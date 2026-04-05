@@ -7,15 +7,11 @@
  **********************************************************************/
 
 #include "upower.h"
-#include <QtConcurrentRun>
 #include <QtDBus>
-#include <util/sll/unreachable.h>
+#include <util/threads/coro.h>
+#include <util/threads/coro/dbus.h>
 
-namespace LC
-{
-namespace Liznoo
-{
-namespace PowerActions
+namespace LC::Liznoo::PowerActions
 {
 	namespace
 	{
@@ -28,49 +24,53 @@ namespace PowerActions
 			case Platform::State::Hibernate:
 				return "Hibernate";
 			}
-
-			Util::Unreachable ();
+			std::unreachable ();
 		}
 	}
 
-	QFuture<bool> UPower::IsAvailable ()
+	Util::ContextTask<bool> UPower::IsAvailable ()
 	{
-		return QtConcurrent::run ([]
-				{
-					QDBusInterface face ("org.freedesktop.UPower",
-							"/org/freedesktop/UPower",
-							"org.freedesktop.UPower",
-							QDBusConnection::systemBus ());
-					return face.isValid () &&
-							face.property ("CanSuspend").isValid () &&
-							face.property ("CanHibernate").isValid ();
-				});
+		const QDBusInterface face
+		{
+			"org.freedesktop.UPower",
+			"/org/freedesktop/UPower",
+			"org.freedesktop.UPower",
+			QDBusConnection::systemBus ()
+		};
+		co_return face.isValid () &&
+				face.property ("CanSuspend").isValid () &&
+				face.property ("CanHibernate").isValid ();
 	}
 
-	QFuture<Platform::QueryChangeStateResult> UPower::CanChangeState (State state)
+	Util::ContextTask<Platform::Result> UPower::CanChangeState (State state)
 	{
-		return QtConcurrent::run ([state] () -> QueryChangeStateResult
-				{
-					QDBusInterface face ("org.freedesktop.UPower",
-							"/org/freedesktop/UPower",
-							"org.freedesktop.UPower",
-							QDBusConnection::systemBus ());
-					if (!face.isValid ())
-						return { false, tr ("Cannot connect to UPower daemon.") };
+		const QDBusInterface face
+		{
+			"org.freedesktop.UPower",
+			"/org/freedesktop/UPower",
+			"org.freedesktop.UPower",
+			QDBusConnection::systemBus ()
+		};
+		if (!face.isValid ())
+			co_return Fail { tr ("Cannot connect to UPower daemon.") };
 
-					return { face.property ("Can" + State2Method (state)).toBool (), {} };
-				});
+		if (face.property ("Can" + State2Method (state)).toBool ())
+			co_return Success {};
+		co_return Fail {};
 	}
 
-	void UPower::ChangeState (State state)
+	Util::ContextTask<Platform::Result> UPower::ChangeState (State state)
 	{
-		QDBusInterface face ("org.freedesktop.UPower",
-				"/org/freedesktop/UPower",
-				"org.freedesktop.UPower",
-				QDBusConnection::systemBus ());
+		QDBusInterface face
+		{
+			"org.freedesktop.UPower",
+			"/org/freedesktop/UPower",
+			"org.freedesktop.UPower",
+			QDBusConnection::systemBus ()
+		};
 
-		face.call (QDBus::NoBlock, State2Method (state));
+		const auto res = co_await Util::Typed<> (face.asyncCall (State2Method (state)));
+		co_return co_await Util::WithHandler (res,
+				[] (const QDBusError& err) { return tr ("Failed to change state: %1.").arg (err.message ()); });
 	}
-}
-}
 }

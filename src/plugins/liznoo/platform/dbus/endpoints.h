@@ -6,4 +6,11 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#include "dbusthread.h"
+#pragma once
+
+#include <util/dbus/async.h>
+
+namespace LC::Liznoo::DBus
+{
+	Util::DBus::Endpoint GetUPowerEndpoint ();
+}

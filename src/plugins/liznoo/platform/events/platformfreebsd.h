@@ -11,17 +11,11 @@
 
 #include "platformlayer.h"
 
-namespace LC
-{
-namespace Liznoo
-{
-namespace Events
+namespace LC::Liznoo::Events
 {
 	class PlatformFreeBSD : public PlatformLayer
 	{
 	public:
-		PlatformFreeBSD (const ICoreProxy_ptr& proxy, QObject* = 0);
+		explicit PlatformFreeBSD (QObject* = nullptr);
 	};
-}
-}
 }

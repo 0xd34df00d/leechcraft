@@ -57,8 +57,8 @@ namespace Events
 		}
 	}
 
-	PlatformMac::PlatformMac (const ICoreProxy_ptr& proxy, QObject *parent)
-	: PlatformLayer (proxy, parent)
+	PlatformMac::PlatformMac (QObject *parent)
+	: PlatformLayer (parent)
 	, Port_ (IORegisterForSystemPower (this, &NotifyPortRef_, IOCallbackProxy, &NotifierObject_))
 	{
 		if (!Port_)
@@ -72,7 +72,7 @@ namespace Events
 				IONotificationPortGetRunLoopSource (NotifyPortRef_),
 				kCFRunLoopCommonModes);
 
-		setAvailable (true);
+		IsAvailable_ = true;
 	}
 
 	PlatformMac::~PlatformMac ()
@@ -102,10 +102,10 @@ namespace Events
 			IOCancelPowerChange (Port_, reinterpret_cast<long> (messageArgument));
 			break;
 		case kIOMessageSystemWillSleep:
-			emitGonnaSleep (30000);
+			NotifyGonnaSleep (30000);
 			break;
 		case kIOMessageSystemHasPoweredOn:
-			emitWokeUp ();
+			NotifyWokeUp ();
 			break;
 		default:
 			break;

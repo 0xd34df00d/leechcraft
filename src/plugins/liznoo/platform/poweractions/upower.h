@@ -8,23 +8,19 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include "platform.h"
 
-namespace LC
-{
-namespace Liznoo
-{
-namespace PowerActions
+namespace LC::Liznoo::PowerActions
 {
 	class UPower final : public Platform
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Liznoo::PowerActions::UPower)
 	public:
 		using Platform::Platform;
 
-		QFuture<bool> IsAvailable () override;
-		QFuture<QueryChangeStateResult> CanChangeState (State) override;
-		void ChangeState (State) override;
+		Util::ContextTask<bool> IsAvailable () override;
+		Util::ContextTask<Result> CanChangeState (State) override;
+		Util::ContextTask<Result> ChangeState (State) override;
 	};
-}
-}
 }

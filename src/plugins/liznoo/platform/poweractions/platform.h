@@ -9,37 +9,31 @@
 #pragma once
 
 #include <QObject>
-#include <QFuture>
+#include <util/sll/either.h>
+#include <util/sll/void.h>
+#include <util/threads/coro/taskfwd.h>
 
-namespace LC
-{
-namespace Liznoo
-{
-namespace PowerActions
+namespace LC::Liznoo::PowerActions
 {
 	class Platform : public QObject
 	{
-		Q_OBJECT
 	public:
 		using QObject::QObject;
 
-		enum class State
+		enum class State : std::uint8_t
 		{
 			Suspend,
 			Hibernate
 		};
 
-		struct QueryChangeStateResult
-		{
-			bool CanChangeState_;
-			QString Reason_;
-		};
+		using Success = Util::Void;
+		struct Fail { QString Reason_; };
 
-		virtual QFuture<bool> IsAvailable () = 0;
+		using Result = Util::Either<Fail, Success>;
 
-		virtual QFuture<QueryChangeStateResult> CanChangeState (State) = 0;
-		virtual void ChangeState (State) = 0;
+		virtual Util::ContextTask<bool> IsAvailable () = 0;
+
+		virtual Util::ContextTask<Result> CanChangeState (State) = 0;
+		virtual Util::ContextTask<Result> ChangeState (State) = 0;
 	};
-}
-}
 }

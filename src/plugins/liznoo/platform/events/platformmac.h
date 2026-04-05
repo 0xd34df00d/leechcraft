@@ -25,7 +25,7 @@ namespace Events
 		io_object_t NotifierObject_;
 		io_connect_t Port_;
 	public:
-		PlatformMac (const ICoreProxy_ptr& proxy, QObject* = 0);
+		PlatformMac (QObject* = 0);
 		~PlatformMac ();
 
 		void Stop ();

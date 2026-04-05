@@ -37,13 +37,13 @@ LC_DEFINE_PLUGIN (
 			platform/screen/freedesktop.cpp
 			>
 		$<$<PLATFORM_ID:Linux>:
-			platform/common/dbusthread.cpp
-			platform/common/connectorbase.cpp
-			platform/logind/logindconnector.cpp
 			platform/battery/upowerplatform.cpp
-			platform/upower/upowerconnector.cpp
+			platform/dbus/endpoints.cpp
+			platform/events/dbus/dbusplatformbase.cpp
+			platform/events/dbus/logind.cpp
+			platform/events/dbus/consolekit.cpp
+			platform/events/dbus/upower.cpp
 			platform/poweractions/upower.cpp
-			platform/consolekit/connector.cpp
 			platform/screen/freedesktop.cpp
 			>
 	SETTINGS liznoosettings.xml

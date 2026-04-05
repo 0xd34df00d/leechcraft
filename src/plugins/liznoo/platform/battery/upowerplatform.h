@@ -8,31 +8,24 @@
 
 #pragma once
 
-#include <memory>
+#include <util/dbus/async.h>
+#include <util/threads/coro/taskfwd.h>
 #include "batteryplatform.h"
 
-namespace LC
-{
-namespace Liznoo
-{
-template<typename>
-class DBusThread;
-
-namespace UPower
-{
-	class UPowerConnector;
-
-	using UPowerThread_ptr = std::shared_ptr<DBusThread<UPowerConnector>>;
-}
-
-namespace Battery
+namespace LC::Liznoo::Battery
 {
 	class UPowerPlatform : public BatteryPlatform
 	{
-		const UPower::UPowerThread_ptr Thread_;
+		Q_OBJECT
+
+		QSet<QString> SubscribedDevices_;
+		Util::DBus::EndpointWithSignals UPower_;
 	public:
-		UPowerPlatform (const UPower::UPowerThread_ptr&, QObject* = nullptr);
+		explicit UPowerPlatform (QObject* = nullptr);
+	private:
+		Util::ContextTask<void> RequeryDevice (QString);
+		Util::ContextTask<void> EnumerateDevices ();
+	private slots:
+		void handlePropertiesChanged (const QDBusMessage&);
 	};
-}
-}
 }

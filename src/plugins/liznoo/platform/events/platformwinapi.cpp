@@ -30,8 +30,8 @@ namespace Liznoo
 {
 namespace Events
 {
-	PlatformWinAPI::PlatformWinAPI (const WinAPI::FakeQWidgetWinAPI_ptr& widget, const ICoreProxy_ptr& proxy, QObject* parent)
-	: PlatformLayer (proxy, parent)
+	PlatformWinAPI::PlatformWinAPI (const WinAPI::FakeQWidgetWinAPI_ptr& widget, QObject* parent)
+	: PlatformLayer (parent)
 	, HPowerSchemeNotify_ (new HPOWERNOTIFY, aHPowerNotifyDeleter)
 	, HPowerSourceNotify_ (new HPOWERNOTIFY, aHPowerNotifyDeleter)
 	, HBatteryPowerNotify_ (new HPOWERNOTIFY, aHPowerNotifyDeleter)
@@ -62,6 +62,8 @@ namespace Events
 				SIGNAL (powerSourceChanged (QString)),
 				this,
 				SLOT (handlePowerSourceChanged (QString)));
+
+		IsAvailable_ = true;
 	}
 
 	void PlatformWinAPI::handleSchemeChanged (QString schemeName)

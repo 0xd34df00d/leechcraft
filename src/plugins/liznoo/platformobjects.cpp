@@ -11,21 +11,19 @@
 #include <QtDebug>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
-#include <util/threads/futures.h>
 #include <util/sll/either.h>
-#include "availabilitychecker.h"
+#include <util/threads/coro.h>
 #include "platform/screen/screenplatform.h"
 #include "platform/battery/batteryplatform.h"
 
 #if defined(Q_OS_LINUX)
 	#include "platform/battery/upowerplatform.h"
-	#include "platform/events/platformupowerlike.h"
+	#include "platform/events/dbus/dbusplatformbase.h"
+	#include "platform/events/dbus/consolekit.h"
+	#include "platform/events/dbus/logind.h"
+	#include "platform/events/dbus/upower.h"
 	#include "platform/poweractions/upower.h"
 	#include "platform/screen/freedesktop.h"
-	#include "platform/common/dbusthread.h"
-	#include "platform/upower/upowerconnector.h"
-	#include "platform/logind/logindconnector.h"
-	#include "platform/consolekit/connector.h"
 #elif defined(Q_OS_WIN32)
 	#include "platform/battery/winapiplatform.h"
 	#include "platform/events/platformwinapi.h"
@@ -42,159 +40,88 @@
 	#pragma message ("Unsupported system")
 #endif
 
-namespace LC
-{
-namespace Liznoo
+namespace LC::Liznoo
 {
 	namespace
 	{
-#if defined(Q_OS_LINUX)
-		class LogindEventsChecker final : public IChecker<Events::PlatformLayer>
+		template<typename T, typename F>
+		std::shared_ptr<T> Select (std::initializer_list<std::shared_ptr<T>> options, F pred)
 		{
-			const ICoreProxy_ptr Proxy_;
-
-			std::shared_ptr<DBusThread<Logind::LogindConnector>> Thread_;
-		public:
-			LogindEventsChecker (const ICoreProxy_ptr& proxy)
-			: Proxy_ { proxy }
-			{
-			}
-
-			QFuture<bool> Check () override
-			{
-				Thread_ = std::make_shared<DBusThread<Logind::LogindConnector>> ();
-				Thread_->start (QThread::LowestPriority);
-				return Thread_->ScheduleImpl (&Logind::LogindConnector::ArePowerEventsAvailable);
-			}
-
-			std::shared_ptr<Events::PlatformLayer> Make () override
-			{
-				return Events::MakeUPowerLike (Thread_, Proxy_);
-			}
-		};
-#endif
-
-		template<typename T>
-		class PowerActionsChecker final : public IChecker<PowerActions::Platform>
-		{
-			std::shared_ptr<T> Platform_;
-		public:
-			QFuture<bool> Check () override
-			{
-				Platform_ = std::make_shared<T> ();
-				return Platform_->IsAvailable ();
-			}
-
-			std::shared_ptr<PowerActions::Platform> Make () override
-			{
-				return Platform_;
-			}
-		};
+			for (const auto& option : options)
+				if (option && pred (*option))
+					return option;
+			return {};
+		}
 	}
 
-	PlatformObjects::PlatformObjects (const ICoreProxy_ptr& proxy, QObject *parent)
-	: QObject { parent }
-	, Proxy_ { proxy }
+	Util::ContextTask<void> PlatformObjects::Init ()
 	{
-#if defined(Q_OS_LINUX)
-		const auto upowerThread = std::make_shared<DBusThread<UPower::UPowerConnector>> ();
-		const auto ckThread = std::make_shared<DBusThread<ConsoleKit::Connector>> ();
+#ifdef Q_OS_LINUX
+		const auto upowerEvents = co_await Events::UPower::Create ();
+		const auto ckEvents = co_await Events::ConsoleKit::Create ();
+		const auto logindEvents = co_await Events::Logind::Create ();
 
-		const auto eventsChecker = new AvailabilityChecker<Events::PlatformLayer>
-		{
-			MakePureChecker<Events::PlatformLayer> ([upowerThread]
-					{
-						return upowerThread->
-								ScheduleImpl (&UPower::UPowerConnector::ArePowerEventsAvailable);
-					},
-					[upowerThread, this] { return Events::MakeUPowerLike (upowerThread, Proxy_); }),
-			MakePureChecker<Events::PlatformLayer> ([ckThread]
-					{
-						return ckThread->
-								ScheduleImpl (&ConsoleKit::Connector::ArePowerEventsAvailable);
-					},
-					[ckThread, this] { return Events::MakeUPowerLike (ckThread, Proxy_); }),
-			std::make_unique<LogindEventsChecker> (proxy)
-		};
-		Util::Sequence (this, eventsChecker->GetResult ()) >>
-				[this] (const auto& maybeEvents)
-				{
-					if (maybeEvents)
-						EventsPlatform_ = *maybeEvents;
-					else
-						qWarning () << Q_FUNC_INFO
-								<< "no events platform";
-				};
+		EventsPlatform_ = Select<Events::PlatformLayer> ({ upowerEvents, ckEvents, logindEvents },
+				[] (const Events::PlatformLayer& platform) { return platform.IsAvailable (); });
+		if (!EventsPlatform_)
+			qWarning () << "no events platform";
 
 		ScreenPlatform_ = new Screen::Freedesktop (this);
-		BatteryPlatform_ = std::make_shared<Battery::UPowerPlatform> (upowerThread);
+		BatteryPlatform_ = std::make_shared<Battery::UPowerPlatform> ();
 
-		const auto actionsChecker = new AvailabilityChecker<PowerActions::Platform>
-		{
-			std::make_unique<PowerActionsChecker<PowerActions::UPower>> ()
-		};
-		Util::Sequence (this, actionsChecker->GetResult ()) >>
-				[this] (const auto& maybeActions)
-				{
-					if (maybeActions)
-						PowerActPlatform_ = *maybeActions;
-					else
-						qWarning () << Q_FUNC_INFO
-								<< "no actions platform";
-				};
-
-		upowerThread->start (QThread::LowestPriority);
-		ckThread->start (QThread::LowestPriority);
-#elif defined(Q_OS_WIN32)
+		const auto upowerActions = std::make_shared<PowerActions::UPower> ();
+		if (co_await upowerActions->IsAvailable ())
+			PowerActPlatform_ = upowerActions;
+#elifdef Q_OS_WIN32
 		const auto widget = std::make_shared<WinAPI::FakeQWidgetWinAPI> ();
 
-		EventsPlatform_ = std::make_shared<Events::PlatformWinAPI> (widget, Proxy_);
+		EventsPlatform_ = std::make_shared<Events::PlatformWinAPI> (widget);
 		BatteryPlatform_ = std::make_shared<Battery::WinAPIPlatform> (widget);
-#elif defined(Q_OS_FREEBSD)
-		EventsPlatform_ = std::make_shared<Events::PlatformFreeBSD> (Proxy_);
+#elifdef Q_OS_FREEBSD
+		EventsPlatform_ = std::make_shared<Events::PlatformFreeBSD> ();
 		PowerActPlatform_ = std::make_shared<PowerActions::FreeBSD> ();
 		BatteryPlatform_ = std::make_shared<Battery::FreeBSDPlatform> ();
 		ScreenPlatform_ = new Screen::Freedesktop (this);
-#elif defined(Q_OS_MAC)
+#elifdef Q_OS_MAC
 		BatteryPlatform_ = std::make_shared<Battery::MacPlatform> ();
-		EventsPlatform_ = std::make_shared<Events::PlatformMac> (Proxy_);
+		EventsPlatform_ = std::make_shared<Events::PlatformMac> ();
 #endif
 
 		if (BatteryPlatform_)
 			connect (BatteryPlatform_.get (),
-					SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)),
+					&Battery::BatteryPlatform::batteryInfoUpdated,
 					this,
-					SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)));
+					&PlatformObjects::batteryInfoUpdated);
 		else
-			qWarning () << Q_FUNC_INFO
-					<< "battery backend is not available";
+			qWarning () << "battery backend is not available";
 	}
 
-	QFuture<PlatformObjects::ChangeStateResult_t> PlatformObjects::ChangeState (PowerActions::Platform::State state)
+	Util::ContextTask<std::unique_ptr<PlatformObjects>> PlatformObjects::Create ()
+	{
+		auto result = std::unique_ptr<PlatformObjects> { new PlatformObjects };
+		co_await result->Init ();
+		co_return result;
+	}
+
+	Util::ContextTask<PlatformObjects::ChangeStateResult_t> PlatformObjects::ChangeState (PowerActions::Platform::State state)
 	{
 		using enum ChangeStateFailed::Reason;
 
 		if (!PowerActPlatform_)
-			return Util::MakeReadyFuture (ChangeStateResult_t { Util::AsLeft, { Unavailable, {} } });
+			co_return { Util::AsLeft, ChangeStateFailed { Unavailable } };
 
-		return Util::Sequence (this, PowerActPlatform_->CanChangeState (state)) >>
-				[state, this] (const PowerActions::Platform::QueryChangeStateResult& res)
-				{
-					if (res.CanChangeState_)
-					{
-						PowerActPlatform_->ChangeState (state);
-						return Util::MakeReadyFuture (ChangeStateResult_t { ChangeStateSucceeded {} });
-					}
-					return Util::MakeReadyFuture (ChangeStateResult_t { Util::AsLeft, { PlatformFailure, res.Reason_ } });
-				};
+		co_await Util::AddContextObject { *this };
+
+		co_await co_await PowerActPlatform_->CanChangeState (state);
+		co_await co_await PowerActPlatform_->ChangeState (state);
+		co_return ChangeStateSucceeded {};
 	}
 
 	void PlatformObjects::ProhibitScreensaver (bool enable, const QString& id)
 	{
 		if (!ScreenPlatform_)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "screen platform layer unavailable, screensaver prohibiton won't work";
+			qWarning () << "screen platform layer unavailable, screensaver prohibiton won't work";
 			return;
 		}
 
@@ -205,12 +132,11 @@ namespace Liznoo
 	{
 		if (!EventsPlatform_)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "platform backend unavailable";
+			qWarning () << "platform backend unavailable";
 			return false;
 		}
 
-		EventsPlatform_->emitGonnaSleep (1000);
+		EventsPlatform_->NotifyGonnaSleep (1000);
 		return true;
 	}
 
@@ -218,13 +144,11 @@ namespace Liznoo
 	{
 		if (!EventsPlatform_)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "platform backend unavailable";
+			qWarning () << "platform backend unavailable";
 			return false;
 		}
 
-		EventsPlatform_->emitWokeUp ();
+		EventsPlatform_->NotifyWokeUp ();
 		return true;
 	}
-}
 }

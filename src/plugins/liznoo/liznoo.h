@@ -14,6 +14,8 @@
 #include <interfaces/ientityhandler.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/iquarkcomponentprovider.h>
+#include <util/threads/coro/task.h>
+#include "platform/poweractions/platform.h"
 #include "batteryhistory.h"
 #include "batteryinfo.h"
 
@@ -23,6 +25,7 @@ namespace Liznoo
 {
 	class BatteryHistoryDialog;
 	class PlatformObjects;
+	class QuarkManager;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -36,11 +39,10 @@ namespace Liznoo
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Liznoo")
 
-		ICoreProxy_ptr Proxy_;
-
 		Util::XmlSettingsDialog_ptr XSD_;
 
-		std::shared_ptr<PlatformObjects> Platform_;
+		std::optional<Util::ContextTask<void>> PlatformInitTask_;
+		std::unique_ptr<PlatformObjects> Platform_;
 
 		QMap<QString, BatteryInfo> Battery2LastInfo_;
 		QMap<QString, BatteryHistoryDialog*> Battery2Dialog_;
@@ -51,6 +53,9 @@ namespace Liznoo
 
 		QuarkComponent_ptr LiznooQuark_;
 	public:
+		Plugin ();
+		~Plugin () override;
+
 		void Init (ICoreProxy_ptr) override;
 		void SecondInit () override;
 		QByteArray GetUniqueID () const override;
@@ -70,14 +75,14 @@ namespace Liznoo
 		QuarkComponents_t GetComponents () const override;
 	private:
 		void CheckNotifications (const BatteryInfo&);
+		PlatformObjects& GetPlatformObjects ();
+
+		Util::ContextTask<void> InitializePlatform (QPointer<QuarkManager>);
+		Util::Task<void> HandleStateRequested (PowerActions::Platform::State);
 	private slots:
-		void handleBatteryInfo (Liznoo::BatteryInfo);
 		void handleUpdateHistory ();
 		void handleHistoryTriggered ();
 		void handleHistoryTriggered (const QString&);
-
-		void handleSuspendRequested ();
-		void handleHibernateRequested ();
 
 		void handlePushButton (const QString&);
 	signals:
@@ -85,4 +90,3 @@ namespace Liznoo
 	};
 }
 }
-

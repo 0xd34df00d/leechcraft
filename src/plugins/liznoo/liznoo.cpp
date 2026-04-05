@@ -19,10 +19,9 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <util/xpc/util.h>
 #include <util/sll/either.h>
-#include <util/sll/visitor.h>
 #include <util/sll/qtutil.h>
-#include <util/sll/unreachable.h>
-#include <util/threads/futures.h>
+#include <util/threads/coro.h>
+#include <util/threads/coro/getresult.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "batteryhistorydialog.h"
@@ -36,19 +35,19 @@ namespace Liznoo
 	const int HistSize = 300;
 	const auto UpdateMsecs = 3000;
 
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	Plugin::Plugin () = default;
+
+	Plugin::~Plugin () = default;
+
+	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Proxy_ = proxy;
 		qRegisterMetaType<BatteryInfo> ("Liznoo::BatteryInfo");
+
+		const auto qm = new QuarkManager;
+		PlatformInitTask_ = InitializePlatform (qm);
 
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "liznoosettings.xml");
-
-		Platform_ = std::make_shared<PlatformObjects> (proxy);
-		connect (Platform_.get (),
-				SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)),
-				this,
-				SLOT (handleBatteryInfo (Liznoo::BatteryInfo)));
 
 		const auto battTimer = new QTimer { this };
 		connect (battTimer,
@@ -59,16 +58,16 @@ namespace Liznoo
 
 		Suspend_ = new QAction (tr ("Suspend"), this);
 		connect (Suspend_,
-				SIGNAL (triggered ()),
+				&QAction::triggered,
 				this,
-				SLOT (handleSuspendRequested ()));
+				[this] { HandleStateRequested (PowerActions::Platform::State::Suspend); });
 		Suspend_->setProperty ("ActionIcon", "system-suspend");
 
 		Hibernate_ = new QAction (tr ("Hibernate"), this);
 		connect (Hibernate_,
-				SIGNAL (triggered ()),
+				&QAction::triggered,
 				this,
-				SLOT (handleHibernateRequested ()));
+				[this] { HandleStateRequested (PowerActions::Platform::State::Hibernate); });
 		Hibernate_->setProperty ("ActionIcon", "system-suspend-hibernate");
 
 		connect (XSD_.get (),
@@ -76,14 +75,8 @@ namespace Liznoo
 				this,
 				SLOT (handlePushButton (QString)));
 
-		const auto qm = new QuarkManager;
 		LiznooQuark_ = std::make_shared<QuarkComponent> ("liznoo", "LiznooQuark.qml");
 		LiznooQuark_->DynamicProps_.append ({ "Liznoo_proxy", qm });
-
-		connect (Platform_.get (),
-				SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)),
-				qm,
-				SLOT (handleBatteryInfo (Liznoo::BatteryInfo)));
 
 		connect (qm,
 				SIGNAL (batteryHistoryDialogRequested (QString)),
@@ -117,7 +110,7 @@ namespace Liznoo
 
 	QIcon Plugin::GetIcon () const
 	{
-		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
@@ -136,7 +129,7 @@ namespace Liznoo
 	{
 		const auto& context = entity.Entity_.toString ();
 		if (context == "ScreensaverProhibition")
-			Platform_->ProhibitScreensaver (entity.Additional_ ["Enable"].toBool (),
+			GetPlatformObjects ().ProhibitScreensaver (entity.Additional_ ["Enable"].toBool (),
 					entity.Additional_ ["ContextID"].toString ());
 	}
 
@@ -180,7 +173,7 @@ namespace Liznoo
 		const bool isLow = check ([checkPerc] (const BatteryInfo& b)
 				{ return checkPerc (b, "LowPower"); });
 
-		const auto iem = Proxy_->GetEntityManager ();
+		const auto iem = GetProxyHolder ()->GetEntityManager ();
 		if (isExtremeLow || isLow)
 			iem->HandleEntity (Util::MakeNotification ("Liznoo",
 						tr ("Battery charge level is %1%.")
@@ -205,11 +198,67 @@ namespace Liznoo
 		}
 	}
 
-	void Plugin::handleBatteryInfo (BatteryInfo info)
+	PlatformObjects& Plugin::GetPlatformObjects ()
 	{
-		CheckNotifications (info);
+		if (const auto task = std::exchange (PlatformInitTask_, {}))
+		{
+			qWarning () << "platform init isn't done yet, blocking";
+			Util::GetTaskResult (*task);
+		}
 
-		Battery2LastInfo_ [info.ID_] = info;
+		if (!Platform_)
+			throw std::runtime_error { "Liznoo::Plugin::GetPlatformObjects(): double-awaiting the platform" };
+
+		return *Platform_;
+	}
+
+	Util::ContextTask<void> Plugin::InitializePlatform (QPointer<QuarkManager> qm)
+	{
+		co_await Util::AddContextObject { *this };
+		Platform_ = co_await PlatformObjects::Create ();
+		connect (Platform_.get (),
+				&PlatformObjects::batteryInfoUpdated,
+				this,
+				[this, qm] (const BatteryInfo& info)
+				{
+					CheckNotifications (info);
+					Battery2LastInfo_ [info.ID_] = info;
+					if (qm)
+						qm->handleBatteryInfo (info);
+				});
+		PlatformInitTask_.reset ();
+	}
+
+	namespace
+	{
+		QString GetReasonString (PlatformObjects::ChangeStateFailed::Reason reason)
+		{
+			switch (reason)
+			{
+			case PlatformObjects::ChangeStateFailed::Reason::Unavailable:
+				return Plugin::tr ("No platform backend is available.");
+			case PlatformObjects::ChangeStateFailed::Reason::PlatformFailure:
+				return Plugin::tr ("Platform backend failed.");
+			case PlatformObjects::ChangeStateFailed::Reason::Other:
+				return Plugin::tr ("Unknown reason.");
+			}
+			std::unreachable ();
+		}
+	}
+
+	Util::Task<void> Plugin::HandleStateRequested (PowerActions::Platform::State state)
+	{
+		const auto& result = co_await GetPlatformObjects ().ChangeState (state);
+		Util::Visit (result,
+				[] (PlatformObjects::ChangeStateSucceeded) {},
+				[] (PlatformObjects::ChangeStateFailed failure)
+				{
+					auto msg = GetReasonString (failure.Reason_);
+					if (!failure.ReasonString_.isEmpty ())
+						msg += " " + failure.ReasonString_;
+					const auto& entity = Util::MakeNotification ("Liznoo", msg, Priority::Critical);
+					GetProxyHolder ()->GetEntityManager ()->HandleEntity (entity);
+				});
 	}
 
 	void Plugin::handleUpdateHistory ()
@@ -259,64 +308,15 @@ namespace Liznoo
 		dialog->raise ();
 	}
 
-	namespace
-	{
-		QString GetReasonString (PlatformObjects::ChangeStateFailed::Reason reason)
-		{
-			switch (reason)
-			{
-			case PlatformObjects::ChangeStateFailed::Reason::Unavailable:
-				return Plugin::tr ("No platform backend is available.");
-			case PlatformObjects::ChangeStateFailed::Reason::PlatformFailure:
-				return Plugin::tr ("Platform backend failed.");
-			case PlatformObjects::ChangeStateFailed::Reason::Other:
-				return Plugin::tr ("Unknown reason.");
-			}
-
-			Util::Unreachable ();
-		}
-
-		void HandleChangeStateResult (IEntityManager *iem,
-				const QFuture<PlatformObjects::ChangeStateResult_t>& future)
-		{
-			Util::Sequence (nullptr, future) >>
-					Util::Visitor
-					{
-						[] (PlatformObjects::ChangeStateSucceeded) {},
-						[iem] (PlatformObjects::ChangeStateFailed f)
-						{
-							auto msg = GetReasonString (f.Reason_);
-							if (!f.ReasonString_.isEmpty ())
-								msg += " " + f.ReasonString_;
-							const auto& entity = Util::MakeNotification ("Liznoo", msg, Priority::Critical);
-							iem->HandleEntity (entity);
-						}
-					};
-		}
-	}
-
-	void Plugin::handleSuspendRequested ()
-	{
-		HandleChangeStateResult (Proxy_->GetEntityManager (),
-				Platform_->ChangeState (PowerActions::Platform::State::Suspend));
-	}
-
-	void Plugin::handleHibernateRequested ()
-	{
-		HandleChangeStateResult (Proxy_->GetEntityManager (),
-				Platform_->ChangeState (PowerActions::Platform::State::Hibernate));
-	}
-
 	void Plugin::handlePushButton (const QString& button)
 	{
 		const auto res = [&button, this]
 		{
 			if (button == "TestSleep")
-				return Platform_->EmitTestSleep ();
-			else if (button == "TestWake")
-				return Platform_->EmitTestWakeup ();
-			else
-				return true;
+				return GetPlatformObjects ().EmitTestSleep ();
+			if (button == "TestWake")
+				return GetPlatformObjects ().EmitTestWakeup ();
+			return true;
 		} ();
 
 		if (!res)

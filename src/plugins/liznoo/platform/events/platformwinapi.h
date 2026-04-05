@@ -37,7 +37,7 @@ namespace Events
 
 		const WinAPI::FakeQWidgetWinAPI_ptr FakeWidget_;
 	public:
-		PlatformWinAPI (const WinAPI::FakeQWidgetWinAPI_ptr&, const ICoreProxy_ptr&, QObject* = 0);
+		PlatformWinAPI (const WinAPI::FakeQWidgetWinAPI_ptr&, QObject* = 0);
 	private slots:
 		void handleSchemeChanged (QString schemeName);
 		void handlePowerSourceChanged (QString powerSource);

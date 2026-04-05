@@ -1,19 +1,23 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2006-2014  Georg Rudoy
- * Copyright (C) 2012       Maxim Ignatenko
  *
  * Distributed under the Boost Software License, Version 1.0.
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#include "platformfreebsd.h"
+#pragma once
+
+#include "dbusplatformbase.h"
 
 namespace LC::Liznoo::Events
 {
-	PlatformFreeBSD::PlatformFreeBSD (QObject *parent)
-	: PlatformLayer { parent }
+	class UPower : public DBusPlatform<UPower>
 	{
-		IsAvailable_ = false;
-	}
+		Util::DBus::EndpointWithSignals UPower_;
+	public:
+		static const Config Config;
+
+		explicit UPower (bool available, QObject* = nullptr);
+	};
 }

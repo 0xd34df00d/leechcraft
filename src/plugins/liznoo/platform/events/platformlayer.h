@@ -9,35 +9,19 @@
 #pragma once
 
 #include <QObject>
-#include <QList>
-#include <QFutureInterface>
-#include <interfaces/structures.h>
-#include <interfaces/core/icoreproxy.h>
-#include "../../batteryinfo.h"
 
-namespace LC
-{
-namespace Liznoo
-{
-namespace Events
+namespace LC::Liznoo::Events
 {
 	class PlatformLayer : public QObject
 	{
-		Q_OBJECT
-
-		QFutureInterface<bool> IsAvailable_;
 	protected:
-		const ICoreProxy_ptr Proxy_;
+		bool IsAvailable_ = false;
 	public:
-		PlatformLayer (const ICoreProxy_ptr&, QObject* = nullptr);
+		using QObject::QObject;
 
-		QFuture<bool> IsAvailable ();
-	protected slots:
-		void setAvailable (bool);
-	public slots:
-		void emitGonnaSleep (int);
-		void emitWokeUp ();
+		bool IsAvailable () const;
+
+		void NotifyGonnaSleep (int);
+		void NotifyWokeUp ();
 	};
-}
-}
 }

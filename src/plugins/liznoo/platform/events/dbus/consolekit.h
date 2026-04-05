@@ -8,22 +8,16 @@
 
 #pragma once
 
-#include "../common/connectorbase.h"
+#include "dbusplatformbase.h"
 
-namespace LC
+namespace LC::Liznoo::Events
 {
-namespace Liznoo
-{
-namespace ConsoleKit
-{
-	class Connector : public ConnectorBase
+	class ConsoleKit : public DBusPlatform<ConsoleKit>
 	{
-		Q_OBJECT
+		Util::DBus::EndpointWithSignals Endpoint_;
 	public:
-		Connector (QObject* = nullptr);
-	private slots:
-		void handlePrepare (bool);
+		static const Config Config;
+
+		explicit ConsoleKit (bool powerSignalsAvailable, QObject* = nullptr);
 	};
-}
-}
 }

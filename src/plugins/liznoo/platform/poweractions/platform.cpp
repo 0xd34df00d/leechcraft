@@ -7,13 +7,3 @@
  **********************************************************************/
 
 #include "platform.h"
-
-namespace LC
-{
-namespace Liznoo
-{
-namespace PowerActions
-{
-}
-}
-}

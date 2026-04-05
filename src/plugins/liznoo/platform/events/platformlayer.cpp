@@ -7,54 +7,35 @@
  **********************************************************************/
 
 #include "platformlayer.h"
-#include <QFuture>
 #include <util/xpc/util.h>
 #include <interfaces/entityconstants.h>
 #include <interfaces/core/ientitymanager.h>
 
-namespace LC
+namespace LC::Liznoo::Events
 {
-namespace Liznoo
-{
-namespace Events
-{
-	PlatformLayer::PlatformLayer (const ICoreProxy_ptr& proxy, QObject *parent)
-	: QObject { parent }
-	, Proxy_ { proxy }
+	bool PlatformLayer::IsAvailable () const
 	{
-		IsAvailable_.reportStarted ();
+		return IsAvailable_;
 	}
 
-	QFuture<bool> PlatformLayer::IsAvailable ()
+	void PlatformLayer::NotifyGonnaSleep (int timeout)
 	{
-		return IsAvailable_.future ();
-	}
-
-	void PlatformLayer::setAvailable (bool avail)
-	{
-		IsAvailable_.reportFinished (&avail);
-	}
-
-	void PlatformLayer::emitGonnaSleep (int timeout)
-	{
-		qDebug () << Q_FUNC_INFO << "detected sleep in" << timeout;
+		qDebug () << "detected sleep in" << timeout;
 		auto e = Util::MakeEntity (PowerState::Sleeping,
 				{},
 				TaskParameter::Internal,
 				Mimes::PowerStateChanged);
 		e.Additional_ [EF::PowerState::TimeLeft] = timeout;
-		Proxy_->GetEntityManager ()->HandleEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
-	void PlatformLayer::emitWokeUp ()
+	void PlatformLayer::NotifyWokeUp ()
 	{
-		qDebug () << Q_FUNC_INFO << "detected wake up";
+		qDebug () << "detected wake up";
 		const auto& e = Util::MakeEntity (PowerState::WokeUp,
 				{},
 				TaskParameter::Internal,
 				Mimes::PowerStateChanged);
-		Proxy_->GetEntityManager ()->HandleEntity (e);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
-}
-}
 }

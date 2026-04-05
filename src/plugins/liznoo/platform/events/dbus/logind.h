@@ -8,20 +8,21 @@
 
 #pragma once
 
-#include <util/threads/workerthreadbase.h>
+#include <QCoreApplication>
+#include "dbusplatformbase.h"
 
-namespace LC
+namespace LC::Liznoo::Events
 {
-namespace Liznoo
-{
-	template<typename ConnT>
-	class DBusThread : public Util::WorkerThread<ConnT>
+	class Logind : public DBusPlatform<Logind>
 	{
-	public:
-		using Util::WorkerThread<ConnT>::WorkerThread;
-	};
+		Q_DECLARE_TR_FUNCTIONS (LC::Liznoo::Events::Logind);
 
-	template<typename ConnT>
-	using DBusThread_ptr = std::shared_ptr<DBusThread<ConnT>>;
-}
+		Util::DBus::EndpointWithSignals Logind_;
+	public:
+		static const Config Config;
+
+		explicit Logind (bool available, QObject* = nullptr);
+	private:
+		Util::Task<void> Inhibit ();
+	};
 }

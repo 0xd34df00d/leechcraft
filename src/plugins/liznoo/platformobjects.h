@@ -10,17 +10,11 @@
 
 #include <memory>
 #include <QObject>
-#include <util/sll/eitherfwd.h>
-#include <util/sll/void.h>
+#include <util/threads/coro/taskfwd.h>
 #include <interfaces/core/icoreproxyfwd.h>
 #include "platform/poweractions/platform.h"
 
-template<typename>
-class QFuture;
-
-namespace LC
-{
-namespace Liznoo
+namespace LC::Liznoo
 {
 	namespace Events
 	{
@@ -43,19 +37,20 @@ namespace Liznoo
 	{
 		Q_OBJECT
 
-		const ICoreProxy_ptr Proxy_;
-
 		std::shared_ptr<Events::PlatformLayer> EventsPlatform_;
 		Screen::ScreenPlatform *ScreenPlatform_= nullptr;
 		std::shared_ptr<PowerActions::Platform> PowerActPlatform_;
 		std::shared_ptr<Battery::BatteryPlatform> BatteryPlatform_;
+
+		explicit PlatformObjects () = default;
+		Util::ContextTask<void> Init ();
 	public:
-		PlatformObjects (const ICoreProxy_ptr& proxy, QObject* = nullptr);
+		static Util::ContextTask<std::unique_ptr<PlatformObjects>> Create ();
 
 		struct ChangeStateSucceeded {};
 		struct ChangeStateFailed
 		{
-			enum class Reason
+			enum class Reason : std::uint8_t
 			{
 				Unavailable,
 				PlatformFailure,
@@ -63,9 +58,20 @@ namespace Liznoo
 			} Reason_;
 
 			QString ReasonString_;
+
+			explicit ChangeStateFailed (Reason reason)
+			: Reason_ { reason }
+			{
+			}
+
+			explicit ChangeStateFailed (PowerActions::Platform::Fail fail)
+			: Reason_ { Reason::PlatformFailure }
+			, ReasonString_ { fail.Reason_ }
+			{
+			}
 		};
 		using ChangeStateResult_t = Util::Either<ChangeStateFailed, ChangeStateSucceeded>;
-		QFuture<ChangeStateResult_t> ChangeState (PowerActions::Platform::State);
+		Util::ContextTask<ChangeStateResult_t> ChangeState (PowerActions::Platform::State);
 		void ProhibitScreensaver (bool prohibit, const QString& id);
 
 		bool EmitTestSleep ();
@@ -73,5 +79,4 @@ namespace Liznoo
 	signals:
 		void batteryInfoUpdated (const Liznoo::BatteryInfo&);
 	};
-}
 }
