@@ -12,19 +12,14 @@
 #include <util/sys/fdguard.h>
 #include "platform.h"
 
-class QTimer;
-
 namespace LC::Liznoo::Battery
 {
 	class FreeBSD : public Platform
 	{
-		Q_OBJECT
-
-		QTimer * const Timer_;
 		const Util::FDGuard ACPIfd_;
 	public:
-		FreeBSD (QObject* = nullptr);
-	private slots:
-		void update ();
+		explicit FreeBSD (QObject* = nullptr);
+	private:
+		void Update ();
 	};
 }

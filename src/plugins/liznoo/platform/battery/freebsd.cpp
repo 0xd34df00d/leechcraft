@@ -8,27 +8,24 @@
  **********************************************************************/
 
 #include "freebsd.h"
+#include <QTimer>
 #include <sys/ioctl.h>
 #include <dev/acpica/acpiio.h>
 #include <fcntl.h>
 #include <errno.h>
-#include <QTimer>
 
 namespace LC::Liznoo::Battery
 {
 	FreeBSD::FreeBSD (QObject *parent)
 	: Platform { parent }
-	, Timer_ { new QTimer { this } }
 	, ACPIfd_ { "/dev/acpi", O_RDONLY }
 	{
-		Timer_->start (10 * 1000);
-		connect (Timer_,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (update ()));
+		auto timer = new QTimer { this };
+		timer->start (10 * 1000);
+		timer->callOnTimeout ([this] { Update (); });
 	}
 
-	void FreeBSD::update ()
+	void FreeBSD::Update ()
 	{
 		int batteries = 0;
 		if (!ACPIfd_)
