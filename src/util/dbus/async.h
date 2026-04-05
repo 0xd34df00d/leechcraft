@@ -24,7 +24,7 @@ namespace LC::Util::DBus
 		QString Service;
 		QString Path;
 		QString Interface;
-		QDBusConnection Conn;
+		QDBusConnection Conn = QDBusConnection::sessionBus ();
 
 		UTIL_DBUS_API AsyncReply<QVariant> GetRawProperty (const QString& property) const;
 		UTIL_DBUS_API AsyncReply<QVariantMap> GetAllProperties () const;
