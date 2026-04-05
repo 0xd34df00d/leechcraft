@@ -10,13 +10,15 @@
 
 #include <QDBusConnection>
 #include <QDBusPendingReply>
+#include <util/sll/qtutil.h>
 #include <util/sll/typegetter.h>
+#include <util/threads/coro/task.h>
+#include <util/threads/coro/either.h>
+#include <util/threads/coro/dbus.h>
 #include "dbusconfig.h"
 
 namespace LC::Util::DBus
 {
-	class TypedSignals;
-
 	struct Endpoint
 	{
 		QString Service;
@@ -24,19 +26,34 @@ namespace LC::Util::DBus
 		QString Interface;
 		QDBusConnection Conn;
 
-		UTIL_DBUS_API QDBusPendingCall GetProperty (const QString& property) const;
-		UTIL_DBUS_API QDBusPendingReply<QVariantMap> GetAllProperties () const;
+		UTIL_DBUS_API AsyncReply<QVariant> GetRawProperty (const QString& property) const;
+		UTIL_DBUS_API AsyncReply<QVariantMap> GetAllProperties () const;
 
-		template<typename... Args>
-		QDBusPendingCall Call (const QString& method, Args&&... args) const
+		template<typename T>
+		Task<Either<QDBusError, T>> GetProperty (QString property) const
+		{
+			const auto eitherPropVar = co_await GetRawProperty (property);
+			const QVariant propVar = co_await eitherPropVar;
+			if (!propVar.canConvert<T> ())
+			{
+				const auto& errorMsg = "Property `%1` expected type %2 but has type %3."_qs
+						.arg (property, QMetaType::fromType<T> ().name (), propVar.typeName ());
+				co_return Left { QDBusError { QDBusError::InvalidSignature, errorMsg } };
+			}
+
+			co_return propVar.value<T> ();
+		}
+
+		template<typename... Rets, typename... Args>
+		AsyncReply<Rets...> Call (const QString& method, Args&&... args) const
 		{
 			auto msg = QDBusMessage::createMethodCall (Service, Path, Interface, method);
 			msg.setArguments ({ std::forward<Args> (args)... });
-			return Conn.asyncCall (msg);
+			return { Conn.asyncCall (msg) };
 		}
 	};
 
-	UTIL_DBUS_API QDBusPendingCall StartService (const QDBusConnection& conn, const QString& name);
+	UTIL_DBUS_API AsyncReply<> StartService (const QDBusConnection& conn, const QString& name);
 
 	class UTIL_DBUS_API TypedSignals : public QObject
 	{

@@ -41,12 +41,11 @@ namespace LC::Liznoo::Events
 
 	Util::Task<void> Logind::Inhibit ()
 	{
-		const auto result = Logind_.Call ("Inhibit"_qs,
+		const auto eitherResponse = co_await Logind_.Call<QDBusUnixFileDescriptor> ("Inhibit"_qs,
 					"shutdown:sleep"_qs,
 					"LeechCraft"_qs,
 					tr ("Preparing LeechCraft for going to sleep..."),
 					"delay"_qs);
-		const auto eitherResponse = co_await Util::Typed<QDBusUnixFileDescriptor> (result);
 		const auto fd = co_await Util::WithHandler (eitherResponse,
 			[] (const auto& err) { qWarning () << "failed to inhibit sleep" << err; });
 		qDebug () << fd.fileDescriptor ();

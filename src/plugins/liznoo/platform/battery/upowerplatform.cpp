@@ -25,7 +25,7 @@ namespace LC::Liznoo::Battery
 	Util::ContextTask<void> UPowerPlatform::EnumerateDevices ()
 	{
 		co_await Util::AddContextObject { *this };
-		const auto& eitherPaths = co_await Util::Typed<QList<QDBusObjectPath>> (UPower_.Call ("EnumerateDevices"_qs));
+		const auto& eitherPaths = co_await UPower_.Call<QList<QDBusObjectPath>> ("EnumerateDevices"_qs);
 		const auto& paths = co_await Util::WithHandler (eitherPaths,
 				[] (const QDBusError& err) { qWarning () << "unable to enumerate devices:" << err; });
 		for (const auto& path : paths)
@@ -67,7 +67,7 @@ namespace LC::Liznoo::Battery
 			.Interface = "org.freedesktop.UPower.Device"_qs,
 			.Conn = QDBusConnection::systemBus (),
 		};
-		const auto& eitherProps = co_await Util::Reply (device.GetAllProperties ());
+		const auto& eitherProps = co_await device.GetAllProperties ();
 		const auto& props = co_await Util::WithHandler (eitherProps,
 				[&] (const QDBusError& err) { qWarning () << "unable to query props on" << id << err; });
 		if (props ["Type"_qs].toInt () != 2)

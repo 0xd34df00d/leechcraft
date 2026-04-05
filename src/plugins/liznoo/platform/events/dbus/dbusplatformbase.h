@@ -41,7 +41,7 @@ namespace LC::Liznoo::Events
 		static Util::ContextTask<std::shared_ptr<Self>> Create ()
 		{
 			const auto& service = Self::Config.Service;
-			if (const auto startResult = co_await Util::Typed<> (Util::DBus::StartService (QDBusConnection::systemBus (), service));
+			if (const auto startResult = co_await Util::DBus::StartService (QDBusConnection::systemBus (), service);
 				const auto err = startResult.MaybeLeft ())
 			{
 				if (err->type () == QDBusError::ServiceUnknown)
