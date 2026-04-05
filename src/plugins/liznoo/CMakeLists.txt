@@ -17,27 +17,27 @@ LC_DEFINE_PLUGIN (
 		batteryhistorydialog.cpp
 		platformobjects.cpp
 		quarkmanager.cpp
-		platform/battery/batteryplatform.cpp
+		platform/battery/platform.cpp
 		platform/events/platform.cpp
 		platform/poweractions/platform.cpp
 		platform/screen/platform.cpp
 		$<$<PLATFORM_ID:Darwin>:
-			platform/battery/macplatform.mm
+			platform/battery/mac.mm
 			platform/events/mac.mm
 			>
 		$<$<PLATFORM_ID:Windows>:
-			platform/battery/winapiplatform.cpp
+			platform/battery/windows.cpp
 			platform/events/windows.cpp
 			platform/winapi/fakeqwidgetwinapi.cpp
 			>
 		$<$<PLATFORM_ID:FreeBSD>:
-			platform/battery/freebsdplatform.cpp
+			platform/battery/freebsd.cpp
 			platform/poweractions/freebsd.cpp
 			platform/events/freebsd.cpp
 			platform/screen/freedesktop.cpp
 			>
 		$<$<PLATFORM_ID:Linux>:
-			platform/battery/upowerplatform.cpp
+			platform/battery/upower.cpp
 			platform/dbus/endpoints.cpp
 			platform/events/dbus/dbusplatformbase.cpp
 			platform/events/dbus/logind.cpp

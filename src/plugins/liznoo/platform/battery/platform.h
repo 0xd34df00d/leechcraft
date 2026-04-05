@@ -6,14 +6,19 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#include "batteryplatform.h"
+#pragma once
 
-namespace LC
+#include <QObject>
+#include "../../batteryinfo.h"
+
+namespace LC::Liznoo::Battery
 {
-namespace Liznoo
-{
-namespace Battery
-{
-}
-}
+	class Platform : public QObject
+	{
+		Q_OBJECT
+	public:
+		using QObject::QObject;
+	signals:
+		void batteryInfoUpdated (Liznoo::BatteryInfo);
+	};
 }

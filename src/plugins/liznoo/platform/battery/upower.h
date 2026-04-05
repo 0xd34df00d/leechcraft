@@ -10,18 +10,18 @@
 
 #include <util/dbus/async.h>
 #include <util/threads/coro/taskfwd.h>
-#include "batteryplatform.h"
+#include "platform.h"
 
 namespace LC::Liznoo::Battery
 {
-	class UPowerPlatform : public BatteryPlatform
+	class UPower : public Platform
 	{
 		Q_OBJECT
 
 		QSet<QString> SubscribedDevices_;
 		Util::DBus::EndpointWithSignals UPower_;
 	public:
-		explicit UPowerPlatform (QObject* = nullptr);
+		explicit UPower (QObject* = nullptr);
 	private:
 		Util::ContextTask<void> RequeryDevice (QString);
 		Util::ContextTask<void> EnumerateDevices ();

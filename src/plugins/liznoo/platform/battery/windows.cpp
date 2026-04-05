@@ -6,18 +6,14 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#include "winapiplatform.h"
+#include "windows.h"
 #include <QtDebug>
 #include "../winapi/fakeqwidgetwinapi.h"
 
-namespace LC
+namespace LC::Liznoo::Battery
 {
-namespace Liznoo
-{
-namespace Battery
-{
-	WinAPIPlatform::WinAPIPlatform (const Windows::FakeQWidgetWinAPI_ptr& widget, QObject *parent)
-	: BatteryPlatform { parent }
+	Windows::Windows (const Liznoo::Windows::FakeQWidgetWinAPI_ptr& widget, QObject *parent)
+	: Platform { parent }
 	, Widget_ { widget }
 	{
 		connect (Widget_.get (),
@@ -26,7 +22,7 @@ namespace Battery
 				SLOT (handleBatteryStateChanged (int)));
 	}
 
-	void WinAPIPlatform::handleBatteryStateChanged (int newPercentage)
+	void Windows::handleBatteryStateChanged (int newPercentage)
 	{
 		//TODO(DZhon): Rewrite using Win32_Battery WMI Class.
 
@@ -44,6 +40,4 @@ namespace Battery
 
 		emit batteryInfoUpdated (info);
 	}
-}
-}
 }

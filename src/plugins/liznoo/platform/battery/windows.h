@@ -9,30 +9,24 @@
 #pragma once
 
 #include <memory>
-#include "batteryplatform.h"
+#include "platform.h"
 
-namespace LC
-{
-namespace Liznoo
-{
-namespace Windows
+namespace LC::Liznoo::Windows
 {
 	class FakeQWidgetWinAPI;
 	using FakeQWidgetWinAPI_ptr = std::shared_ptr<FakeQWidgetWinAPI>;
 }
 
-namespace Battery
+namespace LC::Liznoo::Battery
 {
-	class WinAPIPlatform : public BatteryPlatform
+	class Windows : public Platform
 	{
 		Q_OBJECT
 
-		const Windows::FakeQWidgetWinAPI_ptr Widget_;
+		const Liznoo::Windows::FakeQWidgetWinAPI_ptr Widget_;
 	public:
-		WinAPIPlatform (const Windows::FakeQWidgetWinAPI_ptr&, QObject* = nullptr);
+		Windows (const Liznoo::Windows::FakeQWidgetWinAPI_ptr&, QObject* = nullptr);
 	private slots:
 		void handleBatteryStateChanged (int newPercentage);
 	};
-}
-}
 }

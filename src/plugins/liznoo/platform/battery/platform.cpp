@@ -6,26 +6,4 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#pragma once
-
-#include "batteryplatform.h"
-#include <IOKit/pwr_mgt/IOPMLib.h>
-
-namespace LC
-{
-namespace Liznoo
-{
-namespace Battery
-{
-	class MacPlatform : public BatteryPlatform
-	{
-		CFRunLoopSourceRef PSEventsSource_;
-	public:
-		MacPlatform ();
-		~MacPlatform ();
-	private:
-		void HandlePowerSourcesChanged ();
-	};
-}
-}
-}
+#include "platform.h"

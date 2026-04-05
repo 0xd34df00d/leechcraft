@@ -28,7 +28,7 @@ namespace LC::Liznoo
 
 	namespace Battery
 	{
-		class BatteryPlatform;
+		class Platform;
 	}
 
 	struct BatteryInfo;
@@ -40,7 +40,7 @@ namespace LC::Liznoo
 		std::shared_ptr<Events::Platform> EventsPlatform_;
 		Screen::Platform *ScreenPlatform_= nullptr;
 		std::shared_ptr<PowerActions::Platform> PowerActPlatform_;
-		std::shared_ptr<Battery::BatteryPlatform> BatteryPlatform_;
+		std::shared_ptr<Battery::Platform> BatteryPlatform_;
 
 		explicit PlatformObjects () = default;
 		Util::ContextTask<void> Init ();

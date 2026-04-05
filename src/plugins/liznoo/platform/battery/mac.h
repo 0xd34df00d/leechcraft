@@ -8,23 +8,18 @@
 
 #pragma once
 
-#include <QObject>
-#include "../../batteryinfo.h"
+#include "platform.h"
+#include <IOKit/pwr_mgt/IOPMLib.h>
 
-namespace LC
+namespace LC::Liznoo::Battery
 {
-namespace Liznoo
-{
-namespace Battery
-{
-	class BatteryPlatform : public QObject
+	class Mac : public Platform
 	{
-		Q_OBJECT
+		CFRunLoopSourceRef PSEventsSource_;
 	public:
-		using QObject::QObject;
-	signals:
-		void batteryInfoUpdated (Liznoo::BatteryInfo);
+		Mac ();
+		~Mac ();
+	private:
+		void HandlePowerSourcesChanged ();
 	};
-}
-}
 }

@@ -7,21 +7,17 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#include "freebsdplatform.h"
+#include "freebsd.h"
 #include <sys/ioctl.h>
 #include <dev/acpica/acpiio.h>
 #include <fcntl.h>
 #include <errno.h>
 #include <QTimer>
 
-namespace LC
+namespace LC::Liznoo::Battery
 {
-namespace Liznoo
-{
-namespace Battery
-{
-	FreeBSDPlatform::FreeBSDPlatform (QObject *parent)
-	: BatteryPlatform { parent }
+	FreeBSD::FreeBSD (QObject *parent)
+	: Platform { parent }
 	, Timer_ { new QTimer { this } }
 	, ACPIfd_ { "/dev/acpi", O_RDONLY }
 	{
@@ -32,7 +28,7 @@ namespace Battery
 				SLOT (update ()));
 	}
 
-	void FreeBSDPlatform::update ()
+	void FreeBSD::update ()
 	{
 		int batteries = 0;
 		if (!ACPIfd_)
@@ -103,6 +99,4 @@ namespace Battery
 			}
 		}
 	}
-}
-}
 }

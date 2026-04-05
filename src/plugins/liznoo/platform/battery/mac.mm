@@ -27,7 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "macplatform.h"
+#include "mac.h"
 #include <QTimer>
 #include <QtDebug>
 #include <mach/mach_port.h>
@@ -40,25 +40,21 @@
 #include <IOKit/ps/IOPSKeys.h>
 #include <CoreFoundation/CFNumber.h>
 
-namespace LeechCraft
+namespace LC::Liznoo::Battery
 {
-namespace Liznoo
-{
-namespace Battery
-{
-	MacPlatform::MacPlatform ()
+	Mac::Mac ()
 	: PSEventsSource_ { IOPSNotificationCreateRunLoopSource ([] (void *refCon)
-				{ static_cast<MacPlatform*> (refCon)->HandlePowerSourcesChanged (); },
+				{ static_cast<Mac*> (refCon)->HandlePowerSourcesChanged (); },
 			this) }
 	{
 		CFRunLoopAddSource (CFRunLoopGetCurrent (),
 				PSEventsSource_,
 				kCFRunLoopCommonModes);
 
-		QTimer::singleShot (100, this, &MacPlatform::HandlePowerSourcesChanged);
+		QTimer::singleShot (100, this, &Mac::HandlePowerSourcesChanged);
 	}
 
-	MacPlatform::~MacPlatform ()
+	Mac::~Mac ()
 	{
 		CFRunLoopRemoveSource (CFRunLoopGetCurrent (),
 				PSEventsSource_,
@@ -120,7 +116,7 @@ namespace Battery
 		}
 	}
 
-	void MacPlatform::HandlePowerSourcesChanged ()
+	void Mac::HandlePowerSourcesChanged ()
 	{
 		auto info = MakeShared (IOPSCopyPowerSourcesInfo (), SafeRelease);
 		if (!info)
@@ -206,6 +202,4 @@ namespace Battery
 
 		CFRelease (properties);
 	}
-}
-}
 }

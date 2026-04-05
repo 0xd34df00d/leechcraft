@@ -6,7 +6,7 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#include "upowerplatform.h"
+#include "upower.h"
 #include <util/sll/qtutil.h>
 #include <util/threads/coro.h>
 #include <util/threads/coro/dbus.h>
@@ -14,15 +14,15 @@
 
 namespace LC::Liznoo::Battery
 {
-	UPowerPlatform::UPowerPlatform (QObject *parent)
-	: BatteryPlatform { parent }
+	UPower::UPower (QObject *parent)
+	: Platform { parent }
 	, UPower_ { DBus::GetUPowerEndpoint () }
 	{
 		UPower_.Connect ("DeviceAdded", [this] (const QDBusObjectPath& path) { RequeryDevice (path.path ()); });
 		EnumerateDevices ();
 	}
 
-	Util::ContextTask<void> UPowerPlatform::EnumerateDevices ()
+	Util::ContextTask<void> UPower::EnumerateDevices ()
 	{
 		co_await Util::AddContextObject { *this };
 		const auto& eitherPaths = co_await UPower_.Call<QList<QDBusObjectPath>> ("EnumerateDevices"_qs);
@@ -57,7 +57,7 @@ namespace LC::Liznoo::Battery
 		}
 	}
 
-	Util::ContextTask<void> UPowerPlatform::RequeryDevice (QString id)
+	Util::ContextTask<void> UPower::RequeryDevice (QString id)
 	{
 		co_await Util::AddContextObject { *this };
 		const Util::DBus::Endpoint device
@@ -100,7 +100,7 @@ namespace LC::Liznoo::Battery
 		}
 	}
 
-	void UPowerPlatform::handlePropertiesChanged (const QDBusMessage& msg)
+	void UPower::handlePropertiesChanged (const QDBusMessage& msg)
 	{
 		const auto& changedVar = msg.arguments ().value (1);
 		const auto& changedMap = qdbus_cast<QVariantMap> (changedVar.value<QDBusArgument> ());

@@ -10,27 +10,21 @@
 #pragma once
 
 #include <util/sys/fdguard.h>
-#include "batteryplatform.h"
+#include "platform.h"
 
 class QTimer;
 
-namespace LC
+namespace LC::Liznoo::Battery
 {
-namespace Liznoo
-{
-namespace Battery
-{
-	class FreeBSDPlatform : public BatteryPlatform
+	class FreeBSD : public Platform
 	{
 		Q_OBJECT
 
 		QTimer * const Timer_;
 		const Util::FDGuard ACPIfd_;
 	public:
-		FreeBSDPlatform (QObject* = nullptr);
+		FreeBSD (QObject* = nullptr);
 	private slots:
 		void update ();
 	};
-}
-}
 }
