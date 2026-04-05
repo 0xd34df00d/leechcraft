@@ -20,7 +20,7 @@ LC_DEFINE_PLUGIN (
 		platform/battery/batteryplatform.cpp
 		platform/events/platformlayer.cpp
 		platform/poweractions/platform.cpp
-		platform/screen/screenplatform.cpp
+		platform/screen/platform.cpp
 		$<$<PLATFORM_ID:Darwin>:
 			platform/battery/macplatform.mm
 			platform/events/platformmac.mm

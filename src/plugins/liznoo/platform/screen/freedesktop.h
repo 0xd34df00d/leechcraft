@@ -8,17 +8,13 @@
 
 #pragma once
 
-#include "screenplatform.h"
+#include "platform.h"
 
 class QTimer;
 
-namespace LC
+namespace LC::Liznoo::Screen
 {
-namespace Liznoo
-{
-namespace Screen
-{
-	class Freedesktop : public ScreenPlatform
+	class Freedesktop : public Platform
 	{
 		Q_OBJECT
 
@@ -26,10 +22,8 @@ namespace Screen
 	public:
 		Freedesktop (QObject* = nullptr);
 
-		void ProhibitScreensaver (bool prohibit, const QString& id);
+		void ProhibitScreensaver (bool prohibit, const QString& id) override;
 	private slots:
 		void handleTimeout ();
 	};
-}
-}
 }

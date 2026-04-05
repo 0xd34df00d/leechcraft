@@ -12,14 +12,10 @@
 #include <QDBusInterface>
 #include <QDBusPendingCall>
 
-namespace LC
-{
-namespace Liznoo
-{
-namespace Screen
+namespace LC::Liznoo::Screen
 {
 	Freedesktop::Freedesktop (QObject *parent)
-	: ScreenPlatform (parent)
+	: Platform (parent)
 	, ActivityTimer_ (new QTimer (this))
 	{
 		connect (ActivityTimer_,
@@ -52,6 +48,4 @@ namespace Screen
 		QDBusInterface iface ("org.freedesktop.ScreenSaver", "/ScreenSaver");
 		iface.call ("SimulateUserActivity");
 	}
-}
-}
 }

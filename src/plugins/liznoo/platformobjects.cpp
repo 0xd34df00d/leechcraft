@@ -13,7 +13,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include <util/sll/either.h>
 #include <util/threads/coro.h>
-#include "platform/screen/screenplatform.h"
+#include "platform/screen/platform.h"
 #include "platform/battery/batteryplatform.h"
 
 #if defined(Q_OS_LINUX)

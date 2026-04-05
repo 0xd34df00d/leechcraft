@@ -6,14 +6,21 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#include "screenplatform.h"
+#pragma once
 
-namespace LC
+#include <QObject>
+#include <QSet>
+
+namespace LC::Liznoo::Screen
 {
-namespace Liznoo
-{
-namespace
-{
-}
-}
+	class Platform : public QObject
+	{
+		Q_OBJECT
+	protected:
+		QSet<QString> ActiveProhibitions_;
+	public:
+		using QObject::QObject;
+
+		virtual void ProhibitScreensaver (bool prohibit, const QString& id) = 0;
+	};
 }
