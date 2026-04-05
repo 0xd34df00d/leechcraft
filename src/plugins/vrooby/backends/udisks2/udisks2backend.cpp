@@ -191,8 +191,8 @@ namespace LC::Vrooby::UDisks2
 						RemovePath (path);
 				});
 
-		const auto result = co_await Util::Typed<EnumerationResult_t> (UDisksObj_->GetManagedObjects ());
-		Util::Visit (co_await Util::Typed<EnumerationResult_t> (UDisksObj_->GetManagedObjects ()),
+		const auto result = co_await Util::Reply (UDisksObj_->GetManagedObjects ());
+		Util::Visit (co_await Util::Reply (UDisksObj_->GetManagedObjects ()),
 				[] (const QDBusError& error)
 				{
 					qWarning () << error.message ();
