@@ -96,4 +96,7 @@ namespace LC::Util
 	{
 		return { asyncCall };
 	}
+
+	template<typename... Rets, typename... Actual>
+	detail::DBusAwaiter<Rets...> Typed (const QDBusPendingReply<Actual...>&) = delete ("do not use Util::Typed to await typed QDBusPendingReply<...>");
 }
