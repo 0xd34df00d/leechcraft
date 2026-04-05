@@ -7,22 +7,22 @@
  **********************************************************************/
 
 #include "upower.h"
-#include <QtDBus>
 #include <util/threads/coro.h>
 #include <util/threads/coro/dbus.h>
+#include "platform/dbus/endpoints.h"
 
 namespace LC::Liznoo::PowerActions
 {
 	namespace
 	{
-		QByteArray State2Method (Platform::State state)
+		QString State2Method (Platform::State state)
 		{
 			switch (state)
 			{
 			case Platform::State::Suspend:
-				return "Suspend";
+				return "Suspend"_qs;
 			case Platform::State::Hibernate:
-				return "Hibernate";
+				return "Hibernate"_qs;
 			}
 			std::unreachable ();
 		}
@@ -30,46 +30,26 @@ namespace LC::Liznoo::PowerActions
 
 	Util::ContextTask<bool> UPower::IsAvailable ()
 	{
-		const QDBusInterface face
-		{
-			"org.freedesktop.UPower",
-			"/org/freedesktop/UPower",
-			"org.freedesktop.UPower",
-			QDBusConnection::systemBus ()
-		};
-		co_return face.isValid () &&
-				face.property ("CanSuspend").isValid () &&
-				face.property ("CanHibernate").isValid ();
+		const auto& upower = DBus::GetUPowerEndpoint ();
+		const auto eitherCanSuspend = co_await upower.GetProperty<bool> ("CanSuspend"_qs);
+		const auto eitherCanHibernate = co_await upower.GetProperty<bool> ("CanHibernate"_qs);
+		co_return eitherCanSuspend.IsRight () && eitherCanHibernate.IsRight ();
 	}
 
 	Util::ContextTask<Platform::Result> UPower::CanChangeState (State state)
 	{
-		const QDBusInterface face
-		{
-			"org.freedesktop.UPower",
-			"/org/freedesktop/UPower",
-			"org.freedesktop.UPower",
-			QDBusConnection::systemBus ()
-		};
-		if (!face.isValid ())
-			co_return Fail { tr ("Cannot connect to UPower daemon.") };
-
-		if (face.property ("Can" + State2Method (state)).toBool ())
+		const auto& upower = DBus::GetUPowerEndpoint ();
+		const auto eitherAllowed = co_await upower.GetProperty<bool> ("Can"_ql + State2Method (state));
+		if (co_await Util::WithHandler (eitherAllowed, [] (const QDBusError& err) { return err.message (); }))
 			co_return Success {};
-		co_return Fail {};
+		co_return Fail { tr ("Cannot change state: either not supported or insufficient permissions.") };
 	}
 
 	Util::ContextTask<Platform::Result> UPower::ChangeState (State state)
 	{
-		QDBusInterface face
-		{
-			"org.freedesktop.UPower",
-			"/org/freedesktop/UPower",
-			"org.freedesktop.UPower",
-			QDBusConnection::systemBus ()
-		};
+		const auto& upower = DBus::GetUPowerEndpoint ();
 
-		const auto res = co_await Util::Typed<> (face.asyncCall (State2Method (state)));
+		const auto res = co_await upower.Call<> (State2Method (state));
 		co_return co_await Util::WithHandler (res,
 				[] (const QDBusError& err) { return tr ("Failed to change state: %1.").arg (err.message ()); });
 	}
