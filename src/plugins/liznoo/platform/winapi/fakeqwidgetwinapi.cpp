@@ -11,11 +11,7 @@
 #include <QDebug>
 #include <objbase.h>
 
-namespace LC
-{
-namespace Liznoo
-{
-namespace WinAPI
+namespace LC::Liznoo::Windows
 {
 	FakeQWidgetWinAPI::FakeQWidgetWinAPI (QWidget *parent)
 	: QWidget (parent)
@@ -90,6 +86,4 @@ namespace WinAPI
 
 		return QWidget::nativeEvent (eventType, msg, result);
 	}
-}
-}
 }

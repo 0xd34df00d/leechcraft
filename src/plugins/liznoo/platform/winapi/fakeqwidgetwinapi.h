@@ -13,11 +13,7 @@
 #include <QString>
 #include <windows.h>
 
-namespace LC
-{
-namespace Liznoo
-{
-namespace WinAPI
+namespace LC::Liznoo::Windows
 {
 	class FakeQWidgetWinAPI : public QWidget
 	{
@@ -37,6 +33,4 @@ namespace WinAPI
 		void powerSourceChanged (QString powerSource);
 		void batteryStateChanged (int newPercentage);
 	};
-}
-}
 }

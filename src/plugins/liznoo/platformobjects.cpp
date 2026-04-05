@@ -26,16 +26,16 @@
 	#include "platform/screen/freedesktop.h"
 #elif defined(Q_OS_WIN32)
 	#include "platform/battery/winapiplatform.h"
-	#include "platform/events/platformwinapi.h"
+	#include "platform/events/windows.h"
 	#include "platform/winapi/fakeqwidgetwinapi.h"
 #elif defined(Q_OS_FREEBSD)
 	#include "platform/battery/freebsdplatform.h"
-	#include "platform/events/platformfreebsd.h"
+	#include "platform/events/freebsd.h"
 	#include "platform/poweractions/freebsd.h"
 	#include "platform/screen/freedesktop.h"
 #elif defined(Q_OS_MAC)
 	#include "platform/battery/macplatform.h"
-	#include "platform/events/platformmac.h"
+	#include "platform/events/mac.h"
 #else
 	#pragma message ("Unsupported system")
 #endif
@@ -61,8 +61,8 @@ namespace LC::Liznoo
 		const auto ckEvents = co_await Events::ConsoleKit::Create ();
 		const auto logindEvents = co_await Events::Logind::Create ();
 
-		EventsPlatform_ = Select<Events::PlatformLayer> ({ upowerEvents, ckEvents, logindEvents },
-				[] (const Events::PlatformLayer& platform) { return platform.IsAvailable (); });
+		EventsPlatform_ = Select<Events::Platform> ({ upowerEvents, ckEvents, logindEvents },
+				[] (const Events::Platform& platform) { return platform.IsAvailable (); });
 		if (!EventsPlatform_)
 			qWarning () << "no events platform";
 
@@ -73,18 +73,18 @@ namespace LC::Liznoo
 		if (co_await upowerActions->IsAvailable ())
 			PowerActPlatform_ = upowerActions;
 #elifdef Q_OS_WIN32
-		const auto widget = std::make_shared<WinAPI::FakeQWidgetWinAPI> ();
+		const auto widget = std::make_shared<Windows::FakeQWidgetWinAPI> ();
 
-		EventsPlatform_ = std::make_shared<Events::PlatformWinAPI> (widget);
+		EventsPlatform_ = std::make_shared<Events::Windows> (widget);
 		BatteryPlatform_ = std::make_shared<Battery::WinAPIPlatform> (widget);
 #elifdef Q_OS_FREEBSD
-		EventsPlatform_ = std::make_shared<Events::PlatformFreeBSD> ();
+		EventsPlatform_ = std::make_shared<Events::FreeBSD> ();
 		PowerActPlatform_ = std::make_shared<PowerActions::FreeBSD> ();
 		BatteryPlatform_ = std::make_shared<Battery::FreeBSDPlatform> ();
 		ScreenPlatform_ = new Screen::Freedesktop (this);
 #elifdef Q_OS_MAC
 		BatteryPlatform_ = std::make_shared<Battery::MacPlatform> ();
-		EventsPlatform_ = std::make_shared<Events::PlatformMac> ();
+		EventsPlatform_ = std::make_shared<Events::Mac> ();
 #endif
 
 		if (BatteryPlatform_)

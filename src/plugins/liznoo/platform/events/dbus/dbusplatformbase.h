@@ -11,11 +11,11 @@
 #include <util/dbus/async.h>
 #include <util/threads/coro.h>
 #include <util/threads/coro/dbus.h>
-#include "../platformlayer.h"
+#include "../platform.h"
 
 namespace LC::Liznoo::Events
 {
-	class DBusPlatformBase : public PlatformLayer
+	class DBusPlatformBase : public Platform
 	{
 	protected:
 		struct Config

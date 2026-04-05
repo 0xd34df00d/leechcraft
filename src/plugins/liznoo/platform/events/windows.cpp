@@ -7,31 +7,27 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
+#include "windows.h"
 #include <QtGlobal>
 #include <QTimer>
 #include "../winapi/fakeqwidgetwinapi.h"
-#include "platformwinapi.h"
 
 namespace
 {
-auto aHPowerNotifyDeleter = [] (HPOWERNOTIFY *ptr)
-{
-	if (ptr && *ptr)
+	auto aHPowerNotifyDeleter = [] (HPOWERNOTIFY *ptr)
 	{
-		UnregisterPowerSettingNotification (*ptr);
-		delete ptr;
-	}
-};
+		if (ptr && *ptr)
+		{
+			UnregisterPowerSettingNotification (*ptr);
+			delete ptr;
+		}
+	};
 }
 
-namespace LC
+namespace LC::Liznoo::Events
 {
-namespace Liznoo
-{
-namespace Events
-{
-	PlatformWinAPI::PlatformWinAPI (const WinAPI::FakeQWidgetWinAPI_ptr& widget, QObject* parent)
-	: PlatformLayer (parent)
+	Windows::Windows (const Windows::FakeQWidgetWinAPI_ptr& widget, QObject* parent)
+	: Platform (parent)
 	, HPowerSchemeNotify_ (new HPOWERNOTIFY, aHPowerNotifyDeleter)
 	, HPowerSourceNotify_ (new HPOWERNOTIFY, aHPowerNotifyDeleter)
 	, HBatteryPowerNotify_ (new HPOWERNOTIFY, aHPowerNotifyDeleter)
@@ -66,15 +62,13 @@ namespace Events
 		IsAvailable_ = true;
 	}
 
-	void PlatformWinAPI::handleSchemeChanged (QString schemeName)
+	void Windows::handleSchemeChanged (QString schemeName)
 	{
 		qDebug() << "New power scheme detected" << ": [" << schemeName << "]";
 	}
 
-	void PlatformWinAPI::handlePowerSourceChanged (QString powerSource)
+	void Windows::handlePowerSourceChanged (QString powerSource)
 	{
 		qDebug() << "New power source detected" << ": [" << powerSource << "]";
 	}
 }
-} // namespace Liznoo
-} // namespace LC

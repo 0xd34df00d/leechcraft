@@ -15,7 +15,7 @@ namespace LC
 {
 namespace Liznoo
 {
-namespace WinAPI
+namespace Windows
 {
 	class FakeQWidgetWinAPI;
 	using FakeQWidgetWinAPI_ptr = std::shared_ptr<FakeQWidgetWinAPI>;
@@ -27,9 +27,9 @@ namespace Battery
 	{
 		Q_OBJECT
 
-		const WinAPI::FakeQWidgetWinAPI_ptr Widget_;
+		const Windows::FakeQWidgetWinAPI_ptr Widget_;
 	public:
-		WinAPIPlatform (const WinAPI::FakeQWidgetWinAPI_ptr&, QObject* = nullptr);
+		WinAPIPlatform (const Windows::FakeQWidgetWinAPI_ptr&, QObject* = nullptr);
 	private slots:
 		void handleBatteryStateChanged (int newPercentage);
 	};

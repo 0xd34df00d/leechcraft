@@ -18,7 +18,7 @@ namespace LC::Liznoo
 {
 	namespace Events
 	{
-		class PlatformLayer;
+		class Platform;
 	}
 
 	namespace Screen
@@ -37,7 +37,7 @@ namespace LC::Liznoo
 	{
 		Q_OBJECT
 
-		std::shared_ptr<Events::PlatformLayer> EventsPlatform_;
+		std::shared_ptr<Events::Platform> EventsPlatform_;
 		Screen::Platform *ScreenPlatform_= nullptr;
 		std::shared_ptr<PowerActions::Platform> PowerActPlatform_;
 		std::shared_ptr<Battery::BatteryPlatform> BatteryPlatform_;

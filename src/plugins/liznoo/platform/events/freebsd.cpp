@@ -7,15 +7,13 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#pragma once
-
-#include "platformlayer.h"
+#include "freebsd.h"
 
 namespace LC::Liznoo::Events
 {
-	class PlatformFreeBSD : public PlatformLayer
+	FreeBSD::FreeBSD (QObject *parent)
+	: Platform { parent }
 	{
-	public:
-		explicit PlatformFreeBSD (QObject* = nullptr);
-	};
+		IsAvailable_ = false;
+	}
 }

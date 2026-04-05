@@ -12,21 +12,17 @@
 #include <memory>
 #include <functional>
 #include <windows.h>
-#include "platformlayer.h"
+#include "platform.h"
 
-namespace LC
-{
-namespace Liznoo
-{
-namespace WinAPI
+namespace LC::Liznoo::Windows
 {
     class FakeQWidgetWinAPI;
     using FakeQWidgetWinAPI_ptr = std::shared_ptr<FakeQWidgetWinAPI>;
 }
 
-namespace Events
+namespace LC::Liznoo::Events
 {
-	class PlatformWinAPI : public PlatformLayer
+	class Windows : public Platform
 	{
 		Q_OBJECT
 
@@ -35,13 +31,11 @@ namespace Events
 		std::unique_ptr<HPOWERNOTIFY, HPowerNotifyDeleter> HPowerSourceNotify_;
 		std::unique_ptr<HPOWERNOTIFY, HPowerNotifyDeleter> HBatteryPowerNotify_;
 
-		const WinAPI::FakeQWidgetWinAPI_ptr FakeWidget_;
+		const Windows::FakeQWidgetWinAPI_ptr FakeWidget_;
 	public:
-		PlatformWinAPI (const WinAPI::FakeQWidgetWinAPI_ptr&, QObject* = 0);
+		Windows (const Windows::FakeQWidgetWinAPI_ptr&, QObject* = 0);
 	private slots:
 		void handleSchemeChanged (QString schemeName);
 		void handlePowerSourceChanged (QString powerSource);
 	};
 }
-} // namespace Liznoo
-} // namespace Leechcraft

@@ -14,7 +14,7 @@
 namespace LC::Liznoo::Events
 {
 	DBusPlatformBase::DBusPlatformBase (bool available, QObject *parent)
-	: PlatformLayer { parent }
+	: Platform { parent }
 	{
 		IsAvailable_ = available;
 	}

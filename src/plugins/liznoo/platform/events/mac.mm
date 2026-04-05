@@ -27,7 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "platformmac.h"
+#include "mac.h"
 #include <ctype.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -42,23 +42,19 @@
 #include <IOKit/ps/IOPSKeys.h>
 #include <CoreFoundation/CFNumber.h>
 
-namespace LeechCraft
-{
-namespace Liznoo
-{
-namespace Events
+namespace LC::Liznoo::Events
 {
 	namespace
 	{
 		void IOCallbackProxy (void *refCon, io_service_t service, natural_t messageType, void *messageArgument)
 		{
-			auto platform = static_cast<PlatformMac*> (refCon);
+			auto platform = static_cast<Mac*> (refCon);
 			platform->IOCallback (service, messageType, messageArgument);
 		}
 	}
 
-	PlatformMac::PlatformMac (QObject *parent)
-	: PlatformLayer (parent)
+	Mac::Mac (QObject *parent)
+	: Platform (parent)
 	, Port_ (IORegisterForSystemPower (this, &NotifyPortRef_, IOCallbackProxy, &NotifierObject_))
 	{
 		if (!Port_)
@@ -75,12 +71,12 @@ namespace Events
 		IsAvailable_ = true;
 	}
 
-	PlatformMac::~PlatformMac ()
+	Mac::~Mac ()
 	{
 		Stop ();
 	}
 
-	void PlatformMac::Stop ()
+	void Mac::Stop ()
 	{
 		if (!Port_)
 			return;
@@ -94,7 +90,7 @@ namespace Events
 		Port_ = 0;
 	}
 
-	void PlatformMac::IOCallback (io_service_t, natural_t messageType, void *messageArgument)
+	void Mac::IOCallback (io_service_t, natural_t messageType, void *messageArgument)
 	{
 		switch (messageType)
 		{
@@ -111,6 +107,4 @@ namespace Events
 			break;
 		}
 	}
-}
-}
 }

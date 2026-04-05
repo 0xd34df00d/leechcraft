@@ -18,22 +18,22 @@ LC_DEFINE_PLUGIN (
 		platformobjects.cpp
 		quarkmanager.cpp
 		platform/battery/batteryplatform.cpp
-		platform/events/platformlayer.cpp
+		platform/events/platform.cpp
 		platform/poweractions/platform.cpp
 		platform/screen/platform.cpp
 		$<$<PLATFORM_ID:Darwin>:
 			platform/battery/macplatform.mm
-			platform/events/platformmac.mm
+			platform/events/mac.mm
 			>
 		$<$<PLATFORM_ID:Windows>:
 			platform/battery/winapiplatform.cpp
-			platform/events/platformwinapi.cpp
+			platform/events/windows.cpp
 			platform/winapi/fakeqwidgetwinapi.cpp
 			>
 		$<$<PLATFORM_ID:FreeBSD>:
 			platform/battery/freebsdplatform.cpp
 			platform/poweractions/freebsd.cpp
-			platform/events/platformfreebsd.cpp
+			platform/events/freebsd.cpp
 			platform/screen/freedesktop.cpp
 			>
 		$<$<PLATFORM_ID:Linux>:

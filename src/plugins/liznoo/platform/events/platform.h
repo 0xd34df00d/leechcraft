@@ -12,7 +12,7 @@
 
 namespace LC::Liznoo::Events
 {
-	class PlatformLayer : public QObject
+	class Platform : public QObject
 	{
 	protected:
 		bool IsAvailable_ = false;

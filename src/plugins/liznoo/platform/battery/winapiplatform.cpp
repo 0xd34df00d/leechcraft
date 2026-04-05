@@ -16,7 +16,7 @@ namespace Liznoo
 {
 namespace Battery
 {
-	WinAPIPlatform::WinAPIPlatform (const WinAPI::FakeQWidgetWinAPI_ptr& widget, QObject *parent)
+	WinAPIPlatform::WinAPIPlatform (const Windows::FakeQWidgetWinAPI_ptr& widget, QObject *parent)
 	: BatteryPlatform { parent }
 	, Widget_ { widget }
 	{

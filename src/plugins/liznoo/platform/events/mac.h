@@ -8,16 +8,12 @@
 
 #pragma once
 
-#include "platformlayer.h"
+#include "platform.h"
 #include <IOKit/pwr_mgt/IOPMLib.h>
 
-namespace LC
+namespace LC::Liznoo::Events
 {
-namespace Liznoo
-{
-namespace Events
-{
-	class PlatformMac : public PlatformLayer
+	class Mac : public Platform
 	{
 		Q_OBJECT
 
@@ -25,12 +21,10 @@ namespace Events
 		io_object_t NotifierObject_;
 		io_connect_t Port_;
 	public:
-		PlatformMac (QObject* = 0);
-		~PlatformMac ();
+		Mac (QObject* = 0);
+		~Mac ();
 
 		void Stop ();
 		void IOCallback (io_service_t, natural_t, void*);
 	};
-}
-}
 }
