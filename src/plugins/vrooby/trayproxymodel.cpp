@@ -124,8 +124,9 @@ namespace LC::Vrooby
 
 		if (Hidden_.isEmpty ())
 		{
+			beginFilterChange ();
 			FilterEnabled_ = true;
-			invalidateFilter ();
+			endFilterChange (Direction::Rows);
 		}
 	}
 
@@ -136,8 +137,9 @@ namespace LC::Vrooby
 
 	void TrayProxyModel::ToggleFilter ()
 	{
+		beginFilterChange ();
 		FilterEnabled_ = !FilterEnabled_;
-		invalidateFilter ();
+		endFilterChange (Direction::Rows);
 	}
 
 	bool TrayProxyModel::filterAcceptsRow (int row, const QModelIndex&) const
