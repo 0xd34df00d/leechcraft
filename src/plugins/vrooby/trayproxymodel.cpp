@@ -111,18 +111,14 @@ namespace LC::Vrooby
 		settings.setValue ("List", QStringList { Hidden_.values () });
 		settings.endGroup ();
 
-		if (FilterEnabled_)
-			invalidateFilter ();
-		else
+		const auto src = sourceModel ();
+		for (int i = 0; i < src->rowCount (); ++i)
 		{
-			for (int i = 0; i < rowCount (); ++i)
+			const auto& idx = src->index (i, 0);
+			if (id == idx.data (CommonDevRole::DevPersistentID).toString ())
 			{
-				const auto& idx = sourceModel ()->index (i, 0);
-				if (id != idx.data (CommonDevRole::DevPersistentID).toString ())
-					continue;
-
-				const auto& mapped = mapFromSource (idx);
-				emit dataChanged (mapped, mapped);
+				emit src->dataChanged (idx, idx);
+				break;
 			}
 		}
 
