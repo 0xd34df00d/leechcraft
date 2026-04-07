@@ -16,6 +16,7 @@
 #include <coro.h>
 #include <coro/getresult.h>
 #include <coro/inparallel.h>
+#include <coro/sharedtask.h>
 #include <coro/throttle.h>
 #ifdef QT_DBUS_LIB
 #include <coro/dbus.h>
@@ -341,6 +342,76 @@ namespace LC::Util
 		QCOMPARE_GE (executionElapsed, max * (1 - tolerance));
 		const auto linearizedExecTime = max * (max + 1) / 2;
 		QCOMPARE_LT (executionElapsed, linearizedExecTime / 2);
+	}
+
+	void CoroTaskTest::testSharedTaskManyAwaiters ()
+	{
+		auto shared = [] () -> SharedTask<int>
+		{
+			co_await 10ms;
+			co_return 42;
+		} ();
+
+		auto mkAwaiter = [&shared] (int offset) -> Task<int>
+		{
+			co_return co_await shared + offset;
+		};
+
+		const auto result = GetTaskResult (InParallel (mkAwaiter (0), mkAwaiter (1)));
+		QCOMPARE (result, (std::tuple { 42, 43 }));
+	}
+
+	void CoroTaskTest::testSharedTaskAwaiterRemovedOnOuterDestruction ()
+	{
+		constexpr auto destructionDelay = 10ms;
+		auto shared = [] () -> SharedTask<int>
+		{
+			co_await 500ms;
+			co_return 42;
+		} ();
+
+		auto survivingAwaiter = [&shared] () -> Task<int>
+		{
+			co_return co_await shared;
+		} ();
+
+		auto context = std::make_unique<QObject> ();
+		auto cancelledAwaiter = [&shared] (QObject *context) -> ContextTask<int>
+		{
+			co_await AddContextObject { *context };
+			co_return co_await shared;
+		} (&*context);
+		QTimer::singleShot (destructionDelay, [context = std::move (context)] () mutable { context.reset (); });
+
+		QCOMPARE (GetTaskResult (survivingAwaiter), 42);
+		QVERIFY_THROWS_EXCEPTION (LC::Util::ContextDeadException, GetTaskResult (cancelledAwaiter));
+	}
+
+	void CoroTaskTest::testSharedTaskExceptionManyAwaiters ()
+	{
+		struct TestSharedTaskException : std::exception {};
+
+		auto shared = [] () -> SharedTask<>
+		{
+			co_await 10ms;
+			throw TestSharedTaskException {};
+		} ();
+
+		auto mkAwaiter = [&shared] () -> Task<bool>
+		{
+			try
+			{
+				co_await shared;
+				co_return false;
+			}
+			catch (const TestSharedTaskException&)
+			{
+				co_return true;
+			}
+		};
+
+		const auto result = GetTaskResult (InParallel (mkAwaiter (), mkAwaiter ()));
+		QCOMPARE (result, (std::tuple { true, true }));
 	}
 
 	void CoroTaskTest::testEither ()

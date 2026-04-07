@@ -31,6 +31,9 @@ namespace LC::Util
 		void testWaitMany ();
 		void testWaitManyTuple ();
 		void testWaitManyInvoking ();
+		void testSharedTaskManyAwaiters ();
+		void testSharedTaskAwaiterRemovedOnOuterDestruction ();
+		void testSharedTaskExceptionManyAwaiters ();
 
 		void testEither ();
 		void testEitherIgnoreLeft ();
