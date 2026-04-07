@@ -22,7 +22,6 @@ namespace LC::Util
 		struct PromiseBase
 		{
 			std::atomic<size_t> Refs_ = 1;
-			std::atomic<std::coroutine_handle<>> Continuation_ {};
 			std::exception_ptr Exception_ {};
 		};
 
@@ -65,6 +64,8 @@ namespace LC::Util
 			using Handle_t = std::coroutine_handle<Promise>;
 			Handle_t Subtask_;
 
+			std::coroutine_handle<> OuterTask_;
+
 			explicit TaskAwaiter (Handle_t subtask)
 			: Subtask_ { subtask }
 			{
@@ -72,6 +73,7 @@ namespace LC::Util
 
 			TaskAwaiter (TaskAwaiter&& other) noexcept
 			: Subtask_ { std::exchange (other.Subtask_, {}) }
+			, OuterTask_ { std::exchange (other.OuterTask_, {}) }
 			{
 			}
 
@@ -81,8 +83,12 @@ namespace LC::Util
 
 			~TaskAwaiter ()
 			{
-				if (Subtask_)
-					Subtask_.promise ().Continuation_.exchange ({});
+				if (Subtask_ && OuterTask_)
+				{
+					auto& promise = Subtask_.promise ();
+					std::lock_guard guard { promise };
+					promise.RemoveAwaiter (OuterTask_);
+				}
 			}
 
 			bool await_ready () const noexcept
@@ -99,8 +105,8 @@ namespace LC::Util
 				if (CheckTaskFinishedUnlocked (promise))
 					return false;
 
-				if (promise.Continuation_.exchange (handle))
-					qFatal () << "subtask has already been awaited on";
+				OuterTask_ = handle;
+				promise.AddAwaiter (handle);
 				return true;
 			}
 
@@ -150,6 +156,38 @@ namespace LC::Util
 		}
 	};
 
+	namespace detail
+	{
+		template<typename E>
+		concept IsAwaiterHandler = E::IsAwaiterHandler;
+
+		template<typename...>
+		struct DefaultAwaiterHandling
+		{
+			std::atomic<std::coroutine_handle<>> Continuation_ {};
+
+			void AddAwaiter (std::coroutine_handle<> handle)
+			{
+				if (this->Continuation_.exchange (handle))
+					qFatal () << "subtask has already been awaited on";
+			}
+
+			void RemoveAwaiter (std::coroutine_handle<>) noexcept
+			{
+				this->Continuation_.exchange ({});
+			}
+
+			auto GetAwaiters (this auto&& self) noexcept
+			{
+				return self.Continuation_.exchange ({});
+			}
+		};
+
+		template<typename... Extensions>
+			requires (IsAwaiterHandler<Extensions> || ...)
+		struct DefaultAwaiterHandling<Extensions...> {};
+	}
+
 	template<typename R, template<typename> typename... Extensions>
 	class Task
 	{
@@ -161,6 +199,7 @@ namespace LC::Util
 	public:
 		struct promise_type : detail::PromiseRet<R>
 							, Extensions<promise_type>...
+							, detail::DefaultAwaiterHandling<Extensions<promise_type>...>
 		{
 			void lock () const
 			{

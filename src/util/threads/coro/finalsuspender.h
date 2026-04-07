@@ -19,11 +19,26 @@ namespace LC::Util::detail
 
 		bool await_ready () const noexcept { return false; }
 
-		auto await_suspend (std::coroutine_handle<>) noexcept
+		std::coroutine_handle<> await_suspend (std::coroutine_handle<>) noexcept
 		{
-			const auto cont = Promise_.Continuation_.exchange ({});
+			auto handles = [this]
+			{
+				std::lock_guard guard { Promise_ };
+				return Promise_.GetAwaiters ();
+			} ();
 			Promise_.DecRef ();
-			return cont ? cont : std::noop_coroutine ();
+
+			if constexpr (std::is_same_v<decltype (handles), std::coroutine_handle<>>)
+				return handles ? handles : std::noop_coroutine ();
+			else
+			{
+				if (handles.size () == 1)
+					return handles [0];
+
+				for (const auto& h : handles)
+					h.resume ();
+				return std::noop_coroutine ();
+			}
 		}
 
 		void await_resume () const noexcept {}
