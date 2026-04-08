@@ -18,6 +18,7 @@ if (WIN32)
 endif ()
 
 option (USE_ASAN "Use address sanitizer" OFF)
+option (USE_UBSAN "Use UB sanitizer" OFF)
 
 set (LC_QT_VERSION 6)
 set (LC_LIBSUFFIX "-qt${LC_QT_VERSION}")
@@ -30,6 +31,10 @@ if (UNIX OR (WIN32 AND MINGW))
 	if (USE_ASAN)
 		add_compile_options (-fsanitize=address)
 		add_link_options (-fsanitize=address)
+	endif ()
+	if (USE_UBSAN)
+		add_compile_options (-fsanitize=undefined)
+		add_link_options (-fsanitize=undefined)
 	endif ()
 
 	add_definitions (-DQT_MESSAGELOGCONTEXT)
