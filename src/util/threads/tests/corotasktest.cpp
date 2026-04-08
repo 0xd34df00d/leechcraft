@@ -414,6 +414,30 @@ namespace LC::Util
 		QCOMPARE (result, (std::tuple { true, true }));
 	}
 
+	void CoroTaskTest::testSharedTaskLastCopyDestroyedByAwaiter ()
+	{
+		std::optional<SharedTask<int>> shared = [] () -> SharedTask<int>
+		{
+			co_await 10ms;
+			co_return 42;
+		} ();
+
+		auto destructiveAwaiter = [] (std::optional<SharedTask<int>> *shared) -> Task<int>
+		{
+			auto result = co_await **shared;
+			shared->reset ();
+			co_return result;
+		} (&shared);
+
+		auto normalAwaiter = [] (std::optional<SharedTask<int>> *shared) -> Task<int>
+		{
+			co_return co_await **shared;
+		} (&shared);
+
+		const auto result = GetTaskResult (InParallel (destructiveAwaiter, normalAwaiter));
+		QCOMPARE (result, (std::tuple { 42, 42 }));
+	}
+
 	void CoroTaskTest::testEither ()
 	{
 		using Result_t = Either<QString, bool>;

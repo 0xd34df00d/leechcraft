@@ -34,6 +34,7 @@ namespace LC::Util
 		void testSharedTaskManyAwaiters ();
 		void testSharedTaskAwaiterRemovedOnOuterDestruction ();
 		void testSharedTaskExceptionManyAwaiters ();
+		void testSharedTaskLastCopyDestroyedByAwaiter ();
 
 		void testEither ();
 		void testEitherIgnoreLeft ();
