@@ -69,6 +69,8 @@ namespace LC::Util
 			explicit TaskAwaiter (Handle_t subtask)
 			: Subtask_ { subtask }
 			{
+				if (Subtask_)
+					Subtask_.promise ().IncRef ();
 			}
 
 			TaskAwaiter (TaskAwaiter&& other) noexcept
@@ -89,6 +91,9 @@ namespace LC::Util
 					std::lock_guard guard { promise };
 					promise.RemoveAwaiter (OuterTask_);
 				}
+
+				if (Subtask_)
+					Subtask_.promise ().DecRef ();
 			}
 
 			bool await_ready () const noexcept
