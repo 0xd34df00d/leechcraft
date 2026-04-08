@@ -31,26 +31,30 @@ namespace LC::Util
 
 	void TagsFilterModel::SetTagsRole (int role)
 	{
+		beginFilterChange ();
 		TagsRole_ = role;
-		invalidateFilter ();
+		endFilterChange (Direction::Rows);
 	}
 
 	void TagsFilterModel::SetSeparator (const QString& separator)
 	{
+		beginFilterChange ();
 		Separator_ = separator;
-		invalidateFilter ();
+		endFilterChange (Direction::Rows);
 	}
 
 	void TagsFilterModel::SetTagsInclusionMode (TagsFilterModel::TagsInclusionMode mode)
 	{
+		beginFilterChange ();
 		TagsMode_ = mode;
-		invalidateFilter ();
+		endFilterChange (Direction::Rows);
 	}
 
 	void TagsFilterModel::SetTagsMode (bool tags)
 	{
+		beginFilterChange ();
 		NormalMode_ = !tags;
-		invalidateFilter ();
+		endFilterChange (Direction::Rows);
 	}
 
 	bool TagsFilterModel::filterAcceptsRow (int sourceRow, const QModelIndex& index) const

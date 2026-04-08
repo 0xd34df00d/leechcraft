@@ -28,8 +28,9 @@ namespace LC::Util
 		if (cs == Filter_.caseSensitivity ())
 			return;
 
+		beginFilterChange ();
 		Filter_.setCaseSensitivity (cs);
-		invalidateFilter ();
+		endFilterChange (Direction::Rows);
 	}
 
 	Qt::CaseSensitivity FixedStringFilterProxyModel::GetCaseSensitivity () const
@@ -42,8 +43,9 @@ namespace LC::Util
 		if (roles == Roles_)
 			return;
 
+		beginFilterChange ();
 		Roles_ = roles;
-		invalidateFilter ();
+		endFilterChange (Direction::Rows);
 	}
 
 	QList<int> FixedStringFilterProxyModel::GetFilterRoles () const
@@ -56,8 +58,9 @@ namespace LC::Util
 		if (columns == Columns_)
 			return;
 
+		beginFilterChange ();
 		Columns_ = columns;
-		invalidateFilter ();
+		endFilterChange (Direction::Rows);
 	}
 
 	QList<int> FixedStringFilterProxyModel::GetFilterColumns () const
@@ -70,8 +73,9 @@ namespace LC::Util
 		if (Filter_.pattern () == filter)
 			return;
 
+		beginFilterChange ();
 		Filter_.setPattern (filter);
-		invalidateFilter ();
+		endFilterChange (Direction::Rows);
 	}
 
 	QString FixedStringFilterProxyModel::GetFilterString () const
