@@ -10,6 +10,7 @@
 
 #include <atomic>
 #include <coroutine>
+#include <stdexcept>
 
 namespace LC::Util::detail
 {
@@ -21,10 +22,18 @@ namespace LC::Util::detail
 	{
 		std::atomic<std::coroutine_handle<>> Continuation_ {};
 
+		struct DoubleAwaitError : std::logic_error
+		{
+			DoubleAwaitError ()
+			: std::logic_error { "double await" }
+			{
+			}
+		};
+
 		void AddAwaiter (std::coroutine_handle<> handle)
 		{
 			if (this->Continuation_.exchange (handle))
-				qFatal () << "subtask has already been awaited on";
+				throw DoubleAwaitError {};
 		}
 
 		void RemoveAwaiter (std::coroutine_handle<>) noexcept
