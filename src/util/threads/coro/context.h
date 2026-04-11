@@ -10,9 +10,11 @@
 
 #include <coroutine>
 #include <stdexcept>
+#include <vector>
 #include <QMetaObject>
 #include <QObject>
 #include <QVector>
+#include <util/sll/raiisignalconnection.h>
 #include "../threadsconfig.h"
 
 namespace LC::Util
@@ -97,7 +99,7 @@ namespace LC::Util
 						handle.promise ().DeadObjects_.push_back ({ className, object->objectName () });
 						handle.resume ();
 					});
-			handle.promise ().ContextConnections_.push_back (conn);
+			handle.promise ().ContextConnections_.emplace_back (conn);
 			return false;
 		}
 
@@ -111,14 +113,8 @@ namespace LC::Util
 	{
 		using HasContextExtension = void;
 
-		QVector<QMetaObject::Connection> ContextConnections_;
+		std::vector<RaiiSignalConnection> ContextConnections_;
 		QVector<detail::DeadObjectInfo> DeadObjects_;
-
-		void FinalSuspend () const noexcept
-		{
-			for (const auto& conn : ContextConnections_)
-				QObject::disconnect (conn);
-		}
 
 		AddContextObject await_transform (AddContextObject awaitable) const
 		{
