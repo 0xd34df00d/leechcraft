@@ -13,6 +13,7 @@
 #include "coro/channel.h"
 #include "coro/channelutils.h"
 #include "coro/getresult.h"
+#include "coro/threadsafety.h"
 
 QTEST_GUILESS_MAIN (LC::Util::CoroChannelTest)
 

@@ -10,7 +10,6 @@
 
 #include <coroutine>
 #include <exception>
-#include <mutex>
 #include <utility>
 #include "finalsuspender.h"
 #include "taskfwd.h"
@@ -145,29 +144,13 @@ namespace LC::Util
 		};
 	}
 
-	template<typename>
-	struct ThreadSafetyExtension
-	{
-		mutable std::mutex Mutex_;
-
-		void DoLock () const
-		{
-			Mutex_.lock ();
-		}
-
-		void DoUnlock () const
-		{
-			Mutex_.unlock ();
-		}
-	};
-
 	namespace detail
 	{
 		template<typename E>
 		concept IsAwaiterHandler = E::IsAwaiterHandler;
 
 		template<typename...>
-		struct DefaultAwaiterHandling
+		struct DefaultAwaiterHandler
 		{
 			std::atomic<std::coroutine_handle<>> Continuation_ {};
 
@@ -190,7 +173,22 @@ namespace LC::Util
 
 		template<typename... Extensions>
 			requires (IsAwaiterHandler<Extensions> || ...)
-		struct DefaultAwaiterHandling<Extensions...> {};
+		struct DefaultAwaiterHandler<Extensions...> {};
+
+
+		template<typename E>
+		concept IsLockingHandler = E::IsLockingHandler;
+
+		template<typename...>
+		struct DefaultLockingHandler
+		{
+			static void lock () {}
+			static void unlock () {}
+		};
+
+		template<typename... Extensions>
+			requires (IsLockingHandler<Extensions> || ...)
+		struct DefaultLockingHandler<Extensions...> {};
 	}
 
 	template<typename R, template<typename> typename... Extensions>
@@ -202,22 +200,12 @@ namespace LC::Util
 		using Handle_t = std::coroutine_handle<promise_type>;
 		Handle_t Handle_;
 	public:
-		struct promise_type : detail::PromiseRet<R>
-							, Extensions<promise_type>...
-							, detail::DefaultAwaiterHandling<Extensions<promise_type>...>
+		struct promise_type
+			: detail::PromiseRet<R>
+			, Extensions<promise_type>...
+			, detail::DefaultAwaiterHandler<Extensions<promise_type>...>
+			, detail::DefaultLockingHandler<Extensions<promise_type>...>
 		{
-			void lock () const
-			{
-				if constexpr (requires { this->DoLock (); })
-					this->DoLock ();
-			}
-
-			void unlock () const
-			{
-				if constexpr (requires { this->DoUnlock (); })
-					this->DoUnlock ();
-			}
-
 			auto GetAddress () { return Handle_t::from_promise (*this).address (); }
 
 			Task get_return_object ()
