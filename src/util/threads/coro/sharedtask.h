@@ -17,7 +17,7 @@
 namespace LC::Util
 {
 	template<typename>
-	struct SharedTaskExtensions
+	struct SharedTaskExtension
 	{
 		static constexpr bool IsAwaiterHandler = true;
 
@@ -41,8 +41,8 @@ namespace LC::Util
 	};
 
 	template<typename T = void>
-	using SharedTask = Task<T, SharedTaskExtensions>;
+	using SharedTask = Task<T, SharedTaskExtension>;
 
 	template<typename T = void>
-	using SharedContextTask = Task<T, SharedTaskExtensions, ContextExtensions>;
+	using SharedContextTask = Task<T, SharedTaskExtension, ContextExtensions>;
 }
