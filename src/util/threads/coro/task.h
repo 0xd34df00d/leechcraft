@@ -12,6 +12,7 @@
 #include <exception>
 #include <utility>
 #include "finalsuspender.h"
+#include "defaulthandlers.h"
 #include "taskfwd.h"
 
 namespace LC::Util
@@ -142,53 +143,6 @@ namespace LC::Util
 					return static_cast<bool> (promise.Ret_);
 			}
 		};
-	}
-
-	namespace detail
-	{
-		template<typename E>
-		concept IsAwaiterHandler = E::IsAwaiterHandler;
-
-		template<typename...>
-		struct DefaultAwaiterHandler
-		{
-			std::atomic<std::coroutine_handle<>> Continuation_ {};
-
-			void AddAwaiter (std::coroutine_handle<> handle)
-			{
-				if (this->Continuation_.exchange (handle))
-					qFatal () << "subtask has already been awaited on";
-			}
-
-			void RemoveAwaiter (std::coroutine_handle<>) noexcept
-			{
-				this->Continuation_.exchange ({});
-			}
-
-			auto GetAwaiters (this auto&& self) noexcept
-			{
-				return self.Continuation_.exchange ({});
-			}
-		};
-
-		template<typename... Extensions>
-			requires (IsAwaiterHandler<Extensions> || ...)
-		struct DefaultAwaiterHandler<Extensions...> {};
-
-
-		template<typename E>
-		concept IsLockingHandler = E::IsLockingHandler;
-
-		template<typename...>
-		struct DefaultLockingHandler
-		{
-			static void lock () {}
-			static void unlock () {}
-		};
-
-		template<typename... Extensions>
-			requires (IsLockingHandler<Extensions> || ...)
-		struct DefaultLockingHandler<Extensions...> {};
 	}
 
 	template<typename R, template<typename> typename... Extensions>
