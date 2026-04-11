@@ -438,6 +438,136 @@ namespace LC::Util
 		QCOMPARE (result, (std::tuple { 42, 42 }));
 	}
 
+	void CoroTaskTest::testSharedContextTaskManyAwaitersContextAlive ()
+	{
+		auto context = std::make_unique<QObject> ();
+		auto shared = [] (QObject *ctx) -> SharedContextTask<int>
+		{
+			co_await AddContextObject { *ctx };
+			co_await 10ms;
+			co_return 42;
+		} (&*context);
+
+		auto mkAwaiter = [&shared] (int offset) -> Task<int>
+		{
+			co_return co_await shared + offset;
+		};
+
+		const auto result = GetTaskResult (InParallel (mkAwaiter (0), mkAwaiter (1)));
+		QCOMPARE (result, (std::tuple { 42, 43 }));
+	}
+
+	void CoroTaskTest::testSharedContextTaskContextDeadFansOutToAll ()
+	{
+		auto context = std::make_unique<QObject> ();
+		auto shared = [] (QObject *ctx) -> SharedContextTask<int>
+		{
+			co_await AddContextObject { *ctx };
+			co_await 500ms;
+			co_return 42;
+		} (&*context);
+
+		auto mkAwaiter = [&shared] () -> Task<bool>
+		{
+			try
+			{
+				co_await shared;
+				co_return false;
+			}
+			catch (const ContextDeadException&)
+			{
+				co_return true;
+			}
+		};
+
+		QTimer::singleShot (10ms, [context = std::move (context)] () mutable { context.reset (); });
+
+		const auto result = GetTaskResult (InParallel (mkAwaiter (), mkAwaiter ()));
+		QCOMPARE (result, (std::tuple { true, true }));
+	}
+
+	void CoroTaskTest::testSharedContextTaskBodyExceptionFansOut ()
+	{
+		struct TestSharedContextException : std::exception {};
+
+		auto context = std::make_unique<QObject> ();
+		auto shared = [] (QObject *ctx) -> SharedContextTask<>
+		{
+			co_await AddContextObject { *ctx };
+			co_await 10ms;
+			throw TestSharedContextException {};
+		} (&*context);
+
+		auto mkAwaiter = [&shared] () -> Task<bool>
+		{
+			try
+			{
+				co_await shared;
+				co_return false;
+			}
+			catch (const TestSharedContextException&)
+			{
+				co_return true;
+			}
+		};
+
+		const auto result = GetTaskResult (InParallel (mkAwaiter (), mkAwaiter ()));
+		QCOMPARE (result, (std::tuple { true, true }));
+	}
+
+	void CoroTaskTest::testSharedContextTaskContextDeadDoesntWaitLong ()
+	{
+		auto context = std::make_unique<QObject> ();
+		auto shared = [] (QObject *ctx) -> SharedContextTask<>
+		{
+			co_await AddContextObject { *ctx };
+			co_await 500ms;
+		} (&*context);
+
+		auto awaiter = [&shared] () -> Task<void>
+		{
+			co_await shared;
+		} ();
+
+		QTimer::singleShot (10ms, [context = std::move (context)] () mutable { context.reset (); });
+
+		QElapsedTimer timer;
+		timer.start ();
+		QVERIFY_THROWS_EXCEPTION (LC::Util::ContextDeadException, GetTaskResult (awaiter));
+		QCOMPARE_LT (timer.elapsed (), 255);
+	}
+
+	void CoroTaskTest::testSharedContextTaskMixedAwaitersOwnContextDies ()
+	{
+		auto sharedCtx = std::make_unique<QObject> ();
+		auto aliveCtx = std::make_unique<QObject> ();
+		auto dyingCtx = std::make_unique<QObject> ();
+
+		auto shared = [] (QObject *ctx) -> SharedContextTask<int>
+		{
+			co_await AddContextObject { *ctx };
+			co_await 100ms;
+			co_return 42;
+		} (&*sharedCtx);
+
+		auto aliveAwaiter = [&shared] (QObject *ctx) -> ContextTask<int>
+		{
+			co_await AddContextObject { *ctx };
+			co_return co_await shared;
+		} (&*aliveCtx);
+
+		auto dyingAwaiter = [&shared] (QObject *ctx) -> ContextTask<int>
+		{
+			co_await AddContextObject { *ctx };
+			co_return co_await shared;
+		} (&*dyingCtx);
+
+		QTimer::singleShot (10ms, [dyingCtx = std::move (dyingCtx)] () mutable { dyingCtx.reset (); });
+
+		QVERIFY_THROWS_EXCEPTION (LC::Util::ContextDeadException, GetTaskResult (dyingAwaiter));
+		QCOMPARE (GetTaskResult (aliveAwaiter), 42);
+	}
+
 	void CoroTaskTest::testEither ()
 	{
 		using Result_t = Either<QString, bool>;

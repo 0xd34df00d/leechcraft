@@ -36,6 +36,12 @@ namespace LC::Util
 		void testSharedTaskExceptionManyAwaiters ();
 		void testSharedTaskLastCopyDestroyedByAwaiter ();
 
+		void testSharedContextTaskManyAwaitersContextAlive ();
+		void testSharedContextTaskContextDeadFansOutToAll ();
+		void testSharedContextTaskBodyExceptionFansOut ();
+		void testSharedContextTaskContextDeadDoesntWaitLong ();
+		void testSharedContextTaskMixedAwaitersOwnContextDies ();
+
 		void testEither ();
 		void testEitherIgnoreLeft ();
 
