@@ -35,6 +35,7 @@ namespace LC::Util
 		void testSharedTaskAwaiterRemovedOnOuterDestruction ();
 		void testSharedTaskExceptionManyAwaiters ();
 		void testSharedTaskLastCopyDestroyedByAwaiter ();
+		void testSharedTaskNonTriviallyMovableReturn ();
 
 		void testSharedContextTaskManyAwaitersContextAlive ();
 		void testSharedContextTaskContextDeadFansOutToAll ();

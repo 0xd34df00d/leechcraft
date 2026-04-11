@@ -129,7 +129,7 @@ namespace LC::Util
 					}
 
 				if constexpr (!Promise::IsVoid)
-					return std::move (*promise.Ret_);
+					return Promise::ResumeValue (*promise.Ret_);
 			}
 		private:
 			bool CheckTaskFinishedUnlocked (const Promise& promise) const
@@ -159,6 +159,7 @@ namespace LC::Util
 			, Extensions<promise_type>...
 			, detail::DefaultAwaiterHandler<Extensions<promise_type>...>
 			, detail::DefaultLockingHandler<Extensions<promise_type>...>
+			, detail::DefaultResumeValueHandler<Extensions<promise_type>...>
 		{
 			auto GetAddress () { return Handle_t::from_promise (*this).address (); }
 

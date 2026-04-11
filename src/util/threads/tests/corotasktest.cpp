@@ -438,6 +438,26 @@ namespace LC::Util
 		QCOMPARE (result, (std::tuple { 42, 42 }));
 	}
 
+	void CoroTaskTest::testSharedTaskNonTriviallyMovableReturn ()
+	{
+		// Long enough that a moved-from QString is different from the real one, avoiding any SSO shenanigans.
+		const auto payload = "0123456789abcdef"_qs.repeated (16);
+
+		auto shared = [] (QString p) -> SharedTask<QString>
+		{
+			co_await 10ms;
+			co_return p;
+		} (payload);
+
+		auto mkAwaiter = [&shared] () -> Task<QString>
+		{
+			co_return co_await shared;
+		};
+
+		const auto result = GetTaskResult (InParallel (mkAwaiter (), mkAwaiter ()));
+		QCOMPARE (result, (std::tuple { payload, payload }));
+	}
+
 	void CoroTaskTest::testSharedContextTaskManyAwaitersContextAlive ()
 	{
 		auto context = std::make_unique<QObject> ();

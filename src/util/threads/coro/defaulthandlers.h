@@ -65,4 +65,22 @@ namespace LC::Util::detail
 	template<typename... Extensions>
 		requires (IsLockingHandler<Extensions> || ...)
 	struct DefaultLockingHandler<Extensions...> {};
+
+
+	template<typename E>
+	concept IsResumeValueHandler = E::IsResumeValueHandler;
+
+	template<typename...>
+	struct DefaultResumeValueHandler
+	{
+		template<typename R>
+		static R&& ResumeValue (R& ret) noexcept
+		{
+			return std::move (ret);
+		}
+	};
+
+	template<typename... Extensions>
+		requires (IsResumeValueHandler<Extensions> || ...)
+	struct DefaultResumeValueHandler<Extensions...> {};
 }

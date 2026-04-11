@@ -20,6 +20,7 @@ namespace LC::Util
 	struct SharedTaskExtension
 	{
 		static constexpr bool IsAwaiterHandler = true;
+		static constexpr bool IsResumeValueHandler = true;
 
 		QList<std::coroutine_handle<>> Awaiters_;
 
@@ -37,6 +38,12 @@ namespace LC::Util
 		auto GetAwaiters ()
 		{
 			return this->Awaiters_;
+		}
+
+		template<typename R>
+		static const R& ResumeValue (R& ret) noexcept
+		{
+			return ret;
 		}
 	};
 
