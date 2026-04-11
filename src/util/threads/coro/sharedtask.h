@@ -44,5 +44,5 @@ namespace LC::Util
 	using SharedTask = Task<T, SharedTaskExtension>;
 
 	template<typename T = void>
-	using SharedContextTask = Task<T, SharedTaskExtension, ContextExtensions>;
+	using SharedContextTask = Task<T, SharedTaskExtension, ContextExtension>;
 }

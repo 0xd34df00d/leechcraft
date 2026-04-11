@@ -86,7 +86,7 @@ namespace LC::Util
 		}
 
 		template<typename Promise>
-			requires requires { typename Promise::HasContextExtensions; }
+			requires requires { typename Promise::HasContextExtension; }
 		bool await_suspend (std::coroutine_handle<Promise> handle)
 		{
 			auto conn = QObject::connect (&Context_,
@@ -107,9 +107,9 @@ namespace LC::Util
 	};
 
 	template<typename>
-	struct ContextExtensions
+	struct ContextExtension
 	{
-		using HasContextExtensions = void;
+		using HasContextExtension = void;
 
 		QVector<QMetaObject::Connection> ContextConnections_;
 		QVector<detail::DeadObjectInfo> DeadObjects_;
@@ -129,7 +129,7 @@ namespace LC::Util
 		auto await_transform (T&& awaitable)
 		{
 			using OrigAwaiter = decltype (detail::Awaiter (std::forward<T> (awaitable)));
-			return detail::AwaitableWrapper<ContextExtensions, OrigAwaiter> { *this, detail::Awaiter (std::forward<T> (awaitable)) };
+			return detail::AwaitableWrapper<ContextExtension, OrigAwaiter> { *this, detail::Awaiter (std::forward<T> (awaitable)) };
 		}
 	};
 }
