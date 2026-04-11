@@ -215,17 +215,7 @@ namespace LC::Util
 
 			std::suspend_never initial_suspend () const noexcept { return {}; }
 
-			auto final_suspend () noexcept
-			{
-				([this]
-				{
-					static_cast<void> (this);
-					using Base = Extensions<promise_type>;
-					if constexpr (requires (Base t) { t.FinalSuspend (); })
-						Base::FinalSuspend ();
-				} (), ...);
-				return detail::FinalSuspender<promise_type> { *this };
-			}
+			auto final_suspend () noexcept { return detail::FinalSuspender<promise_type> { *this }; }
 
 			void unhandled_exception ()
 			{
