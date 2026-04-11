@@ -12,6 +12,7 @@
 #include <QList>
 #include <QtDebug>
 #include "task.h"
+#include "context.h"
 
 namespace LC::Util
 {
@@ -41,4 +42,7 @@ namespace LC::Util
 
 	template<typename T = void>
 	using SharedTask = Task<T, SharedTaskExtensions>;
+
+	template<typename T = void>
+	using SharedContextTask = Task<T, SharedTaskExtensions, ContextExtensions>;
 }
