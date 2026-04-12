@@ -31,7 +31,7 @@ namespace LC::Liznoo::PowerActions
 
 		using Result = Util::Either<Fail, Success>;
 
-		virtual Util::ContextTask<bool> IsAvailable () = 0;
+		virtual Util::ContextTask<bool> IsAvailable () const = 0;
 
 		virtual Util::ContextTask<Result> CanChangeState (State) = 0;
 		virtual Util::ContextTask<Result> ChangeState (State) = 0;

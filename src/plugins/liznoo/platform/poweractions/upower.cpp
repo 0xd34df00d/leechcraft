@@ -28,7 +28,7 @@ namespace LC::Liznoo::PowerActions
 		}
 	}
 
-	Util::ContextTask<bool> UPower::IsAvailable ()
+	Util::ContextTask<bool> UPower::IsAvailable () const
 	{
 		const auto& upower = DBus::GetUPowerEndpoint ();
 		const auto eitherCanSuspend = co_await upower.GetProperty<bool> ("CanSuspend"_qs);

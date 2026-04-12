@@ -19,7 +19,7 @@ namespace LC::Liznoo::PowerActions
 	public:
 		using Platform::Platform;
 
-		Util::ContextTask<bool> IsAvailable () override;
+		Util::ContextTask<bool> IsAvailable () const override;
 		Util::ContextTask<Result> CanChangeState (State) override;
 		Util::ContextTask<Result> ChangeState (State) override;
 	};
