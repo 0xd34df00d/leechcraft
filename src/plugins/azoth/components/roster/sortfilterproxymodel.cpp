@@ -73,14 +73,14 @@ namespace LC::Azoth
 					this,
 					&SortFilterProxyModel::handleMUCDestroyed);
 
+		beginFilterChange ();
 		MUCEntry_ = qobject_cast<IMUCEntry*> (mucEntry) ? mucEntry : nullptr;
+		endFilterChange (Direction::Rows);
 		if (MUCEntry_)
 			connect (MUCEntry_,
 					&QObject::destroyed,
 					this,
 					&SortFilterProxyModel::handleMUCDestroyed);
-
-		invalidateFilter ();
 	}
 
 	void SortFilterProxyModel::showOfflineContacts (bool show)
