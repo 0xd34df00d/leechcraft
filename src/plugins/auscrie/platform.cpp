@@ -18,7 +18,9 @@ namespace LC::Auscrie
 	QPixmap GetLCWindow ()
 	{
 		auto rootWin = GetProxyHolder ()->GetRootWindowsManager ()->GetPreferredWindow ();
-		QPixmap px { rootWin->size () };
+		const auto dpr = rootWin->devicePixelRatioF ();
+		QPixmap px { rootWin->size () * dpr };
+		px.setDevicePixelRatio (dpr);
 		px.fill (Qt::transparent);
 		rootWin->render (&px);
 		return px;
