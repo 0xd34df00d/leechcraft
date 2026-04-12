@@ -32,22 +32,25 @@ namespace LC::Azoth
 		xsm.RegisterObject ("HideMUCPartsInWholeCL", this,
 				[this] (bool hide)
 				{
+					beginFilterChange ();
 					HideMUCParts_ = hide;
-					invalidate ();
+					endFilterChange (Direction::Rows);
 				});
 
 		xsm.RegisterObject ("ShowSelfContacts", this,
 				[this] (bool showSelf)
 				{
+					beginFilterChange ();
 					ShowSelfContacts_ = showSelf;
-					invalidate ();
+					endFilterChange (Direction::Rows);
 				});
 
 		xsm.RegisterObject ("HideErrorContactsWithOffline", this,
 				[this] (bool hideErroring)
 				{
+					beginFilterChange ();
 					HideErroring_ = hideErroring;
-					invalidate ();
+					endFilterChange (Direction::Rows);
 				});
 	}
 
