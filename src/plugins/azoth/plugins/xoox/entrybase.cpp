@@ -805,7 +805,7 @@ namespace Xoox
 		});
 	}
 
-	void EntryBase::SetDiscoIdentities (const QString& variant, const QList<QXmppDiscoveryIq::Identity>& ids)
+	void EntryBase::SetDiscoIdentities (const QString& variant, const QList<QXmppDiscoIdentity>& ids)
 	{
 		OnVariant (variant, [&, this] (VariantInfo& varInfo)
 		{

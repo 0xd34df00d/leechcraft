@@ -27,7 +27,7 @@
 #include "capsdatabase.h"
 #include "glooxaccount.h"
 
-QDataStream& operator<< (QDataStream& out, const QXmppDiscoveryIq::Identity& id)
+QDataStream& operator<< (QDataStream& out, const QXmppDiscoIdentity& id)
 {
 	out << static_cast<quint8> (1)
 		<< id.category ()
@@ -37,15 +37,13 @@ QDataStream& operator<< (QDataStream& out, const QXmppDiscoveryIq::Identity& id)
 	return out;
 }
 
-QDataStream& operator>> (QDataStream& in, QXmppDiscoveryIq::Identity& id)
+QDataStream& operator>> (QDataStream& in, QXmppDiscoIdentity& id)
 {
 	quint8 version = 0;
 	in >> version;
 	if (version != 1)
 	{
-		qWarning () << Q_FUNC_INFO
-				<< "unknown version"
-				<< version;
+		qWarning () << "unknown version" << version;
 		return in;
 	}
 

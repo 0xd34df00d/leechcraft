@@ -194,7 +194,7 @@ namespace Xoox
 		const auto& identities = iq.identities ();
 		if (identities.size () == 1)
 		{
-			const QXmppDiscoveryIq::Identity& id = identities.at (0);
+			const auto& id = identities.at (0);
 			const QString& text = id.name ();
 			if (!text.isEmpty ())
 				targetItem->setText (text);

@@ -42,7 +42,7 @@ namespace Xoox
 		struct ItemInfo
 		{
 			QStringList Caps_;
-			QList<QXmppDiscoveryIq::Identity> Identities_;
+			QList<QXmppDiscoIdentity> Identities_;
 			QString JID_;
 			QString Node_;
 		};

@@ -113,7 +113,7 @@ namespace Xoox
 			QMap<QString, QVariant> ClientInfo_;
 			QByteArray VerString_;
 			QXmppVersionIq Version_;
-			QList<QXmppDiscoveryIq::Identity> Identities_;
+			QList<QXmppDiscoIdentity> Identities_;
 			std::optional<Media::AudioInfo> Audio_;
 			std::optional<MoodInfo> Mood_;
 			std::optional<ActivityInfo> Activity_;
@@ -207,7 +207,7 @@ namespace Xoox
 		void SetClientInfo (const QString&, const QString&, const QByteArray&);
 		void SetClientInfo (const QString&, const QXmppPresence&);
 		void SetClientVersion (const QString&, const QXmppVersionIq&);
-		void SetDiscoIdentities (const QString&, const QList<QXmppDiscoveryIq::Identity>&);
+		void SetDiscoIdentities (const QString&, const QList<QXmppDiscoIdentity>&);
 
 		GeolocationInfo_t GetGeolocationInfo (const QString&) const;
 

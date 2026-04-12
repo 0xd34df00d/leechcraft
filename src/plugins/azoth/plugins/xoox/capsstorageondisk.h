@@ -34,10 +34,10 @@ namespace Xoox
 		CapsStorageOnDisk (const ILoadProgressReporter_ptr&, QObject* = nullptr);
 
 		std::optional<QStringList> GetFeatures (const QByteArray&) const;
-		std::optional<QList<QXmppDiscoveryIq::Identity>> GetIdentities (const QByteArray&) const;
+		std::optional<QList<QXmppDiscoIdentity>> GetIdentities (const QByteArray&) const;
 
 		void AddFeatures (const QByteArray&, const QStringList&);
-		void AddIdentities (const QByteArray&, const QList<QXmppDiscoveryIq::Identity>&);
+		void AddIdentities (const QByteArray&, const QList<QXmppDiscoIdentity>&);
 	private:
 		void InitTables ();
 		void InitQueries ();

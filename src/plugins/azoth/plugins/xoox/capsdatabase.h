@@ -25,7 +25,7 @@ namespace Xoox
 	class CapsDatabase : public QObject
 	{
 		mutable QHash<QByteArray, QStringList> Ver2Features_;
-		mutable QHash<QByteArray, QList<QXmppDiscoveryIq::Identity>> Ver2Identities_;
+		mutable QHash<QByteArray, QList<QXmppDiscoIdentity>> Ver2Identities_;
 
 		CapsStorageOnDisk * const Storage_;
 	public:
@@ -36,8 +36,8 @@ namespace Xoox
 		QStringList Get (const QByteArray&) const;
 		void Set (const QByteArray&, const QStringList&);
 
-		QList<QXmppDiscoveryIq::Identity> GetIdentities (const QByteArray&) const;
-		void SetIdentities (const QByteArray&, const QList<QXmppDiscoveryIq::Identity>&);
+		QList<QXmppDiscoIdentity> GetIdentities (const QByteArray&) const;
+		void SetIdentities (const QByteArray&, const QList<QXmppDiscoIdentity>&);
 	private:
 		bool Preload (const QByteArray&) const;
 	};

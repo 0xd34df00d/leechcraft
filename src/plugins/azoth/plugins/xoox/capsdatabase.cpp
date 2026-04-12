@@ -48,7 +48,7 @@ namespace Xoox
 		Storage_->AddFeatures (hash, features);
 	}
 
-	QList<QXmppDiscoveryIq::Identity> CapsDatabase::GetIdentities (const QByteArray& hash) const
+	QList<QXmppDiscoIdentity> CapsDatabase::GetIdentities (const QByteArray& hash) const
 	{
 		if (!Ver2Identities_.contains (hash))
 			Preload (hash);
@@ -57,7 +57,7 @@ namespace Xoox
 	}
 
 	void CapsDatabase::SetIdentities (const QByteArray& hash,
-			const QList<QXmppDiscoveryIq::Identity>& ids)
+			const QList<QXmppDiscoIdentity>& ids)
 	{
 		Ver2Identities_ [hash] = ids;
 		Storage_->AddIdentities (hash, ids);

@@ -23,8 +23,8 @@ class QXmppPresence;
 
 class GlooxAccount;
 
-QDataStream& operator<< (QDataStream&, const QXmppDiscoveryIq::Identity&);
-QDataStream& operator>> (QDataStream&, QXmppDiscoveryIq::Identity&);
+QDataStream& operator<< (QDataStream&, const QXmppDiscoIdentity&);
+QDataStream& operator>> (QDataStream&, QXmppDiscoIdentity&);
 
 namespace LC
 {

@@ -20,7 +20,7 @@
 #include <util/db/util.h>
 #include "util.h"
 
-Q_DECLARE_METATYPE (QXmppDiscoveryIq::Identity);
+Q_DECLARE_METATYPE (QXmppDiscoIdentity);
 
 namespace LC
 {
@@ -31,7 +31,7 @@ namespace Xoox
 	CapsStorageOnDisk::CapsStorageOnDisk (const ILoadProgressReporter_ptr& lpr, QObject *parent)
 	: QObject { parent }
 	{
-		qRegisterMetaType<QXmppDiscoveryIq::Identity> ("QXmppDiscoveryIq::Identity");
+		qRegisterMetaType<QXmppDiscoIdentity> ("QXmppDiscoveryIq::Identity");
 
 		DB_.setDatabaseName (Util::CreateIfNotExists ("azoth/xoox").filePath ("caps2.db"));
 		if (!DB_.open ())
@@ -87,15 +87,15 @@ namespace Xoox
 			return DeserializeFeatures (SelectFeatures_.value (0).toByteArray ());
 	}
 
-	std::optional<QList<QXmppDiscoveryIq::Identity>> CapsStorageOnDisk::GetIdentities (const QByteArray& ver) const
+	std::optional<QList<QXmppDiscoIdentity>> CapsStorageOnDisk::GetIdentities (const QByteArray& ver) const
 	{
 		SelectIdentities_.bindValue (":ver", ver);
 		Util::DBLock::Execute (SelectIdentities_);
 
-		QList<QXmppDiscoveryIq::Identity> result;
+		QList<QXmppDiscoIdentity> result;
 		while (SelectIdentities_.next ())
 		{
-			QXmppDiscoveryIq::Identity id;
+			QXmppDiscoIdentity id;
 			id.setCategory (SelectIdentities_.value (0).toString ());
 			id.setLanguage (SelectIdentities_.value (1).toString ());
 			id.setName (SelectIdentities_.value (2).toString ());
@@ -121,7 +121,7 @@ namespace Xoox
 	}
 
 	void CapsStorageOnDisk::AddIdentities (const QByteArray& ver,
-			const QList<QXmppDiscoveryIq::Identity>& identities)
+			const QList<QXmppDiscoIdentity>& identities)
 	{
 		Util::DBLock lock { DB_ };
 		lock.Init ();
@@ -184,7 +184,7 @@ namespace Xoox
 		}
 
 		QHash<QByteArray, QStringList> features;
-		QHash<QByteArray, QList<QXmppDiscoveryIq::Identity>> identities;
+		QHash<QByteArray, QList<QXmppDiscoIdentity>> identities;
 
 		QDataStream stream { &file };
 		quint8 ver = 0;
