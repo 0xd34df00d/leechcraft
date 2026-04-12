@@ -14,7 +14,7 @@
 #include <interfaces/ientityhandler.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/iquarkcomponentprovider.h>
-#include <util/threads/coro/task.h>
+#include <util/threads/coro/sharedtask.h>
 #include "platform/poweractions/platform.h"
 #include "batteryhistory.h"
 #include "batteryinfo.h"
@@ -41,7 +41,7 @@ namespace Liznoo
 
 		Util::XmlSettingsDialog_ptr XSD_;
 
-		std::optional<Util::ContextTask<void>> PlatformInitTask_;
+		std::optional<Util::SharedContextTask<void>> PlatformInitTask_;
 		std::unique_ptr<PlatformObjects> Platform_;
 
 		QMap<QString, BatteryInfo> Battery2LastInfo_;
@@ -75,16 +75,15 @@ namespace Liznoo
 		QuarkComponents_t GetComponents () const override;
 	private:
 		void CheckNotifications (const BatteryInfo&);
-		PlatformObjects& GetPlatformObjects ();
+		Util::Task<void> EnsurePlatformReady ();
 
-		Util::ContextTask<void> InitializePlatform (QPointer<QuarkManager>);
-		Util::Task<void> HandleStateRequested (PowerActions::Platform::State);
+		Util::SharedContextTask<void> InitializePlatform (QPointer<QuarkManager>);
+		Util::ContextTask<void> HandleStateRequested (PowerActions::Platform::State);
+		Util::ContextTask<void> HandleSettingsButton (QString);
 	private slots:
 		void handleUpdateHistory ();
 		void handleHistoryTriggered ();
 		void handleHistoryTriggered (const QString&);
-
-		void handlePushButton (const QString&);
 	signals:
 		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace) override;
 	};

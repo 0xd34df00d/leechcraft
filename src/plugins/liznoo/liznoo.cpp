@@ -21,7 +21,6 @@
 #include <util/sll/either.h>
 #include <util/sll/qtutil.h>
 #include <util/threads/coro.h>
-#include <util/threads/coro/getresult.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "batteryhistorydialog.h"
@@ -71,9 +70,9 @@ namespace Liznoo
 		Hibernate_->setProperty ("ActionIcon", "system-suspend-hibernate");
 
 		connect (XSD_.get (),
-				SIGNAL (pushButtonClicked (QString)),
+				&Util::XmlSettingsDialog::pushButtonClicked,
 				this,
-				SLOT (handlePushButton (QString)));
+				&Plugin::HandleSettingsButton);
 
 		LiznooQuark_ = std::make_shared<QuarkComponent> ("liznoo", "LiznooQuark.qml");
 		LiznooQuark_->DynamicProps_.append ({ "Liznoo_proxy", qm });
@@ -128,9 +127,15 @@ namespace Liznoo
 	void Plugin::Handle (Entity entity)
 	{
 		const auto& context = entity.Entity_.toString ();
-		if (context == "ScreensaverProhibition")
-			GetPlatformObjects ().ProhibitScreensaver (entity.Additional_ ["Enable"].toBool (),
-					entity.Additional_ ["ContextID"].toString ());
+		if (context != "ScreensaverProhibition"_qs)
+			return;
+
+		[] (Entity e, Plugin *pThis) -> Util::ContextTask<void>
+		{
+			co_await Util::AddContextObject { *pThis };
+			co_await pThis->EnsurePlatformReady ();
+			pThis->Platform_->ProhibitScreensaver (e.Additional_ ["Enable"].toBool (), e.Additional_ ["ContextID"].toString ());
+		} (entity, this);
 	}
 
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace) const
@@ -198,21 +203,13 @@ namespace Liznoo
 		}
 	}
 
-	PlatformObjects& Plugin::GetPlatformObjects ()
+	Util::Task<void> Plugin::EnsurePlatformReady ()
 	{
-		if (const auto task = std::exchange (PlatformInitTask_, {}))
-		{
-			qWarning () << "platform init isn't done yet, blocking";
-			Util::GetTaskResult (*task);
-		}
-
-		if (!Platform_)
-			throw std::runtime_error { "Liznoo::Plugin::GetPlatformObjects(): double-awaiting the platform" };
-
-		return *Platform_;
+		if (PlatformInitTask_)
+			co_await *PlatformInitTask_;
 	}
 
-	Util::ContextTask<void> Plugin::InitializePlatform (QPointer<QuarkManager> qm)
+	Util::SharedContextTask<void> Plugin::InitializePlatform (QPointer<QuarkManager> qm)
 	{
 		co_await Util::AddContextObject { *this };
 		Platform_ = co_await PlatformObjects::Create ();
@@ -246,10 +243,11 @@ namespace Liznoo
 		}
 	}
 
-	Util::Task<void> Plugin::HandleStateRequested (PowerActions::Platform::State state)
+	Util::ContextTask<void> Plugin::HandleStateRequested (PowerActions::Platform::State state)
 	{
-		const auto& result = co_await GetPlatformObjects ().ChangeState (state);
-		Util::Visit (result,
+		co_await Util::AddContextObject { *this };
+		co_await EnsurePlatformReady ();
+		Util::Visit (co_await Platform_->ChangeState (state),
 				[] (PlatformObjects::ChangeStateSucceeded) {},
 				[] (PlatformObjects::ChangeStateFailed failure)
 				{
@@ -308,14 +306,16 @@ namespace Liznoo
 		dialog->raise ();
 	}
 
-	void Plugin::handlePushButton (const QString& button)
+	Util::ContextTask<void> Plugin::HandleSettingsButton (QString button)
 	{
+		co_await Util::AddContextObject { *this };
+		co_await EnsurePlatformReady ();
 		const auto res = [&button, this]
 		{
 			if (button == "TestSleep")
-				return GetPlatformObjects ().EmitTestSleep ();
+				return Platform_->EmitTestSleep ();
 			if (button == "TestWake")
-				return GetPlatformObjects ().EmitTestWakeup ();
+				return Platform_->EmitTestWakeup ();
 			return true;
 		} ();
 
