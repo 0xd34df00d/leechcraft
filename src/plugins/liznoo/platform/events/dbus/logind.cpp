@@ -11,6 +11,7 @@
 #include <QtDebug>
 #include <unistd.h>
 #include <util/sll/qtutil.h>
+#include "platform/dbus/endpoints.h"
 
 namespace LC::Liznoo::Events
 {
@@ -23,7 +24,7 @@ namespace LC::Liznoo::Events
 
 	Logind::Logind (bool available, QObject *parent)
 	: DBusPlatform { available, parent }
-	, Logind_ { { .Service = "org.freedesktop.login1", .Path = "/org/freedesktop/login1", .Interface = "org.freedesktop.login1.Manager", .Conn = SB_ } }
+	, Logind_ { DBus::GetLogindEndpoint () }
 	{
 		if (available)
 			Logind_.Connect ("PreparingForSleep"_qs,

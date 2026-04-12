@@ -43,6 +43,7 @@ LC_DEFINE_PLUGIN (
 			platform/events/dbus/logind.cpp
 			platform/events/dbus/consolekit.cpp
 			platform/events/dbus/upower.cpp
+			platform/poweractions/logind.cpp
 			platform/poweractions/upower.cpp
 			platform/screen/freedesktop.cpp
 			>

@@ -21,4 +21,15 @@ namespace LC::Liznoo::DBus
 			.Conn = QDBusConnection::systemBus (),
 		};
 	}
+
+	Util::DBus::Endpoint GetLogindEndpoint ()
+	{
+		return
+		{
+			.Service = "org.freedesktop.login1"_qs,
+			.Path = "/org/freedesktop/login1"_qs,
+			.Interface = "org.freedesktop.login1.Manager"_qs,
+			.Conn = QDBusConnection::systemBus (),
+		};
+	}
 }

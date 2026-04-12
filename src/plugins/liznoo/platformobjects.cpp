@@ -23,6 +23,7 @@
 	#include "platform/events/dbus/consolekit.h"
 	#include "platform/events/dbus/logind.h"
 	#include "platform/events/dbus/upower.h"
+	#include "platform/poweractions/logind.h"
 	#include "platform/poweractions/upower.h"
 	#include "platform/screen/freedesktop.h"
 #elif defined(Q_OS_WIN32)
@@ -46,12 +47,12 @@ namespace LC::Liznoo
 	namespace
 	{
 		template<typename T, typename F>
-		std::shared_ptr<T> Select (std::initializer_list<std::shared_ptr<T>> options, F pred)
+		Util::Task<std::shared_ptr<T>> Select (std::initializer_list<std::shared_ptr<T>> options, F pred)
 		{
 			for (const auto& option : options)
-				if (option && pred (*option))
-					return option;
-			return {};
+				if (option && co_await pred (*option))
+					co_return option;
+			co_return {};
 		}
 	}
 
@@ -62,17 +63,19 @@ namespace LC::Liznoo
 				Events::ConsoleKit::Create (),
 				Events::Logind::Create ());
 
-		EventsPlatform_ = Select<Events::Platform> ({ upowerEvents, ckEvents, logindEvents },
-				[] (const Events::Platform& platform) { return platform.IsAvailable (); });
+		EventsPlatform_ = co_await Select<Events::Platform> ({ upowerEvents, ckEvents, logindEvents },
+				[] (const Events::Platform& platform) -> Util::Task<bool> { co_return platform.IsAvailable (); });
 		if (!EventsPlatform_)
 			qWarning () << "no events platform";
 
 		ScreenPlatform_ = new Screen::Freedesktop (this);
 		BatteryPlatform_ = std::make_shared<Battery::UPower> ();
 
-		const auto upowerActions = std::make_shared<PowerActions::UPower> ();
-		if (co_await upowerActions->IsAvailable ())
-			PowerActPlatform_ = upowerActions;
+		PowerActPlatform_ = co_await Select<PowerActions::Platform> ({
+					std::make_shared<PowerActions::Logind> (),
+					std::make_shared<PowerActions::UPower> ()
+				},
+				[] (const PowerActions::Platform& platform) { return platform.IsAvailable (); });
 #elifdef Q_OS_WIN32
 		const auto widget = std::make_shared<Windows::FakeQWidgetWinAPI> ();
 

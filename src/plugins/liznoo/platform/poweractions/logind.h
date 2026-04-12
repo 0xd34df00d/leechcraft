@@ -8,10 +8,19 @@
 
 #pragma once
 
-#include <util/dbus/async.h>
+#include <QCoreApplication>
+#include "platform.h"
 
-namespace LC::Liznoo::DBus
+namespace LC::Liznoo::PowerActions
 {
-	Util::DBus::Endpoint GetUPowerEndpoint ();
-	Util::DBus::Endpoint GetLogindEndpoint ();
+	class Logind final : public Platform
+	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Liznoo::PowerActions::Logind)
+	public:
+		using Platform::Platform;
+
+		Util::ContextTask<bool> IsAvailable () const override;
+		Util::ContextTask<Result> CanChangeState (State) override;
+		Util::ContextTask<Result> ChangeState (State) override;
+	};
 }
