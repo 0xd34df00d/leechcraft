@@ -99,7 +99,9 @@ Rectangle {
 
             color: "transparent"
 
-            GridView.onRemove: SequentialAnimation {
+            GridView.onRemove: removeAnimation.start()
+            SequentialAnimation {
+                id: removeAnimation
                 PropertyAction { target: thumbsItem; property: "GridView.delayRemove"; value: true }
                 NumberAnimation { target: thumbsItem; property: "opacity"; to: 0; duration: 100; easing.type: Easing.InOutQuad }
                 PropertyAction { target: thumbsItem; property: "GridView.delayRemove"; value: false }
