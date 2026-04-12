@@ -9,6 +9,7 @@
 #pragma once
 
 #include <coroutine>
+#include <mutex>
 
 namespace LC::Util::detail
 {

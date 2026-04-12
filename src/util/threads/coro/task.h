@@ -10,6 +10,7 @@
 
 #include <coroutine>
 #include <exception>
+#include <mutex>
 #include <utility>
 #include "finalsuspender.h"
 #include "defaulthandlers.h"
