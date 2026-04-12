@@ -13,6 +13,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include <util/sll/either.h>
 #include <util/threads/coro.h>
+#include <util/threads/coro/inparallel.h>
 #include "platform/screen/platform.h"
 #include "platform/battery/platform.h"
 
@@ -57,9 +58,9 @@ namespace LC::Liznoo
 	Util::ContextTask<void> PlatformObjects::Init ()
 	{
 #ifdef Q_OS_LINUX
-		const auto upowerEvents = co_await Events::UPower::Create ();
-		const auto ckEvents = co_await Events::ConsoleKit::Create ();
-		const auto logindEvents = co_await Events::Logind::Create ();
+		const auto [upowerEvents, ckEvents, logindEvents] = co_await Util::InParallel (Events::UPower::Create (),
+				Events::ConsoleKit::Create (),
+				Events::Logind::Create ());
 
 		EventsPlatform_ = Select<Events::Platform> ({ upowerEvents, ckEvents, logindEvents },
 				[] (const Events::Platform& platform) { return platform.IsAvailable (); });
