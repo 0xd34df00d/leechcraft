@@ -120,7 +120,9 @@ Rectangle {
                 onTriggered: artistsModel.SetArtistScheduled(artistId, !scheduled)
             }
 
-            GridView.onRemove: SequentialAnimation {
+            GridView.onRemove: removeAnimation.start()
+            SequentialAnimation {
+                id: removeAnimation
                 PropertyAction { target: gridDelegate; property: "GridView.delayRemove"; value: true }
                 NumberAnimation { target: gridDelegate; property: "scale"; to: 0; duration: 500; easing.type: Easing.InCubic }
                 PropertyAction { target: gridDelegate; property: "GridView.delayRemove"; value: false }
