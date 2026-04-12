@@ -60,7 +60,9 @@ Rectangle {
                 ]
             }
 
-            ListView.onRemove: SequentialAnimation {
+            ListView.onRemove: removeAnimation.start()
+            SequentialAnimation {
+                id: removeAnimation
                 PropertyAction { target: launchViewDelegate; property: "ListView.delayRemove"; value: true }
                 NumberAnimation { target: launchViewDelegate; property: "height"; to: 0; duration: 250; easing.type: Easing.InOutQuad }
                 PropertyAction { target: launchViewDelegate; property: "ListView.delayRemove"; value: false }

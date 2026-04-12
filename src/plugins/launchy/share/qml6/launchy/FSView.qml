@@ -264,7 +264,9 @@ Rectangle {
                 visible: !isItemFavorite
             }
 
-            GridView.onAdd: SequentialAnimation {
+            GridView.onAdd: addAnimation.start()
+            SequentialAnimation {
+                id: addAnimation
                 NumberAnimation { target: itemsViewDelegate; property: "opacity"; from: 0; to: 1; duration: 250; easing.type: Easing.InOutQuad }
             }
 
