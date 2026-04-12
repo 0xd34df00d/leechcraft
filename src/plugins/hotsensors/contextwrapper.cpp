@@ -24,10 +24,7 @@ namespace LC::HotSensors
 	{
 		QStringList Hidden_;
 	public:
-		SensorsFilterModel (QObject *parent)
-		: RoleNamesMixin<QSortFilterProxyModel> (parent)
-		{
-		}
+		using RoleNamesMixin::RoleNamesMixin;
 
 		void SetSourceWithRoles (QAbstractItemModel *model)
 		{
@@ -37,8 +34,9 @@ namespace LC::HotSensors
 
 		void SetHidden (const QStringList& hidden)
 		{
+			beginFilterChange ();
 			Hidden_ = hidden;
-			invalidateFilter ();
+			endFilterChange (Direction::Rows);
 		}
 	protected:
 		bool filterAcceptsRow (int row, const QModelIndex&) const override
