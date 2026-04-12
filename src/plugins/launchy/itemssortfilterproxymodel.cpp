@@ -8,7 +8,6 @@
 
 #include "itemssortfilterproxymodel.h"
 #include <QtDebug>
-#include <QTimer>
 #include "modelroles.h"
 
 namespace LC
@@ -31,10 +30,9 @@ namespace Launchy
 
 	void ItemsSortFilterProxyModel::SetAppFilterText (const QString& text)
 	{
+		beginFilterChange ();
 		AppFilterText_ = text;
-		QTimer::singleShot (0,
-				this,
-				SLOT (invalidateFilterSlot ()));
+		endFilterChange (Direction::Rows);
 	}
 
 	bool ItemsSortFilterProxyModel::lessThan (const QModelIndex& left, const QModelIndex& right) const
@@ -82,13 +80,9 @@ namespace Launchy
 
 	void ItemsSortFilterProxyModel::setCategoryNames (const QStringList& cats)
 	{
+		beginFilterChange ();
 		CategoryNames_ = cats;
-		invalidateFilter ();
-	}
-
-	void ItemsSortFilterProxyModel::invalidateFilterSlot ()
-	{
-		invalidateFilter ();
+		endFilterChange (Direction::Rows);
 	}
 }
 }
