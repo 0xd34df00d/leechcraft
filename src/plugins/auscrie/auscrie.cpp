@@ -19,7 +19,7 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/ientityhandler.h>
-#include "platform.h"
+#include "shooter.h"
 #include "shooterdialog.h"
 #include "util.h"
 

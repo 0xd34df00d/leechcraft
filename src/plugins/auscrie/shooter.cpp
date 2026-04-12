@@ -6,29 +6,46 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#include "platform.h"
+#include "shooter.h"
 #include <QCursor>
 #include <QGuiApplication>
 #include <QPixmap>
 #include <QScreen>
-#include <QtDebug>
-#include <util/x11/xwrapper.h>
+#include <QMainWindow>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include "types.h"
 
 namespace LC::Auscrie
 {
 	namespace
 	{
+		QPixmap GetLCWindow ()
+		{
+			auto rootWin = GetProxyHolder ()->GetRootWindowsManager ()->GetPreferredWindow ();
+			const auto dpr = rootWin->devicePixelRatioF ();
+			QPixmap px { rootWin->size () * dpr };
+			px.setDevicePixelRatio (dpr);
+			px.fill (Qt::transparent);
+			rootWin->render (&px);
+			return px;
+		}
+
+		QPixmap GetLCWindowOverlay ()
+		{
+			auto rootWin = GetProxyHolder ()->GetRootWindowsManager ()->GetPreferredWindow ();
+			return rootWin->screen ()->grabWindow (rootWin->winId ());
+		}
+
 		QPixmap GetRootScreen (const QRect& geom)
 		{
 			auto screen = QGuiApplication::screenAt (geom.topLeft ());
 			if (!screen)
 				screen = QGuiApplication::primaryScreen ();
 
-			const auto root = Util::XWrapper::Instance ().GetRootWindow ();
 			return geom.isValid () ?
-					screen->grabWindow (root, geom.x (), geom.y (), geom.width (), geom.height ()):
-					screen->grabWindow (root);
+					screen->grabWindow (0, geom.x (), geom.y (), geom.width (), geom.height ()) :
+					screen->grabWindow (0);
 		}
 	}
 
@@ -49,8 +66,7 @@ namespace LC::Auscrie
 			return GetRootScreen ({});
 		}
 
-		qWarning () << "unknown mode"
-				<< static_cast<int> (mode);
+		qWarning () << "unknown mode" << static_cast<int> (mode);
 		return {};
 	}
 }

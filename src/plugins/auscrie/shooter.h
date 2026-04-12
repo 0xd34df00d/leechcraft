@@ -14,8 +14,5 @@ namespace LC::Auscrie
 {
 	enum class Mode;
 
-	QPixmap GetLCWindow ();
-	QPixmap GetLCWindowOverlay ();
-
 	QPixmap GetPixmap (Mode);
 }
