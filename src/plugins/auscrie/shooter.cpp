@@ -43,9 +43,8 @@ namespace LC::Auscrie
 			if (!screen)
 				screen = QGuiApplication::primaryScreen ();
 
-			return geom.isValid () ?
-					screen->grabWindow (0, geom.x (), geom.y (), geom.width (), geom.height ()) :
-					screen->grabWindow (0);
+			const auto& rect = geom.isValid () ? geom : screen->virtualGeometry ();
+			return screen->grabWindow (0, rect.x (), rect.y (), rect.width (), rect.height ());
 		}
 	}
 
