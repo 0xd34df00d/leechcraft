@@ -219,7 +219,7 @@ SUBPLUGIN (NAMAUTH "Build NamAuth, providing standard HTTP authentication facili
 SUBPLUGIN (NETSTOREMANAGER "Build NetStoreManager for managing network data storages like Yandex.Disk" ${WITH_PLUGINS})
 SUBPLUGIN (OTLOZHU "Build Otlozhu, a GTD-inspired ToDo manager" ${WITH_PLUGINS})
 SUBPLUGIN (OORONEE "Build Ooronee, a quark for handling text and images dropped on it" ${WITH_PLUGINS})
-SUBPLUGIN (POLEEMERY "Build Poleemery, the personal finances manager" ${WITH_PLUGINS})
+SUBPLUGIN (POLEEMERY "Build Poleemery, the personal finances manager" OFF)
 SUBPLUGIN (ROSENTHAL "Build Rosenthal, the Hunspell-based spell checker service plugin" ${WITH_PLUGINS})
 SUBPLUGIN (SB2 "Build SB2, next-gen fluid sidebar" ${WITH_PLUGINS})
 SUBPLUGIN (SCROBLIBRE "Build ScrobLibre, multiaccount Scrobbler API 1.2 scrobbler" ${WITH_PLUGINS})
