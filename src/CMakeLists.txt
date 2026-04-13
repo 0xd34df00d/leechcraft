@@ -17,6 +17,11 @@ if (WIN32)
 	add_definitions (-DNTDDI_VERSION=0x0600)
 endif ()
 
+option (USE_LTO "Use LTO" OFF)
+if (USE_LTO)
+	set (CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+endif ()
+
 option (USE_ASAN "Use address sanitizer" OFF)
 option (USE_UBSAN "Use UB sanitizer" OFF)
 
