@@ -65,7 +65,7 @@ namespace Xoox
 			Widget2Field_.clear ();
 		}
 	protected:
-		virtual QWidget* CreateWidgetImpl (QXmppDataForm::Field&, QFormLayout*) = 0;
+		virtual QWidget* CreateWidgetImpl (const QXmppDataForm::Field&, QFormLayout*) = 0;
 		virtual QVariant GetData (QWidget*) = 0;
 	};
 
@@ -119,7 +119,7 @@ namespace Xoox
 	class BooleanHandler : public TypedFieldHandler<QCheckBox>
 	{
 	protected:
-		QWidget* CreateWidgetImpl (QXmppDataForm::Field& field, QFormLayout *layout) override
+		QWidget* CreateWidgetImpl (const QXmppDataForm::Field& field, QFormLayout *layout) override
 		{
 			auto box = new QCheckBox (field.label ());
 			box->setChecked (field.value ().toBool ());
@@ -136,7 +136,7 @@ namespace Xoox
 	class FixedHandler : public FieldHandler
 	{
 	protected:
-		QWidget* CreateWidgetImpl (QXmppDataForm::Field& field, QFormLayout *layout) override
+		QWidget* CreateWidgetImpl (const QXmppDataForm::Field& field, QFormLayout *layout) override
 		{
 			auto label = new QLabel (field.value ().toString ());
 			layout->addRow (field.label (), label);
@@ -152,7 +152,7 @@ namespace Xoox
 	class NullHandler : public FieldHandler
 	{
 	protected:
-		QWidget* CreateWidgetImpl (QXmppDataForm::Field&, QFormLayout*) override
+		QWidget* CreateWidgetImpl (const QXmppDataForm::Field&, QFormLayout*) override
 		{
 			return nullptr;
 		}
@@ -166,7 +166,7 @@ namespace Xoox
 	class MultiTextHandler : public TypedFieldHandler<QTextEdit>
 	{
 	protected:
-		QWidget* CreateWidgetImpl (QXmppDataForm::Field& field, QFormLayout *layout) override
+		QWidget* CreateWidgetImpl (const QXmppDataForm::Field& field, QFormLayout *layout) override
 		{
 			auto edit = new QTextEdit;
 			edit->setAcceptRichText (false);
@@ -192,7 +192,7 @@ namespace Xoox
 		{
 		}
 	protected:
-		QWidget* CreateWidgetImpl (QXmppDataForm::Field& field, QFormLayout *layout) override
+		QWidget* CreateWidgetImpl (const QXmppDataForm::Field& field, QFormLayout *layout) override
 		{
 			auto edit = new QLineEdit (field.value ().toString ());
 			if (IsPassword_)
@@ -219,7 +219,7 @@ namespace Xoox
 		{
 		}
 	protected:
-		QWidget* CreateWidgetImpl (QXmppDataForm::Field& field, QFormLayout *layout) override
+		QWidget* CreateWidgetImpl (const QXmppDataForm::Field& field, QFormLayout *layout) override
 		{
 			auto tree = new QTreeWidget ();
 			tree->setSelectionMode (SelMode_);
