@@ -13,7 +13,9 @@
 #include <iomanip>
 #include <cstdlib>
 #include <cstring>
+#ifndef __APPLE__
 #include <stacktrace>
+#endif
 #include <unistd.h>
 #include <QMutex>
 #include <QMutexLocker>
@@ -112,10 +114,14 @@ namespace
 
 	void PrintBacktrace (const std::shared_ptr<std::ostream>& ostr)
 	{
+#ifndef __APPLE__
 		constexpr auto skip = 5;
 		const auto trace = std::stacktrace::current (skip);
 		for (const auto& e : trace)
 			*ostr << '\t' << e << '\n';
+#else
+		Q_UNUSED (ostr)
+#endif
 	}
 
 	QByteArray DetectModule (const char *fileStr)
