@@ -83,7 +83,7 @@ namespace LC::BitTorrent
 		{
 			const auto showBool = [] (bool val) { return val ? tr ("yes") : tr ("no"); };
 
-			const auto now = std::chrono::system_clock::now ();
+			const auto now = libtorrent::clock_type::now ();
 			for (const auto& endpoint : tracker.endpoints)
 				for (const auto hashVersion : { libtorrent::protocol_version::V1, libtorrent::protocol_version::V2 })
 				{
