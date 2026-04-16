@@ -36,8 +36,12 @@ namespace Xoox
 
 		const auto& queryElem = element.firstChildElement ("query");
 
-		QXmppDataForm form;
-		form.parse (queryElem.firstChildElement ("x"));
+		const auto& form = [&queryElem]
+		{
+			QXmppDataForm form;
+			form.parse (queryElem.firstChildElement ("x"));
+			return form;
+		} ();
 		if (!form.isNull ())
 			for (const auto& field : form.fields ())
 				if (field.key () == "with")

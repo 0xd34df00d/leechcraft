@@ -33,7 +33,7 @@ namespace Xoox
 		ClientConnection * const Conn_;
 		IProxyObject * const Proxy_;
 
-		QMap<QString, QXmppDiscoveryIq::Item> XEP0146Items_;
+		QMap<QString, QXmppDiscoItem> XEP0146Items_;
 
 		typedef std::function<void (const QDomElement&)> NodeActor_t;
 		QMap<QString, NodeActor_t> NodeInfos_;

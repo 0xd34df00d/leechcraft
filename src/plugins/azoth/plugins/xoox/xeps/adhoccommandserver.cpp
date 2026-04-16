@@ -41,7 +41,7 @@ namespace Xoox
 	{
 		const QString& jid = Conn_->GetOurJID ();
 
-		QXmppDiscoveryIq::Item changeStatus;
+		QXmppDiscoItem changeStatus;
 		changeStatus.setNode (NodeChangeStatus);
 		changeStatus.setJid (jid);
 		changeStatus.setName (tr ("Change status"));
@@ -51,7 +51,7 @@ namespace Xoox
 				[this] (QDomElement e, QString s, QXmppDataForm f)
 					{ ChangeStatusSubmitted (e, s, f); };
 
-		QXmppDiscoveryIq::Item leaveGroupchats;
+		QXmppDiscoItem leaveGroupchats;
 		leaveGroupchats.setNode (NodeLeaveGroupchats);
 		leaveGroupchats.setJid (jid);
 		leaveGroupchats.setName (tr ("Leave groupchats"));
@@ -61,14 +61,14 @@ namespace Xoox
 				[this] (QDomElement e, QString s, QXmppDataForm f)
 					{ LeaveGroupchatsSubmitted (e, s, f); };
 
-		QXmppDiscoveryIq::Item forward;
+		QXmppDiscoItem forward;
 		forward.setNode (NodeForward);
 		forward.setJid (jid);
 		forward.setName (tr ("Forward unread messages"));
 		XEP0146Items_ [forward.node ()] = forward;
 		NodeInfos_ [forward.node ()] = [this] (QDomElement e) { Forward (e); };
 
-		QXmppDiscoveryIq::Item addTask;
+		QXmppDiscoItem addTask;
 		addTask.setNode (NodeAddTask);
 		addTask.setJid (jid);
 		addTask.setName (tr ("Add download task"));

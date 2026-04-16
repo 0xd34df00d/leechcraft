@@ -297,7 +297,7 @@ namespace Xoox
 
 		try
 		{
-			for (auto& field : Form_.fields ())
+			for (auto& field : form.fields ())
 			{
 				const auto handler = Type2Handler_ [field.type ()];
 				if (!handler)
