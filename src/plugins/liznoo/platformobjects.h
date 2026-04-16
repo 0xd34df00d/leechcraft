@@ -37,10 +37,10 @@ namespace LC::Liznoo
 	{
 		Q_OBJECT
 
-		std::shared_ptr<Events::Platform> EventsPlatform_;
-		Screen::Platform *ScreenPlatform_= nullptr;
-		std::shared_ptr<PowerActions::Platform> PowerActPlatform_;
 		std::shared_ptr<Battery::Platform> BatteryPlatform_;
+		std::shared_ptr<Events::Platform> EventsPlatform_;
+		std::shared_ptr<PowerActions::Platform> PowerActPlatform_;
+		std::shared_ptr<Screen::Platform> ScreenPlatform_= nullptr;
 
 		explicit PlatformObjects () = default;
 		Util::ContextTask<void> Init ();

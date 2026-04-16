@@ -12,6 +12,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <util/sll/either.h>
+#include <util/sll/util.h>
 #include <util/threads/coro.h>
 #include <util/threads/coro/inparallel.h>
 #include "platform/screen/platform.h"
@@ -42,6 +43,11 @@
 	#pragma message ("Unsupported system")
 #endif
 
+#if __has_include(<cxxabi.h>)
+#include <cxxabi.h>
+#define LC_HAS_ABI 1
+#endif
+
 namespace LC::Liznoo
 {
 	namespace
@@ -54,6 +60,32 @@ namespace LC::Liznoo
 					co_return option;
 			co_return {};
 		}
+
+#if LC_HAS_ABI
+		template<typename T>
+		void LogSelectedBackend (const char *context, const std::shared_ptr<T>& backend)
+		{
+			if (backend)
+			{
+				[[maybe_unused]] const auto& ref = *backend;
+
+				int status = 0;
+				std::size_t size = 0;
+				const auto str = abi::__cxa_demangle (typeid (ref).name (), NULL, &size, &status);
+				const auto freeGuard = Util::MakeScopeGuard ([str] { std::free (str); });
+
+				qDebug () << context << "selected backend:" << str;
+			}
+			else
+				qWarning () << context << "backend is not available";
+		}
+#else
+		// platforms without cxxabi also generally have only one backend anyway
+		template<typename T>
+		void LogSelectedBackend (const char*, const std::shared_ptr<T>&)
+		{
+		}
+#endif
 	}
 
 	Util::ContextTask<void> PlatformObjects::Init ()
@@ -65,10 +97,8 @@ namespace LC::Liznoo
 
 		EventsPlatform_ = co_await Select<Events::Platform> ({ upowerEvents, ckEvents, logindEvents },
 				[] (const Events::Platform& platform) -> Util::Task<bool> { co_return platform.IsAvailable (); });
-		if (!EventsPlatform_)
-			qWarning () << "no events platform";
 
-		ScreenPlatform_ = new Screen::Freedesktop (this);
+		ScreenPlatform_ = std::make_shared<Screen::Freedesktop> ();
 		BatteryPlatform_ = std::make_shared<Battery::UPower> ();
 
 		PowerActPlatform_ = co_await Select<PowerActions::Platform> ({
@@ -82,22 +112,25 @@ namespace LC::Liznoo
 		EventsPlatform_ = std::make_shared<Events::Windows> (widget);
 		BatteryPlatform_ = std::make_shared<Battery::Windows> (widget);
 #elifdef Q_OS_FREEBSD
+		BatteryPlatform_ = std::make_shared<Battery::FreeBSD> ();
 		EventsPlatform_ = std::make_shared<Events::FreeBSD> ();
 		PowerActPlatform_ = std::make_shared<PowerActions::FreeBSD> ();
-		BatteryPlatform_ = std::make_shared<Battery::FreeBSD> ();
-		ScreenPlatform_ = new Screen::Freedesktop (this);
+		ScreenPlatform_ = std::make_shared<Screen::Freedesktop> ();
 #elifdef Q_OS_MAC
 		BatteryPlatform_ = std::make_shared<Battery::Mac> ();
 		EventsPlatform_ = std::make_shared<Events::Mac> ();
 #endif
+
+		LogSelectedBackend ("battery", BatteryPlatform_);
+		LogSelectedBackend ("events", EventsPlatform_);
+		LogSelectedBackend ("power actions", PowerActPlatform_);
+		LogSelectedBackend ("screen", ScreenPlatform_);
 
 		if (BatteryPlatform_)
 			connect (BatteryPlatform_.get (),
 					&Battery::Platform::batteryInfoUpdated,
 					this,
 					&PlatformObjects::batteryInfoUpdated);
-		else
-			qWarning () << "battery backend is not available";
 	}
 
 	Util::ContextTask<std::unique_ptr<PlatformObjects>> PlatformObjects::Create ()
