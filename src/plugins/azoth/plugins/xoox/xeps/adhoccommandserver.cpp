@@ -41,42 +41,24 @@ namespace Xoox
 	{
 		const QString& jid = Conn_->GetOurJID ();
 
-		QXmppDiscoItem changeStatus;
-		changeStatus.setNode (NodeChangeStatus);
-		changeStatus.setJid (jid);
-		changeStatus.setName (tr ("Change status"));
+		const QXmppDiscoItem changeStatus { jid, tr ("Change status"), NodeChangeStatus };
 		XEP0146Items_ [changeStatus.node ()] = changeStatus;
 		NodeInfos_ [changeStatus.node ()] = [this] (QDomElement e) { ChangeStatusInfo (e); };
-		NodeSubmitHandlers_ [changeStatus.node ()] =
-				[this] (QDomElement e, QString s, QXmppDataForm f)
-					{ ChangeStatusSubmitted (e, s, f); };
+		NodeSubmitHandlers_ [changeStatus.node ()] = std::bind_front (&AdHocCommandServer::ChangeStatusSubmitted, this);
 
-		QXmppDiscoItem leaveGroupchats;
-		leaveGroupchats.setNode (NodeLeaveGroupchats);
-		leaveGroupchats.setJid (jid);
-		leaveGroupchats.setName (tr ("Leave groupchats"));
+		const QXmppDiscoItem leaveGroupchats { jid, tr ("Leave groupchats"), NodeLeaveGroupchats};
 		XEP0146Items_ [leaveGroupchats.node ()] = leaveGroupchats;
 		NodeInfos_ [leaveGroupchats.node ()] = [this] (QDomElement e) { LeaveGroupchatsInfo (e); };
-		NodeSubmitHandlers_ [leaveGroupchats.node ()] =
-				[this] (QDomElement e, QString s, QXmppDataForm f)
-					{ LeaveGroupchatsSubmitted (e, s, f); };
+		NodeSubmitHandlers_ [leaveGroupchats.node ()] = std::bind_front (&AdHocCommandServer::LeaveGroupchatsSubmitted, this);
 
-		QXmppDiscoItem forward;
-		forward.setNode (NodeForward);
-		forward.setJid (jid);
-		forward.setName (tr ("Forward unread messages"));
+		const QXmppDiscoItem forward { jid, tr ("Forward unread messages"), NodeForward };
 		XEP0146Items_ [forward.node ()] = forward;
 		NodeInfos_ [forward.node ()] = [this] (QDomElement e) { Forward (e); };
 
-		QXmppDiscoItem addTask;
-		addTask.setNode (NodeAddTask);
-		addTask.setJid (jid);
-		addTask.setName (tr ("Add download task"));
+		const QXmppDiscoItem addTask { jid, tr ("Add download task"), NodeAddTask };
 		XEP0146Items_ [addTask.node ()] = addTask;
 		NodeInfos_ [addTask.node ()] = [this] (QDomElement e) { AddTaskInfo (e); };
-		NodeSubmitHandlers_ [addTask.node ()] =
-				[this] (QDomElement e, QString s, QXmppDataForm f)
-					{ AddTaskSubmitted (e, s, f); };
+		NodeSubmitHandlers_ [addTask.node ()] = std::bind_front (&AdHocCommandServer::AddTaskSubmitted, this);
 	}
 
 	bool AdHocCommandServer::handleStanza (const QDomElement& elem)

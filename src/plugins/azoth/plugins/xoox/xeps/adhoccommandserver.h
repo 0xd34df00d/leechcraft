@@ -37,8 +37,7 @@ namespace Xoox
 
 		typedef std::function<void (const QDomElement&)> NodeActor_t;
 		QMap<QString, NodeActor_t> NodeInfos_;
-		typedef std::function<void (const QDomElement&,
-				const QString&, const QXmppDataForm&)> NodeSubmitHandler_t;
+		typedef std::function<void (const QDomElement&, const QString&, const QXmppDataForm&)> NodeSubmitHandler_t;
 		QMap<QString, NodeSubmitHandler_t> NodeSubmitHandlers_;
 
 		QMap<QString, QStringList> PendingSessions_;
