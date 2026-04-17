@@ -12,4 +12,3 @@ LC_DEFINE_PLUGIN (
 	)
 
 SUBPLUGIN (READITLATER "Build \"Read It Later\" support for OnlineBookmarks")
-SUBPLUGIN (DELICIOUS "Build \"Delicious\" support for OnlineBookmarks")
