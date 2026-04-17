@@ -18,7 +18,9 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
+#if !defined(Q_OS_MAC) && !defined(Q_OS_WIN)
 #include "backends/udisks2/udisks2backend.h"
+#endif
 #include "devbackend.h"
 #include "trayview.h"
 
@@ -56,7 +58,11 @@ namespace LC::Vrooby
 		TrayView_ = new TrayView ();
 		new Util::UnhoverDeleteMixin (TrayView_, SLOT (hide ()));
 
-		const auto& result = SelectBackend<UDisks2::Backend> ();
+		const auto& result = SelectBackend<
+#if !defined(Q_OS_MAC) && !defined(Q_OS_WIN)
+				UDisks2::Backend
+#endif
+				> ();
 		Backend_ = result.Selected_;
 
 		if (!Backend_)
