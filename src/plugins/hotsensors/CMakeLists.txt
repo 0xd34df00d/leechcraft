@@ -21,6 +21,7 @@ LC_DEFINE_PLUGIN (
 	QT_COMPONENTS QuickWidgets
 	LINK_LIBRARIES
 		$<$<PLATFORM_ID:Linux>:${SENSORS_LIBRARIES}>
-		$<$<PLATFORM_ID:Darwin>:"-framework IOKit -framework CoreFoundation">
+		"$<$<PLATFORM_ID:Darwin>:-framework IOKit>"
+		"$<$<PLATFORM_ID:Darwin>:-framework CoreFoundation>"
 	INSTALL_SHARE
 	)
