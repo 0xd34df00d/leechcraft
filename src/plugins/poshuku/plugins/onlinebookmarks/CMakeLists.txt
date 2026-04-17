@@ -10,5 +10,3 @@ LC_DEFINE_PLUGIN (
 	QT_COMPONENTS Widgets
 	INSTALL_SHARE
 	)
-
-SUBPLUGIN (READITLATER "Build \"Read It Later\" support for OnlineBookmarks")
