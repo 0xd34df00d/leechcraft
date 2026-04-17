@@ -8,6 +8,7 @@ LC_DEFINE_PLUGIN (
 		kinotifywidget.cpp
 		$<$<PLATFORM_ID:Linux,FreeBSD>:fswinwatcher_x11.cpp>
 		$<$<PLATFORM_ID:Windows>:fswinwatcher_win.cpp>
+		$<$<PLATFORM_ID:Darwin>:fswinwatcher_mac.mm>
 	SETTINGS kinotifysettings.xml
 	QT_COMPONENTS StateMachine
 	INSTALL_SHARE
