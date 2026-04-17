@@ -23,5 +23,4 @@ LC_DEFINE_PLUGIN (
 
 SUBPLUGIN (RAPPOR "Build VKontakte client module for Blasq")
 SUBPLUGIN (SPEGNERSI "Build Flickr client module for Blasq")
-SUBPLUGIN (VANGOG "Build Picasa client module for Blasq")
 SUBPLUGIN (DEATHNOTE "Build LiveJournal FotoBilder client module for Blasq")
