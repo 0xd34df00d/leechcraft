@@ -6,7 +6,7 @@ option (WITH_MUSICZOMBIE_CHROMAPRINT "Build support for Chromaprints in MusicZom
 
 if (WITH_MUSICZOMBIE_CHROMAPRINT)
 	find_package (PkgConfig)
-	pkg_check_modules (MzChroma REQUIRED IMPORTED_TARGET libchromaprint libavcodec libavformat libavutil)
+	pkg_check_modules (MzChroma REQUIRED IMPORTED_TARGET libchromaprint libavcodec libavformat libavutil libswresample)
 	set (CHROMA_LIBRARIES PkgConfig::MzChroma)
 	add_definitions (-DWITH_CHROMAPRINT)
 endif ()
