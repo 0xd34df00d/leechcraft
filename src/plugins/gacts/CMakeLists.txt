@@ -19,5 +19,6 @@ LC_DEFINE_PLUGIN (
 	QT_COMPONENTS Core
 	LINK_LIBRARIES
 		$<$<PLATFORM_ID:Linux,FreeBSD>:PkgConfig::X11>
-		$<$<PLATFORM_ID:Darwin>:"-framework CoreFoundation -framework Carbon">
+		"$<$<PLATFORM_ID:Darwin>:-framework CoreFoundation>"
+		"$<$<PLATFORM_ID:Darwin>:-framework Carbon>"
 	)
