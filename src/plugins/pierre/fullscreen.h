@@ -10,15 +10,8 @@
 
 class QMainWindow;
 
-namespace LC
+namespace LC::Pierre::FS
 {
-namespace Pierre
-{
-namespace FS
-{
-	bool SupportsFS ();
 	void AddAction (QMainWindow*);
 	void Toggle (QMainWindow*);
-}
-}
 }

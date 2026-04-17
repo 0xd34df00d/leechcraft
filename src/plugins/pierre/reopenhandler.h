@@ -8,25 +8,13 @@
 
 #pragma once
 
-#include <interfaces/iinfo.h>
-
-
-namespace LC
+namespace LC::Pierre
 {
-namespace Pierre
-{
-
-class ReopenHandler
-{
-	ICoreProxy_ptr Proxy_;
-
-	ReopenHandler ();
-public:
-	static ReopenHandler& Instance ();
-
-	void SetCoreProxy (const ICoreProxy_ptr&);
-	void Triggered ();
-};
-
-}
+	class ReopenHandler
+	{
+		ReopenHandler ();
+	public:
+		static ReopenHandler& Instance ();
+		void Triggered ();
+	};
 }

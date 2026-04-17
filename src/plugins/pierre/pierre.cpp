@@ -21,23 +21,16 @@
 #include "fullscreen.h"
 #include "reopenhandler.h"
 
-namespace LC
+namespace LC::Pierre
 {
-namespace Pierre
-{
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
-		TrayIconMenu_ = 0;
-
-		Proxy_ = proxy;
 		MenuBar_ = new QMenuBar (0);
-
-		ReopenHandler::Instance ().SetCoreProxy (proxy);
 	}
 
 	void Plugin::SecondInit ()
 	{
-		auto rootWM = Proxy_->GetRootWindowsManager ();
+		auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 		for (int i = 0; i < rootWM->GetWindowsCount (); ++i)
 			handleWindow (i);
 
@@ -73,9 +66,7 @@ namespace Pierre
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Core.Plugins/1.0";
-		return result;
+		return { "org.LeechCraft.Core.Plugins/1.0" };
 	}
 
 	void Plugin::hookGonnaFillMenu (IHookProxy_ptr)
@@ -85,7 +76,7 @@ namespace Pierre
 				SLOT (fillMenu ()));
 	}
 
-	void Plugin::hookTrayIconCreated (IHookProxy_ptr proxy, QSystemTrayIcon *icon)
+	void Plugin::hookTrayIconCreated (IHookProxy_ptr, QSystemTrayIcon *icon)
 	{
 		TrayIconMenu_ = icon->contextMenu ();
 		TrayIconMenu_->setAsDockMenu ();
@@ -110,13 +101,13 @@ namespace Pierre
 	void Plugin::handleWindow (int index)
 	{
 		qDebug () << Q_FUNC_INFO;
-		auto rootWM = Proxy_->GetRootWindowsManager ();
+		auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 		FS::AddAction (rootWM->GetMainWindow (index));
 	}
 
 	void Plugin::fillMenu ()
 	{
-		auto rootWM = Proxy_->GetRootWindowsManager ();
+		auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 		auto menu = rootWM->GetMWProxy (0)->GetMainMenu ();
 
 		QMenu *lcMenu = 0;
@@ -141,8 +132,7 @@ namespace Pierre
 		if (!lcMenu->actions ().isEmpty ())
 			MenuBar_->addMenu (lcMenu);
 
-		const auto& actors = Proxy_->GetPluginsManager ()->
-				GetAllCastableRoots<IActionsExporter*> ();
+		const auto& actors = GetProxyHolder ()->GetPluginsManager ()->GetAllCastableRoots<IActionsExporter*> ();
 		for (auto actor : actors)
 			connect (actor,
 					SIGNAL (gotActions (QList<QAction*>, LC::ActionsEmbedPlace)),
@@ -150,7 +140,6 @@ namespace Pierre
 					SLOT (handleGotActions (QList<QAction*>, LC::ActionsEmbedPlace)),
 					Qt::UniqueConnection);
 	}
-}
 }
 
 LC_EXPORT_PLUGIN (leechcraft_pierre, LC::Pierre::Plugin);

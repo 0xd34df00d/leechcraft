@@ -70,16 +70,8 @@
 
 static WindowObserver *observer = nil;
 
-static bool SupportsFSImpl ()
-{
-	return QSysInfo::MacintoshVersion >= QSysInfo::MV_LION;
-}
-
 static void AddActionImpl (QMainWindow *window)
 {
-	if (!SupportsFSImpl ())
-		return;
-
 	NSView *nsview = (NSView *) window->winId();
 	NSWindow *nswindow = [nsview window];
 	[nswindow setCollectionBehavior:NSWindowCollectionBehaviorFullScreenPrimary];
@@ -95,25 +87,13 @@ static void AddActionImpl (QMainWindow *window)
 
 static void ToggleImpl (QMainWindow *window)
 {
-	if (!SupportsFSImpl ())
-		return;
-
 	NSView *nsview = (NSView *) window->winId();
 	NSWindow *nswindow = [nsview window];
 	[nswindow performSelector:@selector(toggleFullScreen:) withObject: nil];
 }
 
-namespace LeechCraft
+namespace LC::Pierre::FS
 {
-namespace Pierre
-{
-namespace FS
-{
-	bool SupportsFS ()
-	{
-		return SupportsFSImpl ();
-	}
-
 	void AddAction (QMainWindow *w)
 	{
 		AddActionImpl (w);
@@ -123,6 +103,4 @@ namespace FS
 	{
 		ToggleImpl (w);
 	}
-}
-}
 }

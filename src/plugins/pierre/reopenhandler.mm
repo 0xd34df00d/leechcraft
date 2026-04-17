@@ -6,18 +6,7 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/imwproxy.h>
 
-
-namespace
-{
-	static void dockClickHandler(id, SEL)
-	{
-		LeechCraft::Pierre::ReopenHandler::Instance ().Triggered ();
-	}
-}
-
-namespace LeechCraft
-{
-namespace Pierre
+namespace LC::Pierre
 {
 	ReopenHandler::ReopenHandler ()
 	{
@@ -25,7 +14,8 @@ namespace Pierre
 
 		SEL sel = @selector (applicationShouldHandleReopen:hasVisibleWindows:);
 		Method m0 = class_getInstanceMethod (cls, sel);
-		if (!class_addMethod (cls, sel, (IMP) dockClickHandler, method_getTypeEncoding(m0)))
+		const auto handler = [] (id, SEL) { ReopenHandler::Instance ().Triggered (); };
+		if (!class_addMethod (cls, sel, (IMP) +handler, method_getTypeEncoding(m0)))
 			qWarning () << Q_FUNC_INFO << "class_addMethod() failed.";
 	}
 
@@ -35,20 +25,14 @@ namespace Pierre
 		return instance;
 	}
 
-	void ReopenHandler::SetCoreProxy (const ICoreProxy_ptr& proxy)
-	{
-		Proxy_ = proxy;
-	}
-
 	void ReopenHandler::Triggered ()
 	{
-		IRootWindowsManager * const rootWM = Proxy_->GetRootWindowsManager ();
+		const auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 
 		for (int i = 0; i < rootWM->GetWindowsCount (); ++i)
 		{
-			IMWProxy * const mwProxy = rootWM->GetMWProxy (i);
+			const auto mwProxy = rootWM->GetMWProxy (i);
 			mwProxy->ShowMain ();
 		}
 	}
-}
 }
