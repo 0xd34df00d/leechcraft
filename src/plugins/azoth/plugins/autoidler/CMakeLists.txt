@@ -20,7 +20,7 @@ LC_DEFINE_PLUGIN (
 	SETTINGS azothautoidlersettings.xml
 	QT_COMPONENTS Widgets
 	LINK_LIBRARIES
-		$<$<PLATFORM_ID:Darwin>:"-framework ApplicationServices">
+		"$<$<PLATFORM_ID:Darwin>:-framework ApplicationServices>"
 		${X11_XSS_LIB}
 	INSTALL_SHARE
 	)
