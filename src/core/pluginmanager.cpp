@@ -435,6 +435,8 @@ namespace LC
 						<< "caught unknown exception";
 				return obj;
 			}
+
+			QCoreApplication::processEvents (QEventLoop::ExcludeUserInputEvents);
 		}
 
 		return 0;
