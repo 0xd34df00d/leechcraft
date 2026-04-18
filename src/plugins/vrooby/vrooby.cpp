@@ -66,19 +66,19 @@ namespace LC::Vrooby
 		Backend_ = result.Selected_;
 
 		if (!Backend_)
-		{
 			qWarning () << "no backends are available";
-			const auto& e = Util::MakeNotification ("Vrooby",
-					tr ("No backends are available, tried the following: %1.").arg (result.Attempted_.join ("; ")),
-					Priority::Critical);
-			QTimer::singleShot (0, this, [e] { GetProxyHolder ()->GetEntityManager ()->HandleEntity (e); });
-		}
 	}
 
 	void Plugin::SecondInit ()
 	{
 		if (!Backend_)
+		{
+			const auto& e = Util::MakeNotification ("Vrooby",
+					tr ("No removable device management backends are available."),
+					Priority::Critical);
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 			return;
+		}
 
 		Backend_->Start ();
 
