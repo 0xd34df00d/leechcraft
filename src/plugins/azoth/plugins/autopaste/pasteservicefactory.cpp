@@ -8,7 +8,6 @@
 
 #include "pasteservicefactory.h"
 #include <QIcon>
-#include "codepadservice.h"
 #include "bpasteservice.h"
 #include "hastebinservice.h"
 #include "pasteorgruservice.h"
@@ -27,7 +26,6 @@ namespace LC::Azoth::Autopaste
 	PasteServiceFactory::PasteServiceFactory ()
 	{
 		Infos_.push_back ({ "bpaste.net", QIcon (), &Creator<BPasteService> });
-		Infos_.push_back ({ "codepad.org", QIcon (), &Creator<CodepadService> });
 		Infos_.push_back ({ "paste.org.ru", QIcon (), &Creator<PasteOrgRuService> });
 		Infos_.push_back ({ "hastebin.com", QIcon (), &Creator<HastebinService> });
 	}

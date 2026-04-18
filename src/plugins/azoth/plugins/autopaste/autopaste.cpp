@@ -21,7 +21,6 @@
 #include <interfaces/azoth/iaccount.h>
 #include <util/azoth/hooks.h>
 #include "xmlsettingsmanager.h"
-#include "codepadservice.h"
 #include "pastedialog.h"
 #include "actionsstorage.h"
 
