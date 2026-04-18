@@ -37,15 +37,8 @@
 #include <mach/processor_info.h>
 #include <mach/mach_host.h>
 
-namespace LeechCraft
+namespace LC::CpuLoad
 {
-namespace CpuLoad
-{
-	MacBackend::MacBackend (QObject *parent)
-	: Backend { parent }
-	{
-	}
-
 	void MacBackend::Update ()
 	{
 		UpdateCpuCount ();
@@ -66,8 +59,8 @@ namespace CpuLoad
 		const auto& map = Loads_.at (cpu);
 		const auto& prev = PrevLoads_.at (cpu);
 
-		const auto sum = std::accumulate (map.begin (), map.end (), 0);
-		const auto prevSum = std::accumulate (prev.begin (), prev.end (), 0);
+		const auto sum = std::accumulate (map.begin (), map.end (), 0.);
+		const auto prevSum = std::accumulate (prev.begin (), prev.end (), 0.);
 
 		QMap<LoadPriority, LoadTypeInfo> result;
 		for (auto i = map.begin (); i != map.end (); ++i)
@@ -126,5 +119,4 @@ namespace CpuLoad
 			add (LoadPriority::Idle, CPU_STATE_IDLE);
 		}
 	}
-}
 }

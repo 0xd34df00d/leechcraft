@@ -11,9 +11,7 @@
 #include "backend.h"
 #include <QVector>
 
-namespace LC
-{
-namespace CpuLoad
+namespace LC::CpuLoad
 {
 	class MacBackend : public Backend
 	{
@@ -21,15 +19,14 @@ namespace CpuLoad
 
 		QVector<QMap<LoadPriority, double>> PrevLoads_,  Loads_;
 	public:
-		MacBackend (QObject* = nullptr);
+		using Backend::Backend;
 
-		void Update ();
+		void Update () override;
 
-		int GetCpuCount () const;
-		QMap<LoadPriority, LoadTypeInfo> GetLoads (int cpu) const;
+		int GetCpuCount () const override;
+		QMap<LoadPriority, LoadTypeInfo> GetLoads (int cpu) const override;
 	private:
 		void UpdateCpuCount ();
 		void UpdateLoads ();
 	};
-}
 }
