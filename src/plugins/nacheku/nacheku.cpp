@@ -18,19 +18,17 @@ namespace LC
 {
 namespace Nacheku
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "nachekusettings.xml");
-
-		const auto iem = proxy->GetEntityManager ();
-
-		new DirectoryWatcher { iem, this };
-		new ClipboardWatcher { iem, this };
 	}
 
 	void Plugin::SecondInit ()
 	{
+		const auto iem = GetProxyHolder ()->GetEntityManager ();
+		new DirectoryWatcher { iem, this };
+		new ClipboardWatcher { iem, this };
 	}
 
 	QByteArray Plugin::GetUniqueID () const
