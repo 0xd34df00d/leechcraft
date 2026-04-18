@@ -31,20 +31,15 @@ namespace LC::Vrooby
 		template<DevBackendType... Backends>
 		auto SelectBackend ()
 		{
-			struct Result
-			{
-				QStringList Attempted_;
-				std::shared_ptr<DevBackend> Selected_;
-			};
-			Result result;
+			std::shared_ptr<DevBackend> result;
 
 			(([&]
 			{
-				result.Attempted_ << Backends::GetBackendName ();
+				qDebug () << "checking" << Backends::GetBackendName ();
 				if (!Backends::IsAvailable ())
 					return false;
 
-				result.Selected_ = std::make_shared<Backends> ();
+				result = std::make_shared<Backends> ();
 				qDebug () << "selecting" << Backends::GetBackendName ();
 				return true;
 			} ()) || ...);
@@ -58,21 +53,18 @@ namespace LC::Vrooby
 		TrayView_ = new TrayView ();
 		new Util::UnhoverDeleteMixin (TrayView_, SLOT (hide ()));
 
-		const auto& result = SelectBackend<
+		Backend_ = SelectBackend<
 #if !defined(Q_OS_MAC) && !defined(Q_OS_WIN)
 				UDisks2::Backend
 #endif
 				> ();
-		Backend_ = result.Selected_;
-
-		if (!Backend_)
-			qWarning () << "no backends are available";
 	}
 
 	void Plugin::SecondInit ()
 	{
 		if (!Backend_)
 		{
+			qWarning () << "no backends are available";
 			const auto& e = Util::MakeNotification ("Vrooby",
 					tr ("No removable device management backends are available."),
 					Priority::Critical);
