@@ -8,7 +8,6 @@ LC_DEFINE_PLUGIN (
 		autopaste.cpp
 		highlight2str.cpp
 		bpasteservice.cpp
-		hastebinservice.cpp
 		pasteorgruservice.cpp
 		spacepasteservicebase.cpp
 		pastedialog.cpp
