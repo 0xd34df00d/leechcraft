@@ -19,9 +19,6 @@ LC_DEFINE_PLUGIN (
 		lastfmradiotuner.cpp
 		recentreleasesfetcher.cpp
 		pendingartistbio.cpp
-		receventsfetcher.cpp
-		eventsfetchaggregator.cpp
-		eventattendmarker.cpp
 		hypedartistsfetcher.cpp
 		hypedtracksfetcher.cpp
 		imagesfetcher.cpp

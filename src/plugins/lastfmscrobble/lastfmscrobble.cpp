@@ -25,9 +25,6 @@
 #include "lastfmradiostation.h"
 #include "recentreleasesfetcher.h"
 #include "pendingartistbio.h"
-#include "receventsfetcher.h"
-#include "eventsfetchaggregator.h"
-#include "eventattendmarker.h"
 #include "hypedartistsfetcher.h"
 #include "hypedtracksfetcher.h"
 
@@ -212,26 +209,6 @@ namespace Lastfmscrobble
 		return (new PendingArtistBio (artist, Proxy_->GetNetworkAccessManager (), addImages, this))->GetFuture ();
 	}
 
-	QFuture<Plugin::EventsQueryResult_t> Plugin::UpdateRecommendedEvents ()
-	{
-		auto nam = Proxy_->GetNetworkAccessManager ();
-
-		auto aggregator = new EventsFetchAggregator (this);
-		aggregator->AddFetcher (new RecEventsFetcher (Auth_, nam, RecEventsFetcher::Type::Recommended, this));
-		aggregator->AddFetcher (new RecEventsFetcher (Auth_, nam, RecEventsFetcher::Type::Attending, this));
-		return aggregator->GetFuture ();
-	}
-
-	void Plugin::AttendEvent (qint64 id, Media::EventAttendType type)
-	{
-		auto nam = Proxy_->GetNetworkAccessManager ();
-		auto attendMarker = new EventAttendMarker (Auth_, nam, id, type, this);
-		connect (attendMarker,
-				SIGNAL (finished ()),
-				this,
-				SLOT (reloadRecommendedEvents ()));
-	}
-
 	bool Plugin::SupportsHype (HypeType type)
 	{
 		switch (type)
@@ -261,11 +238,6 @@ namespace Lastfmscrobble
 		}
 
 		Util::Unreachable ();
-	}
-
-	void Plugin::reloadRecommendedEvents ()
-	{
-		UpdateRecommendedEvents ();
 	}
 }
 }

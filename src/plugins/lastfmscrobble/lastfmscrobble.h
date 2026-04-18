@@ -18,7 +18,6 @@
 #include <interfaces/media/iradiostationprovider.h>
 #include <interfaces/media/irecentreleases.h>
 #include <interfaces/media/iartistbiofetcher.h>
-#include <interfaces/media/ieventsprovider.h>
 #include <interfaces/media/ihypesprovider.h>
 
 class QStandardItem;
@@ -41,7 +40,6 @@ namespace Lastfmscrobble
 				, public Media::IRadioStationProvider
 				, public Media::IRecentReleases
 				, public Media::IArtistBioFetcher
-				, public Media::IEventsProvider
 				, public Media::IHypesProvider
 	{
 		Q_OBJECT
@@ -54,7 +52,6 @@ namespace Lastfmscrobble
 				Media::IRadioStationProvider
 				Media::IRecentReleases
 				Media::IArtistBioFetcher
-				Media::IEventsProvider
 				Media::IHypesProvider)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.LastFMScrobble")
@@ -101,13 +98,8 @@ namespace Lastfmscrobble
 
 		QFuture<IArtistBioFetcher::Result_t> RequestArtistBio (const QString&, bool);
 
-		QFuture<EventsQueryResult_t> UpdateRecommendedEvents ();
-		void AttendEvent (qint64, Media::EventAttendType);
-
 		bool SupportsHype (HypeType);
 		QFuture<HypeQueryResult_t> RequestHype (HypeType);
-	private slots:
-		void reloadRecommendedEvents ();
 	};
 }
 }
