@@ -41,13 +41,17 @@ namespace LC::Aggregator
 
 	void ItemsFilterModel::SetHideRead (bool hide)
 	{
-		HideRead_ = hide;
 		XmlSettingsManager::Instance ().setProperty ("HideReadItems", hide);
-		invalidate ();
+
+		beginFilterChange ();
+		HideRead_ = hide;
+		endFilterChange (Direction::Rows);
 	}
 
 	void ItemsFilterModel::SetItemTags (QList<ITagsManager::tag_id> tags)
 	{
+		beginFilterChange ();
+
 		if (tags.isEmpty ())
 			TaggedItems_.clear ();
 		else
@@ -64,7 +68,7 @@ namespace LC::Aggregator
 			}
 		}
 
-		invalidate ();
+		endFilterChange (Direction::Rows);
 	}
 
 	void ItemsFilterModel::InvalidateCategorySelection (const QStringList& categoriesList)
