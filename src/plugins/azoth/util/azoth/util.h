@@ -14,4 +14,5 @@
 namespace LC::Azoth
 {
 	AZOTH_UTIL_API bool IsOnline (State);
+	AZOTH_UTIL_API QString StateToString (State);
 }

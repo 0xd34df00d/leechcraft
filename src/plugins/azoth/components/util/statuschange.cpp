@@ -13,7 +13,7 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include "interfaces/azoth/iaccount.h"
 #include "components/dialogs/setstatusdialog.h"
-#include "gui.h"
+#include "util/azoth/util.h"
 #include "../../core.h"
 #include "../../customstatusesmanager.h"
 #include "../../resourcesmanager.h"

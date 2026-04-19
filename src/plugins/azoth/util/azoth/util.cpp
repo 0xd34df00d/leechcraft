@@ -23,4 +23,25 @@ namespace LC::Azoth
 			return true;
 		}
 	}
+
+	QString StateToString (State st)
+	{
+		switch (st)
+		{
+		case SOnline:
+			return QObject::tr ("Online");
+		case SChat:
+			return QObject::tr ("Free to chat");
+		case SAway:
+			return QObject::tr ("Away");
+		case SDND:
+			return QObject::tr ("Do not disturb");
+		case SXA:
+			return QObject::tr ("Not available");
+		case SOffline:
+			return QObject::tr ("Offline");
+		default:
+			return QObject::tr ("Error");
+		}
+	}
 }

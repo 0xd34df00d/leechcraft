@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "setstatusdialog.h"
-#include "components/util/gui.h"
+#include "util/azoth/util.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
 #include "customstatusesmanager.h"

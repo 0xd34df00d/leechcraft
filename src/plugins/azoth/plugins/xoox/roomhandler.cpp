@@ -21,6 +21,7 @@
 #include <util/sll/eithercont.h>
 #include <util/sll/prelude.h>
 #include <util/xpc/passutils.h>
+#include <util/azoth/util.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "glooxaccount.h"
 #include "roomclentry.h"
@@ -142,8 +143,7 @@ namespace Xoox
 
 	void RoomHandler::MakeStatusChangedMessage (const QXmppPresence& pres, const QString& nick)
 	{
-		const auto proxy = Account_->GetParentProtocol ()->GetProxyObject ();
-		const auto& state = proxy->StateToString (static_cast<State> (pres.availableStatusType () + 1));
+		const auto& state = StateToString (static_cast<State> (pres.availableStatusType () + 1));
 		const auto& msg = tr ("%1 changed status to %2 (%3)")
 				.arg (nick)
 				.arg (state)

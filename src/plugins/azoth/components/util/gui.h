@@ -21,5 +21,4 @@ namespace LC::Azoth
 
 	QWidget* GetDialogParent ();
 	QString GetActivityIconName (const QString&, const QString&);
-	QString StateToString (State);
 }

@@ -14,7 +14,7 @@
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
-#include <interfaces/azoth/iproxyobject.h>
+#include <util/azoth/util.h>
 #include "clientconnection.h"
 #include "util.h"
 #include "roomclentry.h"
@@ -234,7 +234,7 @@ namespace Xoox
 		QList<QPair<QString, QString>> options;
 		for (const auto& [rawState, status] : rawOpts)
 		{
-			options << QPair { Proxy_->StateToString (rawState), status };
+			options << QPair { StateToString (rawState), status };
 			if (rawState == state.State_)
 				option = status;
 		}

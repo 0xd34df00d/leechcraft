@@ -213,11 +213,6 @@ namespace LC::Azoth
 				.property ("IsAutojoinAllowed").toBool ();
 	}
 
-	QString ProxyObject::StateToString (State st) const
-	{
-		return Azoth::StateToString (st);
-	}
-
 	QByteArray ProxyObject::AuthStatusToString (AuthStatus status) const
 	{
 		switch (status)

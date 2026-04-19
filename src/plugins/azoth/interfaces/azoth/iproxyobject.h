@@ -199,12 +199,6 @@ namespace Azoth
 		 */
 		virtual bool IsAutojoinAllowed () = 0;
 
-		/** @brief Returns a human-readable string for the given state.
-		 *
-		 * @return Human-readable string describing state.
-		 */
-		virtual QString StateToString (State state) const = 0;
-
 		/** @brief Returns serialized name of the authorization status.
 		 *
 		 * @return Serialized name of the auth status.

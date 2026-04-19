@@ -11,7 +11,7 @@
 #include <QCoreApplication>
 #include <xmlsettingsdialog/datasourceroles.h>
 #include <interfaces/azoth/azothcommon.h>
-#include "components/util/gui.h"
+#include "util/azoth/util.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "resourcesmanager.h"

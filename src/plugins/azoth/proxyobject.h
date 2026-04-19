@@ -53,7 +53,6 @@ namespace Azoth
 		void SetPassword (const QString&, QObject*) override;
 		QString GetAccountPassword (QObject*, bool) override;
 		bool IsAutojoinAllowed () override;
-		QString StateToString (State) const override;
 		QByteArray AuthStatusToString (AuthStatus) const override;
 		AuthStatus AuthStatusFromString (const QByteArray&) const override;
 		QObject* GetAccount (const QString&) const override;
