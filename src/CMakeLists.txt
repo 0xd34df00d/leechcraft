@@ -235,7 +235,6 @@ SUBPLUGIN (SNAILS "Build Snails, LeechCraft mail client" OFF)
 # Dumb alternatives
 SUBPLUGIN (DUMBEEP "Build Dumbeep, a dumb sound notifier for those fearing true LMP power" OFF)
 
-SUBPLUGIN (Y7 "Build Y7, Windows 7 integration plugin" ${WITH_PLUGINS_WINDOWS})
 SUBPLUGIN (LAUNCHY "Build Launchy, third-party application launcher module" ${WITH_PLUGINS_UNIX})
 SUBPLUGIN (PIERRE "Build Pierre, Mac OS X integration layer" ${WITH_PLUGINS_APPLE})
 
