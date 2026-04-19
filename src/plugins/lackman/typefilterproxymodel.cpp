@@ -16,14 +16,14 @@ namespace LackMan
 {
 	TypeFilterProxyModel::TypeFilterProxyModel (QObject *parent)
 	: QSortFilterProxyModel (parent)
-	, Mode_ (FilterMode::All)
 	{
 	}
 
 	void TypeFilterProxyModel::SetFilterMode (FilterMode fm)
 	{
+		beginFilterChange ();
 		Mode_ = fm;
-		invalidateFilter ();
+		endFilterChange (Direction::Rows);
 	}
 
 	bool TypeFilterProxyModel::filterAcceptsRow (int row, const QModelIndex& parent) const

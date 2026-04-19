@@ -26,7 +26,7 @@ namespace LackMan
 			NotInstalled
 		};
 	private:
-		FilterMode Mode_;
+		FilterMode Mode_ = FilterMode::All;
 	public:
 		TypeFilterProxyModel (QObject* = 0);
 
