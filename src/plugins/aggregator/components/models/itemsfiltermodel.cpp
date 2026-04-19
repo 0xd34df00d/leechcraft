@@ -73,8 +73,9 @@ namespace LC::Aggregator
 		if (categories == ItemCategories_)
 			return;
 
+		beginFilterChange ();
 		ItemCategories_ = std::move (categories);
-		invalidateFilter ();
+		endFilterChange (Direction::Rows);
 	}
 
 	void ItemsFilterModel::InvalidateItemsSelection (const QSet<IDType_t>& selections)
