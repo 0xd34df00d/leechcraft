@@ -205,7 +205,6 @@ SUBPLUGIN (KBSWITCH "Build KBSwitch, a keyboard plugin" ${WITH_PLUGINS_UNIX_FREE
 SUBPLUGIN (KRIGSTASK "Build Krigstask, applications switcher" ${WITH_PLUGINS_UNIX_FREE})
 SUBPLUGIN (KOVROGRUZ "Build Kovrogruz for fetching album art from various services" ${WITH_PLUGINS})
 SUBPLUGIN (LACKMAN "Build LackMan, the package manager for LeechCraft" ${WITH_PLUGINS})
-SUBPLUGIN (LADS "Build Lads, Ubuntu Unity integration layer" OFF)
 SUBPLUGIN (LASTFMSCROBBLE "Build Last.fm client plugin" ${WITH_PLUGINS})
 SUBPLUGIN (LAUGHTY "Build Desktop Notifications server" ${WITH_PLUGINS_UNIX_FREE})
 SUBPLUGIN (LEMON "Build LeechCraft Network Monitor" ${WITH_PLUGINS})
