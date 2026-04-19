@@ -239,9 +239,6 @@ SUBPLUGIN (Y7 "Build Y7, Windows 7 integration plugin" ${WITH_PLUGINS_WINDOWS})
 SUBPLUGIN (LAUNCHY "Build Launchy, third-party application launcher module" ${WITH_PLUGINS_UNIX})
 SUBPLUGIN (PIERRE "Build Pierre, Mac OS X integration layer" ${WITH_PLUGINS_APPLE})
 
-# Defunct
-SUBPLUGIN (OTZERKALU "Build Otzerkalu, which allows one to download web sites recursively" OFF)
-
 if (NOT DEFINED LEECHCRAFT_VERSION)
 	find_program (GIT_CMD git)
 	execute_process (COMMAND "${GIT_CMD}" "--git-dir=${CMAKE_CURRENT_SOURCE_DIR}/../.git" describe
