@@ -17,8 +17,9 @@ namespace LC::BitTorrent
 {
 	void TabViewProxyModel::SetStateFilterMode (int mode)
 	{
+		beginFilterChange ();
 		StateFilter_ = static_cast<StateFilterMode> (mode);
-		invalidateFilter ();
+		endFilterChange (Direction::Rows);
 	}
 
 	bool TabViewProxyModel::filterAcceptsRow (int row, const QModelIndex&) const
