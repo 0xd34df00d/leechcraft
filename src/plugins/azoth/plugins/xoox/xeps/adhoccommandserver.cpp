@@ -35,9 +35,8 @@ namespace Xoox
 
 	const QString NodeAddTask = "http://leechcraft.org/plugins-azoth-xoox#add-task";
 
-	AdHocCommandServer::AdHocCommandServer (ClientConnection *conn, IProxyObject *proxy)
+	AdHocCommandServer::AdHocCommandServer (ClientConnection *conn)
 	: Conn_ { conn }
-	, Proxy_ { proxy }
 	{
 		const QString& jid = Conn_->GetOurJID ();
 

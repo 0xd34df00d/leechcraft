@@ -153,7 +153,7 @@ namespace Xoox
 		Client_->addExtension (PubSubManager_);
 		Client_->addExtension (MUCManager_);
 		Client_->addExtension (PrivacyListsManager_);
-		Client_->addExtension (new AdHocCommandServer (this, proxy));
+		Client_->addExtension (new AdHocCommandServer (this));
 		Client_->addExtension (Xep0313Manager_);
 		Client_->addExtension (CarbonsManager_);
 

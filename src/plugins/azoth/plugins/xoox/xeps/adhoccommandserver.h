@@ -20,8 +20,6 @@ namespace LC
 {
 namespace Azoth
 {
-class IProxyObject;
-
 namespace Xoox
 {
 	class ClientConnection;
@@ -31,7 +29,6 @@ namespace Xoox
 		Q_OBJECT
 
 		ClientConnection * const Conn_;
-		IProxyObject * const Proxy_;
 
 		QMap<QString, QXmppDiscoItem> XEP0146Items_;
 
@@ -42,7 +39,7 @@ namespace Xoox
 
 		QMap<QString, QStringList> PendingSessions_;
 	public:
-		AdHocCommandServer (ClientConnection*, IProxyObject*);
+		explicit AdHocCommandServer (ClientConnection*);
 
 		bool handleStanza (const QDomElement&);
 	private:
