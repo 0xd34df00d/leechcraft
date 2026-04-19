@@ -44,6 +44,8 @@ add_util_library (azoth-util
 	USES Widgets
 	)
 
+target_include_directories (leechcraft-azoth-util PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+
 LC_DEFINE_PLUGIN (
 	SRCS
 		components/chat/callchatwidget.cpp
