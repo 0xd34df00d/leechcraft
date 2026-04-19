@@ -96,6 +96,9 @@ namespace Azoth
 			case SOffline:
 				iconName = "offline";
 				break;
+			case SInvisible:
+				iconName = "invisible";
+				break;
 			case SConnecting:
 				iconName = "connect";
 				break;
