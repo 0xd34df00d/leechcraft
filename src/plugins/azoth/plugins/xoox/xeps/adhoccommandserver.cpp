@@ -210,6 +210,36 @@ namespace Xoox
 		Conn_->GetClient ()->sendPacket (iq);
 	}
 
+	namespace
+	{
+		const auto& GetStr2State ()
+		{
+			static QMap<QString, State> str2state
+			{
+				{ "chat", SChat },
+				{ "online", SOnline },
+				{ "away", SAway },
+				{ "xa", SXA },
+				{ "dnd", SDND },
+				{ "invisible", SInvisible },
+				{ "offline", SOffline },
+			};
+			return str2state;
+		}
+
+		const auto& GetStrStatePairs ()
+		{
+			static const auto pairs = []
+			{
+				const auto& str2state = GetStr2State ().asKeyValueRange ();
+				QList<QPair<QString, State>> pairs { str2state.begin (), str2state.end () };
+				std::ranges::sort (pairs, &IsLess, &QPair<QString, State>::second);
+				return pairs;
+			} ();
+			return pairs;
+		}
+	}
+
 	void AdHocCommandServer::ChangeStatusInfo (const QDomElement& sourceElem)
 	{
 		QList<QXmppDataForm::Field> fields;
@@ -221,18 +251,9 @@ namespace Xoox
 
 		const GlooxAccountState& state = Conn_->GetLastState ();
 
-		QList<QPair<State, QString>> rawOpts;
-		rawOpts << qMakePair<State, QString> (SChat, "chat");
-		rawOpts << qMakePair<State, QString> (SOnline, "online");
-		rawOpts << qMakePair<State, QString> (SAway, "away");
-		rawOpts << qMakePair<State, QString> (SXA, "xa");
-		rawOpts << qMakePair<State, QString> (SDND, "dnd");
-		rawOpts << qMakePair<State, QString> (SInvisible, "invisible");
-		rawOpts << qMakePair<State, QString> (SOffline, "offline");
-
 		QString option;
 		QList<QPair<QString, QString>> options;
-		for (const auto& [rawState, status] : rawOpts)
+		for (const auto& [status, rawState] : GetStrStatePairs ())
 		{
 			options << QPair { StateToString (rawState), status };
 			if (rawState == state.State_)
@@ -265,24 +286,6 @@ namespace Xoox
 		form.setFields (fields);
 
 		Send (form, sourceElem, NodeChangeStatus);
-	}
-
-	namespace
-	{
-		const auto& GetStr2State ()
-		{
-			static QMap<QString, State> str2state
-			{
-				{ "chat", SChat },
-				{ "online", SOnline },
-				{ "away", SAway },
-				{ "xa", SXA },
-				{ "dnd", SDND },
-				{ "invisible", SInvisible },
-				{ "offline", SOffline }
-			};
-			return str2state;
-		}
 	}
 
 	void AdHocCommandServer::ChangeStatusSubmitted (const QDomElement& sourceElem,
