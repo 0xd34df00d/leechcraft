@@ -119,6 +119,7 @@
       "cacheVariables": {
         "STRICT_LICENSING": "True",
         "ENABLE_LASTFMSCROBBLE": "False",
+        "ENABLE_AZOTH_VELVETBIRD": "False",
         "WITH_QWT": "False",
         "ENABLE_LEMON": "False",
         "ENABLE_LIZNOO": "False",

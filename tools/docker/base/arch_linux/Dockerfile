@@ -24,7 +24,6 @@ RUN pacman -Syu --noconfirm && \
         qxmpp \
         qca-qt6 \
         libotr \
-        libpurple \
         toxcore \
         hunspell \
         taglib \
