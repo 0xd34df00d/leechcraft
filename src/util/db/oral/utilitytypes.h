@@ -79,7 +79,14 @@ namespace LC::Util::oral
 		}
 	};
 
-	template<typename Enum, std::pair<Enum, char>... Chars>
+	template<typename Fst, typename Snd>
+	struct NttpPair
+	{
+		Fst first;
+		Snd second;
+	};
+
+	template<typename Enum, NttpPair<Enum, char>... Chars>
 		requires std::is_enum_v<Enum>
 	struct ConvertEnum
 	{
