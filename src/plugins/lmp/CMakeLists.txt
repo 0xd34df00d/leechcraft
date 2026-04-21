@@ -147,7 +147,6 @@ SUBPLUGIN (DUMBSYNC "Enable DumbSync for syncing with USB mass storage-based med
 SUBPLUGIN (FRADJ "Enable Fradj for multiband configurable equalizer" ON)
 SUBPLUGIN (GRAFFITI "Enable Graffiti for manipulating audio file tags" ON)
 SUBPLUGIN (HTTSTREAM "Enable HttStream for streaming music from LMP via HTTP" ON)
-SUBPLUGIN (MP3TUNES "Enable plugin for syncing and using the mp3tunes.com service" ON)
 SUBPLUGIN (MTPSYNC "Enable plugin for syncing with MTP devices" OFF)
 SUBPLUGIN (POTORCHU "Enable visualization effects plugin" OFF)
 SUBPLUGIN (PPL "Enable Portable Player Logging support" ON)
