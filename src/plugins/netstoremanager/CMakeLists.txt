@@ -35,4 +35,3 @@ LC_DEFINE_PLUGIN (
 	)
 
 SUBPLUGIN (GOOGLEDRIVE "Build support for Google Drive")
-SUBPLUGIN (DROPBOX "Build support for DropBox")
