@@ -234,36 +234,19 @@ namespace Popishu
 		return TC_;
 	}
 
-	QByteArray EditorPage::GetTabRecoverData () const
+	std::optional<TabSaveInfo> EditorPage::GetTabSaveInfo () const
 	{
-		QByteArray result;
+		TabSaveInfo info { .Name_ = Filename_.isEmpty () ? "Popishu" : QFileInfo { Filename_ }.fileName () };
 
-		{
-			QDataStream ostr (&result, QIODevice::WriteOnly);
-			ostr << QByteArray { "EditorPage/1" }
-					<< Filename_;
+		QDataStream ostr (&info.Data_, QIODevice::WriteOnly);
+		ostr << QByteArray { "EditorPage/1" } << Filename_;
+		ostr << (Modified_ ? Ui_.TextEditor_->text () : QString ());
 
-			ostr << (Modified_ ? Ui_.TextEditor_->text () : QString ());
+		qint32 line = 0, index = 0;
+		Ui_.TextEditor_->getCursorPosition (&line, &index);
+		ostr << line << index;
 
-			qint32 line = 0, index = 0;
-			Ui_.TextEditor_->getCursorPosition (&line, &index);
-
-			ostr << line << index;
-		}
-
-		return result;
-	}
-
-	QIcon EditorPage::GetTabRecoverIcon () const
-	{
-		return GetTabClassInfo ().Icon_;
-	}
-
-	QString EditorPage::GetTabRecoverName () const
-	{
-		return Filename_.isEmpty () ?
-				"Popishu" :
-				QFileInfo { Filename_ }.fileName ();
+		return info;
 	}
 
 	void EditorPage::RestoreState (QDataStream& istr)

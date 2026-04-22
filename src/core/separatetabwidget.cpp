@@ -857,13 +857,13 @@ namespace LC
 			return;
 		}
 
-		const auto& data = irt->GetTabRecoverData ();
+		const auto& saveInfo = irt->GetTabSaveInfo ();
 
 		QList<QPair<QByteArray, QVariant>> props;
 		for (const auto& name : widget->dynamicPropertyNames ())
 			if (name.startsWith ("SessionData/"))
 				props.append ({ name, widget->property (name) });
 
-		ihrt->RecoverTabs ({ { data, props } });
+		ihrt->RecoverTabs ({ { saveInfo.value_or ({}).Data_, props } });
 	}
 }

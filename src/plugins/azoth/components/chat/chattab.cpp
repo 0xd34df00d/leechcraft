@@ -365,14 +365,15 @@ namespace Azoth
 		IsCurrent_ = false;
 	}
 
-	QByteArray ChatTab::GetTabRecoverData () const
+	std::optional<TabSaveInfo> ChatTab::GetTabSaveInfo () const
 	{
-		QByteArray result;
-		auto entry = GetEntry<ICLEntry> ();
+		const auto entry = GetEntry<ICLEntry> ();
 		if (!entry)
-			return result;
+			return {};
 
-		QDataStream stream (&result, QIODevice::WriteOnly);
+		TabSaveInfo info { .Name_ = tr ("Chat with %1.").arg (entry->GetEntryName ()), .Icon_ = QPixmap::fromImage (LastAvatar_) };
+
+		QDataStream stream (&info.Data_, QIODevice::WriteOnly);
 		if (entry->GetEntryType () == ICLEntry::EntryType::MUC &&
 				GetEntry<IMUCEntry> ())
 			stream << QByteArray ("muctab2")
@@ -386,23 +387,7 @@ namespace Azoth
 
 		stream << Ui_.MsgEdit_->toPlainText ();
 
-		return result;
-	}
-
-	QString ChatTab::GetTabRecoverName () const
-	{
-		auto entry = GetEntry<ICLEntry> ();
-		return entry ?
-				tr ("Chat with %1.")
-					.arg (entry->GetEntryName ()) :
-				GetTabClassInfo ().VisibleName_;
-	}
-
-	QIcon ChatTab::GetTabRecoverIcon () const
-	{
-		return LastAvatar_.isNull () ?
-				GetTabClassInfo ().Icon_ :
-				QPixmap::fromImage (LastAvatar_);
+		return info;
 	}
 
 	void ChatTab::FillMimeData (QMimeData *data)

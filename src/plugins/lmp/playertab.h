@@ -71,9 +71,7 @@ namespace LMP
 
 		Player* GetPlayer () const;
 
-		QByteArray GetTabRecoverData () const;
-		QIcon GetTabRecoverIcon () const;
-		QString GetTabRecoverName () const;
+		std::optional<TabSaveInfo> GetTabSaveInfo () const;
 
 		void AddNPTab (const QString&, QWidget*);
 

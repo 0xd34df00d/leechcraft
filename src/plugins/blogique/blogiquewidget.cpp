@@ -228,20 +228,16 @@ namespace Blogique
 		S_ParentMultiTabs_ = tab;
 	}
 
-	QByteArray BlogiqueWidget::GetTabRecoverData () const
+	std::optional<TabSaveInfo> BlogiqueWidget::GetTabSaveInfo () const
 	{
-		QByteArray result;
-		auto entry = GetCurrentEntry ();
+		const auto entry = GetCurrentEntry ();
 		if (entry.IsEmpty ())
-			return result;
+			return {};
 
-		QByteArray accId;
-		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
-		if (acc)
-			accId = acc->GetAccountID ();
-
-		QDataStream stream (&result, QIODevice::WriteOnly);
-		stream << qint64 (1)
+		TabSaveInfo info { .Name_ = entry.Subject_.isEmpty () ? tr ("No subject") : entry.Subject_ };
+		const auto acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		QDataStream stream (&info.Data_, QIODevice::WriteOnly);
+		stream << static_cast<qint64> (1)
 				<< entry.Subject_
 				<< entry.Content_
 				<< entry.Date_
@@ -249,21 +245,8 @@ namespace Blogique
 				<< entry.Target_
 				<< entry.PostOptions_
 				<< entry.CustomData_
-				<< accId;
-
-		return result;
-	}
-
-	QString BlogiqueWidget::GetTabRecoverName () const
-	{
-		return !Ui_.Subject_->text ().isEmpty () ?
-			Ui_.Subject_->text () :
-			tr ("No subject");
-	}
-
-	QIcon BlogiqueWidget::GetTabRecoverIcon () const
-	{
-		return Core::Instance ().GetIcon ();
+				<< (acc ? acc->GetAccountID () : QByteArray {});
+		return info;
 	}
 
 	void BlogiqueWidget::SetTextEditor ()

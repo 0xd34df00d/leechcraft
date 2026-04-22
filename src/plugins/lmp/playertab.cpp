@@ -167,19 +167,9 @@ namespace LMP
 		return Player_;
 	}
 
-	QByteArray PlayerTab::GetTabRecoverData () const
+	std::optional<TabSaveInfo> PlayerTab::GetTabSaveInfo () const
 	{
-		return "playertab";
-	}
-
-	QIcon PlayerTab::GetTabRecoverIcon () const
-	{
-		return QIcon ("lcicons:/lmp/resources/images/lmp.svg");
-	}
-
-	QString PlayerTab::GetTabRecoverName () const
-	{
-		return "LMP";
+		return { { .Data_ = "playertab", .Name_ = "LMP", .Icon_ { "lcicons:/lmp/resources/images/lmp.svg" } } };
 	}
 
 	void PlayerTab::AddNPTab (const QString& tabName, QWidget *widget)

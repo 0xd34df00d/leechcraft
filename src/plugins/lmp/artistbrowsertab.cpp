@@ -92,29 +92,16 @@ namespace LC::LMP
 		return nullptr;
 	}
 
-	QByteArray ArtistBrowserTab::GetTabRecoverData () const
+	std::optional<TabSaveInfo> ArtistBrowserTab::GetTabSaveInfo () const
 	{
 		const auto& artist = Ui_.ArtistNameEdit_->text ();
 		if (artist.isEmpty ())
 			return {};
 
-		QByteArray result;
-		QDataStream stream (&result, QIODevice::WriteOnly);
+		TabSaveInfo info { .Name_ = GetTabName () };
+		QDataStream stream (&info.Data_, QIODevice::WriteOnly);
 		stream << "artistbrowser"_qba << artist;
-		return result;
-	}
-
-	QIcon ArtistBrowserTab::GetTabRecoverIcon () const
-	{
-		return GetStaticTabClass ().Icon_;
-	}
-
-	QString ArtistBrowserTab::GetTabRecoverName () const
-	{
-		const auto& artist = Ui_.ArtistNameEdit_->text ();
-		return artist.isEmpty () ?
-				GetStaticTabClass ().VisibleName_ :
-				tr ("%1 — artist browser").arg (artist);
+		return info;
 	}
 
 	void ArtistBrowserTab::DoQueries (const QString& artist)
@@ -138,7 +125,13 @@ namespace LC::LMP
 
 		BioMgr_->Request (provs.first (), artist, {});
 
-		emit changeTabName (GetTabRecoverName ());
+		emit changeTabName (GetTabName ());
 		emit tabRecoverDataChanged ();
+	}
+
+	QString ArtistBrowserTab::GetTabName () const
+	{
+		const auto& artist = Ui_.ArtistNameEdit_->text ();
+		return tr ("%1 — artist browser").arg (artist);
 	}
 }

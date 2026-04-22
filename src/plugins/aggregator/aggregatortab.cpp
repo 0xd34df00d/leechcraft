@@ -130,19 +130,9 @@ namespace LC::Aggregator
 		emit removeTab ();
 	}
 
-	QByteArray AggregatorTab::GetTabRecoverData () const
+	std::optional<TabSaveInfo> AggregatorTab::GetTabSaveInfo () const
 	{
-		return "aggregatortab";
-	}
-
-	QIcon AggregatorTab::GetTabRecoverIcon () const
-	{
-		return TabClass_.Icon_;
-	}
-
-	QString AggregatorTab::GetTabRecoverName () const
-	{
-		return TabClass_.VisibleName_;
+		return { { .Data_ = "aggregatortab", .Name_ = TabClass_.VisibleName_ } };
 	}
 
 	namespace

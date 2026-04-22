@@ -37,7 +37,7 @@ namespace LC::TabSessManager
 		void HandleRemoveTab (QWidget*);
 	private:
 		void GenericRemoveTab (const RemoveTabParams&);
-		void HandleRemoveRecoverableTab (QWidget*, IRecoverableTab*);
+		void HandleRemoveRecoverableTab (QWidget*, ITabWidget*, IRecoverableTab*);
 		void HandleRemoveSingleTab (QWidget*, ITabWidget*);
 	};
 }

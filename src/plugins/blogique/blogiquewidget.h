@@ -94,9 +94,8 @@ namespace Blogique
 
 		static void SetParentMultiTabs (QObject *tab);
 
-		QByteArray GetTabRecoverData () const;
-		QString GetTabRecoverName () const;
-		QIcon GetTabRecoverIcon () const;
+		std::optional<TabSaveInfo> GetTabSaveInfo () const;
+
 		void FillWidget (const Entry& e, const QByteArray& accId = QByteArray ());
 	private:
 		void SetTextEditor ();

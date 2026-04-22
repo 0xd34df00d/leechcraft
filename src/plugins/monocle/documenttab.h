@@ -99,9 +99,7 @@ namespace Monocle
 		void TabMadeCurrent () override;
 		void TabLostCurrent () override;
 
-		QString GetTabRecoverName () const override;
-		QIcon GetTabRecoverIcon () const override;
-		QByteArray GetTabRecoverData () const override;
+		std::optional<TabSaveInfo> GetTabSaveInfo () const override;
 
 		void FillMimeData (QMimeData*) override;
 		void HandleDragEnter (QDragMoveEvent*) override;

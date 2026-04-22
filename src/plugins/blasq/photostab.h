@@ -75,9 +75,7 @@ namespace Blasq
 		void Remove ();
 		QToolBar* GetToolBar () const;
 
-		QString GetTabRecoverName () const;
-		QIcon GetTabRecoverIcon () const;
-		QByteArray GetTabRecoverData () const;
+		std::optional<TabSaveInfo> GetTabSaveInfo () const;
 
 		void RecoverState (QDataStream&);
 

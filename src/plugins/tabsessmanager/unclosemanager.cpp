@@ -38,7 +38,7 @@ namespace LC::TabSessManager
 			return;
 
 		if (const auto recTab = qobject_cast<IRecoverableTab*> (widget))
-			HandleRemoveRecoverableTab (widget, recTab);
+			HandleRemoveRecoverableTab (widget, tab, recTab);
 		else if (IsGoodSingleTC (tab->GetTabClassInfo ()))
 			HandleRemoveSingleTab (widget, tab);
 	}
@@ -109,16 +109,16 @@ namespace LC::TabSessManager
 		action->setShortcut (QString ("Ctrl+Shift+T"));
 	}
 
-	void UncloseManager::HandleRemoveRecoverableTab (QWidget *widget, IRecoverableTab *recTab)
+	void UncloseManager::HandleRemoveRecoverableTab (QWidget *widget, ITabWidget *tab, IRecoverableTab *recTab)
 	{
-		const auto& recoverData = recTab->GetTabRecoverData ();
-		if (recoverData.isEmpty ())
+		const auto& info = recTab->GetTabSaveInfo ();
+		if (!info)
 			return;
 
 		GenericRemoveTab ({
-				recoverData,
-				recTab->GetTabRecoverName (),
-				recTab->GetTabRecoverIcon (),
+				info->Data_,
+				info->Name_,
+				GetTabIcon (*tab, *info),
 				widget,
 				[] (QObject *plugin, const TabRecoverInfo& info)
 				{

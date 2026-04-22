@@ -143,9 +143,7 @@ namespace Poshuku
 		void HandleDrop (QDropEvent*) override;
 
 		void SetTabRecoverData (const QByteArray&);
-		QByteArray GetTabRecoverData () const override;
-		QString GetTabRecoverName () const override;
-		QIcon GetTabRecoverIcon () const override;
+		std::optional<TabSaveInfo> GetTabSaveInfo () const override;
 
 		void SetFontFamily (FontFamily family, const QFont& font) override;
 		void SetFontSize (FontSize type, int size) override;

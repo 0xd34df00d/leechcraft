@@ -269,26 +269,15 @@ namespace Monocle
 		ScreensaverProhibitor_.SetProhibited (false);
 	}
 
-	QString DocumentTab::GetTabRecoverName () const
-	{
-		return QFileInfo { CurrentDocPath_ }.fileName ();
-	}
-
-	QIcon DocumentTab::GetTabRecoverIcon () const
-	{
-		return TC_.Icon_;
-	}
-
-	QByteArray DocumentTab::GetTabRecoverData () const
+	std::optional<TabSaveInfo> DocumentTab::GetTabSaveInfo () const
 	{
 		if (CurrentDocPath_.isEmpty ())
 			return {};
 
-		QByteArray result;
-		QDataStream out { &result, QIODevice::WriteOnly };
-		out << static_cast<quint8> (2)
-				<< CurrentDocPath_;
-		return result;
+		TabSaveInfo info { .Name_ = QFileInfo { CurrentDocPath_ }.fileName () };
+		QDataStream out { &info.Data_, QIODevice::WriteOnly };
+		out << static_cast<quint8> (2) << CurrentDocPath_;
+		return info;
 	}
 
 	void DocumentTab::FillMimeData (QMimeData *data)

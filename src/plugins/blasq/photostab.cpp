@@ -177,27 +177,17 @@ namespace Blasq
 		return Toolbar_.get ();
 	}
 
-	QString PhotosTab::GetTabRecoverName () const
+	std::optional<TabSaveInfo> PhotosTab::GetTabSaveInfo () const
 	{
-		return CurAcc_ ? ("Blasq: " + CurAcc_->GetName ()) : "Blasq";
-	}
+		TabSaveInfo info { .Name_ = CurAcc_ ? "Blasq: " + CurAcc_->GetName () : "Blasq" };
 
-	QIcon PhotosTab::GetTabRecoverIcon () const
-	{
-		return GetTabClassInfo ().Icon_;
-	}
-
-	QByteArray PhotosTab::GetTabRecoverData () const
-	{
-		QByteArray ba;
-		QDataStream out (&ba, QIODevice::WriteOnly);
+		QDataStream out (&info.Data_, QIODevice::WriteOnly);
 		out << static_cast<quint8> (1)
 				<< GetTabClassInfo ().TabClass_;
-
 		out << (CurAcc_ ? CurAcc_->GetID () : QByteArray ());
 		out << SelectedCollection_;
 
-		return ba;
+		return info;
 	}
 
 	void PhotosTab::RecoverState (QDataStream& in)

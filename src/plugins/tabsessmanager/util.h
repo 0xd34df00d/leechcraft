@@ -11,15 +11,25 @@
 #include <QList>
 #include <QPair>
 
-class QObject;
 class QByteArray;
+class QIcon;
+class QObject;
 class QVariant;
 
 struct TabClassInfo;
+
+class ITabWidget;
+
+namespace LC
+{
+	struct TabSaveInfo;
+}
 
 namespace LC::TabSessManager
 {
 	QList<QPair<QByteArray, QVariant>> GetSessionProps (QObject*);
 
 	bool IsGoodSingleTC (const TabClassInfo&);
+
+	QIcon GetTabIcon (ITabWidget& tab, const TabSaveInfo& info);
 }

@@ -58,9 +58,7 @@ namespace LackMan
 		void Remove ();
 		QToolBar* GetToolBar () const;
 
-		QByteArray GetTabRecoverData () const;
-		QIcon GetTabRecoverIcon () const;
-		QString GetTabRecoverName () const;
+		std::optional<TabSaveInfo> GetTabSaveInfo () const;
 
 		void SetFilterTags (const QStringList&);
 		void SetFilterString (const QString&);

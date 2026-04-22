@@ -147,7 +147,10 @@ namespace Popishu
 
 	void Plugin::AnnouncePage (EditorPage *page)
 	{
-		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (page->GetTabRecoverName (), page);
+		const auto name = page->GetTabSaveInfo ()
+				.transform ([] (const TabSaveInfo& info) { return info.Name_; })
+				.value_or (page->GetTabClassInfo ().VisibleName_);
+		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (name, page);
 	}
 }
 }

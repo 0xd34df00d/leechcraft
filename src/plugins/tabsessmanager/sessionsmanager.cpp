@@ -150,22 +150,18 @@ namespace LC::TabSessManager
 
 	namespace
 	{
-		constexpr auto IconSize = 32;
-
 		void WriteRecoverableTab (QDataStream& str, int windowIndex,
-				QObject *tab, IRecoverableTab *rec, IInfo *plugin)
+				QObject *tabObj, ITabWidget& tab, IRecoverableTab& rec, IInfo *plugin)
 		{
-			const auto& data = rec->GetTabRecoverData ();
-			if (data.isEmpty ())
+			const auto& info = rec.GetTabSaveInfo ();
+			if (!info)
 				return;
 
-			const QIcon forRecover { rec->GetTabRecoverIcon ().pixmap (IconSize, IconSize) };
-
 			str << plugin->GetUniqueID ()
-					<< data
-					<< rec->GetTabRecoverName ()
-					<< forRecover
-					<< GetSessionProps (tab)
+					<< info->Data_
+					<< info->Name_
+					<< GetTabIcon (tab, *info)
+					<< GetSessionProps (tabObj)
 					<< windowIndex;
 		}
 
@@ -175,7 +171,7 @@ namespace LC::TabSessManager
 			str << plugin->GetUniqueID ()
 					<< tc.TabClass_
 					<< tc.VisibleName_
-					<< tc.Icon_.pixmap (IconSize, IconSize)
+					<< tc.Icon_
 					<< GetSessionProps (tab)
 					<< windowIndex;
 		}
@@ -200,7 +196,7 @@ namespace LC::TabSessManager
 					continue;
 
 				if (const auto rec = qobject_cast<IRecoverableTab*> (tab))
-					WriteRecoverableTab (str, windowIndex, tab, rec, plugin);
+					WriteRecoverableTab (str, windowIndex, tab, *tw, *rec, plugin);
 				else
 				{
 					const auto& tc = tw->GetTabClassInfo ();
@@ -328,7 +324,8 @@ namespace LC::TabSessManager
 				if (!tw || !rec)
 					continue;
 
-				plugin2recoveries [tw->ParentMultiTabs ()] << rec->GetTabRecoverData ();
+				if (const auto info = rec->GetTabSaveInfo ())
+					plugin2recoveries [tw->ParentMultiTabs ()] << info->Data_;
 			}
 
 		for (const auto& pair : Util::Stlize (tabs))
@@ -403,7 +400,7 @@ namespace LC::TabSessManager
 
 		widget->installEventFilter (this);
 
-		if (!irt || !irt->GetTabRecoverData ().isEmpty ())
+		if (!irt || irt->GetTabSaveInfo ())
 			handleTabRecoverDataChanged ();
 
 		const auto& posProp = widget->property ("TabSessManager/Position");

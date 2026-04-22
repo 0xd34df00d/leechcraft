@@ -57,9 +57,7 @@ namespace Popishu
 		QObject* ParentMultiTabs () override;
 		TabClassInfo GetTabClassInfo () const override;
 
-		QByteArray GetTabRecoverData () const override;
-		QIcon GetTabRecoverIcon () const override;
-		QString GetTabRecoverName () const override;
+		std::optional<TabSaveInfo> GetTabSaveInfo () const override;
 
 		void RestoreState (QDataStream&);
 

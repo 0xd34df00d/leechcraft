@@ -71,9 +71,7 @@ namespace LC::Aggregator
 		QObject* ParentMultiTabs () override;
 		void Remove () override;
 
-		QByteArray GetTabRecoverData () const override;
-		QIcon GetTabRecoverIcon () const override;
-		QString GetTabRecoverName () const override;
+		std::optional<TabSaveInfo> GetTabSaveInfo () const override;
 	private:
 		bool NavigateChannel (ChannelDirection);
 

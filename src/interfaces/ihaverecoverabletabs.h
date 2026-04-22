@@ -6,14 +6,48 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef INTERFACES_IHAVERECOVERABLETABS_H
-#define INTERFACES_IHAVERECOVERABLETABS_H
-#include <QList>
+#pragma once
+
+#include <optional>
 #include <QByteArray>
+#include <QIcon>
+#include <QList>
 #include <QVariant>
 
 class QWidget;
-class QIcon;
+
+namespace LC
+{
+	struct TabSaveInfo
+	{
+		/** @brief The serialized state of a tab.
+		 *
+		 * This state will later be passed to the
+		 * IHaveRecoverableTabs::RecoverTabs() as the
+		 * LC::TabRecoverInfo::Data_ member.
+		 */
+		QByteArray Data_ {};
+
+		/** @brief The user-readable name of the tab.
+		 *
+		 * The return value of this function will be used in the tab restore
+		 * dialog or tab reopen menu.
+		 *
+		 * For example, a web browser may want to return something like
+		 * "Google — http://google.com".
+		 */
+		QString Name_;
+
+		/** @brief Returns the icon of this tab.
+		 *
+		 * The return value of this function will be used in the tab restore
+		 * dialog or tab reopen menu.
+		 *
+		 * For example, a web browser may want to return web site's favicon.
+		 */
+		QIcon Icon_ {};
+	};
+}
 
 /** @brief Interface for a single tab that may be recovered.
  *
@@ -22,46 +56,26 @@ class QIcon;
  * tab with a web page or a chat window may be recovered either on next
  * LeechCraft start or after being closed.
  *
- * The tab's state should be returned by the GetTabRecoverData()
- * function. Tab name and icon for the restore dialog or menu should be
- * returned by the GetTabRecoverName() and GetTabRecoverIcon() functions
- * respectively. Whenever tab state changes, it should emit the
- * tabRecoverDataChanged() signal to notify tab session managers about
- * the update.
+ * The tab's info is returned by the GetTabSaveInfo() function.
+ * Whenever the tab state changes, it emits the tabRecoverDataChanged()
+ * signal.
  *
  * @sa IHaveRecoverableTabs
  */
 class Q_DECL_EXPORT IRecoverableTab
 {
+protected:
+	virtual ~IRecoverableTab () = default;
 public:
-	virtual ~IRecoverableTab () {}
-
-	/** @brief Returns the serialized state of the tab.
+	/** @brief Returns the tab's save information.
 	 *
-	 * This state will later be passed to the
-	 * IHaveRecoverableTabs::RecoverTabs() as the
-	 * LC::TabRecoverInfo::Data_ member.
+	 * An empty optional means the tab is not worth saving.
+	 *
+	 * @return The tab's save information or an empty optional.
+	 *
+	 * @sa LC::TabSaveInfo
 	 */
-	virtual QByteArray GetTabRecoverData () const = 0;
-
-	/** @brief Returns the user-readable name of the tab.
-	 *
-	 * The return value of this function will be used in the tab restore
-	 * dialog or tab reopen menu.
-	 *
-	 * For example, a web browser may want to return something like
-	 * "Google — http://google.com".
-	 */
-	virtual QString GetTabRecoverName () const = 0;
-
-	/** @brief Returns the icon of this tab.
-	 *
-	 * The return value of this function will be used in the tab restore
-	 * dialog or tab reopen menu.
-	 *
-	 * For example, a web browser may want to return web site's favicon.
-	 */
-	virtual QIcon GetTabRecoverIcon () const = 0;
+	virtual std::optional<LC::TabSaveInfo> GetTabSaveInfo () const = 0;
 protected:
 	/** @brief Notifies that tab state's changed.
 	 *
@@ -156,7 +170,7 @@ public:
 	 * form of the StandardSimilarImpl() function.
 	 *
 	 * @param[in] data The tab recover data previously obtained from
-	 * IRecoverableTab::GetTabRecoverData()
+	 * IRecoverableTab::GetTabSaveInfo()
 	 * @param[in] existing The list of existing tabs, provided for convenience.
 	 * @return Whether the tab similar to the one defined by \em data
 	 * exists already.
@@ -177,7 +191,7 @@ protected:
 	 * @tparam T The type of the functor \em f.
 	 *
 	 * @param[in] data The tab recover data previously obtained from
-	 * IRecoverableTab::GetTabRecoverData()
+	 * IRecoverableTab::GetTabSaveInfo()
 	 * @param[in] existing The list of existing tabs, provided for convenience.
 	 * @param[in] f A functor returning some equality comparable type.
 	 * @return Whether the tab similar to the one defined by \em data
@@ -197,5 +211,3 @@ protected:
 
 Q_DECLARE_INTERFACE (IRecoverableTab, "org.Deviant.LeechCraft.IRecoverableTab/1.0")
 Q_DECLARE_INTERFACE (IHaveRecoverableTabs, "org.Deviant.LeechCraft.IHaveRecoverableTabs/1.0")
-
-#endif

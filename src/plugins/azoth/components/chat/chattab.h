@@ -132,9 +132,7 @@ namespace Azoth
 		void TabMadeCurrent ();
 		void TabLostCurrent ();
 
-		QByteArray GetTabRecoverData () const;
-		QString GetTabRecoverName () const;
-		QIcon GetTabRecoverIcon () const;
+		std::optional<TabSaveInfo> GetTabSaveInfo () const;
 
 		void FillMimeData (QMimeData*);
 		void HandleDragEnter (QDragMoveEvent*);

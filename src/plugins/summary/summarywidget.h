@@ -62,9 +62,7 @@ namespace LC::Summary
 		QObject* ParentMultiTabs () override;
 		TabClassInfo GetTabClassInfo () const override;
 
-		QByteArray GetTabRecoverData () const override;
-		QString GetTabRecoverName () const override;
-		QIcon GetTabRecoverIcon () const override;
+		std::optional<TabSaveInfo> GetTabSaveInfo () const override;
 	private:
 		QModelIndex MapToSourceRecursively (const QModelIndex&) const;
 		IJobHolderRepresentationHandler& GetHandler (const QModelIndex&) const;

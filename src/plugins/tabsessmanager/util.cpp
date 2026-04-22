@@ -12,6 +12,7 @@
 #include <QPair>
 #include <QVariant>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/ihaverecoverabletabs.h>
 
 namespace LC::TabSessManager
 {
@@ -31,5 +32,10 @@ namespace LC::TabSessManager
 	bool IsGoodSingleTC (const TabClassInfo& tc)
 	{
 		return tc.Features_ & TabFeature::TFSingle && tc.Features_ & TabFeature::TFOpenableByRequest;
+	}
+
+	QIcon GetTabIcon (ITabWidget& tab, const TabSaveInfo& info)
+	{
+		return info.Icon_.isNull () ? tab.GetTabClassInfo ().Icon_ : info.Icon_;
 	}
 }

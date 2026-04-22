@@ -152,19 +152,9 @@ namespace LackMan
 		return Toolbar_;
 	}
 
-	QByteArray LackManTab::GetTabRecoverData () const
+	std::optional<TabSaveInfo> LackManTab::GetTabSaveInfo () const
 	{
-		return "lackmantab";
-	}
-
-	QIcon LackManTab::GetTabRecoverIcon () const
-	{
-		return TC_.Icon_;
-	}
-
-	QString LackManTab::GetTabRecoverName () const
-	{
-		return TC_.VisibleName_;
+		return { { .Data_ = "lackmantab", .Name_ = TC_.VisibleName_ } };
 	}
 
 	void LackManTab::SetFilterTags (const QStringList& tags)

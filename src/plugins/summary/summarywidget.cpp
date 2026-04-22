@@ -277,19 +277,9 @@ namespace LC::Summary
 				Toolbar_->removeAction (action);
 	}
 
-	QByteArray SummaryWidget::GetTabRecoverData () const
+	std::optional<TabSaveInfo> SummaryWidget::GetTabSaveInfo () const
 	{
-		return {};
-	}
-
-	QString SummaryWidget::GetTabRecoverName () const
-	{
-		return GetTabClassInfo ().VisibleName_;
-	}
-
-	QIcon SummaryWidget::GetTabRecoverIcon () const
-	{
-		return GetTabClassInfo ().Icon_;
+		return { { .Name_ = GetTabClassInfo ().VisibleName_ } };
 	}
 
 	void SummaryWidget::SetCurrentRow (const QModelIndex& index)

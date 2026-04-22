@@ -33,6 +33,7 @@
 #endif
 
 #include <util/util.h>
+#include <util/sll/qtutil.h>
 #include <util/sll/slotclosure.h>
 #include <util/sll/unreachable.h>
 #include <util/xpc/util.h>
@@ -704,25 +705,16 @@ namespace Poshuku
 		SetWidgetSettings (settings);
 	}
 
-	QByteArray BrowserWidget::GetTabRecoverData () const
+	std::optional<TabSaveInfo> BrowserWidget::GetTabSaveInfo () const
 	{
-		QByteArray result;
-		QDataStream str (&result, QIODevice::WriteOnly);
+		const auto& url = WebView_->GetUrl ();
+
+		TabSaveInfo info { .Name_ = "%1 (%2)"_qs.arg (WebView_->GetTitle (), url.toString ()), .Icon_ = WebView_->GetIcon () };
+		QDataStream str (&info.Data_, QIODevice::WriteOnly);
 		str << WebView_->GetUrl ();
 		str << GetWidgetSettings ();
-		return result;
-	}
 
-	QString BrowserWidget::GetTabRecoverName () const
-	{
-		return QString ("%1 (%2)")
-				.arg (WebView_->GetTitle ())
-				.arg (WebView_->GetUrl ().toString ());
-	}
-
-	QIcon BrowserWidget::GetTabRecoverIcon () const
-	{
-		return WebView_->GetIcon ();
+		return info;
 	}
 
 	void BrowserWidget::SetFontFamily (FontFamily family, const QFont& font)
