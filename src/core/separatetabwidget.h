@@ -140,7 +140,6 @@ namespace LC
 		void handleTabBarPosition ();
 		void handleSelectionBehavior ();
 		void handleAddDefaultTab ();
-		void handleCloneTab ();
 		void handleTabMoved (int from, int to);
 		void handleContextMenuRequested (const QPoint& point);
 		void handleActionDestroyed ();

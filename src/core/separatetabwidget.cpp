@@ -24,6 +24,7 @@
 #include <interfaces/ihaverecoverabletabs.h>
 #include "util/xpc/defaulthookproxy.h"
 #include "util/sll/prelude.h"
+#include "util/sll/qobjectrefcast.h"
 #include "coreproxy.h"
 #include "separatetabbar.h"
 #include "xmlsettingsmanager.h"
@@ -285,32 +286,31 @@ namespace LC
 
 	QMenu* SeparateTabWidget::GetTabMenu (int index)
 	{
-		QMenu *menu = new QMenu ();
-
 		const auto widget = Widget (index);
-		const auto imtw = qobject_cast<ITabWidget*> (widget);
-
-		if (XmlSettingsManager::Instance ()->
-				property ("ShowPluginMenuInTabs").toBool ())
+		const auto itw = qobject_cast<ITabWidget*> (widget);
+		if (!itw)
 		{
-			bool asSub = XmlSettingsManager::Instance ()->
-				property ("ShowPluginMenuInTabsAsSubmenu").toBool ();
-			if (imtw)
-			{
-				const auto& tabActions = imtw->GetTabBarContextMenuActions ();
+			qWarning () << widget << "not an ITabWidget";
+			return nullptr;
+		}
 
-				QMenu *subMenu = asSub ?
-						new QMenu (TabText (index), menu) :
-						nullptr;
-				for (auto act : tabActions)
-					(asSub ? subMenu : menu)->addAction (act);
+		auto menu = new QMenu;
 
-				if (asSub)
-					menu->addMenu (subMenu);
+		if (XmlSettingsManager::Instance ()->property ("ShowPluginMenuInTabs").toBool ())
+		{
+			const bool asSub = XmlSettingsManager::Instance ()->property ("ShowPluginMenuInTabsAsSubmenu").toBool ();
 
-				if (tabActions.size ())
-					menu->addSeparator ();
-			}
+			const auto& tabActions = itw->GetTabBarContextMenuActions ();
+
+			const auto pluginMenu = asSub ? new QMenu (TabText (index), menu) : menu;
+			for (const auto act : tabActions)
+				pluginMenu->addAction (act);
+
+			if (asSub)
+				menu->addMenu (pluginMenu);
+
+			if (tabActions.size ())
+				menu->addSeparator ();
 		}
 
 		auto rootWM = Core::Instance ().GetRootWindowsManager ();
@@ -342,17 +342,28 @@ namespace LC
 			}
 		}
 
-		const auto irt = qobject_cast<IRecoverableTab*> (widget);
-		if (imtw &&
-				irt &&
-				(imtw->GetTabClassInfo ().Features_ & TabFeature::TFOpenableByRequest) &&
-				!(imtw->GetTabClassInfo ().Features_ & TabFeature::TFSingle))
-		{
-			const auto cloneAct = menu->addAction (tr ("Clone tab"),
-					this, SLOT (handleCloneTab ()));
-			cloneAct->setProperty ("TabIndex", index);
-			cloneAct->setProperty ("ActionIcon", "tab-duplicate");
-		}
+		const auto tabFeatures = itw->GetTabClassInfo ().Features_;
+		const auto isOpenable = tabFeatures & TFOpenableByRequest && !(tabFeatures & TFSingle);
+		if (const auto irt = qobject_cast<IRecoverableTab*> (widget);
+			isOpenable && irt)
+			if (const auto info = irt->GetTabSaveInfo ())
+			{
+				const auto cloneAct = menu->addAction (tr ("Clone tab"), this,
+						[itw, widget = QPointer { widget }, info]
+						{
+							if (!widget)
+								return;
+
+							QList<QPair<QByteArray, QVariant>> props;
+							for (const auto& name : widget->dynamicPropertyNames ())
+								if (name.startsWith ("SessionData/"))
+									props.append ({ name, widget->property (name) });
+
+							auto& ihrt = qobject_ref_cast<IHaveRecoverableTabs> (itw->ParentMultiTabs ());
+							ihrt.RecoverTabs ({ { info->Data_, props } });
+						});
+				cloneAct->setProperty ("ActionIcon", "tab-duplicate");
+			}
 
 		for (auto act : TabBarActions_)
 		{
@@ -727,7 +738,10 @@ namespace LC
 			delete menu;
 			menu = GetTabMenu (index);
 		}
-		menu->exec (MainTabBar_->mapToGlobal (point));
+
+		if (menu)
+			menu->exec (MainTabBar_->mapToGlobal (point));
+
 		delete menu;
 	}
 
@@ -830,40 +844,10 @@ namespace LC
 
 		if (!highestIHT)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "no IHT detected";
+			qWarning () << "no IHT detected";
 			return;
 		}
 
 		highestIHT->TabOpenRequested (highestTabClass);
-	}
-
-	void SeparateTabWidget::handleCloneTab ()
-	{
-		const auto index = sender ()->property ("TabIndex").toInt ();
-		const auto widget = Widget (index);
-		const auto irt = qobject_cast<IRecoverableTab*> (widget);
-
-		const auto plugin = qobject_cast<ITabWidget*> (widget)->ParentMultiTabs ();
-		const auto ihrt = qobject_cast<IHaveRecoverableTabs*> (plugin);
-
-		if (!widget || !irt || !ihrt)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "something required is null:"
-					<< widget
-					<< irt
-					<< ihrt;
-			return;
-		}
-
-		const auto& saveInfo = irt->GetTabSaveInfo ();
-
-		QList<QPair<QByteArray, QVariant>> props;
-		for (const auto& name : widget->dynamicPropertyNames ())
-			if (name.startsWith ("SessionData/"))
-				props.append ({ name, widget->property (name) });
-
-		ihrt->RecoverTabs ({ { saveInfo.value_or ({}).Data_, props } });
 	}
 }
