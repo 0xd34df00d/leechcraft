@@ -1915,17 +1915,27 @@ namespace LC::Azoth
 	void Core::updateStatusIconset ()
 	{
 		QMap<State, Util::QIODevice_ptr> state2IconCache;
-		for (const auto entry : Entry2Items_.keys ())
-		{
-			const auto state = entry->GetStatus ().State_;
-			if (!state2IconCache.contains (state))
-				state2IconCache [state] = ResourcesManager::Instance ().GetIconPathForState (state);
 
-			for (auto item : Entry2Items_.value (entry))
-			{
-				const auto& dev = state2IconCache [state];
-				ItemIconManager_->SetIcon (item, dev.get ());
-			}
+		const auto getIcon = [&] (State state)
+		{
+			auto& dev = state2IconCache [state];
+			if (!dev)
+				dev = ResourcesManager::Instance ().GetIconPathForState (state);
+			return dev.get ();
+		};
+
+		for (const auto [entry, items] : Entry2Items_.asKeyValueRange ())
+		{
+			const auto icon = getIcon (entry->GetStatus ().State_);
+			for (auto item : items)
+				ItemIconManager_->SetIcon (item, icon);
+		}
+
+		for (int i = 0, size = CLModel_->rowCount (); i < size; ++i)
+		{
+			const auto item = CLModel_->item (i);
+			if (const auto account = item->data (CLRAccountObject).value<IAccount*> ())
+				ItemIconManager_->SetIcon (item, getIcon (account->GetState ().State_));
 		}
 	}
 
