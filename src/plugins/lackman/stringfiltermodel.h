@@ -6,22 +6,17 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef PLUGINS_LACKMAN_STRINGFILTERMODEL_H
-#define PLUGINS_LACKMAN_STRINGFILTERMODEL_H
+#pragma once
+
 #include <util/models/fixedstringfilterproxymodel.h>
 
-namespace LC
-{
-namespace LackMan
+namespace LC::LackMan
 {
 	class StringFilterModel : public Util::FixedStringFilterProxyModel
 	{
 	public:
-		StringFilterModel (QObject* = 0);
+		explicit StringFilterModel (QObject* = nullptr);
 	protected:
 		bool filterAcceptsRow (int, const QModelIndex&) const override;
 	};
 }
-}
-
-#endif

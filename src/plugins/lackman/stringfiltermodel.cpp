@@ -11,14 +11,11 @@
 #include <interfaces/core/itagsmanager.h>
 #include <util/sll/containerconversions.h>
 #include "packagesmodel.h"
-#include "core.h"
 
-namespace LC
-{
-namespace LackMan
+namespace LC::LackMan
 {
 	StringFilterModel::StringFilterModel (QObject *parent)
-	: FixedStringFilterProxyModel (parent)
+	: FixedStringFilterProxyModel { parent }
 	{
 		using enum PackagesModel::PackageModelRole;
 		SetFilterRoles ({ PMRName, PMRShortDescription, PMRVersion });
@@ -31,8 +28,7 @@ namespace LackMan
 
 		const auto& sourceIdx = sourceModel ()->index (sourceRow, 0, sourceParent);
 		const auto& itemTags = Util::AsSet (sourceIdx.data (PackagesModel::PMRTags).toStringList ());
-		const auto& queryTags = Util::AsSet (Core::Instance ().GetProxy ()->GetTagsManager ()->Split (GetFilterString ()));
+		const auto& queryTags = Util::AsSet (GetProxyHolder ()->GetTagsManager ()->Split (GetFilterString ()));
 		return itemTags.contains (queryTags);
 	}
-}
 }

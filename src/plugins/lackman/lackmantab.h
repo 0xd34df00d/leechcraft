@@ -53,12 +53,12 @@ namespace LackMan
 	public:
 		LackManTab (Util::ShortcutManager*, const TabClassInfo&, QObject*);
 
-		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
-		void Remove ();
-		QToolBar* GetToolBar () const;
+		TabClassInfo GetTabClassInfo () const override;
+		QObject* ParentMultiTabs () override;
+		void Remove () override;
+		QToolBar* GetToolBar () const override;
 
-		std::optional<TabSaveInfo> GetTabSaveInfo () const;
+		std::optional<TabSaveInfo> GetTabSaveInfo () const override;
 
 		void SetFilterTags (const QStringList&);
 		void SetFilterString (const QString&);
@@ -82,10 +82,10 @@ namespace LackMan
 		void on_PackagesTree__customContextMenuRequested (const QPoint&);
 		void on_PackageStatus__currentIndexChanged (int);
 	signals:
-		void removeTab ();
-		void raiseTab ();
+		void removeTab () override;
+		void raiseTab () override;
 
-		void tabRecoverDataChanged ();
+		void tabRecoverDataChanged () override;
 	};
 }
 }

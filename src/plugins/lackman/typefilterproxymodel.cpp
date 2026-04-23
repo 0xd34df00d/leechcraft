@@ -10,15 +10,8 @@
 #include <QtDebug>
 #include "packagesmodel.h"
 
-namespace LC
+namespace LC::LackMan
 {
-namespace LackMan
-{
-	TypeFilterProxyModel::TypeFilterProxyModel (QObject *parent)
-	: QSortFilterProxyModel (parent)
-	{
-	}
-
 	void TypeFilterProxyModel::SetFilterMode (FilterMode fm)
 	{
 		beginFilterChange ();
@@ -41,10 +34,7 @@ namespace LackMan
 			return true;
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown filter mode"
-				<< static_cast<int> (Mode_);
+		qWarning () << "unknown filter mode" << static_cast<int> (Mode_);
 		return true;
 	}
-}
 }

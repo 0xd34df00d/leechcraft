@@ -10,13 +10,10 @@
 
 #include <QSortFilterProxyModel>
 
-namespace LC
-{
-namespace LackMan
+namespace LC::LackMan
 {
 	class TypeFilterProxyModel : public QSortFilterProxyModel
 	{
-		Q_OBJECT
 	public:
 		enum class FilterMode
 		{
@@ -28,11 +25,10 @@ namespace LackMan
 	private:
 		FilterMode Mode_ = FilterMode::All;
 	public:
-		TypeFilterProxyModel (QObject* = 0);
+		using QSortFilterProxyModel::QSortFilterProxyModel;
 
 		void SetFilterMode (FilterMode);
 	protected:
-		bool filterAcceptsRow (int, const QModelIndex&) const;
+		bool filterAcceptsRow (int, const QModelIndex&) const override;
 	};
-}
 }
