@@ -12,21 +12,16 @@
 
 namespace LC::Azoth
 {
-	enum ChatPartState : std::uint8_t;
-
 	struct ChatEvent;
-
 	class ICLEntry;
 
 	class ChatEventsAdapter : public QObject
 	{
 		Q_OBJECT
-
-		ICLEntry& Entry_;
+	protected:
+		using QObject::QObject;
 	public:
-		explicit ChatEventsAdapter (ICLEntry&);
-	private:
-		void HandleChatState (ChatPartState, const QString&);
+		static ChatEventsAdapter* MakeFor (ICLEntry&, QObject* = nullptr);
 	signals:
 		void gotEvent (const ChatEvent&);
 	};

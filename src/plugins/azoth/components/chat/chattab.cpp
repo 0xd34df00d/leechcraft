@@ -1236,7 +1236,7 @@ namespace Azoth
 
 		ReinitAvatar ();
 
-		const auto adapter = new ChatEventsAdapter { *entry };
+		const auto adapter = ChatEventsAdapter::MakeFor (*entry);
 		connect (adapter,
 				&ChatEventsAdapter::gotEvent,
 				this,
