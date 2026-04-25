@@ -14,9 +14,11 @@ namespace LC::LackMan
 {
 	class StringFilterModel : public Util::FixedStringFilterProxyModel
 	{
+		QSet<QString> Tags_;
 	public:
 		explicit StringFilterModel (QObject* = nullptr);
 	protected:
+		void UpdateDerivedFilter (const QString&) override;
 		bool filterAcceptsRow (int, const QModelIndex&) const override;
 	};
 }

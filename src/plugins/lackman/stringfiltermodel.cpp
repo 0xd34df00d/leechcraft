@@ -21,6 +21,11 @@ namespace LC::LackMan
 		SetFilterRoles ({ PMRName, PMRShortDescription, PMRVersion });
 	}
 
+	void StringFilterModel::UpdateDerivedFilter (const QString& filter)
+	{
+		Tags_ = Util::AsSet (GetProxyHolder ()->GetTagsManager ()->Split (filter));
+	}
+
 	bool StringFilterModel::filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const
 	{
 		if (FixedStringFilterProxyModel::filterAcceptsRow (sourceRow, sourceParent))
@@ -28,7 +33,6 @@ namespace LC::LackMan
 
 		const auto& sourceIdx = sourceModel ()->index (sourceRow, 0, sourceParent);
 		const auto& itemTags = Util::AsSet (sourceIdx.data (PackagesModel::PMRTags).toStringList ());
-		const auto& queryTags = Util::AsSet (GetProxyHolder ()->GetTagsManager ()->Split (GetFilterString ()));
-		return itemTags.contains (queryTags);
+		return itemTags.contains (Tags_);
 	}
 }
