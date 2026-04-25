@@ -99,48 +99,6 @@ namespace Xoox
 			Join ();
 	}
 
-	void RoomHandler::MakeLeaveMessage (const QXmppPresence& pres, const QString& nick)
-	{
-		QString msg = tr ("%1 has left the room").arg (nick);
-		if (pres.statusText ().size ())
-			msg += ": " + pres.statusText ();
-
-		const auto message = new RoomPublicMessage (msg,
-				IMessage::Direction::In,
-				CLEntry_,
-				IMessage::Type::StatusMessage,
-				IMessage::SubType::ParticipantLeave,
-				GetParticipantEntry (nick));
-		CLEntry_->HandleMessage (message);
-	}
-
-	void RoomHandler::MakeJoinMessage (const QXmppPresence& pres, const QString& nick)
-	{
-		const auto& affiliation = XooxUtil::AffiliationToString (pres.mucItem ().affiliation ());
-		const auto& role = XooxUtil::RoleToString (pres.mucItem ().role ());
-		const auto& realJid = pres.mucItem ().jid ();
-		QString msg;
-		if (realJid.isEmpty ())
-			msg = tr ("%1 joined the room as %2 and %3")
-					.arg (nick)
-					.arg (role)
-					.arg (affiliation);
-		else
-			msg = tr ("%1 (%2) joined the room as %3 and %4")
-					.arg (nick)
-					.arg (realJid)
-					.arg (role)
-					.arg (affiliation);
-
-		const auto message = new RoomPublicMessage (msg,
-				IMessage::Direction::In,
-				CLEntry_,
-				IMessage::Type::StatusMessage,
-				IMessage::SubType::ParticipantJoin,
-				GetParticipantEntry (nick));
-		CLEntry_->HandleMessage (message);
-	}
-
 	void RoomHandler::MakeStatusChangedMessage (const QXmppPresence& pres, const QString& nick)
 	{
 		const auto& state = StateToString (static_cast<State> (pres.availableStatusType () + 1));
@@ -645,7 +603,7 @@ namespace Xoox
 		if (!existed && !nick.isEmpty ())
 			emit Account_->GetAccountEmitter ().gotCLItems ({ entry.get () });
 
-		MakeJoinMessage (pres, nick);
+		emit CLEntry_->GetMUCEntryEmitter ().participantJoined (*entry);
 	}
 
 	void RoomHandler::handleParticipantChanged (const QString& jid)
@@ -692,7 +650,7 @@ namespace Xoox
 				MakeKickMessage (nick, reason) :
 				QTimer::singleShot (0, this, [=, this] { CLEntry_->GetMUCEntryEmitter ().beenKicked (reason); });
 		else
-			MakeLeaveMessage (pres, nick);
+			emit CLEntry_->GetMUCEntryEmitter ().participantLeaving (*entry, MucEvents::ParticipantLeft { pres.statusText () });
 
 		const auto checkRejoin = Util::MakeScopeGuard ([this]
 				{
