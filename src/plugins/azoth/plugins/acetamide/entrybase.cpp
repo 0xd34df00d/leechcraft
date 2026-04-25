@@ -97,7 +97,6 @@ namespace LC::Azoth::Acetamide
 	void EntryBase::HandleMessage (IrcMessage *msg)
 	{
 		msg->SetOtherPart (this);
-		Account_->GetParentProtocol ()->GetProxyObject ()->GetFormatterProxy ().PreprocessMessage (msg);
 
 		AllMessages_ << msg;
 		emit Emitter_.gotMessage (msg);

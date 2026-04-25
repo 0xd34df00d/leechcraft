@@ -561,9 +561,6 @@ namespace Xoox
 			UnreadMessages_ << msg;
 		}
 
-		const auto proxy = Account_->GetParentProtocol ()->GetProxyObject ();
-		proxy->GetFormatterProxy ().PreprocessMessage (msg);
-
 		AllMessages_ << msg;
 		emit Emitter_.gotMessage (msg);
 	}

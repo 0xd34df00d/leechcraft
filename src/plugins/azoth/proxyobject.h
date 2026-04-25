@@ -31,7 +31,6 @@ namespace Azoth
 		QString FormatNickname (QString, QObject*, const QString&) const override;
 		QString EscapeBody (QString, IMessage::EscapePolicy) const override;
 		QString FormatBody (QString, QObject*, const QList<QColor>&) const override;
-		void PreprocessMessage (QObject*) override;
 		void FormatLinks (QString&) override;
 		QStringList FindLinks (const QString&) override;
 	};

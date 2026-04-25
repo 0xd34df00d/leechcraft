@@ -1495,22 +1495,7 @@ namespace Azoth
 
 		bool ShouldShowMessage (IMessage *msg)
 		{
-			if (msg->GetQObject ()->property ("Azoth/HiddenMessage").toBool ())
-				return false;
-
-			const auto parent = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
-
-			if (msg->GetMessageSubType () == IMessage::SubType::ParticipantStatusChange &&
-					(!parent || parent->GetEntryType () == ICLEntry::EntryType::MUC) &&
-					!XmlSettingsManager::Instance ().property ("ShowStatusChangesEvents").toBool ())
-				return false;
-
-			if (msg->GetMessageSubType () == IMessage::SubType::ParticipantStatusChange &&
-					(!parent || parent->GetEntryType () != ICLEntry::EntryType::MUC) &&
-					!XmlSettingsManager::Instance ().property ("ShowStatusChangesEventsInPrivates").toBool ())
-				return false;
-
-			return true;
+			return !msg->GetQObject ()->property ("Azoth/HiddenMessage").toBool ();
 		}
 	}
 

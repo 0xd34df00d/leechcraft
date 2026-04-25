@@ -519,9 +519,6 @@ namespace Xoox
 
 	void RoomCLEntry::HandleMessage (RoomPublicMessage *msg)
 	{
-		Account_->GetParentProtocol ()->GetProxyObject ()->
-				GetFormatterProxy ().PreprocessMessage (msg);
-
 		AllMessages_ << msg;
 		emit Emitter_.gotMessage (msg);
 	}

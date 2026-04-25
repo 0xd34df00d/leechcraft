@@ -95,15 +95,6 @@ namespace Azoth
 		 */
 		virtual QString FormatBody (QString body, QObject *message, const QList<QColor>& coloring) const = 0;
 
-		/** @brief Preprocesses the message before displaying it.
-		 *
-		 * This function should be called once on each message before
-		 * displaying it.
-		 *
-		 * @param[in] message The message to preprocess.
-		 */
-		virtual void PreprocessMessage (QObject *message) = 0;
-
 		virtual void FormatLinks (QString& body) = 0;
 
 		virtual QStringList FindLinks (const QString&) = 0;

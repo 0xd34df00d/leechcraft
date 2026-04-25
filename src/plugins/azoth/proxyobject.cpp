@@ -77,44 +77,6 @@ namespace LC::Azoth
 		return Core::Instance ().FormatBody (std::move (body), qobject_cast<IMessage*> (obj), coloring);
 	}
 
-	void FormatterProxyObject::PreprocessMessage (QObject *msgObj)
-	{
-		if (msgObj->property ("Azoth/DoNotPreprocess").toBool ())
-			return;
-
-		IMessage *msg = qobject_cast<IMessage*> (msgObj);
-		if (!msg)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "message"
-					<< msgObj
-					<< "is not an IMessage";
-			return;
-		}
-
-		switch (msg->GetMessageSubType ())
-		{
-		case IMessage::SubType::ParticipantStatusChange:
-		{
-			const QString& nick = msgObj->property ("Azoth/Nick").toString ();
-			const QString& state = msgObj->property ("Azoth/TargetState").toString ();
-			const QString& text = msgObj->property ("Azoth/StatusText").toString ();
-			if (!nick.isEmpty () && !state.isEmpty ())
-			{
-				const auto& newBody = text.isEmpty () ?
-						ProxyObject::tr ("%1 changed status to %2")
-							.arg (nick, state) :
-						ProxyObject::tr ("%1 changed status to %2 (%3)")
-							.arg (nick, state, text);
-				msg->SetBody (newBody);
-			}
-			break;
-		}
-		default:
-			break;
-		}
-	}
-
 	const auto MaxBodySize4Links = 10 * 1024;
 
 	namespace

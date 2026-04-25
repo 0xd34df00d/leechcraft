@@ -114,24 +114,6 @@ namespace Azoth
 			 */
 			BanNotification,
 
-			/** @brief Represents status change of a participant in a
-			 * chat or MUC room.
-			 *
-			 * The corresponding Type is MTStatusMessage.
-			 *
-			 * Messages of this type should have the following dynamic
-			 * properties:
-			 * - Azoth/Nick, with a QString representing nick of the
-			 *   participant that has changed its status.
-			 * - Azoth/TargetState, with a QString representing the
-			 *   target state. The string is better obtained from the
-			 *   State enum by the means of IProxyObject::StateToString
-			 *   method.
-			 * - Azoth/StatusText, with a QString representing the new
-			 *   status text of the participant. May be empty.
-			 */
-			ParticipantStatusChange,
-
 			/** @brief Represents permission changes of a participant in
 			 * a chat or MUC room.
 			 */
