@@ -114,14 +114,14 @@ namespace LC::Azoth::Acetamide
 		Nick2Entry_ [newNick] = entry;
 	}
 
-	bool ChannelHandler::IsRosterReceived () const
+	bool ChannelHandler::IsInitialNamesListReceived () const
 	{
-		return IsRosterReceived_;
+		return IsInitialNamesListReceived_;
 	}
 
-	void ChannelHandler::SetRosterReceived (bool status)
+	void ChannelHandler::SetInitialNamesListReceived ()
 	{
-		IsRosterReceived_ = status;
+		IsInitialNamesListReceived_ = true;
 	}
 
 	void ChannelHandler::HandleServiceMessage (const QString& msg,

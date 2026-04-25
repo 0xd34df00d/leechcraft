@@ -180,7 +180,7 @@ namespace LC::Azoth::Acetamide
 	void ChannelsManager::GotNames (const QString& channel, const QStringList& participants)
 	{
 		if (const auto handler = GetChannelHandler (channel);
-			handler && !handler->IsRosterReceived ())
+			handler && !handler->IsInitialNamesListReceived ())
 		{
 			for (const auto& nick : participants)
 				if (!nick.isEmpty ())
@@ -193,9 +193,9 @@ namespace LC::Azoth::Acetamide
 	void ChannelsManager::GotEndOfNamesCmd (const QString& channel)
 	{
 		if (const auto handler = GetChannelHandler (channel);
-			!handler->IsRosterReceived ())
+			!handler->IsInitialNamesListReceived ())
 		{
-			handler->SetRosterReceived (true);
+			handler->SetInitialNamesListReceived ();
 			emit ISH_->GetAccount ()->GetAccountEmitter ().gotCLItems ({ handler->GetCLEntry () });
 		}
 		else

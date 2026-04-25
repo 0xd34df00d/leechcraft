@@ -33,7 +33,7 @@ namespace LC::Azoth::Acetamide
 
 		ChannelOptions ChannelOptions_;
 
-		bool IsRosterReceived_ = false;
+		bool IsInitialNamesListReceived_ = false;
 
 		QHash<QString, ChannelParticipantEntry_ptr> Nick2Entry_;
 
@@ -60,8 +60,8 @@ namespace LC::Azoth::Acetamide
 
 		void ChangeNickname (const QString& oldNick, const QString& newNick);
 
-		bool IsRosterReceived () const;
-		void SetRosterReceived (bool);
+		bool IsInitialNamesListReceived () const;
+		void SetInitialNamesListReceived ();
 
 		void HandleServiceMessage (const QString&, IMessage::Type,
 				IMessage::SubType,
