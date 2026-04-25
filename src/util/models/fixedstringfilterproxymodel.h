@@ -22,7 +22,7 @@ namespace LC::Util
 		explicit FixedStringFilterProxyModel (QObject* = nullptr);
 		explicit FixedStringFilterProxyModel (Qt::CaseSensitivity, QObject* = nullptr);
 
-		virtual void SetFilterString (const QString&);
+		void SetFilterString (const QString&);
 		QString GetFilterString () const;
 
 		bool IsFilterSet () const;
@@ -37,6 +37,13 @@ namespace LC::Util
 		QList<int> GetFilterColumns () const;
 	protected:
 		bool IsMatch (const QString&) const;
+
+		/* Called by `SetFilterString()` within the `beginFilterChange()`/`endFilterChange()` pair.
+		 *
+		 * Override this function to update any custom filtering dependent on the filter string
+		 * in your subclass.
+		 */
+		virtual void UpdateDerivedFilter (const QString&);
 
 		bool filterAcceptsRow (int row, const QModelIndex& parent) const override;
 	private:

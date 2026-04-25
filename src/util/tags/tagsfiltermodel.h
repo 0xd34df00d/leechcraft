@@ -62,8 +62,6 @@ namespace LC::Util
 		 */
 		explicit TagsFilterModel (QObject *parent = nullptr);
 
-		void SetFilterString (const QString&) override;
-
 		void SetTagsRole (int role);
 
 		/** @brief Sets the separator for the tags.
@@ -98,8 +96,8 @@ namespace LC::Util
 		 */
 		void SetTagsMode (bool enabled);
 	protected:
-		/** @brief Reimplemented from QSortFilterProxyModel::filterAcceptsRow().
-		 */
+		void UpdateDerivedFilter (const QString&) override;
+
 		bool filterAcceptsRow (int, const QModelIndex&) const override;
 
 		/** @brief Returns the list of tags for the given row.

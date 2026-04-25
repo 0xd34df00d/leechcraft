@@ -20,15 +20,6 @@ namespace LC::Util
 	{
 	}
 
-	void TagsFilterModel::SetFilterString (const QString& string)
-	{
-		FilterTags_.clear ();
-		for (const auto& s : string.split (Separator_, Qt::SkipEmptyParts))
-			FilterTags_ << s.trimmed ();
-
-		FixedStringFilterProxyModel::SetFilterString (string);
-	}
-
 	void TagsFilterModel::SetTagsRole (int role)
 	{
 		beginFilterChange ();
@@ -55,6 +46,13 @@ namespace LC::Util
 		beginFilterChange ();
 		NormalMode_ = !tags;
 		endFilterChange (Direction::Rows);
+	}
+
+	void TagsFilterModel::UpdateDerivedFilter (const QString& string)
+	{
+		FilterTags_.clear ();
+		for (const auto& s : QStringView { string }.split (Separator_, Qt::SkipEmptyParts))
+			FilterTags_ << s.trimmed ().toString ();
 	}
 
 	bool TagsFilterModel::filterAcceptsRow (int sourceRow, const QModelIndex& index) const

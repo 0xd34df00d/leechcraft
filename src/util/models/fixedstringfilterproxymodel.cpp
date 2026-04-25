@@ -75,6 +75,7 @@ namespace LC::Util
 
 		beginFilterChange ();
 		Filter_.setPattern (filter);
+		UpdateDerivedFilter (filter);
 		endFilterChange (Direction::Rows);
 	}
 
@@ -91,6 +92,10 @@ namespace LC::Util
 	bool FixedStringFilterProxyModel::IsMatch (const QString& text) const
 	{
 		return Filter_.indexIn (text) >= 0;
+	}
+
+	void FixedStringFilterProxyModel::UpdateDerivedFilter (const QString&)
+	{
 	}
 
 	bool FixedStringFilterProxyModel::filterAcceptsRow (int row, const QModelIndex& parent) const
