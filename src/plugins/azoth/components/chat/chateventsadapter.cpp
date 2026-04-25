@@ -42,6 +42,10 @@ namespace LC::Azoth
 						&Emitters::CLEntry::chatPartStateChanged,
 						this,
 						&DirectAdapter::HandleChatState);
+				connect (&emitter,
+						&Emitters::CLEntry::statusChanged,
+						this,
+						&DirectAdapter::HandleStatusChange);
 			}
 
 			void HandleChatState (ChatPartState state, const QString& variant)
@@ -50,6 +54,18 @@ namespace LC::Azoth
 					return;
 
 				emit gotEvent ({ .Text_ { tr ("%1 has left the conversation").arg (GetDisplayId (Entry_, variant)) }  });
+			}
+
+			void HandleStatusChange (const EntryStatus& status, const QString& variant)
+			{
+				if (!CheckShow ("ShowStatusChangesEventsInPrivates"))
+					return;
+
+				const auto& stateStr = StateToString (status.State_);
+				const auto& statusText = status.StatusString_.isEmpty () ?
+						stateStr :
+						"%1 (%2)"_qs.arg (stateStr, status.StatusString_);
+				emit gotEvent ({ .Text_ { tr ("%1 is now %2").arg (GetDisplayId (Entry_, variant), statusText) } });
 			}
 		};
 
