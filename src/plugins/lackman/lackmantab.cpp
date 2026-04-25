@@ -107,9 +107,9 @@ namespace LackMan
 				this,
 				SLOT (handlePackageSelected (const QModelIndex&)));
 		connect (Ui_.SearchLine_,
-				SIGNAL (textChanged (const QString&)),
+				&QLineEdit::textChanged,
 				FilterString_,
-				SLOT (setFilterFixedString (const QString&)));
+				&StringFilterModel::SetFilterString);
 
 		connect (Core::Instance ().GetPendingManager (),
 				SIGNAL (fetchListUpdated (const QList<int>&)),
