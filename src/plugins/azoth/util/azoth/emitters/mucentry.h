@@ -20,6 +20,12 @@ namespace LC::Azoth
 
 namespace LC::Azoth::MucEvents
 {
+	enum class ParticipantJoinOrder : std::uint8_t
+	{
+		BeforeUs,
+		AfterUs,
+	};
+
 	struct ParticipantLeft { QString Message_; };
 
 	struct ParticipantForcedOut
@@ -109,31 +115,26 @@ namespace LC::Azoth::Emitters
 		 */
 		///@{
 
-		/** @brief Notifies about the initial participants list in the room.
+		/** @brief Notifies that a `participant` has joined this room.
 		 *
-		 * These participants were in the room before we joined.
-		 *
-		 * @param[out] participants The list of participants that were in the room before we joined.
-		 *
-		 * @sa participantJoined
-		 * @sa participantLeaving
-		 */
-		void gotInitialParticipants (const QList<ICLEntry*>& participants);
-
-		/** @brief Notifies that a `participant` has just joined this room.
+		 * The participant might've joined the room before us (as per `order`),
+		 * in which case this signal is a part of the initial participants batch.
 		 *
 		 * @param[out] participant The participant that has joined the room.
+		 * @param[out] order Whether the participant joined before or after us.
 		 *
-		 * @sa gotInitialParticipants
 		 * @sa participantLeaving
 		 */
-		void participantJoined (ICLEntry& participant);
+		void participantJoined (ICLEntry& participant, MucEvents::ParticipantJoinOrder order);
 
 		/** @brief Notifies that a `participant` is about to leave this room.
 		 *
-		 * @param[out] participant The participant that is leaving the room.
+		 * This signal is emitted when the participant leaves the room voluntarily,
+		 * as well as he is kicked/banned.
 		 *
-		 * @sa gotInitialParticipants
+		 * @param[out] participant The participant that is leaving the room.
+		 * @param[out] leaveInfo The details of how the participant did leave the room.
+		 *
 		 * @sa participantJoined
 		 */
 		void participantLeaving (ICLEntry& participant, const MucEvents::ParticipantLeaveInfo& leaveInfo);

@@ -582,11 +582,8 @@ namespace Xoox
 	void RoomHandler::handleParticipantAdded (const QString& jid)
 	{
 		const auto& pres = Room_->participantPresence (jid);
-
 		const auto nick = ClientConnection::Split (jid).Resource_;
-
 		const bool existed = Nick2Entry_.contains (nick);
-
 		const auto& entry = GetParticipantEntry (nick, false);
 
 		if (PendingNickChanges_.remove (nick))
@@ -603,7 +600,8 @@ namespace Xoox
 		if (!existed && !nick.isEmpty ())
 			emit Account_->GetAccountEmitter ().gotCLItems ({ entry.get () });
 
-		emit CLEntry_->GetMUCEntryEmitter ().participantJoined (*entry);
+		using enum MucEvents::ParticipantJoinOrder;
+		emit CLEntry_->GetMUCEntryEmitter ().participantJoined (*entry, Room_->isJoined () ? AfterUs : BeforeUs);
 	}
 
 	void RoomHandler::handleParticipantChanged (const QString& jid)

@@ -116,12 +116,12 @@ namespace LC::Azoth::Acetamide
 
 	bool ChannelHandler::IsInitialNamesListReceived () const
 	{
-		return IsInitialNamesListReceived_;
+		return PastInitialNamesList_;
 	}
 
 	void ChannelHandler::SetInitialNamesListReceived ()
 	{
-		IsInitialNamesListReceived_ = true;
+		PastInitialNamesList_ = true;
 	}
 
 	void ChannelHandler::HandleServiceMessage (const QString& msg,
@@ -210,7 +210,8 @@ namespace LC::Azoth::Acetamide
 		if (!existed)
 			emit CM_->GetAccount ()->GetAccountEmitter ().gotCLItems ({ entry.get () });
 
-		emit ChannelCLEntry_->GetMUCEntryEmitter ().participantJoined (*entry);
+		using enum MucEvents::ParticipantJoinOrder;
+		emit ChannelCLEntry_->GetMUCEntryEmitter ().participantJoined (*entry, PastInitialNamesList_ ? AfterUs : BeforeUs);
 	}
 
 	void ChannelHandler::MakeKickMessage (const QString& nick,

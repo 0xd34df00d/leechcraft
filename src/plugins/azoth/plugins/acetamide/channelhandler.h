@@ -33,7 +33,7 @@ namespace LC::Azoth::Acetamide
 
 		ChannelOptions ChannelOptions_;
 
-		bool IsInitialNamesListReceived_ = false;
+		bool PastInitialNamesList_ = false;
 
 		QHash<QString, ChannelParticipantEntry_ptr> Nick2Entry_;
 

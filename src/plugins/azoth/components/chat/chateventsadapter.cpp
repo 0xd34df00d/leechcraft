@@ -89,22 +89,15 @@ namespace LC::Azoth
 
 				for (const auto part : Entry_.GetParticipants ())
 					setupParticipant (*part);
-				connect (&emitter,
-						&Emitters::MUCEntry::gotInitialParticipants,
-						this,
-						[setupParticipant] (const QList<ICLEntry*>& parts)
-						{
-							for (const auto part : parts)
-								setupParticipant (*part);
-						});
 
 				connect (&emitter,
 						&Emitters::MUCEntry::participantJoined,
 						this,
-						[this, setupParticipant] (ICLEntry& part)
+						[this, setupParticipant] (ICLEntry& part, MucEvents::ParticipantJoinOrder order)
 						{
-							EmitJoinEvent (part);
 							setupParticipant (part);
+							if (order == MucEvents::ParticipantJoinOrder::AfterUs)
+								EmitJoinEvent (part);
 						});
 				connect (&emitter,
 						&Emitters::MUCEntry::participantLeaving,
