@@ -13,6 +13,7 @@
 namespace LC::Azoth
 {
 	struct ChatEvent;
+	struct EntryStatus;
 	class ICLEntry;
 
 	class ChatEventsAdapter : public QObject
@@ -22,6 +23,8 @@ namespace LC::Azoth
 		using QObject::QObject;
 	public:
 		static ChatEventsAdapter* MakeFor (ICLEntry&, QObject* = nullptr);
+	protected:
+		void EmitStatusEventImpl (const QString& displayName, const EntryStatus& status);
 	signals:
 		void gotEvent (const ChatEvent&);
 	};

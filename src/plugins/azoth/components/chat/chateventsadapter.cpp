@@ -47,7 +47,7 @@ namespace LC::Azoth
 				connect (&emitter,
 						&Emitters::CLEntry::statusChanged,
 						this,
-						&DirectAdapter::HandleStatusChange);
+						&DirectAdapter::EmitStatusEvent);
 			}
 		private:
 			void HandleChatState (ChatPartState state, const QString& variant)
@@ -58,16 +58,10 @@ namespace LC::Azoth
 				emit gotEvent ({ .Text_ { tr ("%1 has left the conversation").arg (GetDisplayId (Entry_, variant)) }  });
 			}
 
-			void HandleStatusChange (const EntryStatus& status, const QString& variant)
+			void EmitStatusEvent (const EntryStatus& status, const QString& variant)
 			{
-				if (!CheckShow ("ShowStatusChangesEventsInPrivates"))
-					return;
-
-				const auto& stateStr = StateToString (status.State_);
-				const auto& statusText = status.StatusString_.isEmpty () ?
-						stateStr :
-						"%1 (%2)"_qs.arg (stateStr, status.StatusString_);
-				emit gotEvent ({ .Text_ { tr ("%1 is now %2").arg (GetDisplayId (Entry_, variant), statusText) } });
+				if (CheckShow ("ShowStatusChangesEventsInPrivates"))
+					EmitStatusEventImpl (GetDisplayId (Entry_, variant), status);
 			}
 		};
 
@@ -83,8 +77,13 @@ namespace LC::Azoth
 			{
 				auto& emitter = Entry_.GetMUCEntryEmitter ();
 
-				const auto setupParticipant = [] (ICLEntry& part)
+				const auto setupParticipant = [this] (ICLEntry& part)
 				{
+					auto& partEmitter = part.GetCLEntryEmitter ();
+					connect (&partEmitter,
+							&Emitters::CLEntry::statusChanged,
+							this,
+							std::bind_front (&MucAdapter::EmitStatusEvent, this, std::ref (part)));
 				};
 
 				for (const auto part : Entry_.GetParticipants ())
@@ -186,6 +185,12 @@ namespace LC::Azoth
 					!str.isEmpty ())
 					emit gotEvent ({ .Text_ { str } });
 			}
+
+			void EmitStatusEvent (const ICLEntry& part, const EntryStatus& status)
+			{
+				if (CheckShow ("ShowStatusChangesEvents"))
+					EmitStatusEventImpl (part.GetEntryName (), status);
+			}
 		};
 	}
 
@@ -202,5 +207,14 @@ namespace LC::Azoth
 		}
 
 		qFatal () << "unknown entry type:" << static_cast<int> (entry.GetEntryType ());
+	}
+
+	void ChatEventsAdapter::EmitStatusEventImpl (const QString& displayName, const EntryStatus& status)
+	{
+		const auto& stateStr = StateToString (status.State_);
+		const auto& statusText = status.StatusString_.isEmpty () ?
+				stateStr :
+				"%1 (%2)"_qs.arg (stateStr, status.StatusString_);
+		emit gotEvent ({ .Text_ { tr ("%1 is now %2").arg (displayName, statusText) } });
 	}
 }
