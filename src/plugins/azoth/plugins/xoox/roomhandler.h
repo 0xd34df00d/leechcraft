@@ -99,7 +99,6 @@ namespace Xoox
 		void HandleRenameStart (const RoomParticipantEntry_ptr& entry,
 				const QString& nick, const QString& newNick);
 
-		void MakeStatusChangedMessage (const QXmppPresence&, const QString&);
 		void MakeNickChangeMessage (const QString&, const QString&);
 		void MakeKickMessage (const QString&, const QString&);
 		void MakeBanMessage (const QString&, const QString&);

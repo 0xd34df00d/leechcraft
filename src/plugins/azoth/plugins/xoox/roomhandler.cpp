@@ -99,26 +99,6 @@ namespace Xoox
 			Join ();
 	}
 
-	void RoomHandler::MakeStatusChangedMessage (const QXmppPresence& pres, const QString& nick)
-	{
-		const auto& state = StateToString (static_cast<State> (pres.availableStatusType () + 1));
-		const auto& msg = tr ("%1 changed status to %2 (%3)")
-				.arg (nick)
-				.arg (state)
-				.arg (pres.statusText ());
-
-		const auto message = new RoomPublicMessage (msg,
-				IMessage::Direction::In,
-				CLEntry_,
-				IMessage::Type::StatusMessage,
-				IMessage::SubType::ParticipantStatusChange,
-				GetParticipantEntry (nick));
-		message->setProperty ("Azoth/Nick", nick);
-		message->setProperty ("Azoth/TargetState", state);
-		message->setProperty ("Azoth/StatusText", pres.statusText ());
-		CLEntry_->HandleMessage (message);
-	}
-
 	void RoomHandler::MakeNickChangeMessage (const QString& oldNick, const QString& newNick)
 	{
 		QString msg = tr ("%1 changed nick to %2")
@@ -613,8 +593,6 @@ namespace Xoox
 		const auto& entry = GetParticipantEntry (nick);
 
 		entry->HandlePresence (pres, QString ());
-		if (XooxUtil::PresenceToStatus (pres) != entry->GetStatus (QString ()))
-			MakeStatusChangedMessage (pres, nick);
 
 		const auto& item = pres.mucItem ();
 		if (item.affiliation () != entry->GetAffiliation () ||
