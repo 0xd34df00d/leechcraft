@@ -210,37 +210,7 @@ namespace LC::Azoth::Acetamide
 		if (!existed)
 			emit CM_->GetAccount ()->GetAccountEmitter ().gotCLItems ({ entry.get () });
 
-		MakeJoinMessage (nickName);
-	}
-
-	void ChannelHandler::MakeJoinMessage (const QString& nick)
-	{
-		QString msg  = tr ("%1 joined the channel as %2")
-				.arg (nick,
-					  ChannelCLEntry_->Role2String (Nick2Entry_ [nick]->HighestRole ()));
-
-		const auto message = new ChannelPublicMessage (msg,
-				ChannelCLEntry_.get (),
-				IMessage::Type::StatusMessage,
-				IMessage::SubType::ParticipantJoin,
-				Nick2Entry_ [nick]);
-
-		ChannelCLEntry_->HandleMessage (message);
-	}
-
-	void ChannelHandler::MakeLeaveMessage (const QString& nick,
-			const QString& msg)
-	{
-		const auto& mess = msg.isEmpty () ?
-				tr ("%1 has left the channel").arg (nick) :
-				tr ("%1 has left the channel (%2)").arg (nick, msg);
-
-		const auto message = new ChannelPublicMessage (mess,
-				ChannelCLEntry_.get (),
-				IMessage::Type::StatusMessage,
-				IMessage::SubType::ParticipantLeave,
-				Nick2Entry_ [nick]);
-		ChannelCLEntry_->HandleMessage (message);
+		emit ChannelCLEntry_->GetMUCEntryEmitter ().participantJoined (*entry);
 	}
 
 	void ChannelHandler::MakeKickMessage (const QString& nick,
@@ -323,11 +293,10 @@ namespace LC::Azoth::Acetamide
 		RemoveThis ();
 	}
 
-	void ChannelHandler::LeaveParticipant (const QString& nick,
-			const QString& msg)
+	void ChannelHandler::LeaveParticipant (const QString& nick, const QString& msg)
 	{
-		if (Nick2Entry_.contains (nick))
-			MakeLeaveMessage (nick, msg);
+		if (const auto entry = Nick2Entry_.value (nick))
+			emit ChannelCLEntry_->GetMUCEntryEmitter ().participantLeaving (*entry, MucEvents::ParticipantLeft { msg });
 		RemoveUserFromChannel (nick);
 	}
 

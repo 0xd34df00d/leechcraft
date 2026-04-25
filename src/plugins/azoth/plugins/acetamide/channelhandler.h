@@ -72,8 +72,6 @@ namespace LC::Azoth::Acetamide
 		void SetChannelUser (const QString& nick,
 				const QString& user = QString (), const QString& host = QString ());
 
-		void MakeJoinMessage (const QString&);
-		void MakeLeaveMessage (const QString&, const QString&);
 		void MakeKickMessage (const QString&, const QString&,
 				const QString&);
 		void MakePermsChangedMessage (const QString&,
