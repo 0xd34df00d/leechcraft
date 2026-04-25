@@ -137,14 +137,6 @@ namespace Azoth
 			 */
 			ParticipantRoleAffiliationChange,
 
-			/** @brief Notifies about participant joining to a MUC room.
-			 */
-			ParticipantJoin,
-
-			/** @brief Notifies about participant leaving a MUC room.
-			 */
-			ParticipantLeave,
-
 			/** @brief Notifies about participant in a MUC changing the
 			 * nick.
 			 */

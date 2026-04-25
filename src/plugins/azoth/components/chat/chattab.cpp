@@ -1510,11 +1510,6 @@ namespace Azoth
 					!XmlSettingsManager::Instance ().property ("ShowStatusChangesEventsInPrivates").toBool ())
 				return false;
 
-			if ((msg->GetMessageSubType () == IMessage::SubType::ParticipantJoin ||
-						msg->GetMessageSubType () == IMessage::SubType::ParticipantLeave) &&
-					!XmlSettingsManager::Instance ().property ("ShowJoinsLeaves").toBool ())
-				return false;
-
 			return true;
 		}
 	}
