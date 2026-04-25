@@ -9,10 +9,12 @@
 #include "chateventsadapter.h"
 #include <util/sll/qobjectrefcast.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/visitor.h>
 #include "util/azoth/util.h"
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/imucentry.h"
+#include "interfaces/azoth/imucperms.h"
 #include "../../xmlsettingsmanager.h"
 
 namespace LC::Azoth
@@ -47,7 +49,7 @@ namespace LC::Azoth
 						this,
 						&DirectAdapter::HandleStatusChange);
 			}
-
+		private:
 			void HandleChatState (ChatPartState state, const QString& variant)
 			{
 				if (state != CPSGone || !CheckShow ("ShowEndConversations"))
@@ -72,11 +74,124 @@ namespace LC::Azoth
 		class MucAdapter : public ChatEventsAdapter
 		{
 			IMUCEntry& Entry_;
+			IMUCPerms * const Perms_;
 		public:
-			MucAdapter (IMUCEntry& entry, QObject *parent)
+			MucAdapter (ICLEntry& entry, IMUCEntry& mucEntry, QObject *parent)
 			: ChatEventsAdapter { parent }
-			, Entry_ { entry }
+			, Entry_ { mucEntry }
+			, Perms_ { qobject_cast<IMUCPerms*> (entry.GetQObject ()) }
 			{
+				auto& emitter = Entry_.GetMUCEntryEmitter ();
+
+				const auto setupParticipant = [] (ICLEntry& part)
+				{
+				};
+
+				for (const auto part : Entry_.GetParticipants ())
+					setupParticipant (*part);
+				connect (&emitter,
+						&Emitters::MUCEntry::gotInitialParticipants,
+						this,
+						[setupParticipant] (const QList<ICLEntry*>& parts)
+						{
+							for (const auto part : parts)
+								setupParticipant (*part);
+						});
+
+				connect (&emitter,
+						&Emitters::MUCEntry::participantJoined,
+						this,
+						[this, setupParticipant] (ICLEntry& part)
+						{
+							EmitJoinEvent (part);
+							setupParticipant (part);
+						});
+				connect (&emitter,
+						&Emitters::MUCEntry::participantLeaving,
+						this,
+						[this] (ICLEntry& part, const MucEvents::ParticipantLeaveInfo& info)
+						{
+							part.GetCLEntryEmitter ().disconnect (this);
+							EmitLeaveEvent (part, info);
+						});
+			}
+		private:
+			static QString MakeJoinString (const ICLEntry& part, QStringList perms)
+			{
+				const auto& name = part.GetEntryName ();
+				switch (perms.size ())
+				{
+				case 0:
+					return tr ("%1 has entered the room").arg (name);
+				case 1:
+					return tr ("%1 has entered the room as %2").arg (name, perms [0]);
+				default:
+				{
+					const auto& last = perms.takeLast ();
+					return tr ("%1 has entered the room as %2 and %3").arg (name, perms.join (u", "_qsv), last);
+				}
+				}
+			}
+
+			void EmitJoinEvent (const ICLEntry& part)
+			{
+				if (!CheckShow ("ShowJoinsLeaves"))
+					return;
+
+				QStringList permsStrings;
+				if (Perms_)
+					for (const auto& permsList : Perms_->GetPerms (part))
+						for (const auto& perm : permsList)
+							permsStrings << Perms_->GetUserString (perm);
+				emit gotEvent ({ .Text_ { MakeJoinString (part, permsStrings) } });
+			}
+
+			static QString GetOutActionString (MucEvents::ParticipantForcedOut::Action action)
+			{
+				switch (action)
+				{
+				case MucEvents::ParticipantForcedOut::Action::Kicked:
+					return tr ("kicked");
+				case MucEvents::ParticipantForcedOut::Action::Banned:
+					return tr ("banned");
+				}
+				std::unreachable ();
+			}
+
+			static QString MakeLeaveString (const ICLEntry& part, const MucEvents::ParticipantLeaveInfo& info)
+			{
+				const auto& name = part.GetEntryName ();
+				return Util::Visit (info,
+						[&name] (const MucEvents::ParticipantLeft& event)
+						{
+							if (!CheckShow ("ShowJoinsLeaves"))
+								return QString {};
+
+							if (event.Message_.isEmpty ())
+								return tr ("%1 has left the room").arg (name);
+							return tr ("%1 has left the room: %2").arg (name, event.Message_);
+						},
+						[&name] (const MucEvents::ParticipantForcedOut& event)
+						{
+							const auto& action = GetOutActionString (event.Action_);
+
+							const auto hasActor = static_cast<bool> (event.Actor_);
+							const auto hasReason = !event.Reason_.isEmpty ();
+							if (hasActor && hasReason)
+								return tr ("%1 has been %2 by %3: %4").arg (name, action, event.Actor_->GetEntryName (), event.Reason_);
+							if (hasActor)
+								return tr ("%1 has been %2 by %3").arg (name, action, event.Actor_->GetEntryName ());
+							if (hasReason)
+								return tr ("%1 has been %2: %3").arg (name, action, event.Reason_);
+							return tr ("%1 has been %2").arg (name, action);
+						});
+			}
+
+			void EmitLeaveEvent (const ICLEntry& part, const MucEvents::ParticipantLeaveInfo& info)
+			{
+				if (const auto& str = MakeLeaveString (part, info);
+					!str.isEmpty ())
+					emit gotEvent ({ .Text_ { str } });
 			}
 		};
 	}
@@ -90,7 +205,7 @@ namespace LC::Azoth
 		case ICLEntry::EntryType::UnauthEntry:
 			return new DirectAdapter { entry, parent };
 		case ICLEntry::EntryType::MUC:
-			return new MucAdapter { qobject_ref_cast<IMUCEntry> (entry.GetQObject ()), parent };
+			return new MucAdapter { entry, qobject_ref_cast<IMUCEntry> (entry.GetQObject ()), parent };
 		}
 
 		qFatal () << "unknown entry type:" << static_cast<int> (entry.GetEntryType ());
