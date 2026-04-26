@@ -617,32 +617,38 @@ namespace Xoox
 			HandleRenameStart (entry, nick, item.nick ());
 			return;
 		}
-		else if (pres.mucStatusCodes ().contains (301))
-			!us ?
-				MakeBanMessage (nick, reason) :
-				QTimer::singleShot (0, this, [=, this] { CLEntry_->GetMUCEntryEmitter ().beenBanned (reason); });
-		else if (pres.mucStatusCodes ().contains (307))
-			!us ?
-				MakeKickMessage (nick, reason) :
-				QTimer::singleShot (0, this, [=, this] { CLEntry_->GetMUCEntryEmitter ().beenKicked (reason); });
-		else
-			emit CLEntry_->GetMUCEntryEmitter ().participantLeaving (*entry, MucEvents::ParticipantLeft { pres.statusText () });
 
-		const auto checkRejoin = Util::MakeScopeGuard ([this]
+		const auto banned = pres.mucStatusCodes ().contains (301);
+		const auto kicked = pres.mucStatusCodes ().contains (307);
+
+		const auto checkRejoin = Util::MakeScopeGuard ([=, this]
 				{
-					if (Nick2Entry_.isEmpty () ||
-							std::all_of (Nick2Entry_.begin (), Nick2Entry_.end (),
-									[] (const RoomParticipantEntry_ptr& entry)
-										{ return entry->GetStatus ({}).State_ == SOffline; }))
+					if (!kicked && !banned && std::ranges::all_of (Nick2Entry_,
+								[] (const RoomParticipantEntry_ptr& entry) { return entry->GetStatus ({}).State_ == SOffline; }))
 						QTimer::singleShot (5000, this, &RoomHandler::Join);
 				});
 
 		if (us)
 		{
-			Leave ({}, false);
+			Leave ({});
+
+			auto& emitter = CLEntry_->GetMUCEntryEmitter ();
+			if (banned)
+				emit emitter.beenBanned (reason);
+			if (kicked)
+				emit emitter.beenKicked (reason);
+
 			return;
 		}
 
+		if (banned)
+			MakeBanMessage (nick, reason);
+		else if (kicked)
+			MakeKickMessage (nick, reason);
+		else
+			emit CLEntry_->GetMUCEntryEmitter ().participantLeaving (*entry, MucEvents::ParticipantLeft { pres.statusText () });
+
+		// TODO this will be unnecessary once messages become plain structs emitted from entries
 		if (entry->HasUnreadMsgs ())
 			entry->SetStatus (EntryStatus (SOffline, reason),
 					QString (), QXmppPresence (QXmppPresence::Unavailable));
