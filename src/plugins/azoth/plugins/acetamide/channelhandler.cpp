@@ -214,33 +214,6 @@ namespace LC::Azoth::Acetamide
 		emit ChannelCLEntry_->GetMUCEntryEmitter ().participantJoined (*entry, PastInitialNamesList_ ? AfterUs : BeforeUs);
 	}
 
-	void ChannelHandler::MakeKickMessage (const QString& nick,
-			const QString& msg, const QString& kicker)
-	{
-		QString mess;
-		QString reason;
-		if (!msg.isEmpty ())
-			reason = ":" + msg;
-
-		const QString& ourNick = CM_->GetOurNick ();
-
-		if (nick == ourNick)
-			mess = tr ("You have been kicked by %1 %2")
-					.arg (kicker, reason);
-		else if (kicker == ourNick)
-			mess = tr ("You kicked %1: %2")
-					.arg (nick, reason);
-		else
-			mess = tr ("%1 has been kicked by %2: %3")
-					.arg (nick, kicker, reason);
-
-		const auto message = new ChannelPublicMessage (std::move (mess),
-				ChannelCLEntry_.get (),
-				IMessage::Type::EventMessage,
-				IMessage::SubType::KickNotification);
-		ChannelCLEntry_->HandleMessage (message);
-	}
-
 	void ChannelHandler::MakePermsChangedMessage (const QString& nick,
 			ChannelRole role, bool isSet)
 	{
@@ -301,11 +274,17 @@ namespace LC::Azoth::Acetamide
 		RemoveUserFromChannel (nick);
 	}
 
-	void ChannelHandler::KickParticipant (const QString& kicker,
-			const QString& kickee, const QString& msg)
+	void ChannelHandler::KickParticipant (const QString& kicker, const QString& kickee, const QString& msg)
 	{
-		if (Nick2Entry_.contains (kickee))
-			MakeKickMessage (kickee, msg, kicker);
+		auto& emitter = ChannelCLEntry_->GetMUCEntryEmitter ();
+		if (kickee == CM_->GetOurNick ())
+			emit emitter.beenKicked (msg);
+		else if (const auto kickeeEntry = Nick2Entry_.value (kickee))
+		{
+			using enum MucEvents::ParticipantForcedOut::Action;
+			emit emitter.participantLeaving (*kickeeEntry,
+					MucEvents::ParticipantForcedOut { Nick2Entry_.value (kicker).get (), msg, Kicked });
+		}
 
 		RemoveUserFromChannel (kickee);
 	}
