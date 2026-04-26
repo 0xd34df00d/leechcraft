@@ -16,6 +16,7 @@ namespace LC::Azoth
 {
 	class IAccount;
 	class ICLEntry;
+	class IMUCEntry;
 	class ISupportPGP;
 
 	void AuthorizeEntry (ICLEntry*);
@@ -26,4 +27,7 @@ namespace LC::Azoth
 	bool ChoosePGPKey (ISupportPGP*, ICLEntry*);
 
 	QStringList GetMucParticipants (const QString& mucEntryId);
+
+	void RejoinMuc (const IMUCEntry& entry);
+	void RejoinMuc (IAccount& acc, const QVariantMap& identiyfingData);
 }

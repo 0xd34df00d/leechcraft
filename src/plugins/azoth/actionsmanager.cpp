@@ -21,6 +21,7 @@
 #include <util/xpc/defaulthookproxy.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/sll/prelude.h>
+#include <util/sll/qobjectrefcast.h>
 #include <util/sll/visitor.h>
 #include <util/sll/void.h>
 #include <util/sys/util.h>
@@ -369,42 +370,9 @@ namespace Azoth
 
 		void Reconnect (ICLEntry *entry)
 		{
-			auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ());
-			if (!mucEntry)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "requested reconnect on an entry"
-						<< entry->GetQObject ()
-						<< "that doesn't implement IMUCEntry";
-				return;
-			}
-
-			const auto acc = entry->GetParentAccount ();
-			const auto accObj = acc->GetQObject ();
-			auto proto = qobject_cast<IMUCProtocol*> (acc->GetParentProtocol ());
-			if (!proto)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "requested reconnect on an entry"
-						<< entry->GetHumanReadableID ()
-						<< "whose parent account doesn't implement IMUCProtocol";
-				return;
-			}
-
-			const auto& data = mucEntry->GetIdentifyingData ();
-			mucEntry->Leave ();
-
-			auto w = proto->GetMUCJoinWidget ();
-			auto imjw = qobject_cast<IMUCJoinWidget*> (w);
-			imjw->AccountSelected (accObj);
-			imjw->SetIdentifyingData (data);
-
-			QTimer::singleShot (1000,
-					[w, imjw, accObj]
-					{
-						imjw->Join (accObj);
-						w->deleteLater ();
-					});
+			auto& mucEntry = qobject_ref_cast<IMUCEntry> (entry->GetQObject ());
+			mucEntry.Leave ();
+			RejoinMuc (mucEntry);
 		}
 
 		void ConfigureMUC (ICLEntry *entry)
