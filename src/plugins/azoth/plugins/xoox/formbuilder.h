@@ -41,7 +41,7 @@ namespace Xoox
 		XMPPBobManager* BobManager () const;
 
 		QWidget* CreateForm (const QXmppDataForm&, QWidget* = 0);
-		QXmppDataForm GetForm ();
+		QXmppDataForm GetForm () const;
 
 		QString GetSavedUsername () const;
 		QString GetSavedPass () const;

@@ -29,11 +29,11 @@ namespace Xoox
 {
 	class FieldHandler
 	{
-		QMap<QWidget*, QXmppDataForm::Field*> Widget2Field_;
+		QMap<QWidget*, QXmppDataForm::Field> Widget2Field_;
 	public:
 		virtual ~FieldHandler () = default;
 
-		void CreateWidget (QXmppDataForm::Field& field, QFormLayout *layout)
+		void CreateWidget (const QXmppDataForm::Field& field, QFormLayout *layout)
 		{
 			QWidget *w = CreateWidgetImpl (field, layout);
 			if (!w)
@@ -47,22 +47,27 @@ namespace Xoox
 
 			w->setProperty ("Azoth/Xoox/IsRequired", field.isRequired ());
 
-			Widget2Field_ [w] = &field;
-		}
-
-		void Save ()
-		{
-			for (const auto& [widget, field] : Util::Stlize (Widget2Field_))
-			{
-				if (const auto& var = GetData (widget); !var.isNull ())
-					field->setValue (var);
-			}
+			Widget2Field_ [w] = field;
 		}
 
 		void Clear ()
 		{
 			qDeleteAll (Widget2Field_.keys ());
 			Widget2Field_.clear ();
+		}
+
+		QHash<QString, QXmppDataForm::Field> GetFields ()
+		{
+			QHash<QString, QXmppDataForm::Field> result;
+			for (const auto& [widget, field] : Widget2Field_.asKeyValueRange ())
+				if (const auto& var = GetData (widget);
+					!var.isNull ())
+				{
+					auto& updatedField = result [field.key ()];
+					updatedField = field;
+					updatedField.setValue (var);
+				}
+			return result;
 		}
 	protected:
 		virtual QWidget* CreateWidgetImpl (const QXmppDataForm::Field&, QFormLayout*) = 0;
@@ -323,11 +328,21 @@ namespace Xoox
 		return widget;
 	}
 
-	QXmppDataForm FormBuilder::GetForm ()
+	QXmppDataForm FormBuilder::GetForm () const
 	{
+		QHash<QString, QXmppDataForm::Field> updatedFields;
 		for (const auto& handler : Type2Handler_)
-			handler->Save ();
-		return Form_;
+			updatedFields.insert (handler->GetFields ());
+
+		auto fields = std::as_const (Form_).fields ();
+		for (auto& field : fields)
+			if (const auto it = updatedFields.find (field.key ());
+				it != updatedFields.end ())
+				field = *it;
+
+		auto result = Form_;
+		result.setFields (fields);
+		return result;
 	}
 
 	namespace
