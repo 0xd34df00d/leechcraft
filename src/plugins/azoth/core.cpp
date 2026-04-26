@@ -57,6 +57,7 @@
 #include "interfaces/azoth/ihistoryplugin.h"
 #include "interfaces/azoth/icanhavesslerrors.h"
 #include "interfaces/azoth/ichatstyleresourcesource.h"
+#include "util/azoth/util.h"
 
 #ifdef ENABLE_CRYPT
 #include "cryptomanager.h"
@@ -69,7 +70,6 @@
 #include "components/roster/cltooltipmanager.h"
 #include "components/transfers/transferjobmanager.h"
 #include "components/util/gui.h"
-#include "components/util/entries.h"
 #include "chattabsmanager.h"
 #include "pluginmanager.h"
 #include "proxyobject.h"

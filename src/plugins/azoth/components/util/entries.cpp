@@ -9,7 +9,6 @@
 #include "entries.h"
 #include <ranges>
 #include <QSettings>
-#include <QTimer>
 #include <util/sll/prelude.h>
 #include <util/sll/qobjectrefcast.h>
 #include <util/xpc/util.h>
@@ -18,8 +17,6 @@
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/imucentry.h>
-#include <interfaces/azoth/imucprotocol.h>
-#include <interfaces/azoth/imucjoinwidget.h>
 
 #ifdef ENABLE_CRYPT
 #include <interfaces/azoth/isupportpgp.h>
@@ -97,29 +94,5 @@ namespace LC::Azoth
 	{
 		auto& entry = qobject_ref_cast<IMUCEntry> (Core::Instance ().GetEntry (entryId));
 		return Util::Map (entry.GetParticipants (), &ICLEntry::GetEntryName);
-	}
-
-	void RejoinMuc (const IMUCEntry& entry)
-	{
-		const auto acc = dynamic_cast<const ICLEntry&> (entry).GetParentAccount ();
-		RejoinMuc (*acc, entry.GetIdentifyingData ());
-	}
-
-	void RejoinMuc (IAccount& account, const QVariantMap& identifyingData)
-	{
-		const auto accObj = account.GetQObject ();
-		auto& mucProto = qobject_ref_cast<IMUCProtocol> (accObj);
-
-		auto mucJoinWidget = mucProto.GetMUCJoinWidget ();
-		auto& imjw = qobject_ref_cast<IMUCJoinWidget> (mucJoinWidget);
-		imjw.AccountSelected (accObj);
-		imjw.SetIdentifyingData (identifyingData);
-
-		QTimer::singleShot (1000,
-				[mucJoinWidget, &imjw, accObj]
-				{
-					imjw.Join (accObj);
-					mucJoinWidget->deleteLater ();
-				});
 	}
 }

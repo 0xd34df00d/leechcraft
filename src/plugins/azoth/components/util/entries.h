@@ -27,7 +27,4 @@ namespace LC::Azoth
 	bool ChoosePGPKey (ISupportPGP*, ICLEntry*);
 
 	QStringList GetMucParticipants (const QString& mucEntryId);
-
-	void RejoinMuc (const IMUCEntry& entry);
-	void RejoinMuc (IAccount& acc, const QVariantMap& identiyfingData);
 }
