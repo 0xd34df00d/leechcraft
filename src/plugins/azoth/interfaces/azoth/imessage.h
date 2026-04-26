@@ -106,14 +106,6 @@ namespace Azoth
 			 */
 			Other,
 
-			/** This message notifies about someone being just kicked.
-			 */
-			KickNotification,
-
-			/** This message notifies about someone being just banned.
-			 */
-			BanNotification,
-
 			/** @brief Represents permission changes of a participant in
 			 * a chat or MUC room.
 			 */
