@@ -69,6 +69,7 @@
 #include "components/roster/cltooltipmanager.h"
 #include "components/transfers/transferjobmanager.h"
 #include "components/util/gui.h"
+#include "components/util/entries.h"
 #include "chattabsmanager.h"
 #include "pluginmanager.h"
 #include "proxyobject.h"
@@ -1189,14 +1190,19 @@ namespace LC::Azoth
 					this,
 					[entry, mucEntry] (const QString& reason)
 					{
+						const auto& name = entry->GetEntryName ();
+						const auto acc = entry->GetParentAccount ();
+						const QPointer accGuard { acc->GetQObject () };
+						const auto& mucData = mucEntry->GetIdentifyingData ();
 						const auto& text = reason.isEmpty () ?
-								tr ("You have been kicked from %1. Do you want to rejoin?").arg (entry->GetEntryName ()) :
-								tr ("You have been kicked from %1: %2. Do you want to rejoin?").arg (entry->GetEntryName (), reason);
+								tr ("You have been kicked from %1. Do you want to rejoin?").arg (name) :
+								tr ("You have been kicked from %1: %2. Do you want to rejoin?").arg (name, reason);
 						if (QMessageBox::question (nullptr,
 								"LeechCraft Azoth",
 								text,
-								QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-							mucEntry->Join ();
+								QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes &&
+								accGuard)
+							RejoinMuc (*acc, mucData);
 					});
 			connect (&mucEmitter,
 					&Emitters::MUCEntry::beenBanned,
