@@ -382,12 +382,12 @@ namespace LC::Azoth::Acetamide
 			ShowAnswer ("TOPIC", message);
 	}
 
-	void IrcServerHandler::GotKickCommand (const QString& nick,
-			const QString& channel, const QString& target,
-			const QString& msg)
+	void IrcServerHandler::GotKickCommand (const QString& kicker,
+			const QString& channel, const QString& kickee,
+			const QString& reason)
 	{
 		if (IsChannelExists (channel))
-			ChannelsManager_->KickParticipant (channel, target, msg, nick);
+			ChannelsManager_->KickParticipant (channel, kickee, reason, kicker);
 	}
 
 	void IrcServerHandler::KickParticipant (const QString& channel,

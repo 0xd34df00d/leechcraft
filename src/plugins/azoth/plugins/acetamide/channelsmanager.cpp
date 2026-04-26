@@ -158,10 +158,10 @@ namespace LC::Azoth::Acetamide
 	}
 
 	void ChannelsManager::KickParticipant (const QString& channel,
-			const QString& target, const QString& reason, const QString& who)
+			const QString& kickee, const QString& reason, const QString& kicker)
 	{
 		if (const auto handler = GetChannelHandler (channel))
-			handler->KickParticipant (target, reason, who);
+			handler->KickParticipant (kickee, reason, kicker);
 	}
 
 	void ChannelsManager::KickCommand (const QString& channel,

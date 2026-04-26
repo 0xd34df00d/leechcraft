@@ -79,8 +79,8 @@ namespace LC::Azoth::Acetamide
 				const QString& nick, const QString& msg);
 		void QuitParticipant (const QString& nick, const QString& msg);
 
-		void KickParticipant (const QString& channel, const QString& target,
-				const QString& reason, const QString& who);
+		void KickParticipant (const QString& channel, const QString& kickee,
+				const QString& reason, const QString& kicker);
 		void KickCommand (const QString& channel,
 				const QString& nick, const QString& reason);
 

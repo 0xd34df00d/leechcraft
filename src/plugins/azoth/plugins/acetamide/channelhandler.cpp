@@ -274,16 +274,16 @@ namespace LC::Azoth::Acetamide
 		RemoveUserFromChannel (nick);
 	}
 
-	void ChannelHandler::KickParticipant (const QString& kicker, const QString& kickee, const QString& msg)
+	void ChannelHandler::KickParticipant (const QString& kickee, const QString& reason, const QString& kicker)
 	{
 		auto& emitter = ChannelCLEntry_->GetMUCEntryEmitter ();
 		if (kickee == CM_->GetOurNick ())
-			emit emitter.beenKicked (msg);
+			emit emitter.beenKicked (reason);
 		else if (const auto kickeeEntry = Nick2Entry_.value (kickee))
 		{
 			using enum MucEvents::ParticipantForcedOut::Action;
 			emit emitter.participantLeaving (*kickeeEntry,
-					MucEvents::ParticipantForcedOut { Nick2Entry_.value (kicker).get (), msg, Kicked });
+					MucEvents::ParticipantForcedOut { Nick2Entry_.value (kicker).get (), reason, Kicked });
 		}
 
 		RemoveUserFromChannel (kickee);
