@@ -62,7 +62,7 @@ namespace LC::Azoth
 	void RejoinMuc (IAccount& account, const QVariantMap& identifyingData)
 	{
 		const auto accObj = account.GetQObject ();
-		auto& mucProto = qobject_ref_cast<IMUCProtocol> (accObj);
+		auto& mucProto = qobject_ref_cast<IMUCProtocol> (account.GetParentProtocol ());
 
 		auto mucJoinWidget = mucProto.GetMUCJoinWidget ();
 		auto& imjw = qobject_ref_cast<IMUCJoinWidget> (mucJoinWidget);
