@@ -100,8 +100,6 @@ namespace Xoox
 				const QString& nick, const QString& newNick);
 
 		void MakeNickChangeMessage (const QString&, const QString&);
-		void MakeKickMessage (const QString&, const QString&);
-		void MakeBanMessage (const QString&, const QString&);
 		void MakePermsChangedMessage (const QString&,
 				QXmppMucItem::Affiliation,
 				QXmppMucItem::Role,

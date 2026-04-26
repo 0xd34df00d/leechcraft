@@ -22,7 +22,6 @@
 #include <util/sll/prelude.h>
 #include <util/xpc/passutils.h>
 #include <util/azoth/util.h>
-#include <interfaces/azoth/iproxyobject.h>
 #include "glooxaccount.h"
 #include "roomclentry.h"
 #include "roompublicmessage.h"
@@ -111,46 +110,6 @@ namespace Xoox
 				IMessage::Type::StatusMessage,
 				IMessage::SubType::ParticipantNickChange,
 				GetParticipantEntry (newNick));
-		CLEntry_->HandleMessage (message);
-	}
-
-	void RoomHandler::MakeKickMessage (const QString& nick, const QString& reason)
-	{
-		QString msg;
-		if (reason.isEmpty ())
-			msg = tr ("%1 has been kicked")
-					.arg (nick);
-		else
-			msg = tr ("%1 has been kicked: %2")
-					.arg (nick)
-					.arg (reason);
-
-		const auto message = new RoomPublicMessage (msg,
-				IMessage::Direction::In,
-				CLEntry_,
-				IMessage::Type::StatusMessage,
-				IMessage::SubType::KickNotification,
-				GetParticipantEntry (nick));
-		CLEntry_->HandleMessage (message);
-	}
-
-	void RoomHandler::MakeBanMessage (const QString& nick, const QString& reason)
-	{
-		QString msg;
-		if (reason.isEmpty ())
-			msg = tr ("%1 has been banned")
-					.arg (nick);
-		else
-			msg = tr ("%1 has been banned: %2")
-					.arg (nick)
-					.arg (reason);
-
-		const auto message = new RoomPublicMessage (msg,
-				IMessage::Direction::In,
-				CLEntry_,
-				IMessage::Type::StatusMessage,
-				IMessage::SubType::BanNotification,
-				GetParticipantEntry (nick));
 		CLEntry_->HandleMessage (message);
 	}
 
@@ -587,6 +546,8 @@ namespace Xoox
 
 	void RoomHandler::handleParticipantRemoved (const QString& jid)
 	{
+		auto& emitter = CLEntry_->GetMUCEntryEmitter ();
+
 		const auto& pres = Room_->participantPresence (jid);
 
 		const auto nick = ClientConnection::Split (jid).Resource_;
@@ -617,7 +578,6 @@ namespace Xoox
 		{
 			Leave ({});
 
-			auto& emitter = CLEntry_->GetMUCEntryEmitter ();
 			if (banned)
 				emit emitter.beenBanned (reason);
 			if (kicked)
@@ -626,12 +586,15 @@ namespace Xoox
 			return;
 		}
 
+		using enum MucEvents::ParticipantForcedOut::Action;
+		MucEvents::ParticipantLeaveInfo leaveInfo;
 		if (banned)
-			MakeBanMessage (nick, reason);
+			leaveInfo = MucEvents::ParticipantForcedOut { .Reason_ = reason, .Action_ = Banned };
 		else if (kicked)
-			MakeKickMessage (nick, reason);
+			leaveInfo = MucEvents::ParticipantForcedOut { .Reason_ = reason, .Action_ = Kicked };
 		else
-			emit CLEntry_->GetMUCEntryEmitter ().participantLeaving (*entry, MucEvents::ParticipantLeft { pres.statusText () });
+			leaveInfo = MucEvents::ParticipantLeft { pres.statusText () };
+		emit emitter.participantLeaving (*entry, leaveInfo);
 
 		// TODO this will be unnecessary once messages become plain structs emitted from entries
 		if (entry->HasUnreadMsgs ())
