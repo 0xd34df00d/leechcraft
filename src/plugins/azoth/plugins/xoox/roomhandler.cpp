@@ -284,21 +284,6 @@ namespace Xoox
 			const QString& reason)
 	{
 		const auto& entry = GetParticipantEntry (nick);
-		if (aff == QXmppMucItem::OutcastAffiliation ||
-				role == QXmppMucItem::NoRole)
-		{
-			emit Account_->GetAccountEmitter ().removedCLItems ({ entry.get () });
-
-			if (aff == QXmppMucItem::OutcastAffiliation)
-				MakeBanMessage (nick, reason);
-			else
-				MakeKickMessage (nick, reason);
-
-			Nick2Entry_.remove (nick);
-
-			return;
-		}
-
 		entry->SetAffiliation (aff);
 		entry->SetRole (role);
 		MakePermsChangedMessage (nick, aff, role, reason);
