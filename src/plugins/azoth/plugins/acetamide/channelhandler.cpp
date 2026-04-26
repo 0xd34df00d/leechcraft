@@ -12,7 +12,6 @@
 #include "channelclentry.h"
 #include "channelpublicmessage.h"
 #include "ircaccount.h"
-#include "ircmessage.h"
 #include "ircserverhandler.h"
 #include "channelsmanager.h"
 
@@ -277,9 +276,10 @@ namespace LC::Azoth::Acetamide
 	void ChannelHandler::KickParticipant (const QString& kickee, const QString& reason, const QString& kicker)
 	{
 		auto& emitter = ChannelCLEntry_->GetMUCEntryEmitter ();
-		if (kickee == CM_->GetOurNick ())
-			emit emitter.beenKicked (reason);
-		else if (const auto kickeeEntry = Nick2Entry_.value (kickee))
+
+		const auto us = kickee == CM_->GetOurNick ();
+		if (const auto kickeeEntry = Nick2Entry_.value (kickee);
+			kickeeEntry && !us)
 		{
 			using enum MucEvents::ParticipantForcedOut::Action;
 			emit emitter.participantLeaving (*kickeeEntry,
@@ -287,6 +287,9 @@ namespace LC::Azoth::Acetamide
 		}
 
 		RemoveUserFromChannel (kickee);
+
+		if (us)
+			emit emitter.beenKicked (reason);
 	}
 
 	void ChannelHandler::SetRole (const ChannelParticipantEntry& entry, ChannelRole role, const QString&)
