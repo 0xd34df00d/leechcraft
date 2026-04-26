@@ -298,7 +298,7 @@ namespace LC::Azoth::ChatHistory
 			Ui_.Calendar_->setDateTextFormat ({ year, month, day }, fmt);
 	}
 
-	Util::ContextTask<void> ChatHistoryWidget::HandleSearch (const QString& text, ChatFindBox::FindFlags flags)
+	Util::ContextTask<void> ChatHistoryWidget::HandleSearch (QString text, ChatFindBox::FindFlags flags)
 	{
 		if (text.isEmpty ())
 			co_return;

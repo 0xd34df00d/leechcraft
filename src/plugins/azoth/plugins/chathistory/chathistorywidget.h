@@ -105,7 +105,7 @@ namespace LC::Azoth::ChatHistory
 
 		Util::ContextTask<void> UpdateDates ();
 
-		Util::ContextTask<void> HandleSearch (const QString& text, ChatFindBox::FindFlags flags);
+		Util::ContextTask<void> HandleSearch (QString text, ChatFindBox::FindFlags flags);
 
 		struct EntryChanged {};
 		Util::Either<EntryChanged, Util::Void> GuardEntryChanged (qint64 entryId) const;
