@@ -49,6 +49,8 @@ namespace Xoox
 		bool HadRequestedPassword_;
 
 		QXmppDiscoveryIq ServerDisco_;
+
+		bool VoluntaryLeave_ = false;
 	public:
 		RoomHandler (const QString& roomJID, const QString& ourNick,
 				bool asAutojoin, GlooxAccount*);
@@ -62,7 +64,7 @@ namespace Xoox
 		QString GetSubject () const;
 		void SetSubject (const QString&);
 		void Join ();
-		void Leave (const QString& msg, bool remove = true);
+		void Leave (const QString& msg);
 		RoomParticipantEntry* GetSelf ();
 		QString GetOurNick () const;
 		void SetOurNick (const QString&);

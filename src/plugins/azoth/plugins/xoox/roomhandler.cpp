@@ -93,8 +93,8 @@ namespace Xoox
 	void RoomHandler::SetPresence (QXmppPresence pres)
 	{
 		if (pres.type () == QXmppPresence::Unavailable)
-			Leave (pres.statusText (), false);
-		else if (!Room_->isJoined ())
+			Leave (pres.statusText ());
+		else
 			Join ();
 	}
 
@@ -158,7 +158,7 @@ namespace Xoox
 				text,
 				Core::Instance ().GetProxy (),
 				{
-					[this] { Leave ({}); },
+					[this] { RemoveThis (); },
 					[this] (const QString& pass)
 					{
 						HadRequestedPassword_ = true;
@@ -383,6 +383,7 @@ namespace Xoox
 
 	void RoomHandler::Join ()
 	{
+		VoluntaryLeave_ = false;
 		if (Room_->isJoined ())
 			return;
 
@@ -394,20 +395,10 @@ namespace Xoox
 		Room_->setSubject (subj);
 	}
 
-	void RoomHandler::Leave (const QString& msg, bool remove)
+	void RoomHandler::Leave (const QString& msg)
 	{
-		auto entries = Util::Map (Nick2Entry_, [] (const auto& ptr) -> ICLEntry* { return ptr.get (); });
-		if (RoomPseudoEntry_)
-			entries << RoomPseudoEntry_.get ();
-		if (!entries.isEmpty ())
-			emit Account_->GetAccountEmitter ().removedCLItems (entries);
-
+		VoluntaryLeave_ = true;
 		Room_->leave (msg);
-		Nick2Entry_.clear ();
-		RoomPseudoEntry_.reset ();
-
-		if (remove)
-			RemoveThis ();
 	}
 
 	RoomParticipantEntry* RoomHandler::GetSelf ()
@@ -574,7 +565,7 @@ namespace Xoox
 
 		if (us)
 		{
-			Leave ({});
+			RemoveThis ();
 
 			if (banned)
 				emit emitter.beenBanned (reason);
@@ -643,10 +634,18 @@ namespace Xoox
 
 	void RoomHandler::RemoveThis ()
 	{
-		emit Account_->GetAccountEmitter ().removedCLItems ({ CLEntry_ });
+		auto entries = Util::Map (Nick2Entry_, [] (const auto& ptr) -> ICLEntry* { return ptr.get (); });
+		if (RoomPseudoEntry_)
+			entries << RoomPseudoEntry_.get ();
+		entries << CLEntry_;
+		emit Account_->GetAccountEmitter ().removedCLItems (entries);
+
+		Nick2Entry_.clear ();
+		RoomPseudoEntry_.reset ();
+
 		Account_->GetClientConnection ()->Unregister (this);
+
 		Room_->deleteLater ();
-		Room_ = 0;
 		deleteLater ();
 	}
 }
