@@ -22,6 +22,7 @@
 #include <util/sll/prelude.h>
 #include <util/xpc/passutils.h>
 #include <util/azoth/util.h>
+#include "components/util/entries.h"
 #include "glooxaccount.h"
 #include "roomclentry.h"
 #include "roompublicmessage.h"
@@ -556,21 +557,20 @@ namespace Xoox
 		const auto banned = pres.mucStatusCodes ().contains (301);
 		const auto kicked = pres.mucStatusCodes ().contains (307);
 
-		const auto checkRejoin = Util::MakeScopeGuard ([=, this]
-				{
-					if (!kicked && !banned && std::ranges::all_of (Nick2Entry_,
-								[] (const RoomParticipantEntry_ptr& entry) { return entry->GetStatus ({}).State_ == SOffline; }))
-						QTimer::singleShot (5000, this, &RoomHandler::Join);
-				});
-
 		if (us)
 		{
 			RemoveThis ();
 
 			if (banned)
 				emit emitter.beenBanned (reason);
-			if (kicked)
+			else if (kicked)
 				emit emitter.beenKicked (reason);
+			else if (!VoluntaryLeave_)
+			{
+				qWarning () << "detected involuntary leave, rejoining" << RoomJID_;
+				const auto& data = CLEntry_->GetIdentifyingData ();
+				QTimer::singleShot (5000, Account_, [data, acc = Account_] { RejoinMuc (*acc, data); });
+			}
 
 			return;
 		}
