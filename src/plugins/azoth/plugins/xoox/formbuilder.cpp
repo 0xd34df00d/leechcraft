@@ -309,15 +309,21 @@ namespace Xoox
 			updatedFields.insert (handler->GetFields ());
 
 		auto fields = Form_.fields ();
+		if (type != QXmppDataForm::Type::Result)
+			fields.removeIf ([] (const QXmppDataForm::Field& field) { return field.key ().isEmpty (); });
+
 		for (auto& field : fields)
 			if (const auto it = updatedFields.find (field.key ());
 				it != updatedFields.end ())
 				field = *it;
 
-		auto result = Form_;
-		result.setType (type);
-		result.setFields (fields);
-		return result;
+		if (type != QXmppDataForm::Type::Result)
+			return { type, fields };
+
+		auto form = Form_;
+		form.setType (type);
+		form.setFields (fields);
+		return form;
 	}
 
 	namespace
