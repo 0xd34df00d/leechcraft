@@ -281,14 +281,14 @@ namespace Xoox
 	{
 		const auto client = Account_->GetClientConnection ();
 
-		FormBuilder fb { from, &client->Exts ().Get<XMPPBobManager> () };
+		FormBuilder fb { *form, from, &client->Exts ().Get<XMPPBobManager> () };
 
 		QDialog dia;
 		dia.setWindowTitle (tr ("Data form from %1").arg (from));
 		dia.setLayout (new QVBoxLayout ());
 
 		dia.layout ()->addWidget (new QLabel { tr ("You have received dataform from %1:").arg (from) });
-		dia.layout ()->addWidget (fb.CreateForm (*form));
+		dia.layout ()->addWidget (fb.CreateForm ());
 		auto box = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 		connect (box,
 				&QDialogButtonBox::accepted,

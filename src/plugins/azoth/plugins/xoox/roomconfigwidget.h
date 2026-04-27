@@ -13,6 +13,7 @@
 #include <QXmppDataForm.h>
 #include <QXmppMucIq.h>
 #include <interfaces/azoth/iconfigurablemuc.h>
+#include "formbuilder.h"
 #include "ui_roomconfigwidget.h"
 
 class QStandardItemModel;
@@ -37,8 +38,7 @@ namespace Xoox
 
 		Ui::RoomConfigWidget Ui_;
 
-		QWidget *FormWidget_ = nullptr;
-		std::shared_ptr<FormBuilder> FB_;
+		std::optional<FormBuilder> FB_;
 		RoomCLEntry *Room_;
 		QString JID_;
 		QXmppMucRoom * const RoomHandler_;

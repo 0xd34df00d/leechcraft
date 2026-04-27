@@ -14,6 +14,7 @@
 #include <QLineEdit>
 #include <QDomElement>
 #include <QtDebug>
+#include <util/sll/visitor.h>
 #include "xeps/xmppbobmanager.h"
 #include "util.h"
 
@@ -27,9 +28,6 @@ namespace Xoox
 	: QWidget (parent)
 	, Client_ (client)
 	, BobManager_ (client->findExtension<XMPPBobManager> ())
-	, FB_ ({}, BobManager_)
-	, Widget_ (0)
-	, State_ (State::Idle)
 	{
 		setLayout (new QVBoxLayout);
 
@@ -45,16 +43,16 @@ namespace Xoox
 
 	QString RegFormHandlerWidget::GetUser () const
 	{
-		return FormType_ == FTNew ?
-				FB_.GetSavedUsername () :
-				LFB_.GetUsername ();
+		return Util::Visit (FB_,
+				[] (NoForm) -> QString { throw std::runtime_error { "no form" }; },
+				[] (const auto& form) { return form.GetUsername (); });
 	}
 
 	QString RegFormHandlerWidget::GetPassword () const
 	{
-		return FormType_ == FTNew ?
-				FB_.GetSavedPass () :
-				LFB_.GetPassword ();
+		return Util::Visit (FB_,
+				[] (NoForm) -> QString { throw std::runtime_error { "no form" }; },
+				[] (const auto& form) { return form.GetPassword (); });
 	}
 
 	bool RegFormHandlerWidget::IsComplete () const
@@ -76,9 +74,7 @@ namespace Xoox
 			return true;
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown state"
-				<< static_cast<int> (State_);
+		qWarning () << "unknown state" << static_cast<int> (State_);
 		return false;
 	}
 
@@ -114,25 +110,24 @@ namespace Xoox
 		queryElem.setTagName ("query");
 		queryElem.setAttribute ("xmlns", XooxUtil::NsRegister);
 
-		switch (FormType_)
-		{
-		case FTLegacy:
-			for (const auto& elem : LFB_.GetFilledChildren ())
-				queryElem.appendChild (elem);
-			break;
-		case FTNew:
-		{
-			QByteArray arr;
-			{
-				QXmlStreamWriter w (&arr);
-				FB_.GetForm ().toXml (&w);
-			}
-			QDomDocument dom;
-			dom.setContent (arr);
-			queryElem.appendChild (dom.documentElement ());
-			break;
-		}
-		}
+		Util::Visit (FB_,
+				[] (NoForm) {},
+				[&] (const LegacyFormBuilder& lfb)
+				{
+					for (const auto& elem : lfb.GetFilledChildren ())
+						queryElem.appendChild (elem);
+				},
+				[&] (FormBuilder& fb)
+				{
+					QByteArray arr;
+					{
+						QXmlStreamWriter w (&arr);
+						fb.GetUpdatedForm ().toXml (&w);
+					}
+					QDomDocument dom;
+					dom.setContent (arr);
+					queryElem.appendChild (dom.documentElement ());
+				});
 
 		QXmppIq iq (QXmppIq::Set);
 		if (!ReqJID_.isEmpty ())
@@ -155,14 +150,13 @@ namespace Xoox
 
 	void RegFormHandlerWidget::ShowMessage (const QString& msg)
 	{
-		FB_.Clear ();
-		LFB_.Clear ();
+		FB_ = NoForm {};
 		Clear ();
 
 		layout ()->addWidget (new QLabel (msg));
 	}
 
-	void RegFormHandlerWidget::SetState (RegFormHandlerWidget::State state)
+	void RegFormHandlerWidget::SetState (State state)
 	{
 		State_ = state;
 		emit completeChanged ();
@@ -202,13 +196,13 @@ namespace Xoox
 		{
 			QXmppDataForm form;
 			form.parse (XooxUtil::XmppElem2DomElem (formElem));
-			Widget_ = FB_.CreateForm (form);
-			FormType_ = FTNew;
+			FB_.emplace<FormBuilder> (form);
+			Widget_ = std::get<FormBuilder> (FB_).CreateForm ();
 		}
 		else
 		{
-			Widget_ = LFB_.CreateForm (queryElem);
-			FormType_ = FTLegacy;
+			FB_.emplace<LegacyFormBuilder> ();
+			Widget_ = std::get<LegacyFormBuilder> (FB_).CreateForm (queryElem);
 		}
 
 		if (!Widget_)

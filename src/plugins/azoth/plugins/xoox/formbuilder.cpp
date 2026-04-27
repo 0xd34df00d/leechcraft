@@ -50,12 +50,6 @@ namespace Xoox
 			Widget2Field_ [w] = field;
 		}
 
-		void Clear ()
-		{
-			qDeleteAll (Widget2Field_.keys ());
-			Widget2Field_.clear ();
-		}
-
 		QHash<QString, QXmppDataForm::Field> GetFields ()
 		{
 			QHash<QString, QXmppDataForm::Field> result;
@@ -109,15 +103,10 @@ namespace Xoox
 
 		QVariant GetData (QWidget *widget) final
 		{
-			auto concrete = qobject_cast<WidgetT*> (widget);
-			if (!concrete)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to cast"
-						<< widget;
-				return {};
-			}
-			return GetDataImpl (concrete);
+			if (const auto concrete = qobject_cast<WidgetT*> (widget))
+				return GetDataImpl (concrete);
+			qWarning () << "unable to cast" << widget;
+			throw std::runtime_error { "unable to cast" + widget->objectName ().toStdString () };
 		}
 
 		WidgetT* CreateWidgetImpl (const QXmppDataForm::Field&, QFormLayout*) override = 0;
@@ -252,9 +241,10 @@ namespace Xoox
 		}
 	};
 
-	FormBuilder::FormBuilder (const QString& from, XMPPBobManager *bobManager)
-	: From_ (from)
-	, BobManager_ (bobManager)
+	FormBuilder::FormBuilder (const QXmppDataForm& form, const QString& from, XMPPBobManager *bobManager)
+	: Form_ { form }
+	, From_ { from }
+	, BobManager_ { bobManager }
 	{
 		Type2Handler_ [QXmppDataForm::Field::BooleanField].reset (new BooleanHandler ());
 		Type2Handler_ [QXmppDataForm::Field::FixedField].reset (new FixedHandler ());
@@ -268,12 +258,6 @@ namespace Xoox
 		Type2Handler_ [QXmppDataForm::Field::TextSingleField].reset (new SingleTextHandler (false, this));
 	}
 
-	void FormBuilder::Clear ()
-	{
-		for (auto& handler : Type2Handler_)
-			handler->Clear ();
-	}
-
 	XMPPBobManager* FormBuilder::BobManager () const
 	{
 		return BobManager_;
@@ -284,57 +268,46 @@ namespace Xoox
 		return From_;
 	}
 
-	QWidget* FormBuilder::CreateForm (const QXmppDataForm& form, QWidget *parent)
+	QWidget* FormBuilder::CreateForm (QWidget *parent)
 	{
-		if (form.isNull ())
+		if (Form_.isNull ())
 			return nullptr;
 
-		Form_ = form;
-
 		auto widget = new QWidget (parent);
-		widget->setWindowTitle (form.title ());
+		widget->setWindowTitle (Form_.title ());
 
 		auto layout = new QFormLayout;
 		widget->setLayout (layout);
 
-		if (!form.title ().isEmpty ())
-			layout->addRow (new QLabel (form.title ()));
-		if (!form.instructions ().isEmpty ())
-			layout->addRow (new QLabel (form.instructions ()));
+		if (!Form_.title ().isEmpty ())
+			layout->addRow (new QLabel (Form_.title ()));
+		if (!Form_.instructions ().isEmpty ())
+			layout->addRow (new QLabel (Form_.instructions ()));
 
 		try
 		{
-			for (auto& field : form.fields ())
-			{
-				const auto handler = Type2Handler_ [field.type ()];
-				if (!handler)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "unknown field type"
-							<< field.type ();
-					continue;
-				}
-				handler->CreateWidget (field, layout);
-			}
+			for (const auto& field : Form_.fields ())
+				if (const auto handler = Type2Handler_ [field.type ()])
+					handler->CreateWidget (field, layout);
+				else
+					qWarning () << "unknown field type" << field.type ();
 		}
 		catch (const std::exception& e)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< e.what ()
-					<< "while trying to process fields";
+			qWarning () << e.what () << "while trying to process fields";
 			return nullptr;
 		}
 
 		return widget;
 	}
 
-	QXmppDataForm FormBuilder::GetForm () const
+	QXmppDataForm FormBuilder::GetUpdatedForm () const
 	{
 		QHash<QString, QXmppDataForm::Field> updatedFields;
 		for (const auto& handler : Type2Handler_)
 			updatedFields.insert (handler->GetFields ());
 
-		auto fields = std::as_const (Form_).fields ();
+		auto fields = Form_.fields ();
 		for (auto& field : fields)
 			if (const auto it = updatedFields.find (field.key ());
 				it != updatedFields.end ())
@@ -347,24 +320,28 @@ namespace Xoox
 
 	namespace
 	{
-		QString GetFieldVal (const QXmppDataForm& form, const QString& name)
+		QString GetFieldVal (const auto& handlers, const QString& name)
 		{
-			for (const auto& field : form.fields ())
-				if (field.key () == name)
-					return field.value ().toString ();
+			for (const auto& handler : handlers)
+			{
+				const auto& fields = handler->GetFields ();
+				if (const auto it = fields.find (name);
+					it != fields.end ())
+					return it->value ().toString ();
+			}
 
 			return {};
 		}
 	}
 
-	QString FormBuilder::GetSavedUsername () const
+	QString FormBuilder::GetUsername () const
 	{
-		return GetFieldVal (Form_, "username");
+		return GetFieldVal (Type2Handler_, "username");
 	}
 
-	QString FormBuilder::GetSavedPass () const
+	QString FormBuilder::GetPassword () const
 	{
-		return GetFieldVal (Form_, "password");
+		return GetFieldVal (Type2Handler_, "password");
 	}
 }
 }

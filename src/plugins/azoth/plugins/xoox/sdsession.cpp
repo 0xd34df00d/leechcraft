@@ -439,12 +439,12 @@ namespace Xoox
 			return;
 		}
 
-		FormBuilder builder { {}, &Account_->GetClientConnection ()->Exts ().Get<XMPPBobManager> () };
-		const auto widget = builder.CreateForm (form);
+		FormBuilder builder { form, {}, &Account_->GetClientConnection ()->Exts ().Get<XMPPBobManager> () };
+		const auto widget = builder.CreateForm ();
 		if (!XooxUtil::RunFormDialog (widget))
 			return;
 
-		form = builder.GetForm ();
+		form = builder.GetUpdatedForm ();
 		form.setType (QXmppDataForm::Submit);
 
 		QXmppIq regIq;

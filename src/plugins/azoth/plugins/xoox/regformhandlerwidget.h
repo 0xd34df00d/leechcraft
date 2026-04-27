@@ -29,19 +29,15 @@ namespace Xoox
 
 		QXmppClient *Client_;
 		XMPPBobManager *BobManager_;
-		LegacyFormBuilder LFB_;
-		FormBuilder FB_;
-		QWidget *Widget_;
+
+		struct NoForm {};
+		std::variant<NoForm, FormBuilder, LegacyFormBuilder> FB_;
+
+		QWidget *Widget_ = nullptr;
 
 		QString LastStanzaID_;
 
 		QString ReqJID_;
-
-		enum FormType
-		{
-			FTLegacy,
-			FTNew
-		} FormType_;
 	public:
 		enum class State
 		{
@@ -53,7 +49,7 @@ namespace Xoox
 			AwaitingRegistrationResult
 		};
 	private:
-		State State_;
+		State State_ = State::Idle;
 	public:
 		RegFormHandlerWidget (QXmppClient*, QWidget* = 0);
 

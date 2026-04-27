@@ -25,7 +25,6 @@ namespace Xoox
 {
 	RoomConfigWidget::RoomConfigWidget (RoomCLEntry *room, QWidget *widget)
 	: QWidget (widget)
-	, FB_ (new FormBuilder)
 	, Room_ (room)
 	, JID_ (room->GetRoomHandler ()->GetRoomJID ())
 	, RoomHandler_ (room->GetParentAccount ()->GetClientConnection ()->GetMUCManager ()->addRoom (JID_))
@@ -90,7 +89,13 @@ namespace Xoox
 
 	void RoomConfigWidget::accept ()
 	{
-		auto form = FB_->GetForm ();
+		if (!FB_)
+		{
+			qWarning () << "no form";
+			return;
+		}
+
+		auto form = FB_->GetUpdatedForm ();
 		form.setType (QXmppDataForm::Submit);
 		RoomHandler_->setConfiguration (form);
 	}
@@ -184,10 +189,8 @@ namespace Xoox
 		if (sender () != RoomHandler_)
 			return;
 
-		FB_->Clear ();
-
-		FormWidget_ = FB_->CreateForm (form);
-		Ui_.ScrollArea_->setWidget (FormWidget_);
+		FB_.emplace (form);
+		Ui_.ScrollArea_->setWidget (FB_->CreateForm ());
 		emit dataReady ();
 	}
 

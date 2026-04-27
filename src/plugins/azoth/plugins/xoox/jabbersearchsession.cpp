@@ -96,12 +96,12 @@ namespace Xoox
 			QXmppDataForm form;
 			form.parse (XooxUtil::XmppElem2DomElem (xForm));
 
-			FormBuilder fb;
-			QWidget *w = fb.CreateForm (form);
+			FormBuilder fb { form };
+			QWidget *w = fb.CreateForm ();
 			if (!XooxUtil::RunFormDialog (w))
 				return;
 
-			form = fb.GetForm ();
+			form = fb.GetUpdatedForm ();
 			form.setType (QXmppDataForm::Submit);
 
 			SM_.SubmitSearchRequest (server, form);

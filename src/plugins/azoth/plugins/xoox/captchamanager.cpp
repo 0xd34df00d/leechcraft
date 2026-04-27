@@ -36,10 +36,10 @@ namespace Xoox
 
 	void CaptchaManager::HandleCaptchaReceived (const QString& jid, const QXmppDataForm& dataForm)
 	{
-		auto builder = std::make_shared<FormBuilder> (jid, &BobManager_);
+		auto builder = std::make_shared<FormBuilder> (dataForm, jid, &BobManager_);
 
 		auto dialog = new QDialog ();
-		auto widget = builder->CreateForm (dataForm, dialog);
+		auto widget = builder->CreateForm (dialog);
 		dialog->setWindowTitle (widget->windowTitle ().isEmpty () ?
 				tr ("Enter CAPTCHA") :
 				widget->windowTitle ());
@@ -64,7 +64,7 @@ namespace Xoox
 				[this, builder, jid] (int result)
 				{
 					if (result == QDialog::Accepted)
-						CaptchaManager_.SendResponse (jid, builder->GetForm ());
+						CaptchaManager_.SendResponse (jid, builder->GetUpdatedForm ());
 				});
 
 		dialog->show ();

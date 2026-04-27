@@ -106,16 +106,15 @@ namespace Xoox
 		CommandResultPage (const AdHocResult& result, GlooxAccount *acc, QWidget *parent = 0)
 		: QWizardPage { parent }
 		, Result_ { result }
-		, FB_ { {}, &acc->GetClientConnection ()->Exts ().Get<XMPPBobManager> () }
+		, FB_ { result.GetDataForm (), {}, &acc->GetClientConnection ()->Exts ().Get<XMPPBobManager> () }
 		{
 			Ui_.setupUi (this);
 			setCommitPage (true);
 
 			Ui_.Actions_->addItems (result.GetActions ());
 
-			const auto& form = result.GetDataForm ();
-			if (!form.isNull ())
-				Ui_.FormArea_->setWidget (FB_.CreateForm (form));
+			if (const auto formWidget = FB_.CreateForm ())
+				Ui_.FormArea_->setWidget (formWidget);
 			else
 				Ui_.FormArea_->hide ();
 
@@ -142,7 +141,7 @@ namespace Xoox
 
 		QXmppDataForm GetForm () const
 		{
-			return FB_.GetForm ();
+			return FB_.GetUpdatedForm ();
 		}
 
 		AdHocResult GetResult () const

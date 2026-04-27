@@ -28,23 +28,21 @@ namespace Xoox
 
 	class FormBuilder
 	{
-		QXmppDataForm Form_;
+		const QXmppDataForm Form_;
 		QHash<QXmppDataForm::Field::Type, FieldHandler_ptr> Type2Handler_;
 		QString From_;
 		XMPPBobManager *BobManager_;
 	public:
-		FormBuilder (const QString& = QString (), XMPPBobManager* = 0);
-
-		void Clear ();
+		explicit FormBuilder (const QXmppDataForm& form, const QString& from = {}, XMPPBobManager* = nullptr);
 
 		QString From () const;
 		XMPPBobManager* BobManager () const;
 
-		QWidget* CreateForm (const QXmppDataForm&, QWidget* = 0);
-		QXmppDataForm GetForm () const;
+		QWidget* CreateForm (QWidget *parent = nullptr);
+		QXmppDataForm GetUpdatedForm () const;
 
-		QString GetSavedUsername () const;
-		QString GetSavedPass () const;
+		QString GetUsername () const;
+		QString GetPassword () const;
 	};
 }
 }
