@@ -64,7 +64,7 @@ namespace Xoox
 				[this, builder, jid] (int result)
 				{
 					if (result == QDialog::Accepted)
-						CaptchaManager_.SendResponse (jid, builder->GetUpdatedForm ());
+						CaptchaManager_.SendResponse (jid, builder->GetUpdatedForm (QXmppDataForm::Submit));
 				});
 
 		dialog->show ();

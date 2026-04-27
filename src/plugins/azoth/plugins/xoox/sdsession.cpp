@@ -444,16 +444,13 @@ namespace Xoox
 		if (!XooxUtil::RunFormDialog (widget))
 			return;
 
-		form = builder.GetUpdatedForm ();
-		form.setType (QXmppDataForm::Submit);
-
 		QXmppIq regIq;
 		regIq.setType (QXmppIq::Set);
 		regIq.setTo (iq.from ());
 		QXmppElement elem;
 		elem.setTagName ("query");
 		elem.setAttribute ("xmlns", XooxUtil::NsRegister);
-		elem.appendChild (XooxUtil::Form2XmppElem (form));
+		elem.appendChild (XooxUtil::Form2XmppElem (builder.GetUpdatedForm (QXmppDataForm::Submit)));
 
 		regIq.setExtensions ({ elem });
 

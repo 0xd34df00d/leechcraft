@@ -95,9 +95,7 @@ namespace Xoox
 			return;
 		}
 
-		auto form = FB_->GetUpdatedForm ();
-		form.setType (QXmppDataForm::Submit);
-		RoomHandler_->setConfiguration (form);
+		RoomHandler_->setConfiguration (FB_->GetUpdatedForm (QXmppDataForm::Submit));
 	}
 
 	void RoomConfigWidget::on_AddPerm__released ()

@@ -139,9 +139,9 @@ namespace Xoox
 			return Ui_.Actions_->currentText ();
 		}
 
-		QXmppDataForm GetForm () const
+		QXmppDataForm GetForm (QXmppDataForm::Type type) const
 		{
-			return FB_.GetUpdatedForm ();
+			return FB_.GetUpdatedForm (type);
 		}
 
 		AdHocResult GetResult () const
@@ -260,7 +260,7 @@ namespace Xoox
 				return;
 
 			auto result = crp->GetResult ();
-			result.SetDataForm (crp->GetForm ());
+			result.SetDataForm (crp->GetForm (QXmppDataForm::Submit));
 			ProceedExecuting (result, action);
 		}
 	}

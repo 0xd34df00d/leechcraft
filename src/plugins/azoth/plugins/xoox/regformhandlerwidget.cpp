@@ -117,12 +117,12 @@ namespace Xoox
 					for (const auto& elem : lfb.GetFilledChildren ())
 						queryElem.appendChild (elem);
 				},
-				[&] (FormBuilder& fb)
+				[&] (const FormBuilder& fb)
 				{
 					QByteArray arr;
 					{
 						QXmlStreamWriter w (&arr);
-						fb.GetUpdatedForm ().toXml (&w);
+						fb.GetUpdatedForm (QXmppDataForm::Submit).toXml (&w);
 					}
 					QDomDocument dom;
 					dom.setContent (arr);

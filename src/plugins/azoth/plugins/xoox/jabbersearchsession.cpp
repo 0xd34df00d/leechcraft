@@ -101,10 +101,7 @@ namespace Xoox
 			if (!XooxUtil::RunFormDialog (w))
 				return;
 
-			form = fb.GetUpdatedForm ();
-			form.setType (QXmppDataForm::Submit);
-
-			SM_.SubmitSearchRequest (server, form);
+			SM_.SubmitSearchRequest (server, fb.GetUpdatedForm (QXmppDataForm::Submit));
 		}
 		else
 		{

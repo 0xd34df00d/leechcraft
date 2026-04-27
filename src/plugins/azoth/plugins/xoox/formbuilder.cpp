@@ -301,7 +301,7 @@ namespace Xoox
 		return widget;
 	}
 
-	QXmppDataForm FormBuilder::GetUpdatedForm () const
+	QXmppDataForm FormBuilder::GetUpdatedForm (QXmppDataForm::Type type) const
 	{
 		QHash<QString, QXmppDataForm::Field> updatedFields;
 		for (const auto& handler : Type2Handler_)
@@ -314,6 +314,7 @@ namespace Xoox
 				field = *it;
 
 		auto result = Form_;
+		result.setType (type);
 		result.setFields (fields);
 		return result;
 	}

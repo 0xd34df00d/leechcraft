@@ -305,9 +305,7 @@ namespace Xoox
 
 		QXmppMessage msg ("", from);
 		msg.setType (QXmppMessage::Normal);
-		auto subForm = fb.GetForm ();
-		subForm.setType (QXmppDataForm::Submit);
-		msg.setExtensions ({ XooxUtil::Form2XmppElem (subForm) });
+		msg.setExtensions ({ XooxUtil::Form2XmppElem (fb.GetUpdatedForm (QXmppDataForm::Submit)) });
 		client->GetClient ()->sendPacket (msg);
 	}
 

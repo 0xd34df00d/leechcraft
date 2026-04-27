@@ -39,7 +39,7 @@ namespace Xoox
 		XMPPBobManager* BobManager () const;
 
 		QWidget* CreateForm (QWidget *parent = nullptr);
-		QXmppDataForm GetUpdatedForm () const;
+		QXmppDataForm GetUpdatedForm (QXmppDataForm::Type) const;
 
 		QString GetUsername () const;
 		QString GetPassword () const;
