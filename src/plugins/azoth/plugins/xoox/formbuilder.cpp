@@ -221,13 +221,14 @@ namespace Xoox
 			tree->setSelectionMode (SelMode_);
 			tree->setHeaderHidden (true);
 
+			const auto& selectedValues = field.value ().toStringList ();
+
 			for (const auto& [name, value] : field.options ())
 			{
 				auto item = new QTreeWidgetItem (tree, { name });
 				item->setData (0, Qt::UserRole, value);
-
-				if (value == field.value ())
-					tree->setCurrentItem (item, 0, QItemSelectionModel::SelectCurrent);
+				if (selectedValues.contains (value))
+					item->setSelected (true);
 			}
 
 			layout->addRow (field.label (), tree);
