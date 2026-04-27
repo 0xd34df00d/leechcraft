@@ -212,12 +212,10 @@ namespace Xoox
 				.arg (pres.error ().condition ());
 			break;
 		}
-		const QString& text = tr ("Error for %1: %2 (original message: %3)")
-				.arg (nick)
-				.arg (hrText)
-				.arg (errorText.isEmpty () ?
-						tr ("no message") :
-						errorText);
+
+		const auto& text = errorText.isEmpty () ?
+				tr ("Error for %1: %2").arg (nick, hrText) :
+				tr ("Error for %1: %2 (original message: %3)").arg (nick, hrText, errorText);
 		const auto message = new RoomPublicMessage (text,
 				IMessage::Direction::In,
 				CLEntry_,
