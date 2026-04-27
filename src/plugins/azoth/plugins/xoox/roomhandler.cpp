@@ -186,8 +186,16 @@ namespace Xoox
 			hrText = tr ("nickname already taken");
 			break;
 		case QXmppStanza::Error::Forbidden:
-		case QXmppStanza::Error::NotAllowed:
 			hrText = tr ("access forbidden");
+			break;
+		case QXmppStanza::Error::Gone:
+			hrText = tr ("the room is no longer available");
+			break;
+		case QXmppStanza::Error::ItemNotFound:
+			hrText = tr ("the room is not found (did the room creator configure it?)");
+			break;
+		case QXmppStanza::Error::NotAllowed:
+			hrText = tr ("action not allowed");
 			break;
 		case QXmppStanza::Error::NotAuthorized:
 			hrText = tr ("password required");
@@ -257,9 +265,7 @@ namespace Xoox
 				auto df = std::make_unique<QXmppDataForm> ();
 				df->parse (XooxUtil::XmppElem2DomElem (elem));
 				if (df->isNull ())
-					qWarning () << Q_FUNC_INFO
-							<< "unable to parse form from"
-							<< msg.from ();
+					qWarning () << "unable to parse form from" << msg.from ();
 				else
 					HandlePendingForm (std::move (df), msg.from ());
 			}
@@ -269,9 +275,7 @@ namespace Xoox
 				QXmlStreamWriter w (&str);
 				w.setAutoFormatting (true);
 				elem.toXml (&w);
-				qWarning () << Q_FUNC_INFO
-						<< "unhandled <x> element"
-						<< str;
+				qWarning () << "unhandled <x> element" << str;
 			}
 		}
 	}
