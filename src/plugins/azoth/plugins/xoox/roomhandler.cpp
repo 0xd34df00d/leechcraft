@@ -492,6 +492,7 @@ namespace Xoox
 		if (!entry)
 		{
 			entry = std::make_shared<RoomParticipantEntry> (nick, this, Account_);
+			// TODO this won't be needed once messages are QObject-less
 			connect (entry.get (),
 					&RoomParticipantEntry::chatTabClosed,
 					entry.get (),
@@ -622,6 +623,8 @@ namespace Xoox
 					QString (), QXmppPresence (QXmppPresence::Unavailable));
 		else
 			RemoveEntry (entry.get ());
+
+		emit CLEntry_->GetMUCEntryEmitter ().participantLeft (*entry, leaveInfo);
 	}
 
 	bool RoomHandler::IsGateway () const

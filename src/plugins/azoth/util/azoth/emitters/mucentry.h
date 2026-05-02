@@ -108,10 +108,15 @@ namespace LC::Azoth::Emitters
 		 * - just created → `Emitter::Account::gotCLItems` shall still be emitted
 		 *   before these signals.
 		 * - about to be destroyed → `Emitter::Account::removedCLItems` shall
-		 *   still be emitted after these signals.
+		 *   still be emitted after `participantLeaving`.
 		 *
-		 * It is safe to query participant permissions, status, etc, within the
-		 * notification signals.
+		 * So, the expected signal flow is:
+		 * 1. `gotCLItems`
+		 * 2. `participantJoined`
+		 * 3. `participantLeaving`
+		 * 4. `removedCLItems`
+		 * 5. `participantLeft`
+		 * or the last two can be swapped.
 		 */
 		///@{
 
@@ -120,24 +125,57 @@ namespace LC::Azoth::Emitters
 		 * The participant might've joined the room before us (as per `order`),
 		 * in which case this signal is a part of the initial participants batch.
 		 *
+		 * It is safe to query participant permissions, status, etc, within the
+		 * connected slot.
+		 *
 		 * @param[out] participant The participant that has joined the room.
 		 * @param[out] order Whether the participant joined before or after us.
 		 *
 		 * @sa participantLeaving
+		 * @sa participantLeft
 		 */
 		void participantJoined (ICLEntry& participant, MucEvents::ParticipantJoinOrder order);
 
 		/** @brief Notifies that a `participant` is about to leave this room.
 		 *
+		 * The participant is still in the `IMUCEntry::GetParticipants()` list.
+		 *
 		 * This signal is emitted when the participant leaves the room voluntarily,
 		 * as well as he is kicked/banned.
 		 *
+		 * It is safe to query participant permissions, status, etc, within the
+		 * connected slot.
+		 *
 		 * @param[out] participant The participant that is leaving the room.
-		 * @param[out] leaveInfo The details of how the participant did leave the room.
+		 * @param[out] leaveInfo The details of why the participant is leaving the room.
 		 *
 		 * @sa participantJoined
+		 * @sa participantLeft
 		 */
 		void participantLeaving (ICLEntry& participant, const MucEvents::ParticipantLeaveInfo& leaveInfo);
+
+		/** @brief Notifies that a `participant` has just left the room.
+		 *
+		 * The participant is no longer in the `IMUCEntry::GetParticipants()` list.
+		 *
+		 * This signal is emitted when the participant leaves the room voluntarily,
+		 * as well as he is kicked/banned.
+		 *
+		 * The participant name, status, permissions, etc, are no longer available,
+		 * and while the corresponding functions can still be called, their return
+		 * values are unspecified (or, to simplify, return anything, just don't
+		 * crash).
+		 *
+		 * Whether this signal is emitted before or after the corresponding
+		 * `removedCLItems` (if the latter is emitted at all) is unspecified.
+		 *
+		 * @param[out] participant The participant that has left the room.
+		 * @param[out] leaveInfo The details of why the participant has left the room.
+		 *
+		 * @sa participantJoined
+		 * @sa participantLeaving
+		 */
+		void participantLeft (ICLEntry& participant, const MucEvents::ParticipantLeaveInfo& leaveInfo);
 
 		///@}
 	};

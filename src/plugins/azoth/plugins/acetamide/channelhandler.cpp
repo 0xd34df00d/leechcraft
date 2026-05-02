@@ -268,28 +268,33 @@ namespace LC::Azoth::Acetamide
 
 	void ChannelHandler::LeaveParticipant (const QString& nick, const QString& msg)
 	{
-		if (const auto entry = Nick2Entry_.value (nick))
-			emit ChannelCLEntry_->GetMUCEntryEmitter ().participantLeaving (*entry, MucEvents::ParticipantLeft { msg });
+		const MucEvents::ParticipantLeaveInfo leaveInfo = MucEvents::ParticipantLeft { msg };
+		const auto entry = Nick2Entry_.value (nick);
+		if (entry)
+			emit ChannelCLEntry_->GetMUCEntryEmitter ().participantLeaving (*entry, leaveInfo);
 		RemoveUserFromChannel (nick);
+		if (entry)
+			emit ChannelCLEntry_->GetMUCEntryEmitter ().participantLeft (*entry, leaveInfo);
 	}
 
 	void ChannelHandler::KickParticipant (const QString& kickee, const QString& reason, const QString& kicker)
 	{
 		auto& emitter = ChannelCLEntry_->GetMUCEntryEmitter ();
 
+		using enum MucEvents::ParticipantForcedOut::Action;
+		const MucEvents::ParticipantLeaveInfo leaveInfo = MucEvents::ParticipantForcedOut { Nick2Entry_.value (kicker).get (), reason, Kicked };
+
 		const auto us = kickee == CM_->GetOurNick ();
-		if (const auto kickeeEntry = Nick2Entry_.value (kickee);
-			kickeeEntry && !us)
-		{
-			using enum MucEvents::ParticipantForcedOut::Action;
-			emit emitter.participantLeaving (*kickeeEntry,
-					MucEvents::ParticipantForcedOut { Nick2Entry_.value (kicker).get (), reason, Kicked });
-		}
+		const auto kickeeEntry = Nick2Entry_.value (kickee);
+		if (kickeeEntry && !us)
+			emit emitter.participantLeaving (*kickeeEntry, leaveInfo);
 
 		RemoveUserFromChannel (kickee);
 
 		if (us)
 			emit emitter.beenKicked (reason);
+		else if (kickeeEntry)
+			emit emitter.participantLeft (*kickeeEntry, leaveInfo);
 	}
 
 	void ChannelHandler::SetRole (const ChannelParticipantEntry& entry, ChannelRole role, const QString&)
