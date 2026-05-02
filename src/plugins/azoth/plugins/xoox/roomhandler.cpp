@@ -325,6 +325,7 @@ namespace Xoox
 	{
 		HandleMessageExtensions (msg);
 
+		// TODO doesn't need to create the messages once it's migrated to QObject-less entries
 		const bool existed = Nick2Entry_.contains (nick);
 		const auto& entry = GetParticipantEntry (nick, false);
 		if (msg.type () == QXmppMessage::Chat && !nick.isEmpty ())
@@ -479,11 +480,14 @@ namespace Xoox
 		Nick2Entry_.remove (nick);
 	}
 
+	RoomParticipantEntry_ptr RoomHandler::FindParticipantEntry (const QString& nick) const
+	{
+		return nick.isEmpty () ? RoomPseudoEntry_ : Nick2Entry_.value (nick);
+	}
+
 	RoomParticipantEntry_ptr RoomHandler::GetParticipantEntry (const QString& nick, bool announce)
 	{
-		auto& entry = nick.isEmpty () ?
-				RoomPseudoEntry_ :
-				Nick2Entry_ [nick];
+		auto& entry = nick.isEmpty () ? RoomPseudoEntry_ : Nick2Entry_ [nick];
 
 		if (!entry)
 		{

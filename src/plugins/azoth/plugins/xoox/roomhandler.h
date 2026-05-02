@@ -80,11 +80,8 @@ namespace Xoox
 				QXmppMucItem::Role,
 				const QString&);
 		void HandleMessage (const QXmppMessage&, const QString&);
-		/** Creates a new entry for the given nick if it
-		 * doesn't exist already (and does so by calling
-		 * CreateParticipantEntry()) or just returns the
-		 * already existing one.
-		 */
+
+		RoomParticipantEntry_ptr FindParticipantEntry (const QString& nick) const;
 		RoomParticipantEntry_ptr GetParticipantEntry (const QString& nick, bool announce = true);
 
 		bool IsGateway () const;
