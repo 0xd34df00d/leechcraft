@@ -34,7 +34,6 @@
 #include "glooxprotocol.h"
 #include "formbuilder.h"
 #include "sdmanager.h"
-#include "core.h"
 
 namespace LC
 {
@@ -160,7 +159,7 @@ namespace Xoox
 				"password required to join this room.");
 		Util::GetPassword (GetPassKey (),
 				text,
-				Core::Instance ().GetProxy (),
+				GetProxyHolder (),
 				{
 					[this] { RemoveThis (); },
 					[this] (const QString& pass)
