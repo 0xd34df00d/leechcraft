@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "simpledialog.h"
+#include <QScreen>
 
 namespace LC
 {
@@ -17,7 +18,7 @@ namespace Azoth
 	{
 		Ui_.setupUi (this);
 	}
-	
+
 	void SimpleDialog::SetWidget (QWidget *w)
 	{
 		Ui_.Layout_->insertWidget (0, w);
@@ -25,6 +26,10 @@ namespace Azoth
 				SIGNAL (accepted ()),
 				w,
 				SLOT (accept ()));
+
+		const auto screenSize = screen ()->availableGeometry ().size ();
+		const auto maxSize = screenSize * 2 / 3;
+		resize (sizeHint ().expandedTo (QSize { 600, 400 }).boundedTo (maxSize));
 	}
 }
 }
