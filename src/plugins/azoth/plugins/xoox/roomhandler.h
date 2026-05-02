@@ -112,6 +112,8 @@ namespace Xoox
 
 		void RemoveEntry (RoomParticipantEntry*);
 
+		void SendLeave (const QString& reason);
+		void RemoveParticipants ();
 		void RemoveThis ();
 	};
 }

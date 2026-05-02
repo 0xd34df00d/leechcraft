@@ -94,7 +94,10 @@ namespace Xoox
 	void RoomHandler::SetPresence (QXmppPresence pres)
 	{
 		if (pres.type () == QXmppPresence::Unavailable)
-			Leave (pres.statusText ());
+		{
+			SendLeave (pres.statusText ());
+			RemoveParticipants ();
+		}
 		else
 			Join ();
 	}
@@ -400,8 +403,8 @@ namespace Xoox
 
 	void RoomHandler::Leave (const QString& msg)
 	{
-		VoluntaryLeave_ = true;
-		Room_->leave (msg);
+		SendLeave (msg);
+		RemoveThis ();
 	}
 
 	RoomParticipantEntry* RoomHandler::GetSelf ()
@@ -561,15 +564,20 @@ namespace Xoox
 
 		if (us)
 		{
-			RemoveThis ();
-
 			if (banned)
+			{
+				RemoveThis ();
 				emit emitter.beenBanned (reason);
+			}
 			else if (kicked)
+			{
+				RemoveThis ();
 				emit emitter.beenKicked (reason);
+			}
 			else if (!VoluntaryLeave_)
 			{
 				qWarning () << "detected involuntary leave, rejoining" << RoomJID_;
+				RemoveThis ();
 				const auto& data = CLEntry_->GetIdentifyingData ();
 				QTimer::singleShot (5000, Account_, [data, acc = Account_] { RejoinMuc (*acc, data); });
 			}
@@ -634,17 +642,28 @@ namespace Xoox
 			RoomPseudoEntry_.reset ();
 	}
 
-	void RoomHandler::RemoveThis ()
+	void RoomHandler::SendLeave (const QString& reason)
+	{
+		VoluntaryLeave_ = true;
+		Room_->leave (reason);
+	}
+
+	void RoomHandler::RemoveParticipants ()
 	{
 		auto entries = Util::Map (Nick2Entry_, [] (const auto& ptr) -> ICLEntry* { return ptr.get (); });
 		if (RoomPseudoEntry_)
 			entries << RoomPseudoEntry_.get ();
-		entries << CLEntry_;
-		emit Account_->GetAccountEmitter ().removedCLItems (entries);
+		if (!entries.isEmpty ())
+			emit Account_->GetAccountEmitter ().removedCLItems (entries);
 
 		Nick2Entry_.clear ();
 		RoomPseudoEntry_.reset ();
+	}
 
+	void RoomHandler::RemoveThis ()
+	{
+		RemoveParticipants ();
+		emit Account_->GetAccountEmitter ().removedCLItems ({ CLEntry_ });
 		Account_->GetClientConnection ()->Unregister (this);
 
 		Room_->deleteLater ();
