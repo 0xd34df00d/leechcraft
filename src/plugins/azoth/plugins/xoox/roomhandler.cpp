@@ -598,7 +598,9 @@ namespace Xoox
 
 	void RoomHandler::HandleParticipantRemoved (const QString& nick, const QXmppPresence& pres)
 	{
-		const auto& entry = GetParticipantEntry (nick);
+		const auto entry = FindParticipantEntry (nick);
+		if (!entry)
+			return;
 
 		const auto banned = pres.mucStatusCodes ().contains (301);
 		const auto kicked = pres.mucStatusCodes ().contains (307);
