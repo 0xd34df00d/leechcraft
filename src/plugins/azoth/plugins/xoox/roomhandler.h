@@ -91,10 +91,12 @@ namespace Xoox
 	private slots:
 		void handleParticipantAdded (const QString&);
 		void handleParticipantChanged (const QString&);
-		void handleParticipantRemoved (const QString&);
 
 		void requestVoice ();
 	private:
+		void HandleSelfRemoved (const QXmppPresence& removalPresence);
+		void HandleParticipantRemoved (const QString& nick, const QXmppPresence& removalPresence);
+
 		void HandleMessageExtensions (const QXmppMessage&);
 		void HandlePendingForm (std::unique_ptr<QXmppDataForm>, const QString&);
 

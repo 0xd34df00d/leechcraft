@@ -69,9 +69,20 @@ namespace Xoox
 				this,
 				SLOT (handleParticipantAdded (const QString&)));
 		connect (Room_,
-				SIGNAL (participantRemoved (const QString&)),
+				&QXmppMucRoom::participantRemoved,
 				this,
-				SLOT (handleParticipantRemoved (const QString&)));
+				[this] (const QString& jid)
+				{
+					const auto& nick = ClientConnection::Split (jid).Resource_;
+					const auto& pres = Room_->participantPresence (jid);
+					if (const auto newNick = pres.mucItem ().nick ();
+						!newNick.isEmpty () && newNick != nick)
+						HandleRenameStart (GetParticipantEntry (nick), nick, newNick);
+					else if (Room_->nickName () == nick)
+						HandleSelfRemoved (pres);
+					else
+						HandleParticipantRemoved (nick, pres);
+				});
 
 		QTimer::singleShot (0, this, [this] { Room_->join (); });
 	}
@@ -534,70 +545,6 @@ namespace Xoox
 			HandlePermsChanged (nick, item.affiliation (), item.role (), item.reason ());
 	}
 
-	void RoomHandler::handleParticipantRemoved (const QString& jid)
-	{
-		auto& emitter = CLEntry_->GetMUCEntryEmitter ();
-
-		const auto& pres = Room_->participantPresence (jid);
-
-		const auto nick = ClientConnection::Split (jid).Resource_;
-
-		const bool us = Room_->nickName () == nick;
-
-		const auto& entry = GetParticipantEntry (nick);
-		const auto& item = pres.mucItem ();
-		const auto& reason = item.reason ();
-		if (!item.nick ().isEmpty () &&
-				item.nick () != nick)
-		{
-			HandleRenameStart (entry, nick, item.nick ());
-			return;
-		}
-
-		const auto banned = pres.mucStatusCodes ().contains (301);
-		const auto kicked = pres.mucStatusCodes ().contains (307);
-
-		if (us)
-		{
-			if (banned)
-			{
-				RemoveThis ();
-				emit emitter.beenBanned (reason);
-			}
-			else if (kicked)
-			{
-				RemoveThis ();
-				emit emitter.beenKicked (reason);
-			}
-			else if (!VoluntaryLeave_)
-			{
-				qWarning () << "detected involuntary leave, rejoining" << RoomJID_;
-				RemoveThis ();
-				const auto& data = CLEntry_->GetIdentifyingData ();
-				QTimer::singleShot (5000, Account_, [data, acc = Account_] { RejoinMuc (*acc, data); });
-			}
-
-			return;
-		}
-
-		using enum MucEvents::ParticipantForcedOut::Action;
-		MucEvents::ParticipantLeaveInfo leaveInfo;
-		if (banned)
-			leaveInfo = MucEvents::ParticipantForcedOut { .Reason_ = reason, .Action_ = Banned };
-		else if (kicked)
-			leaveInfo = MucEvents::ParticipantForcedOut { .Reason_ = reason, .Action_ = Kicked };
-		else
-			leaveInfo = MucEvents::ParticipantLeft { pres.statusText () };
-		emit emitter.participantLeaving (*entry, leaveInfo);
-
-		// TODO this will be unnecessary once messages become plain structs emitted from entries
-		if (entry->HasUnreadMsgs ())
-			entry->SetStatus (EntryStatus (SOffline, reason),
-					QString (), QXmppPresence (QXmppPresence::Unavailable));
-		else
-			RemoveEntry (entry.get ());
-	}
-
 	void RoomHandler::requestVoice ()
 	{
 		QXmppDataForm::Field typeField (QXmppDataForm::Field::HiddenField);
@@ -616,6 +563,59 @@ namespace Xoox
 		msg.setExtensions ({ XooxUtil::Form2XmppElem (form) });
 
 		Account_->GetClientConnection ()->GetClient ()->sendPacket (msg);
+	}
+
+	void RoomHandler::HandleSelfRemoved (const QXmppPresence& pres)
+	{
+		auto& emitter = CLEntry_->GetMUCEntryEmitter ();
+
+		const auto banned = pres.mucStatusCodes ().contains (301);
+		const auto kicked = pres.mucStatusCodes ().contains (307);
+		const auto& reason = pres.mucItem ().reason ();
+
+		if (banned)
+		{
+			RemoveThis ();
+			emit emitter.beenBanned (reason);
+		}
+		else if (kicked)
+		{
+			RemoveThis ();
+			emit emitter.beenKicked (reason);
+		}
+		else if (!VoluntaryLeave_)
+		{
+			qWarning () << "detected involuntary leave, rejoining" << RoomJID_;
+			RemoveThis ();
+			const auto& data = CLEntry_->GetIdentifyingData ();
+			QTimer::singleShot (5000, Account_, [data, acc = Account_] { RejoinMuc (*acc, data); });
+		}
+	}
+
+	void RoomHandler::HandleParticipantRemoved (const QString& nick, const QXmppPresence& pres)
+	{
+		const auto& entry = GetParticipantEntry (nick);
+
+		const auto banned = pres.mucStatusCodes ().contains (301);
+		const auto kicked = pres.mucStatusCodes ().contains (307);
+		const auto& reason = pres.mucItem ().reason ();
+
+		using enum MucEvents::ParticipantForcedOut::Action;
+		MucEvents::ParticipantLeaveInfo leaveInfo;
+		if (banned)
+			leaveInfo = MucEvents::ParticipantForcedOut { .Reason_ = reason, .Action_ = Banned };
+		else if (kicked)
+			leaveInfo = MucEvents::ParticipantForcedOut { .Reason_ = reason, .Action_ = Kicked };
+		else
+			leaveInfo = MucEvents::ParticipantLeft { pres.statusText () };
+		emit CLEntry_->GetMUCEntryEmitter ().participantLeaving (*entry, leaveInfo);
+
+		// TODO this will be unnecessary once messages become plain structs emitted from entries
+		if (entry->HasUnreadMsgs ())
+			entry->SetStatus (EntryStatus (SOffline, reason),
+					QString (), QXmppPresence (QXmppPresence::Unavailable));
+		else
+			RemoveEntry (entry.get ());
 	}
 
 	bool RoomHandler::IsGateway () const
