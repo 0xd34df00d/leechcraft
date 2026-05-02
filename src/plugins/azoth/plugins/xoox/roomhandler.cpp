@@ -7,9 +7,8 @@
  **********************************************************************/
 
 #include "roomhandler.h"
-#include <QMessageBox>
-#include <QInputDialog>
 #include <QtDebug>
+#include <QDialog>
 #include <QVBoxLayout>
 #include <QDialogButtonBox>
 #include <QLabel>
@@ -17,12 +16,10 @@
 #include <QXmppVCardIq.h>
 #include <QXmppMucManager.h>
 #include <QXmppClient.h>
-#include <util/sll/util.h>
 #include <util/sll/eithercont.h>
 #include <util/sll/prelude.h>
 #include <util/xpc/passutils.h>
 #include <util/azoth/util.h>
-#include "components/util/entries.h"
 #include "glooxaccount.h"
 #include "roomclentry.h"
 #include "roompublicmessage.h"
@@ -31,7 +28,6 @@
 #include "clientconnectionextensionsmanager.h"
 #include "glooxmessage.h"
 #include "util.h"
-#include "glooxprotocol.h"
 #include "formbuilder.h"
 #include "sdmanager.h"
 
