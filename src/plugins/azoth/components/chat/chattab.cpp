@@ -1269,6 +1269,10 @@ namespace Azoth
 				&QObject::destroyed,
 				adapter,
 				&ChatEventsAdapter::deleteLater);
+		connect (entry->GetQObject (),
+				&QObject::destroyed,
+				adapter,
+				&ChatEventsAdapter::deleteLater);
 
 		ReinitEntryTypeSpecific ();
 
