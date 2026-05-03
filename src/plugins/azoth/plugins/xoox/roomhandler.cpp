@@ -656,7 +656,7 @@ namespace Xoox
 
 	void RoomHandler::RemoveParticipants ()
 	{
-		auto entries = Util::Map (Nick2Entry_, [] (const auto& ptr) -> ICLEntry* { return ptr.get (); });
+		auto entries = GetParticipants ();
 		if (RoomPseudoEntry_)
 			entries << RoomPseudoEntry_.get ();
 		if (!entries.isEmpty ())
