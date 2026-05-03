@@ -149,40 +149,8 @@ namespace LC::Azoth
 
 	void ChatTabsManager::UpdateEntryMapping (const QString& id)
 	{
-		if (!Entry2Tab_.contains (id))
-			return;
-
-		const auto tab = Entry2Tab_ [id];
-		tab->SetEnabled (true);
-		tab->ReinitEntry ();
-	}
-
-	void ChatTabsManager::HandleEntryAdded (ICLEntry *entry)
-	{
-		if (entry->GetEntryType () != ICLEntry::EntryType::PrivateChat)
-			return;
-
-		UpdateMUCTab (entry->GetParentCLEntry ());
-	}
-
-	void ChatTabsManager::HandleEntryRemoved (ICLEntry *entry)
-	{
-		if (entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
-			UpdateMUCTab (entry->GetParentCLEntry ());
-
-		if (!Entry2Tab_.contains (entry->GetEntryID ()))
-			return;
-
-		const auto tab = Entry2Tab_ [entry->GetEntryID ()];
-		tab->SetEnabled (false);
-		disconnect (entry->GetQObject (),
-				0,
-				this,
-				0);
-		disconnect (entry->GetQObject (),
-				0,
-				tab,
-				0);
+		if (const auto tab = Entry2Tab_.value (id))
+			tab->ReinitEntry ();
 	}
 
 	void ChatTabsManager::HandleInMessage (IMessage *msg)
@@ -247,19 +215,6 @@ namespace LC::Azoth
 
 		tab->TabMadeCurrent ();
 		return false;
-	}
-
-	void ChatTabsManager::UpdateMUCTab (ICLEntry *muc)
-	{
-		if (!muc)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "passed obj doesn't implement ICLEntry";
-			return;
-		}
-
-		if (Entry2Tab_.contains (muc->GetEntryID ()))
-			Entry2Tab_ [muc->GetEntryID ()]->HandleMUCParticipantsChanged ();
 	}
 
 	void ChatTabsManager::RestoreChat (const RestoreChatInfo& info, QObject *entryObj)

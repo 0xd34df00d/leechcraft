@@ -220,16 +220,8 @@ namespace Azoth
 		DummyMsgManager::Instance ().ClearMessages (GetEntry<QObject> ());
 		PrepareTheme ();
 
-		auto entry = GetEntry<ICLEntry> ();
-		const int autoNum = XmlSettingsManager::Instance ()
-				.property ("ShowLastNMessages").toInt ();
-		if (entry->GetAllMessages ().size () <= 100 &&
-				entry->GetEntryType () != ICLEntry::EntryType::MUC &&
-				autoNum)
-			RequestLogs (autoNum);
-
+		InitEntrySpecific ();
 		ReinitEntry ();
-		CheckMUC ();
 		InitExtraActions ();
 		RegisterSettings ();
 
@@ -237,8 +229,6 @@ namespace Azoth
 				this,
 				GetEntry<QObject> (),
 				Ui_.View_);
-
-		HandleMUCParticipantsChanged ();
 
 		connect (Core::Instance ().GetCustomChatStyleManager (),
 				SIGNAL (accountStyleChanged (IAccount*)),
@@ -468,7 +458,7 @@ namespace Azoth
 		QString text = entry->GetEntryName ();
 		if (entry->GetHumanReadableID () != text)
 			text += " (" + entry->GetHumanReadableID () + ")";
-		text += ' ' + tr ("[%n participant(s)]", 0, parts);
+		text += ' ' + tr ("[%n participant(s)]", nullptr, parts);
 		Ui_.EntryInfo_->setText (text);
 	}
 
@@ -1114,8 +1104,7 @@ namespace Azoth
 
 	void ChatTab::handleSendButtonVisible ()
 	{
-		Ui_.SendButton_->setVisible (XmlSettingsManager::Instance ()
-					.property ("SendButtonVisible").toBool ());
+		Ui_.SendButton_->setVisible (XmlSettingsManager::Instance ().property ("SendButtonVisible").toBool ());
 	}
 
 	void ChatTab::handleAccountStyleChanged (IAccount *acc)
@@ -1202,6 +1191,38 @@ namespace Azoth
 		sm->RegisterShortcut ("org.LeechCraft.Azoth.OpenLastLink", openLinkInfo, shortcut);
 	}
 
+	void ChatTab::InitEntrySpecific ()
+	{
+		const auto entry = GetEntry<ICLEntry> ();
+
+		IsMUC_ = entry->GetEntryType () == ICLEntry::EntryType::MUC;
+
+		if (IsMUC_)
+		{
+			TabIcon_ = QIcon ("lcicons:/plugins/azoth/resources/images/azoth.svg");
+			Ui_.AvatarLabel_->hide ();
+
+			const int height = Util::AvailableGeometry (QCursor::pos ()).height ();
+			MUCEventLog_->setWindowTitle (tr ("MUC log for %1").arg (GetEntry<ICLEntry> ()->GetHumanReadableID ()));
+			MUCEventLog_->setStyleSheet ("background-color: rgb(0, 0, 0);");
+			MUCEventLog_->resize (600, height * 2 / 3);
+
+			XmlSettingsManager::Instance ().RegisterObject ("SeparateMUCEventLogWindow",
+					this, "handleSeparateMUCLog");
+			handleSeparateMUCLog (true);
+		}
+		else
+		{
+			Ui_.SubjectButton_->hide ();
+			Ui_.MUCEventsButton_->hide ();
+			TabIcon_ = ResourcesManager::Instance ().GetIconForState (entry->GetStatus ().State_);
+
+			const int autoNum = XmlSettingsManager::Instance ().property ("ShowLastNMessages").toInt ();
+			if (entry->GetAllMessages ().size () <= 100 && autoNum)
+				RequestLogs (autoNum);
+		}
+	}
+
 	void ChatTab::ReinitEntry ()
 	{
 		const auto entry = GetEntry<ICLEntry> ();
@@ -1223,15 +1244,14 @@ namespace Azoth
 				this,
 				&ChatTab::ReformatTitle);
 
-		ICLEntry *e = GetEntry<ICLEntry> ();
-		handleVariantsChanged (e->Variants ());
+		handleVariantsChanged (entry->Variants ());
 
-		QString infoText = e->GetEntryName ();
-		if (e->GetHumanReadableID () != infoText)
-			infoText += " (" + e->GetHumanReadableID () + ")";
+		auto infoText = entry->GetEntryName ();
+		if (entry->GetHumanReadableID () != infoText)
+			infoText += " (" + entry->GetHumanReadableID () + ")";
 		Ui_.EntryInfo_->setText (infoText);
 
-		const auto& accName = e->GetParentAccount ()->GetAccountName ();
+		const auto& accName = entry->GetParentAccount ()->GetAccountName ();
 		Ui_.AccountName_->setText (accName);
 
 		ReinitAvatar ();
@@ -1249,6 +1269,14 @@ namespace Azoth
 				&QObject::destroyed,
 				adapter,
 				&ChatEventsAdapter::deleteLater);
+
+		ReinitEntryTypeSpecific ();
+
+		SetEnabled (true);
+		connect (entry->GetQObject (),
+				&QObject::destroyed,
+				this,
+				[this] { SetEnabled (false); });
 	}
 
 	void ChatTab::ReinitAvatar ()
@@ -1279,48 +1307,27 @@ namespace Azoth
 				AvatarsManager_->GetAvatar (obj, IHaveAvatars::Size::Thumbnail)) >> avatarSetter;
 	}
 
-	void ChatTab::CheckMUC ()
+	void ChatTab::ReinitEntryTypeSpecific ()
 	{
-		const auto e = GetEntry<ICLEntry> ();
-
-		IsMUC_ = e->GetEntryType () == ICLEntry::EntryType::MUC;
-
-		if (IsMUC_ && !GetEntry<IMUCEntry> ())
-		{
-			qWarning () << e->GetEntryName () << "declares itself to be a MUC, but doesn't implement IMUCEntry";
-			IsMUC_  = false;
-		}
-
 		if (IsMUC_ )
-			HandleMUC ();
-		else
 		{
-			Ui_.SubjectButton_->hide ();
-			Ui_.MUCEventsButton_->hide ();
-			TabIcon_ = ResourcesManager::Instance ().GetIconForState (e->GetStatus ().State_);
+			HandleMUCParticipantsChanged ();
 
-			connect (&e->GetCLEntryEmitter (),
+			auto& emitter = GetEntry<IMUCEntry> ()->GetMUCEntryEmitter ();
+			connect (&emitter,
+					&Emitters::MUCEntry::participantJoined,
+					this,
+					&ChatTab::HandleMUCParticipantsChanged);
+			connect (&emitter,
+					&Emitters::MUCEntry::participantLeft,
+					this,
+					&ChatTab::HandleMUCParticipantsChanged);
+		}
+		else
+			connect (&GetEntry<ICLEntry> ()->GetCLEntryEmitter (),
 					&Emitters::CLEntry::chatPartStateChanged,
 					this,
 					&ChatTab::handleChatPartStateChanged);
-		}
-	}
-
-	void ChatTab::HandleMUC ()
-	{
-		TabIcon_ = QIcon ("lcicons:/plugins/azoth/resources/images/azoth.svg");
-		Ui_.AvatarLabel_->hide ();
-
-		const int height = Util::AvailableGeometry (QCursor::pos ()).height ();
-
-		MUCEventLog_->setWindowTitle (tr ("MUC log for %1")
-					.arg (GetEntry<ICLEntry> ()->GetHumanReadableID ()));
-		MUCEventLog_->setStyleSheet ("background-color: rgb(0, 0, 0);");
-		MUCEventLog_->resize (600, height * 2 / 3);
-
-		XmlSettingsManager::Instance ().RegisterObject ("SeparateMUCEventLogWindow",
-				this, "handleSeparateMUCLog");
-		handleSeparateMUCLog (true);
 	}
 
 	void ChatTab::InitExtraActions ()
@@ -1653,8 +1660,7 @@ namespace Azoth
 	void ChatTab::handleSeparateMUCLog (bool initial)
 	{
 		MUCEventLog_->clear ();
-		const bool isSep = XmlSettingsManager::Instance ()
-				.property ("SeparateMUCEventLogWindow").toBool ();
+		const bool isSep = XmlSettingsManager::Instance ().property ("SeparateMUCEventLogWindow").toBool ();
 
 		Ui_.MUCEventsButton_->setVisible (isSep);
 		if (!initial)

@@ -1721,8 +1721,6 @@ namespace LC::Azoth
 							if (open || !qobject_ref_cast<IMUCEntry> (entry->GetQObject ()).IsAutojoined ())
 								ChatTabsManager_->OpenChat (entry, false);
 						}
-
-						ChatTabsManager_->HandleEntryAdded (entry);
 					}
 				});
 		connect (&emitter,
@@ -1742,7 +1740,6 @@ namespace LC::Azoth
 							mucEntry->GetMUCEntryEmitter ().disconnect (this);
 
 						TooltipManager_->RemoveEntry (entry);
-						ChatTabsManager_->HandleEntryRemoved (entry);
 
 						for (auto clItem : Entry2Items_.value (entry))
 							RemoveCLItem (clItem);

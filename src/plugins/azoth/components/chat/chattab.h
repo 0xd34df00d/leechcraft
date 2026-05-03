@@ -204,9 +204,9 @@ namespace Azoth
 		void handleAccountStyleChanged (IAccount*);
 	private:
 		void BuildBasicActions ();
+		void InitEntrySpecific ();
 		void ReinitAvatar ();
-		void CheckMUC ();
-		void HandleMUC ();
+		void ReinitEntryTypeSpecific ();
 
 		void InitExtraActions ();
 		void AddManagedActions (bool first);

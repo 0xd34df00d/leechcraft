@@ -65,8 +65,6 @@ namespace Azoth
 
 		void UpdateEntryMapping (const QString&);
 
-		void HandleEntryAdded (ICLEntry*);
-		void HandleEntryRemoved (ICLEntry*);
 		void HandleInMessage (IMessage*);
 
 		void ChatMadeCurrent (ChatTab*);
@@ -77,7 +75,6 @@ namespace Azoth
 	protected:
 		bool eventFilter (QObject*, QEvent*);
 	private:
-		void UpdateMUCTab (ICLEntry*);
 		void RestoreChat (const RestoreChatInfo&, QObject*);
 		void CloseChatTab (ChatTab*, bool fromUser);
 	private slots:
