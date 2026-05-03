@@ -13,11 +13,15 @@
 #include <QDialogButtonBox>
 #include <QLabel>
 #include <QTimer>
-#include <QXmppVCardIq.h>
-#include <QXmppMucManager.h>
 #include <QXmppClient.h>
+#include <QXmppDiscoveryManager.h>
+#include <QXmppMucManager.h>
+#include <QXmppTask.h>
+#include <QXmppVCardIq.h>
 #include <util/sll/eithercont.h>
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
+#include <util/threads/coro.h>
 #include <util/xpc/passutils.h>
 #include <util/azoth/util.h>
 #include "glooxaccount.h"
@@ -29,7 +33,6 @@
 #include "glooxmessage.h"
 #include "util.h"
 #include "formbuilder.h"
-#include "sdmanager.h"
 
 namespace LC
 {
@@ -50,13 +53,16 @@ namespace Xoox
 	, CLEntry_ (new RoomCLEntry (this, asAutojoin, Account_))
 	, HadRequestedPassword_ (false)
 	{
-		const QString& server = jid.split ('@', Qt::SkipEmptyParts).value (1);
-		auto sdManager = Account_->GetClientConnection ()->GetSDManager ();
-
-		QPointer<RoomHandler> pThis (this);
-		sdManager->RequestInfo ([pThis] (const QXmppDiscoveryIq& iq)
-					{ if (pThis) pThis->ServerDisco_ = iq; },
-				server);
+		[] (RoomHandler *pthis, QString server) -> Util::ContextTask<void>
+		{
+			co_await Util::AddContextObject { *pthis };
+			const auto discoMgr = pthis->Account_->GetClientConnection ()->GetQXmppDiscoveryManager ();
+			const auto eitherReply = Util::EitherFromSwapped (co_await discoMgr->info (server));
+			const auto discoInfo = co_await Util::WithHandler (eitherReply,
+					[] (const QXmppError& error) { qWarning () << "error requesting server disco info:" << error.description; });
+			pthis->IsGateway_ = std::ranges::none_of (discoInfo.identities (),
+					[] (const QXmppDiscoIdentity& id) { return id.category () == "conference"_qs && id.type () == "text"_qs; });
+		} (this, jid.split ('@', Qt::SkipEmptyParts).value (1));
 
 		Room_->setNickName (ourNick.isEmpty () ? account->GetOurNick () : ourNick);
 
@@ -629,11 +635,7 @@ namespace Xoox
 
 	bool RoomHandler::IsGateway () const
 	{
-		if (ServerDisco_.identities ().size () != 1)
-			return true;
-
-		auto id = ServerDisco_.identities ().at (0);
-		return id.category () != "conference" || id.type () != "text";
+		return IsGateway_.value_or (true);
 	}
 
 	void RoomHandler::RemoveEntry (RoomParticipantEntry *entry)

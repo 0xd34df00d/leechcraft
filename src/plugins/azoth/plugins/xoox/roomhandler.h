@@ -48,7 +48,7 @@ namespace Xoox
 		QSet<QString> PendingNickChanges_;
 		bool HadRequestedPassword_;
 
-		QXmppDiscoveryIq ServerDisco_;
+		std::optional<bool> IsGateway_;
 
 		bool VoluntaryLeave_ = false;
 	public:
