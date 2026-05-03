@@ -633,7 +633,7 @@ namespace Xoox
 			return true;
 
 		auto id = ServerDisco_.identities ().at (0);
-		return id.category () == "conference" && id.type () != "text";
+		return id.category () != "conference" || id.type () != "text";
 	}
 
 	void RoomHandler::RemoveEntry (RoomParticipantEntry *entry)
