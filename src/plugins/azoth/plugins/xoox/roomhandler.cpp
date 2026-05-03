@@ -321,10 +321,10 @@ namespace Xoox
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
-		QXmppMessage msg ("", from);
+		QXmppMessage msg ({}, from);
 		msg.setType (QXmppMessage::Normal);
 		msg.setExtensions ({ XooxUtil::Form2XmppElem (fb.GetUpdatedForm (QXmppDataForm::Submit)) });
-		client->GetClient ()->sendPacket (msg);
+		client->GetClient ()->send (std::move (msg));
 	}
 
 	void RoomHandler::HandleMessage (const QXmppMessage& msg, const QString& nick)
@@ -572,8 +572,7 @@ namespace Xoox
 		QXmppMessage msg ({}, Room_->jid ());
 		msg.setType (QXmppMessage::Normal);
 		msg.setExtensions ({ XooxUtil::Form2XmppElem (form) });
-
-		Account_->GetClientConnection ()->GetClient ()->sendPacket (msg);
+		Account_->GetClientConnection ()->GetClient ()->send (std::move (msg));
 	}
 
 	void RoomHandler::HandleSelfRemoved (const QXmppPresence& pres)
