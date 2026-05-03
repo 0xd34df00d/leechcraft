@@ -11,6 +11,7 @@
 #include <expected>
 #include <optional>
 #include <type_traits>
+#include <variant>
 #include "overloaded.h"
 
 namespace LC::Util
@@ -162,6 +163,14 @@ namespace LC::Util
 			return !(e1 == e2);
 		}
 	};
+
+	template<typename L, typename R>
+	Either<L, R> EitherFromSwapped (const std::variant<R, L>& variant)
+	{
+		if (variant.index () == 0)
+			return std::get<0> (variant);
+		return Left<L> { std::get<1> (variant) };
+	}
 
 	template<template<typename> class Cont, typename L, typename R>
 	std::pair<Cont<L>, Cont<R>> Partition (const Cont<Either<L, R>>& eithers)
