@@ -661,9 +661,7 @@ namespace Xoox
 	{
 		const bool existed = Variants_.contains (variant);
 		auto& varInfo = Variants_ [variant];
-		const bool wasOffline = existed ?
-				varInfo.CurrentStatus_.State_ == SOffline :
-				false;
+		const bool wasOffline = existed && varInfo.CurrentStatus_.State_ == SOffline;
 
 		if (existed &&
 				status == varInfo.CurrentStatus_ &&

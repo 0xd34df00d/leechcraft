@@ -610,12 +610,9 @@ namespace Xoox
 	QObject* ClientConnection::GetCLEntry (const QString& bareJid, const QString& variant) const
 	{
 		if (const auto rh = RoomHandlers_.value (bareJid))
-		{
-			if (variant.isEmpty ())
-				return rh->GetCLEntry ();
-			else
-				return rh->GetParticipantEntry (variant).get ();
-		}
+			return variant.isEmpty () ?
+					static_cast<QObject*> (rh->GetCLEntry ()) :
+					rh->GetParticipantEntry (variant).get ();
 		if (bareJid == OurBareJID_)
 			return SelfContact_;
 		if (const auto entry = JID2CLEntry_.value (bareJid))
