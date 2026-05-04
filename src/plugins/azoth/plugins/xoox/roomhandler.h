@@ -91,6 +91,9 @@ namespace Xoox
 
 		void requestVoice ();
 	private:
+		void HandlePrivateMessage (const QXmppMessage& msg, const QString& nick);
+		void HandlePublicMessage (const QXmppMessage& msg, const QString& nick);
+
 		void HandleSelfRemoved (const QXmppPresence& removalPresence);
 		void HandleParticipantRemoved (const QString& nick, const QXmppPresence& removalPresence);
 

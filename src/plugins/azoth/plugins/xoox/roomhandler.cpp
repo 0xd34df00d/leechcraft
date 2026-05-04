@@ -331,62 +331,77 @@ namespace Xoox
 	{
 		HandleMessageExtensions (msg);
 
-		// TODO doesn't need to create the messages once it's migrated to QObject-less entries
-		const bool existed = Nick2Entry_.contains (nick);
-		const auto& entry = GetParticipantEntry (nick, false);
-		if (msg.type () == QXmppMessage::Chat && !nick.isEmpty ())
+		switch (msg.type ())
 		{
-			if (msg.isAttentionRequested ())
-				entry->HandleAttentionMessage (msg);
-
-			if (msg.state ())
-				entry->UpdateChatState (msg.state (), QString ());
-
-			if (!msg.body ().isEmpty ())
-			{
-				GlooxMessage *message = new GlooxMessage (msg,
-						Account_->GetClientConnection ().get ());
-				entry->HandleMessage (message);
-			}
+		case QXmppMessage::Chat:
+			return HandlePrivateMessage (msg, nick);
+		case QXmppMessage::GroupChat:
+		case QXmppMessage::Normal:
+			return HandlePublicMessage (msg, nick);
+		default:
+			qWarning () << "unhandled message type" << msg.type ();
+			break;
 		}
-		else
+	}
+
+	void RoomHandler::HandlePrivateMessage (const QXmppMessage& msg, const QString& nick)
+	{
+		if (nick.isEmpty ())
 		{
-			RoomPublicMessage *message = nullptr;
-			if (msg.type () == QXmppMessage::GroupChat &&
-				!msg.subject ().isEmpty ())
-			{
-				Subject_ = msg.subject ();
-				CLEntry_->HandleSubjectChanged (Subject_);
+			qWarning () << "got a private message from an empty nick, ignoring";
+			return;
+		}
 
-				const QString& string = nick.isEmpty () ?
-						msg.subject () :
-						tr ("%1 changed subject to %2")
-							.arg (nick)
-							.arg (msg.subject ());
+		const auto& entry = GetParticipantEntry (nick, false);
+		if (msg.isAttentionRequested ())
+			entry->HandleAttentionMessage (msg);
 
-				message = new RoomPublicMessage (string,
+		if (msg.state ())
+			entry->UpdateChatState (msg.state (), QString ());
+
+		if (!msg.body ().isEmpty ())
+			entry->HandleMessage (new GlooxMessage (msg, Account_->GetClientConnection ().get ()));
+	}
+
+	void RoomHandler::HandlePublicMessage (const QXmppMessage& msg, const QString& nick)
+	{
+		if (!msg.subject ().isEmpty ())
+		{
+			Subject_ = msg.subject ();
+			CLEntry_->HandleSubjectChanged (Subject_);
+
+			const auto& string = nick.isEmpty () ?
+					msg.subject () :
+					tr ("%1 changed subject to %2").arg (nick, msg.subject ());
+
+			const auto message = new RoomPublicMessage (string,
 					IMessage::Direction::In,
 					CLEntry_,
 					IMessage::Type::EventMessage,
 					IMessage::SubType::RoomSubjectChange);
-			}
-			else if (!nick.isEmpty ())
-			{
-				if (!msg.body ().isEmpty ())
-					message = new RoomPublicMessage (msg, CLEntry_, entry);
-			}
-			else if (!msg.body ().isEmpty ())
-				message = new RoomPublicMessage (msg.body (),
+			CLEntry_->HandleMessage (message);
+			return;
+		}
+
+		if (msg.body ().isEmpty ())
+			return;
+
+		if (!nick.isEmpty ())
+		{
+			const bool existed = Nick2Entry_.contains (nick);
+			const auto& entry = GetParticipantEntry (nick, false);
+			CLEntry_->HandleMessage (new RoomPublicMessage (msg, CLEntry_, entry));
+			if (!existed)
+				RemoveEntry (entry.get ());
+		}
+		else
+		{
+			const auto message = new RoomPublicMessage (msg.body (),
 					IMessage::Direction::In,
 					CLEntry_,
 					IMessage::Type::EventMessage,
 					IMessage::SubType::Other);
-
-			if (message)
-				CLEntry_->HandleMessage (message);
-
-			if (!existed)
-				RemoveEntry (entry.get ());
+			CLEntry_->HandleMessage (message);
 		}
 	}
 
