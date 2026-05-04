@@ -39,9 +39,6 @@ namespace Xoox
 		QXmppMucRoom *Room_;
 		RoomCLEntry *CLEntry_;
 
-		// some servers advertise a special, nick-less entry denoting the room
-		RoomParticipantEntry_ptr RoomPseudoEntry_;
-
 		QHash<QString, RoomParticipantEntry_ptr> Nick2Entry_;
 		QString Subject_;
 		// contains new nicks
@@ -75,10 +72,6 @@ namespace Xoox
 		QXmppMucRoom* GetRoom () const;
 
 		void HandleErrorPresence (const QXmppPresence&, const QString&);
-		void HandlePermsChanged (const QString&,
-				QXmppMucItem::Affiliation,
-				QXmppMucItem::Role,
-				const QString&);
 		void HandleMessage (const QXmppMessage&, const QString&);
 
 		RoomParticipantEntry_ptr FindParticipantEntry (const QString& nick) const;
@@ -91,6 +84,11 @@ namespace Xoox
 
 		void requestVoice ();
 	private:
+		void HandlePermsChanged (const QString&,
+				QXmppMucItem::Affiliation,
+				QXmppMucItem::Role,
+				const QString&);
+
 		void HandlePrivateMessage (const QXmppMessage& msg, const QString& nick);
 		void HandlePublicMessage (const QXmppMessage& msg, const QString& nick);
 

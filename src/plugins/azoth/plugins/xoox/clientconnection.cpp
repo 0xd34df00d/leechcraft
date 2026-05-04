@@ -793,7 +793,7 @@ namespace Xoox
 
 		if (JID2CLEntry_.contains (jid))
 			JID2CLEntry_ [jid]->SetVCard (vcard);
-		else if (RoomHandlers_.contains (jid))
+		else if (RoomHandlers_.contains (jid) && !nick.isEmpty ())
 			RoomHandlers_ [jid]->GetParticipantEntry (nick)->SetVCard (vcard);
 		else if (OurBareJID_ == jid)
 			SelfContact_->SetVCard (vcard);
@@ -805,7 +805,7 @@ namespace Xoox
 
 		if (JID2CLEntry_.contains (jid))
 			JID2CLEntry_ [jid]->SetClientVersion (nick, version);
-		else if (RoomHandlers_.contains (jid))
+		else if (RoomHandlers_.contains (jid) && !nick.isEmpty ())
 			RoomHandlers_ [jid]->GetParticipantEntry (nick)->SetClientVersion (QString (), version);
 		else if (OurBareJID_ == jid)
 			SelfContact_->SetClientVersion (nick, version);

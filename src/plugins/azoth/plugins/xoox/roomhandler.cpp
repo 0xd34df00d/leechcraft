@@ -82,7 +82,7 @@ namespace Xoox
 					const auto& nick = ClientConnection::Split (jid).Resource_;
 					const auto& pres = Room_->participantPresence (jid);
 					if (const auto newNick = pres.mucItem ().nick ();
-						!newNick.isEmpty () && newNick != nick)
+						!newNick.isEmpty () && !nick.isEmpty () && newNick != nick)
 						HandleRenameStart (GetParticipantEntry (nick), nick, newNick);
 					else if (Room_->nickName () == nick)
 						HandleSelfRemoved (pres);
@@ -264,6 +264,9 @@ namespace Xoox
 			QXmppMucItem::Role role,
 			const QString& reason)
 	{
+		if (nick.isEmpty ())
+			return;
+
 		const auto& entry = GetParticipantEntry (nick);
 		entry->SetAffiliation (aff);
 		entry->SetRole (role);
@@ -476,9 +479,9 @@ namespace Xoox
 	void RoomHandler::HandleRenameStart (const RoomParticipantEntry_ptr& entry,
 			const QString& nick, const QString& newNick)
 	{
-		if (entry == RoomPseudoEntry_)
+		if (newNick.isEmpty ())
 		{
-			qWarning () << "tried to rename the pseudo entry";
+			qWarning () << "ignoring renaming into an empty nick";
 			return;
 		}
 
@@ -503,12 +506,15 @@ namespace Xoox
 
 	RoomParticipantEntry_ptr RoomHandler::FindParticipantEntry (const QString& nick) const
 	{
-		return nick.isEmpty () ? RoomPseudoEntry_ : Nick2Entry_.value (nick);
+		return Nick2Entry_.value (nick);
 	}
 
 	RoomParticipantEntry_ptr RoomHandler::GetParticipantEntry (const QString& nick, bool announce)
 	{
-		auto& entry = nick.isEmpty () ? RoomPseudoEntry_ : Nick2Entry_ [nick];
+		if (nick.isEmpty ())
+			return {};
+
+		auto& entry = Nick2Entry_ [nick];
 
 		if (!entry)
 		{
@@ -523,7 +529,7 @@ namespace Xoox
 							RemoveEntry (entry);
 					},
 					Qt::QueuedConnection);
-			if (announce && !nick.isEmpty ())
+			if (announce)
 				emit Account_->GetAccountEmitter ().gotCLItems ({ entry.get () });
 		}
 
@@ -532,8 +538,11 @@ namespace Xoox
 
 	void RoomHandler::handleParticipantAdded (const QString& jid)
 	{
-		const auto& pres = Room_->participantPresence (jid);
 		const auto nick = ClientConnection::Split (jid).Resource_;
+		if (nick.isEmpty ())
+			return;
+
+		const auto& pres = Room_->participantPresence (jid);
 		const bool existed = Nick2Entry_.contains (nick);
 		const auto& entry = GetParticipantEntry (nick, false);
 
@@ -557,9 +566,11 @@ namespace Xoox
 
 	void RoomHandler::handleParticipantChanged (const QString& jid)
 	{
-		const auto& pres = Room_->participantPresence (jid);
-
 		const auto nick = ClientConnection::Split (jid).Resource_;
+		if (nick.isEmpty ())
+			return;
+
+		const auto& pres = Room_->participantPresence (jid);
 
 		const auto& entry = GetParticipantEntry (nick);
 
@@ -655,11 +666,7 @@ namespace Xoox
 	void RoomHandler::RemoveEntry (RoomParticipantEntry *entry)
 	{
 		emit Account_->GetAccountEmitter ().removedCLItems ({ entry });
-		if (const auto nick = entry->GetNick ();
-			!nick.isEmpty ())
-			Nick2Entry_.remove (nick);
-		else
-			RoomPseudoEntry_.reset ();
+		Nick2Entry_.remove (entry->GetNick ());
 	}
 
 	void RoomHandler::SendLeave (const QString& reason)
@@ -670,14 +677,11 @@ namespace Xoox
 
 	void RoomHandler::RemoveParticipants ()
 	{
-		auto entries = GetParticipants ();
-		if (RoomPseudoEntry_)
-			entries << RoomPseudoEntry_.get ();
-		if (!entries.isEmpty ())
+		if (const auto entries = GetParticipants ();
+			!entries.isEmpty ())
 			emit Account_->GetAccountEmitter ().removedCLItems (entries);
 
 		Nick2Entry_.clear ();
-		RoomPseudoEntry_.reset ();
 	}
 
 	void RoomHandler::RemoveThis ()
