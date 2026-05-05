@@ -9,8 +9,9 @@
 #include "roompublicmessage.h"
 #include <QTextDocument>
 #include <QtDebug>
-#include <QXmppMessage.h>
 #include <QXmppClient.h>
+#include <QXmppMessage.h>
+#include <QXmppTask.h>
 #include "roomclentry.h"
 #include "roomparticipantentry.h"
 #include "glooxaccount.h"
@@ -56,7 +57,7 @@ namespace Xoox
 		msg.setType (QXmppMessage::GroupChat);
 		if (XHTML_)
 			msg.setXhtml (*XHTML_);
-		client->sendPacket (msg);
+		client->send (std::move (msg));
 	}
 
 	RoomPublicMessage::RoomPublicMessage (const QXmppMessage& msg,
