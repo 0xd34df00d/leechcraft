@@ -371,18 +371,10 @@ namespace Xoox
 		if (!msg.subject ().isEmpty ())
 		{
 			Subject_ = msg.subject ();
-			CLEntry_->HandleSubjectChanged (Subject_);
-
-			const auto& string = nick.isEmpty () ?
-					msg.subject () :
-					tr ("%1 changed subject to %2").arg (nick, msg.subject ());
-
-			const auto message = new RoomPublicMessage (string,
-					IMessage::Direction::In,
-					CLEntry_,
-					IMessage::Type::EventMessage,
-					IMessage::SubType::RoomSubjectChange);
-			CLEntry_->HandleMessage (message);
+			emit CLEntry_->GetMUCEntryEmitter ().mucSubjectChanged ({
+						.Subject_ = Subject_,
+						.ActorNick_ = nick.isEmpty () ? std::optional<QString> {} : nick
+					});
 			return;
 		}
 

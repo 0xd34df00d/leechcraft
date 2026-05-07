@@ -237,12 +237,7 @@ namespace LC::Azoth::Acetamide
 		Subject_ = subject;
 		if (!Url_.isEmpty ())
 			Subject_.append ("\nURL: " + Url_);
-
-		const auto message = new ChannelPublicMessage (tr ("Topic changed to: %1").arg (subject),
-				ChannelCLEntry_.get (),
-				IMessage::Type::EventMessage,
-				IMessage::SubType::RoomSubjectChange);
-		ChannelCLEntry_->HandleMessage (message);
+		emit ChannelCLEntry_->GetMUCEntryEmitter ().mucSubjectChanged ({ .Subject_ = subject });
 	}
 
 	QString ChannelHandler::GetMUCSubject () const

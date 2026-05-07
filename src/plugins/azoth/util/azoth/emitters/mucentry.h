@@ -41,6 +41,13 @@ namespace LC::Azoth::MucEvents
 	};
 
 	using ParticipantLeaveInfo = std::variant<ParticipantLeft, ParticipantForcedOut>;
+
+	struct SubjectChange
+	{
+		QString Subject_;
+
+		std::optional<QString> ActorNick_ {};
+	};
 }
 
 namespace LC::Azoth::Emitters
@@ -51,14 +58,11 @@ namespace LC::Azoth::Emitters
 	public:
 		using QObject::QObject;
 	signals:
-		/** @brief Notifies about subject change.
+		/** @brief Notifies about room subject change.
 		 *
-		 * This signal should be emitted when room subject is changed
-		 * to newSubj.
-		 *
-		 * @param[out] newSubj The new subject of this room.
+		 * @param[out] event The information about the subject change event.
 		 */
-		void mucSubjectChanged (const QString& newSubj);
+		void mucSubjectChanged (const MucEvents::SubjectChange& event);
 
 		/** @brief Notifies about nick conflict.
 		 *

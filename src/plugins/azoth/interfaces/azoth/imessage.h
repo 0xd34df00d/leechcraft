@@ -115,10 +115,6 @@ namespace Azoth
 			 * nick.
 			 */
 			ParticipantNickChange,
-
-			/** @brief Notifies about changing subject in a MUC room.
-			 */
-			RoomSubjectChange
 		};
 
 		enum class EscapePolicy : uint8_t

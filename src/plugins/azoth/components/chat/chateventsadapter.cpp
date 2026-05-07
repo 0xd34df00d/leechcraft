@@ -106,6 +106,16 @@ namespace LC::Azoth
 							part.GetCLEntryEmitter ().disconnect (this);
 							EmitLeaveEvent (part, info);
 						});
+				connect (&emitter,
+						&Emitters::MUCEntry::mucSubjectChanged,
+						this,
+						[this] (const MucEvents::SubjectChange& event)
+						{
+							const auto& text = event.ActorNick_ ?
+									tr ("%1 changed subject to %2").arg (*event.ActorNick_, event.Subject_) :
+									tr ("Subject changed to %1").arg (event.Subject_);
+							emit gotEvent ({ .Text_ { text } });
+						});
 			}
 		private:
 			static QString MakeJoinString (const ICLEntry& part, QStringList perms)

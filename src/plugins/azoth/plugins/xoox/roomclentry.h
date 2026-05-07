@@ -125,7 +125,6 @@ namespace Xoox
 		void MoveMessages (const RoomParticipantEntry_ptr& from, const RoomParticipantEntry_ptr& to);
 
 		void HandleMessage (RoomPublicMessage*);
-		void HandleSubjectChanged (const QString&);
 	private slots:
 		void handleBookmarks (const QXmppBookmarkSet&);
 	};

@@ -1531,8 +1531,7 @@ namespace Azoth
 			MUCEventLog_->append (QString ("<font color=\"#56ED56\">[%1] %2</font>")
 						.arg (dt)
 						.arg (FormatterProxyObject {}.EscapeBody (msg->GetBody (), msg->GetEscapePolicy ())));
-			if (msg->GetMessageSubType () != IMessage::SubType::RoomSubjectChange)
-				return;
+			return;
 		}
 
 		const auto frame = Ui_.View_->page ();

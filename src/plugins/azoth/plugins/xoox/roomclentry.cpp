@@ -523,11 +523,6 @@ namespace Xoox
 		emit Emitter_.gotMessage (msg);
 	}
 
-	void RoomCLEntry::HandleSubjectChanged (const QString& subj)
-	{
-		emit MUCEmitter_.mucSubjectChanged (subj);
-	}
-
 	void RoomCLEntry::handleBookmarks (const QXmppBookmarkSet& set)
 	{
 		for (const auto& bm : set.conferences ())
