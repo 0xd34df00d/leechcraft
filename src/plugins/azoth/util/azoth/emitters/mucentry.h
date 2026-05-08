@@ -45,8 +45,8 @@ namespace LC::Azoth::MucEvents
 	struct SubjectChange
 	{
 		QString Subject_;
-
 		std::optional<QString> ActorNick_ {};
+		Liveness Liveness_;
 	};
 }
 
