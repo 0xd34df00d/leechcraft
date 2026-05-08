@@ -20,10 +20,10 @@ namespace LC::Azoth
 
 namespace LC::Azoth::MucEvents
 {
-	enum class ParticipantJoinOrder : std::uint8_t
+	enum class Liveness : std::uint8_t
 	{
-		BeforeUs,
-		AfterUs,
+		Historical,
+		Live,
 	};
 
 	struct ParticipantLeft { QString Message_; };
@@ -126,19 +126,19 @@ namespace LC::Azoth::Emitters
 
 		/** @brief Notifies that a `participant` has joined this room.
 		 *
-		 * The participant might've joined the room before us (as per `order`),
+		 * The participant might've joined the room before us (as per `liveness`),
 		 * in which case this signal is a part of the initial participants batch.
 		 *
 		 * It is safe to query participant permissions, status, etc, within the
 		 * connected slot.
 		 *
 		 * @param[out] participant The participant that has joined the room.
-		 * @param[out] order Whether the participant joined before or after us.
+		 * @param[out] liveness Whether the participant joined before or after us.
 		 *
 		 * @sa participantLeaving
 		 * @sa participantLeft
 		 */
-		void participantJoined (ICLEntry& participant, MucEvents::ParticipantJoinOrder order);
+		void participantJoined (ICLEntry& participant, MucEvents::Liveness liveness);
 
 		/** @brief Notifies that a `participant` is about to leave this room.
 		 *

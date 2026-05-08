@@ -552,8 +552,8 @@ namespace Xoox
 		if (!existed && !nick.isEmpty ())
 			emit Account_->GetAccountEmitter ().gotCLItems ({ entry.get () });
 
-		using enum MucEvents::ParticipantJoinOrder;
-		emit CLEntry_->GetMUCEntryEmitter ().participantJoined (*entry, Room_->isJoined () ? AfterUs : BeforeUs);
+		using enum MucEvents::Liveness;
+		emit CLEntry_->GetMUCEntryEmitter ().participantJoined (*entry, Room_->isJoined () ? Live : Historical);
 	}
 
 	void RoomHandler::handleParticipantChanged (const QString& jid)

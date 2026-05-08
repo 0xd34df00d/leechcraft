@@ -209,8 +209,8 @@ namespace LC::Azoth::Acetamide
 		if (!existed)
 			emit CM_->GetAccount ()->GetAccountEmitter ().gotCLItems ({ entry.get () });
 
-		using enum MucEvents::ParticipantJoinOrder;
-		emit ChannelCLEntry_->GetMUCEntryEmitter ().participantJoined (*entry, PastInitialNamesList_ ? AfterUs : BeforeUs);
+		using enum MucEvents::Liveness;
+		emit ChannelCLEntry_->GetMUCEntryEmitter ().participantJoined (*entry, PastInitialNamesList_ ? Live : Historical);
 	}
 
 	void ChannelHandler::MakePermsChangedMessage (const QString& nick,

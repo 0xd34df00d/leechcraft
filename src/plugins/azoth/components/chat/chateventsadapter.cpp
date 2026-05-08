@@ -92,10 +92,10 @@ namespace LC::Azoth
 				connect (&emitter,
 						&Emitters::MUCEntry::participantJoined,
 						this,
-						[this, setupParticipant] (ICLEntry& part, MucEvents::ParticipantJoinOrder order)
+						[this, setupParticipant] (ICLEntry& part, MucEvents::Liveness liveness)
 						{
 							setupParticipant (part);
-							if (order == MucEvents::ParticipantJoinOrder::AfterUs)
+							if (liveness == MucEvents::Liveness::Live)
 								EmitJoinEvent (part);
 						});
 				connect (&emitter,
