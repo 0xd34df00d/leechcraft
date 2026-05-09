@@ -135,6 +135,23 @@ namespace LC::Azoth
 				}
 			}
 
+			static QString MakeActorReasonClause (const std::optional<QString>& actor, const QString& reason)
+			{
+				const bool hasActor = actor.has_value ();
+				const bool hasReason = !reason.isEmpty ();
+
+				if (hasActor && hasReason)
+					//: Parenthetical attribution in MUC events: %1 performed the action, %2 is the reason.
+					return tr ("by %1: %2").arg (*actor, reason);
+				if (hasActor)
+					//: Parenthetical attribution in MUC events: %1 performed the action.
+					return tr ("by %1").arg (*actor);
+				if (hasReason)
+					//: Parenthetical attribution in MUC events: %1 is the reason for the action.
+					return tr ("reason: %1").arg (reason);
+				return {};
+			}
+
 			void EmitJoinEvent (const ICLEntry& part)
 			{
 				if (!CheckShow ("ShowJoinsLeaves"))
@@ -176,16 +193,11 @@ namespace LC::Azoth
 						[&name] (const MucEvents::ParticipantForcedOut& event)
 						{
 							const auto& action = GetOutActionString (event.Action_);
-
-							const auto hasActor = static_cast<bool> (event.Actor_);
-							const auto hasReason = !event.Reason_.isEmpty ();
-							if (hasActor && hasReason)
-								return tr ("%1 has been %2 by %3: %4").arg (name, action, event.Actor_->GetEntryName (), event.Reason_);
-							if (hasActor)
-								return tr ("%1 has been %2 by %3").arg (name, action, event.Actor_->GetEntryName ());
-							if (hasReason)
-								return tr ("%1 has been %2: %3").arg (name, action, event.Reason_);
-							return tr ("%1 has been %2").arg (name, action);
+							const auto actorNick = event.Actor_ ? event.Actor_->GetEntryName () : std::optional<QString> {};
+							const auto& addendum = MakeActorReasonClause (actorNick, event.Reason_);
+							return addendum.isEmpty () ?
+									tr ("%1 has been %2").arg (name, action) :
+									tr ("%1 has been %2 (%3)").arg (name, action, addendum);
 						});
 			}
 
