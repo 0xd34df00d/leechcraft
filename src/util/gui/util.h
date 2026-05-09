@@ -99,6 +99,8 @@ namespace LC::Util
 	 */
 	UTIL_GUI_API QString FormatName (const QString& name);
 
+	UTIL_GUI_API QString FormatHumanReadableList (QStringList items);
+
 	UTIL_GUI_API QPixmap DrawOverlayText (QPixmap px, const QString& text, QFont font, const QPen& pen, const QBrush& brush);
 
 	UTIL_GUI_API QIcon FixupTrayIcon (const QIcon& icon);

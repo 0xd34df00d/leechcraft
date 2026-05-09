@@ -116,6 +116,23 @@ namespace LC::Util
 		return "<em>" + name + "</em>";
 	}
 
+	QString FormatHumanReadableList (QStringList items)
+	{
+		switch (items.size ())
+		{
+		case 0:
+			return {};
+		case 1:
+			return items [0];
+		default:
+		{
+			const auto& last = items.takeLast ();
+			//: %1 is a comma-separated list having at least one item, %2 is the final item
+			return QObject::tr ("%1 and %2").arg (items.join (u", "_qsv), last);
+		}
+		}
+	}
+
 	QPixmap DrawOverlayText (QPixmap px,
 			const QString& text, QFont font, const QPen& pen, const QBrush& brush)
 	{
