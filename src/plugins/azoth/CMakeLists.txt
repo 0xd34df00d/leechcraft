@@ -38,6 +38,7 @@ add_util_library (azoth-util
 		util/azoth/emitters/clentry.cpp
 		util/azoth/emitters/mediacall.cpp
 		util/azoth/emitters/mucentry.cpp
+		util/azoth/emitters/mucperms.cpp
 		util/azoth/emitters/transfermanager.cpp
 		util/azoth/hooks.cpp
 		util/azoth/util.cpp

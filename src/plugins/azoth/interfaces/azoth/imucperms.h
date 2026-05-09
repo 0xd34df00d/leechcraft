@@ -13,6 +13,7 @@
 #include <QMap>
 #include <QByteArray>
 #include <QPair>
+#include <util/azoth/emitters/mucperms.h>
 
 namespace LC
 {
@@ -36,8 +37,12 @@ namespace Azoth
 	 */
 	class IMUCPerms
 	{
+	protected:
+		Emitters::MUCPerms PermsEmitter_;
+
+		virtual ~IMUCPerms () = default;
 	public:
-		virtual ~IMUCPerms () {}
+		Emitters::MUCPerms& GetMUCPermsEmitter () { return PermsEmitter_; }
 
 		/** @brief Returns all possible permission classes and values.
 		 *
