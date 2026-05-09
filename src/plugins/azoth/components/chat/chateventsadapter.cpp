@@ -65,6 +65,15 @@ namespace LC::Azoth
 			}
 		};
 
+		QStringList PermsToStrings (const IMUCPerms& perms, const QMap<QByteArray, QList<QByteArray>>& permsMap)
+		{
+			QStringList permsStrings;
+			for (const auto& permsList : permsMap)
+				for (const auto& perm : permsList)
+					permsStrings << perms.GetUserString (perm);
+			return permsStrings;
+		}
+
 		class MucAdapter : public ChatEventsAdapter
 		{
 			IMUCEntry& Entry_;
@@ -159,9 +168,7 @@ namespace LC::Azoth
 
 				QStringList permsStrings;
 				if (Perms_)
-					for (const auto& permsList : Perms_->GetPerms (part))
-						for (const auto& perm : permsList)
-							permsStrings << Perms_->GetUserString (perm);
+					permsStrings = PermsToStrings (*Perms_, Perms_->GetPerms (part));
 				emit gotEvent ({ .Text_ { MakeJoinString (part, permsStrings) } });
 			}
 
