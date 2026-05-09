@@ -9,6 +9,7 @@
 #pragma once
 
 #include <cstdint>
+#include <optional>
 #include <variant>
 #include <QObject>
 #include "../azothutilconfig.h"
@@ -46,7 +47,7 @@ namespace LC::Azoth::MucEvents
 	{
 		QString Subject_;
 		std::optional<QString> ActorNick_ {};
-		Liveness Liveness_;
+		std::optional<Liveness> Liveness_ {};
 	};
 }
 
