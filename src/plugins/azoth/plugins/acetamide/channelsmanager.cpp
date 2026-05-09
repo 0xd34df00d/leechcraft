@@ -249,10 +249,11 @@ namespace LC::Azoth::Acetamide
 		return true;
 	}
 
-	void ChannelsManager::SetMUCSubject (const QString& channel, const QString& topic)
+	void ChannelsManager::SetMUCSubject (const QString& channel, const QString& topic,
+			const std::optional<QString>& actorNick, MucEvents::Liveness liveness)
 	{
 		if (const auto handler = GetChannelHandler (channel))
-			handler->SetMUCSubject (topic);
+			handler->SetMUCSubject (topic, actorNick, liveness);
 
 		ReceiveCmdAnswerMessage (topic);
 	}

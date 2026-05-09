@@ -289,7 +289,10 @@ namespace LC::Azoth::Acetamide
 
 	void ServerResponseManager::GotTopic (const IrcMessageOptions& opts)
 	{
-		ISH_->GotTopic (opts.Parameters_.last (), opts.Message_);
+		const auto isLive = opts.Command_ == "topic";
+		ISH_->GotTopic (opts.Parameters_.last (), opts.Message_,
+				isLive ? std::optional { opts.Nick_ } : std::nullopt,
+				isLive ? MucEvents::Liveness::Live : MucEvents::Liveness::Historical);
 	}
 
 	void ServerResponseManager::GotKick (const IrcMessageOptions& opts)

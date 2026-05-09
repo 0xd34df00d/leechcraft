@@ -374,10 +374,11 @@ namespace LC::Azoth::Acetamide
 	}
 
 	void IrcServerHandler::GotTopic (const QString& channel,
-			const QString& message)
+			const QString& message, const std::optional<QString>& actorNick,
+			MucEvents::Liveness liveness)
 	{
 		if (IsChannelExists (channel))
-			ChannelsManager_->SetMUCSubject (channel, message);
+			ChannelsManager_->SetMUCSubject (channel, message, actorNick, liveness);
 		else
 			ShowAnswer ("TOPIC", message);
 	}

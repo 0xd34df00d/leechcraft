@@ -12,6 +12,7 @@
 #include <QObject>
 #include <QHash>
 #include <QSet>
+#include <util/azoth/emitters/mucentry.h>
 #include "localtypes.h"
 
 class QDateTime;
@@ -95,7 +96,9 @@ namespace LC::Azoth::Acetamide
 				const QString& nick, const QString& msg);
 		bool ReceiveCmdAnswerMessage (const QString& answer);
 
-		void SetMUCSubject (const QString& channel, const QString& topic);
+		void SetMUCSubject (const QString& channel, const QString& topic,
+				const std::optional<QString>& actorNick,
+				MucEvents::Liveness);
 		void SetTopic (const QString& channel, const QString& topic);
 
 		void CTCPReply (const QString& msg);

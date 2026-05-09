@@ -229,7 +229,8 @@ namespace LC::Azoth::Acetamide
 		ChannelCLEntry_->HandleMessage (message);
 	}
 
-	void ChannelHandler::SetMUCSubject (const QString& subject)
+	void ChannelHandler::SetMUCSubject (const QString& subject,
+			const std::optional<QString>& actorNick, MucEvents::Liveness liveness)
 	{
 		if (Subject_ == subject)
 			return;
@@ -237,7 +238,11 @@ namespace LC::Azoth::Acetamide
 		Subject_ = subject;
 		if (!Url_.isEmpty ())
 			Subject_.append ("\nURL: " + Url_);
-		emit ChannelCLEntry_->GetMUCEntryEmitter ().mucSubjectChanged ({ .Subject_ = subject });
+		emit ChannelCLEntry_->GetMUCEntryEmitter ().mucSubjectChanged ({
+					.Subject_ = Subject_,
+					.ActorNick_ = actorNick,
+					.Liveness_ = liveness
+				});
 	}
 
 	QString ChannelHandler::GetMUCSubject () const

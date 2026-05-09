@@ -12,6 +12,7 @@
 #include <QObject>
 #include <QTcpSocket>
 #include <interfaces/azoth/imessage.h>
+#include <util/azoth/emitters/mucentry.h>
 #include "localtypes.h"
 #include "invitechannelsdialog.h"
 #include "serverparticipantentry.h"
@@ -119,7 +120,9 @@ namespace Acetamide
 		void PongMessage (const QString&);
 
 		void SetTopic (const QString& channel, const QString& topic);
-		void GotTopic (const QString&, const QString&);
+		void GotTopic (const QString&, const QString&,
+				const std::optional<QString>& actorNick,
+				MucEvents::Liveness);
 		void GotKickCommand (const QString&, const QString&,
 				const QString&, const QString&);
 		void KickParticipant (const QString&, const QString&,

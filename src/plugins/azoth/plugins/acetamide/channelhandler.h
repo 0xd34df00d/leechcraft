@@ -11,6 +11,7 @@
 #include <QObject>
 #include <QHash>
 #include <interfaces/azoth/imessage.h>
+#include <util/azoth/emitters/mucentry.h>
 #include "localtypes.h"
 #include "channelparticipantentry.h"
 
@@ -75,7 +76,9 @@ namespace LC::Azoth::Acetamide
 		void MakePermsChangedMessage (const QString&,
 				ChannelRole, bool);
 
-		void SetMUCSubject (const QString&);
+		void SetMUCSubject (const QString&,
+				const std::optional<QString>& actorNick,
+				MucEvents::Liveness);
 		QString GetMUCSubject () const;
 		void SetTopic (const QString& topic);
 
