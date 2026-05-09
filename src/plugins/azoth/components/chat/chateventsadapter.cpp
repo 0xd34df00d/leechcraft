@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "chateventsadapter.h"
+#include <util/gui/util.h>
 #include <util/sll/qobjectrefcast.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
@@ -127,21 +128,12 @@ namespace LC::Azoth
 						});
 			}
 		private:
-			static QString MakeJoinString (const ICLEntry& part, QStringList perms)
+			static QString MakeJoinString (const ICLEntry& part, const QStringList& perms)
 			{
 				const auto& name = part.GetEntryName ();
-				switch (perms.size ())
-				{
-				case 0:
-					return tr ("%1 has entered the room").arg (name);
-				case 1:
-					return tr ("%1 has entered the room as %2").arg (name, perms [0]);
-				default:
-				{
-					const auto& last = perms.takeLast ();
-					return tr ("%1 has entered the room as %2 and %3").arg (name, perms.join (u", "_qsv), last);
-				}
-				}
+				return perms.isEmpty () ?
+						tr ("%1 has entered the room").arg (name) :
+						tr ("%1 has entered the room as %2").arg (name, Util::FormatHumanReadableList (perms));
 			}
 
 			static QString MakeActorReasonClause (const std::optional<QString>& actor, const QString& reason)
