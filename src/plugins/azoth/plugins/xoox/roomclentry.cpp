@@ -34,7 +34,7 @@ namespace Xoox
 	{
 		auto MakePerms ()
 		{
-			static const QMap<QByteArray, QList<QByteArray>> map
+			static const MUCPerms_t map
 			{
 				{ "role", { "norole", "visitor", "participant", "moderator" } },
 				{ "aff", { "outcast", "noaffiliation", "member", "admin", "owner" } }
@@ -322,14 +322,14 @@ namespace Xoox
 		RH_->GetRoom ()->sendInvitation (id, msg);
 	}
 
-	QMap<QByteArray, QList<QByteArray>> RoomCLEntry::GetPossiblePerms () const
+	MUCPerms_t RoomCLEntry::GetPossiblePerms () const
 	{
 		return Perms_;
 	}
 
-	QMap<QByteArray, QList<QByteArray>> RoomCLEntry::GetPerms (const ICLEntry& participant) const
+	MUCPerms_t RoomCLEntry::GetPerms (const ICLEntry& participant) const
 	{
-		QMap<QByteArray, QList<QByteArray>> result;
+		MUCPerms_t result;
 		const auto& entry = dynamic_cast<const RoomParticipantEntry&> (participant);
 		result ["role"] << Role2Str_.value (entry.GetRole (), "invalid");
 		result ["aff"] << Aff2Str_.value (entry.GetAffiliation (), "invalid");

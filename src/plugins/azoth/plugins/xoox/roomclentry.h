@@ -51,7 +51,7 @@ namespace Xoox
 		QList<IMessage*> AllMessages_;
 		RoomHandler *RH_;
 
-		const QMap<QByteArray, QList<QByteArray>> Perms_;
+		const MUCPerms_t Perms_;
 		const QMap<QXmppMucItem::Role, QByteArray> Role2Str_;
 		const QMap<QXmppMucItem::Affiliation, QByteArray> Aff2Str_;
 		const QMap<QByteArray, QString> Translations_;
@@ -102,8 +102,8 @@ namespace Xoox
 		void InviteToMUC (const QString&, const QString&);
 
 		// IMUCPerms
-		QMap<QByteArray, QList<QByteArray>> GetPossiblePerms () const;
-		QMap<QByteArray, QList<QByteArray>> GetPerms (const ICLEntry&) const;
+		MUCPerms_t GetPossiblePerms () const;
+		MUCPerms_t GetPerms (const ICLEntry&) const;
 		QPair<QByteArray, QByteArray> GetKickPerm () const;
 		QPair<QByteArray, QByteArray> GetBanPerm () const;
 		QByteArray GetAffName (const ICLEntry&) const;

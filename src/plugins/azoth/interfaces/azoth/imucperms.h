@@ -56,7 +56,7 @@ namespace Azoth
 		 *
 		 * @return The possible permissions for this room.
 		 */
-		virtual QMap<QByteArray, QList<QByteArray>> GetPossiblePerms () const = 0;
+		virtual MUCPerms_t GetPossiblePerms () const = 0;
 
 		/** @brief Returns current permissions for the given participant.
 		 *
@@ -67,7 +67,7 @@ namespace Azoth
 		 * @param[in] participant The participant to query the permissions for.
 		 * @return The current permissions for the given participant.
 		 */
-		virtual QMap<QByteArray, QList<QByteArray>> GetPerms (const ICLEntry& participant) const = 0;
+		virtual MUCPerms_t GetPerms (const ICLEntry& participant) const = 0;
 
 		virtual QPair<QByteArray, QByteArray> GetKickPerm () const = 0;
 		virtual QPair<QByteArray, QByteArray> GetBanPerm () const = 0;

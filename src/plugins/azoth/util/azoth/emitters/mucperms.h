@@ -16,6 +16,8 @@
 namespace LC::Azoth
 {
 	class ICLEntry;
+
+	using MUCPerms_t = QMap<QByteArray, QList<QByteArray>>;
 }
 
 namespace LC::Azoth::MucEvents
@@ -26,7 +28,7 @@ namespace LC::Azoth::MucEvents
 		QString Reason_;
 		std::optional<QString> ActorNick_;
 
-		std::optional<QMap<QByteArray, QList<QByteArray>>> PrevPerms_;
+		std::optional<MUCPerms_t> PrevPerms_;
 	};
 }
 

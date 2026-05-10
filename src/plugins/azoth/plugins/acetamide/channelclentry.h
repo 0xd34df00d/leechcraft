@@ -37,7 +37,7 @@ namespace LC::Azoth::Acetamide
 		ChannelHandler * const ICH_;
 		QList<IMessage*> AllMessages_;
 
-		QMap<QByteArray, QList<QByteArray>> Perms_;
+		MUCPerms_t Perms_;
 	public:
 		explicit ChannelCLEntry (ChannelHandler*);
 
@@ -87,11 +87,11 @@ namespace LC::Azoth::Acetamide
 
 		// IMUCPerms
 		QByteArray GetAffName (const ICLEntry&) const override;
-		QMap<QByteArray, QList<QByteArray>> GetPerms (const ICLEntry&) const override;
+		MUCPerms_t GetPerms (const ICLEntry&) const override;
 		QPair<QByteArray, QByteArray> GetKickPerm () const override;
 		QPair<QByteArray, QByteArray> GetBanPerm () const override;
 		void SetPerm (ICLEntry&, const QByteArray&, const QByteArray&, const QString&) override;
-		QMap<QByteArray, QList<QByteArray>> GetPossiblePerms () const override;
+		MUCPerms_t GetPossiblePerms () const override;
 		QString GetUserString (const QByteArray&) const override;
 		bool IsLessByPerm (const ICLEntry&, const ICLEntry&) const override;
 		bool MayChangePerm (const ICLEntry&, const QByteArray&, const QByteArray&) const override;

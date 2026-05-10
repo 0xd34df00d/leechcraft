@@ -305,9 +305,9 @@ namespace LC::Azoth::Acetamide
 		return Aff2Str [entry.HighestRole ()];
 	}
 
-	QMap<QByteArray, QList<QByteArray>> ChannelCLEntry::GetPerms (const ICLEntry& participant) const
+	MUCPerms_t ChannelCLEntry::GetPerms (const ICLEntry& participant) const
 	{
-		QMap<QByteArray, QList<QByteArray>> result;
+		MUCPerms_t result;
 		auto& roles = result ["permclass_role"];
 		for (const auto& entry = dynamic_cast<const ChannelParticipantEntry&> (participant);
 			 const auto& role : entry.Roles ())
@@ -340,7 +340,7 @@ namespace LC::Azoth::Acetamide
 			qWarning () << "unknown perm class" << permClass;
 	}
 
-	QMap<QByteArray, QList<QByteArray>> ChannelCLEntry::GetPossiblePerms () const
+	MUCPerms_t ChannelCLEntry::GetPossiblePerms () const
 	{
 		return Perms_;
 	}
