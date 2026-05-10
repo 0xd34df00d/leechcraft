@@ -331,8 +331,10 @@ namespace Xoox
 	{
 		MUCPerms_t result;
 		const auto& entry = dynamic_cast<const RoomParticipantEntry&> (participant);
-		result ["role"] << Role2Str_.value (entry.GetRole (), "invalid");
-		result ["aff"] << Aff2Str_.value (entry.GetAffiliation (), "invalid");
+		if (entry.GetRole () != QXmppMucItem::UnspecifiedRole)
+			result ["role"] << Role2Str_.value (entry.GetRole (), "invalid");
+		if (entry.GetAffiliation () != QXmppMucItem::UnspecifiedAffiliation)
+			result ["aff"] << Aff2Str_.value (entry.GetAffiliation (), "invalid");
 		return result;
 	}
 
