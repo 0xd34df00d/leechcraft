@@ -102,10 +102,6 @@ namespace Xoox
 				const QString& nick, const QString& newNick);
 
 		void MakeNickChangeMessage (const QString&, const QString&);
-		void MakePermsChangedMessage (const QString&,
-				QXmppMucItem::Affiliation,
-				QXmppMucItem::Role,
-				const QString&);
 		void HandleNickConflict ();
 		void HandlePasswordRequired ();
 		QString GetPassKey () const;

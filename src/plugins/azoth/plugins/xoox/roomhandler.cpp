@@ -129,34 +129,6 @@ namespace Xoox
 		CLEntry_->HandleMessage (message);
 	}
 
-	void RoomHandler::MakePermsChangedMessage (const QString& nick,
-			QXmppMucItem::Affiliation aff,
-			QXmppMucItem::Role role, const QString& reason)
-	{
-		const auto& affStr = XooxUtil::AffiliationToString (aff);
-		const auto& roleStr = XooxUtil::RoleToString (role);
-		QString msg;
-		if (reason.isEmpty ())
-			msg = tr ("%1 is now %2 and %3")
-					.arg (nick)
-					.arg (roleStr)
-					.arg (affStr);
-		else
-			msg = tr ("%1 is now %2 and %3: %4")
-					.arg (nick)
-					.arg (roleStr)
-					.arg (affStr)
-					.arg (reason);
-
-		const auto message = new RoomPublicMessage (msg,
-				IMessage::Direction::In,
-				CLEntry_,
-				IMessage::Type::StatusMessage,
-				IMessage::SubType::ParticipantRoleAffiliationChange,
-				GetParticipantEntry (nick));
-		CLEntry_->HandleMessage (message);
-	}
-
 	void RoomHandler::HandleNickConflict ()
 	{
 		// The room is already joined, should do nothing special here.
@@ -264,13 +236,18 @@ namespace Xoox
 			QXmppMucItem::Role role,
 			const QString& reason)
 	{
-		if (nick.isEmpty ())
+		const auto& entry = FindParticipantEntry (nick);
+		if (!entry)
 			return;
 
-		const auto& entry = GetParticipantEntry (nick);
+		const auto oldPerms = CLEntry_->GetPerms (*entry);
 		entry->SetAffiliation (aff);
 		entry->SetRole (role);
-		MakePermsChangedMessage (nick, aff, role, reason);
+		emit CLEntry_->GetMUCPermsEmitter ().permsChanged ({
+					.Participant_ = *entry,
+					.Reason_ = reason,
+					.PrevPerms_ = oldPerms,
+				});
 	}
 
 	void RoomHandler::HandleMessageExtensions (const QXmppMessage& msg)
