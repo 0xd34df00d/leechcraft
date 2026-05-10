@@ -231,21 +231,36 @@ namespace Xoox
 		}
 	}
 
-	void RoomHandler::HandlePermsChanged (const QString& nick,
-			QXmppMucItem::Affiliation aff,
-			QXmppMucItem::Role role,
-			const QString& reason)
+	RoomParticipantEntry_ptr RoomHandler::FindActor (const QString& actorId) const
 	{
-		const auto& entry = FindParticipantEntry (nick);
-		if (!entry)
+		if (actorId.isEmpty ())
+			return {};
+
+		const auto& split = ClientConnection::Split (actorId);
+		if (split.Bare_ == RoomJID_)
+			return Nick2Entry_.value (split.Resource_);
+
+		if (const auto fullMatch = std::ranges::find (Nick2Entry_, actorId, [] (const auto& entry) { return entry->GetRealJID (); });
+			fullMatch != Nick2Entry_.end ())
+			return *fullMatch;
+
+		const auto pos = std::ranges::find (Nick2Entry_, split.Bare_,
+				[] (const auto& entry) { return ClientConnection::Split (entry->GetRealJID ()).Bare_; });
+		return pos == Nick2Entry_.end () ? RoomParticipantEntry_ptr {} : *pos;
+	}
+
+	void RoomHandler::HandlePermsChange (RoomParticipantEntry& entry, const QXmppMucItem& item) const
+	{
+		if (item.affiliation () == entry.GetAffiliation () && item.role () == entry.GetRole ())
 			return;
 
-		const auto oldPerms = CLEntry_->GetPerms (*entry);
-		entry->SetAffiliation (aff);
-		entry->SetRole (role);
+		const auto oldPerms = CLEntry_->GetPerms (entry);
+		entry.SetAffiliation (item.affiliation ());
+		entry.SetRole (item.role ());
 		emit CLEntry_->GetMUCPermsEmitter ().permsChanged ({
-					.Participant_ = *entry,
-					.Reason_ = reason,
+					.Participant_ = entry,
+					.Reason_ = item.reason (),
+					.Actor_ = FindActor (item.actor ()).get (),
 					.PrevPerms_ = oldPerms,
 				});
 	}
@@ -540,15 +555,9 @@ namespace Xoox
 			return;
 
 		const auto& pres = Room_->participantPresence (jid);
-
 		const auto& entry = GetParticipantEntry (nick);
-
 		entry->HandlePresence (pres, QString ());
-
-		const auto& item = pres.mucItem ();
-		if (item.affiliation () != entry->GetAffiliation () ||
-				item.role () != entry->GetRole ())
-			HandlePermsChanged (nick, item.affiliation (), item.role (), item.reason ());
+		HandlePermsChange (*entry, pres.mucItem ());
 	}
 
 	void RoomHandler::requestVoice ()

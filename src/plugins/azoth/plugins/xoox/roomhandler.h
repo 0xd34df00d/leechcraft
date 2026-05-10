@@ -84,10 +84,9 @@ namespace Xoox
 
 		void requestVoice ();
 	private:
-		void HandlePermsChanged (const QString&,
-				QXmppMucItem::Affiliation,
-				QXmppMucItem::Role,
-				const QString&);
+		RoomParticipantEntry_ptr FindActor (const QString& actorId) const;
+
+		void HandlePermsChange (RoomParticipantEntry&, const QXmppMucItem&) const;
 
 		void HandlePrivateMessage (const QXmppMessage& msg, const QString& nick);
 		void HandlePublicMessage (const QXmppMessage& msg, const QString& nick);
