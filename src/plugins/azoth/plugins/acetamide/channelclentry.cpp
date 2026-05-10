@@ -307,11 +307,14 @@ namespace LC::Azoth::Acetamide
 
 	MUCPerms_t ChannelCLEntry::GetPerms (const ICLEntry& participant) const
 	{
-		MUCPerms_t result;
-		auto& roles = result ["permclass_role"];
+		QList<QByteArray> roles;
 		for (const auto& entry = dynamic_cast<const ChannelParticipantEntry&> (participant);
 			 const auto& role : entry.Roles ())
 			roles << Role2Str [role];
+
+		MUCPerms_t result;
+		if (!roles.isEmpty ())
+			result ["permclass_role"] = std::move (roles);
 		return result;
 	}
 
