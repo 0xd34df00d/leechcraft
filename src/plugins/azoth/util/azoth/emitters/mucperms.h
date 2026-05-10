@@ -26,7 +26,7 @@ namespace LC::Azoth::MucEvents
 	{
 		ICLEntry& Participant_;
 		QString Reason_;
-		std::optional<QString> ActorNick_;
+		ICLEntry *Actor_ = nullptr;
 
 		std::optional<MUCPerms_t> PrevPerms_;
 	};

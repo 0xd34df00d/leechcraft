@@ -182,17 +182,17 @@ namespace LC::Azoth
 						tr ("%1 has entered the room as %2").arg (name, Util::FormatHumanReadableList (perms));
 			}
 
-			static QString MakeActorReasonClause (const std::optional<QString>& actor, const QString& reason)
+			static QString MakeActorReasonClause (const ICLEntry *actor, const QString& reason)
 			{
-				const bool hasActor = actor.has_value ();
+				const bool hasActor = actor;
 				const bool hasReason = !reason.isEmpty ();
 
 				if (hasActor && hasReason)
 					//: Parenthetical attribution in MUC events: %1 performed the action, %2 is the reason.
-					return tr ("by %1: %2").arg (*actor, reason);
+					return tr ("by %1: %2").arg (actor->GetEntryName (), reason);
 				if (hasActor)
 					//: Parenthetical attribution in MUC events: %1 performed the action.
-					return tr ("by %1").arg (*actor);
+					return tr ("by %1").arg (actor->GetEntryName ());
 				if (hasReason)
 					//: Parenthetical attribution in MUC events: %1 is the reason for the action.
 					return tr ("reason: %1").arg (reason);
@@ -221,7 +221,7 @@ namespace LC::Azoth
 			QString MakePermsChangeString (const MucEvents::ParticipantPermsChange& event)
 			{
 				const auto& name = event.Participant_.GetEntryName ();
-				const auto& actorReasonAddendum = MakeActorReasonClause (event.ActorNick_, event.Reason_);
+				const auto& actorReasonAddendum = MakeActorReasonClause (event.Actor_, event.Reason_);
 
 				const auto& currPerms = Perms_->GetPerms (event.Participant_);
 				if (currPerms.isEmpty ())
@@ -289,8 +289,7 @@ namespace LC::Azoth
 						[&name] (const MucEvents::ParticipantForcedOut& event)
 						{
 							const auto& action = GetOutActionString (event.Action_);
-							const auto actorNick = event.Actor_ ? event.Actor_->GetEntryName () : std::optional<QString> {};
-							const auto& addendum = MakeActorReasonClause (actorNick, event.Reason_);
+							const auto& addendum = MakeActorReasonClause (event.Actor_, event.Reason_);
 							return addendum.isEmpty () ?
 									tr ("%1 has been %2").arg (name, action) :
 									tr ("%1 has been %2 (%3)").arg (name, action, addendum);
