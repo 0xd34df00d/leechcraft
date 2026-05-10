@@ -32,6 +32,33 @@ namespace LC::Azoth
 			return variant.isEmpty () ? entry.GetEntryName () : entry.GetEntryName () + '/' + variant;
 		}
 
+		MUCPerms_t SubtractPerms (const MUCPerms_t& minuend, const MUCPerms_t& subtrahend)
+		{
+			MUCPerms_t result;
+			for (const auto& [key, minuendList] : minuend.asKeyValueRange ())
+			{
+				const auto& subtrahendList = subtrahend.value (key);
+				for (const auto& item : minuendList)
+					if (!subtrahendList.contains (item))
+						result [key] << item;
+			}
+			return result;
+		}
+
+		auto ComputePermsDiff (const MUCPerms_t& oldPerms, const MUCPerms_t& newPerms)
+		{
+			struct PermsDiff
+			{
+				MUCPerms_t Removed_;
+				MUCPerms_t Added_;
+			};
+			return PermsDiff
+			{
+				.Removed_ = SubtractPerms (oldPerms, newPerms),
+				.Added_ = SubtractPerms (newPerms, oldPerms),
+			};
+		}
+
 		class DirectAdapter : public ChatEventsAdapter
 		{
 			ICLEntry& Entry_;
@@ -66,7 +93,7 @@ namespace LC::Azoth
 			}
 		};
 
-		QStringList PermsToStrings (const IMUCPerms& perms, const QMap<QByteArray, QList<QByteArray>>& permsMap)
+		QStringList PermsToStrings (const IMUCPerms& perms, const MUCPerms_t& permsMap)
 		{
 			QStringList permsStrings;
 			for (const auto& permsList : permsMap)
@@ -126,6 +153,20 @@ namespace LC::Azoth
 									tr ("Subject changed to %1").arg (event.Subject_);
 							emit gotEvent ({ .Text_ { text } });
 						});
+
+				if (Perms_)
+				{
+					auto& permsEmitter = Perms_->GetMUCPermsEmitter ();
+					connect (&permsEmitter,
+							&Emitters::MUCPerms::permsChanged,
+							this,
+							[this] (const MucEvents::ParticipantPermsChange& event)
+							{
+								if (const auto& text = MakePermsChangeString (event);
+									!text.isEmpty ())
+									emit gotEvent ({ .Text_ { text } });
+							});
+				}
 			}
 		private:
 			static QString MakeJoinString (const ICLEntry& part, const QStringList& perms)
@@ -151,6 +192,57 @@ namespace LC::Azoth
 					//: Parenthetical attribution in MUC events: %1 is the reason for the action.
 					return tr ("reason: %1").arg (reason);
 				return {};
+			}
+
+			QString MakePermsDiffClause (const MUCPerms_t& oldPerms, const MUCPerms_t& newPerms)
+			{
+				const auto& diff = ComputePermsDiff (oldPerms, newPerms);
+				const auto& removedString = Util::FormatHumanReadableList (PermsToStrings (*Perms_, diff.Removed_));
+				const auto& addedString = Util::FormatHumanReadableList (PermsToStrings (*Perms_, diff.Added_));
+				const auto hasRemoved = !diff.Removed_.isEmpty ();
+				const auto hasAdded = !diff.Added_.isEmpty ();
+				if (hasRemoved && hasAdded)
+					//: Perms delta when participant both gained and lost perms; %1 is the added list, %2 the lost list
+					return tr ("added %1, no longer %2").arg (addedString, removedString);
+				if (hasAdded)
+					//: Perms delta, gained-only; %1 is the list of newly granted perms.
+					return tr ("added %1").arg (addedString);
+				if (hasRemoved)
+					//: Perms delta, lost-only; %1 is the list of revoked perms.
+					return tr ("no longer %1").arg (removedString);
+				return {};
+			}
+
+			QString MakePermsChangeString (const MucEvents::ParticipantPermsChange& event)
+			{
+				const auto& name = event.Participant_.GetEntryName ();
+				const auto& actorReasonAddendum = MakeActorReasonClause (event.ActorNick_, event.Reason_);
+
+				const auto& currPerms = Perms_->GetPerms (event.Participant_);
+				if (currPerms.isEmpty ())
+				{
+					if (!event.PrevPerms_)
+						return actorReasonAddendum.isEmpty () ?
+								tr ("%1 now has no permissions").arg (name) :
+								tr ("%1 now has no permissions (%2)").arg (name, actorReasonAddendum);
+
+					const auto& prevPermsString = Util::FormatHumanReadableList (PermsToStrings (*Perms_, *event.PrevPerms_));
+					return actorReasonAddendum.isEmpty () ?
+							tr ("%1 now has no permissions; had %2").arg (name, prevPermsString) :
+							tr ("%1 now has no permissions; had %2 (%3)").arg (name, prevPermsString, actorReasonAddendum);
+				}
+
+				const auto& currPermsString = Util::FormatHumanReadableList (PermsToStrings (*Perms_, currPerms));
+				const auto& permsDiffClause = event.PrevPerms_ ?
+						MakePermsDiffClause (*event.PrevPerms_, currPerms) :
+						QString {};
+				if (permsDiffClause.isEmpty ())
+					return actorReasonAddendum.isEmpty () ?
+							tr ("%1 is now %2").arg (name, currPermsString) :
+							tr ("%1 is now %2 (%3)").arg (name, currPermsString, actorReasonAddendum);
+				return actorReasonAddendum.isEmpty () ?
+						tr ("%1 is now %2: %3").arg (name, currPermsString, permsDiffClause) :
+						tr ("%1 is now %2: %3 (%4)").arg (name, currPermsString, permsDiffClause, actorReasonAddendum);
 			}
 
 			void EmitJoinEvent (const ICLEntry& part)
