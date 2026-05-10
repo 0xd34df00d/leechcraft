@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "chateventsadapter.h"
+#include <QCoreApplication>
 #include <util/gui/util.h>
 #include <util/sll/qobjectrefcast.h>
 #include <util/sll/qtutil.h>
@@ -61,6 +62,8 @@ namespace LC::Azoth
 
 		class DirectAdapter : public ChatEventsAdapter
 		{
+			Q_DECLARE_TR_FUNCTIONS (LC::Azoth::DirectAdapter)
+
 			ICLEntry& Entry_;
 		public:
 			DirectAdapter (ICLEntry& entry, QObject *parent)
@@ -104,6 +107,8 @@ namespace LC::Azoth
 
 		class MucAdapter : public ChatEventsAdapter
 		{
+			Q_DECLARE_TR_FUNCTIONS (LC::Azoth::MucAdapter)
+
 			IMUCEntry& Entry_;
 			IMUCPerms * const Perms_;
 		public:
