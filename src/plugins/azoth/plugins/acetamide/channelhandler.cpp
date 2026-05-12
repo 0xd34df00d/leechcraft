@@ -11,6 +11,7 @@
 #include <util/sll/qtutil.h>
 #include "channelclentry.h"
 #include "channelpublicmessage.h"
+#include "channelsubjecttracker.h"
 #include "ircaccount.h"
 #include "ircserverhandler.h"
 #include "channelsmanager.h"
@@ -19,11 +20,12 @@ namespace LC::Azoth::Acetamide
 {
 	ChannelHandler::ChannelHandler (const ChannelOptions& channel,
 			ChannelsManager *cm)
-	: CM_ (cm)
-	, ChannelID_ (channel.ChannelName_ + "@" + channel.ServerName_)
-	, ChannelOptions_ (channel)
+	: CM_ { cm }
+	, ChannelCLEntry_ { std::make_shared<ChannelCLEntry> (this) }
+	, ChannelID_ { channel.ChannelName_ + "@" + channel.ServerName_ }
+	, ChannelOptions_ { channel }
+	, SubjectTracker_ { new ChannelSubjectTracker { ChannelCLEntry_->GetMUCEntryEmitter (), this } }
 	{
-		ChannelCLEntry_ = std::make_shared<ChannelCLEntry> (this);
 		connect (this,
 				&ChannelHandler::updateChanModes,
 				ChannelCLEntry_.get (),
@@ -232,22 +234,17 @@ namespace LC::Azoth::Acetamide
 	void ChannelHandler::SetMUCSubject (const QString& subject,
 			const std::optional<QString>& actorNick, MucEvents::Liveness liveness)
 	{
-		if (Subject_ == subject)
-			return;
+		SubjectTracker_->Set (subject, actorNick, liveness);
+	}
 
-		Subject_ = subject;
-		if (!Url_.isEmpty ())
-			Subject_.append ("\nURL: " + Url_);
-		emit ChannelCLEntry_->GetMUCEntryEmitter ().mucSubjectChanged ({
-					.Subject_ = Subject_,
-					.ActorNick_ = actorNick,
-					.Liveness_ = liveness
-				});
+	void ChannelHandler::NotifyTopicWhoTime (const QString& who, quint64 time)
+	{
+		SubjectTracker_->NotifyAuthor (who, time);
 	}
 
 	QString ChannelHandler::GetMUCSubject () const
 	{
-		return Subject_;
+		return SubjectTracker_->GetText ();
 	}
 
 	void ChannelHandler::SetTopic (const QString& topic)
@@ -572,9 +569,7 @@ namespace LC::Azoth::Acetamide
 
 	void ChannelHandler::SetUrl (const QString& url)
 	{
-		Url_ = url;
-		if (!Url_.isEmpty ())
-			Subject_.append ("\nURL: " + Url_);
+		SubjectTracker_->SetUrl (url);
 	}
 
 	bool ChannelHandler::RemoveUserFromChannel (const QString& nick)

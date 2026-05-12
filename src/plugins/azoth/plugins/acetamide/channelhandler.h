@@ -18,6 +18,7 @@
 namespace LC::Azoth::Acetamide
 {
 	class ChannelCLEntry;
+	class ChannelSubjectTracker;
 	class IrcMessage;
 	class IrcServerHandler;
 	class ChannelsManager;
@@ -26,11 +27,10 @@ namespace LC::Azoth::Acetamide
 	{
 		Q_OBJECT
 
-		std::shared_ptr<ChannelCLEntry> ChannelCLEntry_;
 		ChannelsManager *CM_;
+		std::shared_ptr<ChannelCLEntry> ChannelCLEntry_;
 
 		QString ChannelID_;
-		QString Subject_;
 
 		ChannelOptions ChannelOptions_;
 
@@ -39,7 +39,8 @@ namespace LC::Azoth::Acetamide
 		QHash<QString, ChannelParticipantEntry_ptr> Nick2Entry_;
 
 		ChannelModes ChannelMode_;
-		QString Url_;
+
+		ChannelSubjectTracker * const SubjectTracker_;
 	public:
 		ChannelHandler (const ChannelOptions& options, ChannelsManager *manager);
 
@@ -79,6 +80,7 @@ namespace LC::Azoth::Acetamide
 		void SetMUCSubject (const QString&,
 				const std::optional<QString>& actorNick,
 				MucEvents::Liveness);
+		void NotifyTopicWhoTime (const QString& who, quint64 time);
 		QString GetMUCSubject () const;
 		void SetTopic (const QString& topic);
 

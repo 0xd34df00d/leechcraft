@@ -510,6 +510,8 @@ namespace LC::Azoth::Acetamide
 		if (!handler)
 			return;
 
+		handler->NotifyTopicWhoTime (who, time);
+
 		const auto& msg = tr ("Topic was set by %1 at %2")
 				.arg (who,
 					  QDateTime::fromSecsSinceEpoch (time).toString (Qt::TextDate));
