@@ -26,7 +26,7 @@ namespace LC::Azoth::Acetamide
 				{
 					if (std::exchange (PendingHistoricalEmit_, false))
 						emit Emitter_.mucSubjectChanged ({
-									.Subject_ = Text_,
+									.Subject_ = GetText (),
 									.ActorNick_ = std::nullopt,
 									.Liveness_ = MucEvents::Liveness::Historical
 								});
@@ -35,7 +35,7 @@ namespace LC::Azoth::Acetamide
 
 	QString ChannelSubjectTracker::GetText () const
 	{
-		return Text_;
+		return Url_.isEmpty () ? Text_ : Text_ + "\nURL: " + Url_;
 	}
 
 	void ChannelSubjectTracker::Set (const QString& text,
@@ -45,15 +45,13 @@ namespace LC::Azoth::Acetamide
 			return;
 
 		Text_ = text;
-		if (!Url_.isEmpty ())
-			Text_.append ("\nURL: " + Url_);
 
 		if (liveness == MucEvents::Liveness::Live)
 		{
 			PendingHistoricalEmit_ = false;
 			FallbackTimer_->stop ();
 			emit Emitter_.mucSubjectChanged ({
-						.Subject_ = Text_,
+						.Subject_ = GetText (),
 						.ActorNick_ = actorNick,
 						.Liveness_ = liveness
 					});
@@ -71,7 +69,7 @@ namespace LC::Azoth::Acetamide
 			return;
 		FallbackTimer_->stop ();
 		emit Emitter_.mucSubjectChanged ({
-					.Subject_ = Text_,
+					.Subject_ = GetText (),
 					.ActorNick_ = who,
 					.Liveness_ = MucEvents::Liveness::Historical
 				});
@@ -79,8 +77,17 @@ namespace LC::Azoth::Acetamide
 
 	void ChannelSubjectTracker::SetUrl (const QString& url)
 	{
+		if (Url_ == url)
+			return;
 		Url_ = url;
-		if (!Url_.isEmpty ())
-			Text_.append ("\nURL: " + Url_);
+
+		if (PendingHistoricalEmit_)
+			return;
+
+		emit Emitter_.mucSubjectChanged ({
+					.Subject_ = GetText (),
+					.ActorNick_ = std::nullopt,
+					.Liveness_ = MucEvents::Liveness::Historical
+				});
 	}
 }
