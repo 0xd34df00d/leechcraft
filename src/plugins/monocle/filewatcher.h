@@ -24,12 +24,17 @@ namespace LC::Monocle
 		QFileSystemWatcher Watcher_;
 
 		QTimer ReloadTimer_;
-	public:
-		using FileIdentity_t = std::tuple<qint64, QDateTime>;
-	private:
-		std::optional<FileIdentity_t> LastIdentity_;
+
+		struct FileIdentity;
+		using MaybeFileIdentity = std::optional<FileIdentity>;
+
+		std::unique_ptr<MaybeFileIdentity> LastIdentityHolder_;
+		MaybeFileIdentity& LastIdentity_;
+
+		static MaybeFileIdentity MakeIdentity (const QString&);
 	public:
 		explicit FileWatcher (QObject* = nullptr);
+		~FileWatcher () override;
 
 		void SetWatchedFile (const QString&);
 	private:

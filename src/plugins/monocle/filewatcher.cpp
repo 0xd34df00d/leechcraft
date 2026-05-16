@@ -14,20 +14,40 @@
 
 namespace LC::Monocle
 {
-	namespace
+	struct FileWatcher::FileIdentity
 	{
-		std::optional<FileWatcher::FileIdentity_t> MakeIdentity (const QString& path)
-		{
-			const QFileInfo fi { path };
-			if (!fi.exists ())
-				return {};
+		qint64 Size_;
+		QDateTime LastModified_;
 
-			return FileWatcher::FileIdentity_t { fi.size (), fi.lastModified () };
+		bool operator== (const FileIdentity&) const = default;
+
+		friend QDebug operator<< (QDebug dbg, const FileIdentity& id)
+		{
+			return dbg << std::tie (id.Size_, id.LastModified_);
 		}
+	};
+
+	FileWatcher::MaybeFileIdentity FileWatcher::MakeIdentity (const QString& path)
+	{
+		const QFileInfo fi { path };
+		if (!fi.exists ())
+			return {};
+
+		struct stat st;
+		if (stat (QFile::encodeName (path).constData (), &st) != 0)
+			return {};
+
+		return FileIdentity
+		{
+			.Size_ = fi.size (),
+			.LastModified_ = fi.lastModified (),
+		};
 	}
 
 	FileWatcher::FileWatcher (QObject *parent)
 	: QObject { parent }
+	, LastIdentityHolder_ { std::make_unique<MaybeFileIdentity> () }
+	, LastIdentity_ { *LastIdentityHolder_ }
 	{
 		connect (&Watcher_,
 				&QFileSystemWatcher::directoryChanged,
@@ -54,6 +74,8 @@ namespace LC::Monocle
 					LastIdentity_ = MakeIdentity (CurrentFile_);
 				});
 	}
+
+	FileWatcher::~FileWatcher () = default;
 
 	void FileWatcher::SetWatchedFile (const QString& file)
 	{
