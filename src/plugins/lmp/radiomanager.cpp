@@ -355,7 +355,7 @@ namespace LMP
 	}
 
 	template<typename F>
-	std::result_of_t<F (Media::IRadioStationProvider*, QModelIndex)>
+	std::invoke_result_t<F, Media::IRadioStationProvider*, QModelIndex>
 		RadioManager::WithSourceProv (const QModelIndex& mapped, F f) const
 	{
 		return WithSourceProv (mapped,
@@ -371,7 +371,7 @@ namespace LMP
 	}
 
 	template<typename Succ, typename Fail>
-	std::result_of_t<Succ (Media::IRadioStationProvider*, QModelIndex)>
+	std::invoke_result_t<Succ, Media::IRadioStationProvider*, QModelIndex>
 		RadioManager::WithSourceProv (const QModelIndex& mapped, Succ succ, Fail fail) const
 	{
 		const auto& src = MergeModel_->mapToSource (mapped);
