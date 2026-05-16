@@ -8,9 +8,13 @@
 
 #include "filewatcher.h"
 #include <QDir>
-#include <QTimer>
+#include <QFile>
 #include <QFileInfo>
+#include <QTimer>
 #include <QtDebug>
+#ifdef Q_OS_UNIX
+#include <sys/stat.h>
+#endif
 
 namespace LC::Monocle
 {
@@ -18,12 +22,17 @@ namespace LC::Monocle
 	{
 		qint64 Size_;
 		QDateTime LastModified_;
+#ifdef Q_OS_UNIX
+		ino_t Inode_;
+#else
+		bool Inode_ = false; // dummy
+#endif
 
 		bool operator== (const FileIdentity&) const = default;
 
 		friend QDebug operator<< (QDebug dbg, const FileIdentity& id)
 		{
-			return dbg << std::tie (id.Size_, id.LastModified_);
+			return dbg << std::tie (id.Size_, id.LastModified_, id.Inode_);
 		}
 	};
 
@@ -33,14 +42,19 @@ namespace LC::Monocle
 		if (!fi.exists ())
 			return {};
 
+#ifdef Q_OS_UNIX
 		struct stat st;
 		if (stat (QFile::encodeName (path).constData (), &st) != 0)
 			return {};
+#endif
 
 		return FileIdentity
 		{
 			.Size_ = fi.size (),
 			.LastModified_ = fi.lastModified (),
+#ifdef Q_OS_UNIX
+			.Inode_ = st.st_ino,
+#endif
 		};
 	}
 
@@ -52,16 +66,11 @@ namespace LC::Monocle
 		connect (&Watcher_,
 				&QFileSystemWatcher::directoryChanged,
 				this,
-				&FileWatcher::CheckReload);
+				&FileWatcher::HandleChange);
 		connect (&Watcher_,
 				&QFileSystemWatcher::fileChanged,
 				this,
-				[this]
-				{
-					if (!Watcher_.files ().contains (CurrentFile_))
-						Watcher_.addPath (CurrentFile_);
-					CheckReload ();
-				});
+				&FileWatcher::HandleChange);
 
 		using namespace std::chrono_literals;
 		constexpr auto ReloadTimerInterval = 750ms;
@@ -94,11 +103,18 @@ namespace LC::Monocle
 			qWarning () << "failed to watch" << failed;
 	}
 
-	void FileWatcher::CheckReload ()
+	void FileWatcher::HandleChange ()
 	{
-		const auto& newIdentity = MakeIdentity (CurrentFile_);
+		const auto newIdentity = MakeIdentity (CurrentFile_);
 		if (!newIdentity || LastIdentity_ == newIdentity)
 			return;
+
+		if (!LastIdentity_ || LastIdentity_->Inode_ != newIdentity->Inode_)
+		{
+			Watcher_.removePath (CurrentFile_);
+			if (!Watcher_.addPath (CurrentFile_))
+				qWarning () << "failed to rearm watch on" << CurrentFile_;
+		}
 
 		LastIdentity_ = newIdentity;
 		ReloadTimer_.start ();

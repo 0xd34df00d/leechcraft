@@ -38,7 +38,7 @@ namespace LC::Monocle
 
 		void SetWatchedFile (const QString&);
 	private:
-		void CheckReload ();
+		void HandleChange ();
 	signals:
 		void reloadNeeded (const QString&);
 	};
