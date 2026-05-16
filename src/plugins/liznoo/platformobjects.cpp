@@ -90,6 +90,7 @@ namespace LC::Liznoo
 
 	Util::ContextTask<void> PlatformObjects::Init ()
 	{
+		co_await Util::AddContextObject { *this };
 #ifdef Q_OS_LINUX
 		const auto [upowerEvents, ckEvents, logindEvents] = co_await Util::InParallel (Events::UPower::Create (),
 				Events::ConsoleKit::Create (),
