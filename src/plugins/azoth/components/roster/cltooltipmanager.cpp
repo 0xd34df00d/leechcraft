@@ -96,10 +96,6 @@ namespace Azoth
 				&Emitters::CLEntry::groupsChanged,
 				this,
 				invalidate);
-		connect (&emitter,
-				&Emitters::CLEntry::permsChanged,
-				this,
-				invalidate);
 
 		const auto entryObj = entry->GetQObject ();
 		if (qobject_cast<IHaveAvatars*> (entryObj))
@@ -108,6 +104,12 @@ namespace Azoth
 					this,
 					SLOT (handleAvatarChanged (QObject*)),
 					Qt::UniqueConnection);
+
+		if (const auto perms = qobject_cast<IMUCPerms*> (entryObj))
+			connect (&perms->GetMUCPermsEmitter (),
+					&Emitters::MUCPerms::permsChanged,
+					this,
+					[this] (const MucEvents::ParticipantPermsChange& event) { InvalidateTooltip (&event.Participant_); });
 
 		if (qobject_cast<IAdvancedCLEntry*> (entryObj))
 		{

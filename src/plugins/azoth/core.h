@@ -41,6 +41,7 @@ namespace LC::Azoth
 	class ICLEntry;
 	class IAccount;
 	class IMessage;
+	class IMUCPerms;
 	class IEmoticonResourceSource;
 	class IChatStyleResourceSource;
 
@@ -274,6 +275,8 @@ namespace LC::Azoth
 
 		void HandlePowerNotification (Entity);
 
+		void HandlePermsChanged (ICLEntry& part, const IMUCPerms& mucPerms);
+
 		/** Removes one item representing the given CL entry.
 		 */
 		void RemoveCLItem (QStandardItem*);
@@ -311,7 +314,6 @@ namespace LC::Azoth
 		void handleAccountRemoved (QObject *accObj);
 
 		void handleEntryGroupsChanged (ICLEntry *entry, QStringList);
-		void handleEntryPermsChanged (ICLEntry *entry);
 		void handleEntryGotMessage (QObject *msg);
 
 		/** Is registered in the XmlSettingsManager as handler for

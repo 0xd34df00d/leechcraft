@@ -1166,10 +1166,6 @@ namespace LC::Azoth
 				this,
 				std::bind_front (&Core::handleEntryGroupsChanged, this, entry));
 		connect (&emitter,
-				&Emitters::CLEntry::permsChanged,
-				this,
-				std::bind_front (&Core::handleEntryPermsChanged, this, entry));
-		connect (&emitter,
 				&Emitters::CLEntry::entryGenerallyChanged,
 				this,
 				[this, entry]
@@ -1214,6 +1210,26 @@ namespace LC::Azoth
 								tr ("You have been banned from %1: %2.").arg (entry->GetEntryName (), reason);
 						QMessageBox::warning (nullptr, "LeechCraft Azoth", text);
 					});
+
+			if (const auto mucPerms = qobject_cast<IMUCPerms*> (entryObj))
+			{
+				for (const auto part : mucEntry->GetParticipants ())
+					HandlePermsChanged (*part, *mucPerms);
+
+				connect (&mucPerms->GetMUCPermsEmitter (),
+						&Emitters::MUCPerms::permsChanged,
+						this,
+						[this, mucPerms] (const MucEvents::ParticipantPermsChange& event)
+						{
+							HandlePermsChanged (event.Participant_, *mucPerms);
+						});
+				// TODO this mixes up permissions for participants of several rooms at once,
+				// but this will have to wait until the CL model is redone with a proper QAbstractItemModel subclass
+				connect (&mucEmitter,
+						&Emitters::MUCEntry::participantJoined,
+						this,
+						[this, mucPerms] (ICLEntry& participant) { HandlePermsChanged (participant, *mucPerms); });
+			}
 		}
 
 		NotificationsManager_->AddCLEntry (entryObj);
@@ -1237,9 +1253,6 @@ namespace LC::Azoth
 		}
 
 		HandleStatusChanged (entry, entry->GetStatus (), {});
-
-		if (entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
-			handleEntryPermsChanged (entry);
 
 		TooltipManager_->AddEntry (entry);
 
@@ -1855,14 +1868,10 @@ namespace LC::Azoth
 		HandleStatusChanged (entry, entry->GetStatus (), QString ());
 	}
 
-	void Core::handleEntryPermsChanged (ICLEntry *entry)
+	void Core::HandlePermsChanged (ICLEntry& part, const IMUCPerms& mucPerms)
 	{
-		const auto mucPerms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntryObject ());
-		if (!mucPerms)
-			return;
-
-		const QString& name = mucPerms->GetAffName (*entry);
-		for (auto item : Entry2Items_.value (entry))
+		const auto& name = mucPerms.GetAffName (part);
+		for (const auto item : Entry2Items_.value (&part))
 			item->setData (name, CLRAffiliation);
 	}
 
