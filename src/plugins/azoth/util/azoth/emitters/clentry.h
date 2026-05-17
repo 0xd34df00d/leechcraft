@@ -76,11 +76,6 @@ namespace LC::Azoth::Emitters
 		 */
 		void chatPartStateChanged (const ChatPartState& state, const QString& variant);
 
-		/** @brief This signal should be emitted if it's a MUC
-		 * participant and his role/affiliation changes.
-		 */
-		void permsChanged ();
-
 		/** @brief This signal should be emitted when the entry changes.
 		 *
 		 * This signal should be emitted only if no other signals apply
