@@ -147,7 +147,6 @@ namespace Xoox
 	void RoomParticipantEntry::SetAffiliation (QXmppMucItem::Affiliation aff)
 	{
 		Affiliation_ = aff;
-		emit Emitter_.permsChanged ();
 	}
 
 	QXmppMucItem::Role RoomParticipantEntry::GetRole () const
@@ -158,7 +157,6 @@ namespace Xoox
 	void RoomParticipantEntry::SetRole (QXmppMucItem::Role role)
 	{
 		Role_ = role;
-		emit Emitter_.permsChanged ();
 	}
 }
 }
