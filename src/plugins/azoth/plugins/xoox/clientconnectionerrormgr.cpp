@@ -134,7 +134,7 @@ namespace Xoox
 		case QXmppStanza::Error::SubscriptionRequired:
 			return tr ("Subscription is required to perform this action.");
 		case QXmppStanza::Error::Gone:
-			return tr ("The user or server cannot be contacted at this address.");
+			return tr ("The user, MUC room, or server is no longer available at this address.");
 		case QXmppStanza::Error::UndefinedCondition:
 			return tr ("Undefined condition.");
 		case QXmppStanza::Error::UnexpectedRequest:
