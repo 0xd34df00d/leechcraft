@@ -106,11 +106,6 @@ namespace Azoth
 			 */
 			Other,
 
-			/** @brief Represents permission changes of a participant in
-			 * a chat or MUC room.
-			 */
-			ParticipantRoleAffiliationChange,
-
 			/** @brief Notifies about participant in a MUC changing the
 			 * nick.
 			 */
