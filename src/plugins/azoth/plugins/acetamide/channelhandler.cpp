@@ -215,22 +215,6 @@ namespace LC::Azoth::Acetamide
 		emit ChannelCLEntry_->GetMUCEntryEmitter ().participantJoined (*entry, PastInitialNamesList_ ? Live : Historical);
 	}
 
-	void ChannelHandler::MakePermsChangedMessage (const QString& nick,
-			ChannelRole role, bool isSet)
-	{
-		const QString& roleStr = ChannelCLEntry_->Role2String (role);
-		const auto& msg = isSet ?
-				tr ("%1 is now %2").arg (nick, roleStr) :
-				tr ("%1 is not %2 anymore").arg (nick, roleStr);
-
-		const auto message = new ChannelPublicMessage (msg,
-				ChannelCLEntry_.get (),
-				IMessage::Type::StatusMessage,
-				IMessage::SubType::ParticipantRoleAffiliationChange,
-				GetParticipantEntry (nick));
-		ChannelCLEntry_->HandleMessage (message);
-	}
-
 	void ChannelHandler::SetMUCSubject (const QString& subject,
 			const std::optional<QString>& actorNick, MucEvents::Liveness liveness)
 	{

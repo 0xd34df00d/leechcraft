@@ -74,9 +74,6 @@ namespace LC::Azoth::Acetamide
 		void SetChannelUser (const QString& nick,
 				const QString& user = QString (), const QString& host = QString ());
 
-		void MakePermsChangedMessage (const QString&,
-				ChannelRole, bool);
-
 		void SetMUCSubject (const QString&,
 				const std::optional<QString>& actorNick,
 				MucEvents::Liveness);

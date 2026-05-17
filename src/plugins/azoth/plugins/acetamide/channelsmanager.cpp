@@ -357,17 +357,22 @@ namespace LC::Azoth::Acetamide
 			return;
 		}
 
-		bool action = mode [0] == '+';
+		const bool action = mode [0] == '+';
 
 		const auto handleRole = [&] (ChannelRole role)
 		{
 			if (const auto& entry = handler->GetExistingParticipantEntry (value))
 			{
+				const auto oldPerms = handler->GetCLEntry ()->GetPerms (*entry);
 				if (action)
 					entry->SetRole (role);
 				else
 					entry->RemoveRole (role);
-				handler->MakePermsChangedMessage (value, role, action);
+				handler->GetCLEntry ()->GetMUCPermsEmitter ().permsChanged ({
+							.Participant_ = *entry,
+							.Reason_ = {},
+							.PrevPerms_ = oldPerms,
+						});
 			}
 		};
 
