@@ -102,7 +102,7 @@ namespace LC::Azoth::Acetamide
 		if (!Roles_.contains (role))
 		{
 			Roles_ << role;
-			std::sort (Roles_.begin (), Roles_.end ());
+			std::ranges::sort (Roles_);
 			emit Emitter_.permsChanged ();
 		}
 	}
@@ -110,13 +110,13 @@ namespace LC::Azoth::Acetamide
 	void ChannelParticipantEntry::SetRoles (const QList<ChannelRole>& roles)
 	{
 		Roles_ = roles;
-		std::sort (Roles_.begin (), Roles_.end ());
+		std::ranges::sort (Roles_);
 		emit Emitter_.permsChanged ();
 	}
 
 	void ChannelParticipantEntry::RemoveRole (ChannelRole role)
 	{
-		if (Roles_.removeAll (role))
+		if (Roles_.removeOne (role))
 			emit Emitter_.permsChanged ();
 	}
 }
