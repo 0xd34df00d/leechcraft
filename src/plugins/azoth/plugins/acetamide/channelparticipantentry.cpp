@@ -103,7 +103,6 @@ namespace LC::Azoth::Acetamide
 		{
 			Roles_ << role;
 			std::ranges::sort (Roles_);
-			emit Emitter_.permsChanged ();
 		}
 	}
 
@@ -111,12 +110,10 @@ namespace LC::Azoth::Acetamide
 	{
 		Roles_ = roles;
 		std::ranges::sort (Roles_);
-		emit Emitter_.permsChanged ();
 	}
 
 	void ChannelParticipantEntry::RemoveRole (ChannelRole role)
 	{
-		if (Roles_.removeOne (role))
-			emit Emitter_.permsChanged ();
+		Roles_.removeOne (role);
 	}
 }
