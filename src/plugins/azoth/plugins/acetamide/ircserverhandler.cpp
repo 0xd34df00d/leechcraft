@@ -919,13 +919,13 @@ namespace LC::Azoth::Acetamide
 	}
 
 	void IrcServerHandler::ParseChanMode (const QString& channel,
-			const QString& mode, const QString& value)
+			const QString& mode, const QString& value, const QString& actorNick)
 	{
 		if (mode.isEmpty ())
 			return;
 
 		if (IsChannelExists (channel))
-			ChannelsManager_->ParseChanMode (channel, mode, value);
+			ChannelsManager_->ParseChanMode (channel, mode, value, actorNick);
 	}
 
 	void IrcServerHandler::ParseUserMode (const QString& nick,

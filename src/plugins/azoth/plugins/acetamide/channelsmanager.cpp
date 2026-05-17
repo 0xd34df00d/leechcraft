@@ -346,7 +346,7 @@ namespace LC::Azoth::Acetamide
 	}
 
 	void ChannelsManager::ParseChanMode (const QString& channel,
-			const QString& mode, const QString& value)
+			const QString& mode, const QString& value, const QString& actorNick)
 	{
 		const auto handler = GetChannelHandler (channel);
 		if (!handler)
@@ -358,6 +358,8 @@ namespace LC::Azoth::Acetamide
 		}
 
 		const bool action = mode [0] == '+';
+
+		const auto actor = handler->GetExistingParticipantEntry (actorNick);
 
 		const auto handleRole = [&] (ChannelRole role)
 		{
@@ -371,6 +373,7 @@ namespace LC::Azoth::Acetamide
 				handler->GetCLEntry ()->GetMUCPermsEmitter ().permsChanged ({
 							.Participant_ = *entry,
 							.Reason_ = {},
+							.Actor_ = actor.get (),
 							.PrevPerms_ = oldPerms,
 						});
 			}

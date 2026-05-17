@@ -184,7 +184,7 @@ namespace Acetamide
 		void SayCommand (const QStringList&);
 
 		void ParseChanMode (const QString&, const QString&,
-				const QString& value = QString ());
+				const QString& value = {}, const QString& actorNick = {});
 		void ParseUserMode (const QString&, const QString&);
 
 		void ParserISupport (const QString&);

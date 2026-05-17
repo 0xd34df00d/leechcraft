@@ -873,11 +873,12 @@ namespace LC::Azoth::Acetamide
 		const auto& channel = opts.Parameters_.first ();
 
 		if (opts.Parameters_.count () == 2)
-			ISH_->ParseChanMode (channel, opts.Parameters_.at (1));
+			ISH_->ParseChanMode (channel, opts.Parameters_.at (1), {}, opts.Nick_);
 		else if (opts.Parameters_.count () == 3)
 			ISH_->ParseChanMode (channel,
 					opts.Parameters_.at (1),
-					opts.Parameters_.at (2));
+					opts.Parameters_.at (2),
+					opts.Nick_);
 	}
 
 	void ServerResponseManager::GotChannelModes (const IrcMessageOptions& opts)

@@ -123,7 +123,7 @@ namespace LC::Azoth::Acetamide
 		void RemoveInviteListItem (const QString& channel, const QString& mask);
 
 		void ParseChanMode (const QString& channel,
-				const QString& mode, const QString& value);
+				const QString& mode, const QString& value, const QString& actorNick = {});
 		void SetNewChannelMode (const QString& channel,
 				const QString& mode, const QString& name);
 		void SetNewChannelModes (const QString& channel, const ChannelModes& modes);
