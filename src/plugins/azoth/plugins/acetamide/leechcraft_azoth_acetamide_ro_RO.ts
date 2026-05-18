@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="ro_RO">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="ro_RO">
 <context>
     <name>BookmarkEditWidget</name>
     <message>
@@ -141,7 +139,7 @@
         <location filename="channelconfigwidget.ui" line="261"/>
         <location filename="channelconfigwidget.ui" line="334"/>
         <source>Update</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="channelconfigwidget.ui" line="192"/>
@@ -192,7 +190,7 @@
         <location filename="invitechannelsdialog.ui" line="39"/>
         <source>From now on:</source>
         <oldsource>From now on: </oldsource>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="invitechannelsdialog.ui" line="47"/>
@@ -616,7 +614,7 @@
     <message>
         <location filename="ircparticipantentry.cpp" line="21"/>
         <source>Close chat</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -624,12 +622,12 @@
     <message>
         <location filename="ircprotocol.cpp" line="161"/>
         <source>This server needs password. Please enter it here:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="ircprotocol.cpp" line="167"/>
         <source>This channel needs password. Please enter it here:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -691,7 +689,7 @@
         <location filename="ircserverhandler.cpp" line="540"/>
         <source>%1 is logged in as %2</source>
         <oldsource>%1 is logged in as %2 </oldsource>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="543"/>
@@ -729,7 +727,7 @@
     <message>
         <location filename="ircserversocket.cpp" line="163"/>
         <source>Unknown encoding %1.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -777,12 +775,12 @@ ascii: The chars [a-z] are lowercase of [A-Z].
 rfc1459: ascii with additional {}|~ the lowercase of []^.
 strict-rfc1459: ascii with additional {}| the lowercase of [].
 Note: RFC1459 forgot to mention the ~ and ^ although in all known implementations those are considered equivalent too.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="serverinfowidget.cpp" line="160"/>
         <source>Maximum number of channels allowed to join by channel prefix.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="serverinfowidget.cpp" line="166"/>
@@ -792,13 +790,13 @@ Note: RFC1459 forgot to mention the ~ and ^ although in all known implementation
     <message>
         <location filename="serverinfowidget.cpp" line="180"/>
         <source>Maximum kick comment length.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="serverinfowidget.cpp" line="186"/>
         <source>Maximum number entries in the list per mode. 
 [Example: Given &quot;b:25,eI:50&quot;, it would be possible to set up to 25 &quot;+b&quot; modes, and up to 50 of a combination of &quot;+e&quot; and &quot;+I&quot;  modes, e.g. 30 &quot;+e&quot; and 20 &quot;+I&quot; modes, making up a total of 50.]</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="serverinfowidget.cpp" line="194"/>
@@ -819,59 +817,59 @@ Note: RFC1459 forgot to mention the ~ and ^ although in all known implementation
         <location filename="serverinfowidget.cpp" line="172"/>
         <source>Indicates the existence of &quot;safe&quot; channels as described in RFC 2811, and the length of the &quot;id&quot; portion of those channel names.
 [Example: IDCHAN=!:5 means the client should expect IDs which are 5 characters in length on &quot;!&quot; channels; for example  &quot;!JNB4Sircd&quot;, where &quot;JNB4S&quot; is the ID and &quot;ircd&quot; is the channel&apos;s short name.]</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="serverinfowidget.cpp" line="212"/>
         <source>Indicates which form(s) of the ISUPPORT numeric are used by the server.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="serverinfowidget.cpp" line="218"/>
         <source>The server supports a method of sending a NOTICE message to only those people on a channel with the specified status. This is done via a NOTICE command, with the channel prefixed by the desired status flag as the target.
 [Example: NOTICE @#channel :Hi there]</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="serverinfowidget.cpp" line="226"/>
         <source>Maximum topic length.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="serverinfowidget.cpp" line="234"/>
         <source>Indicates that the server supports &quot;ban exceptions&quot; (channel mode +e), as defined in RFC 2811, section 4.3.1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="serverinfowidget.cpp" line="240"/>
         <source>Indicates that the client may request a &quot;LIST&quot; command from the server, without being disconnected due to the large amount of data generated by the command.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="serverinfowidget.cpp" line="250"/>
         <source>Mode that adds or removes a nick or address to a list. Always has a parameter.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="serverinfowidget.cpp" line="256"/>
         <source>Mode that changes a setting and always has a parameter.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="serverinfowidget.cpp" line="262"/>
         <source>Mode that changes a setting and only has a parameter when set.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="serverinfowidget.cpp" line="268"/>
         <source>Mode that changes a setting and never has a parameter.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="serverinfowidget.cpp" line="274"/>
-        <source>A list of channel modes a person can get and the respective prefix a channel or nickname will get in case the person has it. The order of the modes goes from most powerful to least powerful. Those prefixes are shown in the output of the WHOIS, WHO and NAMES command. [Example: (ab)&amp;* maps the channel mode &apos;a&apos; to the channel status flag &apos;&amp;&apos;, and channel mode &apos;b&apos; to the channel status flag &apos;*&apos;.]
+        <source>A list of channel modes a person can get and the respective prefix a channel or nickname will get in case the person has it. The order of the modes goes from most powerful to least powerful. Those prefixes are shown in the output of the WHOIS, WHO and NAMES command. [Example: (ab)&amp;* maps the channel mode 'a' to the channel status flag '&amp;', and channel mode 'b' to the channel status flag '*'.]
 [Example: PREFIX=(ohv)@%+ maps channel mode &apos;o&apos; to status &apos;@&apos;, &apos;h&apos; to status &apos;%&apos;, and &apos;v&apos; to status +.]</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -892,7 +890,7 @@ Note: RFC1459 forgot to mention the ~ and ^ although in all known implementation
     <message>
         <location filename="serverresponsemanager.cpp" line="330"/>
         <source>You invite %1 to channel %2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="serverresponsemanager.cpp" line="354"/>
@@ -1022,7 +1020,7 @@ Note: RFC1459 forgot to mention the ~ and ^ although in all known implementation
         <location filename="serverinfowidget.ui" line="166"/>
         <source>The supported channel prefixes.</source>
         <oldsource>The supported channel prefixes. </oldsource>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="serverinfowidget.ui" line="156"/>
