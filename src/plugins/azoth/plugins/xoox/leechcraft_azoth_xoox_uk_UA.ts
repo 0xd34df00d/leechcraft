@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="uk_UA">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="uk_UA">
 <context>
     <name>AffiliationSelectorDialog</name>
     <message>
@@ -46,7 +44,7 @@
     <message>
         <location filename="affiliationselectordialog.ui" line="81"/>
         <source>Reason:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -111,12 +109,12 @@
     <message>
         <location filename="gwitemsremovaldialog.ui" line="14"/>
         <source>Gateway items removal</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="gwitemsremovaldialog.ui" line="20"/>
         <source>Seems like you are removing a gateway. Would you like to remove the following contacts as well?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -124,7 +122,7 @@
     <message>
         <location filename="gwoptionsdialog.ui" line="14"/>
         <source>Gateway options</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -204,7 +202,7 @@
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="196"/>
         <source>TLS:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="204"/>
@@ -214,12 +212,12 @@
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="209"/>
         <source>Disabled</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="214"/>
         <source>Required</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="227"/>
@@ -246,17 +244,17 @@
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="289"/>
         <source>File transfers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="295"/>
         <source>Allowed methods</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="301"/>
         <source>In-band bytestreams</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="308"/>
@@ -266,32 +264,32 @@
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="318"/>
         <source>Use SOCKS5 proxy</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="327"/>
         <source>Proxy address:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="354"/>
         <source>Media calls</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="360"/>
         <source>STUN</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="399"/>
         <source>TURN</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="435"/>
         <source>User:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="442"/>
@@ -306,7 +304,7 @@
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="481"/>
         <source>Log everything to file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -319,7 +317,7 @@
     <message>
         <location filename="inbandaccountregfirstpage.ui" line="36"/>
         <source>leechcraft.org</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="inbandaccountregfirstpage.ui" line="41"/>
@@ -376,7 +374,7 @@
     <message>
         <location filename="xeps/adhoccommandmanager.cpp" line="204"/>
         <source>Original message: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -459,7 +457,7 @@
     <message>
         <location filename="callshandler.cpp" line="67"/>
         <source>Why would you call yourself?</source>
-        <translation type="unfinished">Як ви хочете називатись?</translation>
+        <translation>Як ви хочете називатись?</translation>
     </message>
 </context>
 <context>
@@ -467,7 +465,7 @@
     <message>
         <location filename="capsstorageondisk.cpp" line="204"/>
         <source>Migrating capabilities database...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -491,12 +489,12 @@
     <message>
         <location filename="clientconnectionerrormgr.cpp" line="83"/>
         <source>Error from %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="clientconnectionerrormgr.cpp" line="86"/>
         <source>Error from %1: %2 (%3).</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="clientconnectionerrormgr.cpp" line="101"/>
@@ -591,22 +589,22 @@
     <message>
         <location filename="clientconnectionerrormgr.cpp" line="137"/>
         <source>The user, MUC room, or server is no longer available at this address.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="clientconnectionerrormgr.cpp" line="139"/>
         <source>Undefined condition.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="clientconnectionerrormgr.cpp" line="141"/>
         <source>Unexpected request.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="clientconnectionerrormgr.cpp" line="143"/>
         <source>Local server policy violation.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="clientconnectionerrormgr.cpp" line="149"/>
@@ -677,22 +675,22 @@
     <message>
         <location filename="entrybase.cpp" line="286"/>
         <source>Photo</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="entrybase.cpp" line="288"/>
         <source>Real name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="entrybase.cpp" line="289"/>
         <source>Birthday</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="entrybase.cpp" line="291"/>
         <source>About</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="entrybase.cpp" line="301"/>
@@ -723,63 +721,63 @@
     <message>
         <location filename="entrybase.cpp" line="309"/>
         <source>Phone</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="entrybase.cpp" line="346"/>
         <source>postal</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="entrybase.cpp" line="357"/>
         <source>Country: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="entrybase.cpp" line="358"/>
         <source>Region: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="entrybase.cpp" line="359"/>
         <source>Locality: %1</source>
-        <comment>User&apos;s locality</comment>
-        <translation type="unfinished"></translation>
+        <comment>User's locality</comment>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="entrybase.cpp" line="360"/>
         <source>Street: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="entrybase.cpp" line="361"/>
         <source>Postal code: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="entrybase.cpp" line="363"/>
         <source>Address</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="entrybase.cpp" line="367"/>
         <source>Organization</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="entrybase.cpp" line="368"/>
         <source>Organization unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="entrybase.cpp" line="369"/>
         <source>Job title</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="entrybase.cpp" line="370"/>
         <source>Job role</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="entrybase.cpp" line="1052"/>
@@ -797,7 +795,7 @@
     <message>
         <location filename="executecommanddialog.cpp" line="179"/>
         <source>Execute another command</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="executecommanddialog.cpp" line="193"/>
@@ -838,7 +836,7 @@
     <message>
         <location filename="gwoptionsdialog.cpp" line="63"/>
         <source>Error updating gateway information: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -846,7 +844,7 @@
     <message>
         <location filename="glooxaccount.cpp" line="106"/>
         <source>Self VCard...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="glooxaccount.cpp" line="107"/>
@@ -856,32 +854,32 @@
     <message>
         <location filename="glooxaccount.cpp" line="108"/>
         <source>Enable message carbons</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="glooxaccount.cpp" line="116"/>
         <source>Deliver messages from conversations on other resources to this resource as well.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="glooxaccount.cpp" line="643"/>
         <source>By full JID</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="glooxaccount.cpp" line="643"/>
         <source>By domain</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="glooxaccount.cpp" line="646"/>
         <source>Select block type:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="glooxaccount.cpp" line="772"/>
         <source>Cannot join something that&apos;s already added to the roster. Do you want to remove %1 from roster and retry?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -917,7 +915,7 @@
     <message>
         <location filename="glooxclentry.cpp" line="170"/>
         <source>Gateway preferences...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -956,22 +954,22 @@
     <message>
         <location filename="xeps/jabbersearchmanager.cpp" line="31"/>
         <source>First name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="xeps/jabbersearchmanager.cpp" line="32"/>
         <source>Last name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="xeps/jabbersearchmanager.cpp" line="33"/>
         <source>Nick</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="xeps/jabbersearchmanager.cpp" line="34"/>
         <source>E-Mail</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1179,7 +1177,7 @@
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="354"/>
         <source>Error fetching lists.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1210,7 +1208,7 @@
     <message>
         <location filename="xeps/privacylistsmanager.cpp" line="388"/>
         <source>Cannot fetch lists.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1223,7 +1221,7 @@
     <message>
         <location filename="regformhandlerwidget.cpp" line="170"/>
         <source>Server error: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="regformhandlerwidget.cpp" line="186"/>
@@ -1399,17 +1397,17 @@
     <message>
         <location filename="roomhandler.cpp" line="179"/>
         <source>the room is no longer available</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="182"/>
         <source>the room is not found (did the room creator configure it?)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="185"/>
         <source>action not allowed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="188"/>
@@ -1449,7 +1447,7 @@
     <message>
         <location filename="roomhandler.cpp" line="212"/>
         <source>Error for %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="213"/>
@@ -1459,12 +1457,12 @@
     <message>
         <location filename="roomhandler.cpp" line="300"/>
         <source>Data form from %1</source>
-        <translation type="unfinished">Форма даних із %1</translation>
+        <translation>Форма даних із %1</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="303"/>
         <source>You have received dataform from %1:</source>
-        <translation type="unfinished">Ви отримали dataform від %1:</translation>
+        <translation>Ви отримали dataform від %1:</translation>
     </message>
 </context>
 <context>
@@ -1512,32 +1510,32 @@
     <message>
         <location filename="sdsession.cpp" line="129"/>
         <source>Refresh...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="sdsession.cpp" line="217"/>
         <source>MUC description: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="sdsession.cpp" line="231"/>
         <source>OS: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="sdsession.cpp" line="232"/>
         <source>OS version: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="sdsession.cpp" line="233"/>
         <source>Software: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="sdsession.cpp" line="234"/>
         <source>Software version: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="sdsession.cpp" line="236"/>
@@ -1644,48 +1642,48 @@
     <message>
         <location filename="vcarddialog.cpp" line="118"/>
         <source>%1&apos;s avatar</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="209"/>
         <source>postal</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="216"/>
         <source>Address %1:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="218"/>
         <source>Address %1 (%2):</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="229"/>
         <source>Country: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="230"/>
         <source>Region: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="231"/>
         <source>Locality: %1</source>
-        <comment>User&apos;s locality</comment>
-        <translation type="unfinished"></translation>
+        <comment>User's locality</comment>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="232"/>
         <source>Street: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="233"/>
         <source>Postal code: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="284"/>
@@ -1705,12 +1703,12 @@
     <message>
         <location filename="vcarddialog.cpp" line="373"/>
         <source>VCard phones</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="429"/>
         <source>VCard emails</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="468"/>
@@ -1720,7 +1718,7 @@
     <message>
         <location filename="vcarddialog.cpp" line="470"/>
         <source>Images (*.png *.jpg *.jpeg *.gif *.bmp);;All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1728,12 +1726,12 @@
     <message>
         <location filename="vcardlisteditdialog.cpp" line="24"/>
         <source>Item</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="vcardlisteditdialog.cpp" line="77"/>
         <source>Enter the new item:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1749,7 +1747,7 @@
     <message>
         <location filename="xep0313modelmanager.cpp" line="34"/>
         <source>Entry name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="xep0313modelmanager.cpp" line="34"/>
@@ -1966,17 +1964,17 @@
     <message>
         <location filename="executecommanddialog.cpp" line="85"/>
         <source>Info:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="executecommanddialog.cpp" line="87"/>
         <source>Warning:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="executecommanddialog.cpp" line="89"/>
         <source>Error:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -2058,7 +2056,7 @@
         <location filename="vcarddialog.ui" line="148"/>
         <location filename="vcarddialog.ui" line="162"/>
         <source>Edit...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="194"/>
@@ -2103,7 +2101,7 @@
     <message>
         <location filename="vcarddialog.ui" line="312"/>
         <source>Addresses</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="325"/>
@@ -2139,12 +2137,12 @@
     <message>
         <location filename="xep0313prefsdialog.ui" line="14"/>
         <source>Message archiving preferences</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="xep0313prefsdialog.ui" line="22"/>
         <source>Default mode:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="xep0313prefsdialog.ui" line="30"/>
@@ -2159,27 +2157,27 @@
     <message>
         <location filename="xep0313prefsdialog.ui" line="40"/>
         <source>roster only</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="xep0313prefsdialog.ui" line="56"/>
         <source>Per-JID configuration</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="xep0313prefsdialog.ui" line="62"/>
         <source>Always:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="xep0313prefsdialog.ui" line="72"/>
         <source>Never:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="xep0313prefsdialog.ui" line="82"/>
         <source>Enter custom JIDs, one per line:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -2187,7 +2185,7 @@
     <message>
         <location filename="dummy.cpp" line="5"/>
         <source>Azoth Xoox</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="7"/>
@@ -2197,37 +2195,37 @@
     <message>
         <location filename="dummy.cpp" line="9"/>
         <source>Advertise OS version</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="11"/>
         <source>Advertise Qt version</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="13"/>
         <source>IQ requests</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="15"/>
         <source>Request participant versions in MUCs</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="17"/>
         <source>Request participant VCards in MUCs</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="19"/>
         <source>Request contacts versions</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="21"/>
         <source>Request contacts VCards</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 </TS>
