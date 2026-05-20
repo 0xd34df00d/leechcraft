@@ -122,6 +122,10 @@ namespace LC::Azoth::Emitters
 		 * 4. `removedCLItems`
 		 * 5. `participantLeft`
 		 * or the last two can be swapped.
+		 *
+		 * Note also that `removedCLItems` might happen much later, if ever,
+		 * in case the entry also belongs to other chat rooms, or is known to
+		 * be a normal contact in addition to being a chatroom participant.
 		 */
 		///@{
 
