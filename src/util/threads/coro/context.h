@@ -37,6 +37,13 @@ namespace LC::Util
 	namespace detail
 	{
 		template<typename T>
+		concept IsAwaiter = requires (T t)
+		{
+			t.await_ready ();
+			t.await_resume ();
+		};
+
+		template<typename T>
 		decltype (auto) Awaiter (T&& obj)
 		{
 			if constexpr (requires { operator co_await (std::forward<T> (obj)); })
@@ -44,7 +51,10 @@ namespace LC::Util
 			else if constexpr (requires { std::forward<T> (obj).operator co_await (); })
 				return std::forward<T> (obj).operator co_await ();
 			else
+			{
+				static_assert (IsAwaiter<std::remove_reference_t<T>>, "operand doesn't look like an Awaitable");
 				return std::forward<T> (obj);
+			}
 		}
 
 		UTIL_THREADS_API void CheckDeadObjects (const QVector<DeadObjectInfo>&);
