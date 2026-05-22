@@ -8,48 +8,9 @@
 
 #pragma once
 
-#include <cstdint>
-#include <optional>
-#include <variant>
 #include <QObject>
+#include <interfaces/azoth/mucevents.h>
 #include "../azothutilconfig.h"
-
-namespace LC::Azoth
-{
-	class ICLEntry;
-}
-
-namespace LC::Azoth::MucEvents
-{
-	enum class Liveness : std::uint8_t
-	{
-		Historical,
-		Live,
-	};
-
-	struct ParticipantLeft { QString Message_; };
-
-	struct ParticipantForcedOut
-	{
-		ICLEntry *Actor_ = nullptr;
-		QString Reason_;
-
-		enum class Action : std::uint8_t
-		{
-			Kicked,
-			Banned,
-		} Action_;
-	};
-
-	using ParticipantLeaveInfo = std::variant<ParticipantLeft, ParticipantForcedOut>;
-
-	struct SubjectChange
-	{
-		QString Subject_;
-		std::optional<QString> ActorNick_ {};
-		std::optional<Liveness> Liveness_ {};
-	};
-}
 
 namespace LC::Azoth::Emitters
 {

@@ -8,29 +8,9 @@
 
 #pragma once
 
-#include <optional>
-#include <QMap>
 #include <QObject>
+#include <interfaces/azoth/mucevents.h>
 #include "../azothutilconfig.h"
-
-namespace LC::Azoth
-{
-	class ICLEntry;
-
-	using MUCPerms_t = QMap<QByteArray, QList<QByteArray>>;
-}
-
-namespace LC::Azoth::MucEvents
-{
-	struct ParticipantPermsChange
-	{
-		ICLEntry& Participant_;
-		QString Reason_;
-		ICLEntry *Actor_ = nullptr;
-
-		std::optional<MUCPerms_t> PrevPerms_;
-	};
-}
 
 namespace LC::Azoth::Emitters
 {
