@@ -70,6 +70,13 @@ namespace LC::Util
 		EscShortcut_->setEnabled (close);
 	}
 
+	void FindNotification::SetFlags (FindFlags flags)
+	{
+		Ui_->MatchCase_->setCheckState (flags & FindCaseSensitively ? Qt::Checked : Qt::Unchecked);
+		Ui_->WrapAround_->setCheckState (flags & FindWrapsAround ? Qt::Checked : Qt::Unchecked);
+		Ui_->SearchBackwards_->setCheckState (flags & FindBackwards ? Qt::Checked : Qt::Unchecked);
+	}
+
 	void FindNotification::SetText (const QString& text)
 	{
 		Ui_->Pattern_->setText (text);

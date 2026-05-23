@@ -106,6 +106,12 @@ namespace LC::Util
 		 */
 		void SetEscCloses (bool close);
 
+		/** @brief Sets the flags and updates the widget visual state accordingly.
+		 *
+		 * @param[in] flags The flags to set for the subsequent search operations.
+		 */
+		void SetFlags (FindFlags flags);
+
 		/** @brief Sets the text in the find field.
 		 *
 		 * This does not trigger the search. To perform the search, call
