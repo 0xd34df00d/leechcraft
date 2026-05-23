@@ -75,9 +75,9 @@ namespace LC::LMP::MTPSync
 	void Plugin::SecondInit ()
 	{
 		for (const auto mgr : GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<IRemovableDevManager*> ())
-			if (mgr->SupportsDevType (USBDevice))
+			if (const auto model = mgr->GetDevicesModel ();
+				mgr->SupportsDevType (USBDevice) && model)
 			{
-				const auto model = mgr->GetDevicesModel ();
 				connect (model,
 						&QAbstractItemModel::rowsInserted,
 						this,
