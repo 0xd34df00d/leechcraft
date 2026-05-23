@@ -85,9 +85,9 @@ namespace LC::LMP::DumbSync
 	void Plugin::SecondInit ()
 	{
 		for (const auto& mgr : GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<IRemovableDevManager*> ())
-			if (mgr->SupportsDevType (DeviceType::MassStorage))
+			if (const auto model = mgr->GetDevicesModel ();
+				mgr->SupportsDevType (DeviceType::MassStorage) && model)
 			{
-				const auto model = mgr->GetDevicesModel ();
 				DevModelsMerger_->addSourceModel (model);
 				Model2DevManager_ [model] = mgr;
 			}
