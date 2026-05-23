@@ -51,6 +51,7 @@ LC_DEFINE_PLUGIN (
 	QT_COMPONENTS Concurrent Widgets ${LIZNOO_DBUS_QT_DEP}
 	LINK_LIBRARIES
 		PkgConfig::Qwt
-		$<$<PLATFORM_ID:Darwin>:"-framework IOKit -framework CoreFoundation">
+		"$<$<PLATFORM_ID:Darwin>:-framework IOKit>"
+		"$<$<PLATFORM_ID:Darwin>:-framework CoreFoundation>"
 	INSTALL_SHARE
 	)
