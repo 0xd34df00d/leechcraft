@@ -169,4 +169,6 @@ namespace LC::Util
 
 		virtual void Reject ();
 	};
+
+	Q_DECLARE_OPERATORS_FOR_FLAGS (FindNotification::FindFlags)
 }
