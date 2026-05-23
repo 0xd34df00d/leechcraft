@@ -52,7 +52,7 @@ namespace LC::Util
 				&QPushButton::released,
 				[this]
 				{
-					auto flags = GetFlags ();
+					auto flags = GetDirectionlessFlags ();
 					if (Ui_->SearchBackwards_->checkState () == Qt::Checked)
 						flags |= FindBackwards;
 					HandleNext (Ui_->Pattern_->text (), flags);
@@ -96,7 +96,7 @@ namespace LC::Util
 		Ui_->Pattern_->setStyleSheet (ss);
 	}
 
-	auto FindNotification::GetFlags () const -> FindFlags
+	auto FindNotification::GetDirectionlessFlags () const -> FindFlags
 	{
 		FindFlags flags;
 		if (Ui_->MatchCase_->checkState () == Qt::Checked)
@@ -112,7 +112,7 @@ namespace LC::Util
 		if (text.isEmpty ())
 			return;
 
-		HandleNext (text, GetFlags ());
+		HandleNext (text, GetDirectionlessFlags ());
 	}
 
 	void FindNotification::FindPrevious ()
@@ -121,7 +121,7 @@ namespace LC::Util
 		if (text.isEmpty ())
 			return;
 
-		HandleNext (text, GetFlags () | FindBackwards);
+		HandleNext (text, GetDirectionlessFlags () | FindBackwards);
 	}
 
 	void FindNotification::Clear ()

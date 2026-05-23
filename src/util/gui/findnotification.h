@@ -130,15 +130,6 @@ namespace LC::Util
 		 */
 		void SetSuccessful (bool successful);
 
-		/** @brief Returns the current find flags except the direction.
-		 *
-		 * Please note that the direction flag (FindBackwards) never
-		 * appears in the return result.
-		 *
-		 * @return The find flags corresponding to the user choices.
-		 */
-		FindFlags GetFlags () const;
-
 		/** @brief Search for the next occurrence of the search text.
 		 *
 		 * If the text has been modified since the previous call to
@@ -164,6 +155,8 @@ namespace LC::Util
 		 * This is equivalent to <code>SetText ({})</code>.
 		 */
 		void Clear ();
+	private:
+		FindFlags GetDirectionlessFlags () const;
 	protected:
 		/** @brief Called each time the user requests a search.
 		 *
