@@ -31,6 +31,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <QDebug>
 #include <QTimer>
 #include <mach/mach_port.h>
 #include <mach/mach_interface.h>
