@@ -41,7 +41,10 @@ add_util_library (monocle-util
 		util/monocle/tocbuilder.cpp
 		util/monocle/types.cpp
 	USES Widgets Xml
-	DEPENDS $<$<BOOL:${WITH_MONOCLE_IMAGEMAGICK}>:PkgConfig::MagickPP>
+	DEPENDS
+		leechcraft-util-sll
+		leechcraft-xsd
+		$<$<BOOL:${WITH_MONOCLE_IMAGEMAGICK}>:PkgConfig::MagickPP>
 	DEFINES $<$<BOOL:${WITH_MONOCLE_IMAGEMAGICK}>:WITH_IMAGEMAGICK>
 	)
 
