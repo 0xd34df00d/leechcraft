@@ -66,7 +66,8 @@ namespace LC::Azoth::ChatHistory
 							tr ("No more search results, wrapping the search around…"),
 							Priority::Info);
 					GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
-				});
+				},
+				Qt::QueuedConnection);
 
 		const auto hvef = new HistoryViewEventFilter (Ui_.HistView_);
 		connect (hvef,
