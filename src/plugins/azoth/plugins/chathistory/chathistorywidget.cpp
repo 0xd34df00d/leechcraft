@@ -54,6 +54,7 @@ namespace LC::Azoth::ChatHistory
 				this,
 				&ChatHistoryWidget::HandleSearch);
 		FindBox_->SetEscCloses (false);
+		FindBox_->SetFlags (Util::FindNotification::FindBackwards | Util::FindNotification::FindWrapsAround);
 
 		const auto hvef = new HistoryViewEventFilter (Ui_.HistView_);
 		connect (hvef,
