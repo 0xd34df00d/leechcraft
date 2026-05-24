@@ -12,6 +12,7 @@
 #include <util/models/itemsmodel.h>
 #include <interfaces/ihavetabs.h>
 #include "chatfindbox.h"
+#include "types.h"
 #include "storage2.h"
 #include "ui_chathistorywidget.h"
 
@@ -26,6 +27,7 @@ namespace LC::Azoth
 namespace LC::Azoth::ChatHistory
 {
 	class ChatFindBox;
+	class SearchHandler;
 	class StorageThread;
 
 	class ChatHistoryWidget : public QWidget
@@ -56,9 +58,6 @@ namespace LC::Azoth::ChatHistory
 		};
 		std::optional<Span<Storage2::Cursor>> DisplayedSpan_;
 
-		QString PreviousSearchText_;
-		std::optional<Storage2::Cursor> LastSearchCursor_;
-
 		Util::RoledItemsModel<AccountInfo> AccountsModel_;
 
 		struct DisplayEntry
@@ -85,8 +84,10 @@ namespace LC::Azoth::ChatHistory
 		std::optional<FocusEntry> FocusEntry_;
 
 		ChatFindBox *FindBox_;
+		std::unique_ptr<SearchHandler> SearchHandler_;
 	public:
 		ChatHistoryWidget (const InitParams&, ICLEntry* = 0, QWidget* = 0);
+		~ChatHistoryWidget () override;
 
 		void Remove () override;
 		QToolBar* GetToolBar () const override;
@@ -107,7 +108,6 @@ namespace LC::Azoth::ChatHistory
 
 		Util::ContextTask<void> HandleSearch (QString text, ChatFindBox::FindFlags flags);
 
-		struct EntryChanged {};
 		Util::Either<EntryChanged, Util::Void> GuardEntryChanged (qint64 entryId) const;
 
 		void ShowLoading ();

@@ -23,6 +23,7 @@
 #include "chathistory.h"
 #include "xmlsettingsmanager.h"
 #include "historyvieweventfilter.h"
+#include "searchhandler.h"
 
 namespace LC::Azoth::ChatHistory
 {
@@ -34,6 +35,7 @@ namespace LC::Azoth::ChatHistory
 	, SortFilter_ (new QSortFilterProxyModel (this))
 	, Toolbar_ (new QToolBar (tr ("Chat history")))
 	, FocusEntry_ { entry ? std::optional<FocusEntry> { { .AccId_ = entry->GetParentAccount ()->GetAccountID (), .EntryId_ = entry->GetHumanReadableID () } } : std::nullopt }
+	, SearchHandler_ { std::make_unique<SearchHandler> (params.StorageThread_, std::bind_front (&ChatHistoryWidget::GuardEntryChanged, this)) }
 	{
 		Ui_.setupUi (this);
 		Ui_.VertSplitter_->setStretchFactor (0, 0);
@@ -55,6 +57,16 @@ namespace LC::Azoth::ChatHistory
 				&ChatHistoryWidget::HandleSearch);
 		FindBox_->SetEscCloses (false);
 		FindBox_->SetFlags (Util::FindNotification::FindBackwards | Util::FindNotification::FindWrapsAround);
+		connect (&*SearchHandler_,
+				&SearchHandler::wrappedAround,
+				this,
+				[]
+				{
+					const auto& e = Util::MakeNotification ("Azoth ChatHistory",
+							tr ("No more search results, wrapping the search around…"),
+							Priority::Info);
+					GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+				});
 
 		const auto hvef = new HistoryViewEventFilter (Ui_.HistView_);
 		connect (hvef,
@@ -125,6 +137,8 @@ namespace LC::Azoth::ChatHistory
 				&ChatHistoryWidget::LoadAccountEntries);
 		LoadAccounts ();
 	}
+
+	ChatHistoryWidget::~ChatHistoryWidget () = default;
 
 	void ChatHistoryWidget::Remove ()
 	{
@@ -310,47 +324,22 @@ namespace LC::Azoth::ChatHistory
 
 		co_await Util::AddContextObject { *this };
 
-		if (PreviousSearchText_ != text)
-		{
-			LastSearchCursor_.reset ();
-			PreviousSearchText_ = text;
-		}
-
-		using enum Storage2::SearchDirection;
-		const auto cs = flags & ChatFindBox::FindCaseSensitively ? Qt::CaseSensitive : Qt::CaseInsensitive;
-		const auto dir = flags & ChatFindBox::FindBackwards ? Backward : Forward;
-
-		const auto wraparound = dir == Backward ?
-				Storage2::Cursor::Max () :
-				Storage2::Cursor::Min ();
-
-		auto nextPos = co_await Params_.StorageThread_.Run (&Storage2::Search, entry->Base_, text, cs, dir, LastSearchCursor_.value_or (wraparound));
-		if (!nextPos && flags & ChatFindBox::FindWrapsAround && LastSearchCursor_)
-		{
-			const auto& e = Util::MakeNotification ("Azoth ChatHistory",
-					tr ("No more search results, wrapping the search around…"),
-					Priority::Info);
-			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
-			nextPos = co_await Params_.StorageThread_.Run (&Storage2::Search, entry->Base_, text, cs, dir, wraparound);
-		}
-
-		co_await GuardEntryChanged (entry->Id_);
-
-		if (!nextPos)
-		{
-			QMessageBox::warning (this,
-					"LeechCraft",
-					tr ("No more search results for %1.").arg ("<em>" + text.toHtmlEscaped () + "</em>"));
-			co_return;
-		}
-
-		LastSearchCursor_ = nextPos;
-
-		const uint16_t halfAmount = PerPageAmount_ / 2;
-		RequestLogs ({ .Cursor_ = *nextPos, .Before_ = halfAmount, .After_ = halfAmount });
+		const auto eitherResult = co_await SearchHandler_->HandleSearch (entry->Base_, text, flags);
+		Util::Visit (co_await eitherResult,
+				[this] (const Storage2::Cursor& cursor)
+				{
+					const uint16_t halfAmount = PerPageAmount_ / 2;
+					RequestLogs ({ .Cursor_ = cursor, .Before_ = halfAmount, .After_ = halfAmount });
+				},
+				[this, text] (SearchHandler::NoResults)
+				{
+					QMessageBox::warning (this,
+							"Azoth ChatHistory",
+							tr ("No more search results for %1.").arg ("<em>" + text.toHtmlEscaped () + "</em>"));
+				});
 	}
 
-	Util::Either<ChatHistoryWidget::EntryChanged, Util::Void> ChatHistoryWidget::GuardEntryChanged (qint64 entryId) const
+	Util::Either<EntryChanged, Util::Void> ChatHistoryWidget::GuardEntryChanged (qint64 entryId) const
 	{
 		if (const auto currEntry = GetCurrentEntry ();
 			!currEntry || currEntry->Id_ != entryId)
@@ -434,7 +423,7 @@ namespace LC::Azoth::ChatHistory
 			};
 			html += message.RichBody_ ? *message.RichBody_ : preparePlain ();
 
-			if (LastSearchCursor_ == Storage2::Cursor::FromMessage (message))
+			if (SearchHandler_->IsFocusMessage (message))
 			{
 				lineColor = "#FF7E00"_qs;
 				scrollPos = Ui_.HistView_->document ()->characterCount ();
