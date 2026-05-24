@@ -30,6 +30,8 @@ namespace LC::Azoth::ChatHistory
 
 		QString PreviousSearchText_;
 		std::optional<Storage2::Cursor> LastSearchCursor_;
+
+		int Generation_ = 0;
 	public:
 		explicit SearchHandler (StorageThread&, EntryChangeGuard, QObject* = nullptr);
 

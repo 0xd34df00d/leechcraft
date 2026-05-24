@@ -28,6 +28,8 @@ namespace LC::Azoth::ChatHistory
 			PreviousSearchText_ = text;
 		}
 
+		const auto thisGeneration = ++Generation_;
+
 		using enum Storage2::SearchDirection;
 		const auto cs = flags & ChatFindBox::FindCaseSensitively ? Qt::CaseSensitive : Qt::CaseInsensitive;
 		const auto dir = flags & ChatFindBox::FindBackwards ? Backward : Forward;
@@ -37,10 +39,14 @@ namespace LC::Azoth::ChatHistory
 				Storage2::Cursor::Min ();
 
 		auto nextPos = co_await StorageThread_.Run (&Storage2::Search, entry, text, cs, dir, LastSearchCursor_.value_or (wraparound));
+		if (thisGeneration != Generation_)
+			co_return EntryChanged {};
 		if (!nextPos && flags & ChatFindBox::FindWrapsAround && LastSearchCursor_)
 		{
 			emit wrappedAround ();
 			nextPos = co_await StorageThread_.Run (&Storage2::Search, entry, text, cs, dir, wraparound);
+			if (thisGeneration != Generation_)
+				co_return EntryChanged {};
 		}
 
 		co_await Guard_ (entry.Id_);
