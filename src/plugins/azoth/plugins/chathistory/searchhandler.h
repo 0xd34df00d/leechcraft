@@ -22,18 +22,15 @@ namespace LC::Azoth::ChatHistory
 	class SearchHandler : public QObject
 	{
 		Q_OBJECT
-	public:
-		using EntryChangeGuard = std::function<Util::Either<EntryChanged, Util::Void> (qint64)>;
-	private:
+
 		StorageThread& StorageThread_;
-		const EntryChangeGuard Guard_;
 
 		QString PreviousSearchText_;
 		std::optional<Storage2::Cursor> LastSearchCursor_;
 
 		int Generation_ = 0;
 	public:
-		explicit SearchHandler (StorageThread&, EntryChangeGuard, QObject* = nullptr);
+		explicit SearchHandler (StorageThread&, QObject* = nullptr);
 
 		struct NoResults {};
 		using SearchResult = Util::Either<EntryChanged, std::variant<NoResults, Storage2::Cursor>>;

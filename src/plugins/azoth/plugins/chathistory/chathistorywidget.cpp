@@ -35,7 +35,7 @@ namespace LC::Azoth::ChatHistory
 	, SortFilter_ (new QSortFilterProxyModel (this))
 	, Toolbar_ (new QToolBar (tr ("Chat history")))
 	, FocusEntry_ { entry ? std::optional<FocusEntry> { { .AccId_ = entry->GetParentAccount ()->GetAccountID (), .EntryId_ = entry->GetHumanReadableID () } } : std::nullopt }
-	, SearchHandler_ { std::make_unique<SearchHandler> (params.StorageThread_, std::bind_front (&ChatHistoryWidget::GuardEntryChanged, this)) }
+	, SearchHandler_ { std::make_unique<SearchHandler> (params.StorageThread_) }
 	{
 		Ui_.setupUi (this);
 		Ui_.VertSplitter_->setStretchFactor (0, 0);
@@ -328,6 +328,7 @@ namespace LC::Azoth::ChatHistory
 		co_await Util::AddContextObject { *this };
 
 		const auto eitherResult = co_await SearchHandler_->HandleSearch (entry->Base_, text, flags);
+		co_await GuardEntryChanged (entry->Id_);
 		Util::Visit (co_await eitherResult,
 				[this] (const Storage2::Cursor& cursor)
 				{

@@ -11,10 +11,9 @@
 
 namespace LC::Azoth::ChatHistory
 {
-	SearchHandler::SearchHandler (StorageThread& storageThread, EntryChangeGuard guard, QObject *parent)
+	SearchHandler::SearchHandler (StorageThread& storageThread, QObject *parent)
 	: QObject { parent }
 	, StorageThread_ { storageThread }
-	, Guard_ { std::move (guard) }
 	{
 	}
 
@@ -49,7 +48,6 @@ namespace LC::Azoth::ChatHistory
 				co_return EntryChanged {};
 		}
 
-		co_await Guard_ (entry.Id_);
 		if (!nextPos)
 			co_return NoResults {};
 
