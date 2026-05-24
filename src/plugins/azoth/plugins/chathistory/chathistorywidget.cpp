@@ -329,18 +329,15 @@ namespace LC::Azoth::ChatHistory
 
 		const auto eitherResult = co_await SearchHandler_->HandleSearch (entry->Base_, text, flags);
 		co_await GuardEntryChanged (entry->Id_);
-		Util::Visit (co_await eitherResult,
+		const auto isSuccessful = Util::Visit (co_await eitherResult,
 				[this] (const Storage2::Cursor& cursor)
 				{
 					const uint16_t halfAmount = PerPageAmount_ / 2;
 					RequestLogs ({ .Cursor_ = cursor, .Before_ = halfAmount, .After_ = halfAmount });
+					return true;
 				},
-				[this, text] (SearchHandler::NoResults)
-				{
-					QMessageBox::warning (this,
-							"Azoth ChatHistory",
-							tr ("No more search results for %1.").arg ("<em>" + text.toHtmlEscaped () + "</em>"));
-				});
+				[] (SearchHandler::NoResults) { return false; });
+		FindBox_->SetSuccessful (isSuccessful);
 	}
 
 	Util::Either<EntryChanged, Util::Void> ChatHistoryWidget::GuardEntryChanged (qint64 entryId) const
