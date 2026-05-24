@@ -251,6 +251,8 @@ namespace LC::Azoth::ChatHistory
 
 	void ChatHistoryWidget::HandleEntrySelected (const QModelIndex& idx)
 	{
+		SearchHandler_->Reset ();
+
 		if (!idx.isValid ())
 			return;
 

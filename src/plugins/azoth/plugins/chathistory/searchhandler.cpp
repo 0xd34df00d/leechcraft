@@ -55,4 +55,10 @@ namespace LC::Azoth::ChatHistory
 	{
 		return LastSearchCursor_ == Storage2::Cursor::FromMessage (message);
 	}
+
+	void SearchHandler::Reset ()
+	{
+		PreviousSearchText_.clear ();
+		LastSearchCursor_.reset ();
+	}
 }

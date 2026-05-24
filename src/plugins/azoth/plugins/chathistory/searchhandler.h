@@ -39,6 +39,8 @@ namespace LC::Azoth::ChatHistory
 		Util::ContextTask<SearchResult> HandleSearch (Entry entry, QString text, ChatFindBox::FindFlags flags);
 
 		bool IsFocusMessage (const Storage2::HistoryMessage& message) const;
+
+		void Reset ();
 	signals:
 		void wrappedAround ();
 	};
