@@ -238,17 +238,11 @@ namespace LC::Azoth
 		 * this function. Also, when initiating entry addition, the
 		 * entry is expected to be identified by a similar string.
 		 *
-		 * The default implementation returns GetEntryID() as an unicode
-		 * string.
-		 *
 		 * @return Human-readable persistent ID of this entry.
 		 *
 		 * @sa GetEntryID()
 		 */
-		virtual QString GetHumanReadableID () const
-		{
-			return GetEntryID ();
-		}
+		virtual QString GetHumanReadableID () const = 0;
 
 		/** @brief Returns the list of human-readable names of the
 		 * groups that this entry belongs to.
