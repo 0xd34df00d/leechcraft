@@ -68,25 +68,12 @@ namespace LC::Azoth
 
 		Q_DECLARE_FLAGS (Features, Feature)
 
-		enum class EntryType
+		enum class EntryType : std::uint8_t
 		{
-			/** This entry represents a standard chat.
-			 */
-			Chat,
-
-			/** This entry represents a multi-user chatroom.
-			 */
-			MUC,
-
-			/** This entry represents a private conversation in a
-			 * multi-user chatroom.
-			 */
-			PrivateChat,
-
-			/** This entry represents an unauthorized user that has
-			 * requested authorization.
-			 */
-			UnauthEntry
+			Chat,			///< A standard one-to-one chat.
+			MUC,			///< A multi-user chatroom.
+			PrivateChat,	///< A chat room member.
+			UnauthEntry,	///< An unauthorized user that has requested authorization.
 		};
 
 		/** Returns the entry as a QObject.
