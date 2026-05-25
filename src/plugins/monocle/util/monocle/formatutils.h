@@ -10,6 +10,7 @@
 
 class QTextBlockFormat;
 class QTextCharFormat;
+class QTextFrameFormat;
 
 namespace LC::Monocle
 {
@@ -18,6 +19,9 @@ namespace LC::Monocle
 
 	template<typename T>
 	void SetBlockConfig (T& marginsFmt, QTextBlockFormat& blockFmt, const BlockFormat& blockCfg);
+
+	extern template void SetBlockConfig<QTextFrameFormat> (QTextFrameFormat&, QTextBlockFormat&, const BlockFormat&);
+	extern template void SetBlockConfig<QTextBlockFormat> (QTextBlockFormat&, QTextBlockFormat&, const BlockFormat&);
 
 	void SetCharConfig (QTextCharFormat&, const CharFormat&);
 }
