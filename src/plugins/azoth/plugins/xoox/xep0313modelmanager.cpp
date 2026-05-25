@@ -9,6 +9,7 @@
 #include "xep0313modelmanager.h"
 #include <QStandardItemModel>
 #include <QtDebug>
+#include <interfaces/azoth/iclentry.h>
 #include "glooxaccount.h"
 
 namespace LC

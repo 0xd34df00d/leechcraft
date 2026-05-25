@@ -21,6 +21,7 @@ extern "C"
 
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/iaccount.h>
+#include <interfaces/azoth/iclentry.h>
 #include "util.h"
 
 namespace LC

@@ -18,6 +18,7 @@
 #include <interfaces/media/audiostructs.h>
 #include <interfaces/media/icurrentsongkeeper.h>
 #include <interfaces/azoth/iaccount.h>
+#include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/isupporttune.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>

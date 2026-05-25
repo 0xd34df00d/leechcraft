@@ -20,8 +20,10 @@
 #include <interfaces/azoth/iadvancedmessage.h>
 #include <interfaces/azoth/irichtextmessage.h>
 #include <interfaces/azoth/iaccount.h>
+#include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/imucentry.h>
 #include <interfaces/azoth/iproxyobject.h>
+#include <interfaces/azoth/message.h>
 
 namespace LC::Azoth::StandardStyles
 {

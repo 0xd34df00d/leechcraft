@@ -10,6 +10,7 @@
 #include <QSettings>
 #include <QCoreApplication>
 #include "interfaces/azoth/iaccount.h"
+#include "interfaces/azoth/iclentry.h"
 
 namespace LC
 {

@@ -22,6 +22,7 @@
 #include <interfaces/idatafilter.h>
 #include <interfaces/ientityhandler.h>
 #include "interfaces/azoth/iaccount.h"
+#include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/imucentry.h"
 #include "components/transfers/transferjobmanager.h"
 #include "components/util/dnd.h"

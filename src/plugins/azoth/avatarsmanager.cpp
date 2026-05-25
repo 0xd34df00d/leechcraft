@@ -12,6 +12,7 @@
 #include <util/sll/qtutil.h>
 #include <util/sll/unreachable.h>
 #include "interfaces/azoth/iaccount.h"
+#include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iextselfinfoaccount.h"
 #include "avatarsstorage.h"
 #include "resourcesmanager.h"
