@@ -14,7 +14,6 @@
 #include <QStringList>
 #include <interfaces/azoth/azothcommon.h>
 #include <util/azoth/emitters/account.h>
-#include "iclentry.h"
 
 namespace LC
 {
