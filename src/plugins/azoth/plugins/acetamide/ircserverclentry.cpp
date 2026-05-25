@@ -56,6 +56,11 @@ namespace LC::Azoth::Acetamide
 		return Account_->GetAccountID () + "_" + ISH_->GetServerID ();
 	}
 
+	QString IrcServerCLEntry::GetHumanReadableID () const
+	{
+		return ISH_->GetServerID ();
+	}
+
 	QString IrcServerCLEntry::GetEntryName () const
 	{
 		return ISH_->GetServerID ();
