@@ -44,6 +44,7 @@ namespace LC::Azoth::Sarin
 		void SetEntryName (const QString&) override;
 
 		QString GetEntryID () const override;
+		QString GetHumanReadableID () const override;
 
 		QStringList Groups () const override;
 		void SetGroups (const QStringList&) override;

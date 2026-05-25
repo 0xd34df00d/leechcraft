@@ -15,7 +15,6 @@
 #include "toxaccount.h"
 #include "toxthread.h"
 #include "util.h"
-#include "util/sll/prelude.h"
 
 namespace LC::Azoth::Sarin
 {
@@ -24,7 +23,8 @@ namespace LC::Azoth::Sarin
 	, Mgr_ { mgr }
 	, ConfId_ { confId }
 	, ConfNum_ { confNum }
-	, EntryId_ { mgr.GetAccount ().GetAccountID () + '_' + ToxId2HR (ConfId_) }
+	, HumanReadableId_ { ToxId2HR (ConfId_) }
+	, EntryId_ { mgr.GetAccount ().GetAccountID () + '_' + HumanReadableId_ }
 	{
 		emit mgr.GetAccount ().GetAccountEmitter ().gotCLItems ({ this });
 	}
@@ -73,6 +73,11 @@ namespace LC::Azoth::Sarin
 	QString ConfEntry::GetEntryID () const
 	{
 		return EntryId_;
+	}
+
+	QString ConfEntry::GetHumanReadableID () const
+	{
+		return HumanReadableId_;
 	}
 
 	QStringList ConfEntry::Groups () const

@@ -21,7 +21,8 @@ namespace LC::Azoth::Sarin
 	, Acc_ { conf.GetConfsManager ().GetAccount () }
 	, Conf_ { conf }
 	, Pkey_ { pkey }
-	, EntryId_ { Acc_.GetAccountID () + '_' + ToxId2HR (pkey) }
+	, HumanReadableId_ { ToxId2HR (pkey) }
+	, EntryId_ { Acc_.GetAccountID () + '_' + HumanReadableId_ }
 	, Nick_ { std::move (nick) }
 	, State_ { std::move (state) }
 	{
@@ -65,6 +66,11 @@ namespace LC::Azoth::Sarin
 	QString ConfParticipant::GetEntryID () const
 	{
 		return EntryId_;
+	}
+
+	QString ConfParticipant::GetHumanReadableID () const
+	{
+		return HumanReadableId_;
 	}
 
 	QStringList ConfParticipant::Groups () const

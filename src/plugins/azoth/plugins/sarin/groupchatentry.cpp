@@ -56,6 +56,11 @@ namespace LC::Azoth::Sarin
 		return Mgr_.GetAccount ().GetAccountID () + '_' + GroupId_;
 	}
 
+	QString GroupChatEntry::GetHumanReadableID () const
+	{
+		return GroupId_;
+	}
+
 	QStringList GroupChatEntry::Groups () const
 	{
 		return {};
