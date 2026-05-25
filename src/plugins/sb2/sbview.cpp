@@ -47,7 +47,7 @@ namespace LC::SB2
 			if (!item.Item_)
 				continue;
 
-			QHoverEvent ev { QEvent::HoverEnter, item.OldPos_, { -1, -1 } };
+			QHoverEvent ev { QEvent::HoverEnter, item.OldPos_, mapToGlobal (item.OldPos_), { -1, -1 } };
 			static_cast<QObject*> (item.Item_)->event (&ev);
 		}
 
@@ -134,7 +134,7 @@ namespace LC::SB2
 			};
 			UnhoverItems_.append ({ item, oldPos });
 
-			QHoverEvent ev { QEvent::HoverLeave, { -1, -1 }, oldPos };
+			QHoverEvent ev { QEvent::HoverLeave, { -1, -1 }, { -1, -1 }, oldPos };
 			static_cast<QObject*> (item)->event (&ev);
 		}
 
