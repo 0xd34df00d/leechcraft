@@ -77,7 +77,7 @@ namespace Xoox
 	bool AdHocCommandServer::HandleDiscoIq (const QDomElement& elem)
 	{
 		QXmppDiscoveryIq receivedIq;
-        receivedIq.parse (elem);
+		receivedIq.parse (elem);
 		if (receivedIq.type () != QXmppIq::Get)
 			return false;
 
@@ -105,7 +105,7 @@ namespace Xoox
 			QXmppIq error { QXmppIq::Error };
 			error.setId (receivedIq.id ());
 			error.setTo (receivedIq.from ());
-			error.setError ({ QXmppStanza::Error::Wait, QXmppStanza::Error::Forbidden, "Wrong JID, bro." });
+			error.setError ({ QXmppStanza::Error::Cancel, QXmppStanza::Error::Forbidden, "Wrong JID, bro." });
 			Conn_->GetClient ()->send (std::move (error));
 		}
 
@@ -135,7 +135,7 @@ namespace Xoox
 			iq.setTo (elem.attribute ("from"));
 			iq.setFrom ({});
 			iq.setType (QXmppIq::Error);
-			iq.setError ({ QXmppStanza::Error::Auth, QXmppStanza::Error::Forbidden });
+			iq.setError ({ QXmppStanza::Error::Cancel, QXmppStanza::Error::Forbidden });
 			Conn_->GetClient ()->send (std::move (iq));
 			return true;
 		}
