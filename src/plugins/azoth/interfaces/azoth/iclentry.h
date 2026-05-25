@@ -57,42 +57,13 @@ namespace LC::Azoth
 		 */
 		enum Feature
 		{
-			/** This entry is permanent and would appear in the next
-			 * session too. It makes sense to save it to disk, for
-			 * example, when shutting down.
-			 *
-			 * This also means that the entry has been accepted into
-			 * some kind of contact list by the user.
-			 */
-			FPermanentEntry = 0x0000,
-
-			/** This entry is not permanent and would cease existing
-			 * after this login session.
-			 */
-			FSessionEntry = 0x0001,
-
-			/** Mask (0000011) for FPermanentEntry and FSessionEntry.
-			 */
-			FMaskLongetivity = 0x0003,
-
-			/** This entry supports renaming, so calls to SetEntryName()
-			 * are not in vain.
-			 */
-			FSupportsRenames = 0x0020,
-
-			/** This entry supports auth manipulations. It makes sense
-			 * to request, remove, give, etc auth. In this case the
-			 * entry should also implement IAuthable.
-			 */
-			FSupportsAuth = 0x0080,
-
-			/** This entry supports moving between different groups.
-			 */
-			FSupportsGrouping = 0x0100,
-
-			/** This entry represents a self-contact, for example, in XMPP.
-			 */
-			FSelfContact = 0x0200
+			FPermanentEntry			= 0b00000000, ///< The entry is permanent: it belongs to some kind of roster list.
+			FSessionEntry			= 0b00000001, ///< The entry is transient, like a chat room participant or a temporary contact.
+			FMaskLongetivity		= 0b00000011, ///< Mask for FPermanentEntry and FSessionEntry.
+			FSupportsRenames		= 0b00000100, ///< The entry supports renaming, so `SetEntryName()` makes sense.
+			FSupportsAuth			= 0b00001000, ///< The entry supports auth manipulations and implements IAuthable.
+			FSupportsGrouping		= 0b00010000, ///< The entry supports moving between different groups via `SetGroups()`.
+			FSelfContact			= 0b00100000, ///< The entry represents ourselves, like the self-contact in XMPP.
 		};
 
 		Q_DECLARE_FLAGS (Features, Feature)
