@@ -133,20 +133,23 @@ namespace Xoox
 			QXmppIq iq;
 			iq.parse (elem);
 			iq.setTo (elem.attribute ("from"));
-			iq.setFrom (QString ());
-			iq.setError (QXmppStanza::Error (QXmppStanza::Error::Auth, QXmppStanza::Error::Forbidden));
+			iq.setFrom ({});
+			iq.setType (QXmppIq::Error);
+			iq.setError ({ QXmppStanza::Error::Auth, QXmppStanza::Error::Forbidden });
+			Conn_->GetClient ()->send (std::move (iq));
 			return true;
 		}
 
 		if (!XEP0146Items_.contains (node))
 		{
-			qWarning () << Q_FUNC_INFO << "no node" << node;
-			qWarning () << XEP0146Items_.keys ();
+			qWarning () << "no node" << node << "among" << XEP0146Items_.keys ();
 			QXmppIq iq;
 			iq.parse (elem);
 			iq.setTo (elem.attribute ("from"));
-			iq.setFrom (QString ());
-			iq.setError (QXmppStanza::Error (QXmppStanza::Error::Cancel, QXmppStanza::Error::FeatureNotImplemented));
+			iq.setFrom ({});
+			iq.setType (QXmppIq::Error);
+			iq.setError ({ QXmppStanza::Error::Cancel, QXmppStanza::Error::FeatureNotImplemented });
+			Conn_->GetClient ()->send (std::move (iq));
 			return true;
 		}
 
