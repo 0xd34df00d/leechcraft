@@ -33,16 +33,6 @@ namespace LC::Azoth
 	 * return the up-to-date list of variants that this entry may have
 	 * as destinations.
 	 *
-	 * By default, entries are considered to be normal chat entries, and
-	 * Azoth core would manage the chat widget (and, consequently, chat
-	 * tabs) for such entries itself. Nevertheless, some entries may
-	 * want to have custom behavior for their widgets or even have no
-	 * widgets at all. In this case, they set FHasCustomChatWidget flag
-	 * in GetEntryFeatures(). In this case Azoth core wouldn't care
-	 * about their chat widgets at all. Instead, such entry would need
-	 * to implement IMultiTabsWidget, for example, and the corresponding
-	 * plugin would need to be a IMultiTabs.
-	 *
 	 * This interface provides only more or less basic functionality.
 	 * Advanced features, like drawing attention and such, are in
 	 * IAdvancedCLEntry.
@@ -89,10 +79,6 @@ namespace LC::Azoth
 			 * are not in vain.
 			 */
 			FSupportsRenames = 0x0020,
-
-			/** This entry has a custom chat widget.
-			 */
-			FHasCustomChatWidget = 0x0040,
 
 			/** This entry supports auth manipulations. It makes sense
 			 * to request, remove, give, etc auth. In this case the
