@@ -63,6 +63,9 @@ namespace LC::Util
 		UTIL_SLL_API Tag& WithAttr (QByteArray, QString) &&;
 	};
 
+	extern template UTIL_SLL_API QString Tag::Serialize (const TagSerializeConfig&) const;
+	extern template UTIL_SLL_API QByteArray Tag::Serialize (const TagSerializeConfig&) const;
+
 	namespace Tags
 	{
 		extern const Tag Br;
