@@ -10,6 +10,7 @@
 #include <QDir>
 #include <QUrl>
 #include <QXmppDiscoveryManager.h>
+#include <QXmppTask.h>
 #include <QXmppUtils.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
@@ -97,16 +98,15 @@ namespace Xoox
 			result.setQueryNode (NsCommands);
 			result.setQueryType (QXmppDiscoveryIq::ItemsQuery);
 			result.setItems (XEP0146Items_.values ());
-			Conn_->GetClient ()->sendPacket (result);
+			Conn_->GetClient ()->send (std::move (result));
 		}
 		else
 		{
-			QXmppIq error;
+			QXmppIq error { QXmppIq::Error };
 			error.setId (receivedIq.id ());
 			error.setTo (receivedIq.from ());
-			error.setType (QXmppIq::Error);
-			error.setError (QXmppStanza::Error (QXmppStanza::Error::Wait, QXmppStanza::Error::Forbidden, "Wrong JID, bro."));
-			Conn_->GetClient ()->sendPacket (error);
+			error.setError ({ QXmppStanza::Error::Wait, QXmppStanza::Error::Forbidden, "Wrong JID, bro." });
+			Conn_->GetClient ()->send (std::move (error));
 		}
 
 		return true;
@@ -181,13 +181,11 @@ namespace Xoox
 		elem.setAttribute ("sessionid", sessionId);
 		elem.appendChild (XooxUtil::Form2XmppElem (form));
 
-		QXmppIq iq;
+		QXmppIq iq { QXmppIq::Result };
 		iq.setTo (sourceElem.attribute ("from"));
 		iq.setId (sourceElem.attribute ("id"));
-		iq.setType (QXmppIq::Result);
 		iq.setExtensions ({ elem });
-
-		Conn_->GetClient ()->sendPacket (iq);
+		Conn_->GetClient ()->send (std::move (iq));
 	}
 
 	void AdHocCommandServer::SendCompleted (const QDomElement& sourceElem,
@@ -200,13 +198,11 @@ namespace Xoox
 		elem.setAttribute ("status", "completed");
 		elem.setAttribute ("sessionid", sessionId);
 
-		QXmppIq iq;
+		QXmppIq iq { QXmppIq::Result };
 		iq.setTo (sourceElem.attribute ("from"));
 		iq.setId (sourceElem.attribute ("id"));
-		iq.setType (QXmppIq::Result);
-		iq.setExtensions (QXmppElementList () << elem);
-
-		Conn_->GetClient ()->sendPacket (iq);
+		iq.setExtensions ({ elem });
+		Conn_->GetClient ()->send (std::move (iq));
 	}
 
 	namespace
@@ -373,12 +369,12 @@ namespace Xoox
 
 			for (auto msgObj : base->GetUnreadMessages ())
 			{
-				QXmppMessage msg (QString (), to, msgObj->GetNativeMessage ().body ());
+				QXmppMessage msg { {}, to, msgObj->GetNativeMessage ().body () };
 				msg.setStamp (msgObj->GetDateTime ());
 				msg.setXhtml (msgObj->GetRichBody ());
 
-				const QString& var = msgObj->GetOtherVariant ();
-				const QString& from = var.isEmpty () ?
+				const auto& var = msgObj->GetOtherVariant ();
+				const auto& from = var.isEmpty () ?
 						base->GetHumanReadableID () :
 						base->GetHumanReadableID () + '/' + var;
 
@@ -387,7 +383,7 @@ namespace Xoox
 				address.setJid (from);
 				msg.setExtendedAddresses ({ address });
 
-				Conn_->GetClient ()->sendPacket (msg);
+				Conn_->GetClient ()->send (std::move (msg));
 			}
 
 			base->MarkMsgsRead ();
