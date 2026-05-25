@@ -145,7 +145,7 @@ namespace Rosenthal
 
 			QList<QStandardItem*> row { item };
 			row << new QStandardItem (loc.nativeLanguageName ());
-			row << new QStandardItem (loc.nativeCountryName ());
+			row << new QStandardItem (loc.nativeTerritoryName ());
 
 			for (auto item : row)
 				item->setEditable (false);
