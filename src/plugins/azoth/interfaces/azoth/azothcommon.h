@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <variant>
+#include <QHashFunctions>
 #include <QMetaType>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/azoth/imessage.h>
@@ -16,6 +18,68 @@ namespace LC
 {
 namespace Azoth
 {
+	enum class IdKind : std::uint8_t
+	{
+		Persistent,
+		Conventional,
+	};
+
+	template<IdKind>
+	struct EntryId
+	{
+		QString Id_;
+
+		bool operator== (const EntryId&) const = default;
+
+		friend size_t qHash (const EntryId& id, size_t seed = 0) { return qHash (id.Id_, seed); }
+
+		[[nodiscard]] QString ToString () const { return Id_; }
+	};
+
+	template<IdKind K>
+	struct GlobalId
+	{
+		QString AccountId_;
+		EntryId<K> EntryId_;
+
+		bool operator== (const GlobalId&) const = default;
+
+		friend size_t qHash (const GlobalId& id, size_t seed = 0) { return qHashMulti (seed, id.AccountId_, id.EntryId_); }
+
+		[[nodiscard]] QString ToString () const { return AccountId_ + ':' + EntryId_.ToString (); }
+	};
+
+	using GlobalPersistentId = GlobalId<IdKind::Persistent>;
+	using GlobalConventionalId = GlobalId<IdKind::Conventional>;
+
+	template<template<IdKind> typename Id>
+	struct StrongestId : std::variant<Id<IdKind::Persistent>, Id<IdKind::Conventional>>
+	{
+		using Base = std::variant<Id<IdKind::Persistent>, Id<IdKind::Conventional>>;
+		using Base::Base;
+
+		bool operator== (const StrongestId&) const = default;
+
+		friend size_t qHash (const StrongestId& strongestId, size_t seed = 0)
+		{
+			const auto index = strongestId.index ();
+			return std::visit ([&] (const auto& id) { return qHashMulti (seed, index, id); }, strongestId.ToVariant ());
+		}
+
+		[[nodiscard]] QString ToString () const
+		{
+			return std::visit ([] (const auto& id) { return id.ToString (); }, *this);
+		}
+
+		[[nodiscard]] const Base& ToVariant () const
+		{
+			return *this;
+		}
+	};
+
+	using StrongestEntryId = StrongestId<EntryId>;
+	using StrongestGlobalId = StrongestId<GlobalId>;
+
 	/** @brief Describes possible presence states of an account or a
 	 * contact.
 	 */
