@@ -29,12 +29,21 @@ namespace Azoth
 	{
 		QString Id_;
 
+		EntryId () = default;
+
+		static EntryId FromString (const QString& id) { return EntryId { id }; }
+
 		bool operator== (const EntryId&) const = default;
 
 		friend size_t qHash (const EntryId& id, size_t seed = 0) { return qHash (id.Id_, seed); }
 
 		[[nodiscard]] QString ToString () const { return Id_; }
+	private:
+		explicit EntryId (const QString& id) : Id_ { id } {}
 	};
+
+	using EntryPersistentId = EntryId<IdKind::Persistent>;
+	using EntryConventionalId = EntryId<IdKind::Conventional>;
 
 	template<IdKind K>
 	struct GlobalId
