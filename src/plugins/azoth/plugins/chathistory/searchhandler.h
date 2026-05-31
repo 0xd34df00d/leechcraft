@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <functional>
 #include <QObject>
 #include <util/sll/either.h>
 #include "chatfindbox.h"
