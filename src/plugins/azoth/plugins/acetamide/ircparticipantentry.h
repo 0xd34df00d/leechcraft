@@ -30,13 +30,11 @@ namespace LC::Azoth::Acetamide
 
 		IAccount* GetParentAccount () const override;
 
-		ICLEntry::Features GetEntryFeatures () const override;
-		ICLEntry::EntryType GetEntryType () const override;
+		Features GetEntryFeatures () const override;
+		EntryType GetEntryType () const override;
 
 		QString GetEntryName () const override;
 		void SetEntryName (const QString&) override;
-
-		QString GetEntryID () const override = 0;
 
 		QStringList Variants () const override;
 

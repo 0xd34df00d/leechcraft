@@ -131,17 +131,14 @@ namespace LC::Azoth::Acetamide
 	{
 	}
 
-	QString ChannelCLEntry::GetEntryID () const
+	std::optional<EntryPersistentId> ChannelCLEntry::GetPersistentID () const
 	{
-		return ICH_->GetChannelsManager ()->GetAccount ()->
-				GetAccountID () + "_" +
-				ICH_->GetChannelsManager ()->GetServerID () + "_" +
-				ICH_->GetChannelID ();
+		return EntryPersistentId::FromString (ICH_->GetChannelsManager ()->GetServerID () + '/' + ICH_->GetChannelID ());
 	}
 
-	QString ChannelCLEntry::GetHumanReadableID () const
+	EntryConventionalId ChannelCLEntry::GetConventionalID () const
 	{
-		return ICH_->GetChannelID ();
+		return EntryConventionalId::FromString (ICH_->GetChannelsManager ()->GetServerID () + '/' + ICH_->GetChannelID ());
 	}
 
 	QStringList ChannelCLEntry::Groups () const

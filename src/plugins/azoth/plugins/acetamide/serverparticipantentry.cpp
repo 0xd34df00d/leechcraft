@@ -29,15 +29,14 @@ namespace LC::Azoth::Acetamide
 		return ISH_->GetCLEntry ();
 	}
 
-	QString ServerParticipantEntry::GetEntryID () const
+	std::optional<EntryPersistentId> ServerParticipantEntry::GetPersistentID () const
 	{
-		return Account_->GetAccountName () + "/" +
-				ISH_->GetServerID () + "_" + Nick_;
+		return {};
 	}
 
-	QString ServerParticipantEntry::GetHumanReadableID () const
+	EntryConventionalId ServerParticipantEntry::GetConventionalID () const
 	{
-		return Nick_ + "_" + ISH_->GetServerID ();
+		return EntryConventionalId::FromString (Nick_ + '@' + ISH_->GetServerID ());
 	}
 
 	QStringList ServerParticipantEntry::Groups () const

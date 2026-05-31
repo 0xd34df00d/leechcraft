@@ -51,14 +51,14 @@ namespace LC::Azoth::Acetamide
 		return EntryType::MUC;
 	}
 
-	QString IrcServerCLEntry::GetEntryID () const
+	std::optional<EntryPersistentId> IrcServerCLEntry::GetPersistentID () const
 	{
-		return Account_->GetAccountID () + "_" + ISH_->GetServerID ();
+		return EntryPersistentId::FromString (ISH_->GetServerID ());
 	}
 
-	QString IrcServerCLEntry::GetHumanReadableID () const
+	EntryConventionalId IrcServerCLEntry::GetConventionalID () const
 	{
-		return ISH_->GetServerID ();
+		return EntryConventionalId::FromString (ISH_->GetServerID ());
 	}
 
 	QString IrcServerCLEntry::GetEntryName () const
