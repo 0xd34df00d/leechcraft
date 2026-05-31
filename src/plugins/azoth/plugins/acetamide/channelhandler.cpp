@@ -105,14 +105,9 @@ namespace LC::Azoth::Acetamide
 				IMessage::SubType::ParticipantNickChange,
 				Nick2Entry_ [oldNick]);
 
-		emit CM_->GetAccount ()->GetAccountEmitter ().removedCLItems ({ Nick2Entry_ [oldNick].get () });
-		QList<ChannelRole> roles = Nick2Entry_ [oldNick]->Roles ();
-		ChannelParticipantEntry_ptr entry = Nick2Entry_.take (oldNick);
-		entry->SetEntryName (newNick);
-		entry->SetRoles (roles);
-		emit CM_->GetAccount ()->GetAccountEmitter ().gotCLItems ({ entry.get () });
-
+		const auto entry = Nick2Entry_.take (oldNick);
 		Nick2Entry_ [newNick] = entry;
+		entry->SetEntryName (newNick);
 	}
 
 	bool ChannelHandler::IsInitialNamesListReceived () const
