@@ -11,7 +11,6 @@
 #include <variant>
 #include <QHashFunctions>
 #include <QMetaType>
-#include <interfaces/iactionsexporter.h>
 #include <interfaces/azoth/imessage.h>
 
 namespace LC
@@ -86,8 +85,8 @@ namespace Azoth
 		}
 	};
 
-	using StrongestEntryId = StrongestId<EntryId>;
-	using StrongestGlobalId = StrongestId<GlobalId>;
+	using EntryStrongestId = StrongestId<EntryId>;
+	using GlobalStrongestId = StrongestId<GlobalId>;
 
 	/** @brief Describes possible presence states of an account or a
 	 * contact.

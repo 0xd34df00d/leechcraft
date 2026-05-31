@@ -8,10 +8,12 @@
 
 #pragma once
 
+#include <QHashFunctions>
 #include <QFlags>
 #include <QMetaType>
 #include <util/azoth/emitters/clentry.h>
 #include "azothcommon.h"
+#include "iaccount.h"
 #include "message.h"
 
 class QAction;
@@ -146,47 +148,82 @@ namespace LC::Azoth
 		 */
 		virtual void SetEntryName (const QString& name) = 0;
 
-		/** @brief Returns the ID of this entry.
-		 *
-		 * The ID must be unique among all entries and should not depend
-		 * on the value returned by GetEntryName() (the human-readable
-		 * name).
-		 *
-		 * The main difference between this and GetHumanReadableID() is
-		 * that GetEntryID() is used for distinguishing different items
-		 * in the contact list (and there may be several items for one
-		 * remote), while GetHumanReadableID() is used to distinguish
-		 * different remotes between each other. Also, GetEntryID()
-		 * should be unique globally (for example, it may contain ID of
-		 * the account in it).
-		 *
-		 * @return The unique and persistent ID of this entry.
-		 *
-		 * @sa GetHumanReadableID()
-		 */
-		virtual QString GetEntryID () const = 0;
+		[[deprecated("Use GetGlobalPersistentID() or GetGlobalStrongestID()")]]
+		QString GetEntryID () const
+		{
+			return GetGlobalStrongestID ().ToString ();
+		}
 
-		/** @brief Returns the human-readable ID of this entry.
+		[[deprecated("Use GetConventionalID()")]]
+		QString GetHumanReadableID () const
+		{
+			return GetConventionalID ().ToString ();
+		}
+
+		/** @brief Returns the global persistent ID of this entry.
 		 *
-		 * This function is used to obtain the human-readable identifier
-		 * of this entry (for example, Jabber ID in case of XMPP), which
-		 * may be not so unique as GetEntryID(). For example, if an
-		 * entry exists in the roster, but it has also requested auth,
-		 * there would be two entries with the same human-readable ID,
-		 * but they would still be distinguished by the result of the
-		 * GetEntryID() function.
+		 * The persistent ID:
+		 * - must be unique among all entries belonging to this entry's
+		 *   parent account
+		 * - must never change during the lifetime of this object
+		 * - shall be persistent across restarts: the same logical entry
+		 *   shall have the same persistent ID, if it's possible to
+		 *   determine at the protocol level
 		 *
-		 * Various operations like buddy searches (in protocols that
-		 * support this feature like Skype or ICQ) are expected to
-		 * operate on strings that are among possible return values of
-		 * this function. Also, when initiating entry addition, the
-		 * entry is expected to be identified by a similar string.
+		 * Not all contexts support persistent IDs, hence the return value
+		 * is wrapped in `std::optional`. A good example is anonymous chat
+		 * rooms, where the persistent ID is not available, and the
+		 * conventional ID depends on the nick.
 		 *
-		 * @return Human-readable persistent ID of this entry.
-		 *
-		 * @sa GetEntryID()
+		 * @sa GetGlobalPersistentID()
+		 * @sa GetConventionalID()
 		 */
-		virtual QString GetHumanReadableID () const = 0;
+		virtual std::optional<EntryPersistentId> GetPersistentID () const = 0;
+
+		std::optional<GlobalPersistentId> GetGlobalPersistentID () const
+		{
+			if (const auto persistentId = GetPersistentID ())
+				return GlobalId { GetParentAccount ()->GetAccountID (), *persistentId };
+			return {};
+		}
+
+		/** @brief Returns the conventional human-readable ID of this entry.
+		 *
+		 * Unlike GetPersistentID(), the conventional ID is not guaranteed to
+		 * be stable throughout the lifetime of the entry,
+		 * and it may change over time (in which case
+		 * Emitters::CLEntry::conventionalIdChanged() will be emitted).
+		 * The canonical example is an entry in an anonymous chat room,
+		 * where the conventional ID depends on the nick.
+		 *
+		 * If it makes sense for the protocol, the conventional ID is also the
+		 * ID normally used by humans to exchange contacts (like JID in XMPP,
+		 * or phone number in SIP).
+		 *
+		 * @return Conventional ID of this entry.
+		 *
+		 * @sa GetPersistentID()
+		 */
+		virtual EntryConventionalId GetConventionalID () const = 0;
+
+		GlobalConventionalId GetGlobalConventionalID () const
+		{
+			return GlobalId { GetParentAccount ()->GetAccountID (), GetConventionalID () };
+		}
+
+		EntryStrongestId GetStrongestID () const
+		{
+			if (const auto persistentId = GetPersistentID ())
+				return *persistentId;
+			return GetConventionalID ();
+		}
+
+		GlobalStrongestId GetGlobalStrongestID () const
+		{
+			if (const auto persistentId = GetGlobalPersistentID ())
+				return *persistentId;
+			return GetGlobalConventionalID ();
+		}
 
 		/** @brief Returns the list of human-readable names of the
 		 * groups that this entry belongs to.
