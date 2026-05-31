@@ -155,5 +155,19 @@ namespace LC::Azoth::Emitters
 		 * @param[out] reason An optional reason string.
 		 */
 		void mucInvitationReceived (const QVariantMap& ident, const QString& inviter, const QString& reason);
+
+		/** @brief This signal is emitted whenever the entry changes
+		 * its conventional ID.
+		 *
+		 * For instance, if the entry represents a chat room member,
+		 * its conventional ID is usually the room name plus nick.
+		 * In this case, nick changes result in conventional ID changes,
+		 * and this signal shall be emitted.
+		 *
+		 * @sa ICLEntry::GetConventionalId()
+		 */
+		void conventionalIdChanged (const GlobalConventionalId& oldId,
+				const GlobalConventionalId& newId,
+				const ICLEntry& entry);
 	};
 }

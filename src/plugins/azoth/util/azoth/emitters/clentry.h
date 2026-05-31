@@ -55,18 +55,6 @@ namespace LC::Azoth::Emitters
 		 */
 		void nameChanged (const QString& name);
 
-		/** @brief This signal is emitted whenever the entry changes
-		 * its conventional ID.
-		 *
-		 * For instance, if the entry represents a chat room member,
-		 * its conventional ID is usually the room name plus nick.
-		 * In this case, nick changes result in conventional ID changes,
-		 * and this signal shall be emitted.
-		 *
-		 * @sa ICLEntry::GetConventionalId()
-		 */
-		void conventionalIdChanged (const GlobalConventionalId& newId, const GlobalConventionalId& oldId);
-
 		/** @brief This signal should be emitted whenever the entry's
 		 * groups are changed.
 		 *

@@ -191,8 +191,8 @@ namespace LC::Azoth
 		 *
 		 * Unlike GetPersistentID(), the conventional ID is not guaranteed to
 		 * be stable throughout the lifetime of the entry,
-		 * and it may change over time (in which case
-		 * Emitters::CLEntry::conventionalIdChanged() will be emitted).
+		 * and it may change over time (in which case the parent account's
+		 * Emitters::Account::conventionalIdChanged() will be emitted for this entry).
 		 * The canonical example is an entry in an anonymous chat room,
 		 * where the conventional ID depends on the nick.
 		 *
