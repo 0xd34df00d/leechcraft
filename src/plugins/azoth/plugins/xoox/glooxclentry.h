@@ -58,28 +58,26 @@ namespace LC::Azoth::Xoox
 		QXmppRosterIq::Item GetRI () const;
 
 		// ICLEntry
-		Features GetEntryFeatures () const;
-		EntryType GetEntryType () const;
-		QString GetEntryName () const;
-		void SetEntryName (const QString&);
-		/** Entry ID for GlooxCLEntry is its jid.
-		 */
-		QString GetEntryID () const;
-		QStringList Groups () const;
-		void SetGroups (const QStringList&);
-		QStringList Variants () const;
-		EntryStatus GetStatus (const QString&) const;
-		void SendMessage (const OutgoingMessage& message);
-		QList<QAction*> GetActions () const;
+		Features GetEntryFeatures () const override;
+		EntryType GetEntryType () const override;
+		QString GetEntryName () const override;
+		void SetEntryName (const QString&) override;
+		QString GetEntryID () const override;
+		QStringList Groups () const override;
+		void SetGroups (const QStringList&) override;
+		QStringList Variants () const override;
+		EntryStatus GetStatus (const QString&) const override;
+		void SendMessage (const OutgoingMessage& message) override;
+		QList<QAction*> GetActions () const override;
 
 		// IAuthable
-		AuthStatus GetAuthStatus () const;
-		void ResendAuth (const QString&);
-		void RevokeAuth (const QString&);
-		void Unsubscribe (const QString&);
-		void RerequestAuth (const QString&);
+		AuthStatus GetAuthStatus () const override;
+		void ResendAuth (const QString&) override;
+		void RevokeAuth (const QString&) override;
+		void Unsubscribe (const QString&) override;
+		void RerequestAuth (const QString&) override;
 
-		QString GetJID () const;
+		QString GetJID () const override;
 
 		bool IsGateway (QString* = 0) const;
 
