@@ -38,18 +38,18 @@ namespace Xoox
 	public:
 		RoomParticipantEntry (const QString&, RoomHandler*, GlooxAccount*);
 
-		ICLEntry* GetParentCLEntry () const;
-		Features GetEntryFeatures () const;
-		EntryType GetEntryType () const;
-		QString GetEntryName () const;
-		void SetEntryName (const QString&);
-		QString GetEntryID () const;
-		QStringList Groups () const;
-		void SetGroups (const QStringList&);
-		QStringList Variants () const;
-		void SendMessage (const OutgoingMessage&);
+		ICLEntry* GetParentCLEntry () const override;
+		Features GetEntryFeatures () const override;
+		EntryType GetEntryType () const override;
+		QString GetEntryName () const override;
+		void SetEntryName (const QString&) override;
+		QString GetEntryID () const override;
+		QStringList Groups () const override;
+		void SetGroups (const QStringList&) override;
+		QStringList Variants () const override;
+		void SendMessage (const OutgoingMessage&) override;
 
-		QString GetJID () const;
+		QString GetJID () const override;
 		QString GetRealJID () const;
 		QString GetNick () const;
 
