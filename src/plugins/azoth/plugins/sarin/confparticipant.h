@@ -27,9 +27,7 @@ namespace LC::Azoth::Sarin
 		ToxAccount& Acc_;
 		ConfEntry& Conf_;
 		const Pubkey Pkey_;
-
-		const QString HumanReadableId_;
-		const QString EntryId_;
+		const QString PkeyHR_;
 
 		QString Nick_;
 	public:
@@ -57,8 +55,8 @@ namespace LC::Azoth::Sarin
 		QString GetEntryName () const override;
 		void SetEntryName (const QString& name) override;
 
-		QString GetEntryID () const override;
-		QString GetHumanReadableID () const override;
+		std::optional<EntryPersistentId> GetPersistentID () const override;
+		EntryConventionalId GetConventionalID () const override;
 
 		QStringList Groups () const override;
 		void SetGroups (const QStringList& groups) override;

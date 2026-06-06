@@ -51,14 +51,14 @@ namespace LC::Azoth::Sarin
 	{
 	}
 
-	QString GroupChatEntry::GetEntryID () const
+	std::optional<EntryPersistentId> GroupChatEntry::GetPersistentID () const
 	{
-		return Mgr_.GetAccount ().GetAccountID () + '_' + GroupId_;
+		return EntryPersistentId::FromString (GroupId_);
 	}
 
-	QString GroupChatEntry::GetHumanReadableID () const
+	EntryConventionalId GroupChatEntry::GetConventionalID () const
 	{
-		return GroupId_;
+		return EntryConventionalId::FromString (GroupId_);
 	}
 
 	QStringList GroupChatEntry::Groups () const

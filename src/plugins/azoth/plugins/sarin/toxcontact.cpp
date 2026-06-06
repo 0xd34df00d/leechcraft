@@ -19,7 +19,7 @@ namespace LC::Azoth::Sarin
 	ToxContact::ToxContact (Pubkey pkey, ToxAccount *account)
 	: QObject { account }
 	, Pubkey_ { pkey }
-	, EntryId_ { account->GetAccountID () + '/' + ToxId2HR (pkey) }
+	, PubkeyHR_ { ToxId2HR (pkey) }
 	, Acc_ { account }
 	{
 	}
@@ -51,7 +51,7 @@ namespace LC::Azoth::Sarin
 
 	QString ToxContact::GetEntryName () const
 	{
-		return PublicName_.isEmpty () ? ToxId2HR (Pubkey_) : PublicName_;
+		return PublicName_.isEmpty () ? PubkeyHR_ : PublicName_;
 	}
 
 	void ToxContact::SetEntryName (const QString& name)
@@ -63,14 +63,14 @@ namespace LC::Azoth::Sarin
 		emit Emitter_.nameChanged (GetEntryName ());
 	}
 
-	QString ToxContact::GetEntryID () const
+	std::optional<EntryPersistentId> ToxContact::GetPersistentID () const
 	{
-		return EntryId_;
+		return EntryPersistentId::FromString (PubkeyHR_);
 	}
 
-	QString ToxContact::GetHumanReadableID () const
+	EntryConventionalId ToxContact::GetConventionalID () const
 	{
-		return ToxId2HR (Pubkey_);
+		return EntryConventionalId::FromString (PubkeyHR_);
 	}
 
 	QStringList ToxContact::Groups () const

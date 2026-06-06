@@ -33,8 +33,7 @@ namespace LC::Azoth::Sarin
 		const ConfId ConfId_;
 		const uint32_t ConfNum_;
 
-		const QString HumanReadableId_;
-		const QString EntryId_;
+		const QString ConfIdHR_;
 
 		QHash<Pubkey, ConfParticipant*> Participants_;
 		QHash<uint32_t, Pubkey> OnlineNum2Pubkey_;
@@ -55,8 +54,8 @@ namespace LC::Azoth::Sarin
 		QString GetEntryName () const override;
 		void SetEntryName (const QString&) override;
 
-		QString GetEntryID () const override;
-		QString GetHumanReadableID () const override;
+		std::optional<EntryPersistentId> GetPersistentID () const override;
+		EntryConventionalId GetConventionalID () const override;
 
 		QStringList Groups () const override;
 		void SetGroups (const QStringList&) override;

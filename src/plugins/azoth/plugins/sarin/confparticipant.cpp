@@ -21,8 +21,7 @@ namespace LC::Azoth::Sarin
 	, Acc_ { conf.GetConfsManager ().GetAccount () }
 	, Conf_ { conf }
 	, Pkey_ { pkey }
-	, HumanReadableId_ { ToxId2HR (pkey) }
-	, EntryId_ { Acc_.GetAccountID () + '_' + HumanReadableId_ }
+	, PkeyHR_ { ToxId2HR (pkey) }
 	, Nick_ { std::move (nick) }
 	, State_ { std::move (state) }
 	{
@@ -63,14 +62,14 @@ namespace LC::Azoth::Sarin
 		qWarning () << "renaming isn't supported";
 	}
 
-	QString ConfParticipant::GetEntryID () const
+	std::optional<EntryPersistentId> ConfParticipant::GetPersistentID () const
 	{
-		return EntryId_;
+		return EntryPersistentId::FromString (PkeyHR_);
 	}
 
-	QString ConfParticipant::GetHumanReadableID () const
+	EntryConventionalId ConfParticipant::GetConventionalID () const
 	{
-		return HumanReadableId_;
+		return EntryConventionalId::FromString (PkeyHR_);
 	}
 
 	QStringList ConfParticipant::Groups () const

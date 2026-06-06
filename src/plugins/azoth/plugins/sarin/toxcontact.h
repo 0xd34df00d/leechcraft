@@ -24,7 +24,7 @@ namespace LC::Azoth::Sarin
 		Q_INTERFACES (LC::Azoth::ICLEntry)
 
 		const Pubkey Pubkey_;
-		const QString EntryId_;
+		const QString PubkeyHR_;
 		ToxAccount * const Acc_;
 
 		QList<ChatMessage*> AllMessages_;
@@ -44,8 +44,8 @@ namespace LC::Azoth::Sarin
 
 		QString GetEntryName () const override;
 		void SetEntryName (const QString&) override;
-		QString GetEntryID () const override;
-		QString GetHumanReadableID () const override;
+		std::optional<EntryPersistentId> GetPersistentID () const override;
+		EntryConventionalId GetConventionalID () const override;
 		QStringList Groups () const override;
 		void SetGroups (const QStringList&) override;
 

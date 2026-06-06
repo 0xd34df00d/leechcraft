@@ -23,8 +23,7 @@ namespace LC::Azoth::Sarin
 	, Mgr_ { mgr }
 	, ConfId_ { confId }
 	, ConfNum_ { confNum }
-	, HumanReadableId_ { ToxId2HR (ConfId_) }
-	, EntryId_ { mgr.GetAccount ().GetAccountID () + '_' + HumanReadableId_ }
+	, ConfIdHR_ { ToxId2HR (ConfId_) }
 	{
 		emit mgr.GetAccount ().GetAccountEmitter ().gotCLItems ({ this });
 	}
@@ -70,14 +69,14 @@ namespace LC::Azoth::Sarin
 	{
 	}
 
-	QString ConfEntry::GetEntryID () const
+	std::optional<EntryPersistentId> ConfEntry::GetPersistentID () const
 	{
-		return EntryId_;
+		return EntryPersistentId::FromString (ConfIdHR_);
 	}
 
-	QString ConfEntry::GetHumanReadableID () const
+	EntryConventionalId ConfEntry::GetConventionalID () const
 	{
-		return HumanReadableId_;
+		return EntryConventionalId::FromString (ConfIdHR_);
 	}
 
 	QStringList ConfEntry::Groups () const
