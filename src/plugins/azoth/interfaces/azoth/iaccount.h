@@ -15,6 +15,8 @@
 #include <interfaces/azoth/azothcommon.h>
 #include <util/azoth/emitters/account.h>
 
+class QAction;
+
 namespace LC
 {
 namespace Azoth
