@@ -63,64 +63,64 @@ namespace Xoox
 		RoomHandler* GetRoomHandler () const;
 
 		// ICLEntry
-		QObject* GetQObject ();
-		GlooxAccount* GetParentAccount () const ;
-		Features GetEntryFeatures () const;
-		EntryType GetEntryType () const;
-		QString GetEntryName () const;
-		void SetEntryName (const QString&);
-		QString GetEntryID () const;
-		QString GetHumanReadableID () const;
-		QStringList Groups () const;
-		void SetGroups (const QStringList&);
-		QStringList Variants () const;
-		void SendMessage (const OutgoingMessage&);
-		QList<IMessage*> GetAllMessages () const;
-		void PurgeMessages (const QDateTime&);
-		void SetChatPartState (ChatPartState, const QString&);
-		EntryStatus GetStatus (const QString&) const;
-		QList<QAction*> GetActions () const;
-		void ShowInfo ();
-		QMap<QString, QVariant> GetClientInfo (const QString&) const;
-		void MarkMsgsRead ();
-		void ChatTabClosed ();
+		QObject* GetQObject () override;
+		GlooxAccount* GetParentAccount () const override;
+		Features GetEntryFeatures () const override;
+		EntryType GetEntryType () const override;
+		QString GetEntryName () const override;
+		void SetEntryName (const QString&) override;
+		QString GetEntryID () const override;
+		QString GetHumanReadableID () const override;
+		QStringList Groups () const override;
+		void SetGroups (const QStringList&) override;
+		QStringList Variants () const override;
+		void SendMessage (const OutgoingMessage&) override;
+		QList<IMessage*> GetAllMessages () const override;
+		void PurgeMessages (const QDateTime&) override;
+		void SetChatPartState (ChatPartState, const QString&) override;
+		EntryStatus GetStatus (const QString&) const override;
+		QList<QAction*> GetActions () const override;
+		void ShowInfo () override;
+		QMap<QString, QVariant> GetClientInfo (const QString&) const override;
+		void MarkMsgsRead () override;
+		void ChatTabClosed () override;
 
 		// IMUCEntry
-		MUCFeatures GetMUCFeatures () const;
-		QString GetMUCSubject () const;
-		bool CanChangeSubject () const;
-		void SetMUCSubject (const QString&);
-		QList<ICLEntry*> GetParticipants ();
-		bool IsAutojoined () const;
-		void Join ();
-		void Leave (const QString&);
-		QString GetNick () const;
-		void SetNick (const QString&);
-		QString GetGroupName () const;
-		QVariantMap GetIdentifyingData () const;
-		QString GetRealID (const ICLEntry&) const;
-		void InviteToMUC (const QString&, const QString&);
+		MUCFeatures GetMUCFeatures () const override;
+		QString GetMUCSubject () const override;
+		bool CanChangeSubject () const override;
+		void SetMUCSubject (const QString&) override;
+		QList<ICLEntry*> GetParticipants () override;
+		bool IsAutojoined () const override;
+		void Join () override;
+		void Leave (const QString&) override;
+		QString GetNick () const override;
+		void SetNick (const QString&) override;
+		QString GetGroupName () const override;
+		QVariantMap GetIdentifyingData () const override;
+		QString GetRealID (const ICLEntry&) const override;
+		void InviteToMUC (const QString&, const QString&) override;
 
 		// IMUCPerms
-		MUCPerms_t GetPossiblePerms () const;
-		MUCPerms_t GetPerms (const ICLEntry&) const;
-		QPair<QByteArray, QByteArray> GetKickPerm () const;
-		QPair<QByteArray, QByteArray> GetBanPerm () const;
-		QByteArray GetAffName (const ICLEntry&) const;
-		bool MayChangePerm (const ICLEntry&, const QByteArray&, const QByteArray&) const;
-		void SetPerm (ICLEntry&, const QByteArray&, const QByteArray&, const QString&);
-		void TrySetPerm (const QString&, const QByteArray&, const QByteArray&, const QString&);
-		bool IsLessByPerm (const ICLEntry&, const ICLEntry&) const;
-		bool IsMultiPerm (const QByteArray&) const;
-		QString GetUserString (const QByteArray&) const;
+		MUCPerms_t GetPossiblePerms () const override;
+		MUCPerms_t GetPerms (const ICLEntry&) const override;
+		QPair<QByteArray, QByteArray> GetKickPerm () const override;
+		QPair<QByteArray, QByteArray> GetBanPerm () const override;
+		QByteArray GetAffName (const ICLEntry&) const override;
+		bool MayChangePerm (const ICLEntry&, const QByteArray&, const QByteArray&) const override;
+		void SetPerm (ICLEntry&, const QByteArray&, const QByteArray&, const QString&) override;
+		void TrySetPerm (const QString&, const QByteArray&, const QByteArray&, const QString&) override;
+		bool IsLessByPerm (const ICLEntry&, const ICLEntry&) const override;
+		bool IsMultiPerm (const QByteArray&) const override;
+		QString GetUserString (const QByteArray&) const override;
 
 		// IConfigurableMUC
-		QWidget* GetConfigurationWidget ();
-		void AcceptConfiguration (QWidget*);
+		QWidget* GetConfigurationWidget () override;
+		void AcceptConfiguration (QWidget*) override;
 
 		// IHaveDirectedStatus
-		bool CanSendDirectedStatusNow (const QString&);
-		void SendDirectedStatus (const EntryStatus&, const QString&);
+		bool CanSendDirectedStatusNow (const QString&) override;
+		void SendDirectedStatus (const EntryStatus&, const QString&) override;
 
 		void MoveMessages (const RoomParticipantEntry_ptr& from, const RoomParticipantEntry_ptr& to);
 
