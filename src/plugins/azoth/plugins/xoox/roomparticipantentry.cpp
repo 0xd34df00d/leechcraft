@@ -15,7 +15,6 @@
 #include "glooxmessage.h"
 #include "roomhandler.h"
 #include "roomclentry.h"
-#include "core.h"
 #include "avatarsstorage.h"
 
 namespace LC
@@ -24,13 +23,20 @@ namespace Azoth
 {
 namespace Xoox
 {
+	namespace
+	{
+		EntryConventionalId MakeParticipantId (const RoomHandler& rh, const QString& nick)
+		{
+			return EntryConventionalId::FromString (rh.GetRoomJID () + '/' + nick);
+		}
+	}
+
 	RoomParticipantEntry::RoomParticipantEntry (const QString& nick,
 			RoomHandler *rh, GlooxAccount *account)
-	: EntryBase (rh->GetRoomJID () + "/" + nick, account)
-	, Nick_ (nick)
-	, RoomHandler_ (rh)
-	, Affiliation_ (QXmppMucItem::UnspecifiedAffiliation)
-	, Role_ (QXmppMucItem::UnspecifiedRole)
+	: EntryBase { account }
+	, Nick_ { nick }
+	, ConventionalId_ { MakeParticipantId (*rh, nick) }
+	, RoomHandler_ { rh }
 	{
 	}
 
@@ -56,13 +62,23 @@ namespace Xoox
 
 	void RoomParticipantEntry::SetEntryName (const QString& nick)
 	{
+		const auto oldId = GetGlobalConventionalID ();
+
 		Nick_ = nick;
+		ConventionalId_ = MakeParticipantId (*RoomHandler_, nick);
 		emit Emitter_.nameChanged (Nick_);
+
+		emit Account_->GetAccountEmitter ().conventionalIdChanged (oldId, GetGlobalConventionalID (), *this);
 	}
 
-	QString RoomParticipantEntry::GetEntryID () const
+	std::optional<EntryPersistentId> RoomParticipantEntry::GetPersistentID () const
 	{
-		return Account_->GetAccountID () + '_' + HumanReadableId_;
+		return {};
+	}
+
+	EntryConventionalId RoomParticipantEntry::GetConventionalID () const
+	{
+		return ConventionalId_;
 	}
 
 	QStringList RoomParticipantEntry::Groups () const

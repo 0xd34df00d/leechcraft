@@ -32,13 +32,14 @@
 namespace LC::Azoth::Xoox
 {
 	GlooxCLEntry::GlooxCLEntry (const QString& jid, GlooxAccount *parent)
-	: EntryBase (jid, parent)
+	: EntryBase { parent }
+	, JID_ { jid }
 	{
 	}
 
 	QString GlooxCLEntry::JIDFromID (GlooxAccount *acc, const QString& id)
 	{
-		const QString& pre = acc->GetAccountID () + '_';
+		const QString& pre = acc->GetAccountID () + ':';
 		return id.startsWith (pre) ?
 				id.mid (pre.size ()) :
 				id;
@@ -63,7 +64,7 @@ namespace LC::Azoth::Xoox
 
 	QXmppRosterIq::Item GlooxCLEntry::GetRI () const
 	{
-		return Account_->GetClientConnection ()->Exts ().Get<QXmppRosterManager> ().getRosterEntry (HumanReadableId_);
+		return Account_->GetClientConnection ()->Exts ().Get<QXmppRosterManager> ().getRosterEntry (JID_);
 	}
 
 	ICLEntry::Features GlooxCLEntry::GetEntryFeatures () const
@@ -82,9 +83,9 @@ namespace LC::Azoth::Xoox
 
 	QString GlooxCLEntry::GetEntryName () const
 	{
-		QString name = GetRI ().name ();
+		auto name = GetRI ().name ();
 		if (name.isEmpty ())
-			return HumanReadableId_;
+			return JID_;
 		return name;
 	}
 
@@ -98,9 +99,14 @@ namespace LC::Azoth::Xoox
 		emit Emitter_.nameChanged (name);
 	}
 
-	QString GlooxCLEntry::GetEntryID () const
+	std::optional<EntryPersistentId> GlooxCLEntry::GetPersistentID () const
 	{
-		return Account_->GetAccountID () + '_' + HumanReadableId_;
+		return EntryPersistentId::FromString (JID_);
+	}
+
+	EntryConventionalId GlooxCLEntry::GetConventionalID () const
+	{
+		return EntryConventionalId::FromString (JID_);
 	}
 
 	QStringList GlooxCLEntry::Groups () const
@@ -234,7 +240,7 @@ namespace LC::Azoth::Xoox
 
 	QString GlooxCLEntry::GetJID () const
 	{
-		return HumanReadableId_;
+		return JID_;
 	}
 
 	void GlooxCLEntry::SetAuthRequested (bool auth)

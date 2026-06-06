@@ -42,6 +42,8 @@ namespace LC::Azoth::Xoox
 		};
 		QList<MessageQueueItem> MessageQueue_;
 
+		const QString JID_;
+
 		bool AuthRequested_ = false;
 		bool IsRosterEntry_ = false;
 
@@ -62,7 +64,8 @@ namespace LC::Azoth::Xoox
 		EntryType GetEntryType () const override;
 		QString GetEntryName () const override;
 		void SetEntryName (const QString&) override;
-		QString GetEntryID () const override;
+		std::optional<EntryPersistentId> GetPersistentID () const override;
+		EntryConventionalId GetConventionalID () const override;
 		QStringList Groups () const override;
 		void SetGroups (const QStringList&) override;
 		QStringList Variants () const override;

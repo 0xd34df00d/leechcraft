@@ -21,7 +21,7 @@ namespace Azoth
 namespace Xoox
 {
 	SelfContact::SelfContact (const QString& fullJid, GlooxAccount *acc)
-	: EntryBase (acc->GetSettings ()->GetJID (), acc)
+	: EntryBase (acc)
 	{
 		UpdateJID (fullJid);
 
@@ -52,9 +52,14 @@ namespace Xoox
 				<< "can't set name of self contact";
 	}
 
-	QString SelfContact::GetEntryID () const
+	std::optional<EntryPersistentId> SelfContact::GetPersistentID () const
 	{
-		return Account_->GetAccountID () + '_' + ".self";
+		return EntryPersistentId::FromString ("self");
+	}
+
+	EntryConventionalId SelfContact::GetConventionalID () const
+	{
+		return EntryConventionalId::FromString (BareJID_);
 	}
 
 	QStringList SelfContact::Groups () const
@@ -136,9 +141,16 @@ namespace Xoox
 
 	void SelfContact::UpdateJID (const QString& fullJid)
 	{
-		std::tie (BareJID_, Resource_) = ClientConnection::Split (fullJid);
+		std::optional<GlobalConventionalId> oldId;
+		if (!BareJID_.isEmpty ())
+			oldId = GetGlobalConventionalID ();
 
+		std::tie (BareJID_, Resource_) = ClientConnection::Split (fullJid);
 		emit Emitter_.availableVariantsChanged (Variants ());
+
+		if (const auto& newId = GetGlobalConventionalID ();
+			oldId && *oldId != newId)
+			emit Account_->GetAccountEmitter ().conventionalIdChanged (*oldId, newId, *this);
 	}
 
 	void SelfContact::handleSelfVCardUpdated ()

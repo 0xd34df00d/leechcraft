@@ -151,14 +151,14 @@ namespace Xoox
 	{
 	}
 
-	QString RoomCLEntry::GetEntryID () const
+	std::optional<EntryPersistentId> RoomCLEntry::GetPersistentID () const
 	{
-		return Account_->GetAccountID () + '_' + RH_->GetRoomJID ();
+		return EntryPersistentId::FromString (RH_->GetRoomJID ());
 	}
 
-	QString RoomCLEntry::GetHumanReadableID () const
+	EntryConventionalId RoomCLEntry::GetConventionalID () const
 	{
-		return RH_->GetRoomJID ();
+		return EntryConventionalId::FromString (RH_->GetRoomJID ());
 	}
 
 	QStringList RoomCLEntry::Groups () const

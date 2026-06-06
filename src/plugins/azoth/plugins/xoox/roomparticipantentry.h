@@ -31,10 +31,11 @@ namespace Xoox
 		Q_OBJECT
 
 		QString Nick_;
+		EntryConventionalId ConventionalId_;
 		RoomHandler *RoomHandler_;
 
-		QXmppMucItem::Affiliation Affiliation_;
-		QXmppMucItem::Role Role_;
+		QXmppMucItem::Affiliation Affiliation_ = QXmppMucItem::UnspecifiedAffiliation;
+		QXmppMucItem::Role Role_ = QXmppMucItem::UnspecifiedRole;
 	public:
 		RoomParticipantEntry (const QString&, RoomHandler*, GlooxAccount*);
 
@@ -43,7 +44,8 @@ namespace Xoox
 		EntryType GetEntryType () const override;
 		QString GetEntryName () const override;
 		void SetEntryName (const QString&) override;
-		QString GetEntryID () const override;
+		std::optional<EntryPersistentId> GetPersistentID () const override;
+		EntryConventionalId GetConventionalID () const override;
 		QStringList Groups () const override;
 		void SetGroups (const QStringList&) override;
 		QStringList Variants () const override;

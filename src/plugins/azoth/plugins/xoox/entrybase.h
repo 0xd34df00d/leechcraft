@@ -90,8 +90,6 @@ namespace Xoox
 	protected:
 		GlooxAccount *Account_;
 
-		const QString HumanReadableId_;
-
 		QList<GlooxMessage*> AllMessages_;
 		QList<GlooxMessage*> UnreadMessages_;
 		QList<QAction*> Actions_;
@@ -130,7 +128,7 @@ namespace Xoox
 
 		bool HasUnreadMsgs_ = false;
 	public:
-		EntryBase (const QString& humanReadableId, GlooxAccount* = nullptr);
+		EntryBase (GlooxAccount* = nullptr);
 		virtual ~EntryBase ();
 
 		// ICLEntry
@@ -141,7 +139,6 @@ namespace Xoox
 		void SetChatPartState (ChatPartState, const QString&);
 		EntryStatus GetStatus (const QString&) const;
 		QList<QAction*> GetActions () const;
-		QString GetHumanReadableID () const final;
 		void ShowInfo ();
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
 		void MarkMsgsRead ();

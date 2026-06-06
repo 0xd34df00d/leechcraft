@@ -69,15 +69,12 @@ namespace Azoth
 {
 namespace Xoox
 {
-	EntryBase::EntryBase (const QString& humanReadableId, GlooxAccount *parent)
+	EntryBase::EntryBase (GlooxAccount *parent)
 	: QObject (parent)
 	, Account_ (parent)
-	, HumanReadableId_ (humanReadableId)
 	, Commands_ (new QAction (tr ("Commands..."), this))
 	, DetectNick_ (new QAction (tr ("Detect nick"), this))
 	, StdSep_ (Util::CreateSeparator (this))
-	, VCardPhotoHash_ (parent->GetParentProtocol ()->GetVCardStorage ()->
-				GetVCardPhotoHash (humanReadableId).value_or (QByteArray {}))
 	{
 		connect (this,
 				SIGNAL (locationChanged (const QString&, QObject*)),
@@ -92,6 +89,16 @@ namespace Xoox
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleDetectNick ()));
+
+		QTimer::singleShot (0, this,
+				[this]
+				{
+					const auto vcardStorage = Account_->GetParentProtocol ()->GetVCardStorage ();
+					const auto& conventionalId = GetConventionalID ().ToString ();
+					VCardPhotoHash_ = vcardStorage->GetVCardPhotoHash (conventionalId).value_or (QByteArray {});
+					if (!VCardPhotoHash_.isEmpty ())
+						emit avatarChanged (this);
+				});
 	}
 
 	EntryBase::~EntryBase ()
@@ -162,11 +169,6 @@ namespace Xoox
 		additional << StdSep_;
 
 		return additional + Actions_;
-	}
-
-	QString EntryBase::GetHumanReadableID () const
-	{
-		return HumanReadableId_;
 	}
 
 	void EntryBase::ShowInfo ()
