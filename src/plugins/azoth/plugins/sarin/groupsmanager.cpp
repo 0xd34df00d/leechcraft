@@ -38,20 +38,17 @@ namespace LC::Azoth::Sarin
 		if (!tox)
 			co_return Util::Left { JoinGroupError::ToxOffline };
 
-		const auto& groupIdUtf8 = groupId.toUtf8 ();
-		if (groupIdUtf8.size () != TOX_GROUP_CHAT_ID_SIZE)
+		const auto groupIdBytes = QByteArray::fromHex (groupId.toUtf8 ());
+		if (groupIdBytes.size () != TOX_GROUP_CHAT_ID_SIZE)
 		{
-			qWarning () << "invalid group ID length" << groupIdUtf8.size ();
+			qWarning () << "invalid group ID length" << groupIdBytes.size ();
 			co_return Util::Left { JoinGroupError::InvalidGroupIdLength };
 		}
-
-		std::array<uint8_t, TOX_GROUP_CHAT_ID_SIZE> groupIdArr {};
-		std::copy_n (groupIdUtf8.begin (), TOX_GROUP_CHAT_ID_SIZE, groupIdArr.begin ());
 
 		const auto nickUtf8 = nick.toUtf8 ();
 		const auto pwUtf8 = password.toUtf8 ();
 		const auto joinResult = co_await tox->RunWithError (&tox_group_join,
-				&groupIdArr [0],
+				std::bit_cast<const uint8_t*> (groupIdBytes.constData ()),
 				std::bit_cast<const uint8_t*> (nickUtf8.constData ()), nickUtf8.size (),
 				std::bit_cast<const uint8_t*> (pwUtf8.constData ()), pwUtf8.size ());
 		const auto groupNum = co_await joinResult;

@@ -19,7 +19,7 @@ namespace LC::Azoth::Sarin
 	GroupJoinWidget::GroupJoinWidget ()
 	{
 		Ui_.setupUi (this);
-		Ui_.GroupId_->setMaxLength (TOX_GROUP_CHAT_ID_SIZE);
+		Ui_.GroupId_->setMaxLength (2 * TOX_GROUP_CHAT_ID_SIZE);
 		Ui_.Nick_->setMaxLength (TOX_MAX_NAME_LENGTH);
 		Ui_.Password_->setMaxLength (TOX_GROUP_MAX_PASSWORD_SIZE);
 
@@ -145,7 +145,7 @@ namespace LC::Azoth::Sarin
 	void GroupJoinWidget::CheckValidity ()
 	{
 		const auto isLegacyConf = !IsJoiningGroup ();
-		const auto isGroupValid = Ui_.GroupId_->text ().size () == TOX_GROUP_CHAT_ID_SIZE &&
+		const auto isGroupValid = Ui_.GroupId_->text ().size () == qsizetype { 2 } * TOX_GROUP_CHAT_ID_SIZE &&
 				!Ui_.Nick_->text ().isEmpty ();
 		const auto valid = isLegacyConf || isGroupValid;
 		emit validityChanged (valid);
