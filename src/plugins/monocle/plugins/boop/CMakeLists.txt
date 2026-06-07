@@ -16,7 +16,7 @@ LC_DEFINE_PLUGIN (
 		microcssparser.cpp
 		toc.cpp
 		util.cpp
-	QT_COMPONENTS Gui Xml
+	QT_COMPONENTS Core5Compat Gui Xml
 	LINK_LIBRARIES PkgConfig::QuaZip leechcraft-monocle-util
 	INSTALL_DESKTOP
 	)
