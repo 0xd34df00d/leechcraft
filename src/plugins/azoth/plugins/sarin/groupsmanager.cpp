@@ -12,6 +12,7 @@
 #include "groupchatentry.h"
 #include "toxaccount.h"
 #include "toxthread.h"
+#include "util.h"
 
 namespace LC::Azoth::Sarin
 {
@@ -38,17 +39,17 @@ namespace LC::Azoth::Sarin
 		if (!tox)
 			co_return Util::Left { JoinGroupError::ToxOffline };
 
-		const auto groupIdBytes = QByteArray::fromHex (groupId.toUtf8 ());
-		if (groupIdBytes.size () != TOX_GROUP_CHAT_ID_SIZE)
+		const auto groupIdArr = HumanReadable2ToxId<TOX_GROUP_CHAT_ID_SIZE> (groupId);
+		if (!groupIdArr)
 		{
-			qWarning () << "invalid group ID length" << groupIdBytes.size ();
+			qWarning () << "invalid group ID";
 			co_return Util::Left { JoinGroupError::InvalidGroupIdLength };
 		}
 
 		const auto nickUtf8 = nick.toUtf8 ();
 		const auto pwUtf8 = password.toUtf8 ();
 		const auto joinResult = co_await tox->RunWithError (&tox_group_join,
-				std::bit_cast<const uint8_t*> (groupIdBytes.constData ()),
+				groupIdArr->data (),
 				std::bit_cast<const uint8_t*> (nickUtf8.constData ()), nickUtf8.size (),
 				std::bit_cast<const uint8_t*> (pwUtf8.constData ()), pwUtf8.size ());
 		const auto groupNum = co_await joinResult;

@@ -13,6 +13,7 @@
 #include "confsmanager.h"
 #include "groupsmanager.h"
 #include "toxaccount.h"
+#include "util.h"
 
 namespace LC::Azoth::Sarin
 {
@@ -144,7 +145,7 @@ namespace LC::Azoth::Sarin
 	void GroupJoinWidget::CheckValidity ()
 	{
 		const auto isLegacyConf = !IsJoiningGroup ();
-		const auto isGroupValid = QByteArray::fromHex (Ui_.GroupId_->text ().toUtf8 ()).size () == TOX_GROUP_CHAT_ID_SIZE &&
+		const auto isGroupValid = HumanReadable2ToxId<TOX_GROUP_CHAT_ID_SIZE> (Ui_.GroupId_->text ()).has_value () &&
 				!Ui_.Nick_->text ().isEmpty ();
 		const auto valid = isLegacyConf || isGroupValid;
 		emit validityChanged (valid);
