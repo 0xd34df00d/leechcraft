@@ -200,7 +200,7 @@ namespace Azoth
 		 *
 		 * @sa ICLEntry::GetHumanReadableID()
 		 */
-		virtual void InviteToMUC (const QString& userId, const QString& msg) = 0;
+		virtual void InviteToMUC (const QString& userId, const QString& msg) = 0;	// TODO replace with ConventionalId?
 	};
 }
 }

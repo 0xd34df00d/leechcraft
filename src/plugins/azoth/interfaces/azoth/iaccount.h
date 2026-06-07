@@ -224,7 +224,7 @@ namespace Azoth
 		 * @param[in] groups The groups to add the \em entry to, if
 		 * applicable. May be blank.
 		 */
-		virtual void RequestAuth (const QString& entry,
+		virtual void RequestAuth (const QString& entry,		// TODO replace with `EntryId<Conventional>`
 				const QString& msg = QString (),
 				const QString& name = QString (),
 				const QStringList& groups = QStringList ()) = 0;
