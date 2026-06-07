@@ -58,8 +58,6 @@ namespace LC::Azoth::Acetamide
 		Nick_ = name;
 		emit Emitter_.nameChanged (Nick_);
 
-		emit GetParentAccount ()->GetAccountEmitter ().conventionalIdChanged (oldGlobalId, GetGlobalConventionalID (), *this);
-
 		for (const auto message : AllMessages_)
 		{
 			const auto msg = dynamic_cast<IrcMessage*> (message);
@@ -73,6 +71,8 @@ namespace LC::Azoth::Acetamide
 
 			msg->SetOtherVariant (name);
 		}
+
+		emit GetParentAccount ()->GetAccountEmitter ().conventionalIdChanged (oldGlobalId, GetGlobalConventionalID (), *this);
 	}
 
 	QStringList IrcParticipantEntry::Variants () const
