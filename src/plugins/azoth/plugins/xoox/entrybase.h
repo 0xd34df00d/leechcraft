@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <optional>
 #include <QObject>
 #include <QImage>
 #include <QMap>
@@ -122,7 +123,7 @@ namespace Xoox
 
 		QPointer<VCardDialog> VCardDialog_;
 
-		QByteArray VCardPhotoHash_;
+		mutable std::optional<QByteArray> VCardPhotoHash_;
 
 		QDateTime LastEntityTimeRequest_;
 

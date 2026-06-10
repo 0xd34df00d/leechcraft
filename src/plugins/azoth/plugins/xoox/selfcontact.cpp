@@ -155,7 +155,7 @@ namespace Xoox
 
 	void SelfContact::handleSelfVCardUpdated ()
 	{
-		Account_->UpdateOurPhotoHash (VCardPhotoHash_);
+		Account_->UpdateOurPhotoHash (GetVCardPhotoHash ());
 	}
 }
 }

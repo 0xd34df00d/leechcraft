@@ -89,16 +89,6 @@ namespace Xoox
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleDetectNick ()));
-
-		QTimer::singleShot (0, this,
-				[this]
-				{
-					const auto vcardStorage = Account_->GetParentProtocol ()->GetVCardStorage ();
-					const auto& conventionalId = GetConventionalID ().ToString ();
-					VCardPhotoHash_ = vcardStorage->GetVCardPhotoHash (conventionalId).value_or (QByteArray {});
-					if (!VCardPhotoHash_.isEmpty ())
-						emit avatarChanged (this);
-				});
 	}
 
 	EntryBase::~EntryBase ()
@@ -425,7 +415,7 @@ namespace Xoox
 	{
 		const auto maybeVCard = Account_->GetParentProtocol ()->
 				GetVCardStorage ()->GetVCard (GetHumanReadableID ());
-		if (maybeVCard && VCardPhotoHash_ == ComputeVCardPhotoHash (*maybeVCard))
+		if (maybeVCard && GetVCardPhotoHash () == ComputeVCardPhotoHash (*maybeVCard))
 			return Util::MakeReadyFuture (QImage::fromData (maybeVCard->photo ()));
 
 		if (!Account_->GetClientConnection ()->IsConnected ())
@@ -466,7 +456,7 @@ namespace Xoox
 
 	bool EntryBase::HasAvatar () const
 	{
-		return !VCardPhotoHash_.isEmpty ();
+		return !GetVCardPhotoHash ().isEmpty ();
 	}
 
 	bool EntryBase::SupportsSize (Size size) const
@@ -544,7 +534,12 @@ namespace Xoox
 
 	const QByteArray& EntryBase::GetVCardPhotoHash () const
 	{
-		return VCardPhotoHash_;
+		if (!VCardPhotoHash_)
+		{
+			const auto storage = Account_->GetParentProtocol ()->GetVCardStorage ();
+			VCardPhotoHash_ = storage->GetVCardPhotoHash (GetConventionalID ().ToString ()).value_or (QByteArray {});
+		}
+		return *VCardPhotoHash_;
 	}
 
 	void EntryBase::HandlePresence (const QXmppPresence& pres, const QString& resource)
@@ -720,7 +715,7 @@ namespace Xoox
 		emit vcardUpdated ();
 
 		const auto& newPhotoHash = ComputeVCardPhotoHash (vcard);
-		if (newPhotoHash != VCardPhotoHash_)
+		if (newPhotoHash != GetVCardPhotoHash ())
 		{
 			VCardPhotoHash_ = newPhotoHash;
 			WriteDownPhotoHash ();
@@ -930,16 +925,16 @@ namespace Xoox
 		const auto& vcardUpdate = pres.vCardUpdateType ();
 		if (vcardUpdate == QXmppPresence::VCardUpdateNoPhoto)
 		{
-			if (!VCardPhotoHash_.isEmpty ())
+			if (!GetVCardPhotoHash ().isEmpty ())
 			{
-				VCardPhotoHash_.clear ();
+				VCardPhotoHash_ = QByteArray {};
 				WriteDownPhotoHash ();
 				emit avatarChanged (this);
 			}
 		}
 		else if (vcardUpdate == QXmppPresence::VCardUpdateValidPhoto)
 		{
-			if (pres.photoHash () != VCardPhotoHash_)
+			if (pres.photoHash () != GetVCardPhotoHash ())
 			{
 				VCardPhotoHash_ = pres.photoHash ();
 				WriteDownPhotoHash ();
@@ -980,7 +975,7 @@ namespace Xoox
 	void EntryBase::WriteDownPhotoHash () const
 	{
 		const auto vcardStorage = Account_->GetParentProtocol ()->GetVCardStorage ();
-		vcardStorage->SetVCardPhotoHash (GetHumanReadableID (), VCardPhotoHash_);
+		vcardStorage->SetVCardPhotoHash (GetHumanReadableID (), GetVCardPhotoHash ());
 	}
 
 	QString EntryBase::GetVariantOrHighest (const QString& var) const
