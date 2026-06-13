@@ -711,16 +711,15 @@ namespace Xoox
 			VCardDialog_->UpdateInfo (vcard);
 
 		Account_->GetParentProtocol ()->GetVCardStorage ()->SetVCard (GetHumanReadableID (), vcard);
-
-		emit vcardUpdated ();
-
-		const auto& newPhotoHash = ComputeVCardPhotoHash (vcard);
-		if (newPhotoHash != GetVCardPhotoHash ())
+		if (const auto& newPhotoHash = ComputeVCardPhotoHash (vcard);
+			newPhotoHash != GetVCardPhotoHash ())
 		{
 			VCardPhotoHash_ = newPhotoHash;
 			WriteDownPhotoHash ();
 			emit avatarChanged (this);
 		}
+
+		emit vcardUpdated ();
 	}
 
 	bool EntryBase::HasUnreadMsgs () const
