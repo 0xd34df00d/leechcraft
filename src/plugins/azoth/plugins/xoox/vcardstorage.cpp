@@ -7,32 +7,72 @@
  **********************************************************************/
 
 #include "vcardstorage.h"
+#include <QDir>
+#include <QSqlError>
 #include <QXmlStreamWriter>
 #include <QtDebug>
-#include <util/threads/futures.h>
-#include "vcardstorageondisk.h"
+#include <util/db/dblock.h>
+#include <util/db/util.h>
+#include <util/db/oral/oral.h>
+#include <util/sys/paths.h>
 
-namespace LC
+namespace LC::Azoth::Xoox
 {
-namespace Azoth
+	struct VCardStorage::VCardRecord
+	{
+		Util::oral::PKey<QString, Util::oral::NoAutogen> JID_;
+		QString VCardIq_;
+
+		constexpr static auto ClassName = "VCards"_ct;
+	};
+
+	struct VCardStorage::PhotoHashRecord
+	{
+		Util::oral::PKey<QString, Util::oral::NoAutogen> JID_;
+		QByteArray Hash_;
+
+		constexpr static auto ClassName = "PhotoHashes"_ct;
+	};
+}
+
+ORAL_ADAPT_STRUCT (LC::Azoth::Xoox::VCardStorage::VCardRecord,
+		JID_,
+		VCardIq_)
+
+ORAL_ADAPT_STRUCT (LC::Azoth::Xoox::VCardStorage::PhotoHashRecord,
+		JID_,
+		Hash_)
+
+namespace LC::Azoth::Xoox
 {
-namespace Xoox
-{
+	namespace sph = Util::oral::sph;
+
 	VCardStorage::VCardStorage (QObject *parent)
 	: QObject { parent }
-	, DB_ { new VCardStorageOnDisk { this } }
-	, Writer_ { new Util::WorkerThread<VCardStorageOnDisk> (this) }
+	, DB_ { QSqlDatabase::addDatabase ("QSQLITE", Util::GenConnectionName ("org.LeechCraft.Azoth.Xoox.VCards")) }
 	, VCardCache_ { 1024 * 1024 }
 	{
-		Writer_->start (QThread::LowestPriority);
+		const auto& cacheDir = Util::GetUserDir (Util::UserDir::Cache, "azoth/xoox");
+		DB_.setDatabaseName (cacheDir.filePath ("vcards.db"));
+		if (!DB_.open ())
+		{
+			qWarning () << "cannot open the database";
+			Util::DBLock::DumpError (DB_.lastError ());
+			throw std::runtime_error { "Cannot create database" };
+		}
+
+		Util::RunTextQuery (DB_, "PRAGMA synchronous = NORMAL;");
+		Util::RunTextQuery (DB_, "PRAGMA journal_mode = WAL;");
+
+		AdaptedVCards_ = Util::oral::AdaptPtr<VCardRecord> (DB_);
+		AdaptedPhotoHashes_ = Util::oral::AdaptPtr<PhotoHashRecord> (DB_);
 	}
+
+	VCardStorage::~VCardStorage () = default;
 
 	void VCardStorage::SetVCard (const QString& jid, const QString& vcard)
 	{
-		PendingVCards_ [jid] = vcard;
-
-		Util::Sequence (this, Writer_->ScheduleImpl (&VCardStorageOnDisk::SetVCard, jid, vcard)) >>
-				[this, jid] { PendingVCards_.remove (jid); };
+		AdaptedVCards_->Insert ({ jid, vcard }, Util::oral::InsertAction::Replace::Whole);
 	}
 
 	void VCardStorage::SetVCard (const QString& jid, const QXmppVCardIq& vcard)
@@ -56,9 +96,7 @@ namespace Xoox
 		QDomDocument vcardDoc;
 		if (!vcardDoc.setContent (*res))
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to parse"
-					<< *res;
+			qWarning () << "unable to parse" << *res;
 			return {};
 		}
 
@@ -72,27 +110,16 @@ namespace Xoox
 
 	void VCardStorage::SetVCardPhotoHash (const QString& jid, const QByteArray& hash)
 	{
-		PendingHashes_ [jid] = hash;
-
-		Util::Sequence (this, Writer_->ScheduleImpl (&VCardStorageOnDisk::SetVCardPhotoHash, jid, hash)) >>
-				[this, jid] { PendingHashes_.remove (jid); };
+		AdaptedPhotoHashes_->Insert ({ jid, hash }, Util::oral::InsertAction::Replace::Whole);
 	}
 
 	std::optional<QByteArray> VCardStorage::GetVCardPhotoHash (const QString& jid) const
 	{
-		if (PendingHashes_.contains (jid))
-			return PendingHashes_.value (jid);
-
-		return DB_->GetVCardPhotoHash (jid);
+		return AdaptedPhotoHashes_->SelectOne (sph::fields<&PhotoHashRecord::Hash_>, sph::f<&PhotoHashRecord::JID_> == jid);
 	}
 
 	std::optional<QString> VCardStorage::GetVCardString (const QString& jid) const
 	{
-		if (PendingVCards_.contains (jid))
-			return PendingVCards_.value (jid);
-
-		return DB_->GetVCard (jid);
+		return AdaptedVCards_->SelectOne (sph::fields<&VCardRecord::VCardIq_>, sph::f<&VCardRecord::JID_> == jid);
 	}
-}
-}
 }

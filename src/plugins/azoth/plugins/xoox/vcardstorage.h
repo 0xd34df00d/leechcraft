@@ -8,43 +8,38 @@
 
 #pragma once
 
-#include <memory>
 #include <optional>
-#include <QObject>
 #include <QCache>
+#include <QSqlDatabase>
 #include <QXmppVCardIq.h>
-#include <util/threads/workerthreadbase.h>
+#include <util/db/oral/oralfwd.h>
 
-namespace LC
+namespace LC::Azoth::Xoox
 {
-namespace Azoth
-{
-namespace Xoox
-{
-	class VCardStorageOnDisk;
-
 	class VCardStorage : public QObject
 	{
-		VCardStorageOnDisk * const DB_;
-		const std::shared_ptr<Util::WorkerThread<VCardStorageOnDisk>> Writer_;
+	public:
+		struct VCardRecord;
+		struct PhotoHashRecord;
+	private:
+		QSqlDatabase DB_;
 
-		QMap<QString, QString> PendingVCards_;
-		QMap<QString, QByteArray> PendingHashes_;
+		Util::oral::ObjectInfo_ptr<VCardRecord> AdaptedVCards_;
+		Util::oral::ObjectInfo_ptr<PhotoHashRecord> AdaptedPhotoHashes_;
 
 		mutable QCache<QString, QXmppVCardIq> VCardCache_;
 	public:
-		VCardStorage (QObject* = nullptr);
+		explicit VCardStorage (QObject* = nullptr);
+		~VCardStorage ();
 
-		void SetVCard (const QString& jid, const QString& vcard);
-		void SetVCard (const QString& jid, const QXmppVCardIq& vcard);
+		void SetVCard (const QString& id, const QString& vcard);
+		void SetVCard (const QString& id, const QXmppVCardIq& vcard);
 
-		std::optional<QXmppVCardIq> GetVCard (const QString& jid) const;
+		std::optional<QXmppVCardIq> GetVCard (const QString& id) const;
 
-		void SetVCardPhotoHash (const QString& jid, const QByteArray& hash);
-		std::optional<QByteArray> GetVCardPhotoHash (const QString& jid) const;
+		void SetVCardPhotoHash (const QString& id, const QByteArray& hash);
+		std::optional<QByteArray> GetVCardPhotoHash (const QString& id) const;
 	private:
-		std::optional<QString> GetVCardString (const QString& jid) const;
+		std::optional<QString> GetVCardString (const QString& id) const;
 	};
-}
-}
 }

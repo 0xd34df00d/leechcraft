@@ -106,7 +106,6 @@ LC_DEFINE_PLUGIN (
 		discomanagerwrapper.cpp
 		addtoblockedrunner.cpp
 		vcardstorage.cpp
-		vcardstorageondisk.cpp
 		sslerrorshandler.cpp
 		callshandler.cpp
 		bookmarksintegrator.cpp
