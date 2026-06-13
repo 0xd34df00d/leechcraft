@@ -13,6 +13,7 @@
 #include <QSqlDatabase>
 #include <QXmppVCardIq.h>
 #include <util/db/oral/oralfwd.h>
+#include "interfaces/azoth/azothcommon.h"
 
 namespace LC::Azoth::Xoox
 {
@@ -27,19 +28,19 @@ namespace LC::Azoth::Xoox
 		Util::oral::ObjectInfo_ptr<VCardRecord> AdaptedVCards_;
 		Util::oral::ObjectInfo_ptr<PhotoHashRecord> AdaptedPhotoHashes_;
 
-		mutable QCache<QString, QXmppVCardIq> VCardCache_;
+		mutable QCache<EntryConventionalId, QXmppVCardIq> VCardCache_;
 	public:
 		explicit VCardStorage (QObject* = nullptr);
 		~VCardStorage ();
 
-		void SetVCard (const QString& id, const QString& vcard);
-		void SetVCard (const QString& id, const QXmppVCardIq& vcard);
+		void SetVCard (const EntryConventionalId& id, const QString& vcard);
+		void SetVCard (const EntryConventionalId& id, const QXmppVCardIq& vcard);
 
-		std::optional<QXmppVCardIq> GetVCard (const QString& id) const;
+		std::optional<QXmppVCardIq> GetVCard (const EntryConventionalId& id) const;
 
-		void SetVCardPhotoHash (const QString& id, const QByteArray& hash);
-		std::optional<QByteArray> GetVCardPhotoHash (const QString& id) const;
+		void SetVCardPhotoHash (const EntryConventionalId& id, const QByteArray& hash);
+		std::optional<QByteArray> GetVCardPhotoHash (const EntryConventionalId& id) const;
 	private:
-		std::optional<QString> GetVCardString (const QString& id) const;
+		std::optional<QString> GetVCardString (const EntryConventionalId& id) const;
 	};
 }

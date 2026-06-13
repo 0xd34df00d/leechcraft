@@ -413,8 +413,7 @@ namespace Xoox
 
 	QFuture<QImage> EntryBase::RefreshAvatar (Size)
 	{
-		const auto maybeVCard = Account_->GetParentProtocol ()->
-				GetVCardStorage ()->GetVCard (GetHumanReadableID ());
+		const auto maybeVCard = Account_->GetParentProtocol ()->GetVCardStorage ()->GetVCard (GetConventionalID ());
 		if (maybeVCard && GetVCardPhotoHash () == ComputeVCardPhotoHash (*maybeVCard))
 			return Util::MakeReadyFuture (QImage::fromData (maybeVCard->photo ()));
 
@@ -537,7 +536,7 @@ namespace Xoox
 		if (!VCardPhotoHash_)
 		{
 			const auto storage = Account_->GetParentProtocol ()->GetVCardStorage ();
-			VCardPhotoHash_ = storage->GetVCardPhotoHash (GetConventionalID ().ToString ()).value_or (QByteArray {});
+			VCardPhotoHash_ = storage->GetVCardPhotoHash (GetConventionalID ()).value_or (QByteArray {});
 		}
 		return *VCardPhotoHash_;
 	}
@@ -702,7 +701,7 @@ namespace Xoox
 	QXmppVCardIq EntryBase::GetVCard () const
 	{
 		const auto storage = Account_->GetParentProtocol ()->GetVCardStorage ();
-		return storage->GetVCard (GetHumanReadableID ()).value_or (QXmppVCardIq {});
+		return storage->GetVCard (GetConventionalID ()).value_or (QXmppVCardIq {});
 	}
 
 	void EntryBase::SetVCard (const QXmppVCardIq& vcard)
@@ -710,7 +709,7 @@ namespace Xoox
 		if (VCardDialog_)
 			VCardDialog_->UpdateInfo (vcard);
 
-		Account_->GetParentProtocol ()->GetVCardStorage ()->SetVCard (GetHumanReadableID (), vcard);
+		Account_->GetParentProtocol ()->GetVCardStorage ()->SetVCard (GetConventionalID (), vcard);
 		if (const auto& newPhotoHash = ComputeVCardPhotoHash (vcard);
 			newPhotoHash != GetVCardPhotoHash ())
 		{
@@ -974,7 +973,7 @@ namespace Xoox
 	void EntryBase::WriteDownPhotoHash () const
 	{
 		const auto vcardStorage = Account_->GetParentProtocol ()->GetVCardStorage ();
-		vcardStorage->SetVCardPhotoHash (GetHumanReadableID (), GetVCardPhotoHash ());
+		vcardStorage->SetVCardPhotoHash (GetConventionalID (), GetVCardPhotoHash ());
 	}
 
 	QString EntryBase::GetVariantOrHighest (const QString& var) const

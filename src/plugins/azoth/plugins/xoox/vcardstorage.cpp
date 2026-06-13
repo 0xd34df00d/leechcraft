@@ -14,13 +14,14 @@
 #include <util/db/dblock.h>
 #include <util/db/util.h>
 #include <util/db/oral/oral.h>
+#include <util/db/oral/utilitytypes.h>
 #include <util/sys/paths.h>
 
 namespace LC::Azoth::Xoox
 {
 	struct VCardStorage::VCardRecord
 	{
-		Util::oral::PKey<QString, Util::oral::NoAutogen> JID_;
+		Util::oral::PKey<EntryConventionalId, Util::oral::NoAutogen> JID_;
 		QString VCardIq_;
 
 		constexpr static auto ClassName = "VCards"_ct;
@@ -28,11 +29,26 @@ namespace LC::Azoth::Xoox
 
 	struct VCardStorage::PhotoHashRecord
 	{
-		Util::oral::PKey<QString, Util::oral::NoAutogen> JID_;
+		Util::oral::PKey<EntryConventionalId, Util::oral::NoAutogen> JID_;
 		QByteArray Hash_;
 
 		constexpr static auto ClassName = "PhotoHashes"_ct;
 	};
+}
+
+namespace LC::Util::oral
+{
+	template<typename ImplFactory>
+	struct Type2Name<ImplFactory, Azoth::EntryConventionalId> : Type2Name<ImplFactory, QString> {};
+
+	template<>
+	struct ConvertT<Azoth::EntryConventionalId>
+		: ConvertVia<
+				Azoth::EntryConventionalId,
+				QString,
+				&Azoth::EntryConventionalId::ToString,
+				&Azoth::EntryConventionalId::FromString
+			> {};
 }
 
 ORAL_ADAPT_STRUCT (LC::Azoth::Xoox::VCardStorage::VCardRecord,
@@ -70,26 +86,26 @@ namespace LC::Azoth::Xoox
 
 	VCardStorage::~VCardStorage () = default;
 
-	void VCardStorage::SetVCard (const QString& jid, const QString& vcard)
+	void VCardStorage::SetVCard (const EntryConventionalId& id, const QString& vcard)
 	{
-		AdaptedVCards_->Insert ({ jid, vcard }, Util::oral::InsertAction::Replace::Whole);
+		AdaptedVCards_->Insert ({ id, vcard }, Util::oral::InsertAction::Replace::Whole);
 	}
 
-	void VCardStorage::SetVCard (const QString& jid, const QXmppVCardIq& vcard)
+	void VCardStorage::SetVCard (const EntryConventionalId& id, const QXmppVCardIq& vcard)
 	{
 		QString serialized;
 		QXmlStreamWriter writer { &serialized };
 		vcard.toXml (&writer);
 
-		SetVCard (jid, serialized);
+		SetVCard (id, serialized);
 	}
 
-	std::optional<QXmppVCardIq> VCardStorage::GetVCard (const QString& jid) const
+	std::optional<QXmppVCardIq> VCardStorage::GetVCard (const EntryConventionalId& id) const
 	{
-		if (const auto vcard = VCardCache_.object (jid))
+		if (const auto vcard = VCardCache_.object (id))
 			return *vcard;
 
-		const auto res = GetVCardString (jid);
+		const auto res = GetVCardString (id);
 		if (!res)
 			return {};
 
@@ -103,23 +119,23 @@ namespace LC::Azoth::Xoox
 		QXmppVCardIq vcard;
 		vcard.parse (vcardDoc.documentElement ());
 
-		VCardCache_.insert (jid, new QXmppVCardIq { vcard }, res->size ());
+		VCardCache_.insert (id, new QXmppVCardIq { vcard }, res->size ());
 
 		return vcard;
 	}
 
-	void VCardStorage::SetVCardPhotoHash (const QString& jid, const QByteArray& hash)
+	void VCardStorage::SetVCardPhotoHash (const EntryConventionalId& id, const QByteArray& hash)
 	{
-		AdaptedPhotoHashes_->Insert ({ jid, hash }, Util::oral::InsertAction::Replace::Whole);
+		AdaptedPhotoHashes_->Insert ({ id, hash }, Util::oral::InsertAction::Replace::Whole);
 	}
 
-	std::optional<QByteArray> VCardStorage::GetVCardPhotoHash (const QString& jid) const
+	std::optional<QByteArray> VCardStorage::GetVCardPhotoHash (const EntryConventionalId& id) const
 	{
-		return AdaptedPhotoHashes_->SelectOne (sph::fields<&PhotoHashRecord::Hash_>, sph::f<&PhotoHashRecord::JID_> == jid);
+		return AdaptedPhotoHashes_->SelectOne (sph::fields<&PhotoHashRecord::Hash_>, sph::f<&PhotoHashRecord::JID_> == id);
 	}
 
-	std::optional<QString> VCardStorage::GetVCardString (const QString& jid) const
+	std::optional<QString> VCardStorage::GetVCardString (const EntryConventionalId& id) const
 	{
-		return AdaptedVCards_->SelectOne (sph::fields<&VCardRecord::VCardIq_>, sph::f<&VCardRecord::JID_> == jid);
+		return AdaptedVCards_->SelectOne (sph::fields<&VCardRecord::VCardIq_>, sph::f<&VCardRecord::JID_> == id);
 	}
 }
