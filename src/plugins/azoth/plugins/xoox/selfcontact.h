@@ -47,8 +47,6 @@ namespace Xoox
 		void UpdateJID (const QString&);
 	private:
 		void UpdatePriority (const QString&, int);
-	private slots:
-		void handleSelfVCardUpdated ();
 	};
 }
 }

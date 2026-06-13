@@ -26,9 +26,9 @@ namespace Xoox
 		UpdateJID (fullJid);
 
 		connect (this,
-				SIGNAL (vcardUpdated ()),
+				&EntryBase::avatarChanged,
 				this,
-				SLOT (handleSelfVCardUpdated ()));
+				[this] { Account_->UpdateOurPhotoHash (GetVCardPhotoHash ()); });
 	}
 
 	ICLEntry::Features SelfContact::GetEntryFeatures () const
@@ -151,11 +151,6 @@ namespace Xoox
 		if (const auto& newId = GetGlobalConventionalID ();
 			oldId && *oldId != newId)
 			emit Account_->GetAccountEmitter ().conventionalIdChanged (*oldId, newId, *this);
-	}
-
-	void SelfContact::handleSelfVCardUpdated ()
-	{
-		Account_->UpdateOurPhotoHash (GetVCardPhotoHash ());
 	}
 }
 }
