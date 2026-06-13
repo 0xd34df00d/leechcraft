@@ -20,6 +20,7 @@
 #include <util/db/dblock.h>
 #include <util/db/util.h>
 #include <util/db/oral/oral.h>
+#include <util/db/oral/utilitytypes.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/sll/containerconversions.h>
 #include <util/sll/functor.h>
@@ -93,12 +94,10 @@ namespace LC::Aggregator
 			return TagsList_;
 		}
 
-		using BaseType = QString;
-
 		// need to migrate off this in the next schema migration
-		static const BaseType EmptyMarker_;
+		static const QString EmptyMarker_;
 
-		BaseType ToBaseType () const
+		QString ToString () const
 		{
 			if (TagsList_.isEmpty ())
 				return EmptyMarker_;
@@ -107,7 +106,7 @@ namespace LC::Aggregator
 			return itm->Join (TagsList_);
 		}
 
-		static Tags FromBaseType (const BaseType& var)
+		static Tags FromString (const QString& var)
 		{
 			if (var == EmptyMarker_)
 				return {};
@@ -135,9 +134,7 @@ namespace LC::Aggregator
 			return Image_;
 		}
 
-		using BaseType = QByteArray;
-
-		BaseType ToBaseType () const
+		QByteArray ToByteArray () const
 		{
 			QByteArray bytes;
 			if (!Image_.isNull ())
@@ -149,7 +146,7 @@ namespace LC::Aggregator
 			return bytes;
 		}
 
-		static Image FromBaseType (const BaseType& var)
+		static Image FromByteArray (const QByteArray& var)
 		{
 			QImage result;
 			if (!var.isEmpty ())
@@ -176,14 +173,12 @@ namespace LC::Aggregator
 			return Categories_;
 		}
 
-		using BaseType = QString;
-
-		BaseType ToBaseType () const
+		QString ToString () const
 		{
 			return Categories_.join (CatsSeparator);
 		}
 
-		static ItemCategories FromBaseType (const BaseType& var)
+		static ItemCategories FromString (const QString& var)
 		{
 			return { var.split (CatsSeparator, Qt::SkipEmptyParts) };
 		}
@@ -205,14 +200,12 @@ namespace LC::Aggregator
 			return Coord_;
 		}
 
-		using BaseType = QString;
-
-		BaseType ToBaseType () const
+		QString ToString () const
 		{
 			return QString::number (Coord_);
 		}
 
-		static GeoCoord FromBaseType (const BaseType& var)
+		static GeoCoord FromString (const QString& var)
 		{
 			return { var.toDouble () };
 		}
@@ -235,6 +228,57 @@ namespace LC::Aggregator
 		else
 			return src;
 	}
+}
+
+namespace LC::Util::oral
+{
+	template<typename ImplFactory>
+	struct Type2Name<ImplFactory, Aggregator::Tags> : Type2Name<ImplFactory, QString> {};
+
+	template<>
+	struct ConvertT<Aggregator::Tags>
+		: ConvertVia<
+				Aggregator::Tags,
+				QString,
+				&Aggregator::Tags::ToString,
+				&Aggregator::Tags::FromString
+			> {};
+
+	template<typename ImplFactory>
+	struct Type2Name<ImplFactory, Aggregator::Image> : Type2Name<ImplFactory, QByteArray> {};
+
+	template<>
+	struct ConvertT<Aggregator::Image>
+		: ConvertVia<
+				Aggregator::Image,
+				QByteArray,
+				&Aggregator::Image::ToByteArray,
+				&Aggregator::Image::FromByteArray
+			> {};
+
+	template<typename ImplFactory>
+	struct Type2Name<ImplFactory, Aggregator::ItemCategories> : Type2Name<ImplFactory, QString> {};
+
+	template<>
+	struct ConvertT<Aggregator::ItemCategories>
+		: ConvertVia<
+				Aggregator::ItemCategories,
+				QString,
+				&Aggregator::ItemCategories::ToString,
+				&Aggregator::ItemCategories::FromString
+			> {};
+
+	template<typename ImplFactory>
+	struct Type2Name<ImplFactory, Aggregator::GeoCoord> : Type2Name<ImplFactory, QString> {};
+
+	template<>
+	struct ConvertT<Aggregator::GeoCoord>
+		: ConvertVia<
+				Aggregator::GeoCoord,
+				QString,
+				&Aggregator::GeoCoord::ToString,
+				&Aggregator::GeoCoord::FromString
+			> {};
 }
 
 #define DEFINE_FIELD(_1, _2, triple) \
