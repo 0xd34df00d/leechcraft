@@ -116,4 +116,22 @@ namespace LC::Util::oral
 			return Chars... [0].first;
 		}
 	};
+
+	template<typename From, typename To, auto Cvt>
+	concept Converter = requires (const From& from) { { std::invoke (Cvt, from) } -> std::same_as<To>; };
+
+	template<typename T, typename BaseType, auto ToBaseType, auto FromBaseType>
+		requires Converter<T, BaseType, ToBaseType> && Converter<BaseType, T, FromBaseType>
+	struct ConvertVia
+	{
+		static QVariant operator() (const T& t) noexcept (noexcept (std::invoke (ToBaseType, t)))
+		{
+			return Convert<BaseType> (std::invoke (ToBaseType, t));
+		}
+
+		static T operator() (const QVariant& var) noexcept (noexcept (std::invoke (FromBaseType, std::declval<const BaseType&> ())))
+		{
+			return std::invoke (FromBaseType, Convert<BaseType> (var));
+		}
+	};
 }
