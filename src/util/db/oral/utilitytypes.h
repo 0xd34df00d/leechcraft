@@ -11,6 +11,7 @@
 #include <utility>
 #include <QDataStream>
 #include <QByteArray>
+#include "oral.h"
 
 namespace LC::Util::oral
 {
