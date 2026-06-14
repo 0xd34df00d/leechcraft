@@ -38,9 +38,6 @@ namespace LC::Azoth::Xoox
 
 namespace LC::Util::oral
 {
-	template<typename ImplFactory>
-	struct Type2Name<ImplFactory, Azoth::EntryConventionalId> : Type2Name<ImplFactory, QString> {};
-
 	template<>
 	struct ConvertT<Azoth::EntryConventionalId>
 		: ConvertVia<
