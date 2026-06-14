@@ -232,9 +232,6 @@ namespace LC::Aggregator
 
 namespace LC::Util::oral
 {
-	template<typename ImplFactory>
-	struct Type2Name<ImplFactory, Aggregator::Tags> : Type2Name<ImplFactory, QString> {};
-
 	template<>
 	struct ConvertT<Aggregator::Tags>
 		: ConvertVia<
@@ -243,9 +240,6 @@ namespace LC::Util::oral
 				&Aggregator::Tags::ToString,
 				&Aggregator::Tags::FromString
 			> {};
-
-	template<typename ImplFactory>
-	struct Type2Name<ImplFactory, Aggregator::Image> : Type2Name<ImplFactory, QByteArray> {};
 
 	template<>
 	struct ConvertT<Aggregator::Image>
@@ -256,9 +250,6 @@ namespace LC::Util::oral
 				&Aggregator::Image::FromByteArray
 			> {};
 
-	template<typename ImplFactory>
-	struct Type2Name<ImplFactory, Aggregator::ItemCategories> : Type2Name<ImplFactory, QString> {};
-
 	template<>
 	struct ConvertT<Aggregator::ItemCategories>
 		: ConvertVia<
@@ -267,9 +258,6 @@ namespace LC::Util::oral
 				&Aggregator::ItemCategories::ToString,
 				&Aggregator::ItemCategories::FromString
 			> {};
-
-	template<typename ImplFactory>
-	struct Type2Name<ImplFactory, Aggregator::GeoCoord> : Type2Name<ImplFactory, QString> {};
 
 	template<>
 	struct ConvertT<Aggregator::GeoCoord>
