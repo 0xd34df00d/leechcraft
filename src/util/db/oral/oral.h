@@ -158,9 +158,6 @@ namespace LC::Util::oral
 
 		template<typename T>
 		concept TypeNameCustomizedMember = requires { typename T::TypeName; };
-
-		template<typename T>
-		concept BaseTypeCustomized = requires { typename T::BaseType; };
 	}
 
 	template<typename ImplFactory, typename T>
@@ -170,7 +167,7 @@ namespace LC::Util::oral
 		{
 			if constexpr (detail::TypeNameCustomizedMember<T>)
 				return T::TypeName;
-			else if constexpr (detail::BaseTypeCustomized<T>)
+			else if constexpr (requires { typename T::BaseType; })
 				return Type2Name<ImplFactory, typename T::BaseType> {} ();
 			else if constexpr (HasType<T> (Typelist<int, qlonglong, qulonglong, bool> {}) || std::is_enum_v<T>)
 				return "INTEGER"_ct;
