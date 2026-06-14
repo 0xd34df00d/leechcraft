@@ -241,8 +241,6 @@ namespace LC::Util::oral
 		{
 			if constexpr (detail::TypeNameCustomizedMember<T>)
 				return t.ToVariant ();
-			else if constexpr (detail::BaseTypeCustomized<T>)
-				return Convert<typename T::BaseType> (t.ToBaseType ());
 			else if constexpr (std::is_same_v<T, QDateTime>)
 				return t.toString (Qt::ISODateWithMs);
 			else if constexpr (std::is_enum_v<T>)
@@ -257,8 +255,6 @@ namespace LC::Util::oral
 		{
 			if constexpr (detail::TypeNameCustomizedMember<T>)
 				return T::FromVariant (var);
-			else if constexpr (detail::BaseTypeCustomized<T>)
-				return T::FromBaseType (Convert<typename T::BaseType> (var));
 			else if constexpr (std::is_same_v<T, QDateTime>)
 				return QDateTime::fromString (var.toString (), Qt::ISODateWithMs);
 			else if constexpr (std::is_enum_v<T>)
