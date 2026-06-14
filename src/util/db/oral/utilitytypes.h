@@ -136,9 +136,6 @@ namespace LC::Util::oral
 		}
 	};
 
-	template<typename ImplFactory, typename T>
-	struct Type2Name<ImplFactory, AsDataStream<T>> : Type2Name<ImplFactory, QByteArray> {};
-
 	template<typename T>
 	struct ConvertT<AsDataStream<T>>
 		: ConvertVia<
