@@ -64,10 +64,12 @@ namespace LC::Util::oral
 	template<typename From, typename To, auto Cvt>
 	concept Converter = requires (const From& from) { { std::invoke (Cvt, from) } -> std::same_as<To>; };
 
-	template<typename T, typename BaseType, auto ToBaseType, auto FromBaseType>
-		requires Converter<T, BaseType, ToBaseType> && Converter<BaseType, T, FromBaseType>
+	template<typename T, typename Base, auto ToBaseType, auto FromBaseType>
+		requires Converter<T, Base, ToBaseType> && Converter<Base, T, FromBaseType>
 	struct ConvertVia
 	{
+		using BaseType = Base;
+
 		static QVariant operator() (const T& t) noexcept (noexcept (std::invoke (ToBaseType, t)))
 		{
 			return Convert<BaseType> (std::invoke (ToBaseType, t));
