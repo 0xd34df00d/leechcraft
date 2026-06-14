@@ -160,6 +160,10 @@ namespace LC::Util::oral
 		concept TypeNameCustomizedMember = requires { typename T::TypeName; };
 	}
 
+	template<typename T>
+		requires (!std::same_as<T, QVariant>)
+	struct ConvertT;
+
 	template<typename ImplFactory, typename T>
 	struct Type2Name
 	{
@@ -167,8 +171,8 @@ namespace LC::Util::oral
 		{
 			if constexpr (detail::TypeNameCustomizedMember<T>)
 				return T::TypeName;
-			else if constexpr (requires { typename T::BaseType; })
-				return Type2Name<ImplFactory, typename T::BaseType> {} ();
+			else if constexpr (requires { typename ConvertT<T>::BaseType; })
+				return Type2Name<ImplFactory, typename ConvertT<T>::BaseType> {} ();
 			else if constexpr (HasType<T> (Typelist<int, qlonglong, qulonglong, bool> {}) || std::is_enum_v<T>)
 				return "INTEGER"_ct;
 			else if constexpr (std::is_same_v<T, double>)
@@ -222,10 +226,6 @@ namespace LC::Util::oral
 					" REFERENCES " + className + " (" + detail::FieldNameByPtr<Ptr> + ") ON DELETE CASCADE";
 		}
 	};
-
-	template<typename T>
-		requires (!std::same_as<T, QVariant>)
-	struct ConvertT;
 
 	template<typename T>
 	constexpr auto Convert = ConvertT<T> {};
