@@ -15,63 +15,6 @@
 
 namespace LC::Util::oral
 {
-	template<typename T>
-	struct AsDataStream
-	{
-		using BaseType = QByteArray;
-
-		T Val_;
-
-		operator T () const &
-		{
-			return Val_;
-		}
-
-		operator T&& () &&
-		{
-			return std::move (Val_);
-		}
-
-		AsDataStream () = default;
-		AsDataStream (const AsDataStream&) = default;
-		AsDataStream (AsDataStream&&) = default;
-
-		AsDataStream& operator= (const AsDataStream&) = default;
-		AsDataStream& operator= (AsDataStream&&) = default;
-
-		template<typename... Args>
-		AsDataStream (Args&&... args)
-		: Val_ { std::forward<Args> (args)... }
-		{
-		}
-
-		template<typename U>
-		AsDataStream& operator= (U&& val)
-		{
-			Val_ = std::forward<U> (val);
-			return *this;
-		}
-
-		BaseType ToBaseType () const
-		{
-			QByteArray ba;
-			{
-				QDataStream out { &ba, QIODevice::WriteOnly };
-				out << Val_;
-			}
-			return ba;
-		}
-
-		static AsDataStream FromBaseType (const QByteArray& ba)
-		{
-			QDataStream in { ba };
-
-			AsDataStream res;
-			in >> res.Val_;
-			return res;
-		}
-	};
-
 	struct CharEnumTypeName
 	{
 		constexpr auto operator() () const noexcept
@@ -135,4 +78,71 @@ namespace LC::Util::oral
 			return std::invoke (FromBaseType, Convert<BaseType> (var));
 		}
 	};
+
+	template<typename T>
+	struct AsDataStream
+	{
+		T Val_;
+
+		operator T () const &
+		{
+			return Val_;
+		}
+
+		operator T&& () &&
+		{
+			return std::move (Val_);
+		}
+
+		AsDataStream () = default;
+		AsDataStream (const AsDataStream&) = default;
+		AsDataStream (AsDataStream&&) = default;
+
+		AsDataStream& operator= (const AsDataStream&) = default;
+		AsDataStream& operator= (AsDataStream&&) = default;
+
+		template<typename... Args>
+		AsDataStream (Args&&... args)
+		: Val_ { std::forward<Args> (args)... }
+		{
+		}
+
+		template<typename U>
+		AsDataStream& operator= (U&& val)
+		{
+			Val_ = std::forward<U> (val);
+			return *this;
+		}
+
+		QByteArray ToByteArray () const
+		{
+			QByteArray ba;
+			{
+				QDataStream out { &ba, QIODevice::WriteOnly };
+				out << Val_;
+			}
+			return ba;
+		}
+
+		static AsDataStream FromByteArray (const QByteArray& ba)
+		{
+			QDataStream in { ba };
+
+			AsDataStream res;
+			in >> res.Val_;
+			return res;
+		}
+	};
+
+	template<typename ImplFactory, typename T>
+	struct Type2Name<ImplFactory, AsDataStream<T>> : Type2Name<ImplFactory, QByteArray> {};
+
+	template<typename T>
+	struct ConvertT<AsDataStream<T>>
+		: ConvertVia<
+				AsDataStream<T>,
+				QByteArray,
+				&AsDataStream<T>::ToByteArray,
+				&AsDataStream<T>::FromByteArray
+			> {};
 }
