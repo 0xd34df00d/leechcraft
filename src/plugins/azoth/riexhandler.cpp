@@ -143,7 +143,7 @@ namespace RIEX
 			if ((entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) != ICLEntry::FPermanentEntry)
 				continue;
 
-			clEntries [entry->GetHumanReadableID ()] = entry;
+			clEntries [entry->GetConventionalID ().ToString ()] = entry;
 		}
 
 		FilterRIEXItems (items, clEntries);

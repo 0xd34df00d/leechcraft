@@ -65,7 +65,7 @@ namespace LC::Azoth
 
 			entries.append ({ entry, thisGroup });
 			names << entry->GetEntryName ();
-			urls << QUrl (entry->GetHumanReadableID ());
+			urls << QUrl (entry->GetConventionalID ().ToString ());		// TODO add a QUrl-shaped getter to ICLEntry?
 		}
 
 		DndUtil::Encode (entries, result);

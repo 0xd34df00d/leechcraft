@@ -430,9 +430,7 @@ namespace Azoth
 
 			auto icon = MoodIconCache_ [iconName];
 			if (icon.isNull ())
-				icon = QIcon (ResourcesManager::Instance ()
-						.GetResourceLoader (ResourcesManager::RLTMoodIconLoader)->
-								GetIconPath (iconName));
+				icon = QIcon (ResourcesManager::Instance ().GetResourceLoader (ResourcesManager::RLTMoodIconLoader)->GetIconPath (iconName));
 
 			if (!icon.isNull ())
 			{

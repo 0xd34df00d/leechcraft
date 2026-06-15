@@ -63,8 +63,8 @@ namespace Azoth
 
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 		const QString& id = entry->GetEntryName ().isEmpty () ?
-				entry->GetHumanReadableID () :
-				entry->GetEntryName () + " (" + entry->GetHumanReadableID () + ")";
+				entry->GetConventionalID ().ToString () :
+				entry->GetEntryName () + " (" + entry->GetConventionalID ().ToString () + ")";
 
 		const QString& text = message.isEmpty () ?
 				tr ("%1 has suggested to modify your contact list:")
