@@ -14,6 +14,7 @@
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/isupportbookmarks.h"
 #include "interfaces/azoth/imucprotocol.h"
+#include "util/azoth/util.h"
 #include "core.h"
 #include "bookmarkeditdialog.h"
 
@@ -102,9 +103,7 @@ namespace Azoth
 		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 		if (!entry)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "object doesn't implement ICLEntry"
-					<< entryObj;
+			qWarning () << "object doesn't implement ICLEntry" << entryObj;
 			return;
 		}
 
@@ -112,19 +111,14 @@ namespace Azoth
 
 		if (!found)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to find parent protocol for entry"
-					<< entryObj
-					<< entry->GetEntryID ();
+			qWarning () << "unable to find parent protocol for entry" << entryObj << entry->GetGlobalStrongestID ();
 			return;
 		}
 
 		const auto& data = GetIdentifyingData (entryObj);
 		if (data.isEmpty ())
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "empty identifying data returned by"
-					<< entryObj;
+			qWarning () << "empty identifying data returned by" << entryObj;
 			return;
 		}
 

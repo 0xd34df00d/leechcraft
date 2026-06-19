@@ -9,6 +9,7 @@
 #include "entries.h"
 #include <ranges>
 #include <QSettings>
+#include <QMessageBox>
 #include <util/sll/prelude.h>
 #include <util/sll/qobjectrefcast.h>
 #include <util/xpc/util.h>
@@ -17,6 +18,7 @@
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/imucentry.h>
+#include "util/azoth/util.h"
 
 #ifdef ENABLE_CRYPT
 #include <interfaces/azoth/isupportpgp.h>
@@ -30,9 +32,9 @@ namespace LC::Azoth
 	void AuthorizeEntry (ICLEntry *entry)
 	{
 		const auto account = entry->GetParentAccount ();
-		const auto& id = entry->GetHumanReadableID ();
+		const auto& id = entry->GetConventionalID ();
 		account->Authorize (entry->GetQObject ());
-		account->RequestAuth (id);
+		account->RequestAuth (id.ToString ());
 
 		const auto& e = Util::MakeANCancel ("org.LeechCraft.Azoth",
 				"org.LC.Plugins.Azoth.AuthRequestFrom/" + entry->GetEntryID ());
@@ -55,7 +57,7 @@ namespace LC::Azoth
 		const auto pos = std::ranges::find_if (allEntries,
 				[&hrId] (ICLEntry *entry)
 				{
-					return entry->GetHumanReadableID () == hrId;
+					return entry->GetConventionalID ().ToString () == hrId;
 				});
 		return pos == allEntries.end () ? nullptr : *pos;
 	}

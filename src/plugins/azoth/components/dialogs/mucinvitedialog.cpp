@@ -38,7 +38,7 @@ namespace Azoth
 			if (entry->GetEntryType () != requestedType)
 				continue;
 
-			const QString& id = entry->GetHumanReadableID ();
+			const QString& id = entry->GetConventionalID ().ToString ();
 			Ui_.Invitee_->addItem (QString ("%1 (%2)")
 						.arg (entry->GetEntryName ())
 						.arg (id),
