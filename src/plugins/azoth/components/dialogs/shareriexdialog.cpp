@@ -27,7 +27,7 @@ namespace Azoth
 		Ui_.setupUi (this);
 
 		const QString& name = entry->GetEntryName ();
-		const QString& hrID = entry->GetConventionalID ().ToString ();
+		const QString& hrID = entry->GetHumanReadableAddress ();
 		Ui_.MessageLabel_->setText (tr ("Select items to be shared with %1:")
 					.arg (name.isEmpty () ? hrID : name + " (" + hrID + ")"));
 
@@ -142,12 +142,12 @@ namespace Azoth
 				itemName->setCheckState (Qt::Unchecked);
 				itemName->setCheckable (true);
 				itemName->setText (entry->GetEntryName ().isEmpty () ?
-							entry->GetConventionalID ().ToString () :
+							entry->GetHumanReadableAddress () :
 							entry->GetEntryName ());
 				itemName->setData (QVariant::fromValue<ICLEntry*> (entry));
 				row << itemName;
 
-				row << new QStandardItem (entry->GetConventionalID ().ToString ());
+				row << new QStandardItem (entry->GetHumanReadableAddress ());
 				row << new QStandardItem (entry->GetParentAccount ()->GetAccountName ());
 				row << new QStandardItem (entry->Groups ().join ("; "));
 

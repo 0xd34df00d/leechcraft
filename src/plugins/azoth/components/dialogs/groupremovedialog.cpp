@@ -28,7 +28,7 @@ namespace Azoth
 			nameItem->setEditable (false);
 			nameItem->setCheckState (Qt::Checked);
 
-			auto idItem = new QStandardItem (entry->GetConventionalID ().ToString ());
+			auto idItem = new QStandardItem (entry->GetHumanReadableAddress ());
 			idItem->setEditable (false);
 
 			Model_->appendRow ({ nameItem, idItem });

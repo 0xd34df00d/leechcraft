@@ -32,9 +32,8 @@ namespace LC::Azoth
 	void AuthorizeEntry (ICLEntry *entry)
 	{
 		const auto account = entry->GetParentAccount ();
-		const auto& id = entry->GetConventionalID ();
 		account->Authorize (entry->GetQObject ());
-		account->RequestAuth (id.ToString ());
+		account->RequestAuth (entry->GetConventionalID ().ToString ());
 
 		const auto& e = Util::MakeANCancel ("org.LeechCraft.Azoth",
 				"org.LC.Plugins.Azoth.AuthRequestFrom/" + entry->GetEntryID ());
@@ -65,7 +64,7 @@ namespace LC::Azoth
 	bool ChoosePGPKey (ISupportPGP *pgp, ICLEntry *entry)
 	{
 #ifdef ENABLE_CRYPT
-		const auto& conventionalId = entry->GetConventionalID ();
+		const auto& address = entry->GetHumanReadableAddress ();
 
 		const auto persistentId = entry->GetGlobalPersistentID ();
 		if (!persistentId)
@@ -74,14 +73,14 @@ namespace LC::Azoth
 					QObject::tr ("LeechCraft"),
 					QObject::tr ("PGP keys can only be bound to contacts with a persistent identifier. "
 								"Unfortunately, %1 (%2) does not have one on the protocol level.")
-						.arg (entry->GetEntryName (), conventionalId.ToString ()));
-			qWarning () << "no persistent ID for" << conventionalId;
+						.arg (entry->GetEntryName (), address));
+			qWarning () << "no persistent ID for" << address;
 			return false;
 		}
 
 		const auto& str = QObject::tr ("Please select the key for %1 (%2).")
 				.arg (entry->GetEntryName ())
-				.arg (conventionalId.ToString ());
+				.arg (address);
 		PGPKeySelectionDialog dia { str, PGPKeySelectionDialog::TPublic,
 				pgp->GetEntryKey (entry->GetQObject ()) };
 		if (dia.exec () != QDialog::Accepted)

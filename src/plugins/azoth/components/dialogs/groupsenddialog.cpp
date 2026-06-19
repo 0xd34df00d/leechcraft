@@ -31,7 +31,7 @@ namespace Azoth
 			QList<QStandardItem*> row
 			{
 				new QStandardItem { entry->GetEntryName () },
-				new QStandardItem { entry->GetConventionalID ().ToString () }
+				new QStandardItem { entry->GetHumanReadableAddress () }
 			};
 			const auto item = row.first ();
 			item->setIcon (rmi.GetIconForState (entry->GetStatus ().State_));
