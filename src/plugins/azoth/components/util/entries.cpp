@@ -63,9 +63,23 @@ namespace LC::Azoth
 	bool ChoosePGPKey (ISupportPGP *pgp, ICLEntry *entry)
 	{
 #ifdef ENABLE_CRYPT
+		const auto& conventionalId = entry->GetConventionalID ();
+
+		const auto persistentId = entry->GetGlobalPersistentID ();
+		if (!persistentId)
+		{
+			QMessageBox::critical (nullptr,
+					QObject::tr ("LeechCraft"),
+					QObject::tr ("PGP keys can only be bound to contacts with a persistent identifier. "
+								"Unfortunately, %1 (%2) does not have one on the protocol level.")
+						.arg (entry->GetEntryName (), conventionalId.ToString ()));
+			qWarning () << "no persistent ID for" << conventionalId;
+			return false;
+		}
+
 		const auto& str = QObject::tr ("Please select the key for %1 (%2).")
 				.arg (entry->GetEntryName ())
-				.arg (entry->GetHumanReadableID ());
+				.arg (conventionalId.ToString ());
 		PGPKeySelectionDialog dia { str, PGPKeySelectionDialog::TPublic,
 				pgp->GetEntryKey (entry->GetQObject ()) };
 		if (dia.exec () != QDialog::Accepted)
@@ -75,13 +89,12 @@ namespace LC::Azoth
 
 		pgp->SetEntryKey (entry->GetQObject (), key);
 
-		QSettings settings { QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Azoth" };
+		QSettings settings { QCoreApplication::organizationName (), QCoreApplication::applicationName () + "_Azoth" };
 		settings.beginGroup ("PublicEntryKeys");
 		if (key.isNull ())
-			settings.remove (entry->GetEntryID ());
+			settings.remove (persistentId->ToString ());
 		else
-			settings.setValue (entry->GetEntryID (), key.keyId ());
+			settings.setValue (persistentId->ToString (), key.keyId ());
 		settings.endGroup ();
 
 		return !key.isNull ();

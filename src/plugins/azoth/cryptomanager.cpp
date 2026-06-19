@@ -138,7 +138,8 @@ namespace Azoth
 
 	void CryptoManager::RestoreKeyForEntry (ICLEntry *clEntry)
 	{
-		if (!StoredPublicKeys_.contains (clEntry->GetEntryID ()))
+		const auto& persistentId = clEntry->GetGlobalPersistentID ();
+		if (!persistentId || !StoredPublicKeys_.contains (persistentId->ToString ()))
 			return;
 
 		const auto pgp = qobject_cast<ISupportPGP*> (clEntry->GetParentAccount ()->GetQObject ());
@@ -152,7 +153,7 @@ namespace Azoth
 			return;
 		}
 
-		const auto& keyId = StoredPublicKeys_.take (clEntry->GetEntryID ());
+		const auto& keyId = StoredPublicKeys_.take (persistentId->ToString ());
 		for (const auto& key : GetPublicKeys ())
 			if (key.keyId () == keyId)
 			{
