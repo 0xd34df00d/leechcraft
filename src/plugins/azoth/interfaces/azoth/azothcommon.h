@@ -88,6 +88,11 @@ namespace Azoth
 	using EntryStrongestId = StrongestId<EntryId>;
 	using GlobalStrongestId = StrongestId<GlobalId>;
 
+	inline QString GetAccountId (const GlobalStrongestId& strongestId)
+	{
+		return std::visit ([] (const auto& id) { return id.AccountId_; }, strongestId.ToVariant ());
+	}
+
 	/** @brief Describes possible presence states of an account or a
 	 * contact.
 	 */
