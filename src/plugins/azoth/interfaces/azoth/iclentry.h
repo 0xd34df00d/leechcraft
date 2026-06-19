@@ -225,6 +225,11 @@ namespace LC::Azoth
 			return GetGlobalConventionalID ();
 		}
 
+		virtual QString GetHumanReadableAddress () const
+		{
+			return GetConventionalID ().ToString ();
+		}
+
 		/** @brief Returns the list of human-readable names of the
 		 * groups that this entry belongs to.
 		 *
