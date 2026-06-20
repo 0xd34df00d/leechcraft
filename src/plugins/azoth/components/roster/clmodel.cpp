@@ -10,7 +10,6 @@
 #include <QMimeData>
 #include <QUrl>
 #include <util/sll/qtutil.h>
-#include <util/xpc/defaulthookproxy.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
 #include "components/dialogs/mucinvitedialog.h"
@@ -81,9 +80,6 @@ namespace LC::Azoth
 		if (action == Qt::IgnoreAction)
 			return true;
 
-		if (PerformHooks (mime, row, parent))
-			return true;
-
 		if (TryInvite (mime, row, parent))
 			return true;
 
@@ -112,32 +108,6 @@ namespace LC::Azoth
 
 		if (const auto entry = index.data (CLRIEntry).value<ICLEntry*> ())
 			TooltipManager_->RebuildTooltip (entry);
-	}
-
-	bool CLModel::PerformHooks (const QMimeData *mime, int row, const QModelIndex& parent)
-	{
-		if (CheckHookDnDEntry2Entry (mime, row, parent))
-			return true;
-
-		return false;
-	}
-
-	bool CLModel::CheckHookDnDEntry2Entry (const QMimeData *mime, int row, const QModelIndex& parent)
-	{
-		if (row != -1 ||
-				!DndUtil::HasContacts (mime) ||
-				parent.data (CLREntryType).value<CLEntryType> () != CLETContact)
-			return false;
-
-		const auto source = DndUtil::DecodeEntryObj (mime);
-		if (!source)
-			return false;
-
-		const auto target = parent.data (CLREntryObject).value<QObject*> ();
-
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookDnDEntry2Entry (proxy, source, target);
-		return proxy->IsCancelled ();
 	}
 
 	bool CLModel::TryInvite (const QMimeData *mime, int, const QModelIndex& parent)

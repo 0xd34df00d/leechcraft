@@ -41,10 +41,6 @@ namespace Azoth
 
 		void hookCollectContactIcons (LC::IHookProxy_ptr, QObject*, QList<QIcon>&) const;
 
-		void hookDnDEntry2Entry (LC::IHookProxy_ptr proxy,
-				QObject *source,
-				QObject *target);
-
 		/** @brief Hook for adjusting where CL entry actions appear.
 		 *
 		 * This hook is called to determine where the given action for

@@ -9,7 +9,6 @@
 #pragma once
 
 #include <QStandardItemModel>
-#include <interfaces/core/ihookproxy.h>
 
 namespace LC::Azoth
 {
@@ -32,15 +31,10 @@ namespace LC::Azoth
 	private:
 		void CheckRequestUpdateTooltip (const QModelIndex&, int) const;
 
-		bool PerformHooks (const QMimeData*, int, const QModelIndex&);
-		bool CheckHookDnDEntry2Entry (const QMimeData*, int, const QModelIndex&);
-
 		bool TryInvite (const QMimeData*, int, const QModelIndex&);
 		bool TryDropContact (const QMimeData*, int, const QModelIndex&);
 		bool TryDropFile (const QMimeData*, const QModelIndex&);
 	signals:
-		void hookDnDEntry2Entry (LC::IHookProxy_ptr,
-				QObject*, QObject*);
 		void rebuiltTooltip ();
 	};
 }
