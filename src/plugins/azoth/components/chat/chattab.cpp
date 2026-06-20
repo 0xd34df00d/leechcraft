@@ -696,7 +696,7 @@ namespace Azoth
 			return;
 		}
 
-		if (call->GetSourceID () != EntryID_)
+		if (call->GetEntry ().GetGlobalStrongestID ().ToString () != EntryID_)
 			return;
 
 		CallChatWidget *widget = new CallChatWidget (callObj);
@@ -1356,8 +1356,9 @@ namespace Azoth
 					this,
 					SLOT (handleCall (QObject*)));
 
-			for (auto object : Core::Instance ().GetCallManager ()->GetCallsForEntry (EntryID_))
-				handleCall (object);
+			if (const auto entry = GetEntry<ICLEntry> ())
+				for (auto object : Core::Instance ().GetCallManager ()->GetCallsForEntry (*entry))
+					handleCall (object);
 		}
 #endif
 

@@ -35,7 +35,7 @@ namespace Azoth
 	{
 		Q_OBJECT
 
-		QHash<QString, QObjectList> Entry2Calls_;
+		QHash<const ICLEntry*, QObjectList> Entry2Calls_;
 
 		QHash<QObject*, CallState> CallStates_;
 	public:
@@ -44,7 +44,7 @@ namespace Azoth
 
 		void AddAccount (QObject*);
 		QObject* Call (ICLEntry*, const QString&);
-		QObjectList GetCallsForEntry (const QString&) const;
+		QObjectList GetCallsForEntry (const ICLEntry&) const;
 	private:
 		void HandleIncomingCall (IMediaCall*);
 	private slots:

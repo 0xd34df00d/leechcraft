@@ -22,6 +22,7 @@
 #include <util/xpc/notificationactionhandler.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
+#include "util/azoth/util.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
 
@@ -86,9 +87,9 @@ namespace Azoth
 #endif
 	}
 
-	QObjectList CallManager::GetCallsForEntry (const QString& id) const
+	QObjectList CallManager::GetCallsForEntry (const ICLEntry& entry) const
 	{
-		return Entry2Calls_ [id];
+		return Entry2Calls_ [&entry];
 	}
 
 #ifdef ENABLE_MEDIACALLS
@@ -112,15 +113,7 @@ namespace Azoth
 
 	void CallManager::HandleIncomingCall (IMediaCall *mediaCall)
 	{
-		const auto entry = qobject_cast<ICLEntry*> (Core::Instance ().GetEntry (mediaCall->GetSourceID ()));
-		if (!entry)
-		{
-			qWarning () << "ignoring call from unknown caller" << mediaCall->GetSourceID ();
-			mediaCall->Hangup ();
-			return;
-		}
-
-		const auto& name = entry->GetEntryName ();
+		const auto& name = mediaCall->GetEntry ().GetEntryName ();
 
 		auto e = Util::MakeNotification ("Azoth",
 				tr ("Incoming call from %1").arg (name),
@@ -137,26 +130,19 @@ namespace Azoth
 		const auto mediaCall = qobject_cast<IMediaCall*> (obj);
 		if (!mediaCall)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< obj
-					<< "is not a IMediaCall, got from"
-					<< sender ();
+			qWarning () << obj << "is not a IMediaCall, got from" << sender ();
 			return;
 		}
 
-		const auto& sourceId = mediaCall->GetSourceID ();
-		if (Entry2Calls_.value (sourceId).contains (obj))
+		const auto& entry = mediaCall->GetEntry ();
+		auto& calls = Entry2Calls_ [&entry];
+		if (calls.contains (obj))
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "attempt to double-add the call"
-					<< obj
-					<< "from"
-					<< sourceId
-					<< sender ();
+			qWarning () << "double-adding" << obj << "from" << entry.GetGlobalStrongestID ();
 			return;
 		}
 
-		Entry2Calls_ [sourceId] << obj;
+		calls << obj;
 
 		connect (obj,
 				SIGNAL (stateChanged (LC::Azoth::IMediaCall::State)),
@@ -189,7 +175,13 @@ namespace Azoth
 		CallStates_.remove (sender ());
 
 		if (const auto call = qobject_cast<IMediaCall*> (sender ()))
-			Entry2Calls_ [call->GetSourceID ()].removeAll (sender ());
+		{
+			const auto& entry = call->GetEntry ();
+			auto& calls = Entry2Calls_ [&entry];
+			calls.removeOne (sender ());
+			if (calls.isEmpty ())
+				Entry2Calls_.remove (&entry);
+		}
 		else
 			qWarning () << Q_FUNC_INFO
 					<< "sender isn't an IMediaCall";

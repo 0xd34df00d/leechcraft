@@ -20,6 +20,8 @@ namespace LC::Azoth::Emitters
 
 namespace LC::Azoth
 {
+	class ICLEntry;
+
 	class IMediaCall
 	{
 	protected:
@@ -43,7 +45,7 @@ namespace LC::Azoth
 
 		virtual Direction GetDirection () const = 0;
 
-		virtual QString GetSourceID () const = 0;
+		virtual const ICLEntry& GetEntry () const = 0;
 
 		virtual void Accept () = 0;
 
