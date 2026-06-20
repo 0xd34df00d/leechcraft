@@ -106,7 +106,6 @@ LC_DEFINE_PLUGIN (
 		components/util/settings.cpp
 		components/util/statuschange.cpp
 		azoth.cpp
-		azothschemehandler.cpp
 		core.cpp
 		chattabsmanager.cpp
 		accountslistwidget.cpp

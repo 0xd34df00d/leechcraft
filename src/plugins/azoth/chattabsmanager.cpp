@@ -16,7 +16,6 @@
 #include "roles.h"
 #include "xmlsettingsmanager.h"
 #include "avatarsmanager.h"
-#include "azothschemehandler.h"
 
 namespace LC::Azoth
 {
@@ -26,7 +25,6 @@ namespace LC::Azoth
 	, FontsWidget_ { fontsWidget }
 	, Profile_ { new QWebEngineProfile { this } }
 	{
-		Profile_->installUrlSchemeHandler ("azoth", new AzothSchemeHandler { am, this });
 		XmlSettingsManager::Instance ().RegisterObject ("CustomMUCStyle",
 				this, "chatWindowStyleChanged");
 
