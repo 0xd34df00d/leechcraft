@@ -21,8 +21,9 @@ namespace Azoth
 {
 namespace Xoox
 {
-	MediaCall::MediaCall (GlooxAccount *acc, QXmppCall *call)
+	MediaCall::MediaCall (GlooxAccount *acc, QXmppCall *call, const ICLEntry& entry)
 	: QObject (call)
+	, Entry_ (entry)
 	, Call_ (call)
 	, Account_ (acc)
 	{
@@ -53,9 +54,9 @@ namespace Xoox
 		}
 	}
 
-	QString MediaCall::GetSourceID () const
+	const ICLEntry& MediaCall::GetEntry () const
 	{
-		return Account_->GetAccountID () + '_' + ClientConnection::Split (Call_->jid ()).Bare_;
+		return Entry_;
 	}
 
 	void MediaCall::Accept ()

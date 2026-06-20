@@ -29,15 +29,16 @@ namespace Xoox
 		Q_OBJECT
 		Q_INTERFACES (LC::Azoth::IMediaCall)
 
+		const ICLEntry& Entry_;
 		QXmppCall *Call_;
 		GlooxAccount *Account_;
 		Emitters::MediaCall Emitter_;
 	public:
-		MediaCall (GlooxAccount*, QXmppCall*);
+		MediaCall (GlooxAccount*, QXmppCall*, const ICLEntry&);
 
 		Emitters::MediaCall& GetMediaCallEmitter ();
 		Direction GetDirection () const;
-		QString GetSourceID () const;
+		const ICLEntry& GetEntry () const;
 		void Accept ();
 		void Hangup ();
 		QIODevice* GetAudioDevice ();
