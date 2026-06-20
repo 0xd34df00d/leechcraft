@@ -32,9 +32,9 @@ namespace LC::Azoth::Sarin
 	}
 
 	AudioCall::AudioCall (const ToxContact *contact, CallManager *callMgr, Direction dir)
-	: SourceId_ { contact->GetEntryID () }
-	, SourcePubkey_ { contact->GetPubKey () }
+	: SourcePubkey_ { contact->GetPubKey () }
 	, Dir_ { dir }
+	, Entry_ { *contact }
 	, CallMgr_ { callMgr }
 	{
 		connect (CallMgr_,
@@ -83,9 +83,9 @@ namespace LC::Azoth::Sarin
 		return Dir_;
 	}
 
-	QString AudioCall::GetSourceID () const
+	const ICLEntry& AudioCall::GetEntry () const
 	{
-		return SourceId_;
+		return Entry_;
 	}
 
 	void AudioCall::Accept ()

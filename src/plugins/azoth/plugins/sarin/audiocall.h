@@ -40,6 +40,7 @@ namespace LC::Azoth::Sarin
 		const QString SourceId_;
 		const QString SourcePubkey_;
 		const Direction Dir_;
+		const ICLEntry& Entry_;
 
 		CallManager * const CallMgr_;
 
@@ -60,7 +61,7 @@ namespace LC::Azoth::Sarin
 		Emitters::MediaCall& GetMediaCallEmitter ();
 
 		Direction GetDirection () const;
-		QString GetSourceID () const;
+		const ICLEntry& GetEntry () const;
 		void Accept ();
 		void Hangup ();
 		QIODevice* GetAudioDevice ();
