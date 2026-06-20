@@ -113,9 +113,14 @@ namespace Azoth
 	void CallManager::HandleIncomingCall (IMediaCall *mediaCall)
 	{
 		const auto entry = qobject_cast<ICLEntry*> (Core::Instance ().GetEntry (mediaCall->GetSourceID ()));
-		const auto& name = entry ?
-				entry->GetEntryName () :
-				mediaCall->GetSourceID ();
+		if (!entry)
+		{
+			qWarning () << "ignoring call from unknown caller" << mediaCall->GetSourceID ();
+			mediaCall->Hangup ();
+			return;
+		}
+
+		const auto& name = entry->GetEntryName ();
 
 		auto e = Util::MakeNotification ("Azoth",
 				tr ("Incoming call from %1").arg (name),
