@@ -8,6 +8,7 @@
 
 #include "globalstrongestidtracker.h"
 #include <util/sll/visitor.h>
+#include "util/azoth/util.h"
 #include "interfaces/azoth/iclentry.h"
 
 namespace LC::Azoth
@@ -39,5 +40,10 @@ namespace LC::Azoth
 	GlobalStrongestIdTracker::operator GlobalStrongestId () const
 	{
 		return Id_;
+	}
+
+	QDebug operator<< (const QDebug& out, const GlobalStrongestIdTracker& tracker)
+	{
+		return out << tracker.GetId ();
 	}
 }
