@@ -8,11 +8,13 @@
 
 #pragma once
 
+#include "interfaces/azoth/azothcommon.h"
+
 class QByteArray;
 class QString;
 
 namespace LC::Azoth
 {
-	bool CheckWithDefaultValue (const QString& entryId, const QString& group, const QByteArray& propName);
-	void UpdateWithDefaultValue (bool value, const QString& entryId, const QString& group, const QByteArray& propName);
+	bool CheckWithDefaultValue (const GlobalStrongestId& id, const QString& group, const QByteArray& propName);
+	void UpdateWithDefaultValue (bool value, const GlobalStrongestId& id, const QString& group, const QByteArray& propName);
 }

@@ -10,6 +10,7 @@
 #include <QMainWindow>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <util/sll/qobjectrefcast.h>
 #include "interfaces/azoth/iclentry.h"
 #include "core.h"
 #include "chattabsmanager.h"
@@ -59,7 +60,7 @@ namespace Azoth
 		if (!entryObj)
 			return;
 
-		const auto entry = qobject_cast<ICLEntry*> (entryObj);
+		const auto& entry = qobject_ref_cast<ICLEntry> (entryObj);
 		const auto chatWidget = Core::Instance ().GetChatTabsManager ()->OpenChat (entry, true);
 
 		const auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();

@@ -388,7 +388,7 @@ namespace Azoth
 
 		const auto nh = new Util::NotificationActionHandler { e, this };
 		nh->AddFunction (tr ("Open chat"),
-				[parentCL] { Core::Instance ().GetChatTabsManager ()->OpenChat (parentCL, true); });
+				[parentCL] { Core::Instance ().GetChatTabsManager ()->OpenChat (*parentCL, true); });
 		nh->AddDependentObject (parentCL->GetQObject ());
 
 		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, {}, other)) >>
@@ -708,7 +708,7 @@ namespace Azoth
 
 		const auto nh = new Util::NotificationActionHandler { e };
 		nh->AddFunction (tr ("Open chat"),
-				[&entry] { Core::Instance ().GetChatTabsManager ()->OpenChat (&entry, true); });
+				[&entry] { Core::Instance ().GetChatTabsManager ()->OpenChat (entry, true); });
 		nh->AddDependentObject (entry.GetQObject ());
 
 		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, &entry, "AttentionDrawnBy")) >>
@@ -740,7 +740,7 @@ namespace Azoth
 
 		const auto nh = new Util::NotificationActionHandler { e };
 		nh->AddFunction (tr ("Open chat"),
-				[entry] { Core::Instance ().GetChatTabsManager ()->OpenChat (entry, true); });
+				[entry] { Core::Instance ().GetChatTabsManager ()->OpenChat (*entry, true); });
 		nh->AddDependentObject (entry->GetQObject ());
 
 		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, "Typing")) >>

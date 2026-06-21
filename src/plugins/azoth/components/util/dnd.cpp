@@ -8,10 +8,9 @@
 
 #include "dnd.h"
 #include <QString>
-#include <QList>
-#include <QDataStream>
 #include <QMimeData>
 #include <util/sll/qtutil.h>
+#include "util/azoth/util.h"
 #include "interfaces/azoth/iclentry.h"
 #include "../../core.h"
 
@@ -29,7 +28,7 @@ namespace LC::Azoth::DndUtil
 		QByteArray encoded;
 		QDataStream stream (&encoded, QIODevice::WriteOnly);
 		for (const auto& info : entries)
-			stream << info.Entry_->GetEntryID () << info.Group_;
+			stream << info.Entry_->GetGlobalStrongestID () << info.Group_;
 
 		if (data)
 			data->setData (CLEntryFormat, encoded);
@@ -37,20 +36,20 @@ namespace LC::Azoth::DndUtil
 		return encoded;
 	}
 
-	QObject* DecodeEntryObj (const QMimeData *mime)
+	ICLEntry* DecodeEntryObj (const QMimeData *mime)
 	{
 		QDataStream stream (mime->data (CLEntryFormat));
-		QString sid;
+		GlobalStrongestId sid;
 		stream >> sid;
 
 		return Core::Instance ().GetEntry (sid);
 	}
 
-	QList<QObject*> DecodeEntryObjs (const QMimeData *mime)
+	QList<ICLEntry*> DecodeEntryObjs (const QMimeData *mime)
 	{
-		QList<QObject*> result;
+		QList<ICLEntry*> result;
 		for (const auto& info : DecodeMimeInfos (mime))
-			result << info.Entry_->GetQObject ();
+			result << info.Entry_;
 		return result;
 	}
 
@@ -61,16 +60,12 @@ namespace LC::Azoth::DndUtil
 		QDataStream stream (mime->data (CLEntryFormat));
 		while (!stream.atEnd ())
 		{
-			QString id;
+			GlobalStrongestId id;
 			QString group;
 			stream >> id >> group;
 
-			const auto entryObj = Core::Instance ().GetEntry (id);
-			const auto entry = qobject_cast<ICLEntry*> (entryObj);
-			if (!entry)
-				continue;
-
-			result.append ({ entry, group });
+			if (const auto entry = Core::Instance ().GetEntry (id))
+				result.append ({ entry, group });
 		}
 
 		return result;

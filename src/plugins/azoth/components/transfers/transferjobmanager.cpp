@@ -84,7 +84,7 @@ namespace Azoth
 	{
 		ICLEntry* GetContact (const QString& id)
 		{
-			return qobject_cast<ICLEntry*> (Core::Instance ().GetEntry (id));
+			return Core::Instance ().GetEntry (id);
 		}
 	}
 

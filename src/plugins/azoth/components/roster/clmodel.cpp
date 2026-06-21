@@ -123,13 +123,9 @@ namespace LC::Azoth
 
 		bool accepted = false;
 
-		for (const auto& serializedObj : DndUtil::DecodeEntryObjs (mime))
+		for (const auto& serializedEntry : DndUtil::DecodeEntryObjs (mime))
 		{
-			const auto serializedEntry = qobject_cast<ICLEntry*> (serializedObj);
-			if (!serializedEntry)
-				continue;
-
-			const auto serializedMuc = qobject_cast<IMUCEntry*> (serializedObj);
+			const auto serializedMuc = qobject_cast<IMUCEntry*> (serializedEntry->GetQObject ());
 			if (static_cast<bool> (targetMuc) == static_cast<bool> (serializedMuc))
 				continue;
 

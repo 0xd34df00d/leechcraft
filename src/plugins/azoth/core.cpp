@@ -599,9 +599,15 @@ namespace LC::Azoth
 		return result.values ();
 	}
 
-	QObject* Core::GetEntry (const QString& id) const
+	ICLEntry* Core::GetEntry (const QString& id) const
 	{
 		return ID2Entry_.value (id);
+	}
+
+	ICLEntry* Core::GetEntry (const GlobalStrongestId& id) const
+	{
+		//return ID2Entry_.GetEntry (id);
+		return ID2Entry_.value (id.ToString ());
 	}
 
 	TransferJobManager* Core::GetTransferJobManager () const
@@ -1238,8 +1244,8 @@ namespace LC::Azoth
 		CryptoManager::Instance ().AddEntry (entry);
 #endif
 
-		const QString& id = entry->GetEntryID ();
-		ID2Entry_ [id] = entryObj;
+		ID2Entry_ [entry->GetEntryID ()] = entry;
+		//ID2Entry_.AddEntry (*entry);
 
 		const auto& groups = GetDisplayGroups (entry);
 		for (const auto catItem : GetCategoriesItems (groups, accItem))
@@ -1256,7 +1262,7 @@ namespace LC::Azoth
 
 		TooltipManager_->AddEntry (entry);
 
-		ChatTabsManager_->UpdateEntryMapping (id);
+		ChatTabsManager_->UpdateEntryMapping (entry->GetEntryID ());
 
 		proxy = std::make_shared<Util::DefaultHookProxy> ();
 		emit hookAddingCLEntryEnd (proxy, entryObj);
@@ -1312,19 +1318,16 @@ namespace LC::Azoth
 			RecalculateOnlineForCat (item->parent ());
 		}
 
-		const QString& id = entry->GetEntryID ();
-		if (!XferJobManager_->GetIncomingOffers (id).isEmpty ())
-			CheckFileIcon (id);
+		if (!XferJobManager_->GetIncomingOffers (entry->GetEntryID ()).isEmpty ())
+			CheckFileIcon (entry->GetEntryID ());
 	}
 
 	void Core::CheckFileIcon (const QString& id)
 	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (GetEntry (id));
+		const auto entry = GetEntry (id);
 		if (!entry)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "got null entry for"
-					<< id;
+			qWarning () << "got null entry for" << id;
 			return;
 		}
 
@@ -1732,7 +1735,7 @@ namespace LC::Azoth
 						{
 							const bool open = XmlSettingsManager::Instance ().property ("OpenTabsForAutojoin").toBool ();
 							if (open || !qobject_ref_cast<IMUCEntry> (entry->GetQObject ()).IsAutojoined ())
-								ChatTabsManager_->OpenChat (entry, false);
+								ChatTabsManager_->OpenChat (*entry, false);
 						}
 					}
 				});
@@ -1745,7 +1748,7 @@ namespace LC::Azoth
 					{
 						if (entry->GetEntryType () == ICLEntry::EntryType::MUC &&
 								XmlSettingsManager::Instance ().property ("CloseConfOnLeave").toBool ())
-							GetChatTabsManager ()->CloseChat (entry, false);
+							GetChatTabsManager ()->CloseChat (*entry, false);
 
 						entry->GetQObject ()->disconnect (this);
 						entry->GetCLEntryEmitter ().disconnect (this);

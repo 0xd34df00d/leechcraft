@@ -180,7 +180,7 @@ namespace LC::Azoth::Actions
 			}
 
 			const auto entry = qobject_cast<ICLEntry*> (entryObj);
-			Core::Instance ().GetChatTabsManager ()->OpenChat (entry, true);
+			Core::Instance ().GetChatTabsManager ()->OpenChat (*entry, true);
 		}
 
 		void AddServerHistoryActions (QMenu *menu, IHaveServerHistory *ihsh)

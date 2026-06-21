@@ -218,7 +218,7 @@ namespace LC::Azoth
 
 	QObject* ProxyObject::GetEntry (const QString& entryID, const QString&) const
 	{
-		return Core::Instance ().GetEntry (entryID);
+		return Core::Instance ().GetEntry (entryID)->GetQObject ();
 	}
 
 	void ProxyObject::OpenChat (const QString& entryID, const QString& accID,
@@ -227,7 +227,7 @@ namespace LC::Azoth
 		const auto mgr = Core::Instance ().GetChatTabsManager ();
 
 		const auto entry = qobject_cast<ICLEntry*> (GetEntry (entryID, accID));
-		const auto chat = mgr->OpenChat (entry, true);
+		const auto chat = mgr->OpenChat (*entry, true);
 
 		chat->insertMessageText (message);
 		chat->selectVariant (variant);

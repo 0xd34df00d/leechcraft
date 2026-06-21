@@ -20,9 +20,9 @@
 
 namespace LC::Azoth
 {
-	MsgEditAutocompleter::MsgEditAutocompleter (const QString& entryId, QTextEdit& edit)
+	MsgEditAutocompleter::MsgEditAutocompleter (const ICLEntry& entry, QTextEdit& edit)
 	: QObject { &edit }
-	, EntryId_ { entryId }
+	, EntryId_ { entry }
 	, Edit_ { edit }
 	{
 		Edit_.installEventFilter (this);
@@ -117,7 +117,11 @@ namespace LC::Azoth
 			if (!mucEntry)
 				return {};
 
-			auto nicks = GetMucParticipants (entry.GetEntryID ());
+			const auto mucEntryId = entry.GetGlobalPersistentID ();
+			if (!mucEntryId)
+				return {};
+
+			auto nicks = GetMucParticipants (*mucEntryId);
 			nicks.removeAll (mucEntry->GetNick ());
 			nicks.removeIf (trigger.ToWordRemovalPred ());
 			std::ranges::sort (nicks,
@@ -145,7 +149,7 @@ namespace LC::Azoth
 
 	void MsgEditAutocompleter::Complete (Direction dir)
 	{
-		const auto entry = qobject_cast<ICLEntry*> (Core::Instance ().GetEntry (EntryId_));
+		const auto entry = Core::Instance ().GetEntry (EntryId_.GetId ());
 		if (!entry)
 			return;
 

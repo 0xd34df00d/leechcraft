@@ -132,7 +132,7 @@ namespace LC::Azoth
 		if (entryId.isEmpty ())
 			return;
 
-		const auto entry = qobject_cast<ICLEntry*> (Core::Instance ().GetEntry (entryId));
+		const auto entry = Core::Instance ().GetEntry (entryId);
 		if (!entry)
 			return;
 

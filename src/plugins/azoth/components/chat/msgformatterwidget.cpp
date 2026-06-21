@@ -93,7 +93,7 @@ namespace LC::Azoth
 		};
 	}
 
-	MsgFormatterWidget::MsgFormatterWidget (const QString& entryId, QTextEdit& edit)
+	MsgFormatterWidget::MsgFormatterWidget (const GlobalStrongestId& entryId, QTextEdit& edit)
 	: QWidget { &edit }
 	, EntryId_ { entryId }
 	, Edit_ { edit }

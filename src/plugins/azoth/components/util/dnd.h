@@ -14,7 +14,6 @@ template<typename T>
 class QList;
 
 class QMimeData;
-class QObject;
 
 namespace LC::Azoth
 {
@@ -32,8 +31,8 @@ namespace LC::Azoth::DndUtil
 	};
 
 	QByteArray Encode (const QList<MimeContactInfo>&, QMimeData*);
-	QObject* DecodeEntryObj (const QMimeData*);
-	QList<QObject*> DecodeEntryObjs (const QMimeData*);
+	ICLEntry* DecodeEntryObj (const QMimeData*);
+	QList<ICLEntry*> DecodeEntryObjs (const QMimeData*);
 	QList<MimeContactInfo> DecodeMimeInfos (const QMimeData*);
 
 	bool HasContacts (const QMimeData*);

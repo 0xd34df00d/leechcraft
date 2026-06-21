@@ -54,9 +54,9 @@ namespace Azoth
 		ChatTabsManager (AvatarsManager*, Util::WkFontsWidget*, QObject* = nullptr);
 
 		QWidget* OpenChat (const QModelIndex&);
-		ChatTab* OpenChat (const ICLEntry*, bool fromUser, const DynPropertiesList_t& = {});
+		ChatTab* OpenChat (const ICLEntry&, bool fromUser, const DynPropertiesList_t& = {});
 
-		void CloseChat (const ICLEntry*, bool fromUser);
+		void CloseChat (const ICLEntry&, bool fromUser);
 
 		bool IsActiveChat (const ICLEntry*) const;
 		bool IsOpenedChat (const QString&) const;
@@ -75,7 +75,7 @@ namespace Azoth
 	protected:
 		bool eventFilter (QObject*, QEvent*);
 	private:
-		void RestoreChat (const RestoreChatInfo&, QObject*);
+		void RestoreChat (const RestoreChatInfo&, ICLEntry&);
 		void CloseChatTab (ChatTab*, bool fromUser);
 	private slots:
 		void updateCurrentTab (QObject*);

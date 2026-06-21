@@ -11,6 +11,7 @@
 #include <QtDebug>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <util/sll/qobjectrefcast.h>
 #include "interfaces/azoth/iclentry.h"
 #include "core.h"
 #include "roles.h"
@@ -42,20 +43,12 @@ namespace LC::Azoth
 	QWidget* ChatTabsManager::OpenChat (const QModelIndex& ti)
 	{
 		const auto entryObj = ti.data (CLREntryObject).value<QObject*> ();
-		const auto entry = qobject_cast<ICLEntry*> (entryObj);
-		if (!entry)
-		{
-			qWarning () << "object" << entryObj << "from the index" << ti << "doesn't implement ICLEntry";
-			return nullptr;
-		}
-
-		return OpenChat (entry, true);
+		return OpenChat (qobject_ref_cast<ICLEntry> (entryObj), true);
 	}
 
-	ChatTab* ChatTabsManager::OpenChat (const ICLEntry *entry,
-			bool fromUser, const DynPropertiesList_t& props)
+	ChatTab* ChatTabsManager::OpenChat (const ICLEntry& entry, bool fromUser, const DynPropertiesList_t& props)
 	{
-		const auto& id = entry->GetEntryID ();
+		const auto& id = entry.GetEntryID ();
 		if (Entry2Tab_.contains (id))
 		{
 			auto tab = Entry2Tab_ [id];
@@ -78,7 +71,7 @@ namespace LC::Azoth
 
 		EverOpened_ << id;
 
-		QPointer<ChatTab> tab (new ChatTab (id, entry->GetParentAccount (), AvatarsManager_, FontsWidget_, Profile_));
+		QPointer<ChatTab> tab (new ChatTab (entry, entry.GetParentAccount (), AvatarsManager_, FontsWidget_, Profile_));
 		tab->installEventFilter (this);
 		Entry2Tab_ [id] = tab;
 
@@ -112,13 +105,11 @@ namespace LC::Azoth
 		return tab;
 	}
 
-	void ChatTabsManager::CloseChat (const ICLEntry *entry, bool fromUser)
+	void ChatTabsManager::CloseChat (const ICLEntry& entry, bool fromUser)
 	{
-		const QString& id = entry->GetEntryID ();
-		if (!Entry2Tab_.contains (id))
-			return;
-
-		CloseChatTab (Entry2Tab_ [id], fromUser);
+		if (const auto& id = entry.GetEntryID ();
+			Entry2Tab_.contains (id))
+			CloseChatTab (Entry2Tab_ [id], fromUser);
 	}
 
 	bool ChatTabsManager::IsActiveChat (const ICLEntry *entry) const
@@ -162,7 +153,7 @@ namespace LC::Azoth
 		{
 			auto entry = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
 			if (!Entry2Tab_.contains (entry->GetEntryID ()))
-				OpenChat (entry, false);
+				OpenChat (*entry, false);
 		}
 	}
 
@@ -186,7 +177,7 @@ namespace LC::Azoth
 			auto entryObj = Core::Instance ().GetEntry (info.EntryID_);
 			qDebug () << Q_FUNC_INFO << info.EntryID_ << entryObj;
 			if (entryObj)
-				RestoreChat (info, entryObj);
+				RestoreChat (info, *entryObj);
 			else
 				RestoreInfo_ [info.EntryID_] = info;
 		}
@@ -215,22 +206,11 @@ namespace LC::Azoth
 		return false;
 	}
 
-	void ChatTabsManager::RestoreChat (const RestoreChatInfo& info, QObject *entryObj)
+	void ChatTabsManager::RestoreChat (const RestoreChatInfo& info, ICLEntry& entry)
 	{
-		auto entry = qobject_cast<ICLEntry*> (entryObj);
-
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "null entry for"
-					<< entryObj;
-			return;
-		}
 		auto tab = qobject_cast<ChatTab*> (OpenChat (entry, false, info.Props_));
-
 		if (!info.Variant_.isEmpty ())
 			tab->selectVariant (info.Variant_);
-
 		tab->prepareMessageText (info.MsgText_);
 	}
 
@@ -259,15 +239,14 @@ namespace LC::Azoth
 				0;
 	}
 
-	void ChatTabsManager::handleAddingCLEntryEnd (IHookProxy_ptr,
-			QObject *entryObj)
+	void ChatTabsManager::handleAddingCLEntryEnd (IHookProxy_ptr, QObject *entryObj)
 	{
 		auto entry = qobject_cast<ICLEntry*> (entryObj);
 		const auto& id = entry->GetEntryID ();
 		if (!RestoreInfo_.contains (id))
 			return;
 
-		RestoreChat (RestoreInfo_.take (id), entryObj);
+		RestoreChat (RestoreInfo_.take (id), *entry);
 	}
 
 	void ChatTabsManager::chatWindowStyleChanged ()

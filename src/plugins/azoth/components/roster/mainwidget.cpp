@@ -295,7 +295,7 @@ namespace Azoth
 			return;
 
 		if (auto entry = w.GetActivatedParticipant ())
-			Core::Instance ().GetChatTabsManager ()->OpenChat (entry, true);
+			Core::Instance ().GetChatTabsManager ()->OpenChat (*entry, true);
 	}
 
 	namespace

@@ -10,6 +10,7 @@
 
 #include <QCoreApplication>
 #include <QWidget>
+#include "interfaces/azoth/azothcommon.h"
 
 class QTextEdit;
 class QTextCharFormat;
@@ -20,7 +21,7 @@ namespace LC::Azoth
 	{
 		Q_DECLARE_TR_FUNCTIONS (LC::Aztoh::MsgFormatterWidget)
 
-		const QString EntryId_;
+		const GlobalStrongestId EntryId_;
 		QTextEdit& Edit_;
 
 		QAction *Toggle_;
@@ -34,7 +35,7 @@ namespace LC::Azoth
 
 		QWidget *SmilesTooltip_;
 	public:
-		explicit MsgFormatterWidget (const QString& entryId, QTextEdit&);
+		explicit MsgFormatterWidget (const GlobalStrongestId& entryId, QTextEdit&);
 
 		QAction& GetToggle () const;
 

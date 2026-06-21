@@ -112,7 +112,7 @@ namespace Azoth
 		return S_MUCTabClass_;
 	}
 
-	ChatTab::ChatTab (const QString& entryId,
+	ChatTab::ChatTab (const ICLEntry& entry,
 			IAccount *account,
 			AvatarsManager *am,
 			Util::WkFontsWidget *fontsWidget,
@@ -123,7 +123,7 @@ namespace Azoth
 	, Account_ (account)
 	, TabToolbar_ (new QToolBar (tr ("Azoth chat window"), this))
 	, MUCEventLog_ (new QTextBrowser ())
-	, EntryID_ (entryId)
+	, EntryID_ (entry)
 	, NumUnreadMsgs_ (Core::Instance ().GetUnreadCount (GetEntry<ICLEntry> ()))
 	, CDF_ (new ContactDropFilter (*Core::Instance ().GetTransferJobManager (), *this))
 	{
@@ -198,7 +198,7 @@ namespace Azoth
 		ChatFinder_ = new Util::FindNotificationWE (Core::Instance ().GetProxy (), Ui_.View_);
 		ChatFinder_->hide ();
 
-		InitMsgEdit ();
+		InitMsgEdit (entry);
 
 		BuildBasicActions ();
 
@@ -476,9 +476,9 @@ namespace Azoth
 			AddManagedActions (false);
 	}
 
-	QString ChatTab::GetEntryID () const
+	GlobalStrongestId ChatTab::GetEntryID () const
 	{
-		return EntryID_;
+		return EntryID_.GetId ();
 	}
 
 	std::optional<QString> ChatTab::GetSelectedVariant () const
@@ -696,7 +696,7 @@ namespace Azoth
 			return;
 		}
 
-		if (call->GetEntry ().GetGlobalStrongestID ().ToString () != EntryID_)
+		if (call->GetEntry ().GetGlobalStrongestID () != EntryID_.GetId ())
 			return;
 
 		CallChatWidget *widget = new CallChatWidget (callObj);
@@ -949,7 +949,7 @@ namespace Azoth
 				if (entry->GetHumanReadableID () != id)
 					continue;
 
-				auto w = Core::Instance ().GetChatTabsManager ()->OpenChat (entry, true);
+				auto w = Core::Instance ().GetChatTabsManager ()->OpenChat (*entry, true);
 				QMetaObject::invokeMethod (w,
 						"handleViewLinkClicked",
 						Qt::QueuedConnection,
@@ -1014,14 +1014,22 @@ namespace Azoth
 			const auto& nick = QUrlQuery { url }.queryItemValue ("nick", QUrl::FullyDecoded);
 			InsertNick (nick);
 
-			if (!GetMucParticipants (EntryID_).contains (nick))
-			{
-				const auto& e = Util::MakeNotification ("Azoth",
-						tr ("%1 isn't present in this conference at the moment.")
-							.arg ("<em>" + nick + "</em>"),
-						Priority::Warning);
-				GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
-			}
+			Util::Visit (EntryID_.GetId (),
+					[&] (const GlobalPersistentId& id)
+					{
+						if (!GetMucParticipants (id).contains (nick))
+						{
+							const auto& e = Util::MakeNotification ("Azoth",
+									tr ("%1 isn't present in this conference at the moment.")
+										.arg ("<em>" + nick + "</em>"),
+									Priority::Warning);
+							GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+						}
+					},
+					[&] (const GlobalConventionalId&)
+					{
+						qWarning () << "inserting nick into a MUC with no persistent ID:" << EntryID_;
+					});
 		}
 	}
 
@@ -1123,7 +1131,12 @@ namespace Azoth
 	T* ChatTab::GetEntry () const
 	{
 		if (const auto obj = Core::Instance ().GetEntry (EntryID_))
-			return qobject_cast<T*> (obj);
+		{
+			if constexpr (std::is_same_v<ICLEntry, T>)
+				return obj;
+			else
+				return qobject_cast<T*> (obj->GetQObject ());
+		}
 
 		qWarning () << "no entry for" << EntryID_;
 		return nullptr;
@@ -1411,7 +1424,7 @@ namespace Azoth
 		TabToolbar_->addActions (coreActions);
 	}
 
-	void ChatTab::InitMsgEdit ()
+	void ChatTab::InitMsgEdit (const ICLEntry& entry)
 	{
 #ifndef Q_OS_MAC
 		const auto histModifier = Qt::CTRL;
@@ -1451,9 +1464,9 @@ namespace Azoth
 					emit tabRecoverDataChanged ();
 				});
 
-		new MsgEditAutocompleter (EntryID_, *Ui_.MsgEdit_);
+		new MsgEditAutocompleter (entry, *Ui_.MsgEdit_);
 
-		MsgFormatter_ = new MsgFormatterWidget { EntryID_, *Ui_.MsgEdit_ };
+		MsgFormatter_ = new MsgFormatterWidget { entry.GetGlobalStrongestID (), *Ui_.MsgEdit_ };
 		XmlSettingsManager::Instance ().RegisterObject ("RichFormatterPosition", this,
 				[this] (const QString& posStr)
 				{
@@ -1474,9 +1487,7 @@ namespace Azoth
 		ICLEntry *entry = GetEntry<ICLEntry> ();
 		if (!entry)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "null entry for"
-					<< EntryID_;
+			qWarning () << "null entry for" << EntryID_;
 			return;
 		}
 

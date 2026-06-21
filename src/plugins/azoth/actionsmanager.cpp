@@ -360,12 +360,12 @@ namespace Azoth
 			const bool closeTabs = XmlSettingsManager::Instance ().property ("CloseConfOnLeave").toBool ();
 			if (closeTabs)
 				for (const auto part : mucEntry->GetParticipants ())
-					Core::Instance ().GetChatTabsManager ()->CloseChat (part, true);
+					Core::Instance ().GetChatTabsManager ()->CloseChat (*part, true);
 
 			mucEntry->Leave ();
 
 			if (closeTabs)
-				Core::Instance ().GetChatTabsManager ()->CloseChat (entry, true);
+				Core::Instance ().GetChatTabsManager ()->CloseChat (*entry, true);
 		}
 
 		void Reconnect (ICLEntry *entry)
@@ -511,7 +511,7 @@ namespace Azoth
 			{
 				"openchat",
 				SingleEntryActor_f ([] (ICLEntry *e)
-						{ Core::Instance ().GetChatTabsManager ()->OpenChat (e, true); })
+						{ Core::Instance ().GetChatTabsManager ()->OpenChat (*e, true); })
 			},
 			{ "drawattention", SingleEntryActor_f (DrawAttention) },
 			{ "sendfile", SingleEntryActor_f ([] (ICLEntry *entry) { new FileSendDialog (entry); }) },
@@ -585,7 +585,7 @@ namespace Azoth
 				"userslist",
 				SingleEntryActor_f ([] (ICLEntry *e) -> void
 					{
-						auto chatWidget = Core::Instance ().GetChatTabsManager ()->OpenChat (e, false);
+						auto chatWidget = Core::Instance ().GetChatTabsManager ()->OpenChat (*e, false);
 						auto tab = qobject_cast<ChatTab*> (chatWidget);
 						tab->ShowUsersList ();
 					})

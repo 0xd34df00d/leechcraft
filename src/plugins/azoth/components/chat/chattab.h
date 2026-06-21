@@ -19,6 +19,7 @@
 #include <interfaces/iwkfontssettable.h>
 #include "interfaces/azoth/azothcommon.h"
 #include "ui_chattab.h"
+#include "util/azoth/globalstrongestidtracker.h"
 
 class QTextBrowser;
 
@@ -69,7 +70,7 @@ namespace Azoth
 		QAction *EnableEncryption_ = nullptr;
 #endif
 
-		const QString EntryID_;
+		GlobalStrongestIdTracker EntryID_;
 
 		QList<QString> MsgHistory_;
 		int CurrentHistoryPosition_ = -1;
@@ -105,7 +106,7 @@ namespace Azoth
 		static const TabClassInfo& GetChatTabClassInfo ();
 		static const TabClassInfo& GetMUCTabClassInfo ();
 
-		ChatTab (const QString&,
+		ChatTab (const ICLEntry&,
 				IAccount*,
 				AvatarsManager*,
 				Util::WkFontsWidget*,
@@ -148,7 +149,7 @@ namespace Azoth
 
 		void SetEnabled (bool);
 
-		QString GetEntryID () const;
+		GlobalStrongestId GetEntryID () const;
 		std::optional<QString> GetSelectedVariant () const;
 
 		QString ReformatTitle ();
@@ -211,7 +212,7 @@ namespace Azoth
 		void InitExtraActions ();
 		void AddManagedActions (bool first);
 
-		void InitMsgEdit ();
+		void InitMsgEdit (const ICLEntry&);
 		void RegisterSettings ();
 
 		void RequestLogs (int);

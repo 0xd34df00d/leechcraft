@@ -10,6 +10,8 @@
 
 #include <QObject>
 #include <QStringList>
+#include "util/azoth/globalstrongestidtracker.h"
+#include "interfaces/azoth/azothcommon.h"
 
 class QTextEdit;
 
@@ -17,7 +19,7 @@ namespace LC::Azoth
 {
 	class MsgEditAutocompleter : public QObject
 	{
-		const QString EntryId_;
+		GlobalStrongestIdTracker EntryId_;
 		QTextEdit& Edit_;
 
 		struct Idle {};
@@ -35,7 +37,7 @@ namespace LC::Azoth
 
 		bool InsertingCompletion_ = false;
 	public:
-		explicit MsgEditAutocompleter (const QString& entryId, QTextEdit& msgEdit);
+		explicit MsgEditAutocompleter (const ICLEntry& entry, QTextEdit& msgEdit);
 	private:
 		bool eventFilter (QObject*, QEvent*) override;
 

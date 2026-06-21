@@ -196,10 +196,7 @@ namespace LC::Azoth
 		const bool isMuc = thisEntry->GetEntryType () == ICLEntry::EntryType::MUC;
 
 		auto entries = DndUtil::DecodeEntryObjs (data);
-		entries.removeIf ([thisEntry] (QObject *entryObj)
-					{
-						return !CanEntryBeInvited (thisEntry, qobject_cast<ICLEntry*> (entryObj));
-					});
+		entries.removeIf ([thisEntry] (ICLEntry *entry) { return !CanEntryBeInvited (thisEntry, entry); });
 
 		if (entries.isEmpty ())
 			return;
@@ -214,12 +211,8 @@ namespace LC::Azoth
 		}
 		else
 		{
-			const auto muc = isMuc ?
-					thisEntry :
-					qobject_cast<ICLEntry*> (entries.first ());
-			const auto entry = isMuc ?
-					qobject_cast<ICLEntry*> (entries.first ()) :
-					thisEntry;
+			const auto muc = isMuc ? thisEntry : entries.first ();
+			const auto entry = isMuc ? entries.first () : thisEntry;
 			text = tr ("Invitation message for %1 in %2:").arg (entry->GetEntryName (), muc->GetEntryName ());
 		}
 
@@ -237,14 +230,14 @@ namespace LC::Azoth
 		{
 			const auto muc = qobject_cast<IMUCEntry*> (thisEntry->GetQObject ());
 			for (const auto& entry : entries)
-				muc->InviteToMUC (qobject_cast<ICLEntry*> (entry)->GetHumanReadableID (), reason);
+				muc->InviteToMUC (entry->GetHumanReadableID (), reason);
 		}
 		else
 		{
 			const auto thisId = thisEntry->GetHumanReadableID ();
-			for (const auto& mucEntryObj : entries)
+			for (const auto& entry : entries)
 			{
-				const auto muc = qobject_cast<IMUCEntry*> (mucEntryObj);
+				const auto muc = qobject_cast<IMUCEntry*> (entry->GetQObject ());
 				muc->InviteToMUC (thisId, reason);
 			}
 		}

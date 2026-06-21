@@ -10,10 +10,7 @@
 
 #include <functional>
 #include <QObject>
-#include <QSet>
 #include <QCache>
-#include <QIcon>
-#include <QDateTime>
 #include <QUrl>
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/an/ianemitter.h>
@@ -23,6 +20,7 @@
 #include "interfaces/azoth/imucentry.h"
 #include "interfaces/azoth/iprotocol.h"
 #include "interfaces/azoth/isupportriex.h"
+#include "util/azoth/globalstrongestidmap.h"
 #include "sourcetrackingmodel.h"
 #include "animatediconmanager.h"
 
@@ -95,8 +93,8 @@ namespace LC::Azoth
 
 		ActionsManager *ActionsManager_;
 
-		typedef QHash<QString, QObject*> ID2Entry_t;
-		ID2Entry_t ID2Entry_;
+		QHash<QString, ICLEntry*> ID2Entry_;
+		//GlobalStrongestIdMap ID2Entry_;
 
 		typedef QCache<ICLEntry*, QImage> Entry2SmoothAvatarCache_t;
 		Entry2SmoothAvatarCache_t Entry2SmoothAvatarCache_ { 5 * 1024 * 1024 };
@@ -164,11 +162,10 @@ namespace LC::Azoth
 		 */
 		QStringList GetChatGroups () const;
 
-		/** Returns contact list entry with the given id. The id is the
-		 * same as returned by ICLEntry::GetEntryID(). If no such entry
-		 * could be found, NULL is returned.
-		 */
-		QObject* GetEntry (const QString& id) const;
+		[[deprecated("Use GetEntry(GlobalStrongestId) instead")]]
+		ICLEntry* GetEntry (const QString& id) const;
+
+		ICLEntry* GetEntry (const GlobalStrongestId& id) const;
 
 		TransferJobManager* GetTransferJobManager () const;
 
@@ -221,9 +218,6 @@ namespace LC::Azoth
 
 		int GetUnreadCount (ICLEntry *entry) const;
 
-		/** Checks whether icon representing incoming file should be
-		 * drawn for the entry with the given id.
-		 */
 		void CheckFileIcon (const QString& id);
 
 		IChatStyleResourceSource* GetCurrentChatStyle (QObject*) const;

@@ -13,23 +13,27 @@
 
 namespace LC::Azoth
 {
-	bool CheckWithDefaultValue (const QString& entryId, const QString& group, const QByteArray& propName)
+	bool CheckWithDefaultValue (const GlobalStrongestId& id, const QString& group, const QByteArray& propName)
 	{
+		const auto& idString = id.ToString ();
+
 		QSettings settings { QCoreApplication::organizationName (), QCoreApplication::applicationName () + "_Azoth" };
 
 		settings.beginGroup (group);
 		auto guard = Util::MakeEndGroupScopeGuard (settings);
 
-		if (settings.value ("Enabled").toStringList ().contains (entryId))
+		if (settings.value ("Enabled").toStringList ().contains (idString))
 			return true;
-		if (settings.value ("Disabled").toStringList ().contains (entryId))
+		if (settings.value ("Disabled").toStringList ().contains (idString))
 			return false;
 
 		return XmlSettingsManager::Instance ().property (propName).toBool ();
 	}
 
-	void UpdateWithDefaultValue (bool value, const QString& entryId, const QString& group, const QByteArray& propName)
+	void UpdateWithDefaultValue (bool value, const GlobalStrongestId& id, const QString& group, const QByteArray& propName)
 	{
+		const auto& idString = id.ToString ();
+
 		const bool defaultValue = XmlSettingsManager::Instance ().property (propName).toBool ();
 
 		QSettings settings { QCoreApplication::organizationName (), QCoreApplication::applicationName () + "_Azoth" };
@@ -40,25 +44,25 @@ namespace LC::Azoth
 
 		if (value == defaultValue)
 		{
-			enabled.removeAll (entryId);
-			disabled.removeAll (entryId);
+			enabled.removeAll (idString);
+			disabled.removeAll (idString);
 
 			settings.setValue ("Enabled", enabled);
 			settings.setValue ("Disabled", disabled);
 		}
 		else if (value)
 		{
-			if (!enabled.contains (entryId))
+			if (!enabled.contains (idString))
 			{
-				enabled << entryId;
+				enabled << idString;
 				settings.setValue ("Enabled", enabled);
 			}
 		}
 		else
 		{
-			if (!disabled.contains (entryId))
+			if (!disabled.contains (idString))
 			{
-				disabled << entryId;
+				disabled << idString;
 				settings.setValue ("Disabled", disabled);
 			}
 		}

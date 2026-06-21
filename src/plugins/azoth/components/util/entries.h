@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <QStringList>
+#include "interfaces/azoth/azothcommon.h"
 
 class QObject;
 
@@ -26,5 +26,5 @@ namespace LC::Azoth
 
 	bool ChoosePGPKey (ISupportPGP*, ICLEntry*);
 
-	QStringList GetMucParticipants (const QString& mucEntryId);
+	QStringList GetMucParticipants (const GlobalPersistentId& mucEntryId);
 }
