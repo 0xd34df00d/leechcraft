@@ -40,8 +40,7 @@
         "CFLAGS": "$penv{CFLAGS} -Wno-deprecated-declarations"
       },
       "cacheVariables": {
-        "ENABLE_AGGREGATOR_WEBACCESS": "False",
-        "ENABLE_AZOTH_VELVETBIRD": "False"
+        "ENABLE_AGGREGATOR_WEBACCESS": "False"
       }
     },
     {
@@ -119,7 +118,6 @@
       "cacheVariables": {
         "STRICT_LICENSING": "True",
         "ENABLE_LASTFMSCROBBLE": "False",
-        "ENABLE_AZOTH_VELVETBIRD": "False",
         "WITH_QWT": "False",
         "ENABLE_LEMON": "False",
         "ENABLE_LIZNOO": "False",
@@ -163,7 +161,6 @@
         "ENABLE_AZOTH_ISTERIQUE": "True",
         "ENABLE_AZOTH_KEESO": "True",
         "ENABLE_AZOTH_LASTSEEN": "True",
-        "ENABLE_AZOTH_METACONTACTS": "True",
         "ENABLE_AZOTH_MODNOK": "True",
         "ENABLE_AZOTH_MUCOMMANDS": "True",
         "ENABLE_AZOTH_MUCOMMANDS_TESTS": "True",
@@ -174,7 +171,6 @@
         "ENABLE_AZOTH_STANDARDSTYLES": "True",
         "ENABLE_AZOTH_SHX": "True",
         "ENABLE_AZOTH_TRACOLOR": "True",
-        "ENABLE_AZOTH_VELVETBIRD": "True",
         "ENABLE_AZOTH_XTAZY": "True",
         "ENABLE_AZOTH_XOOX": "True",
         "ENABLE_CRYPT": "True",
@@ -183,7 +179,6 @@
         "ENABLE_BLASQ_DEATHNOTE": "True",
         "ENABLE_BLASQ_RAPPOR": "True",
         "ENABLE_BLASQ_SPEGNERSI": "True",
-        "ENABLE_BLASQ_VANGOG": "True",
         "ENABLE_BLOGIQUE": "True",
         "ENABLE_BLOGIQUE_HESTIA": "True",
         "ENABLE_BLOGIQUE_METIDA": "True",
@@ -209,7 +204,6 @@
         "ENABLE_KRIGSTASK": "False",
         "ENABLE_LACKMAN": "True",
         "TESTS_LACKMAN": "True",
-        "ENABLE_LADS": "False",
         "ENABLE_LASTFMSCROBBLE": "True",
         "ENABLE_LAUGHTY": "True",
         "ENABLE_LAUNCHY": "True",
@@ -241,7 +235,6 @@
         "ENABLE_NACHEKU": "True",
         "ENABLE_NAMAUTH": "True",
         "ENABLE_NETSTOREMANAGER": "True",
-        "ENABLE_NETSTOREMANAGER_DROPBOX": "True",
         "ENABLE_NETSTOREMANAGER_GOOGLEDRIVE": "True",
         "ENABLE_NEWLIFE": "True",
         "ENABLE_OORONEE": "True",
@@ -249,7 +242,6 @@
         "ENABLE_OTLOZHU_SYNC": "False",
         "ENABLE_PINTAB": "True",
         "ENABLE_POGOOGLUE": "True",
-        "ENABLE_POLEEMERY": "False",
         "ENABLE_POPISHU": "False",
         "ENABLE_POSHUKU": "True",
         "ENABLE_IDN": "True",
@@ -261,8 +253,6 @@
         "ENABLE_POSHUKU_FUA": "True",
         "ENABLE_POSHUKU_KEYWORDS": "True",
         "ENABLE_POSHUKU_ONLINEBOOKMARKS": "True",
-        "ENABLE_POSHUKU_ONLINEBOOKMARKS_DELICIOUS": "True",
-        "ENABLE_POSHUKU_ONLINEBOOKMARKS_READITLATER": "True",
         "ENABLE_POSHUKU_QRD": "True",
         "ENABLE_POSHUKU_SPEEDDIAL": "True",
         "ENABLE_POSHUKU_WEBENGINEVIEW": "True",
@@ -275,7 +265,6 @@
         "ENABLE_SYNCER": "False",
         "ENABLE_TABSESSMANAGER": "True",
         "ENABLE_TABSLIST": "True",
-        "ENABLE_TEXTOGROOSE": "True",
         "ENABLE_BITTORRENT": "True",
         "ENABLE_BITTORRENT_GEOIP": "True",
         "ENABLE_TPI": "True",
