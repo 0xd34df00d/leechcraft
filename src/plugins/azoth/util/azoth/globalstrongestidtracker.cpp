@@ -13,7 +13,7 @@
 
 namespace LC::Azoth
 {
-	GlobalStrongestIdTracker::GlobalStrongestIdTracker (ICLEntry& entry, QObject *parent)
+	GlobalStrongestIdTracker::GlobalStrongestIdTracker (const ICLEntry& entry, QObject *parent)
 	: QObject { parent }
 	, Id_ { entry.GetGlobalStrongestID ()}
 	{

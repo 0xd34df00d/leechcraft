@@ -20,7 +20,7 @@ namespace LC::Azoth
 	{
 		GlobalStrongestId Id_;
 	public:
-		explicit GlobalStrongestIdTracker (ICLEntry& entry, QObject* = nullptr);
+		explicit GlobalStrongestIdTracker (const ICLEntry& entry, QObject* = nullptr);
 
 		GlobalStrongestId GetId () const;
 
