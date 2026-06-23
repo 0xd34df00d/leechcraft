@@ -1,6 +1,6 @@
-<?xml version=1.0 encoding=UTF-8?>
-<!DOCTYPE plist PUBLIC -//Apple//DTD PLIST 1.0//EN http://www.apple.com/DTDs/PropertyList-1.0.dtd>
-<plist version=1.0>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
 <dict>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
@@ -24,5 +24,9 @@
 	<string>${LEECHCRAFT_VERSION}</string>
 	<key>NSSupportsAutomaticGraphicsSwitching</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>LeechCraft uses the camera when a call or a web page you allow requests it.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>LeechCraft uses the microphone when a call or a web page you allow requests it.</string>
 </dict>
 </plist>
