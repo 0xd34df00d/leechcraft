@@ -79,7 +79,6 @@ LC_DEFINE_PLUGIN (
 		components/dialogs/locationdialog.cpp
 		components/dialogs/mooddialog.cpp
 		components/dialogs/mucinvitedialog.cpp
-		components/dialogs/pgpkeyselectiondialog.cpp
 		components/dialogs/setstatusdialog.cpp
 		components/dialogs/shareriexdialog.cpp
 		components/dialogs/simpledialog.cpp
