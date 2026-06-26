@@ -106,7 +106,7 @@ namespace LC::Azoth
 
 	QStringList GetMucParticipants (const GlobalPersistentId& entryId)
 	{
-		auto& entry = qobject_ref_cast<IMUCEntry> (Core::Instance ().GetEntry (entryId)->GetQObject ());
+		auto& entry = Core::Instance ().GetEntry<IMUCEntry> (entryId);
 		return Util::Map (entry.GetParticipants (), &ICLEntry::GetEntryName);
 	}
 }

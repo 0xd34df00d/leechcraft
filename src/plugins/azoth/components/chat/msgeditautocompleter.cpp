@@ -149,19 +149,17 @@ namespace LC::Azoth
 
 	void MsgEditAutocompleter::Complete (Direction dir)
 	{
-		const auto entry = Core::Instance ().GetEntry (EntryId_.GetId ());
-		if (!entry)
-			return;
+		auto& entry = Core::Instance ().GetEntry (EntryId_.GetId ());
 
 		InsertingCompletion_ = true;
 		const auto guard = Util::MakeScopeGuard ([this] { InsertingCompletion_ = false; });
 		State_ = Util::Visit (State_,
-				[this, entry, dir] (Idle) -> State
+				[this, &entry, dir] (Idle) -> State
 				{
 					const auto& trigger = GetCompTrigger (Edit_);
 					if (!trigger)
 						return NoCompletions {};
-					const auto& comps = GetCompletions (*trigger, *entry);
+					const auto& comps = GetCompletions (*trigger, entry);
 					if (comps.isEmpty ())
 						return NoCompletions {};
 					return OfferCompletion (Completing { trigger->StartPos_, comps, -DirectionDelta (dir), trigger->Word_.size () }, dir);

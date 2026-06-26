@@ -599,15 +599,50 @@ namespace LC::Azoth
 		return result.values ();
 	}
 
-	ICLEntry* Core::GetEntry (const QString& id) const
+	template<typename T>
+	[[deprecated("Use GetEntry(GlobalStrongestId) instead")]]
+	T& Core::GetEntry (const QString& id) const
 	{
-		return ID2Entry_.value (id);
+		const auto entry = ID2Entry_.value (id);
+		if (!entry)
+			throw std::runtime_error { "no entry for ID " + id.toStdString () };
+
+		if constexpr (std::is_same_v<T, ICLEntry>)
+			return *entry;
+		else if constexpr (std::is_same_v<T, QObject>)
+			return *entry->GetQObject ();
+		else
+			return qobject_ref_cast<T> (entry->GetQObject ());
 	}
 
-	ICLEntry* Core::GetEntry (const GlobalStrongestId& id) const
+	template<typename T>
+	T& Core::GetEntry (const GlobalStrongestId& id) const
 	{
 		//return ID2Entry_.GetEntry (id);
-		return ID2Entry_.value (id.ToString ());
+		return GetEntry<T> (id.ToString ());
+	}
+
+	template<typename T>
+	[[deprecated("Use GetEntryOrNull(GlobalStrongestId) instead")]]
+	T* Core::GetEntryOrNull (const QString& id) const
+	{
+		const auto entry = ID2Entry_.value (id);
+		if (!entry)
+			return nullptr;
+
+		if constexpr (std::is_same_v<T, ICLEntry>)
+			return entry;
+		else if constexpr (std::is_same_v<T, QObject>)
+			return entry->GetQObject ();
+		else
+			return qobject_cast<T*> (entry->GetQObject ());
+	}
+
+	template<typename T>
+	T* Core::GetEntryOrNull (const GlobalStrongestId& id) const
+	{
+		//return ID2Entry_.GetEntry (id);
+		return GetEntryOrNull<T> (id.ToString ());
 	}
 
 	TransferJobManager* Core::GetTransferJobManager () const
@@ -1324,24 +1359,18 @@ namespace LC::Azoth
 
 	void Core::CheckFileIcon (const QString& id)
 	{
-		const auto entry = GetEntry (id);
-		if (!entry)
-		{
-			qWarning () << "got null entry for" << id;
-			return;
-		}
-
+		auto& entry = GetEntry (id);
 		if (XferJobManager_->GetIncomingOffers (id).isEmpty ())
 		{
-			const QString& variant = entry->Variants ().value (0);
-			HandleStatusChanged (entry, entry->GetStatus (variant), variant);
+			const QString& variant = entry.Variants ().value (0);
+			HandleStatusChanged (&entry, entry.GetStatus (variant), variant);
 			return;
 		}
 
 		const auto& filename = XmlSettingsManager::Instance ().property ("StatusIcons").toString () + "/file";
 		const auto& resourceLoader = ResourcesManager::Instance ().GetResourceLoader (ResourcesManager::RLTStatusIconLoader);
 		const auto& fileIcon = resourceLoader->GetIconDevice (filename, true);
-		for (auto item : Entry2Items_.value (entry))
+		for (auto item : Entry2Items_.value (&entry))
 			ItemIconManager_->SetIcon (item, fileIcon.get ());
 	}
 
@@ -1995,4 +2024,18 @@ namespace LC::Azoth
 	{
 		RIEX::HandleRIEXItemsSuggested (items, from, message);
 	}
+
+	template QObject& Core::GetEntry<QObject> (const QString&) const;
+	template ICLEntry& Core::GetEntry<ICLEntry> (const QString&) const;
+	template IMUCEntry& Core::GetEntry<IMUCEntry> (const QString&) const;
+	template QObject& Core::GetEntry<QObject> (const GlobalStrongestId&) const;
+	template ICLEntry& Core::GetEntry<ICLEntry> (const GlobalStrongestId&) const;
+	template IMUCEntry& Core::GetEntry<IMUCEntry> (const GlobalStrongestId&) const;
+
+	template QObject* Core::GetEntryOrNull<QObject> (const QString&) const;
+	template ICLEntry* Core::GetEntryOrNull<ICLEntry> (const QString&) const;
+	template IMUCEntry* Core::GetEntryOrNull<IMUCEntry> (const QString&) const;
+	template QObject* Core::GetEntryOrNull<QObject> (const GlobalStrongestId&) const;
+	template ICLEntry* Core::GetEntryOrNull<ICLEntry> (const GlobalStrongestId&) const;
+	template IMUCEntry* Core::GetEntryOrNull<IMUCEntry> (const GlobalStrongestId&) const;
 }

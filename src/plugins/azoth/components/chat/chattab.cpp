@@ -1130,16 +1130,7 @@ namespace Azoth
 	template<typename T>
 	T* ChatTab::GetEntry () const
 	{
-		if (const auto obj = Core::Instance ().GetEntry (EntryID_))
-		{
-			if constexpr (std::is_same_v<ICLEntry, T>)
-				return obj;
-			else
-				return qobject_cast<T*> (obj->GetQObject ());
-		}
-
-		qWarning () << "no entry for" << EntryID_;
-		return nullptr;
+		return Core::Instance ().GetEntryOrNull<T> (EntryID_);
 	}
 
 	void ChatTab::BuildBasicActions ()

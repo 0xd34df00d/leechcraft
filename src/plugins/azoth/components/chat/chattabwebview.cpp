@@ -132,7 +132,7 @@ namespace LC::Azoth
 		if (entryId.isEmpty ())
 			return;
 
-		const auto entry = Core::Instance ().GetEntry (entryId);
+		const auto entry = Core::Instance ().GetEntryOrNull (entryId);
 		if (!entry)
 			return;
 

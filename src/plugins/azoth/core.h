@@ -162,10 +162,19 @@ namespace LC::Azoth
 		 */
 		QStringList GetChatGroups () const;
 
+		template<typename T = ICLEntry>
 		[[deprecated("Use GetEntry(GlobalStrongestId) instead")]]
-		ICLEntry* GetEntry (const QString& id) const;
+		T& GetEntry (const QString& id) const;
 
-		ICLEntry* GetEntry (const GlobalStrongestId& id) const;
+		template<typename T = ICLEntry>
+		T& GetEntry (const GlobalStrongestId& id) const;
+
+		template<typename T = ICLEntry>
+		[[deprecated("Use GetEntryOrNull(GlobalStrongestId) instead")]]
+		T* GetEntryOrNull (const QString& id) const;
+
+		template<typename T = ICLEntry>
+		T* GetEntryOrNull (const GlobalStrongestId& id) const;
 
 		TransferJobManager* GetTransferJobManager () const;
 

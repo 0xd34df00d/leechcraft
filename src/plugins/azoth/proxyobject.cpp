@@ -218,15 +218,19 @@ namespace LC::Azoth
 
 	QObject* ProxyObject::GetEntry (const QString& entryID, const QString&) const
 	{
-		return Core::Instance ().GetEntry (entryID)->GetQObject ();
+		return Core::Instance ().GetEntryOrNull<QObject> (entryID);
 	}
 
-	void ProxyObject::OpenChat (const QString& entryID, const QString& accID,
-			const QString& message, const QString& variant) const
+	void ProxyObject::OpenChat (const QString& entryID, const QString&, const QString& message, const QString& variant) const
 	{
-		const auto mgr = Core::Instance ().GetChatTabsManager ();
+		const auto entry = Core::Instance ().GetEntryOrNull (entryID);
+		if (!entry)
+		{
+			qWarning () << "unknown entry ID" << entryID;
+			return;
+		}
 
-		const auto entry = qobject_cast<ICLEntry*> (GetEntry (entryID, accID));
+		const auto mgr = Core::Instance ().GetChatTabsManager ();
 		const auto chat = mgr->OpenChat (*entry, true);
 
 		chat->insertMessageText (message);

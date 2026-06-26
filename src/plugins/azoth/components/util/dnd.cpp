@@ -42,7 +42,7 @@ namespace LC::Azoth::DndUtil
 		GlobalStrongestId sid;
 		stream >> sid;
 
-		return Core::Instance ().GetEntry (sid);
+		return Core::Instance ().GetEntryOrNull (sid);
 	}
 
 	QList<ICLEntry*> DecodeEntryObjs (const QMimeData *mime)
@@ -64,7 +64,7 @@ namespace LC::Azoth::DndUtil
 			QString group;
 			stream >> id >> group;
 
-			if (const auto entry = Core::Instance ().GetEntry (id))
+			if (const auto entry = Core::Instance ().GetEntryOrNull (id))
 				result.append ({ entry, group });
 		}
 

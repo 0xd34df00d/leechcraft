@@ -245,7 +245,7 @@ namespace Azoth
 
 				Core::Instance ().GetChatTabsManager ()->EnqueueRestoreInfos ({ info });
 
-				if (!Core::Instance ().GetEntry (entryId))
+				if (!Core::Instance ().GetEntryOrNull (entryId))
 				{
 					auto acc = Core::Instance ().GetAccount (accountId);
 					if (!acc)

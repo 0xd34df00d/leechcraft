@@ -56,19 +56,6 @@ namespace LC::Azoth
 			return tab;
 		}
 
-		if (!Core::Instance ().GetEntry (id))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "the entry"
-					<< id
-					<< "is obviously alive, but Core doesn't know about it."
-					<< "Will wait for re-appearing.";
-
-			EnqueueRestoreInfos ({ { id, {}, {}, {} } });
-
-			return nullptr;
-		}
-
 		EverOpened_ << id;
 
 		QPointer<ChatTab> tab (new ChatTab (entry, entry.GetParentAccount (), AvatarsManager_, FontsWidget_, Profile_));
@@ -174,8 +161,8 @@ namespace LC::Azoth
 	{
 		for (const RestoreChatInfo& info : infos)
 		{
-			auto entryObj = Core::Instance ().GetEntry (info.EntryID_);
-			qDebug () << Q_FUNC_INFO << info.EntryID_ << entryObj;
+			const auto entryObj = Core::Instance ().GetEntryOrNull (info.EntryID_);
+			qDebug () << info.EntryID_ << entryObj;
 			if (entryObj)
 				RestoreChat (info, *entryObj);
 			else
