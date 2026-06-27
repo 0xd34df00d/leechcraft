@@ -11,12 +11,6 @@
 #include <functional>
 #include <numeric>
 #include <optional>
-
-#if defined __GNUC__
-#include <cstdlib>
-#include <cxxabi.h>
-#endif
-
 #include <QApplication>
 #include <QDir>
 #include <QStringList>
@@ -26,6 +20,7 @@
 #include <QMessageBox>
 #include <QMainWindow>
 #include <util/sll/containerconversions.h>
+#include <util/sll/demangle.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/scopeguards.h>
@@ -947,7 +942,6 @@ namespace LC
 
 		QString TryDemangle (const QString& errorStr)
 		{
-#if defined __GNUC__
 			static const QString marker { "undefined symbol: " };
 			const auto pos = errorStr.indexOf (marker);
 			if (pos == -1)
@@ -958,17 +952,8 @@ namespace LC
 			if (endPos >= 0)
 				mangled = mangled.left (endPos);
 
-			int status = 0;
-			QString result;
-			if (auto rawStr = abi::__cxa_demangle (mangled.toLatin1 ().constData (), 0, 0, &status))
-			{
-				result = QString::fromLatin1 (rawStr);
-				std::free (rawStr);
-			}
-			return result;
-#else
-			return {};
-#endif
+			const auto& demangled = Util::Demangle (mangled.toLatin1 ().constData ());
+			return demangled == mangled ? QString {} : demangled;
 		}
 
 		void TryLoad (Loaders::IPluginLoader_ptr loader)
