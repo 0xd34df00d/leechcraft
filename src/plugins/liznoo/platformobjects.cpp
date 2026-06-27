@@ -11,6 +11,7 @@
 #include <QtDebug>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
+#include <util/sll/demangle.h>
 #include <util/sll/either.h>
 #include <util/sll/util.h>
 #include <util/threads/coro.h>
@@ -43,11 +44,6 @@
 	#pragma message ("Unsupported system")
 #endif
 
-#if __has_include(<cxxabi.h>)
-#include <cxxabi.h>
-#define LC_HAS_ABI 1
-#endif
-
 namespace LC::Liznoo
 {
 	namespace
@@ -61,31 +57,14 @@ namespace LC::Liznoo
 			co_return {};
 		}
 
-#if LC_HAS_ABI
 		template<typename T>
 		void LogSelectedBackend (const char *context, const std::shared_ptr<T>& backend)
 		{
 			if (backend)
-			{
-				[[maybe_unused]] const auto& ref = *backend;
-
-				int status = 0;
-				std::size_t size = 0;
-				const auto str = abi::__cxa_demangle (typeid (ref).name (), NULL, &size, &status);
-				const auto freeGuard = Util::MakeScopeGuard ([str] { std::free (str); });
-
-				qDebug () << context << "selected backend:" << str;
-			}
+				qDebug () << context << "selected backend:" << Util::Demangle (typeid (*backend));
 			else
 				qWarning () << context << "backend is not available";
 		}
-#else
-		// platforms without cxxabi also generally have only one backend anyway
-		template<typename T>
-		void LogSelectedBackend (const char*, const std::shared_ptr<T>&)
-		{
-		}
-#endif
 	}
 
 	Util::ContextTask<void> PlatformObjects::Init ()
