@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "qobjectrefcast.h"
+#include "demangle.h"
 
 namespace LC::Util::detail
 {
@@ -16,7 +17,7 @@ namespace LC::Util::detail
 		const QMessageLogger logger { loc.file_name (), static_cast<int> (loc.line ()), loc.function_name () };
 		logger.critical ("unable to cast %s to %s",
 				object ? object->metaObject ()->className () : "nullptr",
-				target);
+				Demangle (target).toLatin1 ().constData ());
 
 		using namespace std::string_literals;
 		throw BadQObjectCast { "qobject_ref_cast failed at "s + loc.file_name () + ':' + std::to_string (loc.line ()) };
