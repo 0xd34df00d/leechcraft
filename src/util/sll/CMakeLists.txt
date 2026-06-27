@@ -16,6 +16,7 @@ add_util_library (util-sll
 		json.cpp
 		timer.cpp
 		qobjectrefcast.cpp
+		demangle.cpp
 	USES Concurrent Xml
 	)
 
