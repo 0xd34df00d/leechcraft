@@ -47,7 +47,7 @@ namespace LC::Azoth::Sarin
 		bool IsAvailable () const override;
 		ITransferJob* Accept (const IncomingOffer& offer, const QString& savePath) override;
 		void Decline (const IncomingOffer&) override;
-		ITransferJob* SendFile (const QString&, const QString&, const QString&, const QString&) override;
+		ITransferJob* SendFile (ICLEntry&, const QString&, const QString&, const QString&) override;
 
 		void HandleToxThreadChanged (const std::shared_ptr<ToxRunner>&);
 	private:

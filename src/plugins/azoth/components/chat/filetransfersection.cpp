@@ -29,16 +29,14 @@ namespace LC::Azoth
 					this,
 					&FileTransferSection::HandleFileOffered);
 
-			// TODO no need for ToString after transfers manager is ported
-			for (const auto& offer : Transfers_.GetIncomingOffers (Tab_.GetEntryID ().ToString ()))
+			for (const auto& offer : Transfers_.GetIncomingOffers (*e))
 				HandleFileOffered (offer);
 		}
 	}
 
 	void FileTransferSection::HandleFileOffered (const IncomingOffer& offer)
 	{
-		// TODO no need for ToString after transfers manager is ported
-		if (offer.EntryId_ == Tab_.GetEntryID ().ToString ())
+		if (offer.Entry_ == Tab_.GetEntry<ICLEntry> ())
 			Tab_.AddActionPane (*new FileOfferedPane { offer, Transfers_, &Tab_ });
 	}
 }

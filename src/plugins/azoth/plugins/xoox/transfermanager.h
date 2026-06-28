@@ -45,7 +45,7 @@ namespace Xoox
 		bool IsAvailable () const override;
 		ITransferJob* Accept (const IncomingOffer& offer, const QString& savePath) override;
 		void Decline (const IncomingOffer&) override;
-		ITransferJob* SendFile (const QString&, const QString&, const QString&, const QString&) override;
+		ITransferJob* SendFile (ICLEntry&, const QString&, const QString&, const QString&) override;
 
 		GlooxAccount* GetAccount () const;
 	private:

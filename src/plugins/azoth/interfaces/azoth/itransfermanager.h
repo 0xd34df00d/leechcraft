@@ -11,6 +11,8 @@
 #include <variant>
 #include <QObject>
 #include <QString>
+#include <util/sll/trackingpointer.h>
+#include "iclentry.h"
 
 namespace LC::Azoth::Emitters
 {
@@ -80,7 +82,7 @@ namespace LC::Azoth
 		ITransferManager *Manager_;
 		uint64_t JobId_;
 
-		QString EntryId_;
+		Util::TrackingPointer<ICLEntry> Entry_;
 
 		QString Name_;
 		qsizetype Size_;
@@ -121,9 +123,6 @@ namespace LC::Azoth
 
 		/** @brief Requests a file transfer with the remote party.
 		 *
-		 * The entry is identified by the ID, which is the result of
-		 * ICLEntry::GetEntryID().
-		 *
 		 * If the variant is an empty string, or there is no such
 		 * variant, the file should be transferred to the variant with
 		 * the highest priority.
@@ -135,8 +134,7 @@ namespace LC::Azoth
 		 *
 		 * The returned object is owned by the plugin.
 		 *
-		 * @param[in] id The id of the remote party, as
-		 * ICLEntry::GetEntryID().
+		 * @param[in] entry The remote party.
 		 * @param[in] variant The entry variant to send the file to.
 		 * @param[in] path The path to the file that should be
 		 * transferred.
@@ -145,7 +143,7 @@ namespace LC::Azoth
 		 * @return The transfer job object representing this transfer
 		 * and implement ITransferJob.
 		 */
-		virtual ITransferJob* SendFile (const QString& id,
+		virtual ITransferJob* SendFile (ICLEntry& entry,
 				const QString& variant,
 				const QString& path,
 				const QString& comment) = 0;

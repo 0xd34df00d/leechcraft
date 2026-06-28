@@ -85,19 +85,14 @@ namespace Xoox
 		return settings->GetFTMethods () != QXmppTransferJob::NoMethod;
 	}
 
-	ITransferJob* TransferManager::SendFile (const QString& id,
+	ITransferJob* TransferManager::SendFile (ICLEntry& entry,
 			const QString& sourceVar, const QString& name, const QString& comment)
 	{
-		QString target = GlooxCLEntry::JIDFromID (&Account_, id);
-		QString var = sourceVar;
+		auto var = sourceVar;
 		if (var.isEmpty ())
-		{
-			QObject *entryObj = Conn_.GetCLEntry (target, QString ());
-			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-			if (!entry)
-				return nullptr;
-			var = entry->Variants ().value (0);
-		}
+			var = entry.Variants ().value (0);
+
+		auto target = entry.GetConventionalID ().ToString ();
 		if (!var.isEmpty ())
 			target += '/' + var;
 		return new TransferJob { std::unique_ptr<QXmppTransferJob> { Manager_.sendFile (target, name, comment) } };
@@ -129,7 +124,7 @@ namespace Xoox
 		emit Emitter_.fileOffered ({
 					.Manager_ = this,
 					.JobId_ = jobId,
-					.EntryId_ = entry->GetEntryID (),
+					.Entry_ = entry,
 					.Name_ = info.name (),
 					.Size_ = info.size (),
 					.Description_ = info.description (),

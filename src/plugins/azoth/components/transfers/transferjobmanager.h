@@ -36,7 +36,7 @@ namespace Azoth
 		Q_OBJECT
 
 		AvatarsManager * const AvatarsMgr_;
-		QHash<QString, QList<IncomingOffer>> Entry2Incoming_;
+		QHash<const ICLEntry*, QList<IncomingOffer>> Entry2Incoming_;
 	public:
 		explicit TransferJobManager (AvatarsManager*, QObject* = nullptr);
 
@@ -44,7 +44,7 @@ namespace Azoth
 
 		void AcceptOffer (const IncomingOffer&, QString savePath = {});
 		void DeclineOffer (const IncomingOffer&);
-		QList<IncomingOffer> GetIncomingOffers (const QString&);
+		QList<IncomingOffer> GetIncomingOffers (const ICLEntry&);
 
 		struct OutgoingFileOffer
 		{

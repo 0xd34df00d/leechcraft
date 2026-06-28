@@ -75,17 +75,9 @@ namespace Azoth
 				&TransferJobManager::HandleFileOffered);
 	}
 
-	QList<IncomingOffer> TransferJobManager::GetIncomingOffers (const QString& id)
+	QList<IncomingOffer> TransferJobManager::GetIncomingOffers (const ICLEntry& entry)
 	{
-		return Entry2Incoming_ [id];
-	}
-
-	namespace
-	{
-		ICLEntry* GetContact (const QString& id)
-		{
-			return Core::Instance ().GetEntryOrNull (id);
-		}
+		return Entry2Incoming_.value (&entry);
 	}
 
 	void TransferJobManager::HandleJob (ITransferJob *job, const JobContext& context)
@@ -153,8 +145,7 @@ namespace Azoth
 			return;
 		}
 
-		const auto entry = GetContact (offer.EntryId_);
-		if (!entry)
+		if (!offer.Entry_)
 		{
 			DeclineOffer (offer);
 			const auto& e = Util::MakeNotification ("Azoth",
@@ -170,8 +161,8 @@ namespace Azoth
 						.Dir_ = JobContext::In { savePath },
 						.OrigFilename_ = offer.Name_,
 						.Size_ = offer.Size_,
-						.EntryName_ = entry->GetEntryName (),
-						.EntryId_ = entry->GetEntryID (),
+						.EntryName_ = offer.Entry_->GetEntryName (),
+						.EntryId_ = offer.Entry_->GetEntryID (),
 					});
 		else
 		{
@@ -201,7 +192,7 @@ namespace Azoth
 			return false;
 		}
 
-		const auto job = mgr->SendFile (offer.Entry_.GetEntryID (), offer.Variant_, offer.FilePath_, offer.Comment_);
+		const auto job = mgr->SendFile (offer.Entry_, offer.Variant_, offer.FilePath_, offer.Comment_);
 		if (!job)
 		{
 			qWarning () << offer.Entry_.GetHumanReadableID () << "unable to create job";
@@ -222,24 +213,33 @@ namespace Azoth
 
 	void TransferJobManager::Deoffer (const IncomingOffer& offer, DeofferReason reason)
 	{
-		if (Entry2Incoming_ [offer.EntryId_].removeOne (offer))
+		if (Entry2Incoming_ [offer.Entry_.UnsafeGet ()].removeOne (offer))
 			NotifyDeoffer (offer, reason);
+	}
+
+	namespace
+	{
+		QByteArray GetTransferEventId (const IncomingOffer& offer)
+		{
+			const auto accountId = offer.Entry_->GetParentAccount ()->GetAccountID ();
+			return "org.LC.Plugins.Azoth.IncomingFileFrom/" + accountId + '/' + QByteArray::number (offer.JobId_);
+		}
 	}
 
 	void TransferJobManager::NotifyDeoffer (const IncomingOffer& offer, DeofferReason reason)
 	{
-		auto e = Util::MakeNotification ("Azoth", {}, Priority::Info);
-		e.Additional_ [AN::EF::SenderID] = "org.LeechCraft.Azoth";
-		e.Additional_ [AN::EF::EventID] = "org.LC.Plugins.Azoth.IncomingFileFrom/" + offer.EntryId_ + '/' + offer.Name_;
-		e.Additional_ [AN::EF::EventCategory] = AN::CatEventCancel;
-		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
-
 		emit jobDeoffered (offer, reason);
 
-		if (const auto entry = GetContact (offer.EntryId_))
+		if (offer.Entry_)
 		{
-			Core::Instance ().IncreaseUnreadCount (entry, -1);
-			Core::Instance ().CheckFileIcon (offer.EntryId_);
+			auto e = Util::MakeNotification ("Azoth", {}, Priority::Info);
+			e.Additional_ [AN::EF::SenderID] = "org.LeechCraft.Azoth";
+			e.Additional_ [AN::EF::EventID] = GetTransferEventId (offer);
+			e.Additional_ [AN::EF::EventCategory] = AN::CatEventCancel;
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+
+			Core::Instance ().IncreaseUnreadCount (&*offer.Entry_, -1);
+			Core::Instance ().CheckFileIcon (offer.Entry_->GetEntryID ());
 		}
 	}
 
@@ -271,30 +271,29 @@ namespace Azoth
 
 	void TransferJobManager::HandleFileOffered (const IncomingOffer& offer)
 	{
-		emit jobOffered (offer);
-
-		Entry2Incoming_ [offer.EntryId_] << offer;
-
-		const auto entry = GetContact (offer.EntryId_);
-		if (!entry)
+		if (!offer.Entry_)
 		{
-			qWarning () << "unknown contact for" << offer.EntryId_;
+			qWarning () << "offered file from dead entry";
 			return;
 		}
+
+		emit jobOffered (offer);
+
+		Entry2Incoming_ [&*offer.Entry_] << offer;
 
 		const auto e = Util::MakeNotification ("Azoth",
 				tr ("File %1 (%2) offered from %3.")
 					.arg (offer.Name_)
 					.arg (Util::MakePrettySize (offer.Size_))
-					.arg (entry->GetHumanReadableID ()),
+					.arg (offer.Entry_->GetHumanReadableID ()),
 				Priority::Info);
 
-		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry)) >>
-				[this, entry, offer] (Entity e)
+		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, &*offer.Entry_)) >>
+				[this, offer] (Entity e)
 				{
 					e.Additional_ [AN::EF::EventType] = AN::TypeIMIncFile;
-					e.Additional_ [AN::EF::EventID] = "org.LC.Plugins.Azoth.IncomingFileFrom/" + entry->GetEntryID () + "/" + offer.Name_;
-					e.Additional_ [AN::EF::VisualPath] = QStringList { entry->GetEntryName (), offer.Name_ };
+					e.Additional_ [AN::EF::EventID] = GetTransferEventId (offer);
+					e.Additional_ [AN::EF::VisualPath] = QStringList { offer.Entry_->GetEntryName (), offer.Name_ };
 					e.Additional_ [AN::EF::DeltaCount] = 1;
 					e.Additional_ [AN::EF::ExtendedText] = tr ("Incoming file: %1")
 								.arg (offer.Description_.isEmpty () ? offer.Name_ : offer.Description_);
@@ -307,8 +306,8 @@ namespace Azoth
 					GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 				};
 
-		Core::Instance ().IncreaseUnreadCount (entry, 1);
-		Core::Instance ().CheckFileIcon (offer.EntryId_);
+		Core::Instance ().IncreaseUnreadCount (&*offer.Entry_, 1);
+		Core::Instance ().CheckFileIcon (offer.Entry_->GetEntryID ());
 	}
 
 	namespace

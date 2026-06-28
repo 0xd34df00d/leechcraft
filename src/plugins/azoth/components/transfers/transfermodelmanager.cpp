@@ -13,6 +13,7 @@
 #include <util/sll/visitor.h>
 #include <util/xpc/progressmanager.h>
 #include <util/azoth/emitters/transfermanager.h>
+#include <interfaces/azoth/iclentry.h>
 #include "types.h"
 
 namespace LC::Azoth
@@ -26,7 +27,7 @@ namespace LC::Azoth
 		{
 			{ Qt::DecorationRole, [] (const IncomingOfferRow& row) { return QVariant { row.Icon_ }; } },
 			{ Roles::RowType, [] (const IncomingOfferRow&) { return QVariant::fromValue (RowType::Offer); } },
-			{ Roles::EntryId, [] (const IncomingOfferRow& row) { return QVariant { row.Offer_.EntryId_ }; } },
+			{ Roles::Entry, [] (const IncomingOfferRow& row) { return QVariant::fromValue (row.Offer_.Entry_); } },
 			{ Roles::OrigFilename, [] (const IncomingOfferRow& row) { return QVariant { row.Offer_.Name_ }; } },
 			{ Roles::Size, [] (const IncomingOfferRow& row) { return QVariant { row.Offer_.Size_ }; } },
 			{ Roles::FullOffer, [] (const IncomingOfferRow& row) { return QVariant::fromValue (row.Offer_); }}

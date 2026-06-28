@@ -35,7 +35,7 @@ namespace LC::Azoth
 			enum Common
 			{
 				RowType = Util::ProgressManager::MaxRole + 1,
-				EntryId,
+				Entry,
 				OrigFilename,
 				Size,
 

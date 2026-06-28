@@ -8,6 +8,7 @@
 
 #include "filetransfermanager.h"
 #include <QtDebug>
+#include <util/azoth/util.h>
 #include <tox/tox.h>
 #include "toxaccount.h"
 #include "toxthread.h"
@@ -84,20 +85,21 @@ namespace LC::Azoth::Sarin
 		Offers_.remove (offer.JobId_);
 	}
 
-	ITransferJob* FileTransferManager::SendFile (const QString& id, const QString&, const QString& name, const QString&)
+	ITransferJob* FileTransferManager::SendFile (ICLEntry& entry, const QString&, const QString& name, const QString&)
 	{
 		const auto tox = Tox_.lock ();
 		if (!tox)
 		{
 			qWarning () << "Tox thread is not available";
-			return {};
+			return nullptr;
 		}
 
-		const auto contact = Acc_->GetByAzothId (id);
+		// TODO generalize to all Tox contacts with pubkeys
+		const auto contact = qobject_cast<ToxContact*> (entry.GetQObject ());
 		if (!contact)
 		{
-			qWarning () << "unable to find contact by the ID" << id;
-			return {};
+			qWarning () << entry.GetConventionalID () << "is not a ToxContact";
+			return nullptr;
 		}
 
 		const auto transfer = new FileTransferOut { contact->GetPubKey (), name, tox };
@@ -159,7 +161,7 @@ namespace LC::Azoth::Sarin
 		emit Emitter_.fileOffered ({
 					.Manager_ = this,
 					.JobId_ = jobId,
-					.EntryId_ = entry->GetEntryID (),
+					.Entry_ = entry,
 					.Name_ = name,
 					.Size_ = static_cast<qsizetype> (size)
 				});

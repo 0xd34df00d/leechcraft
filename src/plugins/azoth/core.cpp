@@ -1353,14 +1353,14 @@ namespace LC::Azoth
 			RecalculateOnlineForCat (item->parent ());
 		}
 
-		if (!XferJobManager_->GetIncomingOffers (entry->GetEntryID ()).isEmpty ())
+		if (!XferJobManager_->GetIncomingOffers (*entry).isEmpty ())
 			CheckFileIcon (entry->GetEntryID ());
 	}
 
 	void Core::CheckFileIcon (const QString& id)
 	{
 		auto& entry = GetEntry (id);
-		if (XferJobManager_->GetIncomingOffers (id).isEmpty ())
+		if (XferJobManager_->GetIncomingOffers (entry).isEmpty ())
 		{
 			const QString& variant = entry.Variants ().value (0);
 			HandleStatusChanged (&entry, entry.GetStatus (variant), variant);
