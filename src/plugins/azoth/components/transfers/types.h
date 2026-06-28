@@ -13,7 +13,7 @@
 
 namespace LC::Azoth::Transfers
 {
-	enum class DeofferReason
+	enum class DeofferReason : std::uint8_t
 	{
 		Expired,
 		Accepted,
