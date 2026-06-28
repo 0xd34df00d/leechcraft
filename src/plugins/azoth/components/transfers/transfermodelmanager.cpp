@@ -27,7 +27,6 @@ namespace LC::Azoth
 		{
 			{ Qt::DecorationRole, [] (const IncomingOfferRow& row) { return QVariant { row.Icon_ }; } },
 			{ Roles::RowType, [] (const IncomingOfferRow&) { return QVariant::fromValue (RowType::Offer); } },
-			{ Roles::Entry, [] (const IncomingOfferRow& row) { return QVariant::fromValue (row.Offer_.Entry_); } },
 			{ Roles::OrigFilename, [] (const IncomingOfferRow& row) { return QVariant { row.Offer_.Name_ }; } },
 			{ Roles::Size, [] (const IncomingOfferRow& row) { return QVariant { row.Offer_.Size_ }; } },
 			{ Roles::FullOffer, [] (const IncomingOfferRow& row) { return QVariant::fromValue (row.Offer_); }}
