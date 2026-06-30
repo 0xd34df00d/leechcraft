@@ -45,6 +45,7 @@ add_util_library (azoth-util
 		util/azoth/globalstrongestidtracker.cpp
 		util/azoth/util.cpp
 	USES Widgets
+	DEPENDS leechcraft-util-sll
 	)
 
 target_include_directories (leechcraft-azoth-util PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
