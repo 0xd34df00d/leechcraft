@@ -34,7 +34,7 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreFoundation/CFArray.h>
 
-namespace LeechCraft
+namespace LC
 {
 namespace LMP
 {
