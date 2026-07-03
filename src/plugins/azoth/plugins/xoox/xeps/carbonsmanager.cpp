@@ -75,11 +75,17 @@ namespace Xoox
 
 	bool CarbonsManager::CheckMessage (const QXmppMessage& msg)
 	{
+		if (const auto& fromBare = QXmppUtils::jidToBareJid (msg.from ());
+			!fromBare.isEmpty () && fromBare != client ()->configuration ().jidBare ())
+			return false;
+
 		for (const auto& extension : msg.extensions ())
 		{
+			if (extension.attribute ("xmlns") != NsCarbons)
+				continue;
+
 			const auto& tag = extension.tagName ();
-			if ((tag == "received" || tag == "sent") &&
-				extension.attribute ("xmlns") == NsCarbons)
+			if (tag == "received" || tag == "sent")
 			{
 				HandleMessage (extension);
 				return true;
