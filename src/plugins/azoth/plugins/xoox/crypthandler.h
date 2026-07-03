@@ -19,11 +19,7 @@
 class QXmppMessage;
 class QXmppPresence;
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Xoox
+namespace LC::Azoth::Xoox
 {
 	class ClientConnection;
 	class GlooxMessage;
@@ -60,12 +56,5 @@ namespace Xoox
 		bool SetEncryptionEnabled (const QString&, bool);
 		bool IsEncryptionEnabled (const QString&) const;
 #endif
-	private slots:
-		void handleEncryptedMessageReceived (const QString&, const QString&);
-		void handleSignedMessageReceived (const QString&);
-		void handleSignedPresenceReceived (const QString&);
-		void handleInvalidSignatureReceived (const QString&);
 	};
-}
-}
 }

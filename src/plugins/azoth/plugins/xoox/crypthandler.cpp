@@ -16,11 +16,7 @@
 #include "clientconnection.h"
 #include "glooxmessage.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Xoox
+namespace LC::Azoth::Xoox
 {
 	CryptHandler::CryptHandler (ClientConnection *conn)
 	: QObject (conn)
@@ -35,21 +31,21 @@ namespace Xoox
 
 		Conn_->GetClient ()->addExtension (PGPManager_);
 		connect (PGPManager_,
-				SIGNAL (encryptedMessageReceived (QString, QString)),
+				&PgpManager::encryptedMessageReceived,
 				this,
-				SLOT (handleEncryptedMessageReceived (QString, QString)));
+				[this] (const QString& id, const QString& decrypted) { EncryptedMessages_ [id] = decrypted; });
 		connect (PGPManager_,
-				SIGNAL (signedMessageReceived (const QString&)),
+				&PgpManager::signedMessageReceived,
 				this,
-				SLOT (handleSignedMessageReceived (const QString&)));
+				[] {});
 		connect (PGPManager_,
-				SIGNAL (signedPresenceReceived (const QString&)),
+				&PgpManager::signedPresenceReceived,
 				this,
-				SLOT (handleSignedPresenceReceived (const QString&)));
+				[this] (const QString& id) { SignedPresences_ << id; });
 		connect (PGPManager_,
-				SIGNAL (invalidSignatureReceived (const QString&)),
+				&PgpManager::invalidSignatureReceived,
 				this,
-				SLOT (handleInvalidSignatureReceived (const QString&)));
+				[] (const QString& id) { qWarning () << "invalid PGP signature from" << id; });
 #endif
 	}
 
@@ -114,25 +110,4 @@ namespace Xoox
 		return Entries2Crypt_.contains (jid);
 	}
 #endif
-
-	void CryptHandler::handleEncryptedMessageReceived (const QString& id, const QString& decrypted)
-	{
-		EncryptedMessages_ [id] = decrypted;
-	}
-
-	void CryptHandler::handleSignedMessageReceived (const QString&)
-	{
-	}
-
-	void CryptHandler::handleSignedPresenceReceived (const QString& id)
-	{
-		SignedPresences_ << id;
-	}
-
-	void CryptHandler::handleInvalidSignatureReceived (const QString& id)
-	{
-		qDebug () << Q_FUNC_INFO << id;
-	}
-}
-}
 }
