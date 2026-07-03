@@ -30,7 +30,7 @@ namespace LC::Azoth::Xoox
 
 		bool CheckMessage (const QXmppMessage&);
 	private:
-		void HandleMessage (const QXmppElement&);
+		void HandleMessage (const QXmppMessage&);
 	signals:
 		void stateChanged (bool);
 		void stateChangeError (const QXmppIq&);

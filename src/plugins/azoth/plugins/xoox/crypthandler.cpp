@@ -8,6 +8,7 @@
 
 #include "crypthandler.h"
 #include <QtDebug>
+#include <QXmppXmlElement.h>
 
 #ifdef ENABLE_CRYPT
 #include "xeps/pgpmanager.h"
@@ -71,12 +72,9 @@ namespace LC::Azoth::Xoox
 
 		const auto& body = msg.body ();
 
-		QXmppElement crypt;
-		crypt.setTagName ("x");
-		crypt.setAttribute ("xmlns", "jabber:x:encrypted");
-		crypt.setValue (PGPManager_->EncryptBody (key, body.toUtf8 ()));
-
-		msg.setExtensions (msg.extensions () << crypt);
+		QXmpp::Xml::Element crypt { "x", "jabber:x:encrypted" };
+		crypt.setText (PGPManager_->EncryptBody (key, body.toUtf8 ()));
+		msg.extensions ().add (std::move (crypt));
 
 		msg.setBody (tr ("This message is encrypted. Please decrypt "
 						"it to view the original contents."));

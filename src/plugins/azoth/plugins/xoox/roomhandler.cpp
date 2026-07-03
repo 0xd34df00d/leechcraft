@@ -16,8 +16,11 @@
 #include <QXmppClient.h>
 #include <QXmppDiscoveryManager.h>
 #include <QXmppMucManager.h>
+#include <QXmppMucForms.h>
 #include <QXmppTask.h>
 #include <QXmppVCardIq.h>
+#include <QXmppXmlElement.h>
+#include <QXmppXmlRegistry.h>
 #include <util/sll/eithercont.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
@@ -40,7 +43,33 @@ namespace Azoth
 {
 namespace Xoox
 {
-	const QString NSData = "jabber:x:data";
+	namespace
+	{
+		struct MessageDataForm
+		{
+			static constexpr std::tuple XmlTag { u"x", u"jabber:x:data" };
+
+			QXmppDataForm Form_;
+
+			bool parse (const QDomElement& el)
+			{
+				Form_.parse (el);
+				return !Form_.isNull ();
+			}
+
+			void toXml (QXmlStreamWriter *w) const
+			{
+				Form_.toXml (w);
+			}
+		};
+
+		[[maybe_unused]]
+		const bool Registered = []
+		{
+			QXmpp::Xml::Registry::registerElement<MessageDataForm> (QXmpp::Xml::Scope::Message);
+			return true;
+		} ();
+	}
 
 	RoomHandler::RoomHandler (const QString& jid,
 			const QString& ourNick,
@@ -267,27 +296,15 @@ namespace Xoox
 
 	void RoomHandler::HandleMessageExtensions (const QXmppMessage& msg)
 	{
-		for (const auto& elem : msg.extensions ())
-		{
-			const auto& xmlns = elem.attribute ("xmlns");
-			if (xmlns == NSData)
-			{
-				auto df = std::make_unique<QXmppDataForm> ();
-				df->parse (XooxUtil::XmppElem2DomElem (elem));
-				if (df->isNull ())
-					qWarning () << "unable to parse form from" << msg.from ();
-				else
-					HandlePendingForm (std::move (df), msg.from ());
-			}
-			else
-			{
-				QString str;
-				QXmlStreamWriter w (&str);
-				w.setAutoFormatting (true);
-				elem.toXml (&w);
-				qWarning () << "unhandled <x> element" << str;
-			}
-		}
+		if (const auto& voiceRequest = msg.mucVoiceRequest ())
+			HandlePendingForm (std::make_unique<QXmppDataForm> (voiceRequest->toDataForm ()), msg.from ());
+
+		for (const auto& form : msg.extensions ().getAll<MessageDataForm> ())
+			HandlePendingForm (std::make_unique<QXmppDataForm> (form.Form_), msg.from ());
+
+		for (const auto& item : msg.extensions ())
+			if (const auto elem = std::any_cast<QXmpp::Xml::Element> (&item))
+				qWarning () << "unhandled <x> element" << elem->tag () << elem->xmlns ();
 	}
 
 	void RoomHandler::HandlePendingForm (std::unique_ptr<QXmppDataForm> form, const QString& from)

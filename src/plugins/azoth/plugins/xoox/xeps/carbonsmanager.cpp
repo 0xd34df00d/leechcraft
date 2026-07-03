@@ -7,18 +7,84 @@
  **********************************************************************/
 
 #include "carbonsmanager.h"
+#include <optional>
 #include <QDomElement>
 #include <QXmppClient.h>
 #include <QXmppMessage.h>
 #include <QXmppUtils.h>
+#include <QXmppXmlRegistry.h>
 #include <util/sll/qtutil.h>
-#include "util.h"
 
 namespace LC::Azoth::Xoox
 {
 	namespace
 	{
 		const QString NsCarbons = "urn:xmpp:carbons:2"_qs;
+
+		std::optional<QXmppMessage> UnwrapForwarded (const QDomElement& wrapper)
+		{
+			const auto& forwarded = wrapper.firstChildElement ("forwarded"_qs);
+			const auto& message = forwarded.firstChildElement ("message"_qs);
+			if (message.isNull ())
+				return {};
+
+			QXmppMessage result;
+			result.parse (message);
+
+			if (const auto& delay = forwarded.firstChildElement ("delay"_qs);
+				!delay.isNull ())
+				result.setStamp (QXmppUtils::datetimeFromString (delay.attribute ("stamp"_qs)).toLocalTime ());
+
+			return result;
+		}
+
+		struct CarbonReceived
+		{
+			static constexpr std::tuple XmlTag { u"received", u"urn:xmpp:carbons:2" };
+
+			QXmppMessage Msg_;
+
+			bool parse (const QDomElement& el)
+			{
+				const auto& msg = UnwrapForwarded (el);
+				if (msg)
+					Msg_ = *msg;
+				return msg.has_value ();
+			}
+
+			void toXml (QXmlStreamWriter*) const
+			{
+				throw std::runtime_error { "carbons should never be serialized this way" };
+			}
+		};
+
+		struct CarbonSent
+		{
+			static constexpr std::tuple XmlTag { u"sent", u"urn:xmpp:carbons:2" };
+
+			QXmppMessage Msg_;
+
+			bool parse (const QDomElement& el)
+			{
+				const auto& msg = UnwrapForwarded (el);
+				if (msg)
+					Msg_ = *msg;
+				return msg.has_value ();
+			}
+
+			void toXml (QXmlStreamWriter*) const
+			{
+				throw std::runtime_error { "carbons should never be serialized this way" };
+			}
+		};
+
+		[[maybe_unused]]
+		const bool Registered = []
+		{
+			QXmpp::Xml::Registry::registerElement<CarbonReceived> (QXmpp::Xml::Scope::Message);
+			QXmpp::Xml::Registry::registerElement<CarbonSent> (QXmpp::Xml::Scope::Message);
+			return true;
+		} ();
 	}
 
 	QStringList CarbonsManager::discoveryFeatures () const
@@ -77,25 +143,23 @@ namespace LC::Azoth::Xoox
 			!fromBare.isEmpty () && fromBare != client ()->configuration ().jidBare ())
 			return false;
 
-		for (const auto& extension : msg.extensions ())
+		if (const auto& received = msg.extensions ().get<CarbonReceived> ())
 		{
-			if (extension.attribute ("xmlns"_qs) != NsCarbons)
-				continue;
+			HandleMessage (received->Msg_);
+			return true;
+		}
 
-			const auto& tag = extension.tagName ();
-			if (tag == "received"_qs || tag == "sent"_qs)
-			{
-				HandleMessage (extension);
-				return true;
-			}
+		if (const auto& sent = msg.extensions ().get<CarbonSent> ())
+		{
+			HandleMessage (sent->Msg_);
+			return true;
 		}
 
 		return false;
 	}
 
-	void CarbonsManager::HandleMessage (const QXmppElement& extElem)
+	void CarbonsManager::HandleMessage (const QXmppMessage& msg)
 	{
-		const auto& msg = XooxUtil::Forwarded2Message (extElem);
 		if (msg.to ().isEmpty ())
 			return;
 
