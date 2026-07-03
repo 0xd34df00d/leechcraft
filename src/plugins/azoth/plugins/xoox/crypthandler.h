@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QObject>
 #include <QSet>
 #include <QHash>
@@ -30,7 +31,7 @@ namespace LC::Azoth::Xoox
 
 	class CryptHandler : public QObject
 	{
-		Q_OBJECT
+		Q_DECLARE_TR_FUNCTIONS (LC::Azoth::Xoox::CryptHandler)
 
 		ClientConnection *Conn_;
 
