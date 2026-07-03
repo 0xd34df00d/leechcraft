@@ -10,17 +10,15 @@
 #include <QDomElement>
 #include <QXmppClient.h>
 #include <QXmppMessage.h>
+#include <QXmppUtils.h>
+#include <util/sll/qtutil.h>
 #include "util.h"
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Xoox
+namespace LC::Azoth::Xoox
 {
 	namespace
 	{
-		const QString NsCarbons { "urn:xmpp:carbons:2" };
+		const QString NsCarbons = "urn:xmpp:carbons:2"_qs;
 	}
 
 	QStringList CarbonsManager::discoveryFeatures () const
@@ -30,12 +28,12 @@ namespace Xoox
 
 	bool CarbonsManager::handleStanza (const QDomElement& stanza)
 	{
-		if (stanza.tagName () == "iq" &&
-				stanza.attribute ("id") == LastReqId_)
+		if (stanza.tagName () == "iq"_qs &&
+				stanza.attribute ("id"_qs) == LastReqId_)
 		{
 			LastReqId_.clear ();
 
-			if (stanza.attribute ("type") == "result")
+			if (stanza.attribute ("type"_qs) == "result"_qs)
 			{
 				LastConfirmedState_ = LastReqState_;
 				emit stateChanged (LastConfirmedState_);
@@ -58,8 +56,8 @@ namespace Xoox
 		QXmppIq iq { QXmppIq::Set };
 
 		QXmppElement elem;
-		elem.setTagName (enabled ? "enable" : "disable");
-		elem.setAttribute ("xmlns", NsCarbons);
+		elem.setTagName (enabled ? "enable"_qs : "disable"_qs);
+		elem.setAttribute ("xmlns"_qs, NsCarbons);
 		iq.setExtensions ({ elem });
 
 		client ()->sendPacket (iq);
@@ -81,11 +79,11 @@ namespace Xoox
 
 		for (const auto& extension : msg.extensions ())
 		{
-			if (extension.attribute ("xmlns") != NsCarbons)
+			if (extension.attribute ("xmlns"_qs) != NsCarbons)
 				continue;
 
 			const auto& tag = extension.tagName ();
-			if (tag == "received" || tag == "sent")
+			if (tag == "received"_qs || tag == "sent"_qs)
 			{
 				HandleMessage (extension);
 				return true;
@@ -98,8 +96,8 @@ namespace Xoox
 	void CarbonsManager::ExcludeMessage (QXmppMessage& msg)
 	{
 		QXmppElement privElem;
-		privElem.setTagName ("private");
-		privElem.setAttribute ("xmlns", NsCarbons);
+		privElem.setTagName ("private"_qs);
+		privElem.setAttribute ("xmlns"_qs, NsCarbons);
 
 		auto extensions = msg.extensions ();
 		extensions.append (privElem);
@@ -114,6 +112,4 @@ namespace Xoox
 
 		emit gotMessage (msg);
 	}
-}
-}
 }

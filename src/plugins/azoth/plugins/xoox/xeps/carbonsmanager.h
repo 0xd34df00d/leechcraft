@@ -12,23 +12,18 @@
 
 class QXmppMessage;
 
-namespace LC
-{
-namespace Azoth
-{
-namespace Xoox
+namespace LC::Azoth::Xoox
 {
 	class CarbonsManager : public QXmppClientExtension
 	{
 		Q_OBJECT
 
 		QString LastReqId_;
-		bool LastReqState_;
-
+		bool LastReqState_ = false;
 		bool LastConfirmedState_ = false;
 	public:
-		QStringList discoveryFeatures () const;
-		bool handleStanza (const QDomElement& stanza);
+		QStringList discoveryFeatures () const override;
+		bool handleStanza (const QDomElement& stanza) override;
 
 		void SetEnabled (bool);
 		bool IsEnabled () const;
@@ -44,6 +39,4 @@ namespace Xoox
 
 		void gotMessage (const QXmppMessage&);
 	};
-}
-}
 }
