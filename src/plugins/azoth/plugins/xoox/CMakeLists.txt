@@ -97,7 +97,6 @@ LC_DEFINE_PLUGIN (
 		xep0313prefsdialog.cpp
 		xep0313modelmanager.cpp
 		xeps/xep0313reqiq.cpp
-		xep0334utils.cpp
 		xeps/carbonsmanager.cpp
 		xeps/pingmanager.cpp
 		pingreplyobject.cpp

@@ -63,7 +63,6 @@
 #include "xeps/xep0313manager.h"
 #include "xeps/carbonsmanager.h"
 #include "xeps/pingmanager.h"
-#include "xep0334utils.h"
 #include "sslerrorshandler.h"
 #include "clientconnectionextensionsmanager.h"
 #include "xeps/riexmanager.h"
@@ -583,9 +582,10 @@ namespace Xoox
 		if (msgObj->IsOTRMessage ())
 		{
 			CarbonsManager_->ExcludeMessage (msg);
-			Xep0334::SetHint (msg, Xep0334::MessageHint::NoCopies);
-			Xep0334::SetHint (msg, Xep0334::MessageHint::NoPermStorage);
-			Xep0334::SetHint (msg, Xep0334::MessageHint::NoStorage);
+			msg.setPrivate (true);
+			msg.addHint (QXmppMessage::NoCopy);
+			msg.addHint (QXmppMessage::NoPermanentStore);
+			msg.addHint (QXmppMessage::NoStore);
 		}
 
 		Client_->sendPacket (msg);
