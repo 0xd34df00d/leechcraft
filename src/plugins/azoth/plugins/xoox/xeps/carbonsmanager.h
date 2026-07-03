@@ -29,8 +29,6 @@ namespace LC::Azoth::Xoox
 		bool IsEnabled () const;
 
 		bool CheckMessage (const QXmppMessage&);
-
-		void ExcludeMessage (QXmppMessage&);
 	private:
 		void HandleMessage (const QXmppElement&);
 	signals:

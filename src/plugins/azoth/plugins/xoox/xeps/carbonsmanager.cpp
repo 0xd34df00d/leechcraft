@@ -93,17 +93,6 @@ namespace LC::Azoth::Xoox
 		return false;
 	}
 
-	void CarbonsManager::ExcludeMessage (QXmppMessage& msg)
-	{
-		QXmppElement privElem;
-		privElem.setTagName ("private"_qs);
-		privElem.setAttribute ("xmlns"_qs, NsCarbons);
-
-		auto extensions = msg.extensions ();
-		extensions.append (privElem);
-		msg.setExtensions (extensions);
-	}
-
 	void CarbonsManager::HandleMessage (const QXmppElement& extElem)
 	{
 		const auto& msg = XooxUtil::Forwarded2Message (extElem);

@@ -581,7 +581,6 @@ namespace Xoox
 
 		if (msgObj->IsOTRMessage ())
 		{
-			CarbonsManager_->ExcludeMessage (msg);
 			msg.setPrivate (true);
 			msg.addHint (QXmppMessage::NoCopy);
 			msg.addHint (QXmppMessage::NoPermanentStore);
