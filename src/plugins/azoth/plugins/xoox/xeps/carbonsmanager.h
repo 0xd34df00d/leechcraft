@@ -14,6 +14,10 @@ class QXmppMessage;
 
 namespace LC::Azoth::Xoox
 {
+	/* We roll our own CarbonsManager instead of the QXmpp one since
+	 * the QXmpp one doesn't allow toggling its enabled state without
+	 * reconnects.
+	 */
 	class CarbonsManager : public QXmppClientExtension
 	{
 		Q_OBJECT
