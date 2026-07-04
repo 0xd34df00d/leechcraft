@@ -119,6 +119,16 @@ namespace Xoox
 		const auto& info = job->fileInfo ();
 
 		const auto jobId = JobIdGen_++;
+
+		connect (rawJob,
+				&QXmppTransferJob::stateChanged,
+				this,
+				[this, jobId] (QXmppTransferJob::State state)
+				{
+					if (state == QXmppTransferJob::FinishedState && PendingJobs_.erase (jobId))
+						emit Emitter_.offerRevoked (jobId);
+				});
+
 		PendingJobs_ [jobId] = std::move (job);
 
 		emit Emitter_.fileOffered ({
