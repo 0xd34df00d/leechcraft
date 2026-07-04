@@ -86,7 +86,7 @@ namespace Azoth
 						}
 					}
 
-					qWarning () << "offerRevoked for unknown job" << jobId << dynamic_cast<QObject*> (mgr);
+					qWarning () << "offerRevoked for unknown job" << jobId << dynamic_cast<QObject*> (&mgr);
 				});
 
 		connect (&account.GetAccountEmitter (),
