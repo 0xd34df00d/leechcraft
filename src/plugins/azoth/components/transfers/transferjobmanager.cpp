@@ -46,29 +46,24 @@ namespace Azoth
 
 	void TransferJobManager::AddAccountManager (QObject *mgrObj)
 	{
-		const auto mgr = qobject_cast<ITransferManager*> (mgrObj);
-		if (!mgr)
-		{
-			qWarning () << mgrObj << "is not a ITransferManager";
-			return;
-		}
+		auto& mgr = qobject_ref_cast<ITransferManager> (mgrObj);
 
-		connect (mgrObj,
+		connect (&mgrObj,
 				&QObject::destroyed,
 				this,
-				[this, mgr]
+				[this, &mgr]
 				{
 					for (auto& entryIncomingOffers : Entry2Incoming_)
 					{
 						const auto it = std::ranges::partition (entryIncomingOffers,
-								[mgr] (const IncomingOffer& offer) { return offer.Manager_ != mgr; });
+								[&mgr] (const IncomingOffer& offer) { return offer.Manager_ != &mgr; });
 						for (const auto& offer : it)
 							NotifyDeoffer (offer, DeofferReason::Expired);
 						entryIncomingOffers.erase (it.begin (), it.end ());
 					}
 				});
 
-		const auto& emitter = mgr->GetTransferManagerEmitter ();
+		const auto& emitter = mgr.GetTransferManagerEmitter ();
 		connect (&emitter,
 				&Emitters::TransferManager::fileOffered,
 				this,
@@ -76,11 +71,11 @@ namespace Azoth
 		connect (&emitter,
 				&Emitters::TransferManager::offerRevoked,
 				this,
-				[this, mgr] (uint64_t jobId)
+				[this, &mgr] (uint64_t jobId)
 				{
 					for (auto& offers : Entry2Incoming_)
 						for (const auto& offer : offers)
-							if (offer.JobId_ == jobId && offer.Manager_ == mgr)
+							if (offer.JobId_ == jobId && offer.Manager_ == &mgr)
 							{
 								NotifyDeoffer (offer, DeofferReason::Revoked);
 								return;
