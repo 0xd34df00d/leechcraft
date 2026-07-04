@@ -40,13 +40,29 @@ namespace LC::Azoth::Emitters
 	public:
 		using QObject::QObject;
 	signals:
-		/** @brief Notifies about incoming transfer request.
+		/** @brief Notifies about incoming file transfer offer.
 		 *
 		 * This signal is emitted by the transfer manager
-		 * whenever another party issues a file transfer request.
+		 * whenever another party issues a file transfer offer.
 		 *
 		 * @param[out] offer The file transfer offer.
+		 *
+		 * @sa offerRevoked
 		 */
 		void fileOffered (const IncomingOffer& offer);
+
+		/** @brief Notifies the offer is no longer available.
+		 *
+		 * This signal is emitted by the transfer manager
+		 * whenever the offer is no longer available, for instance,
+		 * because another party revokes a file transfer offer,
+		 * or another party is destroyed.
+		 *
+		 * @param[out] jobId The ID of the offer being revoked,
+		 * matching `IncomingOffer::JobId_`.
+		 *
+		 * @sa fileOffered
+		 */
+		void offerRevoked (uint64_t jobId);
 	};
 }
