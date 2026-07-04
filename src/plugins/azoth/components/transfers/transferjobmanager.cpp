@@ -75,12 +75,16 @@ namespace Azoth
 				[this, &mgr] (uint64_t jobId)
 				{
 					for (auto& offers : Entry2Incoming_)
-						for (const auto& offer : offers)
-							if (offer.JobId_ == jobId && offer.Manager_ == &mgr)
-							{
-								NotifyDeoffer (offer, DeofferReason::Revoked);
-								return;
-							}
+					{
+						const auto pos = std::ranges::find_if (offers,
+								[&] (const IncomingOffer& offer) { return offer.JobId_ == jobId && offer.Manager_ == &mgr; });
+						if (pos != offers.end ())
+						{
+							NotifyDeoffer (*pos, DeofferReason::Revoked);
+							offers.erase (pos);
+							return;
+						}
+					}
 
 					qWarning () << "offerRevoked for unknown job" << jobId << dynamic_cast<QObject*> (mgr);
 				});
