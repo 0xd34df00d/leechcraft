@@ -40,7 +40,7 @@ namespace Azoth
 	public:
 		explicit TransferJobManager (AvatarsManager*, QObject* = nullptr);
 
-		void AddAccountManager (QObject*);
+		void AddAccountManager (IAccount&, QObject&);
 
 		void AcceptOffer (const IncomingOffer&, QString savePath = {});
 		void DeclineOffer (const IncomingOffer&);

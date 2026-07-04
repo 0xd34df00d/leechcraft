@@ -1836,7 +1836,7 @@ namespace LC::Azoth
 		}
 
 		if (const auto xferMgr = account->GetTransferManager ())
-			XferJobManager_->AddAccountManager (xferMgr);
+			XferJobManager_->AddAccountManager (*account, *xferMgr);
 
 		CallManager_->AddAccount (account->GetQObject ());
 

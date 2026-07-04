@@ -16,6 +16,7 @@
 #include <interfaces/an/entityfields.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
+#include <util/sll/qobjectrefcast.h>
 #include <util/sll/visitor.h>
 #include <util/threads/futures.h>
 #include <util/xpc/notificationactionhandler.h>
@@ -44,7 +45,7 @@ namespace Azoth
 	{
 	}
 
-	void TransferJobManager::AddAccountManager (QObject *mgrObj)
+	void TransferJobManager::AddAccountManager (IAccount& account, QObject& mgrObj)
 	{
 		auto& mgr = qobject_ref_cast<ITransferManager> (mgrObj);
 
@@ -82,6 +83,20 @@ namespace Azoth
 							}
 
 					qWarning () << "offerRevoked for unknown job" << jobId << dynamic_cast<QObject*> (mgr);
+				});
+
+		connect (&account.GetAccountEmitter (),
+				&Emitters::Account::removedCLItems,
+				this,
+				[this] (const QList<ICLEntry*>& entries)
+				{
+					for (const auto entry : entries)
+						for (const auto& offer : Entry2Incoming_.take (entry))
+						{
+							if (offer.Manager_)
+								offer.Manager_->Decline (offer);
+							NotifyDeoffer (offer, DeofferReason::Expired);
+						}
 				});
 	}
 
