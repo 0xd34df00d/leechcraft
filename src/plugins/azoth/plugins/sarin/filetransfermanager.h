@@ -51,6 +51,7 @@ namespace LC::Azoth::Sarin
 
 		void HandleToxThreadChanged (const std::shared_ptr<ToxRunner>&);
 	private:
+		void HandleFileControl (uint32_t friendNum, uint32_t fileNum, int control);
 		void HandleRequest (uint32_t, Pubkey, uint32_t, uint64_t, const QString&);
 	signals:
 		// TODO handle these signals in this Manager instead of re-emitting them

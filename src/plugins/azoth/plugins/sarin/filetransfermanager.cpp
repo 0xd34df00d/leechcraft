@@ -124,7 +124,7 @@ namespace LC::Azoth::Sarin
 		connect (&*tox,
 				&ToxRunner::gotFileControl,
 				this,
-				&FileTransferManager::gotFileControl);
+				&FileTransferManager::HandleFileControl);
 		connect (&*tox,
 				&ToxRunner::gotData,
 				this,
@@ -137,6 +137,20 @@ namespace LC::Azoth::Sarin
 				&ToxRunner::requested,
 				this,
 				&FileTransferManager::HandleRequest);
+	}
+
+	void FileTransferManager::HandleFileControl (uint32_t friendNum, uint32_t fileNum, int control)
+	{
+		if (control == TOX_FILE_CONTROL_CANCEL)
+			for (auto it = Offers_.begin (); it != Offers_.end (); ++it)
+				if (it->FriendNum_ == friendNum && it->FileNum_ == fileNum)
+				{
+					emit Emitter_.offerRevoked (it.key ());
+					Offers_.erase (it);
+					return;
+				}
+
+		emit gotFileControl (friendNum, fileNum, control);
 	}
 
 	void FileTransferManager::HandleRequest (uint32_t friendNum,
