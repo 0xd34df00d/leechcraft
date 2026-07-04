@@ -18,6 +18,7 @@ namespace LC::Azoth::Transfers
 		Expired,
 		Accepted,
 		Declined,
+		Revoked,
 	};
 
 	struct JobContext

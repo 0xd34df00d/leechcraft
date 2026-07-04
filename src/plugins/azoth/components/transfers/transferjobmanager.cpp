@@ -73,6 +73,21 @@ namespace Azoth
 				&Emitters::TransferManager::fileOffered,
 				this,
 				&TransferJobManager::HandleFileOffered);
+		connect (&emitter,
+				&Emitters::TransferManager::offerRevoked,
+				this,
+				[this, mgr] (uint64_t jobId)
+				{
+					for (auto& offers : Entry2Incoming_)
+						for (const auto& offer : offers)
+							if (offer.JobId_ == jobId && offer.Manager_ == mgr)
+							{
+								NotifyDeoffer (offer, DeofferReason::Revoked);
+								return;
+							}
+
+					qWarning () << "offerRevoked for unknown job" << jobId << dynamic_cast<QObject*> (mgr);
+				});
 	}
 
 	QList<IncomingOffer> TransferJobManager::GetIncomingOffers (const ICLEntry& entry)
