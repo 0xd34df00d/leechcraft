@@ -26,6 +26,7 @@
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
 #include "util/azoth/emitters/transfermanager.h"
+#include "util/azoth/util.h"
 #include "components/dialogs/filesenddialog.h"
 #include "components/util/misc.h"
 #include "../../core.h"
@@ -229,14 +230,14 @@ namespace Azoth
 		const auto mgr = qobject_cast<ITransferManager*> (acc->GetTransferManager ());
 		if (!mgr)
 		{
-			qWarning () << offer.Entry_.GetHumanReadableID () << "does not support transfers";
+			qWarning () << offer.Entry_.GetGlobalStrongestID () << "does not support transfers";
 			return false;
 		}
 
 		const auto job = mgr->SendFile (offer.Entry_, offer.Variant_, offer.FilePath_, offer.Comment_);
 		if (!job)
 		{
-			qWarning () << offer.Entry_.GetHumanReadableID () << "unable to create job";
+			qWarning () << offer.Entry_.GetGlobalStrongestID () << "unable to create job";
 			return false;
 		}
 
