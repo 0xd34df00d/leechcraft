@@ -31,7 +31,7 @@ namespace LC::Azoth::Transfers
 		qint64 Size_;
 
 		QString EntryName_;
-		QString EntryId_;
+		QByteArray EventId_;
 	};
 
 	QString GetFilename (const JobContext&);

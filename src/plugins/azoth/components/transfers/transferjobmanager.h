@@ -37,6 +37,8 @@ namespace Azoth
 
 		AvatarsManager * const AvatarsMgr_;
 		QHash<const ICLEntry*, QList<IncomingOffer>> Entry2Incoming_;
+
+		uint64_t OutgoingJobId_ = 0;
 	public:
 		explicit TransferJobManager (AvatarsManager*, QObject* = nullptr);
 
@@ -55,6 +57,8 @@ namespace Azoth
 		};
 		bool SendFile (const OutgoingFileOffer&);
 	private:
+		QByteArray GenerateTransferEventId (const OutgoingFileOffer&);
+
 		void HandleJob (ITransferJob*, const Transfers::JobContext&);
 
 		void Deoffer (const IncomingOffer&, Transfers::DeofferReason);

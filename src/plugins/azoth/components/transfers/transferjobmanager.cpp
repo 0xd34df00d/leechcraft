@@ -109,6 +109,12 @@ namespace Azoth
 		return Entry2Incoming_.value (&entry);
 	}
 
+	QByteArray TransferJobManager::GenerateTransferEventId (const OutgoingFileOffer& offer)
+	{
+		const auto accountId = offer.Entry_.GetParentAccount ()->GetAccountID ();
+		return "org.LC.Plugins.Azoth.OutgoingTransferTo/" + accountId + '/' + QByteArray::number (OutgoingJobId_++);
+	}
+
 	void TransferJobManager::HandleJob (ITransferJob *job, const JobContext& context)
 	{
 		emit jobInitialized (*job, context);
@@ -161,6 +167,12 @@ namespace Azoth
 					TransferJobManager::tr ("Select save path"),
 					dirPath);
 		}
+
+		QByteArray GetTransferEventId (const IncomingOffer& offer)
+		{
+			const auto accountId = offer.Entry_->GetParentAccount ()->GetAccountID ();
+			return "org.LC.Plugins.Azoth.IncomingFileFrom/" + accountId + '/' + QByteArray::number (offer.JobId_);
+		}
 	}
 
 	void TransferJobManager::AcceptOffer (const IncomingOffer& offer, QString savePath)
@@ -191,7 +203,7 @@ namespace Azoth
 						.OrigFilename_ = offer.Name_,
 						.Size_ = offer.Size_,
 						.EntryName_ = offer.Entry_->GetEntryName (),
-						.EntryId_ = offer.Entry_->GetEntryID (),
+						.EventId_ = GetTransferEventId (offer),
 					});
 		else
 		{
@@ -235,7 +247,7 @@ namespace Azoth
 					.OrigFilename_ = info.fileName (),
 					.Size_ = info.size (),
 					.EntryName_ = offer.Entry_.GetEntryName (),
-					.EntryId_ = offer.Entry_.GetEntryID (),
+					.EventId_ = GenerateTransferEventId (offer),
 				});
 		return true;
 	}
@@ -244,15 +256,6 @@ namespace Azoth
 	{
 		if (Entry2Incoming_ [offer.Entry_.UnsafeGet ()].removeOne (offer))
 			NotifyDeoffer (offer, reason);
-	}
-
-	namespace
-	{
-		QByteArray GetTransferEventId (const IncomingOffer& offer)
-		{
-			const auto accountId = offer.Entry_->GetParentAccount ()->GetAccountID ();
-			return "org.LC.Plugins.Azoth.IncomingFileFrom/" + accountId + '/' + QByteArray::number (offer.JobId_);
-		}
 	}
 
 	void TransferJobManager::NotifyDeoffer (const IncomingOffer& offer, DeofferReason reason)
@@ -289,7 +292,7 @@ namespace Azoth
 				"org.LeechCraft.Azoth",
 				AN::CatDownloads,
 				AN::TypeDownloadFinished,
-				"org.LC.Plugins.Azoth.IncomingFileFinished/" + context.EntryId_ + '/' + context.OrigFilename_,
+				context.EventId_ + "/Finished",
 				{ context.EntryName_, context.OrigFilename_ });
 		auto nh = new Util::NotificationActionHandler { e, this };
 		nh->AddFunction (tr ("Open"), opener);
