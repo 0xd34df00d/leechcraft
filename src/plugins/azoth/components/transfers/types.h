@@ -35,4 +35,6 @@ namespace LC::Azoth::Transfers
 	};
 
 	QString GetFilename (const JobContext&);
+
+	QByteArray GetFinishedEventId (const JobContext&);
 }

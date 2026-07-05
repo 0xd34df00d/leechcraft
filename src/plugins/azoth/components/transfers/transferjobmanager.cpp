@@ -292,7 +292,7 @@ namespace Azoth
 				"org.LeechCraft.Azoth",
 				AN::CatDownloads,
 				AN::TypeDownloadFinished,
-				context.EventId_ + "/Finished",
+				Transfers::GetFinishedEventId (context),
 				{ context.EntryName_, context.OrigFilename_ });
 		auto nh = new Util::NotificationActionHandler { e, this };
 		nh->AddFunction (tr ("Open"), opener);

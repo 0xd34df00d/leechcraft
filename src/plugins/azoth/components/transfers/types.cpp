@@ -18,4 +18,9 @@ namespace LC::Azoth::Transfers
 				[] (JobContext::In in) { return QFileInfo { in.SavePath_ }.fileName (); },
 				[&] (JobContext::Out) { return context.OrigFilename_; });
 	}
+
+	QByteArray GetFinishedEventId (const JobContext& ctx)
+	{
+		return ctx.EventId_ + "/Finished";
+	}
 }
