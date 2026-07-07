@@ -1440,9 +1440,8 @@ namespace Azoth
 		}
 
 		auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ();
-		const auto& hrId = entry->GetHumanReadableID ();
 
-		const auto& e = Util::MakeANRule (tr ("Notify when %1 changes state").arg (hrId),
+		const auto& e = Util::MakeANRule (tr ("Notify when %1 changes state").arg (entry->GetHumanReadableAddress ()),
 				"org.LeechCraft.Azoth",
 				AN::CatIM,
 				{ AN::TypeIMStatusChange },
@@ -1469,9 +1468,8 @@ namespace Azoth
 		}
 
 		auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ();
-		const auto& hrId = entry->GetHumanReadableID ();
 
-		const auto& e = Util::MakeANRule (tr ("Notify when %1 becomes online").arg (hrId),
+		const auto& e = Util::MakeANRule (tr ("Notify when %1 becomes online").arg (entry->GetHumanReadableAddress ()),
 				"org.LeechCraft.Azoth",
 				AN::CatIM,
 				{ AN::TypeIMStatusChange },
