@@ -284,7 +284,7 @@ namespace Azoth
 						return
 						{
 							RIEXItem::AAdd,
-							toShare->GetHumanReadableID (),
+							toShare->GetHumanReadableAddress (),
 							toShare->GetEntryName (),
 							shareGroups ? toShare->Groups () : QStringList ()
 						};
