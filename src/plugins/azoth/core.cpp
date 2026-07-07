@@ -1354,12 +1354,11 @@ namespace LC::Azoth
 		}
 
 		if (!XferJobManager_->GetIncomingOffers (*entry).isEmpty ())
-			CheckFileIcon (entry->GetEntryID ());
+			CheckFileIcon (*entry);
 	}
 
-	void Core::CheckFileIcon (const QString& id)
+	void Core::CheckFileIcon (ICLEntry& entry)
 	{
-		auto& entry = GetEntry (id);
 		if (XferJobManager_->GetIncomingOffers (entry).isEmpty ())
 		{
 			const QString& variant = entry.Variants ().value (0);

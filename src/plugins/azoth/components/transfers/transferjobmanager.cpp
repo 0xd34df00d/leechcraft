@@ -272,7 +272,7 @@ namespace Azoth
 			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 
 			Core::Instance ().IncreaseUnreadCount (&*offer.Entry_, -1);
-			Core::Instance ().CheckFileIcon (offer.Entry_->GetEntryID ());
+			Core::Instance ().CheckFileIcon (*offer.Entry_);
 		}
 	}
 
@@ -341,7 +341,7 @@ namespace Azoth
 				};
 
 		Core::Instance ().IncreaseUnreadCount (&*offer.Entry_, 1);
-		Core::Instance ().CheckFileIcon (offer.Entry_->GetEntryID ());
+		Core::Instance ().CheckFileIcon (*offer.Entry_);
 	}
 
 	namespace

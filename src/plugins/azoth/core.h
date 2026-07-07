@@ -227,7 +227,7 @@ namespace LC::Azoth
 
 		int GetUnreadCount (ICLEntry *entry) const;
 
-		void CheckFileIcon (const QString& id);
+		void CheckFileIcon (ICLEntry& entry);
 
 		IChatStyleResourceSource* GetCurrentChatStyle (QObject*) const;
 	private:
