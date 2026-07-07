@@ -279,14 +279,14 @@ namespace Azoth
 			const bool shareGroups = dia.ShouldSuggestGroups ();
 
 			const auto& items = Util::Map (dia.GetSelectedEntries (),
-					[shareGroups] (ICLEntry *toShare) -> RIEXItem
+					[shareGroups] (ICLEntry *toShare)
 					{
-						return
+						return RIEXItem
 						{
-							RIEXItem::AAdd,
-							toShare->GetHumanReadableAddress (),
-							toShare->GetEntryName (),
-							shareGroups ? toShare->Groups () : QStringList ()
+							.Action_ = RIEXItem::AAdd,
+							.ID_ = toShare->GetHumanReadableAddress (),
+							.Nick_ = toShare->GetEntryName (),
+							.Groups_ = shareGroups ? toShare->Groups () : QStringList {},
 						};
 					});
 			riex->SuggestItems (items, entry->GetQObject (), dia.GetShareMessage ());
