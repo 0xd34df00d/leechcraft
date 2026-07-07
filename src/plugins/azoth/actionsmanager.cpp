@@ -1439,9 +1439,11 @@ namespace Azoth
 			return;
 		}
 
-		auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ();
+		const auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ();
+		const auto& name = entry->GetEntryName ();
+		const auto& address = entry->GetHumanReadableAddress ();
 
-		const auto& e = Util::MakeANRule (tr ("Notify when %1 changes state").arg (entry->GetHumanReadableAddress ()),
+		const auto& e = Util::MakeANRule (tr ("Notify when %1 (%2) changes state").arg (name, address),
 				"org.LeechCraft.Azoth",
 				AN::CatIM,
 				{ AN::TypeIMStatusChange },
@@ -1467,9 +1469,11 @@ namespace Azoth
 			return;
 		}
 
-		auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ();
+		const auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ();
+		const auto& name = entry->GetEntryName ();
+		const auto& address = entry->GetHumanReadableAddress ();
 
-		const auto& e = Util::MakeANRule (tr ("Notify when %1 becomes online").arg (entry->GetHumanReadableAddress ()),
+		const auto& e = Util::MakeANRule (tr ("Notify when %1 (%2) becomes online").arg (name, address),
 				"org.LeechCraft.Azoth",
 				AN::CatIM,
 				{ AN::TypeIMStatusChange },
