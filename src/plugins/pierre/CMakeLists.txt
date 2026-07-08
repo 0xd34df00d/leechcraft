@@ -10,7 +10,3 @@ LC_DEFINE_PLUGIN (
 	QT_COMPONENTS Core
 	LINK_LIBRARIES "-framework AppKit"
 	)
-
-if (NOT USE_UNIX_LAYOUT)
-	install (DIRECTORY data/ DESTINATION ${LC_BINDIR}/..)
-endif ()
