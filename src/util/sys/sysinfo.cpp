@@ -127,6 +127,7 @@ namespace LC::Util::SysInfo
 			.Arch_ = QSysInfo::currentCpuArchitecture (),
 			.Name_ = QSysInfo::productType (),
 			.Version_ = QSysInfo::productVersion (),
+			.Flavour_ = QSysInfo::productType (),
 		};
 #else
 		auto osName = Linux::GetEtcOsName ();
