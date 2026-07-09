@@ -45,6 +45,18 @@ namespace
 				<< "setting"
 				<< dir.absolutePath ();
 		QCoreApplication::setLibraryPaths ({ dir.absolutePath () });
+
+		auto setDefaultEnv = [] (const char *name, const QByteArray& value)
+		{
+			if (qgetenv (name).isEmpty ())
+				qputenv (name, value);
+		};
+
+		// the bundled OpenSSL would load its providers, engines and config from Homebrew's prefix otherwise
+		const auto& opensslModules = dir.absoluteFilePath ("openssl").toUtf8 ();
+		setDefaultEnv ("OPENSSL_MODULES", opensslModules);
+		setDefaultEnv ("OPENSSL_ENGINES", opensslModules);
+		setDefaultEnv ("OPENSSL_CONF", "/dev/null");
 	}
 }
 #endif
