@@ -1512,12 +1512,13 @@ namespace Azoth
 		if (nickname.isEmpty ())
 			return;
 
-		auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ();
-		const auto& hrId = entry->GetHumanReadableID ();
-
-		const auto& e = Util::MakeANRule (tr ("Notify when %1 joins %2")
-					.arg (nickname)
-					.arg (hrId),
+		const auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ();
+		const auto& name = entry->GetEntryName ();
+		const auto& address = entry->GetHumanReadableAddress ();
+		const auto& ruleName = name == address ?
+				tr ("Notify when %1 joins %2").arg (nickname, name) :
+				tr ("Notify when %1 joins %2 (%3)").arg (nickname, name, address);
+		const auto& e = Util::MakeANRule (ruleName,
 				"org.LeechCraft.Azoth",
 				AN::CatIM,
 				{ AN::TypeIMStatusChange },
