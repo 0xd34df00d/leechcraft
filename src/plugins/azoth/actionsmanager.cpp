@@ -540,7 +540,7 @@ namespace Azoth
 				"copy_id",
 				SingleEntryActor_f ([] (ICLEntry *e) -> void
 					{
-						const auto& id = e->GetHumanReadableID ();
+						const auto& id = e->GetHumanReadableAddress ();
 						QApplication::clipboard ()->setText (id, QClipboard::Clipboard);
 					})
 			},
