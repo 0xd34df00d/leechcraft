@@ -11,6 +11,7 @@
 #include <QWidget>
 #include <QtDebug>
 #include <QUrl>
+#include <util/sll/demangle.h>
 #include <util/sll/visitor.h>
 #include <util/sll/qtutil.h>
 #include <util/xpc/anutil.h>
@@ -29,6 +30,8 @@ namespace LC::AdvancedNotifications
 			for (const auto& item : list)
 				if (item.canConvert<T> ())
 					result << item.value<T> ();
+				else
+					qWarning () << "cannot convert" << item << "to" << Util::Demangle (typeid (T));
 			return result;
 		}
 	}
