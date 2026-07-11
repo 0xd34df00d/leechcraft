@@ -182,6 +182,8 @@ namespace LC::Util::AN
 			return LC::AN::Wildcard { value.toString () };
 		case 2:
 			return value.toRegularExpression ();
+		case 3:
+			return LC::AN::ExactMatch { value.toString () };
 		default:
 			qWarning () << "unknown type index" << idx << map;
 			return LC::AN::Substring {};
@@ -193,7 +195,8 @@ namespace LC::Util::AN
 		return Visit (matcher,
 				[&] (const QRegularExpression& rx) { return string.contains (rx); },
 				[&] (const LC::AN::Substring& em) { return string.contains (em.Pattern_); },
-				[&] (const LC::AN::Wildcard& wc) { return string.contains (wc.Compiled_); });
+				[&] (const LC::AN::Wildcard& wc) { return string.contains (wc.Compiled_); },
+				[&] (const LC::AN::ExactMatch& em) { return string == em.Pattern_; });
 	}
 
 	bool Matches (const QStringList& strings, const LC::AN::StringMatcher& matcher)

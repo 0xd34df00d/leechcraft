@@ -98,10 +98,12 @@ namespace LC::AdvancedNotifications
 
 	void StringLikeMatcher::SetValue (const QVariant& variant)
 	{
-		if (const auto str = get_if<QString> (&variant))
-			Value_.Rx_ = AN::Substring { *str };
-		else if (const auto em = get_if<AN::Substring> (&variant))
+		if (const auto em = get_if<AN::ExactMatch> (&variant))
 			Value_.Rx_ = *em;
+		else if (const auto str = get_if<QString> (&variant))
+			Value_.Rx_ = AN::ExactMatch { *str };
+		else if (const auto ss = get_if<AN::Substring> (&variant))
+			Value_.Rx_ = *ss;
 		else if (const auto wc = get_if<AN::Wildcard> (&variant))
 			Value_.Rx_ = *wc;
 		else if (const auto rx = get_if<QRegularExpression> (&variant))
@@ -143,6 +145,39 @@ namespace LC::AdvancedNotifications
 		return CW_;
 	}
 
+	namespace
+	{
+		using UiOrderedStringMatcher = std::variant<AN::ExactMatch, AN::Substring, AN::Wildcard, QRegularExpression>;
+
+		template<size_t Idx>
+		using UiOrderedAlternative = std::variant_alternative_t<Idx, UiOrderedStringMatcher>;
+
+		static_assert (std::variant_size_v<UiOrderedStringMatcher> == std::variant_size_v<AN::StringMatcher::Base>);
+
+		int ToUiIndex (const AN::StringMatcher& matcher)
+		{
+			return Util::Visit (matcher, [] (const auto& val) { return UiOrderedStringMatcher { val }.index (); });
+		}
+
+		QString ExtractPattern (const AN::StringMatcher& matcher)
+		{
+			return Util::Visit (matcher,
+					[] (const QRegularExpression& rx) { return rx.pattern (); },
+					[] (const auto& val) { return val.Pattern_; });
+		}
+
+		std::optional<AN::StringMatcher> FromUiIndex (int index, const QString& pattern)
+		{
+			return [&]<size_t... Idx> (std::index_sequence<Idx...>)
+			{
+				// TODO C++26 template for
+				std::optional<AN::StringMatcher> result;
+				static_cast<void> (((index == Idx && (result = UiOrderedAlternative<Idx> { pattern }, 0)) + ...));
+				return result;
+			} (std::make_index_sequence<std::variant_size_v<UiOrderedStringMatcher>> {});
+		}
+	}
+
 	void StringLikeMatcher::SyncToWidget ()
 	{
 		if (!CW_)
@@ -154,25 +189,14 @@ namespace LC::AdvancedNotifications
 		Value_.Contains_ = Ui_->ContainsBox_->currentIndex () == 0;
 		if (Allowed_.isEmpty ())
 		{
-			const auto& text = Ui_->RegexpEditor_->text ();
-			switch (Ui_->RegexType_->currentIndex ())
-			{
-			case 0:
-				Value_.Rx_ = AN::Substring { text };
-				break;
-			case 1:
-				Value_.Rx_ = AN::Wildcard { text };
-				break;
-			case 2:
-				Value_.Rx_ = QRegularExpression { text };
-				break;
-			default:
-				qWarning () << "unknown regexp type" << Ui_->RegexType_->currentIndex ();
-				break;
-			}
+			const auto idx = Ui_->RegexType_->currentIndex ();
+			if (const auto matcher = FromUiIndex (idx, Ui_->RegexpEditor_->text ()))
+				Value_.Rx_ = *matcher;
+			else
+				qWarning () << "unknown string matcher type" << idx;
 		}
 		else
-			Value_.Rx_ = AN::Substring { Ui_->VariantsBox_->currentText () };
+			Value_.Rx_ = AN::ExactMatch { Ui_->VariantsBox_->currentText () };
 	}
 
 	void StringLikeMatcher::SyncWidgetTo ()
@@ -186,27 +210,17 @@ namespace LC::AdvancedNotifications
 		Ui_->ContainsBox_->setCurrentIndex (!Value_.Contains_);
 		if (Allowed_.isEmpty ())
 		{
-			const auto [idx, pattern] = Util::Visit (Value_.Rx_,
-					[] (const QRegularExpression& rx) { return std::pair { 2, rx.pattern () }; },
-					[] (const AN::Wildcard& wc) { return std::pair { 1, wc.Pattern_ }; },
-					[] (const AN::Substring& em) { return std::pair { 0, em.Pattern_ }; });
-			Ui_->RegexpEditor_->setText (pattern);
-			Ui_->RegexType_->setCurrentIndex (idx);
+			Ui_->RegexpEditor_->setText (ExtractPattern (Value_.Rx_));
+			Ui_->RegexType_->setCurrentIndex (ToUiIndex (Value_.Rx_));
 		}
 		else
 		{
-			const auto& pattern = Util::Visit (Value_.Rx_,
-					[] (const AN::Substring& em) { return em.Pattern_; },
-					[]<typename T> (const T&)
-					{
-						qWarning () << "unexpected rx type" << QMetaType::fromType<T> ().name ();
-						return QString {};
-					});
-			const auto idx = Ui_->VariantsBox_->findText (pattern);
-			if (idx == -1)
-				qWarning () << "cannot find" << pattern << "in" << Allowed_;
-			else
+			const auto& pattern = ExtractPattern (Value_.Rx_);
+			if (const auto idx = Ui_->VariantsBox_->findText (pattern);
+				idx >= 0)
 				Ui_->VariantsBox_->setCurrentIndex (idx);
+			else
+				qWarning () << "cannot find" << pattern << "in" << Allowed_;
 		}
 	}
 
@@ -255,6 +269,13 @@ namespace LC::AdvancedNotifications
 									tr ("matches wildcard `%1`") :
 									tr ("doesn't match wildcard `%1`");
 							return msg.arg (wc.Pattern_);
+						},
+						[&] (const AN::ExactMatch& em)
+						{
+							const auto& msg = contains ?
+									tr ("is `%1`") :
+									tr ("isn't `%1`");
+							return msg.arg (em.Pattern_);
 						});
 			}
 
@@ -282,6 +303,13 @@ namespace LC::AdvancedNotifications
 									tr ("contains a string matching wildcard `%1`") :
 									tr ("doesn't contain a string matching wildcard `%1`");
 							return msg.arg (wc.Pattern_);
+						},
+						[&] (const AN::ExactMatch& em)
+						{
+							const auto& msg = contains ?
+									tr ("contains the exact string `%1`") :
+									tr ("doesn't contain the exact string `%1`");
+							return msg.arg (em.Pattern_);
 						});
 			}
 		};

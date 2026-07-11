@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>667</width>
-    <height>35</height>
+    <height>44</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -42,7 +42,12 @@
     <widget class="QComboBox" name="RegexType_">
      <item>
       <property name="text">
-       <string>string</string>
+       <string>exact match</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>substring</string>
       </property>
      </item>
      <item>

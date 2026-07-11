@@ -125,6 +125,12 @@ namespace LC::AN
 		bool operator== (const IntFieldValue&) const = default;
 	};
 
+	struct ExactMatch
+	{
+		QString Pattern_;
+		bool operator== (const ExactMatch&) const = default;
+	};
+
 	struct Substring
 	{
 		QString Pattern_;
@@ -139,9 +145,11 @@ namespace LC::AN
 		bool operator== (const Wildcard&) const = default;
 	};
 
-	struct StringMatcher : std::variant<Substring, Wildcard, QRegularExpression>
+	struct StringMatcher : std::variant<Substring, Wildcard, QRegularExpression, ExactMatch>
 	{
 		using variant::variant;
+
+		using Base = variant;
 	};
 
 	/** @brief Describes a field with QString values.
