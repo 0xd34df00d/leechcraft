@@ -259,8 +259,8 @@ namespace LC::AdvancedNotifications
 						[&] (const AN::Substring& str)
 						{
 							const auto& msg = contains ?
-									tr ("contains substring `%1`") :
-									tr ("doesn't contain substring `%1`");
+									tr ("matches substring `%1`") :
+									tr ("doesn't match substring `%1`");
 							return msg.arg (str.Pattern_);
 						},
 						[&] (const AN::Wildcard& wc)
@@ -273,8 +273,8 @@ namespace LC::AdvancedNotifications
 						[&] (const AN::ExactMatch& em)
 						{
 							const auto& msg = contains ?
-									tr ("is `%1`") :
-									tr ("isn't `%1`");
+									tr ("is exactly `%1`") :
+									tr ("isn't exactly `%1`");
 							return msg.arg (em.Pattern_);
 						});
 			}
