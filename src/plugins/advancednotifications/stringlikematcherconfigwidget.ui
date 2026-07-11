@@ -18,31 +18,21 @@
     <widget class="QComboBox" name="ContainsBox_">
      <item>
       <property name="text">
-       <string>contains</string>
+       <string>matches</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>doesn't contain</string>
+       <string>doesn't match</string>
       </property>
      </item>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLineEdit" name="RegexpEditor_">
-     <property name="minimumSize">
-      <size>
-       <width>200</width>
-       <height>0</height>
-      </size>
-     </property>
     </widget>
    </item>
    <item>
     <widget class="QComboBox" name="RegexType_">
      <item>
       <property name="text">
-       <string>exact match</string>
+       <string>exactly</string>
       </property>
      </item>
      <item>
@@ -60,6 +50,16 @@
        <string>regexp</string>
       </property>
      </item>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="RegexpEditor_">
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>0</height>
+      </size>
+     </property>
     </widget>
    </item>
    <item>
