@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "anutil.h"
+#include <algorithm>
 #include <QObject>
 #include <QMap>
 #include <interfaces/an/ianemitter.h>
@@ -158,7 +159,7 @@ namespace LC::Util::AN
 
 	QVariant ToVariant (const LC::AN::StringMatcher& matcher)
 	{
-		const auto value = Util::Visit (matcher,
+		const auto value = Visit (matcher,
 				[] (const QRegularExpression& expr) { return QVariant { expr }; },
 				[] (const auto& wrapper) { return QVariant { wrapper.Pattern_ }; });
 		return QVariantMap
@@ -187,25 +188,16 @@ namespace LC::Util::AN
 		}
 	}
 
-	namespace
+	bool Matches (const QString& string, const LC::AN::StringMatcher& matcher)
 	{
-		bool GenericMatch (auto&& val, const LC::AN::StringMatcher& pattern)
-		{
-			const auto pos = Util::Visit (pattern,
-					[&val] (const QRegularExpression& rx) { return val.indexOf (rx); },
-					[&val] (const LC::AN::Substring& em) { return val.indexOf (em.Pattern_); },
-					[&val] (const LC::AN::Wildcard& wc) { return val.indexOf (wc.Compiled_); });
-			return pos >= 0;
-		}
+		return Visit (matcher,
+				[&] (const QRegularExpression& rx) { return string.contains (rx); },
+				[&] (const LC::AN::Substring& em) { return string.contains (em.Pattern_); },
+				[&] (const LC::AN::Wildcard& wc) { return string.contains (wc.Compiled_); });
 	}
 
-	bool Matches (const QString& string, const LC::AN::StringMatcher& pattern)
+	bool Matches (const QStringList& strings, const LC::AN::StringMatcher& matcher)
 	{
-		return GenericMatch (string, pattern);
-	}
-
-	bool Matches (const QStringList& strings, const LC::AN::StringMatcher& pattern)
-	{
-		return GenericMatch (strings, pattern);
+		return std::ranges::any_of (strings, [&matcher] (const QString& str) { return Matches (str, matcher); });
 	}
 }
