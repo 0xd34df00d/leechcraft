@@ -78,9 +78,13 @@ namespace LC::AdvancedNotifications
 
 	void StringLikeMatcher::Load (const QVariantMap& map)
 	{
-		const auto& rxVar = map [Keys::Rx];
-		Value_.Rx_ = Util::AN::StringMatcherFromVariant (rxVar);
-		Value_.Contains_ = map [Keys::Contains].toBool ();
+		if (const auto sm = Util::AN::StringMatcherFromVariant (map [Keys::Rx]))
+		{
+			Value_.Rx_ = *sm;
+			Value_.Contains_ = map [Keys::Contains].toBool ();
+		}
+		else
+			qWarning () << "cannot load string matcher from variant" << map;
 	}
 
 	namespace

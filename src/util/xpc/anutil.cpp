@@ -169,7 +169,7 @@ namespace LC::Util::AN
 		};
 	}
 
-	LC::AN::StringMatcher StringMatcherFromVariant (const QVariant& var)
+	std::optional<LC::AN::StringMatcher> StringMatcherFromVariant (const QVariant& var)
 	{
 		const auto& map = var.toMap ();
 		const auto idx = map ["index"_qs].toInt ();
@@ -185,8 +185,7 @@ namespace LC::Util::AN
 		case 3:
 			return LC::AN::ExactMatch { value.toString () };
 		default:
-			qWarning () << "unknown type index" << idx << map;
-			return LC::AN::Substring {};
+			return {};
 		}
 	}
 
