@@ -108,7 +108,7 @@ namespace LC::AdvancedNotifications
 		if (const auto em = get_if<AN::ExactMatch> (&variant))
 			Value_.Matcher_ = *em;
 		else if (const auto str = get_if<QString> (&variant))
-			Value_.Matcher_ = AN::ExactMatch { *str };
+			Value_.Matcher_ = *str;
 		else if (const auto ss = get_if<AN::Substring> (&variant))
 			Value_.Matcher_ = *ss;
 		else if (const auto wc = get_if<AN::Wildcard> (&variant))
