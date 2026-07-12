@@ -52,7 +52,7 @@ namespace LC::AdvancedNotifications
 	class StringLikeMatcher : public TypedMatcherBase
 	{
 	protected:
-		AN::StringFieldValue Value_ { {} };
+		AN::StringFieldValue Value_;
 		const QStringList Allowed_;
 
 		std::shared_ptr<Ui::StringLikeMatcherConfigWidget> Ui_;
