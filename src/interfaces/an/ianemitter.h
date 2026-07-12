@@ -163,14 +163,14 @@ namespace LC::AN
 	{
 		/** @brief The pattern the values should (not) match.
 		 */
-		StringMatcher Rx_;
+		StringMatcher Matcher_;
 
 		/** @brief Whether the values should match or not match Rx_.
 		 *
 		 * If this is true, the values should match Rx_, and shouldn't
 		 * otherwise.
 		 */
-		bool Contains_ = true;
+		bool Positive_ = true;
 
 		bool operator== (const StringFieldValue&) const = default;
 	};

@@ -55,7 +55,7 @@ namespace LMP
 
 			bool operator() (const AN::StringFieldValue& ref) const
 			{
-				return Util::AN::Matches (Value_, ref.Rx_) == ref.Contains_;
+				return Util::AN::Matches (Value_, ref.Matcher_) == ref.Positive_;
 			}
 
 			template<typename T>

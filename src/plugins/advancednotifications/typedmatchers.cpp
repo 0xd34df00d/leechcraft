@@ -71,8 +71,8 @@ namespace LC::AdvancedNotifications
 	{
 		return
 		{
-			{ Keys::Rx, Util::AN::ToVariant (Value_.Rx_) },
-			{ Keys::Contains, Value_.Contains_ }
+			{ Keys::Rx, Util::AN::ToVariant (Value_.Matcher_) },
+			{ Keys::Contains, Value_.Positive_ }
 		};
 	}
 
@@ -80,8 +80,8 @@ namespace LC::AdvancedNotifications
 	{
 		if (const auto sm = Util::AN::StringMatcherFromVariant (map [Keys::Rx]))
 		{
-			Value_.Rx_ = *sm;
-			Value_.Contains_ = map [Keys::Contains].toBool ();
+			Value_.Matcher_ = *sm;
+			Value_.Positive_ = map [Keys::Contains].toBool ();
 		}
 		else
 			qWarning () << "cannot load string matcher from variant" << map;
@@ -106,22 +106,22 @@ namespace LC::AdvancedNotifications
 	void StringLikeMatcher::SetValue (const QVariant& variant)
 	{
 		if (const auto em = get_if<AN::ExactMatch> (&variant))
-			Value_.Rx_ = *em;
+			Value_.Matcher_ = *em;
 		else if (const auto str = get_if<QString> (&variant))
-			Value_.Rx_ = AN::ExactMatch { *str };
+			Value_.Matcher_ = AN::ExactMatch { *str };
 		else if (const auto ss = get_if<AN::Substring> (&variant))
-			Value_.Rx_ = *ss;
+			Value_.Matcher_ = *ss;
 		else if (const auto wc = get_if<AN::Wildcard> (&variant))
-			Value_.Rx_ = *wc;
+			Value_.Matcher_ = *wc;
 		else if (const auto rx = get_if<QRegularExpression> (&variant))
-			Value_.Rx_ = *rx;
+			Value_.Matcher_ = *rx;
 		else
 		{
 			qWarning () << "unsupported type:" << variant;
 			throw std::runtime_error { "unsupported type" };
 		}
 
-		Value_.Contains_ = true;
+		Value_.Positive_ = true;
 	}
 
 	AN::FieldValue StringLikeMatcher::GetValue () const
@@ -193,17 +193,17 @@ namespace LC::AdvancedNotifications
 			return;
 		}
 
-		Value_.Contains_ = Ui_->ContainsBox_->currentIndex () == 0;
+		Value_.Positive_ = Ui_->ContainsBox_->currentIndex () == 0;
 		if (Allowed_.isEmpty ())
 		{
 			const auto idx = Ui_->RegexType_->currentIndex ();
 			if (const auto matcher = FromUiIndex (idx, Ui_->RegexpEditor_->text ()))
-				Value_.Rx_ = *matcher;
+				Value_.Matcher_ = *matcher;
 			else
 				qWarning () << "unknown string matcher type" << idx;
 		}
 		else
-			Value_.Rx_ = AN::ExactMatch { Ui_->VariantsBox_->currentText () };
+			Value_.Matcher_ = AN::ExactMatch { Ui_->VariantsBox_->currentText () };
 	}
 
 	void StringLikeMatcher::SyncWidgetTo ()
@@ -214,15 +214,15 @@ namespace LC::AdvancedNotifications
 			return;
 		}
 
-		Ui_->ContainsBox_->setCurrentIndex (!Value_.Contains_);
+		Ui_->ContainsBox_->setCurrentIndex (!Value_.Positive_);
 		if (Allowed_.isEmpty ())
 		{
-			Ui_->RegexpEditor_->setText (ExtractPattern (Value_.Rx_));
-			Ui_->RegexType_->setCurrentIndex (ToUiIndex (Value_.Rx_));
+			Ui_->RegexpEditor_->setText (ExtractPattern (Value_.Matcher_));
+			Ui_->RegexType_->setCurrentIndex (ToUiIndex (Value_.Matcher_));
 		}
 		else
 		{
-			const auto& pattern = ExtractPattern (Value_.Rx_);
+			const auto& pattern = ExtractPattern (Value_.Matcher_);
 			if (const auto idx = Ui_->VariantsBox_->findText (pattern);
 				idx >= 0)
 				Ui_->VariantsBox_->setCurrentIndex (idx);
@@ -235,7 +235,7 @@ namespace LC::AdvancedNotifications
 	{
 		bool GenericMatch (auto&& val, const AN::StringFieldValue& ref)
 		{
-			return Util::AN::Matches (val, ref.Rx_) == ref.Contains_;
+			return Util::AN::Matches (val, ref.Matcher_) == ref.Positive_;
 		}
 	}
 
@@ -254,8 +254,8 @@ namespace LC::AdvancedNotifications
 		public:
 			static QString ForStringMatcher (const AN::StringFieldValue& value)
 			{
-				const auto contains = value.Contains_;
-				return Util::Visit (value.Rx_,
+				const auto contains = value.Positive_;
+				return Util::Visit (value.Matcher_,
 						[&] (const QRegularExpression& rx)
 						{
 							const auto& msg = contains ?
@@ -288,8 +288,8 @@ namespace LC::AdvancedNotifications
 
 			static QString ForStringListMatcher (const AN::StringFieldValue& value)
 			{
-				const auto contains = value.Contains_;
-				return Util::Visit (value.Rx_,
+				const auto contains = value.Positive_;
+				return Util::Visit (value.Matcher_,
 						[&] (const QRegularExpression& rx)
 						{
 							const auto& msg = contains ?
@@ -350,9 +350,9 @@ namespace LC::AdvancedNotifications
 			return false;
 
 		const auto& url = var.toUrl ();
-		const auto contains = Util::AN::Matches (url.toString (), Value_.Rx_) ||
-				Util::AN::Matches (QString::fromUtf8 (url.toEncoded ()), Value_.Rx_);
-		return contains == Value_.Contains_;
+		const auto contains = Util::AN::Matches (url.toString (), Value_.Matcher_) ||
+				Util::AN::Matches (QString::fromUtf8 (url.toEncoded ()), Value_.Matcher_);
+		return contains == Value_.Positive_;
 	}
 
 	QString UrlMatcher::GetHRDescription () const
