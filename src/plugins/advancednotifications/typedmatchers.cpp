@@ -327,11 +327,6 @@ namespace LC::AdvancedNotifications
 		return Descriptions::ForStringMatcher (Value_);
 	}
 
-	StringListMatcher::StringListMatcher (const QStringList& list)
-	: StringLikeMatcher (list)
-	{
-	}
-
 	bool StringListMatcher::Match (const QVariant& var) const
 	{
 		if (!var.canConvert<QStringList> ())

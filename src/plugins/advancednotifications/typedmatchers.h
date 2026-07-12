@@ -84,7 +84,7 @@ namespace LC::AdvancedNotifications
 	class StringListMatcher final : public StringLikeMatcher
 	{
 	public:
-		explicit StringListMatcher (const QStringList& variants = {});
+		using StringLikeMatcher::StringLikeMatcher;
 
 		bool Match (const QVariant&) const override;
 
