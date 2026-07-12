@@ -165,9 +165,9 @@ namespace LC::AN
 		 */
 		StringMatcher Matcher_ = ExactMatch {};
 
-		/** @brief Whether the values should match or not match Rx_.
+		/** @brief Whether the values should match or not match `Matcher_`.
 		 *
-		 * If this is true, the values should match Rx_, and shouldn't
+		 * If this is true, the values should match `Matcher_`, and shouldn't
 		 * otherwise.
 		 */
 		bool Positive_ = true;
