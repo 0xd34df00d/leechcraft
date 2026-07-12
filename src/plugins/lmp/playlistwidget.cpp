@@ -986,7 +986,7 @@ namespace LMP
 						},
 						{
 							AN::Field::MediaPlayerURL,
-							AN::StringFieldValue { url.toEncoded () }
+							AN::StringFieldValue { QString { url.toEncoded () } }
 						}
 					});
 			proxy->GetEntityManager ()->HandleEntity (e);

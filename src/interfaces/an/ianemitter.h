@@ -149,6 +149,11 @@ namespace LC::AN
 	{
 		using variant::variant;
 
+		explicit(false) StringMatcher (const QString& str)
+		: variant { ExactMatch { str } }
+		{
+		}
+
 		using Base = variant;
 	};
 
@@ -165,35 +170,7 @@ namespace LC::AN
 		 * If this is true, the values should match Rx_, and shouldn't
 		 * otherwise.
 		 */
-		bool Contains_;
-
-		/** @brief Constructs the field matcher.
-		 *
-		 * @param[in] rx The regexp to match.
-		 * @param[in] contains Whether the string should or should not
-		 * match \em rx.
-		 */
-		StringFieldValue (QRegularExpression rx, bool contains)
-		: Rx_ { std::move (rx) }
-		, Contains_ { contains }
-		{
-		}
-
-		/** @brief Constructs the field matcher for the given \em str.
-		 *
-		 * This constructor constructs a field matcher that matches (or
-		 * does not match if \em contains is false) when the string in
-		 * question contains the \em str.
-		 *
-		 * @param[in] str The string that should be looked for.
-		 * @param[in] contains Whether the string should or should not
-		 * contain \em str.
-		 */
-		StringFieldValue (const QString& str, bool contains = true)
-		: Rx_ { Substring { str } }
-		, Contains_ { contains }
-		{
-		}
+		bool Contains_ = true;
 
 		bool operator== (const StringFieldValue&) const = default;
 	};
