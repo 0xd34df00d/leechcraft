@@ -163,7 +163,7 @@ namespace LC::AN
 	{
 		/** @brief The pattern the values should (not) match.
 		 */
-		StringMatcher Matcher_;
+		StringMatcher Matcher_ = ExactMatch {};
 
 		/** @brief Whether the values should match or not match Rx_.
 		 *
