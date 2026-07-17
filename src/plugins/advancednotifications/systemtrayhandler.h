@@ -18,6 +18,9 @@
 
 class QSystemTrayIcon;
 
+template<typename>
+class QFuture;
+
 namespace LC::AdvancedNotifications
 {
 	class VisualNotificationsView;
@@ -42,7 +45,9 @@ namespace LC::AdvancedNotifications
 		NotificationMethod GetHandlerMethod () const override;
 		void Handle (const Entity&, const NotificationRule&) override;
 	private:
-		Util::ContextTask<void> ExtractPixmap (EventData&, const Entity&);
+		void ExtractPixmap (EventData&, const Entity&);
+
+		Util::ContextTask<void> FetchLazyPixmap (EventKey key, QFuture<QImage> pxFuture);
 
 		VisualNotificationsView* CreateVisualNotificationView ();
 		void PrepareSysTrayIcon (const QString&);

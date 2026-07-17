@@ -126,30 +126,35 @@ namespace LC::AdvancedNotifications
 		}
 	}
 
-	Util::ContextTask<void> SystemTrayHandler::ExtractPixmap (EventData& eventData, const Entity& e)
+	void SystemTrayHandler::ExtractPixmap (EventData& eventData, const Entity& e)
 	{
 		const auto& pxVar = e.Additional_ [EF::NotificationPixmap];
 
 		if (const auto px = ExtractPixmapSync (pxVar))
 		{
 			eventData.Pixmap_ = *px;
-			co_return;
+			return;
 		}
 
 		eventData.Pixmap_ = GetDefaultPixmap (e.Additional_ [EF::Priority].value<Priority> ());
 
-		if (const auto& lazyPxGetter = pxVar.value<Util::LazyNotificationPixmap_t> ();
-			const auto& maybeLazy = lazyPxGetter ())
-		{
-			co_await Util::AddContextObject { *this };
-			const auto& px = co_await *maybeLazy;
-			const auto pos = Events_.find ({ eventData.SenderId_, eventData.EventId_ });
-			if (pos != Events_.end ())
-			{
-				pos->Pixmap_ = QPixmap::fromImage (px);
-				RebuildState ();
-			}
-		}
+		const auto& lazyPxGetter = pxVar.value<Util::LazyNotificationPixmap_t> ();
+		if (const auto& maybeLazy = lazyPxGetter ())
+			FetchLazyPixmap ({ eventData.SenderId_, eventData.EventId_ }, *maybeLazy);
+	}
+
+	Util::ContextTask<void> SystemTrayHandler::FetchLazyPixmap (EventKey key, QFuture<QImage> pxFuture)
+	{
+		co_await Util::AddContextObject { *this };
+
+		const auto& px = co_await pxFuture;
+
+		const auto pos = Events_.find (key);
+		if (pos == Events_.end ())
+			co_return;
+
+		pos->Pixmap_ = QPixmap::fromImage (px);
+		RebuildState ();
 	}
 
 	namespace
