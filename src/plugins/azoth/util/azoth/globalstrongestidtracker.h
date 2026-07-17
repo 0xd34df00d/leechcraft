@@ -27,5 +27,5 @@ namespace LC::Azoth
 		operator GlobalStrongestId () const;
 	};
 
-	QDebug operator<< (const QDebug&, const GlobalStrongestIdTracker&);
+	AZOTH_UTIL_API QDebug operator<< (const QDebug&, const GlobalStrongestIdTracker&);
 }
