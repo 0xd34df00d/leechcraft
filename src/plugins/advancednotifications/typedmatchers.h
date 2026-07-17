@@ -33,6 +33,8 @@ namespace LC::AdvancedNotifications
 	public:
 		static TypedMatcherBase_ptr Create (QMetaType::Type, const AN::FieldData& = {});
 
+		virtual ~TypedMatcherBase () = default;
+
 		virtual QVariantMap Save () const = 0;
 		virtual void Load (const QVariantMap&) = 0;
 
