@@ -139,6 +139,9 @@ namespace LC::AdvancedNotifications
 		eventData.Pixmap_ = GetDefaultPixmap (e.Additional_ [EF::Priority].value<Priority> ());
 
 		const auto& lazyPxGetter = pxVar.value<Util::LazyNotificationPixmap_t> ();
+		if (!lazyPxGetter)
+			return;
+
 		if (const auto& maybeLazy = lazyPxGetter ())
 			FetchLazyPixmap ({ eventData.SenderId_, eventData.EventId_ }, *maybeLazy);
 	}
