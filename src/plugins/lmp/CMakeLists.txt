@@ -136,7 +136,8 @@ LC_DEFINE_PLUGIN (
 	LINK_LIBRARIES
 		PkgConfig::TagLib
 		PkgConfig::GStreamer
-		$<$<PLATFORM_ID:Darwin>:"-framework Foundation -framework CoreServices">
+		"$<$<PLATFORM_ID:Darwin>:-framework Foundation>"
+		"$<$<PLATFORM_ID:Darwin>:-framework CoreServices>"
 		leechcraft-lmp-util
 	INSTALL_SHARE
 	INSTALL_DESKTOP
