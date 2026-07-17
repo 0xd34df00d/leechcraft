@@ -7,7 +7,7 @@ find_package (PkgConfig)
 pkg_check_modules (TagLib REQUIRED IMPORTED_TARGET taglib)
 pkg_check_modules (GStreamer REQUIRED IMPORTED_TARGET gstreamer-1.0)
 
-cmake_dependent_option (ENABLE_LMP_MPRIS "Enable MPRIS support for LMP" ON "NOT WIN32" OFF)
+cmake_dependent_option (ENABLE_LMP_MPRIS "Enable MPRIS support for LMP" ON "NOT WIN32 AND NOT APPLE" OFF)
 
 if (ENABLE_LMP_MPRIS)
 	set (EXTRA_DBUS_LIB DBus)
