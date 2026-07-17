@@ -13,7 +13,7 @@ if (ENABLE_LMP_MPRIS)
 	set (EXTRA_DBUS_LIB DBus)
 endif ()
 
-add_compile_definitions ($<$<BOOL:{ENABLE_LMP_MPRIS}>:ENABLE_MPRIS>)
+add_compile_definitions ($<$<BOOL:${ENABLE_LMP_MPRIS}>:ENABLE_MPRIS>)
 
 add_util_library (lmp-util
 	SRCS
