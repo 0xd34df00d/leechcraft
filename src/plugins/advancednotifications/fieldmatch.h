@@ -38,7 +38,6 @@ namespace LC::AdvancedNotifications
 		void SetFieldName (const QString&);
 
 		QMetaType::Type GetType () const;
-		void SetType (QMetaType::Type);
 
 		TypedMatcherBase_ptr GetMatcher () const;
 

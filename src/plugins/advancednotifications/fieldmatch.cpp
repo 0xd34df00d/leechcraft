@@ -50,12 +50,6 @@ namespace LC::AdvancedNotifications
 		return FieldType_;
 	}
 
-	void FieldMatch::SetType (QMetaType::Type type)
-	{
-		FieldType_ = type;
-		Matcher_ = TypedMatcherBase::Create (type);
-	}
-
 	TypedMatcherBase_ptr FieldMatch::GetMatcher () const
 	{
 		return Matcher_;
