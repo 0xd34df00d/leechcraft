@@ -355,12 +355,12 @@ namespace LC::AdvancedNotifications
 
 	QVariantMap BoolMatcher::Save () const
 	{
-		return { { Keys::IsSet, Value_.IsSet_ } };
+		return { { Keys::IsSet, Value_.Value_ } };
 	}
 
 	void BoolMatcher::Load (const QVariantMap& map)
 	{
-		Value_.IsSet_ = map.value (Keys::IsSet).toBool ();
+		Value_.Value_ = map.value (Keys::IsSet).toBool ();
 	}
 
 	void BoolMatcher::SetValue (const AN::FieldValue& variant)
@@ -370,7 +370,7 @@ namespace LC::AdvancedNotifications
 
 	void BoolMatcher::SetValue (const QVariant& variant)
 	{
-		Value_.IsSet_ = variant.toBool ();
+		Value_.Value_ = variant.toBool ();
 	}
 
 	AN::FieldValue BoolMatcher::GetValue () const
@@ -380,12 +380,12 @@ namespace LC::AdvancedNotifications
 
 	bool BoolMatcher::Match (const QVariant& var) const
 	{
-		return var.toBool () == Value_.IsSet_;
+		return var.toBool () == Value_.Value_;
 	}
 
 	QString BoolMatcher::GetHRDescription () const
 	{
-		return Value_.IsSet_ ?
+		return Value_.Value_ ?
 				QObject::tr ("yes") :
 				QObject::tr ("no");
 	}
@@ -414,7 +414,7 @@ namespace LC::AdvancedNotifications
 			return;
 		}
 
-		Value_.IsSet_ = Ui_->IsSet_->checkState () == Qt::Checked;
+		Value_.Value_ = Ui_->IsSet_->checkState () == Qt::Checked;
 	}
 
 	void BoolMatcher::SyncWidgetTo ()
@@ -426,7 +426,7 @@ namespace LC::AdvancedNotifications
 			return;
 		}
 
-		Ui_->IsSet_->setCheckState (Value_.IsSet_ ? Qt::Checked : Qt::Unchecked);
+		Ui_->IsSet_->setCheckState (Value_.Value_ ? Qt::Checked : Qt::Unchecked);
 	}
 
 	IntMatcher::IntMatcher ()

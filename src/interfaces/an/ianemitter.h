@@ -98,7 +98,7 @@ namespace LC::AN
 	{
 		/** @brief Whether the field should be set.
 		 */
-		bool IsSet_;
+		bool Value_;
 
 		auto operator<=> (const BoolFieldValue&) const = default;
 	};
