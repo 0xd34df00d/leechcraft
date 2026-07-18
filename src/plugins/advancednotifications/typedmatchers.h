@@ -55,11 +55,11 @@ namespace LC::AdvancedNotifications
 	{
 	protected:
 		AN::StringFieldValue Value_;
-		const QStringList Allowed_;
+		const AN::FieldData::AllowedValues AllowedValues_;
 
 		std::shared_ptr<Ui::StringLikeMatcherConfigWidget> Ui_;
 	public:
-		explicit StringLikeMatcher (const QStringList& variants = {});
+		explicit StringLikeMatcher (const AN::FieldData::AllowedValues& variants = {});
 
 		QVariantMap Save () const override;
 		void Load (const QVariantMap&) override;

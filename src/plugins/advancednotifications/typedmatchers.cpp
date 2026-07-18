@@ -11,7 +11,7 @@
 #include <QWidget>
 #include <QtDebug>
 #include <QUrl>
-#include <util/sll/demangle.h>
+#include <util/sll/prelude.h>
 #include <util/sll/visitor.h>
 #include <util/sll/qtutil.h>
 #include <util/xpc/anutil.h>
@@ -21,21 +21,6 @@
 
 namespace LC::AdvancedNotifications
 {
-	namespace
-	{
-		template<typename T>
-		QList<T> ToTList (const QVariantList& list)
-		{
-			QList<T> result;
-			for (const auto& item : list)
-				if (item.canConvert<T> ())
-					result << item.value<T> ();
-				else
-					qWarning () << "cannot convert" << item << "to" << Util::Demangle (typeid (T));
-			return result;
-		}
-	}
-
 	TypedMatcherBase_ptr TypedMatcherBase::Create (QMetaType::Type type, const AN::FieldData& fieldData)
 	{
 		switch (type)
@@ -45,9 +30,9 @@ namespace LC::AdvancedNotifications
 		case QMetaType::Int:
 			return std::make_shared<IntMatcher> ();
 		case QMetaType::QString:
-			return std::make_shared<StringMatcher> (ToTList<QString> (fieldData.AllowedValues_));
+			return std::make_shared<StringMatcher> (fieldData.AllowedValues_);
 		case QMetaType::QStringList:
-			return std::make_shared<StringListMatcher> (ToTList<QString> (fieldData.AllowedValues_));
+			return std::make_shared<StringListMatcher> (fieldData.AllowedValues_);
 		case QMetaType::QUrl:
 			return std::make_shared<UrlMatcher> ();
 		default:
@@ -56,8 +41,8 @@ namespace LC::AdvancedNotifications
 		}
 	}
 
-	StringLikeMatcher::StringLikeMatcher (const QStringList& variants)
-	: Allowed_ (variants)
+	StringLikeMatcher::StringLikeMatcher (const QList<AN::FieldData::AllowedValue>& variants)
+	: AllowedValues_ { variants }
 	{
 	}
 
@@ -137,11 +122,12 @@ namespace LC::AdvancedNotifications
 			Ui_.reset (new Ui::StringLikeMatcherConfigWidget ());
 			Ui_->setupUi (CW_);
 
-			if (Allowed_.isEmpty ())
+			if (AllowedValues_.isEmpty ())
 				Ui_->VariantsBox_->hide ();
 			else
 			{
-				Ui_->VariantsBox_->addItems (Allowed_);
+				for (const auto& allowed : AllowedValues_)
+					Ui_->VariantsBox_->addItem (allowed.Name_, allowed.Id_);
 				Ui_->RegexType_->hide ();
 				Ui_->RegexpEditor_->hide ();
 			}
@@ -194,7 +180,7 @@ namespace LC::AdvancedNotifications
 		}
 
 		Value_.Positive_ = Ui_->ContainsBox_->currentIndex () == 0;
-		if (Allowed_.isEmpty ())
+		if (AllowedValues_.isEmpty ())
 		{
 			const auto idx = Ui_->RegexType_->currentIndex ();
 			if (const auto matcher = FromUiIndex (idx, Ui_->RegexpEditor_->text ()))
@@ -203,7 +189,7 @@ namespace LC::AdvancedNotifications
 				qWarning () << "unknown string matcher type" << idx;
 		}
 		else
-			Value_.Matcher_ = AN::ExactMatch { Ui_->VariantsBox_->currentText () };
+			Value_.Matcher_ = AN::ExactMatch { Ui_->VariantsBox_->currentData ().toByteArray () };
 	}
 
 	void StringLikeMatcher::SyncWidgetTo ()
@@ -215,19 +201,19 @@ namespace LC::AdvancedNotifications
 		}
 
 		Ui_->ContainsBox_->setCurrentIndex (!Value_.Positive_);
-		if (Allowed_.isEmpty ())
+		if (AllowedValues_.isEmpty ())
 		{
 			Ui_->RegexpEditor_->setText (ExtractPattern (Value_.Matcher_));
 			Ui_->RegexType_->setCurrentIndex (ToUiIndex (Value_.Matcher_));
 		}
 		else
 		{
-			const auto& pattern = ExtractPattern (Value_.Matcher_);
-			if (const auto idx = Ui_->VariantsBox_->findText (pattern);
+			const auto& pattern = ExtractPattern (Value_.Matcher_).toUtf8 ();
+			if (const auto idx = Ui_->VariantsBox_->findData (pattern);
 				idx >= 0)
 				Ui_->VariantsBox_->setCurrentIndex (idx);
 			else
-				qWarning () << "cannot find" << pattern << "in" << Allowed_;
+				qWarning () << "cannot find" << pattern << "in" << Util::Map (AllowedValues_, &AN::FieldData::AllowedValue::Id_);
 		}
 	}
 

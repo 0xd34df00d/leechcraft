@@ -66,16 +66,30 @@ namespace LC::AN
 		 */
 		QStringList EventTypes_;
 
+		struct AllowedValue
+		{
+			/** @brief Persistent, stable value stored in rules on disk.
+			 */
+			QByteArray Id_;
+
+			/** @brief Human-readable name of the value.
+			 */
+			QString Name_;
+
+			bool operator== (const AllowedValue&) const = default;
+		};
+
+		using AllowedValues = QList<AllowedValue>;
+
 		/** @brief The allowed values of this field.
 		 *
 		 * If this list is non-empty, only values from this list are
 		 * allowed.
 		 *
-		 * This currently only makes sense for QVariant::String and
-		 * QVariant::StringList, in which case each QVariant in this list
-		 * should be a QString.
+		 * This only makes sense for Type_ being either
+		 * QVariant::String or QVariant::StringList.
 		 */
-		QVariantList AllowedValues_ = {};
+		AllowedValues AllowedValues_ = {};
 	};
 
 	/** @brief Describes a field with boolean values.

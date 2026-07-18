@@ -176,9 +176,9 @@ namespace LC::Util
 							AN::TypeMediaPlaybackStatus
 						},
 						{
-							"Stopped",
-							"Paused",
-							"Playing"
+							{ "Stopped", QObject::tr ("Stopped") },
+							{ "Paused", QObject::tr ("Paused") },
+							{ "Playing", QObject::tr ("Playing") },
 						}
 					},
 					{
