@@ -96,7 +96,17 @@ namespace BitTorrent
 			if (const auto& stateData = XmlSettingsManager::Instance ().property ("SessionParams").toByteArray ();
 				!stateData.isEmpty ())
 			{
-				params = libtorrent::read_session_params (stateData);
+				try
+				{
+					params = libtorrent::read_session_params (stateData);
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << "unable to read the saved session params:"
+							<< e.what ()
+							<< "; falling back to the default ones";
+					XmlSettingsManager::Instance ().setProperty ("SessionParams", QVariant {});
+				}
 				XmlSettingsManager::Instance ().setProperty ("SessionState", QVariant {});
 			}
 
