@@ -43,7 +43,7 @@ namespace LC::Util
 
 	Entity MakeANRule (const QString& title, const QByteArray& senderID,
 			const QString& cat, const QStringList& types, AN::NotifyFlags flags,
-			bool openConfiguration, const QList<QPair<QString, AN::FieldValue>>& fields)
+			bool openConfiguration, const QList<QPair<QString, AN::ValueMatcher>>& fields)
 	{
 		auto e = MakeNotification (title, {}, {});
 		e.Additional_ [AN::EF::SenderID] = senderID;

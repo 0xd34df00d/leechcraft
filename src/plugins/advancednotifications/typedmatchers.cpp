@@ -56,7 +56,7 @@ namespace LC::AdvancedNotifications
 	{
 		return
 		{
-			{ Keys::Rx, Util::AN::ToVariant (Value_.Matcher_) },
+			{ Keys::Rx, Util::AN::ToVariant (Value_.Pattern_) },
 			{ Keys::Contains, Value_.Positive_ }
 		};
 	}
@@ -65,7 +65,7 @@ namespace LC::AdvancedNotifications
 	{
 		if (const auto sm = Util::AN::StringPatternFromVariant (map [Keys::Rx]))
 		{
-			Value_.Matcher_ = *sm;
+			Value_.Pattern_ = *sm;
 			Value_.Positive_ = map [Keys::Contains].toBool ();
 		}
 		else
@@ -75,7 +75,7 @@ namespace LC::AdvancedNotifications
 	namespace
 	{
 		template<typename T>
-		void SetValueFromVariant (T& value, const AN::FieldValue& variant)
+		void SetValueFromVariant (T& value, const AN::ValueMatcher& variant)
 		{
 			Util::Visit (variant,
 					[&value] (const T& val) { value = val; },
@@ -83,25 +83,25 @@ namespace LC::AdvancedNotifications
 		}
 	}
 
-	void StringLikeMatcher::SetValue (const AN::FieldValue& variant)
+	void StringLikeMatcher::SetValue (const AN::ValueMatcher& variant)
 	{
 		SetValueFromVariant (Value_, variant);
 	}
 
-	using SFM = AN::StringFieldValue;
+	using SVM = AN::StringValueMatcher;
 
 	void StringLikeMatcher::SetValue (const QVariant& variant)
 	{
-		if (const auto em = get_if<SFM::Exact> (&variant))
-			Value_.Matcher_ = *em;
+		if (const auto em = get_if<SVM::Exact> (&variant))
+			Value_.Pattern_ = *em;
 		else if (const auto str = get_if<QString> (&variant))
-			Value_.Matcher_ = *str;
-		else if (const auto ss = get_if<SFM::Substring> (&variant))
-			Value_.Matcher_ = *ss;
-		else if (const auto wc = get_if<SFM::Wildcard> (&variant))
-			Value_.Matcher_ = *wc;
+			Value_.Pattern_ = *str;
+		else if (const auto ss = get_if<SVM::Substring> (&variant))
+			Value_.Pattern_ = *ss;
+		else if (const auto wc = get_if<SVM::Wildcard> (&variant))
+			Value_.Pattern_ = *wc;
 		else if (const auto rx = get_if<QRegularExpression> (&variant))
-			Value_.Matcher_ = *rx;
+			Value_.Pattern_ = *rx;
 		else
 		{
 			qWarning () << "unsupported type:" << variant;
@@ -111,7 +111,7 @@ namespace LC::AdvancedNotifications
 		Value_.Positive_ = true;
 	}
 
-	AN::FieldValue StringLikeMatcher::GetValue () const
+	AN::ValueMatcher StringLikeMatcher::GetValue () const
 	{
 		return Value_;
 	}
@@ -142,31 +142,31 @@ namespace LC::AdvancedNotifications
 
 	namespace
 	{
-		using UiOrderedStringMatcher = std::variant<SFM::Exact, SFM::Substring, SFM::Wildcard, QRegularExpression>;
+		using UiOrderedStringMatcher = std::variant<SVM::Exact, SVM::Substring, SVM::Wildcard, QRegularExpression>;
 
 		template<size_t Idx>
 		using UiOrderedAlternative = std::variant_alternative_t<Idx, UiOrderedStringMatcher>;
 
-		static_assert (std::variant_size_v<UiOrderedStringMatcher> == std::variant_size_v<SFM::Pattern::Base>);
+		static_assert (std::variant_size_v<UiOrderedStringMatcher> == std::variant_size_v<SVM::Pattern::Base>);
 
-		int ToUiIndex (const SFM::Pattern& matcher)
+		int ToUiIndex (const SVM::Pattern& matcher)
 		{
 			return Util::Visit (matcher, [] (const auto& val) { return UiOrderedStringMatcher { val }.index (); });
 		}
 
-		QString ExtractPattern (const SFM::Pattern& matcher)
+		QString ExtractPattern (const SVM::Pattern& matcher)
 		{
 			return Util::Visit (matcher,
 					[] (const QRegularExpression& rx) { return rx.pattern (); },
 					[] (const auto& val) { return val.Pattern_; });
 		}
 
-		std::optional<SFM::Pattern> FromUiIndex (int index, const QString& pattern)
+		std::optional<SVM::Pattern> FromUiIndex (int index, const QString& pattern)
 		{
 			return [&]<size_t... Idx> (std::index_sequence<Idx...>)
 			{
 				// TODO C++26 template for
-				std::optional<SFM::Pattern> result;
+				std::optional<SVM::Pattern> result;
 				static_cast<void> (((index == Idx && (result = UiOrderedAlternative<Idx> { pattern }, 0)) + ...));
 				return result;
 			} (std::make_index_sequence<std::variant_size_v<UiOrderedStringMatcher>> {});
@@ -186,12 +186,12 @@ namespace LC::AdvancedNotifications
 		{
 			const auto idx = Ui_->RegexType_->currentIndex ();
 			if (const auto matcher = FromUiIndex (idx, Ui_->RegexpEditor_->text ()))
-				Value_.Matcher_ = *matcher;
+				Value_.Pattern_ = *matcher;
 			else
 				qWarning () << "unknown string matcher type" << idx;
 		}
 		else
-			Value_.Matcher_ = SFM::Exact { Ui_->VariantsBox_->currentData ().toByteArray () };
+			Value_.Pattern_ = SVM::Exact { Ui_->VariantsBox_->currentData ().toByteArray () };
 	}
 
 	void StringLikeMatcher::SyncWidgetTo ()
@@ -205,12 +205,12 @@ namespace LC::AdvancedNotifications
 		Ui_->ContainsBox_->setCurrentIndex (!Value_.Positive_);
 		if (AllowedValues_.isEmpty ())
 		{
-			Ui_->RegexpEditor_->setText (ExtractPattern (Value_.Matcher_));
-			Ui_->RegexType_->setCurrentIndex (ToUiIndex (Value_.Matcher_));
+			Ui_->RegexpEditor_->setText (ExtractPattern (Value_.Pattern_));
+			Ui_->RegexType_->setCurrentIndex (ToUiIndex (Value_.Pattern_));
 		}
 		else
 		{
-			const auto& pattern = ExtractPattern (Value_.Matcher_).toUtf8 ();
+			const auto& pattern = ExtractPattern (Value_.Pattern_).toUtf8 ();
 			if (const auto idx = Ui_->VariantsBox_->findData (pattern);
 				idx >= 0)
 				Ui_->VariantsBox_->setCurrentIndex (idx);
@@ -221,9 +221,9 @@ namespace LC::AdvancedNotifications
 
 	namespace
 	{
-		bool GenericMatch (auto&& val, const AN::StringFieldValue& ref)
+		bool GenericMatch (auto&& val, const AN::StringValueMatcher& ref)
 		{
-			return Util::AN::Matches (val, ref.Matcher_) == ref.Positive_;
+			return Util::AN::Matches (val, ref.Pattern_) == ref.Positive_;
 		}
 	}
 
@@ -240,10 +240,10 @@ namespace LC::AdvancedNotifications
 		{
 			Q_DECLARE_TR_FUNCTIONS (LC::AdvancedNotifications::Descriptions)
 		public:
-			static QString ForStringMatcher (const AN::StringFieldValue& value)
+			static QString ForStringMatcher (const AN::StringValueMatcher& value)
 			{
 				const auto contains = value.Positive_;
-				return Util::Visit (value.Matcher_,
+				return Util::Visit (value.Pattern_,
 						[&] (const QRegularExpression& rx)
 						{
 							const auto& msg = contains ?
@@ -251,21 +251,21 @@ namespace LC::AdvancedNotifications
 									tr ("doesn't match regular expression `%1`");
 							return msg.arg (rx.pattern ());
 						},
-						[&] (const SFM::Substring& str)
+						[&] (const SVM::Substring& str)
 						{
 							const auto& msg = contains ?
 									tr ("matches substring `%1`") :
 									tr ("doesn't match substring `%1`");
 							return msg.arg (str.Pattern_);
 						},
-						[&] (const SFM::Wildcard& wc)
+						[&] (const SVM::Wildcard& wc)
 						{
 							const auto& msg = contains ?
 									tr ("matches wildcard `%1`") :
 									tr ("doesn't match wildcard `%1`");
 							return msg.arg (wc.Pattern_);
 						},
-						[&] (const SFM::Exact& em)
+						[&] (const SVM::Exact& em)
 						{
 							const auto& msg = contains ?
 									tr ("is exactly `%1`") :
@@ -274,10 +274,10 @@ namespace LC::AdvancedNotifications
 						});
 			}
 
-			static QString ForStringListMatcher (const AN::StringFieldValue& value)
+			static QString ForStringListMatcher (const AN::StringValueMatcher& value)
 			{
 				const auto contains = value.Positive_;
-				return Util::Visit (value.Matcher_,
+				return Util::Visit (value.Pattern_,
 						[&] (const QRegularExpression& rx)
 						{
 							const auto& msg = contains ?
@@ -285,21 +285,21 @@ namespace LC::AdvancedNotifications
 									tr ("doesn't contains a string matching regular expression `%1`");
 							return msg.arg (rx.pattern ());
 						},
-						[&] (const SFM::Substring& str)
+						[&] (const SVM::Substring& str)
 						{
 							const auto& msg = contains ?
 									tr ("contains a string with the substring `%1`") :
 									tr ("doesn't contain a string with the substring `%1`");
 							return msg.arg (str.Pattern_);
 						},
-						[&] (const SFM::Wildcard& wc)
+						[&] (const SVM::Wildcard& wc)
 						{
 							const auto& msg = contains ?
 									tr ("contains a string matching wildcard `%1`") :
 									tr ("doesn't contain a string matching wildcard `%1`");
 							return msg.arg (wc.Pattern_);
 						},
-						[&] (const SFM::Exact& em)
+						[&] (const SVM::Exact& em)
 						{
 							const auto& msg = contains ?
 									tr ("contains the exact string `%1`") :
@@ -333,8 +333,8 @@ namespace LC::AdvancedNotifications
 			return false;
 
 		const auto& url = var.toUrl ();
-		const auto contains = Util::AN::Matches (url.toString (), Value_.Matcher_) ||
-				Util::AN::Matches (QString::fromUtf8 (url.toEncoded ()), Value_.Matcher_);
+		const auto contains = Util::AN::Matches (url.toString (), Value_.Pattern_) ||
+				Util::AN::Matches (QString::fromUtf8 (url.toEncoded ()), Value_.Pattern_);
 		return contains == Value_.Positive_;
 	}
 
@@ -363,7 +363,7 @@ namespace LC::AdvancedNotifications
 		Value_.Value_ = map.value (Keys::IsSet).toBool ();
 	}
 
-	void BoolMatcher::SetValue (const AN::FieldValue& variant)
+	void BoolMatcher::SetValue (const AN::ValueMatcher& variant)
 	{
 		SetValueFromVariant (Value_, variant);
 	}
@@ -373,7 +373,7 @@ namespace LC::AdvancedNotifications
 		Value_.Value_ = variant.toBool ();
 	}
 
-	AN::FieldValue BoolMatcher::GetValue () const
+	AN::ValueMatcher BoolMatcher::GetValue () const
 	{
 		return Value_;
 	}
@@ -431,11 +431,11 @@ namespace LC::AdvancedNotifications
 
 	IntMatcher::IntMatcher ()
 	{
-		Ops2pos_ [AN::IntFieldValue::OGreater] = 0;
-		Ops2pos_ [AN::IntFieldValue::OEqual | AN::IntFieldValue::OGreater] = 1;
-		Ops2pos_ [AN::IntFieldValue::OEqual] = 2;
-		Ops2pos_ [AN::IntFieldValue::OEqual | AN::IntFieldValue::OLess] = 3;
-		Ops2pos_ [AN::IntFieldValue::OLess] = 4;
+		Ops2pos_ [AN::IntValueMatcher::OGreater] = 0;
+		Ops2pos_ [AN::IntValueMatcher::OEqual | AN::IntValueMatcher::OGreater] = 1;
+		Ops2pos_ [AN::IntValueMatcher::OEqual] = 2;
+		Ops2pos_ [AN::IntValueMatcher::OEqual | AN::IntValueMatcher::OLess] = 3;
+		Ops2pos_ [AN::IntValueMatcher::OLess] = 4;
 	}
 
 	namespace Keys
@@ -456,10 +456,10 @@ namespace LC::AdvancedNotifications
 	void IntMatcher::Load (const QVariantMap& map)
 	{
 		Value_.Boundary_ = map [Keys::Boundary].toInt ();
-		Value_.Ops_ = static_cast<AN::IntFieldValue::Operations> (map [Keys::Ops].value<quint16> ());
+		Value_.Ops_ = static_cast<AN::IntValueMatcher::Operations> (map [Keys::Ops].value<quint16> ());
 	}
 
-	void IntMatcher::SetValue (const AN::FieldValue& variant)
+	void IntMatcher::SetValue (const AN::ValueMatcher& variant)
 	{
 		SetValueFromVariant (Value_, variant);
 	}
@@ -467,10 +467,10 @@ namespace LC::AdvancedNotifications
 	void IntMatcher::SetValue (const QVariant& variant)
 	{
 		Value_.Boundary_ = variant.toInt ();
-		Value_.Ops_ = AN::IntFieldValue::OEqual;
+		Value_.Ops_ = AN::IntValueMatcher::OEqual;
 	}
 
-	AN::FieldValue IntMatcher::GetValue () const
+	AN::ValueMatcher IntMatcher::GetValue () const
 	{
 		return Value_;
 	}
@@ -482,11 +482,11 @@ namespace LC::AdvancedNotifications
 
 		const int val = var.toInt ();
 
-		if ((Value_.Ops_ & AN::IntFieldValue::OEqual) && val == Value_.Boundary_)
+		if ((Value_.Ops_ & AN::IntValueMatcher::OEqual) && val == Value_.Boundary_)
 			return true;
-		if ((Value_.Ops_ & AN::IntFieldValue::OGreater) && val > Value_.Boundary_)
+		if ((Value_.Ops_ & AN::IntValueMatcher::OGreater) && val > Value_.Boundary_)
 			return true;
-		if ((Value_.Ops_ & AN::IntFieldValue::OLess) && val < Value_.Boundary_)
+		if ((Value_.Ops_ & AN::IntValueMatcher::OLess) && val < Value_.Boundary_)
 			return true;
 
 		return false;
@@ -494,15 +494,15 @@ namespace LC::AdvancedNotifications
 
 	QString IntMatcher::GetHRDescription () const
 	{
-		if (Value_.Ops_ == AN::IntFieldValue::OEqual)
+		if (Value_.Ops_ == AN::IntValueMatcher::OEqual)
 			return QObject::tr ("equals to %1").arg (Value_.Boundary_);
 
 		QString op;
-		if ((Value_.Ops_ & AN::IntFieldValue::OGreater))
+		if ((Value_.Ops_ & AN::IntValueMatcher::OGreater))
 			op += ">"_ql;
-		if ((Value_.Ops_ & AN::IntFieldValue::OLess))
+		if ((Value_.Ops_ & AN::IntValueMatcher::OLess))
 			op += "<"_ql;
-		if ((Value_.Ops_ & AN::IntFieldValue::OEqual))
+		if ((Value_.Ops_ & AN::IntValueMatcher::OEqual))
 			op += "="_ql;
 
 		return QObject::tr ("is %1 then %2")

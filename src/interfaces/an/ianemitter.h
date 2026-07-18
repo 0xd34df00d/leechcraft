@@ -92,22 +92,22 @@ namespace LC::AN
 		AllowedValues AllowedValues_ = {};
 	};
 
-	/** @brief Describes a field with boolean values.
+	/** @brief Matches boolean values.
 	 */
-	struct BoolFieldValue
+	struct BoolValueMatcher
 	{
-		/** @brief Whether the field should be set.
+		/** @brief The value to match.
 		 */
 		bool Value_;
 
-		auto operator<=> (const BoolFieldValue&) const = default;
+		auto operator<=> (const BoolValueMatcher&) const = default;
 	};
 
-	/** @brief Describes a field with integer values.
+	/** @brief Matches integer values.
 	 */
-	struct IntFieldValue
+	struct IntValueMatcher
 	{
-		/** @brief The boundary of the field.
+		/** @brief The boundary to compare the matched values against.
 		 */
 		int Boundary_;
 
@@ -136,12 +136,12 @@ namespace LC::AN
 		 */
 		Operations Ops_;
 
-		bool operator== (const IntFieldValue&) const = default;
+		bool operator== (const IntValueMatcher&) const = default;
 	};
 
-	/** @brief Describes a field with QString values.
+	/** @brief Matches string values.
 	 */
-	struct StringFieldValue
+	struct StringValueMatcher
 	{
 		struct Exact
 		{
@@ -177,21 +177,21 @@ namespace LC::AN
 
 		/** @brief The pattern the values should (not) match.
 		 */
-		Pattern Matcher_ = Exact {};
+		Pattern Pattern_ = Exact {};
 
-		/** @brief Whether the values should match or not match `Matcher_`.
+		/** @brief Whether the values should match or not match `Pattern_`.
 		 *
-		 * If this is true, the values should match `Matcher_`, and shouldn't
+		 * If this is true, the values should match `Pattern_`, and shouldn't
 		 * otherwise.
 		 */
 		bool Positive_ = true;
 
-		bool operator== (const StringFieldValue&) const = default;
+		bool operator== (const StringValueMatcher&) const = default;
 	};
 
-	/** @brief A combination of all possible descriptions.
+	/** @brief A matcher for a value of any supported type.
 	 */
-	using FieldValue = std::variant<BoolFieldValue, IntFieldValue, StringFieldValue>;
+	using ValueMatcher = std::variant<BoolValueMatcher, IntValueMatcher, StringValueMatcher>;
 }
 
 /** @brief Interface for plugins emitting AdvancedNotifications entries.
@@ -233,7 +233,7 @@ public:
 
 Q_DECLARE_INTERFACE (IANEmitter, "org.Deviant.LeechCraft.IANEmitter/1.0")
 Q_DECLARE_METATYPE (LC::AN::FieldData)
-Q_DECLARE_METATYPE (LC::AN::FieldValue)
-Q_DECLARE_METATYPE (QList<LC::AN::FieldValue>)
+Q_DECLARE_METATYPE (LC::AN::ValueMatcher)
+Q_DECLARE_METATYPE (QList<LC::AN::ValueMatcher>)
 
-Q_DECLARE_OPERATORS_FOR_FLAGS (LC::AN::IntFieldValue::Operations)
+Q_DECLARE_OPERATORS_FOR_FLAGS (LC::AN::IntValueMatcher::Operations)

@@ -56,9 +56,9 @@ namespace LC::Util::AN
 	 */
 	UTIL_XPC_API QString GetTypeName (const QString& type);
 
-	UTIL_XPC_API QVariant ToVariant (const LC::AN::StringFieldValue::Pattern& matcher);
-	UTIL_XPC_API std::optional<LC::AN::StringFieldValue::Pattern> StringPatternFromVariant (const QVariant& variant);
+	UTIL_XPC_API QVariant ToVariant (const LC::AN::StringValueMatcher::Pattern& matcher);
+	UTIL_XPC_API std::optional<LC::AN::StringValueMatcher::Pattern> StringPatternFromVariant (const QVariant& variant);
 
-	UTIL_XPC_API bool Matches (const QString& string, const LC::AN::StringFieldValue::Pattern& matcher);
-	UTIL_XPC_API bool Matches (const QStringList& strings, const LC::AN::StringFieldValue::Pattern& matcher);
+	UTIL_XPC_API bool Matches (const QString& string, const LC::AN::StringValueMatcher::Pattern& matcher);
+	UTIL_XPC_API bool Matches (const QStringList& strings, const LC::AN::StringValueMatcher::Pattern& matcher);
 }

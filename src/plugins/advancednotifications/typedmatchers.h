@@ -38,9 +38,9 @@ namespace LC::AdvancedNotifications
 		virtual QVariantMap Save () const = 0;
 		virtual void Load (const QVariantMap&) = 0;
 
-		virtual void SetValue (const AN::FieldValue&) = 0;
+		virtual void SetValue (const AN::ValueMatcher&) = 0;
 		virtual void SetValue (const QVariant&) = 0;
-		virtual AN::FieldValue GetValue () const = 0;
+		virtual AN::ValueMatcher GetValue () const = 0;
 
 		virtual bool Match (const QVariant&) const = 0;
 
@@ -54,7 +54,7 @@ namespace LC::AdvancedNotifications
 	class StringLikeMatcher : public TypedMatcherBase
 	{
 	protected:
-		AN::StringFieldValue Value_;
+		AN::StringValueMatcher Value_;
 		const AN::FieldData::AllowedValues AllowedValues_;
 
 		std::shared_ptr<Ui::StringLikeMatcherConfigWidget> Ui_;
@@ -64,9 +64,9 @@ namespace LC::AdvancedNotifications
 		QVariantMap Save () const override;
 		void Load (const QVariantMap&) override;
 
-		void SetValue (const AN::FieldValue&) override;
+		void SetValue (const AN::ValueMatcher&) override;
 		void SetValue (const QVariant&) override;
-		AN::FieldValue GetValue () const override;
+		AN::ValueMatcher GetValue () const override;
 
 		QWidget* GetConfigWidget () override;
 		void SyncToWidget () override;
@@ -105,7 +105,7 @@ namespace LC::AdvancedNotifications
 
 	class BoolMatcher final : public TypedMatcherBase
 	{
-		AN::BoolFieldValue Value_ { false };
+		AN::BoolValueMatcher Value_ { false };
 
 		const QString FieldName_;
 		std::shared_ptr<Ui::BoolMatcherConfigWidget> Ui_;
@@ -115,9 +115,9 @@ namespace LC::AdvancedNotifications
 		QVariantMap Save () const override;
 		void Load (const QVariantMap&) override;
 
-		void SetValue (const AN::FieldValue&) override;
+		void SetValue (const AN::ValueMatcher&) override;
 		void SetValue (const QVariant&) override;
-		AN::FieldValue GetValue () const override;
+		AN::ValueMatcher GetValue () const override;
 
 		bool Match (const QVariant&) const override;
 
@@ -129,19 +129,19 @@ namespace LC::AdvancedNotifications
 
 	class IntMatcher final : public TypedMatcherBase
 	{
-		AN::IntFieldValue Value_ { 0, AN::IntFieldValue::OEqual };
+		AN::IntValueMatcher Value_ { 0, AN::IntValueMatcher::OEqual };
 
 		std::shared_ptr<Ui::IntMatcherConfigWidget> Ui_;
-		QMap<AN::IntFieldValue::Operations, int> Ops2pos_;
+		QMap<AN::IntValueMatcher::Operations, int> Ops2pos_;
 	public:
 		IntMatcher ();
 
 		QVariantMap Save () const override;
 		void Load (const QVariantMap&) override;
 
-		void SetValue (const AN::FieldValue&) override;
+		void SetValue (const AN::ValueMatcher&) override;
 		void SetValue (const QVariant&) override;
-		AN::FieldValue GetValue () const override;
+		AN::ValueMatcher GetValue () const override;
 
 		bool Match (const QVariant&) const override;
 

@@ -157,9 +157,9 @@ namespace LC::Util::AN
 		return type2hr.value (type, type);
 	}
 
-	using SFM = LC::AN::StringFieldValue;
+	using SVM = LC::AN::StringValueMatcher;
 
-	QVariant ToVariant (const SFM::Pattern& matcher)
+	QVariant ToVariant (const SVM::Pattern& matcher)
 	{
 		const auto value = Visit (matcher,
 				[] (const QRegularExpression& expr) { return QVariant { expr }; },
@@ -171,7 +171,7 @@ namespace LC::Util::AN
 		};
 	}
 
-	std::optional<SFM::Pattern> StringPatternFromVariant (const QVariant& var)
+	std::optional<SVM::Pattern> StringPatternFromVariant (const QVariant& var)
 	{
 		const auto& map = var.toMap ();
 		const auto idx = map ["index"_qs].toInt ();
@@ -179,28 +179,28 @@ namespace LC::Util::AN
 		switch (idx)
 		{
 		case 0:
-			return SFM::Substring { value.toString () };
+			return SVM::Substring { value.toString () };
 		case 1:
-			return SFM::Wildcard { value.toString () };
+			return SVM::Wildcard { value.toString () };
 		case 2:
 			return value.toRegularExpression ();
 		case 3:
-			return SFM::Exact { value.toString () };
+			return SVM::Exact { value.toString () };
 		default:
 			return {};
 		}
 	}
 
-	bool Matches (const QString& string, const SFM::Pattern& matcher)
+	bool Matches (const QString& string, const SVM::Pattern& matcher)
 	{
 		return Visit (matcher,
 				[&] (const QRegularExpression& rx) { return string.contains (rx); },
-				[&] (const SFM::Substring& em) { return string.contains (em.Pattern_); },
-				[&] (const SFM::Wildcard& wc) { return string.contains (wc.Compiled_); },
-				[&] (const SFM::Exact& em) { return string == em.Pattern_; });
+				[&] (const SVM::Substring& em) { return string.contains (em.Pattern_); },
+				[&] (const SVM::Wildcard& wc) { return string.contains (wc.Compiled_); },
+				[&] (const SVM::Exact& em) { return string == em.Pattern_; });
 	}
 
-	bool Matches (const QStringList& strings, const SFM::Pattern& matcher)
+	bool Matches (const QStringList& strings, const SVM::Pattern& matcher)
 	{
 		return std::ranges::any_of (strings, [&matcher] (const QString& str) { return Matches (str, matcher); });
 	}
