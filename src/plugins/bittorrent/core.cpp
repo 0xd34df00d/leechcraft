@@ -1461,7 +1461,7 @@ namespace BitTorrent
 
 		const auto& stateVec = libtorrent::write_session_params_buf (Session_->session_state ());
 		XmlSettingsManager::Instance ().setProperty ("SessionParams",
-				QByteArray::fromRawData (stateVec.data (), stateVec.size ()));
+				QByteArray { stateVec.data (), static_cast<qsizetype> (stateVec.size ()) });
 
 		Session_->wait_for_alert (libtorrent::time_duration (5));
 
