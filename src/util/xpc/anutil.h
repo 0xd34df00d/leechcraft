@@ -8,16 +8,8 @@
 
 #pragma once
 
-#include <QStringList>
+#include <interfaces/an/ianemitter.h>
 #include "xpcconfig.h"
-
-template<typename K, typename V>
-class QMap;
-
-namespace LC::AN
-{
-	struct StringMatcher;
-}
 
 namespace LC::Util::AN
 {
@@ -64,9 +56,9 @@ namespace LC::Util::AN
 	 */
 	UTIL_XPC_API QString GetTypeName (const QString& type);
 
-	UTIL_XPC_API QVariant ToVariant (const LC::AN::StringMatcher& matcher);
-	UTIL_XPC_API std::optional<LC::AN::StringMatcher> StringMatcherFromVariant (const QVariant& variant);
+	UTIL_XPC_API QVariant ToVariant (const LC::AN::StringFieldValue::Pattern& matcher);
+	UTIL_XPC_API std::optional<LC::AN::StringFieldValue::Pattern> StringPatternFromVariant (const QVariant& variant);
 
-	UTIL_XPC_API bool Matches (const QString& string, const LC::AN::StringMatcher& matcher);
-	UTIL_XPC_API bool Matches (const QStringList& strings, const LC::AN::StringMatcher& matcher);
+	UTIL_XPC_API bool Matches (const QString& string, const LC::AN::StringFieldValue::Pattern& matcher);
+	UTIL_XPC_API bool Matches (const QStringList& strings, const LC::AN::StringFieldValue::Pattern& matcher);
 }

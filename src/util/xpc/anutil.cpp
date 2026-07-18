@@ -157,7 +157,9 @@ namespace LC::Util::AN
 		return type2hr.value (type, type);
 	}
 
-	QVariant ToVariant (const LC::AN::StringMatcher& matcher)
+	using SFM = LC::AN::StringFieldValue;
+
+	QVariant ToVariant (const SFM::Pattern& matcher)
 	{
 		const auto value = Visit (matcher,
 				[] (const QRegularExpression& expr) { return QVariant { expr }; },
@@ -169,7 +171,7 @@ namespace LC::Util::AN
 		};
 	}
 
-	std::optional<LC::AN::StringMatcher> StringMatcherFromVariant (const QVariant& var)
+	std::optional<SFM::Pattern> StringPatternFromVariant (const QVariant& var)
 	{
 		const auto& map = var.toMap ();
 		const auto idx = map ["index"_qs].toInt ();
@@ -177,28 +179,28 @@ namespace LC::Util::AN
 		switch (idx)
 		{
 		case 0:
-			return LC::AN::Substring { value.toString () };
+			return SFM::Substring { value.toString () };
 		case 1:
-			return LC::AN::Wildcard { value.toString () };
+			return SFM::Wildcard { value.toString () };
 		case 2:
 			return value.toRegularExpression ();
 		case 3:
-			return LC::AN::ExactMatch { value.toString () };
+			return SFM::Exact { value.toString () };
 		default:
 			return {};
 		}
 	}
 
-	bool Matches (const QString& string, const LC::AN::StringMatcher& matcher)
+	bool Matches (const QString& string, const SFM::Pattern& matcher)
 	{
 		return Visit (matcher,
 				[&] (const QRegularExpression& rx) { return string.contains (rx); },
-				[&] (const LC::AN::Substring& em) { return string.contains (em.Pattern_); },
-				[&] (const LC::AN::Wildcard& wc) { return string.contains (wc.Compiled_); },
-				[&] (const LC::AN::ExactMatch& em) { return string == em.Pattern_; });
+				[&] (const SFM::Substring& em) { return string.contains (em.Pattern_); },
+				[&] (const SFM::Wildcard& wc) { return string.contains (wc.Compiled_); },
+				[&] (const SFM::Exact& em) { return string == em.Pattern_; });
 	}
 
-	bool Matches (const QStringList& strings, const LC::AN::StringMatcher& matcher)
+	bool Matches (const QStringList& strings, const SFM::Pattern& matcher)
 	{
 		return std::ranges::any_of (strings, [&matcher] (const QString& str) { return Matches (str, matcher); });
 	}

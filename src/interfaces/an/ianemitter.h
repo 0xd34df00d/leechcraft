@@ -139,45 +139,45 @@ namespace LC::AN
 		bool operator== (const IntFieldValue&) const = default;
 	};
 
-	struct ExactMatch
-	{
-		QString Pattern_;
-		bool operator== (const ExactMatch&) const = default;
-	};
-
-	struct Substring
-	{
-		QString Pattern_;
-		bool operator== (const Substring&) const = default;
-	};
-
-	struct Wildcard
-	{
-		QString Pattern_;
-		QRegularExpression Compiled_ = QRegularExpression::fromWildcard (Pattern_);
-
-		bool operator== (const Wildcard&) const = default;
-	};
-
-	struct StringMatcher : std::variant<Substring, Wildcard, QRegularExpression, ExactMatch>
-	{
-		using variant::variant;
-
-		explicit(false) StringMatcher (const QString& str)
-		: variant { ExactMatch { str } }
-		{
-		}
-
-		using Base = variant;
-	};
-
 	/** @brief Describes a field with QString values.
 	 */
 	struct StringFieldValue
 	{
+		struct Exact
+		{
+			QString Pattern_;
+			bool operator== (const Exact&) const = default;
+		};
+
+		struct Substring
+		{
+			QString Pattern_;
+			bool operator== (const Substring&) const = default;
+		};
+
+		struct Wildcard
+		{
+			QString Pattern_;
+			QRegularExpression Compiled_ = QRegularExpression::fromWildcard (Pattern_);
+
+			bool operator== (const Wildcard&) const = default;
+		};
+
+		struct Pattern : std::variant<Substring, Wildcard, QRegularExpression, Exact>
+		{
+			using variant::variant;
+
+			explicit(false) Pattern (const QString& str)
+			: variant { Exact { str } }
+			{
+			}
+
+			using Base = variant;
+		};
+
 		/** @brief The pattern the values should (not) match.
 		 */
-		StringMatcher Matcher_ = ExactMatch {};
+		Pattern Matcher_ = Exact {};
 
 		/** @brief Whether the values should match or not match `Matcher_`.
 		 *

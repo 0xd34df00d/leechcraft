@@ -63,7 +63,7 @@ namespace LC::AdvancedNotifications
 
 	void StringLikeMatcher::Load (const QVariantMap& map)
 	{
-		if (const auto sm = Util::AN::StringMatcherFromVariant (map [Keys::Rx]))
+		if (const auto sm = Util::AN::StringPatternFromVariant (map [Keys::Rx]))
 		{
 			Value_.Matcher_ = *sm;
 			Value_.Positive_ = map [Keys::Contains].toBool ();
@@ -88,15 +88,17 @@ namespace LC::AdvancedNotifications
 		SetValueFromVariant (Value_, variant);
 	}
 
+	using SFM = AN::StringFieldValue;
+
 	void StringLikeMatcher::SetValue (const QVariant& variant)
 	{
-		if (const auto em = get_if<AN::ExactMatch> (&variant))
+		if (const auto em = get_if<SFM::Exact> (&variant))
 			Value_.Matcher_ = *em;
 		else if (const auto str = get_if<QString> (&variant))
 			Value_.Matcher_ = *str;
-		else if (const auto ss = get_if<AN::Substring> (&variant))
+		else if (const auto ss = get_if<SFM::Substring> (&variant))
 			Value_.Matcher_ = *ss;
-		else if (const auto wc = get_if<AN::Wildcard> (&variant))
+		else if (const auto wc = get_if<SFM::Wildcard> (&variant))
 			Value_.Matcher_ = *wc;
 		else if (const auto rx = get_if<QRegularExpression> (&variant))
 			Value_.Matcher_ = *rx;
@@ -140,31 +142,31 @@ namespace LC::AdvancedNotifications
 
 	namespace
 	{
-		using UiOrderedStringMatcher = std::variant<AN::ExactMatch, AN::Substring, AN::Wildcard, QRegularExpression>;
+		using UiOrderedStringMatcher = std::variant<SFM::Exact, SFM::Substring, SFM::Wildcard, QRegularExpression>;
 
 		template<size_t Idx>
 		using UiOrderedAlternative = std::variant_alternative_t<Idx, UiOrderedStringMatcher>;
 
-		static_assert (std::variant_size_v<UiOrderedStringMatcher> == std::variant_size_v<AN::StringMatcher::Base>);
+		static_assert (std::variant_size_v<UiOrderedStringMatcher> == std::variant_size_v<SFM::Pattern::Base>);
 
-		int ToUiIndex (const AN::StringMatcher& matcher)
+		int ToUiIndex (const SFM::Pattern& matcher)
 		{
 			return Util::Visit (matcher, [] (const auto& val) { return UiOrderedStringMatcher { val }.index (); });
 		}
 
-		QString ExtractPattern (const AN::StringMatcher& matcher)
+		QString ExtractPattern (const SFM::Pattern& matcher)
 		{
 			return Util::Visit (matcher,
 					[] (const QRegularExpression& rx) { return rx.pattern (); },
 					[] (const auto& val) { return val.Pattern_; });
 		}
 
-		std::optional<AN::StringMatcher> FromUiIndex (int index, const QString& pattern)
+		std::optional<SFM::Pattern> FromUiIndex (int index, const QString& pattern)
 		{
 			return [&]<size_t... Idx> (std::index_sequence<Idx...>)
 			{
 				// TODO C++26 template for
-				std::optional<AN::StringMatcher> result;
+				std::optional<SFM::Pattern> result;
 				static_cast<void> (((index == Idx && (result = UiOrderedAlternative<Idx> { pattern }, 0)) + ...));
 				return result;
 			} (std::make_index_sequence<std::variant_size_v<UiOrderedStringMatcher>> {});
@@ -189,7 +191,7 @@ namespace LC::AdvancedNotifications
 				qWarning () << "unknown string matcher type" << idx;
 		}
 		else
-			Value_.Matcher_ = AN::ExactMatch { Ui_->VariantsBox_->currentData ().toByteArray () };
+			Value_.Matcher_ = SFM::Exact { Ui_->VariantsBox_->currentData ().toByteArray () };
 	}
 
 	void StringLikeMatcher::SyncWidgetTo ()
@@ -249,21 +251,21 @@ namespace LC::AdvancedNotifications
 									tr ("doesn't match regular expression `%1`");
 							return msg.arg (rx.pattern ());
 						},
-						[&] (const AN::Substring& str)
+						[&] (const SFM::Substring& str)
 						{
 							const auto& msg = contains ?
 									tr ("matches substring `%1`") :
 									tr ("doesn't match substring `%1`");
 							return msg.arg (str.Pattern_);
 						},
-						[&] (const AN::Wildcard& wc)
+						[&] (const SFM::Wildcard& wc)
 						{
 							const auto& msg = contains ?
 									tr ("matches wildcard `%1`") :
 									tr ("doesn't match wildcard `%1`");
 							return msg.arg (wc.Pattern_);
 						},
-						[&] (const AN::ExactMatch& em)
+						[&] (const SFM::Exact& em)
 						{
 							const auto& msg = contains ?
 									tr ("is exactly `%1`") :
@@ -283,21 +285,21 @@ namespace LC::AdvancedNotifications
 									tr ("doesn't contains a string matching regular expression `%1`");
 							return msg.arg (rx.pattern ());
 						},
-						[&] (const AN::Substring& str)
+						[&] (const SFM::Substring& str)
 						{
 							const auto& msg = contains ?
 									tr ("contains a string with the substring `%1`") :
 									tr ("doesn't contain a string with the substring `%1`");
 							return msg.arg (str.Pattern_);
 						},
-						[&] (const AN::Wildcard& wc)
+						[&] (const SFM::Wildcard& wc)
 						{
 							const auto& msg = contains ?
 									tr ("contains a string matching wildcard `%1`") :
 									tr ("doesn't contain a string matching wildcard `%1`");
 							return msg.arg (wc.Pattern_);
 						},
-						[&] (const AN::ExactMatch& em)
+						[&] (const SFM::Exact& em)
 						{
 							const auto& msg = contains ?
 									tr ("contains the exact string `%1`") :
