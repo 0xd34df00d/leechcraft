@@ -191,17 +191,98 @@ namespace LC::Util::AN
 		}
 	}
 
+	namespace
+	{
+		bool MatchStringPattern (const QString& string, const SVM::Pattern& matcher)
+		{
+			return Visit (matcher,
+					[&] (const QRegularExpression& rx) { return string.contains (rx); },
+					[&] (const SVM::Substring& em) { return string.contains (em.Pattern_); },
+					[&] (const SVM::Wildcard& wc) { return string.contains (wc.Compiled_); },
+					[&] (const SVM::Exact& em) { return string == em.Pattern_; });
+		}
+	}
+
 	bool Matches (const QString& string, const SVM::Pattern& matcher)
 	{
-		return Visit (matcher,
-				[&] (const QRegularExpression& rx) { return string.contains (rx); },
-				[&] (const SVM::Substring& em) { return string.contains (em.Pattern_); },
-				[&] (const SVM::Wildcard& wc) { return string.contains (wc.Compiled_); },
-				[&] (const SVM::Exact& em) { return string == em.Pattern_; });
+		return MatchStringPattern (string, matcher);
 	}
 
 	bool Matches (const QStringList& strings, const SVM::Pattern& matcher)
 	{
-		return std::ranges::any_of (strings, [&matcher] (const QString& str) { return Matches (str, matcher); });
+		return std::ranges::any_of (strings, [&matcher] (const QString& str) { return MatchStringPattern (str, matcher); });
+	}
+
+	bool Matches (const QString& string, const LC::AN::StringValueMatcher& matcher)
+	{
+		return MatchStringPattern (string, matcher.Pattern_) == matcher.Positive_;
+	}
+
+	bool Matches (const QStringList& strings, const LC::AN::StringValueMatcher& matcher)
+	{
+		return std::ranges::any_of (strings, [&matcher] (const QString& str) { return MatchStringPattern (str, matcher.Pattern_); }) == matcher.Positive_;
+	}
+
+	bool Matches (const QUrl& url, const LC::AN::StringValueMatcher& matcher)
+	{
+		const auto strMatches = MatchStringPattern (url.toString (), matcher.Pattern_)
+				|| MatchStringPattern (QString::fromLatin1 (url.toEncoded ()), matcher.Pattern_);
+		return strMatches == matcher.Positive_;
+	}
+
+	bool Matches (bool value, const LC::AN::BoolValueMatcher& matcher)
+	{
+		return value == matcher.Value_;
+	}
+
+	bool Matches (int value, const LC::AN::IntValueMatcher& matcher)
+	{
+		using enum LC::AN::IntValueMatcher::Operation;
+
+		if ((matcher.Ops_ & OEqual) && value == matcher.Boundary_)
+			return true;
+		if ((matcher.Ops_ & OGreater) && value > matcher.Boundary_)
+			return true;
+		if ((matcher.Ops_ & OLess) && value < matcher.Boundary_)
+			return true;
+
+		return false;
+	}
+
+	bool Matches (const QVariant& var, QMetaType::Type expected, const LC::AN::ValueMatcher& matcher)
+	{
+		if (var.metaType ().id () != expected)
+		{
+			qCritical () << "expected" << QMetaType { expected } << "; got" << var.metaType () << var;
+			return false;
+		}
+
+		const auto ensureExpected = [&] (QMetaType::Type matcherType)
+		{
+			if (expected == matcherType)
+				return true;
+			qCritical () << "expected metatype" << QMetaType { expected } << "for matcher" << QMetaType { matcherType };
+			return false;
+		};
+
+		using namespace LC::AN;
+		return Visit (matcher,
+				[&] (const BoolValueMatcher& m) { return ensureExpected (QMetaType::Bool) && Matches (var.toBool (), m); },
+				[&] (const IntValueMatcher& m) { return ensureExpected (QMetaType::Int) && Matches (var.toInt (), m); },
+				[&] (const StringValueMatcher& m)
+				{
+					switch (expected)
+					{
+					case QMetaType::QString:
+						return Matches (var.toString (), m);
+					case QMetaType::QStringList:
+						return Matches (var.toStringList (), m);
+					case QMetaType::QUrl:
+						return Matches (var.toUrl (), m);
+					default:
+						qCritical () << "unexpected metatype" << QMetaType { expected } << "for string matcher";
+						return false;
+					}
+				});
 	}
 }
