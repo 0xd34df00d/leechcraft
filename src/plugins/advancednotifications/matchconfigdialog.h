@@ -11,8 +11,9 @@
 #include <memory>
 #include <QSet>
 #include <QHash>
-#include <QDialog>
 #include <interfaces/an/ianemitter.h>
+#include "fieldmatch.h"
+#include "typedmatchers.h"
 #include "ui_matchconfigdialog.h"
 
 namespace LC::AN
@@ -22,10 +23,7 @@ namespace LC::AN
 
 namespace LC::AdvancedNotifications
 {
-	class TypedMatcherBase;
-	using TypedMatcherBase_ptr = std::shared_ptr<TypedMatcherBase>;
-
-	class FieldMatch;
+	struct FieldMatch;
 
 	class MatchConfigDialog : public QDialog
 	{
@@ -34,7 +32,7 @@ namespace LC::AdvancedNotifications
 		Ui::MatchConfigDialog Ui_;
 
 		QSet<QString> Types_;
-		TypedMatcherBase_ptr CurrentMatcher_;
+		std::variant<IConfigWidget_ptr, QLabel> CurrentConfigWidget_;
 
 		const QHash<QObject*, QList<AN::FieldData>> FieldsMap_;
 	public:
@@ -46,6 +44,6 @@ namespace LC::AdvancedNotifications
 		int SelectPlugin (const QByteArray&, const QString&);
 		void AddFields (const QList<AN::FieldData>&);
 		void ShowPluginFields (int);
-		void ShowField (int);
+		void ShowField (int, const std::optional<ValueMatcherOrData>& = {});
 	};
 }

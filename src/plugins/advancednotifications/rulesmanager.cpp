@@ -26,6 +26,7 @@
 #include <util/models/rolenamesmixin.h>
 #include "typedmatchers.h"
 #include "xmlsettingsmanager.h"
+#include "util/sll/visitor.h"
 
 namespace LC::AdvancedNotifications
 {
@@ -102,18 +103,16 @@ namespace LC::AdvancedNotifications
 			if (!rule.GetTypes ().contains (type))
 				continue;
 
-			bool fieldsMatch = true;
-			for (const auto& match : rule.GetFieldMatches ())
-			{
-				const QString& fieldName = match.GetFieldName ();
-				const auto& matcher = match.GetMatcher ();
-				if (!matcher->Match (e.Additional_ [fieldName]))
-				{
-					fieldsMatch = false;
-					break;
-				}
-			}
-
+			const auto fieldsMatch = std::ranges::all_of (rule.GetFieldMatches (),
+					[&] (const FieldMatch& fieldMatch)
+					{
+						return Util::Visit (fieldMatch.Matcher_,
+								[&] (const AN::ValueMatcher& matcher)
+								{
+									return Util::AN::Matches (e.Additional_ [fieldMatch.Name_], fieldMatch.Type_, matcher);
+								},
+								[] (const QVariantMap&) { return false; });
+					});
 			if (!fieldsMatch)
 				continue;
 
@@ -220,21 +219,17 @@ namespace LC::AdvancedNotifications
 
 		auto tryAddFieldMatch = [&e, &rule, sender] (const AN::FieldData& field, bool standard)
 		{
-			if (!e.Additional_.contains (field.ID_))
-				return;
-
-			const auto& valMatcher = TypedMatcherBase::Create (field.Type_);
-
 			const auto& fieldValVar = e.Additional_ [field.ID_];
-			if (fieldValVar.canConvert<AN::ValueMatcher> ())
-				valMatcher->SetValue (e.Additional_ [field.ID_].value<AN::ValueMatcher> ());
-			else
-				valMatcher->SetValue (e.Additional_ [field.ID_]);
+			if (!fieldValVar.canConvert<AN::ValueMatcher> ())
+				return;
+			// TODO check which plugins emit value matcher as QVariant and not AN::ValueMatcher
 
-			FieldMatch fieldMatch (field.Type_, valMatcher);
-			fieldMatch.SetPluginID (standard ? QString {} : sender);
-			fieldMatch.SetFieldName (field.ID_);
-			rule.AddFieldMatch (fieldMatch);
+			rule.AddFieldMatch ({
+						.PluginID_ = standard ? QString {} : sender,
+						.Name_ = field.ID_,
+						.Type_ = field.Type_,
+						.Matcher_ = fieldValVar.value<AN::ValueMatcher> (),
+					});
 		};
 		for (const auto& field : stdFieldData)
 			tryAddFieldMatch (field, true);
@@ -288,13 +283,14 @@ namespace LC::AdvancedNotifications
 			e.Additional_ [AN::EF::AssocColor] = rule.GetColor ();
 			e.Additional_ [AN::EF::IsEnabled] = rule.IsEnabled ();
 
-			for (const auto& fieldMatch : rule.GetFieldMatches ())
-			{
-				const auto& matcher = fieldMatch.GetMatcher ();
-				e.Additional_ [fieldMatch.GetFieldName ()] = QVariant::fromValue (matcher->GetValue ());
-			}
+			bool hasUnparsedMatchers = false;
+			for (const auto& fm : rule.GetFieldMatches ())
+				Util::Visit (fm.Matcher_,
+						[&] (const AN::ValueMatcher& matcher) { e.Additional_ [fm.Name_] = QVariant::fromValue (matcher); },
+						[&] (const QVariantMap&) { hasUnparsedMatchers = true; });
 
-			result << e;
+			if (!hasUnparsedMatchers)
+				result << e;
 		}
 		return result;
 	}
@@ -394,9 +390,12 @@ namespace LC::AdvancedNotifications
 
 		if (version == -1 || version == 5)
 		{
-			FieldMatch match (QMetaType::Bool);
-			match.SetFieldName (AN::Field::TerminalActive);
-			match.GetMatcher ()->SetValue (AN::BoolValueMatcher { false });
+			const FieldMatch match
+			{
+				.Name_ = AN::Field::TerminalActive,
+				.Type_ = QMetaType::Bool,
+				.Matcher_ = AN::BoolValueMatcher { false },
+			};
 
 			NotificationRule inactiveBell (tr ("Bell in inactive terminal"), AN::CatTerminal,
 					{ AN::TypeTerminalBell });

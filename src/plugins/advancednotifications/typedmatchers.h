@@ -9,145 +9,21 @@
 #pragma once
 
 #include <memory>
-#include <QString>
-#include <QVariant>
 #include <interfaces/an/ianemitter.h>
-
-namespace Ui
-{
-	class BoolMatcherConfigWidget;
-	class IntMatcherConfigWidget;
-	class StringLikeMatcherConfigWidget;
-}
 
 namespace LC::AdvancedNotifications
 {
-	class TypedMatcherBase;
-
-	using TypedMatcherBase_ptr = std::shared_ptr<TypedMatcherBase>;
-
-	class TypedMatcherBase
+	class IConfigWidget
 	{
 	protected:
-		QWidget *CW_ = nullptr;
+		virtual ~IConfigWidget () = default;
 	public:
-		static TypedMatcherBase_ptr Create (QMetaType::Type, const AN::FieldData& = {});
-
-		virtual ~TypedMatcherBase () = default;
-
-		virtual QVariantMap Save () const = 0;
-		virtual void Load (const QVariantMap&) = 0;
-
-		virtual void SetValue (const AN::ValueMatcher&) = 0;
-		virtual void SetValue (const QVariant&) = 0;
-		virtual AN::ValueMatcher GetValue () const = 0;
-
-		virtual bool Match (const QVariant&) const = 0;
-
-		virtual QString GetHRDescription () const = 0;
-
-		virtual QWidget* GetConfigWidget () = 0;
-		virtual void SyncToWidget () = 0;
-		virtual void SyncWidgetTo () = 0;
+		virtual QWidget& GetWidget () = 0;
+		virtual AN::ValueMatcher GetConfiguredMatcher () const = 0;
 	};
 
-	class StringLikeMatcher : public TypedMatcherBase
-	{
-	protected:
-		AN::StringValueMatcher Value_;
-		const AN::FieldData::AllowedValues AllowedValues_;
+	using IConfigWidget_ptr = std::shared_ptr<IConfigWidget>;
 
-		std::shared_ptr<Ui::StringLikeMatcherConfigWidget> Ui_;
-	public:
-		explicit StringLikeMatcher (const AN::FieldData::AllowedValues& variants = {});
-
-		QVariantMap Save () const override;
-		void Load (const QVariantMap&) override;
-
-		void SetValue (const AN::ValueMatcher&) override;
-		void SetValue (const QVariant&) override;
-		AN::ValueMatcher GetValue () const override;
-
-		QWidget* GetConfigWidget () override;
-		void SyncToWidget () override;
-		void SyncWidgetTo () override;
-	};
-
-	class StringMatcher final : public StringLikeMatcher
-	{
-	public:
-		using StringLikeMatcher::StringLikeMatcher;
-
-		bool Match (const QVariant&) const override;
-
-		QString GetHRDescription () const override;
-	};
-
-	class StringListMatcher final : public StringLikeMatcher
-	{
-	public:
-		using StringLikeMatcher::StringLikeMatcher;
-
-		bool Match (const QVariant&) const override;
-
-		QString GetHRDescription () const override;
-	};
-
-	class UrlMatcher final : public StringLikeMatcher
-	{
-	public:
-		UrlMatcher () = default;
-
-		bool Match (const QVariant&) const override;
-
-		QString GetHRDescription () const override;
-	};
-
-	class BoolMatcher final : public TypedMatcherBase
-	{
-		AN::BoolValueMatcher Value_ { false };
-
-		const QString FieldName_;
-		std::shared_ptr<Ui::BoolMatcherConfigWidget> Ui_;
-	public:
-		explicit BoolMatcher (const QString& fieldName);
-
-		QVariantMap Save () const override;
-		void Load (const QVariantMap&) override;
-
-		void SetValue (const AN::ValueMatcher&) override;
-		void SetValue (const QVariant&) override;
-		AN::ValueMatcher GetValue () const override;
-
-		bool Match (const QVariant&) const override;
-
-		QString GetHRDescription () const override;
-		QWidget* GetConfigWidget () override;
-		void SyncToWidget () override;
-		void SyncWidgetTo () override;
-	};
-
-	class IntMatcher final : public TypedMatcherBase
-	{
-		AN::IntValueMatcher Value_ { 0, AN::IntValueMatcher::OEqual };
-
-		std::shared_ptr<Ui::IntMatcherConfigWidget> Ui_;
-		QMap<AN::IntValueMatcher::Operations, int> Ops2pos_;
-	public:
-		IntMatcher ();
-
-		QVariantMap Save () const override;
-		void Load (const QVariantMap&) override;
-
-		void SetValue (const AN::ValueMatcher&) override;
-		void SetValue (const QVariant&) override;
-		AN::ValueMatcher GetValue () const override;
-
-		bool Match (const QVariant&) const override;
-
-		QString GetHRDescription () const override;
-		QWidget* GetConfigWidget () override;
-		void SyncToWidget () override;
-		void SyncWidgetTo () override;
-	};
+	IConfigWidget_ptr CreateMatcherConfigWidget (const AN::FieldData&, const std::optional<AN::ValueMatcher>&);
+	QString GetMatcherDescription (const AN::FieldData&, const AN::ValueMatcher&);
 }

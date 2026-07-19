@@ -219,11 +219,8 @@ namespace LC::AdvancedNotifications
 		stream >> numMatches;
 
 		for (int i = 0; i < numMatches; ++i)
-		{
-			FieldMatch match;
-			match.Load (stream);
-			FieldMatches_ << match;
-		}
+			if (auto match = FieldMatch::Load (stream))
+				FieldMatches_ << *match;
 	}
 
 	namespace
@@ -258,7 +255,7 @@ namespace LC::AdvancedNotifications
 
 QDebug operator<< (QDebug dbg, const LC::AdvancedNotifications::FieldMatch& match)
 {
-	dbg.nospace () << "FieldMatch (for: " << match.GetPluginID () << "; field: " << match.GetFieldName () << ")";
+	dbg.nospace () << "FieldMatch (for: " << match.PluginID_ << "; field: " << match.Name_ << ")";
 	return dbg.space ();
 }
 

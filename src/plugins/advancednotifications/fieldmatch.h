@@ -8,44 +8,27 @@
 
 #pragma once
 
-#include <memory>
-#include <QMetaType>
-#include <QString>
+#include <interfaces/an/ianemitter.h>
 
 namespace LC::AdvancedNotifications
 {
-	class TypedMatcherBase;
+	using ValueMatcherOrData = std::variant<AN::ValueMatcher, QVariantMap>;
 
-	using TypedMatcherBase_ptr = std::shared_ptr<TypedMatcherBase>;
-
-	class FieldMatch
+	struct FieldMatch
 	{
-		QString PluginID_;
-		QString FieldName_;
+		QString PluginID_ {};
+		QString Name_;
 
-		QMetaType::Type FieldType_ = QMetaType::UnknownType;
+		QMetaType::Type Type_ = QMetaType::UnknownType;
 
-		TypedMatcherBase_ptr Matcher_;
-	public:
-		FieldMatch () = default;
-		explicit FieldMatch (QMetaType::Type);
-		FieldMatch (QMetaType::Type, TypedMatcherBase_ptr);
+		ValueMatcherOrData Matcher_;
 
-		QString GetPluginID () const;
-		void SetPluginID (const QString&);
-
-		QString GetFieldName () const;
-		void SetFieldName (const QString&);
-
-		QMetaType::Type GetType () const;
-
-		TypedMatcherBase_ptr GetMatcher () const;
+		bool operator== (const FieldMatch&) const = default;
 
 		void Save (QDataStream&) const;
-		void Load (QDataStream&);
-	};
 
-	bool operator== (const FieldMatch&, const FieldMatch&);
+		[[nodiscard]] static std::optional<FieldMatch> Load (QDataStream&);
+	};
 
 	using FieldMatches_t = QList<FieldMatch>;
 }

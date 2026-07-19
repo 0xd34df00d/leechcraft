@@ -8,9 +8,9 @@
 
 #include "matchconfigdialog.h"
 #include <QtDebug>
+#include <util/sll/visitor.h>
 #include <util/xpc/stdanfields.h>
 #include <interfaces/iinfo.h>
-#include "typedmatchers.h"
 #include "fieldmatch.h"
 
 namespace LC::AdvancedNotifications
@@ -25,9 +25,9 @@ namespace LC::AdvancedNotifications
 				this,
 				&MatchConfigDialog::ShowPluginFields);
 		connect (Ui_.FieldName_,
-				&QComboBox::currentIndexChanged,
+				&QComboBox::activated,
 				this,
-				&MatchConfigDialog::ShowField);
+				[this] (int idx) { ShowField (idx); });
 
 		if (!FieldsMap_ [nullptr].isEmpty ())
 			Ui_.SourcePlugin_->addItem (tr ("Standard fields"));
@@ -48,39 +48,37 @@ namespace LC::AdvancedNotifications
 		const int fieldIdx = Ui_.FieldName_->currentIndex ();
 		const int sourceIdx = Ui_.SourcePlugin_->currentIndex ();
 		if (fieldIdx == -1 || sourceIdx == -1)
-			return FieldMatch ();
+			return {};
 
-		CurrentMatcher_->SyncToWidget ();
+		return Util::Visit (CurrentConfigWidget_,
+				[&] (const IConfigWidget_ptr& configWidget)
+				{
+					if (!configWidget)
+						return FieldMatch {};
 
-		const auto& data = Ui_.FieldName_->itemData (fieldIdx).value<AN::FieldData> ();
+					const auto& data = Ui_.FieldName_->itemData (fieldIdx).value<AN::FieldData> ();
 
-		FieldMatch result (data.Type_, CurrentMatcher_);
-		if (const auto plugin = Ui_.SourcePlugin_->itemData (sourceIdx).value<QObject*> ())
-			result.SetPluginID (qobject_cast<IInfo*> (plugin)->GetUniqueID ());
-		result.SetFieldName (data.ID_);
-
-		return result;
+					FieldMatch match
+					{
+						.Name_ = data.ID_,
+						.Type_ = data.Type_,
+						.Matcher_ = configWidget->GetConfiguredMatcher (),
+					};
+					if (const auto plugin = Ui_.SourcePlugin_->itemData (sourceIdx).value<QObject*> ())
+						match.PluginID_ = qobject_cast<IInfo*> (plugin)->GetUniqueID ();
+					return match;
+				},
+				[] (const QLabel&) { return FieldMatch {}; });
 	}
 
 	void MatchConfigDialog::SetFieldMatch (const FieldMatch& match)
 	{
-		if (!match.GetMatcher ())
-			qWarning () << Q_FUNC_INFO
-					<< "no matcher for"
-					<< match.GetPluginID ()
-					<< match.GetFieldName ();
-
-		const int fieldIdx = SelectPlugin (match.GetPluginID ().toLatin1 (), match.GetFieldName ());
+		const int fieldIdx = SelectPlugin (match.PluginID_.toLatin1 (), match.Name_);
 		if (fieldIdx == -1)
 			return;
 
 		Ui_.FieldName_->setCurrentIndex (fieldIdx);
-
-		if (CurrentMatcher_)
-		{
-			CurrentMatcher_->SetValue (match.GetMatcher ()->GetValue ());
-			CurrentMatcher_->SyncWidgetTo ();
-		}
+		ShowField (fieldIdx, match.Matcher_);
 	}
 
 	int MatchConfigDialog::SelectPlugin (const QByteArray& pluginId, const QString& fieldId)
@@ -134,25 +132,41 @@ namespace LC::AdvancedNotifications
 
 		const auto pObj = Ui_.SourcePlugin_->itemData (idx).value<QObject*> ();
 		AddFields (FieldsMap_ [pObj]);
+		if (const auto curField = Ui_.FieldName_->currentIndex ();
+			curField >= 0)
+			ShowField (curField);
 	}
 
-	void MatchConfigDialog::ShowField (int idx)
+	void MatchConfigDialog::ShowField (int idx, const std::optional<ValueMatcherOrData>& matcher)
 	{
 		const auto& data = Ui_.FieldName_->itemData (idx).value<AN::FieldData> ();
 		Ui_.DescriptionLabel_->setText (data.Description_);
 
-		QLayout *lay = Ui_.ConfigWidget_->layout ();
-		while (auto oldItem = lay->takeAt (0))
-		{
-			delete oldItem->widget ();
-			delete oldItem;
-		}
+		const auto lay = Ui_.ConfigWidget_->layout ();
 
-		CurrentMatcher_ = TypedMatcherBase::Create (data.Type_, data);
-		if (CurrentMatcher_)
-			lay->addWidget (CurrentMatcher_->GetConfigWidget ());
+		auto configWidget = CreateMatcherConfigWidget (data, matcher.and_then (Util::Visitor {
+					[&data] (const QVariantMap&)
+					{
+						qWarning () << "no matcher for" << data.Name_ << data.ID_;
+						// TODO disable or reset the edit widget
+						return std::optional<AN::ValueMatcher> {};
+					},
+					[] (const AN::ValueMatcher& matcher)
+					{
+						// TODO enable edit widget
+						return std::optional { matcher };
+					}
+				}));
+		if (configWidget)
+		{
+			CurrentConfigWidget_ = configWidget;
+			lay->addWidget (&configWidget->GetWidget ());
+		}
 		else
-			lay->addWidget (new QLabel (tr ("Invalid matcher type %1.")
-						.arg (QMetaType { data.Type_ }.name ())));
+		{
+			auto& label = CurrentConfigWidget_.emplace<QLabel> (tr ("Invalid or mismatching matcher type %1.")
+						.arg (QMetaType { data.Type_ }.name ()));
+			lay->addWidget (&label);
+		}
 	}
 }

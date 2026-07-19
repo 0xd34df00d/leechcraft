@@ -1,4 +1,5 @@
 /**********************************************************************
+ *
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2006-2014  Georg Rudoy
  *
@@ -9,87 +10,130 @@
 #include "fieldmatch.h"
 #include <QDataStream>
 #include <QtDebug>
-#include "typedmatchers.h"
+#include <util/sll/qtutil.h>
+#include <util/sll/visitor.h>
+#include <util/xpc/anutil.h>
 
 namespace LC::AdvancedNotifications
 {
-	FieldMatch::FieldMatch (QMetaType::Type type)
-	: FieldType_ (type)
-	, Matcher_ (TypedMatcherBase::Create (type))
+	namespace
 	{
-	}
+		namespace Keys
+		{
+			const QString IsSet = "IsSet"_qs;
 
-	FieldMatch::FieldMatch (QMetaType::Type type, TypedMatcherBase_ptr matcher)
-	: FieldType_ (type)
-	, Matcher_ (std::move (matcher))
-	{
-	}
+			const QString Boundary = "Bd"_qs;
+			const QString Ops = "Ops"_qs;
 
-	QString FieldMatch::GetPluginID () const
-	{
-		return PluginID_;
-	}
+			const QString Rx = "Rx"_qs;
+			const QString Contains = "Cont"_qs;
+		}
 
-	void FieldMatch::SetPluginID (const QString& id)
-	{
-		PluginID_ = id;
-	}
+		QVariantMap ToMap (const AN::ValueMatcher& matcher)
+		{
+			return Util::Visit (matcher,
+				[] (const AN::BoolValueMatcher& bm) { return QVariantMap { { Keys::IsSet, bm.Value_ } }; },
+				[] (const AN::IntValueMatcher& im)
+				{
+					return QVariantMap
+					{
+						{ Keys::Boundary, im.Boundary_ },
+						{ Keys::Ops, static_cast<quint16> (im.Ops_) },
+					};
+				},
+				[] (const AN::StringValueMatcher& sm)
+				{
+					return QVariantMap
+					{
+						{ Keys::Rx, Util::AN::ToVariant (sm.Pattern_) },
+						{ Keys::Contains, sm.Positive_ }
+					};
+				});
+		}
 
-	QString FieldMatch::GetFieldName () const
-	{
-		return FieldName_;
-	}
+		template<typename>
+		struct TypeWitness {};
 
-	void FieldMatch::SetFieldName (const QString& name)
-	{
-		FieldName_ = name;
-	}
+		template<typename T>
+		TypeWitness<T> Type = {};
 
-	QMetaType::Type FieldMatch::GetType () const
-	{
-		return FieldType_;
-	}
+		std::optional<AN::ValueMatcher> FromMap (QMetaType::Type type, const QVariantMap& map)
+		{
+			struct InvalidKey : std::exception {};
 
-	TypedMatcherBase_ptr FieldMatch::GetMatcher () const
-	{
-		return Matcher_;
+			auto key = [&map]<typename T> (TypeWitness<T>, const QString& key)
+			{
+				const auto pos = map.find (key);
+				if (pos == map.end () || !pos->canConvert<T> ())
+				{
+					qWarning () << "invalid key" << key << "in" << map;
+					throw InvalidKey {};
+				}
+				return pos->value<T> ();
+			};
+
+			try
+			{
+				switch (type)
+				{
+				case QMetaType::Bool:
+					return AN::BoolValueMatcher { key (Type<bool>, Keys::IsSet) };
+				case QMetaType::Int:
+					return AN::IntValueMatcher
+					{
+						key (Type<int>, Keys::Boundary),
+						static_cast<AN::IntValueMatcher::Operations> (key (Type<quint16>, Keys::Ops))
+					};
+				case QMetaType::QString:
+				case QMetaType::QStringList:
+				case QMetaType::QUrl:
+				{
+					const auto positive = key (Type<bool>, Keys::Contains);
+					return Util::AN::StringPatternFromVariant (map.value (Keys::Rx))
+							.transform ([&] (const auto& pattern) { return AN::StringValueMatcher { pattern, positive }; });
+				}
+				default:
+					qWarning () << "unknown type" << type;
+					return {};
+				}
+			}
+			catch (const InvalidKey&)
+			{
+				return {};
+			}
+		}
 	}
 
 	void FieldMatch::Save (QDataStream& out) const
 	{
 		out << static_cast<quint8> (1)
 				<< PluginID_
-				<< FieldName_
-				<< FieldType_
-				<< (Matcher_ ? Matcher_->Save () : QVariantMap ());
+				<< Name_
+				<< Type_;
+		Util::Visit (Matcher_,
+				[&out] (const QVariantMap& map) { out << map; },
+				[&out] (const AN::ValueMatcher& matcher) { out << ToMap (matcher); });
 	}
 
-	void FieldMatch::Load (QDataStream& in)
+	std::optional<FieldMatch> FieldMatch::Load (QDataStream& in)
 	{
 		quint8 version = 0;
 		in >> version;
 		if (version != 1)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown version"
-					<< version;
-			return;
+			qWarning () << "unknown version" << version;
+			return {};
 		}
 
+		FieldMatch m;
 		QVariantMap map;
-		in >> PluginID_
-			>> FieldName_
-			>> FieldType_
+		in >> m.PluginID_
+			>> m.Name_
+			>> m.Type_
 			>> map;
-		Matcher_ = TypedMatcherBase::Create (FieldType_);
-		if (Matcher_)
-			Matcher_->Load (map);
-	}
-
-	bool operator== (const FieldMatch& f1, const FieldMatch& f2)
-	{
-		return f1.GetType () == f2.GetType () &&
-			f1.GetPluginID () == f2.GetPluginID () &&
-			f1.GetFieldName () == f2.GetFieldName ();
+		m.Matcher_ = FromMap (m.Type_, map)
+				.transform ([] (const AN::ValueMatcher& m) { return ValueMatcherOrData { m }; })
+				.value_or (map);
+		return m;
 	}
 }

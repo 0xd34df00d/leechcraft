@@ -24,6 +24,7 @@
 #include <util/sll/containerconversions.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
+#include <util/sll/visitor.h>
 #include "xmlsettingsmanager.h"
 #include "matchconfigdialog.h"
 #include "typedmatchers.h"
@@ -272,25 +273,28 @@ namespace LC::AdvancedNotifications
 
 		QList<QStandardItem*> MatchToRow (const FieldMatch& match)
 		{
-			auto fieldName = match.GetFieldName ();
+			auto fieldName = match.Name_;
+			auto description = NotificationRulesWidget::tr ("<empty matcher>");
 
-			const auto& fields = Util::GetStdANFields ({}) + GetPluginFields (match.GetPluginID ().toUtf8 ());
+			const auto& fields = Util::GetStdANFields ({}) + GetPluginFields (match.PluginID_.toUtf8 ());
 
-			const auto pos = std::find_if (fields.begin (), fields.end (),
+			const auto pos = std::ranges::find_if (fields,
 					[&fieldName] (const auto& field) { return field.ID_ == fieldName; });
 			if (pos != fields.end ())
+			{
+				Util::Visit (match.Matcher_,
+						[&] (const AN::ValueMatcher& matcher) { description = GetMatcherDescription (*pos, matcher); },
+						[&] (const QVariantMap&) { qWarning () << "empty matcher for" << fieldName; });
 				fieldName = pos->Name_;
+			}
 			else
-				qWarning () << Q_FUNC_INFO
-						<< "unable to find field"
-						<< fieldName;
+				qWarning () << "unable to find field" << fieldName;
 
-			QList<QStandardItem*> items;
-			items << new QStandardItem (fieldName);
-			items << new QStandardItem (match.GetMatcher () ?
-					match.GetMatcher ()->GetHRDescription () :
-					NotificationRulesWidget::tr ("<empty matcher>"));
-			return items;
+			return
+			{
+				new QStandardItem { fieldName },
+				new QStandardItem { description }
+			};
 		}
 	}
 
