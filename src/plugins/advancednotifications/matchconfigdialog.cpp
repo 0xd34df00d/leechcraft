@@ -21,11 +21,11 @@ namespace LC::AdvancedNotifications
 	{
 		Ui_.setupUi (this);
 		connect (Ui_.SourcePlugin_,
-				qOverload<int> (&QComboBox::currentIndexChanged),
+				&QComboBox::currentIndexChanged,
 				this,
 				&MatchConfigDialog::ShowPluginFields);
 		connect (Ui_.FieldName_,
-				qOverload<int> (&QComboBox::currentIndexChanged),
+				&QComboBox::currentIndexChanged,
 				this,
 				&MatchConfigDialog::ShowField);
 
