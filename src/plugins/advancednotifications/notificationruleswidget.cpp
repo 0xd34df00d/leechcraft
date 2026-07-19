@@ -471,9 +471,11 @@ namespace LC::AdvancedNotifications
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
-		const FieldMatch& match = dia.GetFieldMatch ();
-		Matches_ << match;
-		MatchesModel_->appendRow (MatchToRow (match));
+		if (const auto& match = dia.GetFieldMatch ())
+		{
+			Matches_ << *match;
+			MatchesModel_->appendRow (MatchToRow (*match));
+		}
 	}
 
 	void NotificationRulesWidget::ModifyMatch ()
@@ -485,11 +487,13 @@ namespace LC::AdvancedNotifications
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
-		const FieldMatch& match = dia.GetFieldMatch ();
-		Matches_ [row] = match;
-		int i = 0;
-		for (QStandardItem *item : MatchToRow (match))
-			MatchesModel_->setItem (row, i++, item);
+		if (const auto& match = dia.GetFieldMatch ())
+		{
+			Matches_ [row] = *match;
+			int i = 0;
+			for (const auto item : MatchToRow (*match))
+				MatchesModel_->setItem (row, i++, item);
+		}
 	}
 
 	void NotificationRulesWidget::RemoveMatch ()

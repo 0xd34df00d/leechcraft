@@ -43,7 +43,7 @@ namespace LC::AdvancedNotifications
 		}
 	}
 
-	FieldMatch MatchConfigDialog::GetFieldMatch () const
+	std::optional<FieldMatch> MatchConfigDialog::GetFieldMatch () const
 	{
 		const int fieldIdx = Ui_.FieldName_->currentIndex ();
 		const int sourceIdx = Ui_.SourcePlugin_->currentIndex ();
@@ -51,10 +51,10 @@ namespace LC::AdvancedNotifications
 			return {};
 
 		return Util::Visit (CurrentConfigWidget_,
-				[&] (const IConfigWidget_ptr& configWidget)
+				[&] (const IConfigWidget_ptr& configWidget) -> std::optional<FieldMatch>
 				{
 					if (!configWidget)
-						return FieldMatch {};
+						return {};
 
 					const auto& data = Ui_.FieldName_->itemData (fieldIdx).value<AN::FieldData> ();
 
@@ -68,7 +68,7 @@ namespace LC::AdvancedNotifications
 						match.PluginID_ = qobject_cast<IInfo*> (plugin)->GetUniqueID ();
 					return match;
 				},
-				[] (const QLabel&) { return FieldMatch {}; });
+				[] (const QLabel&) { return std::optional<FieldMatch> {}; });
 	}
 
 	void MatchConfigDialog::SetFieldMatch (const FieldMatch& match)

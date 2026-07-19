@@ -38,7 +38,7 @@ namespace LC::AdvancedNotifications
 	public:
 		explicit MatchConfigDialog (const QHash<QObject*, QList<AN::FieldData>>&, QWidget* = nullptr);
 
-		FieldMatch GetFieldMatch () const;
+		std::optional<FieldMatch> GetFieldMatch () const;
 		void SetFieldMatch (const FieldMatch&);
 	private:
 		int SelectPlugin (const QByteArray&, const QString&);
