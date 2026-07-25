@@ -356,7 +356,7 @@ namespace LC::AdvancedNotifications
 					case QMetaType::QStringList:
 						return Descriptions::ForStringListMatcher (sm, field);
 					default:
-						qWarning () << "unknown type" << field.Type_ << "for field" << field.Type_;
+						qWarning () << "unknown type" << field.Type_ << "for field" << field.ID_;
 						return QString {};
 					}
 				});
