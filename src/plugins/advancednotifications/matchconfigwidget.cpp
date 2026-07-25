@@ -257,7 +257,7 @@ namespace LC::AdvancedNotifications
 				using enum AN::IntValueMatcher::Operation;
 
 				if (im.Ops_ == OEqual)
-					return QObject::tr ("equals to %1").arg (im.Boundary_);
+					return tr ("equals to %1").arg (im.Boundary_);
 
 				QString op;
 				if (im.Ops_ & OGreater)
@@ -268,7 +268,7 @@ namespace LC::AdvancedNotifications
 					op += '=';
 
 				// TODO simplify to `op + QString::number (im.Boundary_)`
-				return QObject::tr ("is %1 then %2").arg (op, im.Boundary_);
+				return tr ("is %1 then %2").arg (op, im.Boundary_);
 			}
 
 			static QString ForStringMatcher (const AN::StringValueMatcher& value, const AN::FieldData& field)
