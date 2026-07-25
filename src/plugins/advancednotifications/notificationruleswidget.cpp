@@ -27,7 +27,7 @@
 #include <util/sll/visitor.h>
 #include "xmlsettingsmanager.h"
 #include "matchconfigdialog.h"
-#include "typedmatchers.h"
+#include "matchconfigwidget.h"
 #include "rulesmanager.h"
 #include "audiothememanager.h"
 #include "unhandlednotificationskeeper.h"

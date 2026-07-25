@@ -13,7 +13,7 @@
 #include <QHash>
 #include <interfaces/an/ianemitter.h>
 #include "fieldmatch.h"
-#include "typedmatchers.h"
+#include "matchconfigwidget.h"
 #include "ui_matchconfigdialog.h"
 
 namespace LC::AN

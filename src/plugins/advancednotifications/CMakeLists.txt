@@ -11,7 +11,7 @@ LC_DEFINE_PLUGIN (
 		notificationruleswidget.cpp
 		notificationrule.cpp
 		fieldmatch.cpp
-		typedmatchers.cpp
+		matchconfigwidget.cpp
 		matchconfigdialog.cpp
 		visualhandler.cpp
 		audiohandler.cpp

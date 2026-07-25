@@ -24,7 +24,7 @@
 #include <util/xpc/util.h>
 #include <util/xpc/anutil.h>
 #include <util/models/rolenamesmixin.h>
-#include "typedmatchers.h"
+#include "matchconfigwidget.h"
 #include "xmlsettingsmanager.h"
 #include "util/sll/visitor.h"
 
