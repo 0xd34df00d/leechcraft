@@ -110,14 +110,14 @@ namespace LC::AdvancedNotifications
 			}
 		};
 
-		class StringMatcher : public ConfigWidgetBase
+		class StringConfig : public ConfigWidgetBase
 		{
 			Ui::StringLikeMatcherConfigWidget Ui_;
 			const bool HasAllowedValues_;
 		public:
 			using MatcherType = AN::StringValueMatcher;
 
-			explicit StringMatcher (const std::optional<MatcherType>& matcher, const std::optional<AN::FieldData::AllowedValues>& allowedValues = {})
+			explicit StringConfig (const std::optional<MatcherType>& matcher, const std::optional<AN::FieldData::AllowedValues>& allowedValues = {})
 			: HasAllowedValues_ { allowedValues && !allowedValues->isEmpty () }
 			{
 				Ui_.setupUi (this);
@@ -216,9 +216,9 @@ namespace LC::AdvancedNotifications
 			return CreateTypedConfigWidget<IntConfig> (matcher);
 		case QMetaType::QString:
 		case QMetaType::QStringList:
-			return CreateTypedConfigWidget<StringMatcher> (matcher, field.AllowedValues_);
+			return CreateTypedConfigWidget<StringConfig> (matcher, field.AllowedValues_);
 		case QMetaType::QUrl:
-			return CreateTypedConfigWidget<StringMatcher> (matcher);
+			return CreateTypedConfigWidget<StringConfig> (matcher);
 		default:
 			qWarning () << "unknown type" << field.Type_;
 			return {};
