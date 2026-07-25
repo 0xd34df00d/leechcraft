@@ -7,7 +7,9 @@
  **********************************************************************/
 
 #include "matchconfigdialog.h"
+#include <QMessageBox>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
 #include <util/xpc/stdanfields.h>
 #include <interfaces/iinfo.h>
@@ -136,24 +138,23 @@ namespace LC::AdvancedNotifications
 			ShowField (curField);
 	}
 
-	void MatchConfigDialog::ShowField (int idx, const std::optional<ValueMatcherOrData>& matcher)
+	void MatchConfigDialog::ShowField (int idx, const std::optional<ValueMatcherOrData>& maybeMatcher)
 	{
 		const auto& data = Ui_.FieldName_->itemData (idx).value<AN::FieldData> ();
 		Ui_.DescriptionLabel_->setText (data.Description_);
 
 		const auto lay = Ui_.ConfigWidget_->layout ();
 
-		auto configWidget = CreateMatcherConfigWidget (data, matcher.and_then (Util::Visitor {
-					[&data] (const QVariantMap&)
+		auto configWidget = CreateMatcherConfigWidget (data, maybeMatcher.and_then (Util::Visitor {
+					[] (const AN::ValueMatcher& matcher) { return std::optional { matcher }; },
+					[this, &data] (const QVariantMap&)
 					{
 						qWarning () << "no matcher for" << data.Name_ << data.ID_;
-						// TODO disable or reset the edit widget
+						QMessageBox::warning (this,
+								"LeechCraft"_qs,
+								tr ("The existing configuration of this matcher could not be deserialized. "
+									"The editor has been reset to the default values."));
 						return std::optional<AN::ValueMatcher> {};
-					},
-					[] (const AN::ValueMatcher& matcher)
-					{
-						// TODO enable edit widget
-						return std::optional { matcher };
 					}
 				}));
 		if (configWidget)
