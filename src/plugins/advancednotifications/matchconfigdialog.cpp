@@ -76,7 +76,12 @@ namespace LC::AdvancedNotifications
 	{
 		const int fieldIdx = SelectPlugin (match.PluginID_.toLatin1 (), match.Name_);
 		if (fieldIdx == -1)
+		{
+			Ui_.FieldName_->setCurrentIndex (-1);
+			Ui_.DescriptionLabel_->clear ();
+			ShowError (tr ("The field %1 is currently unavailable. Is the plugin owning the field loaded?").arg (match.Name_));
 			return;
+		}
 
 		Ui_.FieldName_->setCurrentIndex (fieldIdx);
 		ShowField (fieldIdx, match.Matcher_);
@@ -143,8 +148,6 @@ namespace LC::AdvancedNotifications
 		const auto& data = Ui_.FieldName_->itemData (idx).value<AN::FieldData> ();
 		Ui_.DescriptionLabel_->setText (data.Description_);
 
-		const auto lay = Ui_.ConfigWidget_->layout ();
-
 		auto configWidget = CreateMatcherConfigWidget (data, maybeMatcher.and_then (Util::Visitor {
 					[] (const AN::ValueMatcher& matcher) { return std::optional { matcher }; },
 					[this, &data] (const QVariantMap&)
@@ -160,13 +163,15 @@ namespace LC::AdvancedNotifications
 		if (configWidget)
 		{
 			CurrentConfigWidget_ = configWidget;
-			lay->addWidget (&configWidget->GetWidget ());
+			Ui_.ConfigWidget_->layout ()->addWidget (&configWidget->GetWidget ());
 		}
 		else
-		{
-			auto& label = CurrentConfigWidget_.emplace<QLabel> (tr ("Invalid or mismatching matcher type %1.")
-						.arg (QMetaType { data.Type_ }.name ()));
-			lay->addWidget (&label);
-		}
+			ShowError (tr ("Invalid or mismatching matcher type %1.").arg (QMetaType { data.Type_ }.name ()));
+	}
+
+	void MatchConfigDialog::ShowError (const QString& message)
+	{
+		auto& label = CurrentConfigWidget_.emplace<QLabel> (message);
+		Ui_.ConfigWidget_->layout ()->addWidget (&label);
 	}
 }

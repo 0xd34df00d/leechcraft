@@ -45,5 +45,7 @@ namespace LC::AdvancedNotifications
 		void AddFields (const QList<AN::FieldData>&);
 		void ShowPluginFields (int);
 		void ShowField (int, const std::optional<ValueMatcherOrData>& = {});
+
+		void ShowError (const QString&);
 	};
 }
