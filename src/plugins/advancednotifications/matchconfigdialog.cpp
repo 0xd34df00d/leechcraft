@@ -32,14 +32,13 @@ namespace LC::AdvancedNotifications
 		if (!FieldsMap_ [nullptr].isEmpty ())
 			Ui_.SourcePlugin_->addItem (tr ("Standard fields"));
 
-		for (auto i = FieldsMap_.begin (); i != FieldsMap_.end (); ++i)
+		for (const auto [plugin, _] : FieldsMap_.asKeyValueRange ())
 		{
-			if (!i.key ())
+			if (!plugin)
 				continue;
 
-			auto ii = qobject_cast<IInfo*> (i.key ());
-			Ui_.SourcePlugin_->addItem (ii->GetIcon (),
-					ii->GetName (), QVariant::fromValue (i.key ()));
+			const auto ii = qobject_cast<IInfo*> (plugin);
+			Ui_.SourcePlugin_->addItem (ii->GetIcon (), ii->GetName (), QVariant::fromValue (plugin));
 		}
 	}
 
