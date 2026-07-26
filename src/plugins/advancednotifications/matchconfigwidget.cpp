@@ -174,16 +174,16 @@ namespace LC::AdvancedNotifications
 				return {};
 			}
 
-			using UiOrderedStringMatcher = std::variant<SVM::Exact, SVM::Substring, SVM::Wildcard, QRegularExpression>;
+			using UiOrderedStringPattern = std::variant<SVM::Exact, SVM::Substring, SVM::Wildcard, QRegularExpression>;
 
 			template<size_t Idx>
-			using UiOrderedAlternative = std::variant_alternative_t<Idx, UiOrderedStringMatcher>;
+			using UiOrderedAlternative = std::variant_alternative_t<Idx, UiOrderedStringPattern>;
 
-			static_assert (std::variant_size_v<UiOrderedStringMatcher> == std::variant_size_v<SVM::Pattern::Base>);
+			static_assert (std::variant_size_v<UiOrderedStringPattern> == std::variant_size_v<SVM::Pattern::Base>);
 
 			static int ToUiIndex (const SVM::Pattern& matcher)
 			{
-				return Util::Visit (matcher, [] (const auto& val) { return UiOrderedStringMatcher { val }.index (); });
+				return Util::Visit (matcher, [] (const auto& val) { return UiOrderedStringPattern { val }.index (); });
 			}
 
 			static QString ExtractPattern (const SVM::Pattern& matcher)
@@ -201,7 +201,7 @@ namespace LC::AdvancedNotifications
 					std::optional<SVM::Pattern> result;
 					static_cast<void> (((index == Idx && (result = UiOrderedAlternative<Idx> { pattern }, 0)) + ...));
 					return result;
-				} (std::make_index_sequence<std::variant_size_v<UiOrderedStringMatcher>> {});
+				} (std::make_index_sequence<std::variant_size_v<UiOrderedStringPattern>> {});
 			}
 		};
 	}
