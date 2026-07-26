@@ -59,11 +59,6 @@ namespace LC::Util::AN
 	UTIL_XPC_API QVariant ToVariant (const LC::AN::StringValueMatcher::Pattern& matcher);
 	UTIL_XPC_API std::optional<LC::AN::StringValueMatcher::Pattern> StringPatternFromVariant (const QVariant& variant);
 
-	[[deprecated]]
-	UTIL_XPC_API bool Matches (const QString& string, const LC::AN::StringValueMatcher::Pattern& matcher);
-	[[deprecated]]
-	UTIL_XPC_API bool Matches (const QStringList& strings, const LC::AN::StringValueMatcher::Pattern& matcher);
-
 	UTIL_XPC_API bool Matches (const QString& string, const LC::AN::StringValueMatcher& matcher);
 	UTIL_XPC_API bool Matches (const QStringList& strings, const LC::AN::StringValueMatcher& matcher);
 	UTIL_XPC_API bool Matches (const QUrl& url, const LC::AN::StringValueMatcher& matcher);

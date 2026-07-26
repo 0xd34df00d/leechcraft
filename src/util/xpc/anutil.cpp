@@ -203,16 +203,6 @@ namespace LC::Util::AN
 		}
 	}
 
-	bool Matches (const QString& string, const SVM::Pattern& matcher)
-	{
-		return MatchStringPattern (string, matcher);
-	}
-
-	bool Matches (const QStringList& strings, const SVM::Pattern& matcher)
-	{
-		return std::ranges::any_of (strings, [&matcher] (const QString& str) { return MatchStringPattern (str, matcher); });
-	}
-
 	bool Matches (const QString& string, const LC::AN::StringValueMatcher& matcher)
 	{
 		return MatchStringPattern (string, matcher.Pattern_) == matcher.Positive_;
