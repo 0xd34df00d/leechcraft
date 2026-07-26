@@ -49,94 +49,62 @@ namespace LMP
 
 	namespace
 	{
-		struct StringMatcher
+		std::optional<AN::ValueMatcher> GetMatcher (const Entity& info, const QString& field)
 		{
-			const QString Value_;
+			const auto& var = info.Additional_.value (field);
+			if (var.isNull ())
+				return {};
 
-			bool operator() (const AN::StringValueMatcher& ref) const
+			if (!var.canConvert<AN::ValueMatcher> ())
 			{
-				return Util::AN::Matches (Value_, ref.Pattern_) == ref.Positive_;
+				qWarning () << var << "at" << field << "is not a matcher";
+				return {};
 			}
 
-			template<typename T>
-			bool operator() (const T&) const
-			{
-				return false;
-			}
-		};
-
-		struct IntMatcher
-		{
-			const int Value_;
-
-			bool operator() (const AN::IntValueMatcher& value) const
-			{
-				return ((value.Ops_ & AN::IntValueMatcher::OEqual) && Value_ == value.Boundary_) ||
-						((value.Ops_ & AN::IntValueMatcher::OGreater) && Value_ > value.Boundary_) ||
-						((value.Ops_ & AN::IntValueMatcher::OLess) && Value_ < value.Boundary_);
-			}
-
-			template<typename T>
-			bool operator() (const T&) const
-			{
-				return false;
-			}
-		};
+			return var.value<AN::ValueMatcher> ();
+		}
 
 		struct Matcher
 		{
-			const QVariant LengthField_;
-			const QVariant ArtistField_;
-			const QVariant AlbumField_;
-			const QVariant TitleField_;
-			const QVariant PlayerUrlField_;
+			const std::optional<AN::ValueMatcher> LengthMatcher_;
+			const std::optional<AN::ValueMatcher> ArtistMatcher_;
+			const std::optional<AN::ValueMatcher> AlbumMatcher_;
+			const std::optional<AN::ValueMatcher> TitleMatcher_;
+			const std::optional<AN::ValueMatcher> UrlMatcher_;
+
+			const bool NonEmpty_ = LengthMatcher_ || ArtistMatcher_ || AlbumMatcher_ || TitleMatcher_ || UrlMatcher_;
 
 			Matcher (const Entity& info)
-			: LengthField_ { info.Additional_.value (AN::Field::MediaLength) }
-			, ArtistField_ { info.Additional_.value (AN::Field::MediaArtist) }
-			, AlbumField_ { info.Additional_.value (AN::Field::MediaAlbum) }
-			, TitleField_ { info.Additional_.value (AN::Field::MediaTitle) }
-			, PlayerUrlField_ { info.Additional_.value (AN::Field::MediaPlayerURL) }
+			: LengthMatcher_ { GetMatcher (info, AN::Field::MediaLength) }
+			, ArtistMatcher_ { GetMatcher (info, AN::Field::MediaArtist) }
+			, AlbumMatcher_ { GetMatcher (info, AN::Field::MediaAlbum) }
+			, TitleMatcher_ { GetMatcher (info, AN::Field::MediaTitle) }
+			, UrlMatcher_ { GetMatcher (info, AN::Field::MediaPlayerURL) }
 			{
-			}
-
-			template<typename U, typename T>
-			static bool MatchField (const QVariant& wrapped, const T& value, bool& hadSome)
-			{
-				if (wrapped.isNull ())
-					return true;
-
-				hadSome = true;
-				auto variant = wrapped.value<AN::ValueMatcher> ();
-				return std::visit (U { value }, variant);
 			}
 
 			bool operator() (const MediaInfo& info) const
 			{
-				bool hadSome = false;
-				auto matchStr = [&hadSome] (const QVariant& var, const QString& value)
+				auto match = []<typename T> (const std::optional<AN::ValueMatcher>& matcher, const T& value)
 				{
-					return MatchField<StringMatcher> (var, value, hadSome);
-				};
-				auto matchInt = [&hadSome] (const QVariant& var, int value)
-				{
-					return MatchField<IntMatcher> (var, value, hadSome);
+					const auto type = static_cast<QMetaType::Type> (QMetaType::fromType<T> ().id ());
+					return !matcher || Util::AN::Matches (value, type, *matcher);
 				};
 
-				if (!matchInt (LengthField_, info.Length_) ||
-						!matchStr (ArtistField_, info.Artist_) ||
-						!matchStr (AlbumField_, info.Album_) ||
-						!matchStr (TitleField_, info.Title_))
+				if (!match (LengthMatcher_, info.Length_) ||
+						!match (ArtistMatcher_, info.Artist_) ||
+						!match (AlbumMatcher_, info.Album_) ||
+						!match (TitleMatcher_, info.Title_))
 					return false;
 
 				auto url = info.Additional_.value ("URL").toUrl ();
 				if (url.isEmpty ())
 					url = QUrl::fromLocalFile (info.LocalPath_);
 
-				if (!matchStr (PlayerUrlField_, url.toEncoded ()))
+				if (!url.isEmpty () && !match (UrlMatcher_, url))
 					return false;
 
-				return hadSome;
+				return NonEmpty_;
 			}
 		};
 
