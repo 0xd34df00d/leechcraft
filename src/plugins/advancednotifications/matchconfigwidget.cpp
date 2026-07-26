@@ -249,7 +249,7 @@ namespace LC::AdvancedNotifications
 		public:
 			static QString ForBoolMatcher (const AN::BoolValueMatcher& bm)
 			{
-				return bm.Value_ ? tr ("is set") : tr ("is not set");
+				return bm.Value_ ? tr ("is true") : tr ("is false");
 			}
 
 			static QString ForIntMatcher (const AN::IntValueMatcher& im)
