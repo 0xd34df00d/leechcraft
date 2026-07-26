@@ -273,23 +273,25 @@ namespace LC::AdvancedNotifications
 
 		QList<QStandardItem*> MatchToRow (const FieldMatch& match)
 		{
-			auto fieldName = match.Name_;
-			auto description = NotificationRulesWidget::tr ("<empty matcher>");
-
 			const auto& fields = Util::GetStdANFields ({}) + GetPluginFields (match.PluginID_.toUtf8 ());
-
 			const auto pos = std::ranges::find_if (fields,
-					[&fieldName] (const auto& field) { return field.ID_ == fieldName; });
-			if (pos != fields.end ())
-			{
-				Util::Visit (match.Matcher_,
-						[&] (const AN::ValueMatcher& matcher) { description = GetMatcherDescription (*pos, matcher); },
-						[&] (const QVariantMap&) { qWarning () << "empty matcher for" << fieldName; });
-				fieldName = pos->Name_;
-			}
-			else
-				qWarning () << "unable to find field" << fieldName;
+					[&] (const auto& field) { return field.ID_ == match.Name_; });
 
+			if (pos == fields.end ())
+				qWarning () << "unable to find field for" << match.Name_ << match.PluginID_;
+
+			const auto fieldName = pos != fields.end () ? pos->Name_ : match.Name_;
+			const auto description = Util::Visit (match.Matcher_,
+					[&] (const AN::ValueMatcher& matcher)
+					{
+						const AN::FieldData empty { .ID_ = match.Name_, .Name_ = match.Name_, .Description_ {}, .Type_ = match.Type_, .EventTypes_ {} };
+						return GetMatcherDescription (pos != fields.end () ? *pos : empty, matcher);
+					},
+					[&] (const QVariantMap&)
+					{
+						qWarning () << "empty matcher for" << fieldName;
+						return NotificationRulesWidget::tr ("<empty matcher>");
+					});
 			return
 			{
 				new QStandardItem { fieldName },
