@@ -257,11 +257,11 @@ namespace LC::Util::AN
 			return false;
 		}
 
-		const auto ensureExpected = [&] (QMetaType::Type matcherType)
+		const auto ensureExpected = [&] (auto... types)
 		{
-			if (expected == matcherType)
+			if (((expected == types) || ...))
 				return true;
-			qCritical () << "expected metatype" << QMetaType { expected } << "for matcher" << QMetaType { matcherType };
+			((qCritical () << "expected metatype" << QMetaType { expected } << "for matcher supporting") << ... << QMetaType { types });
 			return false;
 		};
 
