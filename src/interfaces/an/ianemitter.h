@@ -134,7 +134,7 @@ namespace LC::AN
 		 *
 		 * This is the combination of values in Operation enum.
 		 */
-		Operations Ops_;
+		Operations Ops_ = OEqual;
 
 		bool operator== (const IntValueMatcher&) const = default;
 	};
