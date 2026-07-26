@@ -135,24 +135,7 @@ namespace LC::AdvancedNotifications
 				}
 
 				if (matcher)
-				{
-					Ui_.ContainsBox_->setCurrentIndex (!matcher->Positive_);
-					if (HasAllowedValues_)
-					{
-						const auto& pattern = ExtractPattern (matcher->Pattern_).toUtf8 ();
-						if (const auto idx = Ui_.VariantsBox_->findData (pattern);
-							idx >= 0)
-							Ui_.VariantsBox_->setCurrentIndex (idx);
-						else
-							qWarning () << "cannot find" << pattern << "in"
-									<< Util::Map (*allowedValues, &AN::FieldData::AllowedValue::Id_);
-					}
-					else
-					{
-						Ui_.RegexpEditor_->setText (ExtractPattern (matcher->Pattern_));
-						Ui_.RegexType_->setCurrentIndex (ToUiIndex (matcher->Pattern_));
-					}
-				}
+					DisplayMatcher (*matcher, allowedValues);
 			}
 
 			AN::ValueMatcher GetConfiguredMatcher () const override
@@ -161,6 +144,26 @@ namespace LC::AdvancedNotifications
 			}
 		private:
 			using SVM = AN::StringValueMatcher;
+
+			void DisplayMatcher (const MatcherType& matcher, const std::optional<AN::FieldData::AllowedValues>& allowedValues)
+			{
+				Ui_.ContainsBox_->setCurrentIndex (!matcher.Positive_);
+
+				if (HasAllowedValues_)
+				{
+					const auto& pattern = ExtractPattern (matcher.Pattern_).toUtf8 ();
+					if (const auto idx = Ui_.VariantsBox_->findData (pattern);
+						idx >= 0)
+						Ui_.VariantsBox_->setCurrentIndex (idx);
+					else
+						qWarning () << "cannot find" << pattern << "in" << Util::Map (*allowedValues, &AN::FieldData::AllowedValue::Id_);
+				}
+				else
+				{
+					Ui_.RegexpEditor_->setText (ExtractPattern (matcher.Pattern_));
+					Ui_.RegexType_->setCurrentIndex (ToUiIndex (matcher.Pattern_));
+				}
+			}
 
 			SVM::Pattern GetPattern () const
 			{
