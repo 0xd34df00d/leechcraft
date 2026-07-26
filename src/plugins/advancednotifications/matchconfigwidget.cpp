@@ -59,7 +59,7 @@ namespace LC::AdvancedNotifications
 				Ui_.setupUi (this);
 				Ui_.IsSet_->setText (fieldName);
 				if (matcher)
-					Ui_.IsSet_->setChecked (matcher->Value_ ? Qt::Checked : Qt::Unchecked);
+					Ui_.IsSet_->setChecked (matcher->Value_);
 			}
 
 			AN::ValueMatcher GetConfiguredMatcher () const override
