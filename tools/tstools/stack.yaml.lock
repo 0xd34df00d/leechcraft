@@ -13,7 +13,7 @@ packages:
     hackage: turtle-1.6.2
 snapshots:
 - completed:
-    sha256: 983d408bf761e40a1b058b04857d3baebf1d3b9442ce494de9829e366cf079d3
-    size: 752937
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2026/5/16.yaml
-  original: nightly-2026-05-16
+    sha256: 8d8c49da30b6a8fb3775d7cbf7faf30b64745a7a34cbe482f6e7dc061340c74d
+    size: 769670
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2026/8/1.yaml
+  original: nightly-2026-08-01
