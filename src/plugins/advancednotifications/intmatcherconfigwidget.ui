@@ -44,13 +44,6 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>then</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QSpinBox" name="Boundary_">
      <property name="minimum">
       <number>-100000</number>
