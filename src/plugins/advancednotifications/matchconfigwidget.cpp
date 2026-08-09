@@ -284,8 +284,8 @@ namespace LC::AdvancedNotifications
 						[&] (const SVM::Substring& str)
 						{
 							const auto& msg = contains ?
-									tr ("matches substring `%1`") :
-									tr ("doesn't match substring `%1`");
+									tr ("contains substring `%1`") :
+									tr ("doesn't contain substring `%1`");
 							return msg.arg (str.Pattern_);
 						},
 						[&] (const SVM::Wildcard& wc)
