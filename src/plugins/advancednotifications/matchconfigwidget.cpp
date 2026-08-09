@@ -312,7 +312,7 @@ namespace LC::AdvancedNotifications
 						{
 							const auto& msg = contains ?
 									tr ("contains a string matching regular expression `%1`") :
-									tr ("doesn't contains a string matching regular expression `%1`");
+									tr ("doesn't contain a string matching regular expression `%1`");
 							return msg.arg (rx.pattern ());
 						},
 						[&] (const SVM::Substring& str)
