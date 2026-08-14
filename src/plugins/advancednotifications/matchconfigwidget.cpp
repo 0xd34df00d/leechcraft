@@ -156,7 +156,13 @@ namespace LC::AdvancedNotifications
 						idx >= 0)
 						Ui_.VariantsBox_->setCurrentIndex (idx);
 					else
+					{
 						qWarning () << "cannot find" << pattern << "in" << Util::Map (*allowedValues, &AN::FieldData::AllowedValue::Id_);
+
+						const auto nextIdx = Ui_.VariantsBox_->count ();
+						Ui_.VariantsBox_->addItem (tr ("%1 (unknown)").arg (QString::fromUtf8 (pattern)), pattern);
+						Ui_.VariantsBox_->setCurrentIndex (nextIdx);
+					}
 				}
 				else
 				{
