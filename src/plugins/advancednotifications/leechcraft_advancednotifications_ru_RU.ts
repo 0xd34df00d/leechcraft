@@ -15,72 +15,94 @@
     </message>
 </context>
 <context>
-    <name>IntMatcherConfigWidget</name>
-    <message>
-        <location filename="intmatcherconfigwidget.ui" line="49"/>
-        <source>then</source>
-        <translation>чем</translation>
-    </message>
-</context>
-<context>
     <name>LC::AdvancedNotifications::Descriptions</name>
     <message>
-        <location filename="typedmatchers.cpp" line="241"/>
+        <location filename="matchconfigwidget.cpp" line="261"/>
+        <source>is true</source>
+        <translation>истинно</translation>
+    </message>
+    <message>
+        <location filename="matchconfigwidget.cpp" line="261"/>
+        <source>is false</source>
+        <translation>ложно</translation>
+    </message>
+    <message>
+        <location filename="matchconfigwidget.cpp" line="286"/>
         <source>matches regular expression `%1`</source>
         <translation>соответствует регулярному выражению `%1`</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="242"/>
+        <location filename="matchconfigwidget.cpp" line="287"/>
         <source>doesn&apos;t match regular expression `%1`</source>
         <translation>не соответствует регулярному выражению `%1`</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="248"/>
+        <location filename="matchconfigwidget.cpp" line="293"/>
         <source>contains substring `%1`</source>
         <translation>содержит подстроку `%1`</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="249"/>
+        <location filename="matchconfigwidget.cpp" line="294"/>
         <source>doesn&apos;t contain substring `%1`</source>
         <translation>не содержит подстроку `%1`</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="255"/>
+        <location filename="matchconfigwidget.cpp" line="300"/>
         <source>matches wildcard `%1`</source>
         <translation>соответствует маске `%1`</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="256"/>
+        <location filename="matchconfigwidget.cpp" line="301"/>
         <source>doesn&apos;t match wildcard `%1`</source>
         <translation>не соответствует маске `%1`</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="268"/>
+        <location filename="matchconfigwidget.cpp" line="307"/>
+        <source>is exactly `%1`</source>
+        <translation>в точности `%1`</translation>
+    </message>
+    <message>
+        <location filename="matchconfigwidget.cpp" line="308"/>
+        <source>isn&apos;t exactly `%1`</source>
+        <translation>не в точности `%1`</translation>
+    </message>
+    <message>
+        <location filename="matchconfigwidget.cpp" line="320"/>
         <source>contains a string matching regular expression `%1`</source>
         <translation>содержит строку, соответствующую регулярному выражению `%1`</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="269"/>
-        <source>doesn&apos;t contains a string matching regular expression `%1`</source>
+        <location filename="matchconfigwidget.cpp" line="321"/>
+        <source>doesn&apos;t contain a string matching regular expression `%1`</source>
         <translation>не содержит строку, соответствующую регулярному выражению `%1`</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="275"/>
+        <location filename="matchconfigwidget.cpp" line="341"/>
+        <source>contains the exact string `%1`</source>
+        <translation>содержит строку `%1`</translation>
+    </message>
+    <message>
+        <location filename="matchconfigwidget.cpp" line="342"/>
+        <source>doesn&apos;t contain the exact string `%1`</source>
+        <translation>не содержит строку `%1`</translation>
+    </message>
+    <message>
+        <location filename="matchconfigwidget.cpp" line="327"/>
         <source>contains a string with the substring `%1`</source>
         <translation>содержит строку с подстрокой `%1`</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="276"/>
+        <location filename="matchconfigwidget.cpp" line="328"/>
         <source>doesn&apos;t contain a string with the substring `%1`</source>
         <translation>не содержит строку с подстрокой `%1`</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="282"/>
+        <location filename="matchconfigwidget.cpp" line="334"/>
         <source>contains a string matching wildcard `%1`</source>
         <translation>содержит строку, соответствующую маске `%1`</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="283"/>
+        <location filename="matchconfigwidget.cpp" line="335"/>
         <source>doesn&apos;t contain a string matching wildcard `%1`</source>
         <translation>не содержит строку, соответствующую маске `%1`</translation>
     </message>
@@ -96,67 +118,77 @@
 <context>
     <name>LC::AdvancedNotifications::MatchConfigDialog</name>
     <message>
-        <location filename="matchconfigdialog.cpp" line="33"/>
+        <location filename="matchconfigdialog.cpp" line="35"/>
         <source>Standard fields</source>
         <translation>Стандартные поля</translation>
     </message>
     <message>
-        <location filename="matchconfigdialog.cpp" line="155"/>
-        <source>Invalid matcher type %1.</source>
-        <translation>Неверный тип матчера %1.</translation>
+        <location filename="matchconfigdialog.cpp" line="82"/>
+        <source>The field %1 is currently unavailable. Is the plugin owning the field loaded?</source>
+        <translation>Поле %1 в настоящий момент недоступно. Загружен ли плагин, его предоставляющий?</translation>
+    </message>
+    <message>
+        <location filename="matchconfigdialog.cpp" line="158"/>
+        <source>The existing configuration of this matcher could not be deserialized. The editor has been reset to the default values.</source>
+        <translation>Текущая конфигурация этого условия не может быть загружена. Конфигуратор был сброшен к значениям по умолчанию.</translation>
+    </message>
+    <message>
+        <location filename="matchconfigdialog.cpp" line="169"/>
+        <source>Invalid or mismatching matcher type %1.</source>
+        <translation>Неверный или неподходящий тип условия %1.</translation>
     </message>
 </context>
 <context>
     <name>LC::AdvancedNotifications::NotificationRulesWidget</name>
     <message>
-        <location filename="notificationruleswidget.cpp" line="187"/>
+        <location filename="notificationruleswidget.cpp" line="188"/>
         <source>Field name</source>
         <translation>Имя поля</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="187"/>
+        <location filename="notificationruleswidget.cpp" line="188"/>
         <source>Rule description</source>
         <translation>Описание правила</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="292"/>
+        <location filename="notificationruleswidget.cpp" line="293"/>
         <source>&lt;empty matcher&gt;</source>
-        <translation>&lt;пустой матчер&gt;</translation>
+        <translation>&lt;пустое условие&gt;</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="335"/>
+        <location filename="notificationruleswidget.cpp" line="341"/>
         <source>Custom field %1 (%2)</source>
         <translation>Особое поле %1 (%2)</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="366"/>
+        <location filename="notificationruleswidget.cpp" line="372"/>
         <source>The rule has been changed. Do you want to save it?</source>
         <oldsource>The rule has been changed. Do you want to save it</oldsource>
         <translation>Правило было изменено. Вы желаете его сохранить?</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="456"/>
+        <location filename="notificationruleswidget.cpp" line="462"/>
         <source>Are you sure you want to replace all rules with the default set?</source>
         <translation>Вы уверены, что хотите заменить все правила набором по умолчанию?</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="516"/>
+        <location filename="notificationruleswidget.cpp" line="526"/>
         <source>Select audio file</source>
         <translation>Выбор аудиофайла</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="518"/>
+        <location filename="notificationruleswidget.cpp" line="528"/>
         <source>Audio files (*.ogg *.wav *.flac *.mp3);;All files (*.*)</source>
         <translation>Аудиофайлы (*.ogg *.wav *.flac *.mp3);;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="550"/>
+        <location filename="notificationruleswidget.cpp" line="560"/>
         <source>No plugin has been found to play %1.</source>
         <translation>Не найден модуль для проигрывания %1.</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="331"/>
-        <location filename="notificationruleswidget.cpp" line="342"/>
+        <location filename="notificationruleswidget.cpp" line="337"/>
+        <location filename="notificationruleswidget.cpp" line="348"/>
         <source>Please enter the argument:</source>
         <translation>Введите аргумент:</translation>
     </message>
@@ -177,110 +209,118 @@
 <context>
     <name>LC::AdvancedNotifications::RulesManager</name>
     <message>
-        <location filename="rulesmanager.cpp" line="358"/>
+        <location filename="rulesmanager.cpp" line="354"/>
         <source>Event is due</source>
         <translation>Пришел срок события</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="372"/>
+        <location filename="rulesmanager.cpp" line="368"/>
         <source>Download error</source>
         <translation>Ошибка скачивания</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="367"/>
+        <location filename="rulesmanager.cpp" line="363"/>
         <source>Download finished</source>
         <translation>Скачивание завершено</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="389"/>
+        <location filename="rulesmanager.cpp" line="385"/>
         <source>Package updated</source>
         <translation>Пакет обновлен</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="381"/>
+        <location filename="rulesmanager.cpp" line="377"/>
         <source>Generic</source>
         <translation>Общее</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="312"/>
+        <location filename="rulesmanager.cpp" line="308"/>
         <source>Incoming chat messages</source>
         <translation>Входящие сообщения в чате</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="318"/>
+        <location filename="rulesmanager.cpp" line="314"/>
         <source>MUC highlights</source>
         <translation>Подсветки в конференциях</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="324"/>
+        <location filename="rulesmanager.cpp" line="320"/>
         <source>MUC invitations</source>
         <translation>Приглашения в конференции</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="330"/>
+        <location filename="rulesmanager.cpp" line="326"/>
         <source>Incoming file transfers</source>
         <translation>Входящие передачи файлов</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="335"/>
+        <location filename="rulesmanager.cpp" line="331"/>
         <source>Subscription requests</source>
         <translation>Запросы авторизации</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="341"/>
+        <location filename="rulesmanager.cpp" line="337"/>
         <source>Subscription changes</source>
         <translation>Изменения авторизации</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="349"/>
+        <location filename="rulesmanager.cpp" line="345"/>
         <source>Attention requests</source>
         <translation>Запросы внимания</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="401"/>
+        <location filename="rulesmanager.cpp" line="400"/>
         <source>Bell in inactive terminal</source>
         <translation>Сигнал в неактивном терминале</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="407"/>
+        <location filename="rulesmanager.cpp" line="406"/>
         <source>Activity in inactive terminal</source>
         <translation>Активность в неактивном терминале</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="413"/>
+        <location filename="rulesmanager.cpp" line="412"/>
         <source>Inactivity in inactive terminal</source>
         <translation>Отсутствие активности в неактивном терминале</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="422"/>
+        <location filename="rulesmanager.cpp" line="421"/>
         <source>News source updated</source>
         <translation>Источник новостей обновился</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="426"/>
+        <location filename="rulesmanager.cpp" line="425"/>
         <source>News source broken</source>
         <translation>Источник новостей сломался</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="466"/>
+        <location filename="rulesmanager.cpp" line="465"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="466"/>
+        <location filename="rulesmanager.cpp" line="465"/>
         <source>Category</source>
         <translation>Категория</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="466"/>
+        <location filename="rulesmanager.cpp" line="465"/>
         <source>Type</source>
         <translation>Тип</translation>
     </message>
 </context>
 <context>
+    <name>LC::AdvancedNotifications::StringConfig</name>
+    <message>
+        <location filename="matchconfigwidget.cpp" line="163"/>
+        <source>%1 (unknown)</source>
+        <translation>%1 (неизвестно)</translation>
+    </message>
+</context>
+<context>
     <name>LC::AdvancedNotifications::SystemTrayHandler</name>
     <message>
-        <location filename="systemtrayhandler.cpp" line="280"/>
+        <location filename="systemtrayhandler.cpp" line="288"/>
         <source>Dismiss</source>
         <translation>Пропустить</translation>
     </message>
@@ -313,7 +353,7 @@
     <message>
         <location filename="matchconfigdialog.ui" line="14"/>
         <source>Field match</source>
-        <translation>Проверка поля</translation>
+        <translation>Условие на поле</translation>
     </message>
     <message>
         <location filename="matchconfigdialog.ui" line="25"/>
@@ -333,7 +373,7 @@
     <message>
         <location filename="matchconfigdialog.ui" line="67"/>
         <source>Matcher configuration</source>
-        <translation>Конфигурация проверки</translation>
+        <translation>Конфигурация условия</translation>
     </message>
 </context>
 <context>
@@ -441,7 +481,7 @@
     <message>
         <location filename="notificationruleswidget.ui" line="298"/>
         <source>Matches:</source>
-        <translation>Совпадения:</translation>
+        <translation>Условия:</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="310"/>
@@ -502,52 +542,35 @@
     </message>
 </context>
 <context>
-    <name>QObject</name>
-    <message>
-        <location filename="typedmatchers.cpp" line="371"/>
-        <source>yes</source>
-        <translation>да</translation>
-    </message>
-    <message>
-        <location filename="typedmatchers.cpp" line="372"/>
-        <source>no</source>
-        <translation>нет</translation>
-    </message>
-    <message>
-        <location filename="typedmatchers.cpp" line="480"/>
-        <source>equals to %1</source>
-        <translation>равняется %1</translation>
-    </message>
-    <message>
-        <location filename="typedmatchers.cpp" line="490"/>
-        <source>is %1 then %2</source>
-        <translation>%1 чем %2</translation>
-    </message>
-</context>
-<context>
     <name>StringLikeMatcherConfigWidget</name>
     <message>
-        <location filename="stringlikematcherconfigwidget.ui" line="21"/>
-        <source>contains</source>
-        <translation>содержит</translation>
-    </message>
-    <message>
         <location filename="stringlikematcherconfigwidget.ui" line="26"/>
-        <source>doesn&apos;t contain</source>
+        <source>doesn&apos;t match</source>
+        <oldsource>doesn&apos;t contain</oldsource>
         <translation>не содержит</translation>
     </message>
     <message>
-        <location filename="stringlikematcherconfigwidget.ui" line="45"/>
-        <source>string</source>
-        <translation>строка</translation>
+        <location filename="stringlikematcherconfigwidget.ui" line="21"/>
+        <source>matches</source>
+        <translation>содержит</translation>
     </message>
     <message>
-        <location filename="stringlikematcherconfigwidget.ui" line="50"/>
+        <location filename="stringlikematcherconfigwidget.ui" line="35"/>
+        <source>exactly</source>
+        <translation>в точности</translation>
+    </message>
+    <message>
+        <location filename="stringlikematcherconfigwidget.ui" line="40"/>
+        <source>substring</source>
+        <translation>подстроку</translation>
+    </message>
+    <message>
+        <location filename="stringlikematcherconfigwidget.ui" line="45"/>
         <source>wildcard</source>
         <translation>маска</translation>
     </message>
     <message>
-        <location filename="stringlikematcherconfigwidget.ui" line="55"/>
+        <location filename="stringlikematcherconfigwidget.ui" line="50"/>
         <source>regexp</source>
         <translation>регексп</translation>
     </message>
