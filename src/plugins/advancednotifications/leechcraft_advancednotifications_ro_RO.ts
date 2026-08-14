@@ -547,7 +547,7 @@
         <location filename="stringlikematcherconfigwidget.ui" line="26"/>
         <source>doesn&apos;t match</source>
         <oldsource>doesn&apos;t contain</oldsource>
-        <translation type="unfinished">nu conține</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="stringlikematcherconfigwidget.ui" line="21"/>
