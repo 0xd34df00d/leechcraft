@@ -112,6 +112,8 @@ namespace LC::AdvancedNotifications
 
 		class StringConfig : public ConfigWidgetBase
 		{
+			Q_DECLARE_TR_FUNCTIONS (LC::AdvancedNotifications::StringConfig)
+
 			Ui::StringLikeMatcherConfigWidget Ui_;
 			const bool HasAllowedValues_;
 		public:
