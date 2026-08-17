@@ -128,11 +128,18 @@ namespace LC::AdvancedNotifications
 				{
 					for (const auto& allowed : *allowedValues)
 						Ui_.VariantsBox_->addItem (allowed.Name_, allowed.Id_);
-					Ui_.RegexType_->hide ();
+					Ui_.PredicateBox_->hide ();
 					Ui_.RegexpEditor_->hide ();
 				}
 				else
 				{
+					// sync w/ UiOrderedStringPattern
+					Ui_.PredicateBox_->addItems ({
+								tr ("is exactly"),
+								tr ("contains substring"),
+								tr ("matches wildcard"),
+								tr ("matches regular expression"),
+							});
 					Ui_.VariantsBox_->hide ();
 				}
 
@@ -142,14 +149,14 @@ namespace LC::AdvancedNotifications
 
 			AN::ValueMatcher GetConfiguredMatcher () const override
 			{
-				return AN::StringValueMatcher { .Pattern_ = GetPattern (), .Positive_ = Ui_.ContainsBox_->currentIndex () == 0 };
+				return AN::StringValueMatcher { .Pattern_ = GetPattern (), .Positive_ = !Ui_.NegateBox_->isChecked () };
 			}
 		private:
 			using SVM = AN::StringValueMatcher;
 
 			void DisplayMatcher (const MatcherType& matcher, const std::optional<AN::FieldData::AllowedValues>& allowedValues)
 			{
-				Ui_.ContainsBox_->setCurrentIndex (!matcher.Positive_);
+				Ui_.NegateBox_->setChecked (!matcher.Positive_);
 
 				if (HasAllowedValues_)
 				{
@@ -168,8 +175,8 @@ namespace LC::AdvancedNotifications
 				}
 				else
 				{
+					Ui_.PredicateBox_->setCurrentIndex (ToUiIndex (matcher.Pattern_));
 					Ui_.RegexpEditor_->setText (ExtractPattern (matcher.Pattern_));
-					Ui_.RegexType_->setCurrentIndex (ToUiIndex (matcher.Pattern_));
 				}
 			}
 
@@ -178,7 +185,7 @@ namespace LC::AdvancedNotifications
 				if (HasAllowedValues_)
 					return SVM::Exact { Ui_.VariantsBox_->currentData ().toByteArray () };
 
-				const auto idx = Ui_.RegexType_->currentIndex ();
+				const auto idx = Ui_.PredicateBox_->currentIndex ();
 				if (const auto matcher = FromUiIndex (idx, Ui_.RegexpEditor_->text ()))
 					return *matcher;
 				qWarning () << "unknown string matcher type" << idx;

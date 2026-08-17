@@ -15,42 +15,14 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
-    <widget class="QComboBox" name="ContainsBox_">
-     <item>
-      <property name="text">
-       <string>matches</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>doesn't match</string>
-      </property>
-     </item>
+    <widget class="QCheckBox" name="NegateBox_">
+     <property name="text">
+      <string>negate</string>
+     </property>
     </widget>
    </item>
    <item>
-    <widget class="QComboBox" name="RegexType_">
-     <item>
-      <property name="text">
-       <string>exactly</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>substring</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>wildcard</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>regexp</string>
-      </property>
-     </item>
-    </widget>
+    <widget class="QComboBox" name="PredicateBox_"/>
    </item>
    <item>
     <widget class="QLineEdit" name="RegexpEditor_">
