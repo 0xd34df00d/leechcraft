@@ -17,92 +17,92 @@
 <context>
     <name>LC::AdvancedNotifications::Descriptions</name>
     <message>
-        <location filename="matchconfigwidget.cpp" line="261"/>
+        <location filename="matchconfigwidget.cpp" line="270"/>
         <source>is true</source>
         <translation>истинно</translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="261"/>
+        <location filename="matchconfigwidget.cpp" line="270"/>
         <source>is false</source>
         <translation>ложно</translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="286"/>
+        <location filename="matchconfigwidget.cpp" line="295"/>
         <source>matches regular expression `%1`</source>
         <translation>соответствует регулярному выражению `%1`</translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="287"/>
+        <location filename="matchconfigwidget.cpp" line="296"/>
         <source>doesn&apos;t match regular expression `%1`</source>
         <translation>не соответствует регулярному выражению `%1`</translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="293"/>
+        <location filename="matchconfigwidget.cpp" line="302"/>
         <source>contains substring `%1`</source>
         <translation>содержит подстроку `%1`</translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="294"/>
+        <location filename="matchconfigwidget.cpp" line="303"/>
         <source>doesn&apos;t contain substring `%1`</source>
         <translation>не содержит подстроку `%1`</translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="300"/>
+        <location filename="matchconfigwidget.cpp" line="309"/>
         <source>matches wildcard `%1`</source>
         <translation>соответствует маске `%1`</translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="301"/>
+        <location filename="matchconfigwidget.cpp" line="310"/>
         <source>doesn&apos;t match wildcard `%1`</source>
         <translation>не соответствует маске `%1`</translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="307"/>
+        <location filename="matchconfigwidget.cpp" line="316"/>
         <source>is exactly `%1`</source>
         <translation>в точности `%1`</translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="308"/>
+        <location filename="matchconfigwidget.cpp" line="317"/>
         <source>isn&apos;t exactly `%1`</source>
         <translation>не в точности `%1`</translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="320"/>
+        <location filename="matchconfigwidget.cpp" line="329"/>
         <source>contains a string matching regular expression `%1`</source>
         <translation>содержит строку, соответствующую регулярному выражению `%1`</translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="321"/>
+        <location filename="matchconfigwidget.cpp" line="330"/>
         <source>doesn&apos;t contain a string matching regular expression `%1`</source>
         <translation>не содержит строку, соответствующую регулярному выражению `%1`</translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="341"/>
+        <location filename="matchconfigwidget.cpp" line="350"/>
         <source>contains the exact string `%1`</source>
         <translation>содержит строку `%1`</translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="342"/>
+        <location filename="matchconfigwidget.cpp" line="351"/>
         <source>doesn&apos;t contain the exact string `%1`</source>
         <translation>не содержит строку `%1`</translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="327"/>
+        <location filename="matchconfigwidget.cpp" line="336"/>
         <source>contains a string with the substring `%1`</source>
         <translation>содержит строку с подстрокой `%1`</translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="328"/>
+        <location filename="matchconfigwidget.cpp" line="337"/>
         <source>doesn&apos;t contain a string with the substring `%1`</source>
         <translation>не содержит строку с подстрокой `%1`</translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="334"/>
+        <location filename="matchconfigwidget.cpp" line="343"/>
         <source>contains a string matching wildcard `%1`</source>
         <translation>содержит строку, соответствующую маске `%1`</translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="335"/>
+        <location filename="matchconfigwidget.cpp" line="344"/>
         <source>doesn&apos;t contain a string matching wildcard `%1`</source>
         <translation>не содержит строку, соответствующую маске `%1`</translation>
     </message>
@@ -312,7 +312,27 @@
 <context>
     <name>LC::AdvancedNotifications::StringConfig</name>
     <message>
-        <location filename="matchconfigwidget.cpp" line="163"/>
+        <location filename="matchconfigwidget.cpp" line="138"/>
+        <source>is exactly</source>
+        <translation>в точности</translation>
+    </message>
+    <message>
+        <location filename="matchconfigwidget.cpp" line="139"/>
+        <source>contains substring</source>
+        <translation>содержит подстроку</translation>
+    </message>
+    <message>
+        <location filename="matchconfigwidget.cpp" line="140"/>
+        <source>matches wildcard</source>
+        <translation>соответствует маске</translation>
+    </message>
+    <message>
+        <location filename="matchconfigwidget.cpp" line="141"/>
+        <source>matches regular expression</source>
+        <translation>соответствует регулярному выражению</translation>
+    </message>
+    <message>
+        <location filename="matchconfigwidget.cpp" line="172"/>
         <source>%1 (unknown)</source>
         <translation>%1 (неизвестно)</translation>
     </message>
@@ -544,35 +564,14 @@
 <context>
     <name>StringLikeMatcherConfigWidget</name>
     <message>
-        <location filename="stringlikematcherconfigwidget.ui" line="26"/>
-        <source>doesn&apos;t match</source>
-        <oldsource>doesn&apos;t contain</oldsource>
-        <translation>не содержит</translation>
+        <location filename="stringlikematcherconfigwidget.ui" line="20"/>
+        <source>Match when the condition doesn&apos;t hold.</source>
+        <translation>Срабатывает, если условие не выполняется.</translation>
     </message>
     <message>
-        <location filename="stringlikematcherconfigwidget.ui" line="21"/>
-        <source>matches</source>
-        <translation>содержит</translation>
-    </message>
-    <message>
-        <location filename="stringlikematcherconfigwidget.ui" line="35"/>
-        <source>exactly</source>
-        <translation>в точности</translation>
-    </message>
-    <message>
-        <location filename="stringlikematcherconfigwidget.ui" line="40"/>
-        <source>substring</source>
-        <translation>подстроку</translation>
-    </message>
-    <message>
-        <location filename="stringlikematcherconfigwidget.ui" line="45"/>
-        <source>wildcard</source>
-        <translation>маска</translation>
-    </message>
-    <message>
-        <location filename="stringlikematcherconfigwidget.ui" line="50"/>
-        <source>regexp</source>
-        <translation>регексп</translation>
+        <location filename="stringlikematcherconfigwidget.ui" line="23"/>
+        <source>negate</source>
+        <translation>инвертировать</translation>
     </message>
 </context>
 <context>
