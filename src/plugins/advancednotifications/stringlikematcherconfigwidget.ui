@@ -16,6 +16,9 @@
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
     <widget class="QCheckBox" name="NegateBox_">
+     <property name="toolTip">
+      <string>Match when the condition doesn't hold.</string>
+     </property>
      <property name="text">
       <string>negate</string>
      </property>
