@@ -1578,11 +1578,11 @@ namespace LC::Azoth
 		ANFields_ = QList<AN::FieldData>
 		{
 			{
-				"org.LC.Plugins.Azoth.Msg",
-				tr ("Message body"),
-				tr ("Original human-readable message body."),
-				QMetaType::QString,
-				[&]
+				.ID_ = "org.LC.Plugins.Azoth.Msg",
+				.Name_ = tr ("Message body"),
+				.Description_ = tr ("Original human-readable message body."),
+				.Type_ = QMetaType::QString,
+				.EventTypes_ = [&]
 				{
 					auto res = havingMsgField + havingSourceFields;
 					res.removeDuplicates ();
@@ -1590,46 +1590,46 @@ namespace LC::Azoth
 				} ()
 			},
 			{
-				"org.LC.Plugins.Azoth.SourceName",
-				tr ("Sender name"),
-				tr ("Human-readable name of the sender of the message."),
-				QMetaType::QString,
-				havingSourceFields
+				.ID_ = "org.LC.Plugins.Azoth.SourceName",
+				.Name_ = tr ("Sender name"),
+				.Description_ = tr ("Human-readable name of the sender of the message."),
+				.Type_ = QMetaType::QString,
+				.EventTypes_ = havingSourceFields,
 			},
 			{
-				"org.LC.Plugins.Azoth.SourceID",
-				tr ("Sender ID"),
-				tr ("Non-human-readable ID of the sender (protocol-specific)."),
-				QMetaType::QString,
-				havingSourceFields
+				.ID_ = "org.LC.Plugins.Azoth.SourceID",
+				.Name_ = tr ("Sender ID"),
+				.Description_ = tr ("Non-human-readable ID of the sender (protocol-specific)."),
+				.Type_ = QMetaType::QString,
+				.EventTypes_ = havingSourceFields,
 			},
 			{
-				"org.LC.Plugins.Azoth.ParentSourceName",
-				tr ("Sender's parent entry name"),
-				tr ("Human-readable name of the parent entry of the sender of the message, like MUC name for a chat participant."),
-				QMetaType::QString,
-				havingSourceFields
+				.ID_ = "org.LC.Plugins.Azoth.ParentSourceName",
+				.Name_ = tr ("Sender's parent entry name"),
+				.Description_ = tr ("Human-readable name of the parent entry of the sender of the message, like MUC name for a chat participant."),
+				.Type_ = QMetaType::QString,
+				.EventTypes_ = havingSourceFields,
 			},
 			{
-				"org.LC.Plugins.Azoth.ParentSourceID",
-				tr ("Sender's parent ID"),
-				tr ("Non-human-readable ID of the parent entry of the sender of the message, like MUC name for a chat participant."),
-				QMetaType::QString,
-				havingSourceFields
+				.ID_ = "org.LC.Plugins.Azoth.ParentSourceID",
+				.Name_ = tr ("Sender's parent ID"),
+				.Description_ = tr ("Non-human-readable ID of the parent entry of the sender of the message, like MUC name for a chat participant."),
+				.Type_ = QMetaType::QString,
+				.EventTypes_ = havingSourceFields,
 			},
 			{
-				"org.LC.Plugins.Azoth.SourceGroups",
-				tr ("Sender groups"),
-				tr ("Groups to which the sender belongs."),
-				QMetaType::QStringList,
-				havingSourceFields
+				.ID_ = "org.LC.Plugins.Azoth.SourceGroups",
+				.Name_ = tr ("Sender groups"),
+				.Description_ = tr ("Groups to which the sender belongs."),
+				.Type_ = QMetaType::QStringList,
+				.EventTypes_ = havingSourceFields,
 			},
 			{
-				"org.LC.Plugins.Azoth.NewStatus",
-				tr ("New status"),
-				tr ("The new status string of the contact."),
-				QMetaType::QString,
-				{ AN::TypeIMStatusChange }
+				.ID_ = "org.LC.Plugins.Azoth.NewStatus",
+				.Name_ = tr ("New status"),
+				.Description_ = tr ("The new status string of the contact."),
+				.Type_ = QMetaType::QString,
+				.EventTypes_ = { AN::TypeIMStatusChange },
 			}
 		};
 	}
