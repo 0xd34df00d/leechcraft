@@ -12,6 +12,7 @@
 #include <QTimer>
 #include <QWidget>
 #include <util/sll/qobjectrefcast.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/imucentry.h>
@@ -53,6 +54,35 @@ namespace LC::Azoth
 		default:
 			return QObject::tr ("Error");
 		}
+	}
+
+	QString StateToID (State st)
+	{
+		switch (st)
+		{
+		case SOffline:
+			return "offline"_qs;
+		case SOnline:
+			return "online"_qs;
+		case SAway:
+			return "away"_qs;
+		case SXA:
+			return "xa"_qs;
+		case SDND:
+			return "dnd"_qs;
+		case SChat:
+			return "chat"_qs;
+		case SInvisible:
+			return "invisible"_qs;
+		case SProbe:
+			return "probe"_qs;
+		case SConnecting:
+			return "connecting"_qs;
+		case SError:
+		case SInvalid:
+			return "error"_qs;
+		}
+		return "error"_qs;
 	}
 
 	void RejoinMuc (const IMUCEntry& entry)
