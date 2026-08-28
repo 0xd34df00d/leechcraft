@@ -134,7 +134,7 @@ namespace Azoth
 	 */
 	inline bool IsLess (State s1, State s2)
 	{
-		constexpr int order [] = { 7, 3, 4, 5, 6, 1, 2, 8, 9, 10 };
+		constexpr int order [] = { 7, 3, 4, 5, 6, 1, 2, 8, 9, 10, 11 };
 		return order [s1] < order [s2];
 	}
 
