@@ -169,6 +169,7 @@ namespace LC::AdvancedNotifications
 						qWarning () << "cannot find" << pattern << "in" << Util::Map (*allowedValues, &AN::FieldData::AllowedValue::Id_);
 
 						const auto nextIdx = Ui_.VariantsBox_->count ();
+						//: %1 is the raw ID of a value missing from the list of the known values for this field.
 						Ui_.VariantsBox_->addItem (tr ("%1 (unknown)").arg (QString::fromUtf8 (pattern)), pattern);
 						Ui_.VariantsBox_->setCurrentIndex (nextIdx);
 					}
@@ -267,6 +268,7 @@ namespace LC::AdvancedNotifications
 		public:
 			static QString ForBoolMatcher (const AN::BoolValueMatcher& bm)
 			{
+				//: Shown next to a boolean field name in the rules list, e.g. "Terminal is active: is true".
 				return bm.Value_ ? tr ("is true") : tr ("is false");
 			}
 

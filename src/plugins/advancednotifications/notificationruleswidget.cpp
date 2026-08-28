@@ -290,6 +290,7 @@ namespace LC::AdvancedNotifications
 					[&] (const QVariantMap&)
 					{
 						qWarning () << "empty matcher for" << fieldName;
+						//: Shown in the rule description column when a field match lacks a condition.
 						return NotificationRulesWidget::tr ("<empty matcher>");
 					});
 			return
@@ -332,17 +333,20 @@ namespace LC::AdvancedNotifications
 		const auto& fields = GetRelevantANFields ();
 
 		if (fields.isEmpty ())
+			//: The argument for the command run by the rule.
 			return QInputDialog::getText (this,
 					MessageBoxTitle,
 					tr ("Please enter the argument:"));
 
 		QStringList items;
 		for (const auto& field : fields)
+			//: %1 is the field name, %2 is its description.
 			items << tr ("Custom field %1 (%2)")
 					.arg (field.Name_,
 						  field.Description_);
 
 		bool ok = false;
+		//: The argument for the command run by the rule.
 		const auto& value = QInputDialog::getItem (this,
 				MessageBoxTitle,
 				tr ("Please enter the argument:"),

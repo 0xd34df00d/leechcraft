@@ -20,7 +20,7 @@
       <string>Match when the condition doesn't hold.</string>
      </property>
      <property name="text">
-      <string>negate</string>
+      <string extracomment="Inverts the condition to the right of this checkbox.">negate</string>
      </property>
     </widget>
    </item>
