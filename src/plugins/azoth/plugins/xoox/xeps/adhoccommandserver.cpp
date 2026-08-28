@@ -12,6 +12,7 @@
 #include <QXmppDiscoveryManager.h>
 #include <QXmppTask.h>
 #include <QXmppUtils.h>
+#include <util/sll/prelude.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -210,31 +211,22 @@ namespace Xoox
 
 	namespace
 	{
-		const auto& GetStr2State ()
-		{
-			static QMap<QString, State> str2state
-			{
-				{ "chat", SChat },
-				{ "online", SOnline },
-				{ "away", SAway },
-				{ "xa", SXA },
-				{ "dnd", SDND },
-				{ "invisible", SInvisible },
-				{ "offline", SOffline },
-			};
-			return str2state;
-		}
-
 		const auto& GetStrStatePairs ()
 		{
 			static const auto pairs = []
 			{
-				const auto& str2state = GetStr2State ().asKeyValueRange ();
-				QList<QPair<QString, State>> pairs { str2state.begin (), str2state.end () };
-				std::ranges::sort (pairs, &IsLess, &QPair<QString, State>::second);
-				return pairs;
+				QList states { SChat, SOnline, SAway, SXA, SDND, SInvisible, SOffline };
+				std::ranges::sort (states, &IsLess);
+				return Util::Map (states, [] (State st) { return QPair { StateToID (st), st }; });
 			} ();
 			return pairs;
+		}
+
+		State ParseState (const QString& id, State fallback)
+		{
+			const auto& pairs = GetStrStatePairs ();
+			const auto pos = std::ranges::find (pairs, id, &QPair<QString, State>::first);
+			return pos == pairs.end () ? fallback : pos->second;
 		}
 	}
 
@@ -294,7 +286,7 @@ namespace Xoox
 		for (const auto& field : form.fields ())
 		{
 			if (field.key () == "status")
-				newState.State_ = GetStr2State ().value (field.value ().toString (), newState.State_);
+				newState.State_ = ParseState (field.value ().toString (), newState.State_);
 			else if (field.key () == "status-priority")
 				newState.Priority_ = field.value ().toInt ();
 			else if (field.key () == "status-message")
