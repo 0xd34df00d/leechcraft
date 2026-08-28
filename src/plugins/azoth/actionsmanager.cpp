@@ -1488,7 +1488,7 @@ namespace Azoth
 						"org.LC.Plugins.Azoth.NewStatus",
 						AN::StringValueMatcher
 						{
-							StateToString (SOnline)
+							StateToID (SOnline)
 						}
 					}
 				});

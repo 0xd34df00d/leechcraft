@@ -436,9 +436,7 @@ namespace Azoth
 				extAcc->GetSelfContact () == entry->GetQObject ())
 			return;
 
-		const auto& status = StateToString (entrySt.State_);
-
-		const auto& text = GetStatusChangeText (entry, entrySt, variant, status);
+		const auto& text = GetStatusChangeText (entry, entrySt, variant, StateToString (entrySt.State_));
 
 		auto e = Util::MakeNotification ("LeechCraft", text, Priority::Info);
 		e.Mime_ += "+advanced";
@@ -450,7 +448,7 @@ namespace Azoth
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
 
 		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = entrySt.StatusString_;
-		e.Additional_ ["org.LC.Plugins.Azoth.NewStatus"] = status;
+		e.Additional_ ["org.LC.Plugins.Azoth.NewStatus"] = StateToID (entrySt.State_);
 
 		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, "StatusChangeEvent")) >>
 				[this] (const Entity& e) { EntityMgr_->HandleEntity (e); };
