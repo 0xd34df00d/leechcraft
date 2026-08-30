@@ -8,6 +8,7 @@
 
 #include "matchconfigdialog.h"
 #include <QMessageBox>
+#include <QPushButton>
 #include <QtDebug>
 #include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
@@ -164,6 +165,7 @@ namespace LC::AdvancedNotifications
 		{
 			CurrentConfigWidget_ = configWidget;
 			Ui_.ConfigWidget_->layout ()->addWidget (&configWidget->GetWidget ());
+			Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (true);
 		}
 		else
 			ShowError (tr ("Invalid or mismatching matcher type %1.").arg (QMetaType { data.Type_ }.name ()));
@@ -173,5 +175,6 @@ namespace LC::AdvancedNotifications
 	{
 		auto& label = CurrentConfigWidget_.emplace<QLabel> (message);
 		Ui_.ConfigWidget_->layout ()->addWidget (&label);
+		Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (false);
 	}
 }
