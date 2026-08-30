@@ -9,6 +9,7 @@
 #include "notificationsmanager.h"
 #include <QMainWindow>
 #include <util/sll/qobjectrefcast.h>
+#include <util/sll/qtutil.h>
 #include <util/threads/futures.h>
 #include <util/xpc/util.h>
 #include <util/xpc/notificationactionhandler.h>
@@ -49,6 +50,13 @@ namespace LC
 {
 namespace Azoth
 {
+	namespace Fields
+	{
+		const auto SubSourceID = "org.LC.Plugins.Azoth.SubSourceID"_qs;
+		const auto Msg = "org.LC.Plugins.Azoth.Msg"_qs;
+		const auto NewStatus = "org.LC.Plugins.Azoth.NewStatus"_qs;
+	}
+
 	NotificationsManager::NotificationsManager (IEntityManager *manager, AvatarsManager *am, QObject *parent)
 	: QObject { parent }
 	, EntityMgr_ { manager }
@@ -77,7 +85,7 @@ namespace Azoth
 				e.Additional_ [AN::EF::EventType] = eventType;
 				e.Additional_ [AN::EF::FullText] = str;
 				e.Additional_ [AN::EF::Count] = 1;
-				e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = msg;
+				e.Additional_ [Fields::Msg] = msg;
 
 				Util::Sequence (entry.GetQObject (), BuildNotification (&avatarsMgr, e, &entry, "Event")) >>
 						[] (const Entity& e) { GetProxyHolder ()->GetEntityManager ()->HandleEntity (e); };
@@ -111,7 +119,7 @@ namespace Azoth
 			e.Additional_ [AN::EF::EventType] = AN::TypeIMSubscrRequest;
 			e.Additional_ [AN::EF::FullText] = str;
 			e.Additional_ [AN::EF::Count] = 1;
-			e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = msg;
+			e.Additional_ [Fields::Msg] = msg;
 
 			const auto nh = new Util::NotificationActionHandler { e };
 			nh->AddFunction (NotificationsManager::tr ("Authorize"), [&entry] { AuthorizeEntry (&entry); });
@@ -151,7 +159,7 @@ namespace Azoth
 			e.Additional_ [AN::EF::EventType] = AN::TypeIMMUCInvite;
 			e.Additional_ [AN::EF::FullText] = str;
 			e.Additional_ [AN::EF::Count] = 1;
-			e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = reason;
+			e.Additional_ [Fields::Msg] = reason;
 
 			const auto& cancel = Util::MakeANCancel (e);
 
@@ -361,7 +369,7 @@ namespace Azoth
 		const auto count = ++UnreadCounts_ [entry];
 		if (msg->GetMessageType () == IMessage::Type::MUCMessage)
 		{
-			e.Additional_ ["org.LC.Plugins.Azoth.SubSourceID"] = other->GetEntryID ();
+			e.Additional_ [Fields::SubSourceID] = other->GetEntryID ();
 			e.Additional_ [AN::EF::EventType] = isHighlightMsg ? AN::TypeIMMUCHighlight : AN::TypeIMMUCMsg;
 
 			if (isHighlightMsg)
@@ -379,7 +387,7 @@ namespace Azoth
 
 		e.Additional_ [AN::EF::Count] = count;
 		e.Additional_ [AN::EF::ExtendedText] = tr ("%n message(s)", 0, count);
-		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = getBody ();
+		e.Additional_ [Fields::Msg] = getBody ();
 
 		const auto nh = new Util::NotificationActionHandler { e, this };
 		nh->AddFunction (tr ("Open chat"),
@@ -437,13 +445,11 @@ namespace Azoth
 		e.Mime_ += "+advanced";
 
 		e.Additional_ [AN::EF::EventType] = AN::TypeIMStatusChange;
-
 		e.Additional_ [AN::EF::FullText] = text;
 		e.Additional_ [AN::EF::ExtendedText] = text;
 		e.Additional_ [AN::EF::Count] = 1;
-
-		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = entrySt.StatusString_;
-		e.Additional_ ["org.LC.Plugins.Azoth.NewStatus"] = StateToID (entrySt.State_);
+		e.Additional_ [Fields::Msg] = entrySt.StatusString_;
+		e.Additional_ [Fields::NewStatus] = StateToID (entrySt.State_);
 
 		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, "StatusChangeEvent")) >>
 				[this] (const Entity& e) { EntityMgr_->HandleEntity (e); };
@@ -689,7 +695,7 @@ namespace Azoth
 		e.Additional_ [AN::EF::EventType] = AN::TypeIMAttention;
 		e.Additional_ [AN::EF::ExtendedText] = tr ("Attention requested.");
 		e.Additional_ [AN::EF::FullText] = tr ("Attention requested by %1.").arg (entry.GetEntryName ());
-		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = text;
+		e.Additional_ [Fields::Msg] = text;
 
 		const auto nh = new Util::NotificationActionHandler { e };
 		nh->AddFunction (tr ("Open chat"),
