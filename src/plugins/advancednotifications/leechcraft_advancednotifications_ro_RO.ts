@@ -1,17 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="ro_RO">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="ro_RO">
 <context>
     <name>AddFromMissedDialog</name>
     <message>
         <location filename="addfrommisseddialog.ui" line="14"/>
         <source>Missed events</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="addfrommisseddialog.ui" line="42"/>
         <source>You can select several root items to create several rules at once. You can also select some of the child nodes to create rules matching specific values of the corresponding fields.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -19,92 +17,92 @@
     <message>
         <location filename="matchconfigwidget.cpp" line="261"/>
         <source>is true</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="matchconfigwidget.cpp" line="261"/>
         <source>is false</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="matchconfigwidget.cpp" line="286"/>
         <source>matches regular expression `%1`</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="matchconfigwidget.cpp" line="287"/>
         <source>doesn&apos;t match regular expression `%1`</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="matchconfigwidget.cpp" line="293"/>
         <source>contains substring `%1`</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="matchconfigwidget.cpp" line="294"/>
         <source>doesn&apos;t contain substring `%1`</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="matchconfigwidget.cpp" line="300"/>
         <source>matches wildcard `%1`</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="matchconfigwidget.cpp" line="301"/>
         <source>doesn&apos;t match wildcard `%1`</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="matchconfigwidget.cpp" line="307"/>
         <source>is exactly `%1`</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="matchconfigwidget.cpp" line="308"/>
         <source>isn&apos;t exactly `%1`</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="matchconfigwidget.cpp" line="320"/>
         <source>contains a string matching regular expression `%1`</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="matchconfigwidget.cpp" line="321"/>
         <source>doesn&apos;t contain a string matching regular expression `%1`</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="matchconfigwidget.cpp" line="341"/>
         <source>contains the exact string `%1`</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="matchconfigwidget.cpp" line="342"/>
         <source>doesn&apos;t contain the exact string `%1`</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="matchconfigwidget.cpp" line="327"/>
         <source>contains a string with the substring `%1`</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="matchconfigwidget.cpp" line="328"/>
         <source>doesn&apos;t contain a string with the substring `%1`</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="matchconfigwidget.cpp" line="334"/>
         <source>contains a string matching wildcard `%1`</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="matchconfigwidget.cpp" line="335"/>
         <source>doesn&apos;t contain a string matching wildcard `%1`</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -125,17 +123,17 @@
     <message>
         <location filename="matchconfigdialog.cpp" line="82"/>
         <source>The field %1 is currently unavailable. Is the plugin owning the field loaded?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="matchconfigdialog.cpp" line="158"/>
         <source>The existing configuration of this matcher could not be deserialized. The editor has been reset to the default values.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="matchconfigdialog.cpp" line="169"/>
         <source>Invalid or mismatching matcher type %1.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -184,7 +182,7 @@
     <message>
         <location filename="notificationruleswidget.cpp" line="560"/>
         <source>No plugin has been found to play %1.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="notificationruleswidget.cpp" line="337"/>
@@ -286,12 +284,12 @@
     <message>
         <location filename="rulesmanager.cpp" line="421"/>
         <source>News source updated</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="425"/>
         <source>News source broken</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="rulesmanager.cpp" line="465"/>
@@ -314,7 +312,7 @@
     <message>
         <location filename="matchconfigwidget.cpp" line="163"/>
         <source>%1 (unknown)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -330,12 +328,12 @@
     <message>
         <location filename="unhandlednotificationskeeper.cpp" line="27"/>
         <source>Title</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="unhandlednotificationskeeper.cpp" line="27"/>
         <source>Text</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="unhandlednotificationskeeper.cpp" line="27"/>
@@ -438,13 +436,13 @@
     <message>
         <location filename="notificationruleswidget.ui" line="39"/>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="49"/>
         <source>New from missed...</source>
         <oldsource>New from missed</oldsource>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="237"/>
@@ -546,23 +544,23 @@
     <message>
         <location filename="stringlikematcherconfigwidget.ui" line="26"/>
         <source>doesn&apos;t match</source>
-        <oldsource>doesn&apos;t contain</oldsource>
-        <translation type="unfinished"></translation>
+        <oldsource>doesn't contain</oldsource>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="stringlikematcherconfigwidget.ui" line="21"/>
         <source>matches</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="stringlikematcherconfigwidget.ui" line="35"/>
         <source>exactly</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="stringlikematcherconfigwidget.ui" line="40"/>
         <source>substring</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="stringlikematcherconfigwidget.ui" line="45"/>
