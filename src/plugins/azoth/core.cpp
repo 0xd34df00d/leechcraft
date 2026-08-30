@@ -179,8 +179,6 @@ namespace LC::Azoth
 	, CustomChatStyleManager_ (new CustomChatStyleManager)
 	, HistorySyncer_ (std::make_shared<HistorySyncer> ())
 	{
-		FillANFields ();
-
 		connect (this,
 				SIGNAL (hookAddingCLEntryEnd (LC::IHookProxy_ptr, QObject*)),
 				ChatTabsManager_,
@@ -282,11 +280,6 @@ namespace LC::Azoth
 	ProxyObject* Core::GetPluginProxy () const
 	{
 		return PluginProxyObject_.get ();
-	}
-
-	QList<AN::FieldData> Core::GetANFields () const
-	{
-		return ANFields_;
 	}
 
 	QAbstractItemModel* Core::GetSmilesOptionsModel () const
@@ -1542,98 +1535,6 @@ namespace LC::Azoth
 					<< "empty result for"
 					<< opt;
 		return src;
-	}
-
-	void Core::FillANFields ()
-	{
-		const QStringList havingMsgField
-		{
-			AN::TypeIMMUCHighlight,
-			AN::TypeIMMUCMsg,
-			AN::TypeIMIncMsg,
-			AN::TypeIMIncFile,
-			AN::TypeIMAttention,
-			AN::TypeIMSubscrGrant,
-			AN::TypeIMSubscrRevoke,
-			AN::TypeIMSubscrRequest
-		};
-
-		const QStringList havingSourceFields
-		{
-			AN::TypeIMMUCHighlight,
-			AN::TypeIMMUCMsg,
-			AN::TypeIMIncMsg,
-			AN::TypeIMIncFile,
-			AN::TypeIMAttention,
-			AN::TypeIMSubscrGrant,
-			AN::TypeIMSubscrRevoke,
-			AN::TypeIMSubscrRequest,
-			AN::TypeIMStatusChange,
-			AN::TypeIMEventTuneChange,
-			AN::TypeIMEventMoodChange,
-			AN::TypeIMEventActivityChange,
-			AN::TypeIMEventLocationChange
-		};
-
-		ANFields_ = QList<AN::FieldData>
-		{
-			{
-				.ID_ = "org.LC.Plugins.Azoth.Msg",
-				.Name_ = tr ("Message body"),
-				.Description_ = tr ("Original human-readable message body."),
-				.Type_ = QMetaType::QString,
-				.EventTypes_ = [&]
-				{
-					auto res = havingMsgField + havingSourceFields;
-					res.removeDuplicates ();
-					return res;
-				} ()
-			},
-			{
-				.ID_ = "org.LC.Plugins.Azoth.SourceName",
-				.Name_ = tr ("Sender name"),
-				.Description_ = tr ("Human-readable name of the sender of the message."),
-				.Type_ = QMetaType::QString,
-				.EventTypes_ = havingSourceFields,
-			},
-			{
-				.ID_ = "org.LC.Plugins.Azoth.SourceID",
-				.Name_ = tr ("Sender ID"),
-				.Description_ = tr ("Non-human-readable ID of the sender (protocol-specific)."),
-				.Type_ = QMetaType::QString,
-				.EventTypes_ = havingSourceFields,
-			},
-			{
-				.ID_ = "org.LC.Plugins.Azoth.ParentSourceName",
-				.Name_ = tr ("Sender's parent entry name"),
-				.Description_ = tr ("Human-readable name of the parent entry of the sender of the message, like MUC name for a chat participant."),
-				.Type_ = QMetaType::QString,
-				.EventTypes_ = havingSourceFields,
-			},
-			{
-				.ID_ = "org.LC.Plugins.Azoth.ParentSourceID",
-				.Name_ = tr ("Sender's parent ID"),
-				.Description_ = tr ("Non-human-readable ID of the parent entry of the sender of the message, like MUC name for a chat participant."),
-				.Type_ = QMetaType::QString,
-				.EventTypes_ = havingSourceFields,
-			},
-			{
-				.ID_ = "org.LC.Plugins.Azoth.SourceGroups",
-				.Name_ = tr ("Sender groups"),
-				.Description_ = tr ("Groups to which the sender belongs."),
-				.Type_ = QMetaType::QStringList,
-				.EventTypes_ = havingSourceFields,
-			},
-			{
-				.ID_ = "org.LC.Plugins.Azoth.NewStatus",
-				.Name_ = tr ("New status"),
-				.Description_ = tr ("The new status string of the contact."),
-				.Type_ = QMetaType::QString,
-				.EventTypes_ = { AN::TypeIMStatusChange },
-				.AllowedValues_ = Util::Map (QList { SOnline, SChat, SAway, SDND, SXA, SOffline },
-						[] (State st) { return AN::FieldData::AllowedValue { StateToID (st).toUtf8 (), StateToString (st) }; }),
-			}
-		};
 	}
 
 	void Core::handleMucJoinRequested ()

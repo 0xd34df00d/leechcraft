@@ -38,6 +38,7 @@
 #include "components/transfers/transfermodelmanager.h"
 #include "components/util/statuschange.h"
 #include "core.h"
+#include "notificationsmanager.h"
 #include "chattabsmanager.h"
 #include "xmlsettingsmanager.h"
 #include "servicediscoverywidget.h"
@@ -294,7 +295,7 @@ namespace Azoth
 
 	QList<AN::FieldData> Plugin::GetANFields () const
 	{
-		return Core::Instance ().GetANFields ();
+		return NotificationsManager::GetANFields ();
 	}
 
 	void Plugin::InitTransfers ()

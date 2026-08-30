@@ -13,6 +13,11 @@
 #include <interfaces/core/ihookproxy.h>
 #include "interfaces/azoth/azothcommon.h"
 
+namespace LC::AN
+{
+	struct FieldData;
+}
+
 class IEntityManager;
 
 namespace LC
@@ -37,6 +42,8 @@ namespace Azoth
 
 		QHash<QString, bool> ShouldNotifyNextTyping_;
 	public:
+		static QList<AN::FieldData> GetANFields ();
+
 		NotificationsManager (IEntityManager*, AvatarsManager*, QObject* = nullptr);
 
 		void AddAccount (QObject*);

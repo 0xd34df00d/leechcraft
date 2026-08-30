@@ -8,6 +8,7 @@
 
 #include "notificationsmanager.h"
 #include <QMainWindow>
+#include <util/sll/prelude.h>
 #include <util/sll/qobjectrefcast.h>
 #include <util/sll/qtutil.h>
 #include <util/threads/futures.h>
@@ -55,6 +56,103 @@ namespace Azoth
 		const auto SubSourceID = "org.LC.Plugins.Azoth.SubSourceID"_qs;
 		const auto Msg = "org.LC.Plugins.Azoth.Msg"_qs;
 		const auto NewStatus = "org.LC.Plugins.Azoth.NewStatus"_qs;
+		const auto SourceName = "org.LC.Plugins.Azoth.SourceName"_qs;
+		const auto SourceID = "org.LC.Plugins.Azoth.SourceID"_qs;
+		const auto ParentSourceName = "org.LC.Plugins.Azoth.ParentSourceName"_qs;
+		const auto ParentSourceID = "org.LC.Plugins.Azoth.ParentSourceID"_qs;
+		const auto SourceGroups = "org.LC.Plugins.Azoth.SourceGroups"_qs;
+	}
+
+	QList<AN::FieldData> NotificationsManager::GetANFields ()
+	{
+		const QStringList havingMsgField
+		{
+			AN::TypeIMMUCHighlight,
+			AN::TypeIMMUCMsg,
+			AN::TypeIMIncMsg,
+			AN::TypeIMIncFile,
+			AN::TypeIMAttention,
+			AN::TypeIMSubscrGrant,
+			AN::TypeIMSubscrRevoke,
+			AN::TypeIMSubscrRequest
+		};
+
+		const QStringList havingSourceFields
+		{
+			AN::TypeIMMUCHighlight,
+			AN::TypeIMMUCMsg,
+			AN::TypeIMIncMsg,
+			AN::TypeIMIncFile,
+			AN::TypeIMAttention,
+			AN::TypeIMSubscrGrant,
+			AN::TypeIMSubscrRevoke,
+			AN::TypeIMSubscrRequest,
+			AN::TypeIMStatusChange,
+			AN::TypeIMEventTuneChange,
+			AN::TypeIMEventMoodChange,
+			AN::TypeIMEventActivityChange,
+			AN::TypeIMEventLocationChange
+		};
+
+		return
+		{
+			{
+				.ID_ = Fields::Msg,
+				.Name_ = tr ("Message body"),
+				.Description_ = tr ("Original human-readable message body."),
+				.Type_ = QMetaType::QString,
+				.EventTypes_ = [&]
+				{
+					auto res = havingMsgField + havingSourceFields;
+					res.removeDuplicates ();
+					return res;
+				} ()
+			},
+			{
+				.ID_ = Fields::SourceName,
+				.Name_ = tr ("Sender name"),
+				.Description_ = tr ("Human-readable name of the sender of the message."),
+				.Type_ = QMetaType::QString,
+				.EventTypes_ = havingSourceFields,
+			},
+			{
+				.ID_ = Fields::SourceID,
+				.Name_ = tr ("Sender ID"),
+				.Description_ = tr ("Non-human-readable ID of the sender (protocol-specific)."),
+				.Type_ = QMetaType::QString,
+				.EventTypes_ = havingSourceFields,
+			},
+			{
+				.ID_ = Fields::ParentSourceName,
+				.Name_ = tr ("Sender's parent entry name"),
+				.Description_ = tr ("Human-readable name of the parent entry of the sender of the message, like MUC name for a chat participant."),
+				.Type_ = QMetaType::QString,
+				.EventTypes_ = havingSourceFields,
+			},
+			{
+				.ID_ = Fields::ParentSourceID,
+				.Name_ = tr ("Sender's parent ID"),
+				.Description_ = tr ("Non-human-readable ID of the parent entry of the sender of the message, like MUC name for a chat participant."),
+				.Type_ = QMetaType::QString,
+				.EventTypes_ = havingSourceFields,
+			},
+			{
+				.ID_ = Fields::SourceGroups,
+				.Name_ = tr ("Sender groups"),
+				.Description_ = tr ("Groups to which the sender belongs."),
+				.Type_ = QMetaType::QStringList,
+				.EventTypes_ = havingSourceFields,
+			},
+			{
+				.ID_ = Fields::NewStatus,
+				.Name_ = tr ("New status"),
+				.Description_ = tr ("The new status string of the contact."),
+				.Type_ = QMetaType::QString,
+				.EventTypes_ = { AN::TypeIMStatusChange },
+				.AllowedValues_ = Util::Map (QList { SOnline, SChat, SAway, SDND, SXA, SOffline },
+						[] (State st) { return AN::FieldData::AllowedValue { StateToID (st).toUtf8 (), StateToString (st) }; }),
+			}
+		};
 	}
 
 	NotificationsManager::NotificationsManager (IEntityManager *manager, AvatarsManager *am, QObject *parent)

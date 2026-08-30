@@ -70,7 +70,6 @@ namespace LC::Azoth
 		Q_ENUMS (CLRoles CLEntryType CLEntryActionArea)
 
 		ICoreProxy_ptr Proxy_;
-		QList<AN::FieldData> ANFields_;
 
 		QObjectList ProtocolPlugins_;
 		QList<QAction*> AccountCreatorActions_;
@@ -125,8 +124,6 @@ namespace LC::Azoth
 		void SetProxy (ICoreProxy_ptr, QObject*);
 		ICoreProxy_ptr GetProxy () const;
 		ProxyObject* GetPluginProxy () const;
-
-		QList<AN::FieldData> GetANFields () const;
 
 		QAbstractItemModel* GetSmilesOptionsModel () const;
 		IEmoticonResourceSource* GetCurrentEmoSource () const;
@@ -287,8 +284,6 @@ namespace LC::Azoth
 		/** Adds the given entry to the given category item.
 		 */
 		void AddEntryTo (ICLEntry*, QStandardItem*);
-
-		void FillANFields ();
 	public slots:
 		/** Initiates MUC join by calling the corresponding protocol
 		 * plugin's IProtocol::InitiateMUCJoin() function.
