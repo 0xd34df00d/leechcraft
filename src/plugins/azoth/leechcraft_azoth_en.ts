@@ -2716,23 +2716,23 @@
     <name>LC::Azoth::NotificationsManager</name>
     <message>
         <location filename="notificationsmanager.cpp" line="176"/>
-        <source>Incoming chat message from &lt;em&gt;%1&lt;/em&gt;.</source>
-        <translation>Incoming chat message from &lt;em&gt;%1&lt;/em&gt;.</translation>
+        <source>Incoming chat message from %1.</source>
+        <translation>Incoming chat message from %1.</translation>
     </message>
     <message>
         <location filename="notificationsmanager.cpp" line="184"/>
-        <source>Incoming chat message from &lt;em&gt;%1&lt;/em&gt;: &lt;em&gt;%2&lt;/em&gt;</source>
-        <translation>Incoming chat message from &lt;em&gt;%1&lt;/em&gt;: &lt;em&gt;%2&lt;/em&gt;</translation>
+        <source>Incoming chat message from %1: %2</source>
+        <translation>Incoming chat message from %1: %2</translation>
     </message>
     <message>
         <location filename="notificationsmanager.cpp" line="197"/>
-        <source>Highlighted in conference &lt;em&gt;%1&lt;/em&gt; by &lt;em&gt;%2&lt;/em&gt;.</source>
-        <translation>Highlighted in conference &lt;em&gt;%1&lt;/em&gt; by &lt;em&gt;%2&lt;/em&gt;.</translation>
+        <source>Highlighted in conference %1 by %2.</source>
+        <translation>Highlighted in conference %1 by %2.</translation>
     </message>
     <message>
         <location filename="notificationsmanager.cpp" line="206"/>
-        <source>Highlighted in conference &lt;em&gt;%1&lt;/em&gt; by &lt;em&gt;%2&lt;/em&gt;: &lt;em&gt;%3&lt;/em&gt;</source>
-        <translation>Highlighted in conference &lt;em&gt;%1&lt;/em&gt; by &lt;em&gt;%2&lt;/em&gt;: &lt;em&gt;%3&lt;/em&gt;</translation>
+        <source>Highlighted in conference %1 by %2: %3</source>
+        <translation>Highlighted in conference %1 by %2: %3</translation>
     </message>
     <message numerus="yes">
         <location filename="notificationsmanager.cpp" line="239"/>

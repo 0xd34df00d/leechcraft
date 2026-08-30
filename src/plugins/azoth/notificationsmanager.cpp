@@ -8,6 +8,7 @@
 
 #include "notificationsmanager.h"
 #include <QMainWindow>
+#include <util/gui/util.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qobjectrefcast.h>
 #include <util/sll/qtutil.h>
@@ -407,20 +408,19 @@ namespace Azoth
 		switch (msg->GetMessageType ())
 		{
 		case IMessage::Type::ChatMessage:
-			if (XmlSettingsManager::Instance ()
-					.property ("NotifyAboutIncomingMessages").toBool ())
+			if (XmlSettingsManager::Instance ().property ("NotifyAboutIncomingMessages").toBool ())
 			{
 				if (!showMsg)
-					msgString = tr ("Incoming chat message from <em>%1</em>.")
-							.arg (other->GetEntryName ());
+					msgString = tr ("Incoming chat message from %1.")
+							.arg (Util::FormatName (other->GetEntryName ()));
 				else
 				{
 					const auto& body = getBody ();
 					const auto& notifMsg = body.size () > 50 ?
 							body.left (50) + "..." :
 							body;
-					msgString = tr ("Incoming chat message from <em>%1</em>: <em>%2</em>")
-							.arg (other->GetEntryName ())
+					msgString = tr ("Incoming chat message from %1: %2")
+							.arg (Util::FormatName (other->GetEntryName ()))
 							.arg (notifMsg);
 				}
 			}
@@ -432,18 +432,18 @@ namespace Azoth
 					.property ("NotifyAboutConferenceHighlights").toBool ())
 			{
 				if (!showMsg)
-					msgString = tr ("Highlighted in conference <em>%1</em> by <em>%2</em>.")
-							.arg (parentCL->GetEntryName ())
-							.arg (other->GetEntryName ());
+					msgString = tr ("Highlighted in conference %1 by %2.")
+							.arg (Util::FormatName (parentCL->GetEntryName ()))
+							.arg (Util::FormatName (other->GetEntryName ()));
 				else
 				{
 					const auto& body = getBody ();
 					const auto& notifMsg = body.size () > 50 ?
 							body.left (50) + "..." :
 							body;
-					msgString = tr ("Highlighted in conference <em>%1</em> by <em>%2</em>: <em>%3</em>")
-							.arg (parentCL->GetEntryName ())
-							.arg (other->GetEntryName ())
+					msgString = tr ("Highlighted in conference %1 by %2: %3")
+							.arg (Util::FormatName (parentCL->GetEntryName ()))
+							.arg (Util::FormatName (other->GetEntryName ()))
 							.arg (notifMsg);
 				}
 			}
