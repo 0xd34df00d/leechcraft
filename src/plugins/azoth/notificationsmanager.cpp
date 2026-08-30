@@ -718,7 +718,7 @@ namespace Azoth
 						.arg (info.Country_);
 
 			if (hasCountry || hasLocality)
-				return NotificationsManager::tr ("%1 is now in %2 (%3).")
+				return NotificationsManager::tr ("%1 is now in %2.")
 						.arg (entryName)
 						.arg (hasCountry ? info.Country_ : info.Locality_);
 
