@@ -14,6 +14,7 @@
 #include <interfaces/an/constants.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <util/sll/qtutil.h>
 #include <util/xpc/util.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/iregmanagedaccount.h>
@@ -91,7 +92,7 @@ namespace LC::Azoth
 		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.Azoth";
 		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = AN::CatIM;
 		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
-				"org.LC.Plugins.Azoth." + (id.isEmpty () ? "IncomingMessageFrom/" : id) + other->GetEntryID ();
+				"org.LC.Plugins.Azoth." + (id.isEmpty () ? "IncomingMessageFrom"_qs : id) + '/' + other->GetEntryID ();
 
 		e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList (other->GetEntryName ());
 
