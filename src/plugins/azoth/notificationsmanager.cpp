@@ -17,6 +17,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/an/constants.h>
+#include <interfaces/an/entityfields.h>
 #include <interfaces/media/audiostructs.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
@@ -73,9 +74,9 @@ namespace Azoth
 						patternFull.arg (entry.GetEntryName (), entry.GetHumanReadableID (), msg);
 
 				auto e = Util::MakeNotification ("Azoth", str, Priority::Info);
-				e.Additional_ ["org.LC.AdvNotifications.EventType"] = eventType;
-				e.Additional_ ["org.LC.AdvNotifications.FullText"] = str;
-				e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
+				e.Additional_ [AN::EF::EventType] = eventType;
+				e.Additional_ [AN::EF::FullText] = str;
+				e.Additional_ [AN::EF::Count] = 1;
 				e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = msg;
 
 				Util::Sequence (entry.GetQObject (), BuildNotification (&avatarsMgr, e, &entry, "Event")) >>
@@ -107,9 +108,9 @@ namespace Azoth
 					NotificationsManager::tr ("Subscription requested by %1.").arg (entry.GetEntryName ()) :
 					NotificationsManager::tr ("Subscription requested by %1: %2.").arg (entry.GetEntryName (), msg);
 			auto e = Util::MakeNotification ("Azoth", str, Priority::Info);
-			e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMSubscrRequest;
-			e.Additional_ ["org.LC.AdvNotifications.FullText"] = str;
-			e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
+			e.Additional_ [AN::EF::EventType] = AN::TypeIMSubscrRequest;
+			e.Additional_ [AN::EF::FullText] = str;
+			e.Additional_ [AN::EF::Count] = 1;
 			e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = msg;
 
 			const auto nh = new Util::NotificationActionHandler { e };
@@ -143,13 +144,13 @@ namespace Azoth
 					NotificationsManager::tr ("You have been invited to %1 by %2: %3").arg (name, inviter, reason);
 
 			auto e = Util::MakeNotification ("Azoth", str, Priority::Info);
-			e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.Azoth";
-			e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = AN::CatIM;
-			e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList (name);
-			e.Additional_ ["org.LC.AdvNotifications.EventID"] = "org.LC.Plugins.Azoth.Invited/" + name + '/' + inviter;
-			e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMMUCInvite;
-			e.Additional_ ["org.LC.AdvNotifications.FullText"] = str;
-			e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
+			e.Additional_ [AN::EF::SenderID] = "org.LeechCraft.Azoth";
+			e.Additional_ [AN::EF::EventCategory] = AN::CatIM;
+			e.Additional_ [AN::EF::VisualPath] = QStringList (name);
+			e.Additional_ [AN::EF::EventID] = "org.LC.Plugins.Azoth.Invited/" + name + '/' + inviter;
+			e.Additional_ [AN::EF::EventType] = AN::TypeIMMUCInvite;
+			e.Additional_ [AN::EF::FullText] = str;
+			e.Additional_ [AN::EF::Count] = 1;
 			e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = reason;
 
 			const auto& cancel = Util::MakeANCancel (e);
@@ -361,29 +362,23 @@ namespace Azoth
 		if (msg->GetMessageType () == IMessage::Type::MUCMessage)
 		{
 			e.Additional_ ["org.LC.Plugins.Azoth.SubSourceID"] = other->GetEntryID ();
-			e.Additional_ ["org.LC.AdvNotifications.EventType"] = isHighlightMsg ?
-					AN::TypeIMMUCHighlight :
-					AN::TypeIMMUCMsg;
+			e.Additional_ [AN::EF::EventType] = isHighlightMsg ? AN::TypeIMMUCHighlight : AN::TypeIMMUCMsg;
 
 			if (isHighlightMsg)
-				e.Additional_ ["org.LC.AdvNotifications.FullText"] =
-					tr ("%n message(s) from", 0, count) + ' ' + other->GetEntryName () +
-							" <em>(" + parentCL->GetEntryName () + ")</em>";
+				e.Additional_ [AN::EF::FullText] =
+					tr ("%n message(s) from", 0, count) + ' ' + other->GetEntryName () + " <em>(" + parentCL->GetEntryName () + ")</em>";
 			else
-				e.Additional_ ["org.LC.AdvNotifications.FullText"] =
+				e.Additional_ [AN::EF::FullText] =
 					tr ("%n message(s) in", 0, count) + ' ' + parentCL->GetEntryName ();
 		}
 		else
 		{
-			e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMIncMsg;
-			e.Additional_ ["org.LC.AdvNotifications.FullText"] =
-				tr ("%n message(s) from", 0, count) +
-						' ' + other->GetEntryName ();
+			e.Additional_ [AN::EF::EventType] = AN::TypeIMIncMsg;
+			e.Additional_ [AN::EF::FullText] = tr ("%n message(s) from", 0, count) + ' ' + other->GetEntryName ();
 		}
 
-		e.Additional_ ["org.LC.AdvNotifications.Count"] = count;
-
-		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = tr ("%n message(s)", 0, count);
+		e.Additional_ [AN::EF::Count] = count;
+		e.Additional_ [AN::EF::ExtendedText] = tr ("%n message(s)", 0, count);
 		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = getBody ();
 
 		const auto nh = new Util::NotificationActionHandler { e, this };
@@ -441,11 +436,11 @@ namespace Azoth
 		auto e = Util::MakeNotification ("LeechCraft", text, Priority::Info);
 		e.Mime_ += "+advanced";
 
-		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMStatusChange;
+		e.Additional_ [AN::EF::EventType] = AN::TypeIMStatusChange;
 
-		e.Additional_ ["org.LC.AdvNotifications.FullText"] = text;
-		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = text;
-		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
+		e.Additional_ [AN::EF::FullText] = text;
+		e.Additional_ [AN::EF::ExtendedText] = text;
+		e.Additional_ [AN::EF::Count] = 1;
 
 		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = entrySt.StatusString_;
 		e.Additional_ ["org.LC.Plugins.Azoth.NewStatus"] = StateToID (entrySt.State_);
@@ -462,18 +457,10 @@ namespace Azoth
 
 		const auto& entryID = entry->GetEntryID ();
 
-		auto e = Util::MakeNotification ("Azoth", {}, Priority::Info);
-		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.Azoth";
-		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
-				"org.LC.Plugins.Azoth.IncomingMessageFrom/" + entryID;
-		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = "org.LC.AdvNotifications.Cancel";
-
-		EntityMgr_->HandleEntity (e);
-
-		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
-				"org.LC.Plugins.Azoth.AttentionDrawnBy/" + entryID;
-
-		EntityMgr_->HandleEntity (e);
+		EntityMgr_->HandleEntity (Util::MakeANCancel ("org.LeechCraft.Azoth",
+				"org.LC.Plugins.Azoth.IncomingMessageFrom/" + entryID));
+		EntityMgr_->HandleEntity (Util::MakeANCancel ("org.LeechCraft.Azoth",
+				"org.LC.Plugins.Azoth.AttentionDrawnBy/" + entryID));
 	}
 
 	namespace
@@ -501,11 +488,11 @@ namespace Azoth
 		auto e = Util::MakeNotification ("LeechCraft", text, Priority::Info);
 		e.Mime_ += "+advanced";
 
-		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMEventTuneChange;
+		e.Additional_ [AN::EF::EventType] = AN::TypeIMEventTuneChange;
 
-		e.Additional_ ["org.LC.AdvNotifications.FullText"] = text;
-		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = text;
-		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
+		e.Additional_ [AN::EF::FullText] = text;
+		e.Additional_ [AN::EF::ExtendedText] = text;
+		e.Additional_ [AN::EF::Count] = 1;
 
 		e.Additional_ [AN::Field::MediaArtist] = info.Artist_;
 		e.Additional_ [AN::Field::MediaAlbum] = info.Album_;
@@ -548,11 +535,11 @@ namespace Azoth
 		auto e = Util::MakeNotification ("LeechCraft", text, Priority::Info);
 		e.Mime_ += "+advanced";
 
-		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMEventActivityChange;
+		e.Additional_ [AN::EF::EventType] = AN::TypeIMEventActivityChange;
 
-		e.Additional_ ["org.LC.AdvNotifications.FullText"] = text;
-		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = text;
-		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
+		e.Additional_ [AN::EF::FullText] = text;
+		e.Additional_ [AN::EF::ExtendedText] = text;
+		e.Additional_ [AN::EF::Count] = 1;
 
 		e.Additional_ [AN::Field::IMActivityGeneral] = info.General_;
 		e.Additional_ [AN::Field::IMActivitySpecific] = info.Specific_;
@@ -586,11 +573,11 @@ namespace Azoth
 		auto e = Util::MakeNotification ("LeechCraft", text, Priority::Info);
 		e.Mime_ += "+advanced";
 
-		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMEventMoodChange;
+		e.Additional_ [AN::EF::EventType] = AN::TypeIMEventMoodChange;
 
-		e.Additional_ ["org.LC.AdvNotifications.FullText"] = text;
-		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = text;
-		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
+		e.Additional_ [AN::EF::FullText] = text;
+		e.Additional_ [AN::EF::ExtendedText] = text;
+		e.Additional_ [AN::EF::Count] = 1;
 
 		e.Additional_ [AN::Field::IMMoodGeneral] = info.Mood_;
 		e.Additional_ [AN::Field::IMMoodText] = info.Text_;
@@ -673,11 +660,11 @@ namespace Azoth
 		auto e = Util::MakeNotification ("LeechCraft", text, Priority::Info);
 		e.Mime_ += "+advanced";
 
-		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMEventLocationChange;
+		e.Additional_ [AN::EF::EventType] = AN::TypeIMEventLocationChange;
 
-		e.Additional_ ["org.LC.AdvNotifications.FullText"] = text;
-		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = text;
-		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
+		e.Additional_ [AN::EF::FullText] = text;
+		e.Additional_ [AN::EF::ExtendedText] = text;
+		e.Additional_ [AN::EF::Count] = 1;
 
 		e.Additional_ [AN::Field::IMLocationLongitude] = info.Lon_;
 		e.Additional_ [AN::Field::IMLocationLatitude] = info.Lat_;
@@ -698,10 +685,10 @@ namespace Azoth
 				tr ("%1 requests your attention: %2.").arg (entry.GetEntryName (), text);
 
 		auto e = Util::MakeNotification ("Azoth", str, Priority::Info);
-		e.Additional_ ["org.LC.AdvNotifications.DeltaCount"] = 1;
-		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMAttention;
-		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = tr ("Attention requested.");
-		e.Additional_ ["org.LC.AdvNotifications.FullText"] = tr ("Attention requested by %1.").arg (entry.GetEntryName ());
+		e.Additional_ [AN::EF::DeltaCount] = 1;
+		e.Additional_ [AN::EF::EventType] = AN::TypeIMAttention;
+		e.Additional_ [AN::EF::ExtendedText] = tr ("Attention requested.");
+		e.Additional_ [AN::EF::FullText] = tr ("Attention requested by %1.").arg (entry.GetEntryName ());
 		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = text;
 
 		const auto nh = new Util::NotificationActionHandler { e };
