@@ -176,9 +176,11 @@ namespace Azoth
 				if (!XmlSettingsManager::Instance ().property (settingName).toBool ())
 					return;
 
+				const auto& name = Util::FormatName (entry.GetEntryName ());
+				const auto& address = entry.GetHumanReadableAddress ();
 				const auto& str = msg.isEmpty () ?
-						patternLite.arg (entry.GetEntryName (), entry.GetHumanReadableID ()) :
-						patternFull.arg (entry.GetEntryName (), entry.GetHumanReadableID (), msg);
+						patternLite.arg (name, address) :
+						patternFull.arg (name, address, msg);
 
 				auto e = Util::MakeNotification ("Azoth", str, Priority::Info);
 				e.Additional_ [AN::EF::EventType] = eventType;
