@@ -1630,7 +1630,7 @@ namespace LC::Azoth
 				.Description_ = tr ("The new status string of the contact."),
 				.Type_ = QMetaType::QString,
 				.EventTypes_ = { AN::TypeIMStatusChange },
-				.AllowedValues_ = Util::Map (QList { SOnline, SChat, SAway, SDND, SXA, SOffline, SInvisible },
+				.AllowedValues_ = Util::Map (QList { SOnline, SChat, SAway, SDND, SXA, SOffline },
 						[] (State st) { return AN::FieldData::AllowedValue { StateToID (st).toUtf8 (), StateToString (st) }; }),
 			}
 		};
