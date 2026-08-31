@@ -15,92 +15,92 @@
 <context>
     <name>LC::AdvancedNotifications::Descriptions</name>
     <message>
-        <location filename="matchconfigwidget.cpp" line="261"/>
+        <location filename="matchconfigwidget.cpp" line="270"/>
         <source>is true</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="261"/>
+        <location filename="matchconfigwidget.cpp" line="270"/>
         <source>is false</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="286"/>
+        <location filename="matchconfigwidget.cpp" line="295"/>
         <source>matches regular expression `%1`</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="287"/>
+        <location filename="matchconfigwidget.cpp" line="296"/>
         <source>doesn&apos;t match regular expression `%1`</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="293"/>
+        <location filename="matchconfigwidget.cpp" line="302"/>
         <source>contains substring `%1`</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="294"/>
+        <location filename="matchconfigwidget.cpp" line="303"/>
         <source>doesn&apos;t contain substring `%1`</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="300"/>
+        <location filename="matchconfigwidget.cpp" line="309"/>
         <source>matches wildcard `%1`</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="301"/>
+        <location filename="matchconfigwidget.cpp" line="310"/>
         <source>doesn&apos;t match wildcard `%1`</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="307"/>
+        <location filename="matchconfigwidget.cpp" line="316"/>
         <source>is exactly `%1`</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="308"/>
+        <location filename="matchconfigwidget.cpp" line="317"/>
         <source>isn&apos;t exactly `%1`</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="320"/>
+        <location filename="matchconfigwidget.cpp" line="329"/>
         <source>contains a string matching regular expression `%1`</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="321"/>
+        <location filename="matchconfigwidget.cpp" line="330"/>
         <source>doesn&apos;t contain a string matching regular expression `%1`</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="341"/>
+        <location filename="matchconfigwidget.cpp" line="350"/>
         <source>contains the exact string `%1`</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="342"/>
+        <location filename="matchconfigwidget.cpp" line="351"/>
         <source>doesn&apos;t contain the exact string `%1`</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="327"/>
+        <location filename="matchconfigwidget.cpp" line="336"/>
         <source>contains a string with the substring `%1`</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="328"/>
+        <location filename="matchconfigwidget.cpp" line="337"/>
         <source>doesn&apos;t contain a string with the substring `%1`</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="334"/>
+        <location filename="matchconfigwidget.cpp" line="343"/>
         <source>contains a string matching wildcard `%1`</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="335"/>
+        <location filename="matchconfigwidget.cpp" line="344"/>
         <source>doesn&apos;t contain a string matching wildcard `%1`</source>
         <translation type="unfinished"/>
     </message>
@@ -310,7 +310,27 @@
 <context>
     <name>LC::AdvancedNotifications::StringConfig</name>
     <message>
-        <location filename="matchconfigwidget.cpp" line="163"/>
+        <location filename="matchconfigwidget.cpp" line="138"/>
+        <source>is exactly</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="matchconfigwidget.cpp" line="139"/>
+        <source>contains substring</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="matchconfigwidget.cpp" line="140"/>
+        <source>matches wildcard</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="matchconfigwidget.cpp" line="141"/>
+        <source>matches regular expression</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="matchconfigwidget.cpp" line="172"/>
         <source>%1 (unknown)</source>
         <translation type="unfinished"/>
     </message>
@@ -542,35 +562,14 @@
 <context>
     <name>StringLikeMatcherConfigWidget</name>
     <message>
-        <location filename="stringlikematcherconfigwidget.ui" line="26"/>
-        <source>doesn&apos;t match</source>
-        <oldsource>doesn't contain</oldsource>
+        <location filename="stringlikematcherconfigwidget.ui" line="20"/>
+        <source>Match when the condition doesn&apos;t hold.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="stringlikematcherconfigwidget.ui" line="21"/>
-        <source>matches</source>
+        <location filename="stringlikematcherconfigwidget.ui" line="23"/>
+        <source>negate</source>
         <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="stringlikematcherconfigwidget.ui" line="35"/>
-        <source>exactly</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="stringlikematcherconfigwidget.ui" line="40"/>
-        <source>substring</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="stringlikematcherconfigwidget.ui" line="45"/>
-        <source>wildcard</source>
-        <translation>meta-caracter</translation>
-    </message>
-    <message>
-        <location filename="stringlikematcherconfigwidget.ui" line="50"/>
-        <source>regexp</source>
-        <translation>regexp</translation>
     </message>
 </context>
 <context>
