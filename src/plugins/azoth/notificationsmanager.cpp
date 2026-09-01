@@ -165,6 +165,8 @@ namespace Azoth
 
 	namespace
 	{
+		const auto EventTitle = "Azoth"_qs;
+
 		auto NotifyWithReason (AvatarsManager& avatarsMgr,
 				const char *settingName,
 				const QString& eventType,
@@ -182,7 +184,7 @@ namespace Azoth
 						patternLite.arg (name, address) :
 						patternFull.arg (name, address, msg);
 
-				auto e = Util::MakeNotification ("Azoth", str, Priority::Info);
+				auto e = Util::MakeNotification (EventTitle, str, Priority::Info);
 				e.Additional_ [AN::EF::EventType] = eventType;
 				e.Additional_ [AN::EF::FullText] = str;
 				e.Additional_ [AN::EF::Count] = 1;
@@ -198,10 +200,11 @@ namespace Azoth
 			if (!XmlSettingsManager::Instance ().property ("NotifyAboutNonrosterUnsub").toBool ())
 				return;
 
+			const auto& name = Util::FormatName (entryId);
 			const auto& str = msg.isEmpty () ?
-					NotificationsManager::tr ("%1 unsubscribed from us.").arg (entryId) :
-					NotificationsManager::tr ("%1 unsubscribed from us: %2.").arg (entryId, msg);
-			GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Azoth", str, Priority::Info));
+					NotificationsManager::tr ("%1 unsubscribed from us.").arg (name) :
+					NotificationsManager::tr ("%1 unsubscribed from us: %2.").arg (name, msg);
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeNotification (EventTitle, str, Priority::Info));
 		}
 
 		void NotifyAuthRequested (AvatarsManager& avatarsMgr, ICLEntry& entry, const QString& msg)
@@ -213,10 +216,11 @@ namespace Azoth
 				return;
 				*/
 
+			const auto& name = Util::FormatName (entry.GetEntryName ());
 			const auto& str = msg.isEmpty () ?
-					NotificationsManager::tr ("Subscription requested by %1.").arg (entry.GetEntryName ()) :
-					NotificationsManager::tr ("Subscription requested by %1: %2.").arg (entry.GetEntryName (), msg);
-			auto e = Util::MakeNotification ("Azoth", str, Priority::Info);
+					NotificationsManager::tr ("%1 requested subscription.").arg (name) :
+					NotificationsManager::tr ("%1 requested subscription: %2.").arg (name, msg);
+			auto e = Util::MakeNotification (EventTitle, str, Priority::Info);
 			e.Additional_ [AN::EF::EventType] = AN::TypeIMSubscrRequest;
 			e.Additional_ [AN::EF::FullText] = str;
 			e.Additional_ [AN::EF::Count] = 1;
@@ -249,10 +253,12 @@ namespace Azoth
 			const auto& name = ident ["HumanReadableName"].toString ();
 
 			const auto str = reason.isEmpty () ?
-					NotificationsManager::tr ("You have been invited to %1 by %2.").arg (name, inviter) :
-					NotificationsManager::tr ("You have been invited to %1 by %2: %3").arg (name, inviter, reason);
+					NotificationsManager::tr ("You have been invited to %1 by %2.")
+							.arg (Util::FormatName (name), Util::FormatName (inviter)) :
+					NotificationsManager::tr ("You have been invited to %1 by %2: %3")
+							.arg (Util::FormatName (name), Util::FormatName (inviter), reason);
 
-			auto e = Util::MakeNotification ("Azoth", str, Priority::Info);
+			auto e = Util::MakeNotification (EventTitle, str, Priority::Info);
 			e.Additional_ [AN::EF::SenderID] = "org.LeechCraft.Azoth";
 			e.Additional_ [AN::EF::EventCategory] = AN::CatIM;
 			e.Additional_ [AN::EF::VisualPath] = QStringList (name);
@@ -403,8 +409,12 @@ namespace Azoth
 		const auto other = qobject_cast<ICLEntry*> (msg->OtherPart ());
 		const auto parentCL = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
 
-		const auto& getBody = [msg] { return FormatterProxyObject {}.EscapeBody (msg->GetBody (), msg->GetEscapePolicy ()); };
+		const auto& body = FormatterProxyObject {}.EscapeBody (msg->GetBody (), msg->GetEscapePolicy ());
+		const auto& notifMsg = body.size () > 50 ?
+				body.left (50) + "..." :
+				body;
 
+		auto title = EventTitle;
 		QString msgString;
 		bool isHighlightMsg = false;
 		switch (msg->GetMessageType ())
@@ -412,52 +422,37 @@ namespace Azoth
 		case IMessage::Type::ChatMessage:
 			if (XmlSettingsManager::Instance ().property ("NotifyAboutIncomingMessages").toBool ())
 			{
-				if (!showMsg)
-					msgString = tr ("Incoming chat message from %1.")
-							.arg (Util::FormatName (other->GetEntryName ()));
-				else
+				if (showMsg)
 				{
-					const auto& body = getBody ();
-					const auto& notifMsg = body.size () > 50 ?
-							body.left (50) + "..." :
-							body;
-					msgString = tr ("Incoming chat message from %1: %2")
-							.arg (Util::FormatName (other->GetEntryName ()))
-							.arg (notifMsg);
+					title = other->GetEntryName ();
+					msgString = notifMsg;
 				}
+				else
+					msgString = tr ("%1 sent you a message.")
+							.arg (Util::FormatName (other->GetEntryName ()));
 			}
 			break;
 		case IMessage::Type::MUCMessage:
-		{
 			isHighlightMsg = Core::Instance ().IsHighlightMessage (msg);
 			if (isHighlightMsg && XmlSettingsManager::Instance ()
 					.property ("NotifyAboutConferenceHighlights").toBool ())
 			{
-				if (!showMsg)
-					msgString = tr ("Highlighted in conference %1 by %2.")
-							.arg (Util::FormatName (parentCL->GetEntryName ()))
-							.arg (Util::FormatName (other->GetEntryName ()));
-				else
+				if (showMsg)
 				{
-					const auto& body = getBody ();
-					const auto& notifMsg = body.size () > 50 ?
-							body.left (50) + "..." :
-							body;
-					msgString = tr ("Highlighted in conference %1 by %2: %3")
-							.arg (Util::FormatName (parentCL->GetEntryName ()))
-							.arg (Util::FormatName (other->GetEntryName ()))
-							.arg (notifMsg);
+					title = parentCL->GetEntryName ();
+					msgString = Util::FormatName (other->GetEntryName ()) + ": " + notifMsg;
 				}
+				else
+					msgString = tr ("%1 highlighted you in %2.")
+							.arg (Util::FormatName (other->GetEntryName ()),
+									Util::FormatName (parentCL->GetEntryName ()));
 			}
 			break;
-		}
 		default:
 			return;
 		}
 
-		auto e = Util::MakeNotification ("Azoth",
-				msgString,
-				Priority::Info);
+		auto e = Util::MakeNotification (title, msgString, Priority::Info);
 
 		if (msgString.isEmpty ())
 			e.Mime_ += "+advanced";
@@ -487,7 +482,7 @@ namespace Azoth
 
 		e.Additional_ [AN::EF::Count] = count;
 		e.Additional_ [AN::EF::ExtendedText] = tr ("%n message(s)", 0, count);
-		e.Additional_ [Fields::Msg] = getBody ();
+		e.Additional_ [Fields::Msg] = body;
 
 		const auto nh = new Util::NotificationActionHandler { e, this };
 		nh->AddFunction (tr ("Open chat"),
@@ -508,21 +503,15 @@ namespace Azoth
 				status += " (" + statusString + ")";
 
 			const auto& name = entry->GetEntryName ();
-
-			if (!variant.isEmpty ())
-				return NotificationsManager::tr ("%1/%2 is now %3.")
-						.arg ("<em>" + name + "</em>")
-						.arg ("<em>" + variant + "</em>")
-						.arg (status);
-			else if (const auto parent = entry->GetParentCLEntry ())
-				return NotificationsManager::tr ("%1 in room %2 is now %3.")
-						.arg ("<em>" + name + "</em>")
-						.arg ("<em>" + parent->GetEntryName () + "</em>")
-						.arg (status);
-			else
+			const auto parent = entry->GetParentCLEntry ();
+			if (!variant.isEmpty () || !parent)
 				return NotificationsManager::tr ("%1 is now %2.")
-						.arg ("<em>" + name + "</em>")
+						.arg (Util::FormatName (variant.isEmpty () ? name : name + '/' + variant))
 						.arg (status);
+			return NotificationsManager::tr ("%1 in room %2 is now %3.")
+					.arg (Util::FormatName (name))
+					.arg (Util::FormatName (parent->GetEntryName ()))
+					.arg (status);
 		}
 	}
 
@@ -541,7 +530,7 @@ namespace Azoth
 
 		const auto& text = GetStatusChangeText (entry, entrySt, variant, StateToString (entrySt.State_));
 
-		auto e = Util::MakeNotification ("LeechCraft", text, Priority::Info);
+		auto e = Util::MakeNotification (EventTitle, text, Priority::Info);
 		e.Mime_ += "+advanced";
 
 		e.Additional_ [AN::EF::EventType] = AN::TypeIMStatusChange;
@@ -576,11 +565,11 @@ namespace Azoth
 			const auto& entryName = entry->GetEntryName ();
 			return !info.Title_.isEmpty () ?
 					NotificationsManager::tr ("%1 is now listening to %2 by %3.")
-							.arg ("<em>" + entryName + "</em>")
-							.arg ("<em>" + info.Title_ + "</em>")
-							.arg ("<em>" + info.Artist_ + "</em>") :
+							.arg (Util::FormatName (entryName))
+							.arg (Util::FormatName (info.Title_))
+							.arg (Util::FormatName (info.Artist_)) :
 					NotificationsManager::tr ("%1 stopped listening to music.")
-							.arg (entryName);
+							.arg (Util::FormatName (entryName));
 		}
 	}
 
@@ -591,7 +580,7 @@ namespace Azoth
 		const auto& info = qobject_cast<IHaveContactTune*> (sender ())->GetUserTune (variant);
 		const auto& text = GetTuneHRText (entry, info);
 
-		auto e = Util::MakeNotification ("LeechCraft", text, Priority::Info);
+		auto e = Util::MakeNotification (EventTitle, text, Priority::Info);
 		e.Mime_ += "+advanced";
 
 		e.Additional_ [AN::EF::EventType] = AN::TypeIMEventTuneChange;
@@ -617,15 +606,15 @@ namespace Azoth
 			const auto& entryName = entry->GetEntryName ();
 			if (info.General_.isEmpty ())
 				return NotificationsManager::tr ("%1 is not doing anything anymore.")
-						.arg ("<em>" + entryName + "</em>");
+						.arg (Util::FormatName (entryName));
 
 			if (info.Specific_.isEmpty ())
 				return NotificationsManager::tr ("%1 is now %2.")
-						.arg ("<em>" + entryName + "</em>")
+						.arg (Util::FormatName (entryName))
 						.arg (ActivityDialog::ToHumanReadable (info.General_));
 
 			return NotificationsManager::tr ("%1 is now %2 (in particular, %3).")
-					.arg ("<em>" + entryName + "</em>")
+					.arg (Util::FormatName (entryName))
 					.arg (ActivityDialog::ToHumanReadable (info.General_))
 					.arg (ActivityDialog::ToHumanReadable (info.Specific_));
 		}
@@ -638,7 +627,7 @@ namespace Azoth
 		const auto& info = ihca->GetUserActivity (variant);
 		const auto& text = GetActivityHRText (entry, info);
 
-		auto e = Util::MakeNotification ("LeechCraft", text, Priority::Info);
+		auto e = Util::MakeNotification (EventTitle, text, Priority::Info);
 		e.Mime_ += "+advanced";
 
 		e.Additional_ [AN::EF::EventType] = AN::TypeIMEventActivityChange;
@@ -662,10 +651,10 @@ namespace Azoth
 			const auto& entryName = entry->GetEntryName ();
 			if (info.Mood_.isEmpty ())
 				return NotificationsManager::tr ("%1 is not in any particular mood anymore.")
-						.arg ("<em>" + entryName + "</em>");
+						.arg (Util::FormatName (entryName));
 
 			return NotificationsManager::tr ("%1 is now %2.")
-					.arg ("<em>" + entryName + "</em>")
+					.arg (Util::FormatName (entryName))
 					.arg (MoodDialog::ToHumanReadable (info.Mood_));
 		}
 	}
@@ -676,7 +665,7 @@ namespace Azoth
 		const auto& info = qobject_cast<IHaveContactMood*> (sender ())->GetUserMood (variant);
 		const auto& text = GetMoodHRText (entry, info);
 
-		auto e = Util::MakeNotification ("LeechCraft", text, Priority::Info);
+		auto e = Util::MakeNotification (EventTitle, text, Priority::Info);
 		e.Mime_ += "+advanced";
 
 		e.Additional_ [AN::EF::EventType] = AN::TypeIMEventMoodChange;
@@ -709,23 +698,23 @@ namespace Azoth
 			const auto& entryName = entry->GetEntryName ();
 			if (!info.IsValid_)
 				return NotificationsManager::tr ("%1's location is not known.")
-						.arg (entryName);
+						.arg (Util::FormatName (entryName));
 
 			const bool hasCountry = !info.Country_.isEmpty ();
 			const bool hasLocality = !info.Locality_.isEmpty ();
 			if (hasCountry && hasLocality)
 				return NotificationsManager::tr ("%1 is now in %2 (%3).")
-						.arg (entryName)
+						.arg (Util::FormatName (entryName))
 						.arg (info.Locality_)
 						.arg (info.Country_);
 
 			if (hasCountry || hasLocality)
 				return NotificationsManager::tr ("%1 is now in %2.")
-						.arg (entryName)
+						.arg (Util::FormatName (entryName))
 						.arg (hasCountry ? info.Country_ : info.Locality_);
 
 			return NotificationsManager::tr ("%1's location updated.")
-					.arg (entryName);
+					.arg (Util::FormatName (entryName));
 		}
 	}
 
@@ -763,7 +752,7 @@ namespace Azoth
 
 		const auto& text = GetHRLocationText (entry, info);
 
-		auto e = Util::MakeNotification ("LeechCraft", text, Priority::Info);
+		auto e = Util::MakeNotification (EventTitle, text, Priority::Info);
 		e.Mime_ += "+advanced";
 
 		e.Additional_ [AN::EF::EventType] = AN::TypeIMEventLocationChange;
@@ -786,11 +775,12 @@ namespace Azoth
 
 		auto& entry = qobject_ref_cast<ICLEntry> (*sender ());
 
+		const auto& name = Util::FormatName (entry.GetEntryName ());
 		const auto& str = text.isEmpty () ?
-				tr ("%1 requests your attention.").arg (entry.GetEntryName ()) :
-				tr ("%1 requests your attention: %2.").arg (entry.GetEntryName (), text);
+				tr ("%1 requests your attention.").arg (name) :
+				tr ("%1 requests your attention: %2.").arg (name, text);
 
-		auto e = Util::MakeNotification ("Azoth", str, Priority::Info);
+		auto e = Util::MakeNotification (EventTitle, str, Priority::Info);
 		e.Additional_ [AN::EF::DeltaCount] = 1;
 		e.Additional_ [AN::EF::EventType] = AN::TypeIMAttention;
 		e.Additional_ [AN::EF::ExtendedText] = tr ("Attention requested.");
@@ -824,9 +814,9 @@ namespace Azoth
 
 		ShouldNotifyNextTyping_ [id] = false;
 
-		auto e = Util::MakeNotification ("Azoth",
+		auto e = Util::MakeNotification (EventTitle,
 				tr ("%1 started composing a message to you.")
-					.arg (entry->GetEntryName ()),
+					.arg (Util::FormatName (entry->GetEntryName ())),
 				Priority::Info);
 
 		const auto nh = new Util::NotificationActionHandler { e };
