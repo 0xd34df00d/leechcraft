@@ -2702,7 +2702,7 @@
     <message>
         <location filename="notificationsmanager.cpp" line="176"/>
         <source>Incoming chat message from %1.</source>
-        <translation>Вхідне повідомлення від %1.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="notificationsmanager.cpp" line="184"/>
@@ -2712,7 +2712,7 @@
     <message>
         <location filename="notificationsmanager.cpp" line="197"/>
         <source>Highlighted in conference %1 by %2.</source>
-        <translation>%2 потребує вашої уваги в конференції %1.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="notificationsmanager.cpp" line="206"/>
