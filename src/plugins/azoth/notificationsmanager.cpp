@@ -506,12 +506,9 @@ namespace Azoth
 			const auto parent = entry->GetParentCLEntry ();
 			if (!variant.isEmpty () || !parent)
 				return NotificationsManager::tr ("%1 is now %2.")
-						.arg (Util::FormatName (variant.isEmpty () ? name : name + '/' + variant))
-						.arg (status);
+						.arg (Util::FormatName (variant.isEmpty () ? name : name + '/' + variant), status);
 			return NotificationsManager::tr ("%1 in room %2 is now %3.")
-					.arg (Util::FormatName (name))
-					.arg (Util::FormatName (parent->GetEntryName ()))
-					.arg (status);
+					.arg (Util::FormatName (name), Util::FormatName (parent->GetEntryName ()), status);
 		}
 	}
 
@@ -565,9 +562,7 @@ namespace Azoth
 			const auto& entryName = entry->GetEntryName ();
 			return !info.Title_.isEmpty () ?
 					NotificationsManager::tr ("%1 is now listening to %2 by %3.")
-							.arg (Util::FormatName (entryName))
-							.arg (Util::FormatName (info.Title_))
-							.arg (Util::FormatName (info.Artist_)) :
+							.arg (Util::FormatName (entryName), Util::FormatName (info.Title_), Util::FormatName (info.Artist_)) :
 					NotificationsManager::tr ("%1 stopped listening to music.")
 							.arg (Util::FormatName (entryName));
 		}
@@ -610,13 +605,12 @@ namespace Azoth
 
 			if (info.Specific_.isEmpty ())
 				return NotificationsManager::tr ("%1 is now %2.")
-						.arg (Util::FormatName (entryName))
-						.arg (ActivityDialog::ToHumanReadable (info.General_));
+						.arg (Util::FormatName (entryName), ActivityDialog::ToHumanReadable (info.General_));
 
 			return NotificationsManager::tr ("%1 is now %2 (in particular, %3).")
-					.arg (Util::FormatName (entryName))
-					.arg (ActivityDialog::ToHumanReadable (info.General_))
-					.arg (ActivityDialog::ToHumanReadable (info.Specific_));
+					.arg (Util::FormatName (entryName),
+							ActivityDialog::ToHumanReadable (info.General_),
+							ActivityDialog::ToHumanReadable (info.Specific_));
 		}
 	}
 
@@ -654,8 +648,7 @@ namespace Azoth
 						.arg (Util::FormatName (entryName));
 
 			return NotificationsManager::tr ("%1 is now %2.")
-					.arg (Util::FormatName (entryName))
-					.arg (MoodDialog::ToHumanReadable (info.Mood_));
+					.arg (Util::FormatName (entryName), MoodDialog::ToHumanReadable (info.Mood_));
 		}
 	}
 
@@ -704,14 +697,11 @@ namespace Azoth
 			const bool hasLocality = !info.Locality_.isEmpty ();
 			if (hasCountry && hasLocality)
 				return NotificationsManager::tr ("%1 is now in %2 (%3).")
-						.arg (Util::FormatName (entryName))
-						.arg (info.Locality_)
-						.arg (info.Country_);
+						.arg (Util::FormatName (entryName), info.Locality_, info.Country_);
 
 			if (hasCountry || hasLocality)
 				return NotificationsManager::tr ("%1 is now in %2.")
-						.arg (Util::FormatName (entryName))
-						.arg (hasCountry ? info.Country_ : info.Locality_);
+						.arg (Util::FormatName (entryName), hasCountry ? info.Country_ : info.Locality_);
 
 			return NotificationsManager::tr ("%1's location updated.")
 					.arg (Util::FormatName (entryName));
