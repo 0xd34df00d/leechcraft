@@ -27,7 +27,6 @@
 #include "interfaces/azoth/imessage.h"
 #include "interfaces/azoth/iadvancedclentry.h"
 #include "interfaces/azoth/iextselfinfoaccount.h"
-#include "interfaces/azoth/isupporttune.h"
 #include "interfaces/azoth/isupportmood.h"
 #include "interfaces/azoth/isupportactivity.h"
 #include "interfaces/azoth/isupportgeolocation.h"
