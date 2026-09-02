@@ -414,8 +414,11 @@ namespace Azoth
 				body;
 
 		auto title = EventTitle;
+		const auto fmtEntryName = Util::FormatName (other->GetEntryName ());
+
 		QString msgString;
 		bool isHighlightMsg = false;
+
 		switch (msg->GetMessageType ())
 		{
 		case IMessage::Type::ChatMessage:
@@ -427,24 +430,21 @@ namespace Azoth
 					msgString = notifMsg;
 				}
 				else
-					msgString = tr ("%1 sent you a message.")
-							.arg (Util::FormatName (other->GetEntryName ()));
+					msgString = tr ("%1 sent you a message.").arg (fmtEntryName);
 			}
 			break;
 		case IMessage::Type::MUCMessage:
 			isHighlightMsg = Core::Instance ().IsHighlightMessage (msg);
-			if (isHighlightMsg && XmlSettingsManager::Instance ()
-					.property ("NotifyAboutConferenceHighlights").toBool ())
+			if (isHighlightMsg && XmlSettingsManager::Instance ().property ("NotifyAboutConferenceHighlights").toBool ())
 			{
 				if (showMsg)
 				{
 					title = parentCL->GetEntryName ();
-					msgString = Util::FormatName (other->GetEntryName ()) + ": " + notifMsg;
+					msgString = fmtEntryName + ": " + notifMsg;
 				}
 				else
 					msgString = tr ("%1 highlighted you in %2.")
-							.arg (Util::FormatName (other->GetEntryName ()),
-									Util::FormatName (parentCL->GetEntryName ()));
+							.arg (fmtEntryName, Util::FormatName (parentCL->GetEntryName ()));
 			}
 			break;
 		default:
