@@ -409,9 +409,6 @@ namespace Azoth
 		const auto parentCL = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
 
 		const auto& body = FormatterProxyObject {}.EscapeBody (msg->GetBody (), msg->GetEscapePolicy ());
-		const auto& notifMsg = body.size () > 50 ?
-				body.left (50) + "..." :
-				body;
 
 		auto title = EventTitle;
 		const auto fmtEntryName = Util::FormatName (other->GetEntryName ());
@@ -427,7 +424,7 @@ namespace Azoth
 				if (showMsg)
 				{
 					title = other->GetEntryName ();
-					msgString = notifMsg;
+					msgString = body;
 				}
 				else
 					msgString = tr ("%1 sent you a message.").arg (fmtEntryName);
@@ -440,7 +437,7 @@ namespace Azoth
 				if (showMsg)
 				{
 					title = parentCL->GetEntryName ();
-					msgString = fmtEntryName + ": " + notifMsg;
+					msgString = fmtEntryName + ": " + body;
 				}
 				else
 					msgString = tr ("%1 highlighted you in %2.")
