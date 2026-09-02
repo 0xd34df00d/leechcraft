@@ -466,21 +466,20 @@ namespace Azoth
 			e.Additional_ [Fields::SubSourceID] = other->GetEntryID ();
 			e.Additional_ [AN::EF::EventType] = isHighlightMsg ? AN::TypeIMMUCHighlight : AN::TypeIMMUCMsg;
 
-			if (isHighlightMsg)
-				e.Additional_ [AN::EF::FullText] =
-					tr ("%n message(s) from", 0, count) + ' ' + other->GetEntryName () + " <em>(" + parentCL->GetEntryName () + ")</em>";
-			else
-				e.Additional_ [AN::EF::FullText] =
-					tr ("%n message(s) in", 0, count) + ' ' + parentCL->GetEntryName ();
+			const auto& mucName = Util::FormatName (parentCL->GetEntryName ());
+			const auto notifMsg = isHighlightMsg ?
+					tr ("%n message(s) from %1 in %2", nullptr, count).arg (fmtEntryName, mucName) :
+					tr ("%n message(s) in %1", nullptr, count).arg (mucName);
+			e.Additional_ [AN::EF::FullText] = notifMsg;
 		}
 		else
 		{
 			e.Additional_ [AN::EF::EventType] = AN::TypeIMIncMsg;
-			e.Additional_ [AN::EF::FullText] = tr ("%n message(s) from", 0, count) + ' ' + other->GetEntryName ();
+			e.Additional_ [AN::EF::FullText] = tr ("%n message(s) from %1", nullptr, count).arg (fmtEntryName);
 		}
 
 		e.Additional_ [AN::EF::Count] = count;
-		e.Additional_ [AN::EF::ExtendedText] = tr ("%n message(s)", 0, count);
+		e.Additional_ [AN::EF::ExtendedText] = tr ("%n message(s)", nullptr, count);
 		e.Additional_ [Fields::Msg] = body;
 
 		const auto nh = new Util::NotificationActionHandler { e, this };
