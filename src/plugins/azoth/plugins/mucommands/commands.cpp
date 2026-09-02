@@ -110,7 +110,7 @@ namespace MuCommands
 
 			QList<ICLEntry*> entries;
 			for (const auto entry : acc->GetCLEntries ())
-				if (entry->GetEntryName () == name || entry->GetHumanReadableID () == name)
+				if (entry->GetEntryName () == name || entry->GetHumanReadableAddress () == name)
 					entries << entry;
 
 			if (!entries.isEmpty ())
@@ -168,7 +168,7 @@ namespace MuCommands
 			{
 				if (entry->GetEntryType () == ICLEntry::EntryType::MUC)
 					return;
-				nicks << entry->GetHumanReadableID ();
+				nicks << entry->GetHumanReadableAddress ();
 			}
 
 			const auto& participants = GetParticipants (qobject_cast<IMUCEntry*> (entry->GetQObject ()));
@@ -275,7 +275,7 @@ namespace MuCommands
 			auto body = QObject::tr ("Client information for %1:")
 					.arg (var.isEmpty () && target->Variants ().size () == 1 ?
 							name :
-							target->GetHumanReadableID () + '/' + var);
+							target->GetHumanReadableAddress () + '/' + var);
 			body += fields.isEmpty () ?
 					QObject::tr ("no information available.") :
 					"<ul><li>" + fields.join ("</li><li>") + "</li></ul>";
@@ -335,7 +335,7 @@ namespace MuCommands
 								.value ("client_time").toDateTime ();
 						const auto& varName = var.isEmpty () ?
 								name :
-								target->GetHumanReadableID () + '/' + var;
+								target->GetHumanReadableAddress () + '/' + var;
 						if (!time.isValid ())
 						{
 							shouldUpdate = true;
@@ -419,7 +419,7 @@ namespace MuCommands
 					Q_ARG (QObject*, sessionObj));
 		};
 
-		PerformAction ([requestSD] (ICLEntry *target, const QString&) { requestSD (target->GetHumanReadableID ()); },
+		PerformAction ([requestSD] (ICLEntry *target, const QString&) { requestSD (target->GetConventionalID ().ToString ()); },
 				[requestSD] (const QString& name) { requestSD (name); },
 				entry, text);
 
