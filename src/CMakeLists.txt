@@ -171,7 +171,6 @@ SUBPLUGIN (KINOTIFY "Build Kinotify, fancy kinetic notifications" ${WITH_PLUGINS
 SUBPLUGIN (KNOWHOW "Build KnowHow for displaying tips of the day" ${WITH_PLUGINS})
 SUBPLUGIN (LMP "Build LMP, the LeechCraft Music Player" ${WITH_PLUGINS})
 SUBPLUGIN (NETWORKMONITOR "Build NetworkMonitor, the monitor for HTTP requests" ${WITH_PLUGINS})
-SUBPLUGIN (NEWLIFE "Build NewLife, the settings importer" ${WITH_PLUGINS})
 SUBPLUGIN (PINTAB "Build Pintab for pinning important tabs" ${WITH_PLUGINS})
 SUBPLUGIN (POGOOGLUE "Build Pogooglue, Google search client" ${WITH_PLUGINS})
 SUBPLUGIN (POSHUKU "Build Poshuku, the WWW Browser" ${WITH_PLUGINS})

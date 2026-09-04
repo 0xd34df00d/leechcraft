@@ -236,7 +236,6 @@
         "ENABLE_NAMAUTH": "True",
         "ENABLE_NETSTOREMANAGER": "True",
         "ENABLE_NETSTOREMANAGER_GOOGLEDRIVE": "True",
-        "ENABLE_NEWLIFE": "True",
         "ENABLE_OORONEE": "True",
         "ENABLE_OTLOZHU": "True",
         "ENABLE_OTLOZHU_SYNC": "False",
