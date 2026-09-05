@@ -60,7 +60,6 @@
 #include "historywidget.h"
 #include "urleditbuttonsmanager.h"
 #include "zoomer.h"
-#include "searchtext.h"
 #include "featurepermnotification.h"
 #include "browserwidgetsettingshandler.h"
 
@@ -456,20 +455,6 @@ namespace Poshuku
 	{
 		Find_->setData (text);
 		menu->addAction (Find_);
-
-		const auto searchAct = menu->addAction (tr ("Search..."));
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[text, this]
-			{
-				const auto st = new SearchText (text, Proxy_, this);
-				st->setAttribute (Qt::WA_DeleteOnClose);
-				st->show ();
-			},
-			searchAct,
-			SIGNAL (triggered ()),
-			searchAct
-		};
 
 		new Util::StdDataFilterMenuCreator (text, Proxy_->GetEntityManager (), menu);
 	}

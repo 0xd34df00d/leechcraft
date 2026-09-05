@@ -37,7 +37,6 @@ LC_DEFINE_PLUGIN (
 		passwordremember.cpp
 		pageformsdata.cpp
 		cookiesfilter.cpp
-		searchtext.cpp
 		reloadintervalselector.cpp
 		editbookmarkdialog.cpp
 		favoriteschecker.cpp
