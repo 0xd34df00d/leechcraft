@@ -505,7 +505,7 @@ namespace Azoth
 		const ActionsVector_t BeforeRolesNames_;
 		const ActionsVector_t AfterRolesNames_;
 
-		ActionsVectors (AvatarsManager *am)
+		ActionsVectors (AvatarsManager& am)
 		: BeforeRolesNames_
 		{
 			{
@@ -545,10 +545,10 @@ namespace Azoth
 					})
 			},
 			{ "inviteToMuc", SingleEntryActor_f (InviteToMuc) },
-			{ "saveAvatar", SingleEntryActor_f ([am] (ICLEntry *e)
+			{ "saveAvatar", SingleEntryActor_f ([&am] (ICLEntry *e)
 					{
 						const auto entryObj = e->GetQObject ();
-						Util::Sequence (entryObj, am->GetAvatar (entryObj, IHaveAvatars::Size::Full)) >>
+						Util::Sequence (entryObj, am.GetAvatar (entryObj, IHaveAvatars::Size::Full)) >>
 								[] (const QImage& image)
 								{
 									if (image.isNull ())
@@ -598,9 +598,10 @@ namespace Azoth
 		}
 	};
 
-	ActionsManager::ActionsManager (AvatarsManager *am, QObject *parent)
+	ActionsManager::ActionsManager (NotificationsManager& nm, AvatarsManager& am, QObject *parent)
 	: QObject { parent }
 	, AvatarsManager_ { am }
+	, NotificationsManager_ { nm }
 	, ActionsVectors_ { std::make_shared<ActionsVectors> (am) }
 	{
 	}
@@ -1322,7 +1323,7 @@ namespace Azoth
 					isOnline;
 			Entry2Actions_ [entry] ["vcard"]->setEnabled (enableVCard);
 
-			Entry2Actions_ [entry] ["saveAvatar"]->setEnabled (AvatarsManager_->HasAvatar (entry->GetQObject ()));
+			Entry2Actions_ [entry] ["saveAvatar"]->setEnabled (AvatarsManager_.HasAvatar (entry->GetQObject ()));
 
 			const auto& allEntries = account->GetCLEntries ();
 			const auto hasMucs = std::ranges::any_of (allEntries,
@@ -1486,10 +1487,7 @@ namespace Azoth
 					},
 					{
 						"org.LC.Plugins.Azoth.NewStatus",
-						AN::StringValueMatcher
-						{
-							StateToID (SOnline)
-						}
+						AN::StringValueMatcher { StateToID (SOnline) }
 					}
 				});
 		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);

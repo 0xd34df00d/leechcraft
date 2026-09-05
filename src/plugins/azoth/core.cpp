@@ -164,7 +164,8 @@ namespace LC::Azoth
 	, CLModel_ (new CLModel (TooltipManager_, this))
 	, ChatTabsManager_ (new ChatTabsManager (AvatarsManager_.get (), FontsWidget_, this))
 	, CoreCommandsManager_ (new CoreCommandsManager (this))
-	, ActionsManager_ (new ActionsManager (AvatarsManager_.get (), this))
+	, NotificationsManager_ (new NotificationsManager (AvatarsManager_.get ()))
+	, ActionsManager_ (new ActionsManager (*NotificationsManager_, *AvatarsManager_, this))
 	, ItemIconManager_ (new AnimatedIconManager<QStandardItem*> ([] (QStandardItem *it, const QIcon& ic)
 						{ it->setIcon (ic); }))
 	, SmilesOptionsModel_ (new SourceTrackingModel<IEmoticonResourceSource> ({ tr ("Smile pack") }))
@@ -250,7 +251,6 @@ namespace LC::Azoth
 		ShortcutManager_.reset (new Util::ShortcutManager (proxy, pluginObject));
 		CustomStatusesManager_.reset (new CustomStatusesManager);
 
-		NotificationsManager_.reset (new NotificationsManager (AvatarsManager_.get ()));
 		PluginManager_->RegisterHookable (NotificationsManager_.get ());
 		connect (UnreadQueueManager_.get (),
 				SIGNAL (messagesCleared (QObject*)),

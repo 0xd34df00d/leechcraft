@@ -23,12 +23,14 @@ namespace Azoth
 	class IAuthable;
 	class ServerHistoryWidget;
 	class AvatarsManager;
+	class NotificationsManager;
 
 	class ActionsManager : public QObject
 	{
 		Q_OBJECT
 
-		AvatarsManager * const AvatarsManager_;
+		AvatarsManager& AvatarsManager_;
+		NotificationsManager& NotificationsManager_;
 
 		typedef QHash<const ICLEntry*, QHash<QByteArray, QAction*>> Entry2Actions_t;
 		Entry2Actions_t Entry2Actions_;
@@ -49,7 +51,7 @@ namespace Azoth
 		typedef QHash<const QAction*, QList<CLEntryActionArea>> Action2Areas_t;
 		Action2Areas_t Action2Areas_;
 	public:
-		ActionsManager (AvatarsManager*, QObject* = nullptr);
+		ActionsManager (NotificationsManager&, AvatarsManager&, QObject* = nullptr);
 
 		QList<QAction*> GetEntryActions (ICLEntry *entry);
 		QList<QAction*> CreateEntriesActions (QList<ICLEntry*> entries, QObject *parent);

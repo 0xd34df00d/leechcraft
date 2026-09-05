@@ -88,6 +88,7 @@ namespace LC::Azoth
 		typedef QHash<ICLEntry*, QList<QStandardItem*>> Entry2Items_t;
 		Entry2Items_t Entry2Items_;
 
+		std::shared_ptr<NotificationsManager> NotificationsManager_;
 		ActionsManager *ActionsManager_;
 
 		QHash<QString, ICLEntry*> ID2Entry_;
@@ -110,7 +111,6 @@ namespace LC::Azoth
 		std::shared_ptr<Util::ShortcutManager> ShortcutManager_;
 		std::shared_ptr<CustomStatusesManager> CustomStatusesManager_;
 		std::shared_ptr<CustomChatStyleManager> CustomChatStyleManager_;
-		std::shared_ptr<NotificationsManager> NotificationsManager_;
 		std::shared_ptr<HistorySyncer> HistorySyncer_;
 
 		Core ();
