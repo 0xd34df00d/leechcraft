@@ -49,7 +49,6 @@ namespace LC::Azoth
 	class TransferJobManager;
 	class CallManager;
 	class ActionsManager;
-	class ImportManager;
 	class CLModel;
 	class ServiceDiscoveryWidget;
 	class UnreadQueueManager;
@@ -107,7 +106,6 @@ namespace LC::Azoth
 		std::shared_ptr<ProxyObject> PluginProxyObject_;
 		std::shared_ptr<TransferJobManager> XferJobManager_;
 		std::shared_ptr<CallManager> CallManager_;
-		std::shared_ptr<ImportManager> ImportManager_;
 		std::shared_ptr<UnreadQueueManager> UnreadQueueManager_;
 		QMap<QByteArray, std::shared_ptr<ChatStyleOptionManager>> StyleOptionManagers_;
 		std::shared_ptr<Util::ShortcutManager> ShortcutManager_;

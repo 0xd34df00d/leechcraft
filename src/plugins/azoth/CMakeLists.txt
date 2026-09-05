@@ -117,7 +117,6 @@ LC_DEFINE_PLUGIN (
 		callmanager.cpp
 		searchwidget.cpp
 		actionsmanager.cpp
-		importmanager.cpp
 		accountactions.cpp
 		unreadqueuemanager.cpp
 		chatstyleoptionmanager.cpp

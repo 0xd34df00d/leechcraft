@@ -77,7 +77,6 @@
 #include "callmanager.h"
 #include "actionsmanager.h"
 #include "servicediscoverywidget.h"
-#include "importmanager.h"
 #include "unreadqueuemanager.h"
 #include "chatstyleoptionmanager.h"
 #include "riexhandler.h"
@@ -174,7 +173,6 @@ namespace LC::Azoth
 	, PluginProxyObject_ (new ProxyObject (AvatarsManager_.get ()))
 	, XferJobManager_ (new TransferJobManager { AvatarsManager_.get () })
 	, CallManager_ (new CallManager)
-	, ImportManager_ (new ImportManager)
 	, UnreadQueueManager_ (new UnreadQueueManager)
 	, CustomChatStyleManager_ (new CustomChatStyleManager)
 	, HistorySyncer_ (std::make_shared<HistorySyncer> ())
@@ -369,9 +367,7 @@ namespace LC::Azoth
 
 	bool Core::CouldHandle (const Entity& e) const
 	{
-		if (e.Mime_ == Mimes::PowerStateChanged ||
-				e.Mime_ == "x-leechcraft/im-account-import" ||
-				e.Mime_ == "x-leechcraft/im-history-import")
+		if (e.Mime_ == Mimes::PowerStateChanged)
 			return true;
 
 		if (!e.Entity_.canConvert<QUrl> ())
@@ -389,16 +385,6 @@ namespace LC::Azoth
 		if (e.Mime_ == Mimes::PowerStateChanged)
 		{
 			HandlePowerNotification (e);
-			return;
-		}
-		else if (e.Mime_ == "x-leechcraft/im-account-import")
-		{
-			ImportManager_->HandleAccountImport (e);
-			return;
-		}
-		else if (e.Mime_ == "x-leechcraft/im-history-import")
-		{
-			ImportManager_->HandleHistoryImport (e);
 			return;
 		}
 
