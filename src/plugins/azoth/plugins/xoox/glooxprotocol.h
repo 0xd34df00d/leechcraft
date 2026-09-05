@@ -12,7 +12,6 @@
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/imucprotocol.h>
 #include <interfaces/azoth/iurihandler.h>
-#include <interfaces/azoth/isupportimport.h>
 
 namespace LC
 {
@@ -32,13 +31,11 @@ namespace Xoox
 							  , public IProtocol
 							  , public IMUCProtocol
 							  , public IURIHandler
-							  , public ISupportImport
 	{
 		Q_OBJECT
 		Q_INTERFACES (LC::Azoth::IProtocol
 				LC::Azoth::IMUCProtocol
-				LC::Azoth::IURIHandler
-				LC::Azoth::ISupportImport)
+				LC::Azoth::IURIHandler)
 
 		QObject *ParentProtocolPlugin_;
 		QList<GlooxAccount*> Accounts_;
@@ -74,10 +71,6 @@ namespace Xoox
 
 		bool SupportsURI (const QUrl&) const;
 		void HandleURI (const QUrl&, QObject*);
-
-		QString GetImportProtocolID () const;
-		bool ImportAccount (const QVariantMap&);
-		QString GetEntryID (const QString&, QObject*);
 	private:
 		void RestoreAccounts ();
 	private slots:

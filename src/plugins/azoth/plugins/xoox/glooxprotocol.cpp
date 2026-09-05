@@ -7,8 +7,6 @@
  **********************************************************************/
 
 #include "glooxprotocol.h"
-#include <QInputDialog>
-#include <QMainWindow>
 #include <QSettings>
 #include <QCoreApplication>
 #include <QDir>
@@ -17,13 +15,10 @@
 #include <util/sll/functional.h>
 #include <util/sll/prelude.h>
 #include <util/sys/paths.h>
-#include <util/xpc/util.h>
 #include <interfaces/azoth/iprotocolplugin.h>
 #include <interfaces/azoth/iproxyobject.h>
-#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include "glooxaccount.h"
-#include "core.h"
 #include "joingroupchatwidget.h"
 #include "glooxaccountconfigurationwidget.h"
 #include "inbandaccountregfirstpage.h"
@@ -340,68 +335,6 @@ namespace Xoox
 			qWarning () << Q_FUNC_INFO
 					<< "unhandled query items"
 					<< queryItems;
-	}
-
-	QString GlooxProtocol::GetImportProtocolID () const
-	{
-		return "xmpp";
-	}
-
-	bool GlooxProtocol::ImportAccount (const QVariantMap& info)
-	{
-		const QString& name = info ["Name"].toString ();
-
-		if (name.isEmpty () ||
-				info ["Jid"].toString ().isEmpty ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "malformed import info"
-					<< info;
-			GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Azoth",
-						tr ("Unable to import account: malformed import data."),
-						Priority::Critical));
-			return false;
-		}
-
-		for (auto acc : Accounts_)
-			if (acc->GetAccountName () == name)
-			{
-				GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Azoth",
-							tr ("Account %1 already exists, cannot import another one."),
-							Priority::Critical));
-				return false;
-			}
-
-		// Maybe a kludge, dunno. Don't beat me hard :(
-		GlooxAccountConfigurationWidget w;
-		w.SetJID (info ["Jid"].toString ());
-		w.SetHost (info ["Host"].toString ());
-		w.SetPort (info ["Port"].toInt ());
-		w.SetNick (info ["Nick"].toString ());
-
-		GlooxAccount *account = new GlooxAccount (name, this, this);
-		account->GetSettings ()->FillSettings (&w);
-
-		Accounts_ << account;
-		account->Init ();
-		saveAccounts ();
-		emit accountAdded (account);
-
-		return true;
-	}
-
-	QString GlooxProtocol::GetEntryID (const QString& hrID, QObject *accObj)
-	{
-		GlooxAccount *acc = qobject_cast<GlooxAccount*> (accObj);
-		if (!acc)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "passed object is not a GlooxAccount"
-					<< accObj;
-			return QString ();
-		}
-
-		return acc->GetAccountID () + '_' + hrID;
 	}
 
 	void GlooxProtocol::RestoreAccounts ()
