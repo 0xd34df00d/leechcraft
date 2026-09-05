@@ -155,9 +155,9 @@ namespace Azoth
 		};
 	}
 
-	NotificationsManager::NotificationsManager (IEntityManager *manager, AvatarsManager *am, QObject *parent)
+	NotificationsManager::NotificationsManager (AvatarsManager *am, QObject *parent)
 	: QObject { parent }
-	, EntityMgr_ { manager }
+	, EntityMgr_ { *GetProxyHolder ()->GetEntityManager () }
 	, AvatarsMgr_ { am }
 	{
 	}
@@ -485,7 +485,7 @@ namespace Azoth
 		nh->AddDependentObject (parentCL->GetQObject ());
 
 		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, {}, other)) >>
-				[this] (const Entity& e) { EntityMgr_->HandleEntity (e); };
+				[this] (const Entity& e) { EntityMgr_.HandleEntity (e); };
 	}
 
 	namespace
@@ -533,7 +533,7 @@ namespace Azoth
 		e.Additional_ [Fields::NewStatus] = StateToID (entrySt.State_);
 
 		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, "StatusChangeEvent")) >>
-				[this] (const Entity& e) { EntityMgr_->HandleEntity (e); };
+				[this] (const Entity& e) { EntityMgr_.HandleEntity (e); };
 	}
 
 
@@ -544,9 +544,9 @@ namespace Azoth
 
 		const auto& entryID = entry->GetEntryID ();
 
-		EntityMgr_->HandleEntity (Util::MakeANCancel ("org.LeechCraft.Azoth",
+		EntityMgr_.HandleEntity (Util::MakeANCancel ("org.LeechCraft.Azoth",
 				"org.LC.Plugins.Azoth.IncomingMessageFrom/" + entryID));
-		EntityMgr_->HandleEntity (Util::MakeANCancel ("org.LeechCraft.Azoth",
+		EntityMgr_.HandleEntity (Util::MakeANCancel ("org.LeechCraft.Azoth",
 				"org.LC.Plugins.Azoth.AttentionDrawnBy/" + entryID));
 	}
 
@@ -586,7 +586,7 @@ namespace Azoth
 		e.Additional_ [AN::Field::MediaLength] = info.Length_;
 
 		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, "TuneChangeEvent")) >>
-				[this] (const Entity& e) { EntityMgr_->HandleEntity (e); };
+				[this] (const Entity& e) { EntityMgr_.HandleEntity (e); };
 	}
 
 	namespace
@@ -630,7 +630,7 @@ namespace Azoth
 		e.Additional_ [AN::Field::IMActivityText] = info.Text_;
 
 		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, "ActivityChangeEvent")) >>
-				[this] (const Entity& e) { EntityMgr_->HandleEntity (e); };
+				[this] (const Entity& e) { EntityMgr_.HandleEntity (e); };
 	}
 
 	namespace
@@ -666,7 +666,7 @@ namespace Azoth
 		e.Additional_ [AN::Field::IMMoodText] = info.Text_;
 
 		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, "MoodChangeEvent")) >>
-				[this] (const Entity& e) { EntityMgr_->HandleEntity (e); };
+				[this] (const Entity& e) { EntityMgr_.HandleEntity (e); };
 	}
 
 	namespace
@@ -750,7 +750,7 @@ namespace Azoth
 		e.Additional_ [AN::Field::IMLocationLatitude] = info.Lat_;
 
 		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, "LocationChangeEvent")) >>
-				[this] (const Entity& e) { EntityMgr_->HandleEntity (e); };
+				[this] (const Entity& e) { EntityMgr_.HandleEntity (e); };
 	}
 
 	void NotificationsManager::handleAttentionDrawn (const QString& text, const QString&)
@@ -778,7 +778,7 @@ namespace Azoth
 		nh->AddDependentObject (entry.GetQObject ());
 
 		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, &entry, "AttentionDrawnBy")) >>
-				[this] (const Entity& e) { EntityMgr_->HandleEntity (e); };
+				[this] (const Entity& e) { EntityMgr_.HandleEntity (e); };
 	}
 
 	void NotificationsManager::HandleChatPartStateChanged (ICLEntry *entry, ChatPartState state, const QString&)
@@ -810,7 +810,7 @@ namespace Azoth
 		nh->AddDependentObject (entry->GetQObject ());
 
 		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, "Typing")) >>
-				[this] (const Entity& e) { EntityMgr_->HandleEntity (e); };
+				[this] (const Entity& e) { EntityMgr_.HandleEntity (e); };
 	}
 
 	void NotificationsManager::handleEntryMadeCurrent (QObject *entryObj)

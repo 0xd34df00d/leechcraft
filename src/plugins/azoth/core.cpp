@@ -250,7 +250,7 @@ namespace LC::Azoth
 		ShortcutManager_.reset (new Util::ShortcutManager (proxy, pluginObject));
 		CustomStatusesManager_.reset (new CustomStatusesManager);
 
-		NotificationsManager_.reset (new NotificationsManager (proxy->GetEntityManager (), AvatarsManager_.get ()));
+		NotificationsManager_.reset (new NotificationsManager (AvatarsManager_.get ()));
 		PluginManager_->RegisterHookable (NotificationsManager_.get ());
 		connect (UnreadQueueManager_.get (),
 				SIGNAL (messagesCleared (QObject*)),

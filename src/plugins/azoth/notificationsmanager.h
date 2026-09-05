@@ -34,7 +34,7 @@ namespace Azoth
 	{
 		Q_OBJECT
 
-		IEntityManager * const EntityMgr_;
+		IEntityManager& EntityMgr_;
 		AvatarsManager * const AvatarsMgr_;
 		QHash<ICLEntry*, int> UnreadCounts_;
 
@@ -44,7 +44,7 @@ namespace Azoth
 	public:
 		static QList<AN::FieldData> GetANFields ();
 
-		NotificationsManager (IEntityManager*, AvatarsManager*, QObject* = nullptr);
+		NotificationsManager (AvatarsManager*, QObject* = nullptr);
 
 		void AddAccount (QObject*);
 		void RemoveAccount (QObject*);
