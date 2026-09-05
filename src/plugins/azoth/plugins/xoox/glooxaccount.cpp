@@ -79,23 +79,6 @@ namespace Xoox
 			s1.Status_ == s2.Status_;
 	}
 
-	namespace
-	{
-		QIcon MakeAccountIcon (const QString& jid)
-		{
-			if (jid.contains ("google") ||
-					jid.contains ("gmail"))
-				return QIcon { ":/plugins/azoth/plugins/xoox/resources/images/special/gtalk.svg" };
-			else if (jid.contains ("facebook") ||
-					jid.contains ("fb.com"))
-				return QIcon { ":/plugins/azoth/plugins/xoox/resources/images/special/facebook.svg" };
-			else if (jid.contains ("odnoklassniki"))
-				return QIcon { ":/plugins/azoth/plugins/xoox/resources/images/special/odnoklassniki.svg" };
-
-			return {};
-		}
-	}
-
 	GlooxAccount::GlooxAccount (const QString& name,
 			GlooxProtocol *proto,
 			QObject *parent)
@@ -135,9 +118,6 @@ namespace Xoox
 				&AccountSettingsHolder::accountSettingsChanged,
 				this,
 				&GlooxAccount::accountSettingsChanged);
-		connect (SettingsHolder_,
-				&AccountSettingsHolder::jidChanged,
-				[this] (const QString& jid) { AccountIcon_ = MakeAccountIcon (jid); });
 
 		HandleClientConnectionAvailable (false);
 	}
@@ -229,8 +209,6 @@ namespace Xoox
 				{
 					emit serverHistoryFetched (Xep0313ModelMgr_->Jid2Index (jid), id.toUtf8 (), messages);
 				});
-
-		AccountIcon_ = MakeAccountIcon (SettingsHolder_->GetJID ());
 
 		CarbonsAction_->setChecked (SettingsHolder_->IsMessageCarbonsEnabled ());
 
@@ -391,7 +369,7 @@ namespace Xoox
 
 	QIcon GlooxAccount::GetAccountIcon () const
 	{
-		return AccountIcon_;
+		return {};
 	}
 
 	QObject* GlooxAccount::GetSelfContact () const

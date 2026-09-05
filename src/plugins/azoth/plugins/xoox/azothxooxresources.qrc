@@ -2,9 +2,6 @@
 	<qresource prefix="/plugins/azoth/plugins/xoox">
 		<file>resources/images/xoox.svg</file>
 		<file>resources/images/jabbericon.svg</file>
-		<file>resources/images/special/gtalk.svg</file>
-		<file>resources/images/special/facebook.svg</file>
-		<file>resources/images/special/odnoklassniki.svg</file>
 	</qresource>
 	<qresource prefix="/azoth/xoox">
 		<file>resources/data/clientids.json</file>

@@ -121,8 +121,6 @@ namespace Xoox
 
 		AccountSettingsHolder *SettingsHolder_;
 
-		QIcon AccountIcon_;
-
 		std::shared_ptr<ClientConnection> ClientConnection_;
 
 		struct Managers;
