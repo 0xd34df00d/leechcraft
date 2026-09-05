@@ -16,10 +16,9 @@ struct Entity;
 
 namespace Poshuku
 {
-	class HistoryModel;
 	class FavoritesModel;
 
 	void ImportEntity (const Entity&,
-			HistoryModel*, FavoritesModel*, IRootWindowsManager*);
+			FavoritesModel*, IRootWindowsManager*);
 }
 }

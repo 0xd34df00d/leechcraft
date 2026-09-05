@@ -175,8 +175,7 @@ namespace Poshuku
 	void Core::Handle (Entity e)
 	{
 		if (e.Mime_ == "x-leechcraft/browser-import-data")
-			ImportEntity (e, HistoryModel_, FavoritesModel_,
-					Proxy_->GetRootWindowsManager ());
+			ImportEntity (e, FavoritesModel_, Proxy_->GetRootWindowsManager ());
 		else if (e.Entity_.canConvert<QUrl> ())
 		{
 			QUrl url = e.Entity_.toUrl ();
