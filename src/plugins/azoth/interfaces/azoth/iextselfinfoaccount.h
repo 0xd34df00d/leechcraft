@@ -44,10 +44,10 @@ namespace Azoth
 		/** @brief Returns the icon of this account.
 		 *
 		 * The returned icon is used to distinguish this account from
-		 * other accounts of the same protocol. For example, an XMPP
-		 * account on GMail may choose to return a GMail-y icon.
+		 * other accounts of the same protocol, for example, if the
+		 * account server provides some custom branding.
 		 *
-		 * Returning a null icon means that general protocol icon will
+		 * Returning a null icon means that the general protocol icon will
 		 * be used.
 		 *
 		 * @return The icon of this account.
