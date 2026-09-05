@@ -18,7 +18,6 @@
 #include <util/threads/coro/future.h>
 #include <util/threads/coro.h>
 #include <util/xpc/util.h>
-#include "xmlsettingsmanager.h"
 #include "common.h"
 #include "dbutils.h"
 #include "importopmldialog.h"
@@ -83,19 +82,6 @@ namespace LC::Aggregator::Opml
 
 			co_return LocalFile { name, std::move (removeGuard).Shared () };
 		}
-
-		void HandleOpmlGlobalSettings (const Entity& e)
-		{
-			auto copyVal = [&e] (const QByteArray& name)
-			{
-				if (e.Additional_.contains (name))
-					XmlSettingsManager::Instance ().setProperty (name, e.Additional_.value (name));
-			};
-			copyVal ("UpdateOnStartup"_qba);
-			copyVal ("UpdateTimeout"_qba);
-			copyVal ("MaxArticles"_qba);
-			copyVal ("MaxAge"_qba);
-		}
 	}
 
 	void HandleOpmlFile (const QString& file, UpdatesManager& updatesManager)
@@ -122,8 +108,6 @@ namespace LC::Aggregator::Opml
 
 	void HandleOpmlEntity (const Entity& e, std::weak_ptr<UpdatesManager> updatesManager)
 	{
-		HandleOpmlGlobalSettings (e);
-
 		[] (QUrl url, std::weak_ptr<UpdatesManager> updatesManager) -> Util::Task<void>
 		{
 			const auto remoteResult = co_await HandleOpmlUrl (url);
