@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <functional>
 #include <QObject>
 #include <QCache>
 #include <QUrl>
@@ -147,7 +146,7 @@ namespace LC::Azoth
 
 		QAbstractItemModel* GetCLModel () const;
 		ChatTabsManager* GetChatTabsManager () const;
-		QList<IAccount*> GetAccounts (std::function<bool (IProtocol*)> = [] (IProtocol*) { return true; }) const;
+		QList<IAccount*> GetAccounts () const;
 		QList<IProtocol*> GetProtocols () const;
 		IAccount* GetAccount (const QByteArray&) const;
 

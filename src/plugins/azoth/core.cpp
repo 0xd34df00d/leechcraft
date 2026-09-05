@@ -529,9 +529,9 @@ namespace LC::Azoth
 		return ChatTabsManager_;
 	}
 
-	QList<IAccount*> Core::GetAccounts (std::function<bool (IProtocol*)> protoPred) const
+	QList<IAccount*> Core::GetAccounts () const
 	{
-		return GetAccountsPred (ProtocolPlugins_, protoPred);
+		return GetAccountsPred (ProtocolPlugins_);
 	}
 
 	QList<IProtocol*> Core::GetProtocols () const
