@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/gmailnotifier">
-        <file>gmailnotifier.svg</file>
-		<file>gmailicon.svg</file>
-    </qresource>
-</RCC>

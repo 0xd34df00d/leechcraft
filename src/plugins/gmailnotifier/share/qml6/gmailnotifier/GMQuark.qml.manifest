@@ -1,6 +1,0 @@
-{
-    "quarkID": "org.LeechCraft.GMailNotifier",
-    "quarkName": "GMail Notifier",
-    "description": "Shows the number of unread messages in GMail inbox",
-    "icon": "gmail.svg"
-}
