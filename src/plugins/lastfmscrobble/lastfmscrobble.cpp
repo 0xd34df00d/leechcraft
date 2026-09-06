@@ -22,7 +22,6 @@
 #include "albumartfetcher.h"
 #include "authenticator.h"
 #include "pendingrecommendedartists.h"
-#include "recentreleasesfetcher.h"
 #include "pendingartistbio.h"
 #include "topartistsfetcher.h"
 #include "toptracksfetcher.h"
@@ -137,12 +136,6 @@ namespace Lastfmscrobble
 	QFuture<Media::SimilarityQueryResult_t> Plugin::RequestRecommended (int num)
 	{
 		return (new PendingRecommendedArtists (Auth_, Proxy_->GetNetworkAccessManager (), num, this))->GetFuture ();
-	}
-
-	QFuture<Media::IRecentReleases::Result_t> Plugin::RequestRecentReleases (int, bool withRecs)
-	{
-		auto nam = Proxy_->GetNetworkAccessManager ();
-		return (new RecentReleasesFetcher (withRecs, nam, this))->GetFuture ();
 	}
 
 	QFuture<Media::IArtistBioFetcher::Result_t> Plugin::RequestArtistBio (const QString& artist, bool addImages)

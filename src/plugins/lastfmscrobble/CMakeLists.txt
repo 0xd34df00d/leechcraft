@@ -15,7 +15,6 @@ LC_DEFINE_PLUGIN (
 		basesimilarartists.cpp
 		pendingrecommendedartists.cpp
 		util.cpp
-		recentreleasesfetcher.cpp
 		pendingartistbio.cpp
 		topartistsfetcher.cpp
 		toptracksfetcher.cpp

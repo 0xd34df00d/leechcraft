@@ -15,7 +15,6 @@
 #include <interfaces/media/ialbumartprovider.h>
 #include <interfaces/media/isimilarartists.h>
 #include <interfaces/media/irecommendedartists.h>
-#include <interfaces/media/irecentreleases.h>
 #include <interfaces/media/iartistbiofetcher.h>
 #include <interfaces/media/ihypesprovider.h>
 
@@ -34,7 +33,6 @@ namespace Lastfmscrobble
 		, public Media::IAlbumArtProvider
 		, public Media::ISimilarArtists
 		, public Media::IRecommendedArtists
-		, public Media::IRecentReleases
 		, public Media::IArtistBioFetcher
 		, public Media::IHypesProvider
 	{
@@ -45,7 +43,6 @@ namespace Lastfmscrobble
 				Media::IAlbumArtProvider
 				Media::ISimilarArtists
 				Media::IRecommendedArtists
-				Media::IRecentReleases
 				Media::IArtistBioFetcher
 				Media::IHypesProvider)
 
@@ -81,8 +78,6 @@ namespace Lastfmscrobble
 		QFuture<Media::SimilarityQueryResult_t> GetSimilarArtists (const QString&, int);
 
 		QFuture<Media::SimilarityQueryResult_t> RequestRecommended (int);
-
-		QFuture<IRecentReleases::Result_t> RequestRecentReleases (int, bool);
 
 		QFuture<IArtistBioFetcher::Result_t> RequestArtistBio (const QString&, bool);
 
