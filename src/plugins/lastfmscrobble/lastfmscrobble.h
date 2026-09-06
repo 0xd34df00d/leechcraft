@@ -15,13 +15,9 @@
 #include <interfaces/media/ialbumartprovider.h>
 #include <interfaces/media/isimilarartists.h>
 #include <interfaces/media/irecommendedartists.h>
-#include <interfaces/media/iradiostationprovider.h>
 #include <interfaces/media/irecentreleases.h>
 #include <interfaces/media/iartistbiofetcher.h>
 #include <interfaces/media/ihypesprovider.h>
-
-class QStandardItem;
-class QStandardItemModel;
 
 namespace LC
 {
@@ -30,17 +26,17 @@ namespace Lastfmscrobble
 	class Authenticator;
 	class LastFMSubmitter;
 
-	class Plugin : public QObject
-				, public IInfo
-				, public IHaveSettings
-				, public Media::IAudioScrobbler
-				, public Media::IAlbumArtProvider
-				, public Media::ISimilarArtists
-				, public Media::IRecommendedArtists
-				, public Media::IRadioStationProvider
-				, public Media::IRecentReleases
-				, public Media::IArtistBioFetcher
-				, public Media::IHypesProvider
+	class Plugin
+		: public QObject
+		, public IInfo
+		, public IHaveSettings
+		, public Media::IAudioScrobbler
+		, public Media::IAlbumArtProvider
+		, public Media::ISimilarArtists
+		, public Media::IRecommendedArtists
+		, public Media::IRecentReleases
+		, public Media::IArtistBioFetcher
+		, public Media::IHypesProvider
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
@@ -49,7 +45,6 @@ namespace Lastfmscrobble
 				Media::IAlbumArtProvider
 				Media::ISimilarArtists
 				Media::IRecommendedArtists
-				Media::IRadioStationProvider
 				Media::IRecentReleases
 				Media::IArtistBioFetcher
 				Media::IHypesProvider)
@@ -62,9 +57,6 @@ namespace Lastfmscrobble
 		LastFMSubmitter *LFSubmitter_;
 
 		ICoreProxy_ptr Proxy_;
-
-		QStandardItemModel *RadioModel_;
-		QStandardItem *RadioRoot_;
 	public:
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();
@@ -89,10 +81,6 @@ namespace Lastfmscrobble
 		QFuture<Media::SimilarityQueryResult_t> GetSimilarArtists (const QString&, int);
 
 		QFuture<Media::SimilarityQueryResult_t> RequestRecommended (int);
-
-		Media::IRadioStation_ptr GetRadioStation (const QModelIndex&, const QString&);
-		QList<QAbstractItemModel*> GetRadioListItems () const;
-		void RefreshItems (const QList<QModelIndex>&);
 
 		QFuture<IRecentReleases::Result_t> RequestRecentReleases (int, bool);
 

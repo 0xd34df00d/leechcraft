@@ -9,7 +9,6 @@
 
 #include "lastfmscrobble.h"
 #include <QIcon>
-#include <QStandardItemModel>
 #include <QByteArray>
 #include <QFuture>
 #include <interfaces/core/icoreproxy.h>
@@ -22,7 +21,6 @@
 #include "albumartfetcher.h"
 #include "authenticator.h"
 #include "pendingrecommendedartists.h"
-#include "lastfmradiostation.h"
 #include "recentreleasesfetcher.h"
 #include "pendingartistbio.h"
 #include "hypedartistsfetcher.h"
@@ -47,34 +45,6 @@ namespace Lastfmscrobble
 				SIGNAL (authenticated ()),
 				LFSubmitter_,
 				SLOT (handleAuthenticated ()));
-
-		RadioRoot_ = new QStandardItem ("Last.FM");
-		RadioRoot_->setEditable (false);
-		RadioRoot_->setIcon (QIcon (":/resources/images/lastfm.png"));
-		auto addPredefined = [this] (const QString& name, const QString& id, const QIcon& icon) -> QStandardItem*
-		{
-			auto item = new QStandardItem (name);
-			item->setData (Media::RadioType::Predefined, Media::RadioItemRole::ItemType);
-			item->setData (id, Media::RadioItemRole::RadioID);
-			item->setEditable (false);
-			item->setIcon (icon);
-			RadioRoot_->appendRow (item);
-			return item;
-		};
-		addPredefined (tr ("Library"), "library", QIcon (":/resources/images/personal.png"));
-		addPredefined (tr ("Recommendations"), "recommendations", QIcon (":/resources/images/recs.png"));
-		addPredefined (tr ("Loved"), "loved", QIcon (":/resources/images/loved.png"));
-		addPredefined (tr ("Neighbourhood"), "neighbourhood", QIcon (":/resources/images/neighbours.png"));
-
-		auto similarItem = addPredefined (tr ("Similar artists"),
-				QString (), QIcon (":/resources/images/radio.png"));
-		similarItem->setData (Media::RadioType::SimilarArtists, Media::RadioItemRole::ItemType);
-		auto globalItem = addPredefined (tr ("Global tag"),
-				QString (), QIcon (":/resources/images/tag.png"));
-		globalItem->setData (Media::RadioType::GlobalTag, Media::RadioItemRole::ItemType);;
-
-		RadioModel_ = new QStandardItemModel;
-		RadioModel_->appendRow (RadioRoot_);
 	}
 
 	void Plugin::SecondInit ()
@@ -166,36 +136,6 @@ namespace Lastfmscrobble
 	QFuture<Media::SimilarityQueryResult_t> Plugin::RequestRecommended (int num)
 	{
 		return (new PendingRecommendedArtists (Auth_, Proxy_->GetNetworkAccessManager (), num, this))->GetFuture ();
-	}
-
-	Media::IRadioStation_ptr Plugin::GetRadioStation (const QModelIndex& item, const QString& name)
-	{
-		try
-		{
-			auto type = item.data (Media::RadioItemRole::ItemType).toInt ();
-			const auto& param = type == Media::RadioType::Predefined ?
-					item.data (Media::RadioItemRole::RadioID).toString () :
-					name;
-
-			auto nam = Proxy_->GetNetworkAccessManager ();
-			return std::make_shared<LastFmRadioStation> (nam,
-						static_cast<Media::RadioType> (type),
-						param,
-						item.data (Qt::DisplayRole).toString ());
-		}
-		catch (const LastFmRadioStation::UnsupportedType&)
-		{
-			return {};
-		}
-	}
-
-	QList<QAbstractItemModel*> Plugin::GetRadioListItems () const
-	{
-		return { RadioModel_ };
-	}
-
-	void Plugin::RefreshItems (const QList<QModelIndex>&)
-	{
 	}
 
 	QFuture<Media::IRecentReleases::Result_t> Plugin::RequestRecentReleases (int, bool withRecs)

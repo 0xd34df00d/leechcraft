@@ -15,8 +15,6 @@ LC_DEFINE_PLUGIN (
 		basesimilarartists.cpp
 		pendingrecommendedartists.cpp
 		util.cpp
-		lastfmradiostation.cpp
-		lastfmradiotuner.cpp
 		recentreleasesfetcher.cpp
 		pendingartistbio.cpp
 		hypedartistsfetcher.cpp
