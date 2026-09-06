@@ -13,6 +13,7 @@ LC_DEFINE_PLUGIN (
 		stealkilllistfetcher.cpp
 		streamlistfetcherbase.cpp
 		stringlistradiostation.cpp
+	RESOURCES hotstreamsresources.qrc
 	QT_COMPONENTS Concurrent Gui Network Xml
 	INSTALL_SHARE
 	)
