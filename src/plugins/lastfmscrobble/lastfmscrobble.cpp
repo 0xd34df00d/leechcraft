@@ -24,8 +24,8 @@
 #include "pendingrecommendedartists.h"
 #include "recentreleasesfetcher.h"
 #include "pendingartistbio.h"
-#include "hypedartistsfetcher.h"
-#include "hypedtracksfetcher.h"
+#include "topartistsfetcher.h"
+#include "toptracksfetcher.h"
 
 namespace LC
 {
@@ -172,9 +172,9 @@ namespace Lastfmscrobble
 		switch (type)
 		{
 		case HypeType::TopArtists:
-			return (new HypedArtistsFetcher (nam, this))->GetFuture ();
+			return (new TopArtistsFetcher (nam, this))->GetFuture ();
 		case HypeType::TopTracks:
-			return (new HypedTracksFetcher (nam, this))->GetFuture ();
+			return (new TopTracksFetcher (nam, this))->GetFuture ();
 		case HypeType::NewArtists:
 		case HypeType::NewTracks:
 			break;

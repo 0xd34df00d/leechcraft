@@ -6,7 +6,7 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#include "hypedartistsfetcher.h"
+#include "topartistsfetcher.h"
 #include <algorithm>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -24,7 +24,7 @@ namespace LC
 {
 namespace Lastfmscrobble
 {
-	HypedArtistsFetcher::HypedArtistsFetcher (QNetworkAccessManager *nam, QObject *parent)
+	TopArtistsFetcher::TopArtistsFetcher (QNetworkAccessManager *nam, QObject *parent)
 	: QObject (parent)
 	, NAM_ (nam)
 	{
@@ -43,12 +43,12 @@ namespace Lastfmscrobble
 				};
 	}
 
-	QFuture<Media::IHypesProvider::HypeQueryResult_t> HypedArtistsFetcher::GetFuture ()
+	QFuture<Media::IHypesProvider::HypeQueryResult_t> TopArtistsFetcher::GetFuture ()
 	{
 		return Promise_.future ();
 	}
 
-	void HypedArtistsFetcher::DecrementWaiting ()
+	void TopArtistsFetcher::DecrementWaiting ()
 	{
 		if (--InfoCount_)
 			return;
@@ -57,7 +57,7 @@ namespace Lastfmscrobble
 		deleteLater ();
 	}
 
-	void HypedArtistsFetcher::HandleFinished (const QByteArray& data)
+	void TopArtistsFetcher::HandleFinished (const QByteArray& data)
 	{
 		QDomDocument doc;
 		if (!doc.setContent (data))

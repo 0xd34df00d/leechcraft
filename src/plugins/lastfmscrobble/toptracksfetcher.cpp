@@ -6,7 +6,7 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#include "hypedtracksfetcher.h"
+#include "toptracksfetcher.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
@@ -21,7 +21,7 @@ namespace LC
 {
 namespace Lastfmscrobble
 {
-	HypedTracksFetcher::HypedTracksFetcher (QNetworkAccessManager *nam, QObject *parent)
+	TopTracksFetcher::TopTracksFetcher (QNetworkAccessManager *nam, QObject *parent)
 	: QObject (parent)
 	{
 		Promise_.reportStarted ();
@@ -35,12 +35,12 @@ namespace Lastfmscrobble
 				}.Finally ([this] { deleteLater (); });
 	}
 
-	QFuture<Media::IHypesProvider::HypeQueryResult_t> HypedTracksFetcher::GetFuture ()
+	QFuture<Media::IHypesProvider::HypeQueryResult_t> TopTracksFetcher::GetFuture ()
 	{
 		return Promise_.future ();
 	}
 
-	void HypedTracksFetcher::HandleFinished (const QByteArray& data)
+	void TopTracksFetcher::HandleFinished (const QByteArray& data)
 	{
 		QDomDocument doc;
 		if (!doc.setContent (data))

@@ -17,8 +17,8 @@ LC_DEFINE_PLUGIN (
 		util.cpp
 		recentreleasesfetcher.cpp
 		pendingartistbio.cpp
-		hypedartistsfetcher.cpp
-		hypedtracksfetcher.cpp
+		topartistsfetcher.cpp
+		toptracksfetcher.cpp
 		imagesfetcher.cpp
 	RESOURCES lastfmscrobbleresources.qrc
 	SETTINGS lastfmscrobblesettings.xml

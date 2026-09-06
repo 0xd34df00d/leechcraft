@@ -19,14 +19,20 @@ namespace LC
 {
 namespace Lastfmscrobble
 {
-	class HypedTracksFetcher : public QObject
+	class TopArtistsFetcher : public QObject
 	{
+		QNetworkAccessManager *NAM_;
+		QList<Media::HypedArtistInfo> Infos_;
+
+		int InfoCount_ = 0;
+
 		QFutureInterface<Media::IHypesProvider::HypeQueryResult_t> Promise_;
 	public:
-		HypedTracksFetcher (QNetworkAccessManager*, QObject* = 0);
+		TopArtistsFetcher (QNetworkAccessManager*, QObject* = 0);
 
 		QFuture<Media::IHypesProvider::HypeQueryResult_t> GetFuture ();
 	private:
+		void DecrementWaiting ();
 		void HandleFinished (const QByteArray&);
 	};
 }
