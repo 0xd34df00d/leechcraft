@@ -68,6 +68,7 @@
 #include "proxyobject.h"
 #include "serverhistorywidget.h"
 #include "avatarsmanager.h"
+#include "notificationsmanager.h"
 
 using SingleEntryActor_f = std::function<void (LC::Azoth::ICLEntry*)> ;
 using MultiEntryActor_f = std::function<void (QList<LC::Azoth::ICLEntry*>)> ;
@@ -1078,13 +1079,23 @@ namespace Azoth
 		if (entry->GetEntryType () != ICLEntry::EntryType::MUC)
 		{
 			notifyMenu->addAction (tr ("changes state"),
-					this, SLOT (handleActionNotifyChangesState ()));
+					this,
+					[this, entry] { NotificationsManager_.CreateChangesStateRule (*entry); });
 			notifyMenu->addAction (tr ("becomes online"),
-					this, SLOT (handleActionNotifyBecomesOnline ()));
+					this,
+					[this, entry] { NotificationsManager_.CreateBecomesOnlineRule (*entry); });
 		}
 		else
-			notifyMenu->addAction (tr ("participant enters the room..."),
-					this, SLOT (handleActionNotifyParticipantEnter ()));
+			notifyMenu->addAction (tr ("participant enters..."),
+					this,
+					[this, entry]
+					{
+						const auto& nick = QInputDialog::getText (nullptr,
+								"LeechCraft",
+								tr ("Enter the nick of the participant to alert for:"));
+						if (!nick.isEmpty ())
+							NotificationsManager_.CreateParticipantEnterRule (*entry, nick);
+					});
 
 		const auto accObj = entry->GetParentAccount ()->GetQObject ();
 		if (qobject_cast<IHaveServerHistory*> (accObj))
@@ -1427,112 +1438,6 @@ namespace Azoth
 							<< "no function set for"
 							<< action->text ();
 				});
-	}
-
-	void ActionsManager::handleActionNotifyChangesState ()
-	{
-		QAction *action = qobject_cast<QAction*> (sender ());
-		if (!action)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "is not a QAction";
-			return;
-		}
-
-		const auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ();
-		const auto& name = entry->GetEntryName ();
-		const auto& address = entry->GetHumanReadableAddress ();
-
-		const auto& e = Util::MakeANRule (tr ("Notify when %1 (%2) changes state").arg (name, address),
-				"org.LeechCraft.Azoth",
-				AN::CatIM,
-				{ AN::TypeIMStatusChange },
-				AN::NotifyPersistent | AN::NotifyTransient | AN::NotifySingleShot,
-				false,
-				{
-					{
-						"org.LC.Plugins.Azoth.SourceID",
-						AN::StringValueMatcher { entry->GetEntryID () }
-					}
-				});
-		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
-	}
-
-	void ActionsManager::handleActionNotifyBecomesOnline ()
-	{
-		QAction *action = qobject_cast<QAction*> (sender ());
-		if (!action)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "is not a QAction";
-			return;
-		}
-
-		const auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ();
-		const auto& name = entry->GetEntryName ();
-		const auto& address = entry->GetHumanReadableAddress ();
-
-		const auto& e = Util::MakeANRule (tr ("Notify when %1 (%2) becomes online").arg (name, address),
-				"org.LeechCraft.Azoth",
-				AN::CatIM,
-				{ AN::TypeIMStatusChange },
-				AN::NotifyPersistent | AN::NotifyTransient | AN::NotifySingleShot,
-				false,
-				{
-					{
-						"org.LC.Plugins.Azoth.SourceID",
-						AN::StringValueMatcher { entry->GetEntryID () }
-					},
-					{
-						"org.LC.Plugins.Azoth.NewStatus",
-						AN::StringValueMatcher { StateToID (SOnline) }
-					}
-				});
-		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
-	}
-
-	void ActionsManager::handleActionNotifyParticipantEnter ()
-	{
-		QAction *action = qobject_cast<QAction*> (sender ());
-		if (!action)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "is not a QAction";
-			return;
-		}
-
-		const auto& nickname = QInputDialog::getText (nullptr,
-				"LeechCraft",
-				tr ("Enter the nick of the participant to alert for:"));
-		if (nickname.isEmpty ())
-			return;
-
-		const auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ();
-		const auto& name = entry->GetEntryName ();
-		const auto& address = entry->GetHumanReadableAddress ();
-		const auto& ruleName = name == address ?
-				tr ("Notify when %1 joins %2").arg (nickname, name) :
-				tr ("Notify when %1 joins %2 (%3)").arg (nickname, name, address);
-		const auto& e = Util::MakeANRule (ruleName,
-				"org.LeechCraft.Azoth",
-				AN::CatIM,
-				{ AN::TypeIMStatusChange },
-				AN::NotifyPersistent | AN::NotifyTransient | AN::NotifySingleShot,
-				false,
-				{
-					{
-						"org.LC.Plugins.Azoth.SourceName",
-						AN::StringValueMatcher { nickname }
-					},
-					{
-						"org.LC.Plugins.Azoth.ParentSourceID",
-						AN::StringValueMatcher { entry->GetEntryID () }
-					}
-				});
-		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
 }
 }

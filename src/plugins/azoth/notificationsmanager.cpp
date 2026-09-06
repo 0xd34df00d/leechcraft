@@ -400,6 +400,76 @@ namespace Azoth
 			entry->GetCLEntryEmitter ().disconnect (this);
 	}
 
+	void NotificationsManager::CreateChangesStateRule (const ICLEntry& entry)
+	{
+		const auto& name = entry.GetEntryName ();
+		const auto& address = entry.GetHumanReadableAddress ();
+
+		const auto& e = Util::MakeANRule (tr ("Notify when %1 (%2) changes state").arg (name, address),
+				"org.LeechCraft.Azoth",
+				AN::CatIM,
+				{ AN::TypeIMStatusChange },
+				AN::NotifyPersistent | AN::NotifyTransient | AN::NotifySingleShot,
+				false,
+				{
+					{
+						"org.LC.Plugins.Azoth.SourceID",
+						AN::StringValueMatcher { entry.GetEntryID () }
+					}
+				});
+		EntityMgr_.HandleEntity (e);
+	}
+
+	void NotificationsManager::CreateBecomesOnlineRule (const ICLEntry& entry)
+	{
+		const auto& name = entry.GetEntryName ();
+		const auto& address = entry.GetHumanReadableAddress ();
+
+		const auto& e = Util::MakeANRule (tr ("Notify when %1 (%2) becomes online").arg (name, address),
+				"org.LeechCraft.Azoth",
+				AN::CatIM,
+				{ AN::TypeIMStatusChange },
+				AN::NotifyPersistent | AN::NotifyTransient | AN::NotifySingleShot,
+				false,
+				{
+					{
+						"org.LC.Plugins.Azoth.SourceID",
+						AN::StringValueMatcher { entry.GetEntryID () }
+					},
+					{
+						"org.LC.Plugins.Azoth.NewStatus",
+						AN::StringValueMatcher { StateToID (SOnline) }
+					}
+				});
+		EntityMgr_.HandleEntity (e);
+	}
+
+	void NotificationsManager::CreateParticipantEnterRule (const ICLEntry& mucEntry, const QString& nick)
+	{
+		const auto& name = mucEntry.GetEntryName ();
+		const auto& address = mucEntry.GetHumanReadableAddress ();
+		const auto& ruleName = name == address ?
+				tr ("Notify when %1 joins %2").arg (nick, name) :
+				tr ("Notify when %1 joins %2 (%3)").arg (nick, name, address);
+		const auto& e = Util::MakeANRule (ruleName,
+				"org.LeechCraft.Azoth",
+				AN::CatIM,
+				{ AN::TypeIMStatusChange },
+				AN::NotifyPersistent | AN::NotifyTransient | AN::NotifySingleShot,
+				false,
+				{
+					{
+						"org.LC.Plugins.Azoth.SourceName",
+						AN::StringValueMatcher { nick }
+					},
+					{
+						"org.LC.Plugins.Azoth.ParentSourceID",
+						AN::StringValueMatcher { mucEntry.GetEntryID () }
+					}
+				});
+		EntityMgr_.HandleEntity (e);
+	}
+
 	void NotificationsManager::HandleMessage (IMessage *msg)
 	{
 		const bool showMsg = XmlSettingsManager::Instance ()

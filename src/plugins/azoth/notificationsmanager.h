@@ -52,6 +52,10 @@ namespace Azoth
 		void AddCLEntry (QObject*);
 		void RemoveCLEntry (QObject*);
 
+		void CreateChangesStateRule (const ICLEntry&);
+		void CreateBecomesOnlineRule (const ICLEntry&);
+		void CreateParticipantEnterRule (const ICLEntry& mucEntry, const QString& nick);
+
 		void HandleMessage (IMessage*);
 	private:
 		void HandleStatusChanged (ICLEntry*, const EntryStatus&, const QString&);

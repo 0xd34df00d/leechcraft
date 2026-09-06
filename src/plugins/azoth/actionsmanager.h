@@ -63,10 +63,6 @@ namespace Azoth
 		void UpdateActionsForEntry (ICLEntry*);
 	private slots:
 		void handleActoredActionTriggered ();
-
-		void handleActionNotifyChangesState ();
-		void handleActionNotifyBecomesOnline ();
-		void handleActionNotifyParticipantEnter ();
 	signals:
 		void hookEntryActionAreasRequested (LC::IHookProxy_ptr proxy,
 				QObject *action,
