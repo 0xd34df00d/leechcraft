@@ -34,7 +34,6 @@ namespace HotStreams
 			QString Description_;
 			QStringList Genres_;
 			QUrl URL_;
-			QUrl IconURL_;
 			QString DJ_;
 			QString PlaylistFormat_;
 		};

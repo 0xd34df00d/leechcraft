@@ -64,7 +64,6 @@ namespace HotStreams
 				getText ("description"),
 				getText ("genre").split ('|', Qt::SkipEmptyParts),
 				url,
-				QUrl (),
 				getText ("dj") + " (" + getText ("djmail") + ")",
 				"pls"
 			};

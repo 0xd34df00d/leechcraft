@@ -36,7 +36,6 @@ QList<StreamListFetcherBase::StreamInfo> StealKillListFetcher::Parse (const QByt
 		QString::fromUtf8 ("Классика рока и отличное настроение"),
 		genres,
 		QUrl ("http://listen.42fm.ru:8000/stealkill.m3u"),
-		QUrl (),
 		QString (),
 		"m3u"
 	};
@@ -47,7 +46,6 @@ QList<StreamListFetcherBase::StreamInfo> StealKillListFetcher::Parse (const QByt
 		QString::fromUtf8 ("Классика рока и отличное настроение"),
 		genres,
 		QUrl ("http://listen.42fm.ru:8000/stealkill-8.0.ogg.m3u"),
-		QUrl (),
 		QString (),
 		"m3u"
 	};
