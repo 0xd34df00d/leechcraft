@@ -21,17 +21,12 @@ namespace LC
 {
 namespace Lastfmscrobble
 {
-	HypedTracksFetcher::HypedTracksFetcher (QNetworkAccessManager *nam, Media::IHypesProvider::HypeType type, QObject *parent)
+	HypedTracksFetcher::HypedTracksFetcher (QNetworkAccessManager *nam, QObject *parent)
 	: QObject (parent)
 	{
 		Promise_.reportStarted ();
 
-		QMap<QString, QString> params;
-		params ["limit"] = "50";
-		const auto& method = type == Media::IHypesProvider::HypeType::NewTracks ?
-				"chart.getHypedTracks" :
-				"chart.getTopTracks";
-		auto reply = Request (method, nam, params);
+		auto reply = Request ("chart.getTopTracks", nam, ParamsList_t { { "limit", "50" } });
 		Util::HandleReplySeq (reply, this) >>
 				Util::Visitor
 				{

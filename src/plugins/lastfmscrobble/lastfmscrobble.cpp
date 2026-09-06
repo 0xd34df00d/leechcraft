@@ -15,6 +15,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/sll/unreachable.h>
 #include <util/threads/coro/task.h>
+#include <util/threads/futures.h>
 #include "lastfmsubmitter.h"
 #include "xmlsettingsmanager.h"
 #include "pendingsimilarartists.h"
@@ -155,6 +156,7 @@ namespace Lastfmscrobble
 		{
 		case HypeType::NewArtists:
 		case HypeType::NewTracks:
+			return false;
 		case HypeType::TopArtists:
 		case HypeType::TopTracks:
 			return true;
@@ -169,15 +171,16 @@ namespace Lastfmscrobble
 
 		switch (type)
 		{
-		case HypeType::NewArtists:
 		case HypeType::TopArtists:
-			return (new HypedArtistsFetcher (nam, type, this))->GetFuture ();
-		case HypeType::NewTracks:
+			return (new HypedArtistsFetcher (nam, this))->GetFuture ();
 		case HypeType::TopTracks:
-			return (new HypedTracksFetcher (nam, type, this))->GetFuture ();
+			return (new HypedTracksFetcher (nam, this))->GetFuture ();
+		case HypeType::NewArtists:
+		case HypeType::NewTracks:
+			break;
 		}
 
-		Util::Unreachable ();
+		return Util::MakeReadyFuture<HypeQueryResult_t> (Util::Left { tr ("Unsupported hype type") });
 	}
 }
 }

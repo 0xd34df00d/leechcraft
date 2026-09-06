@@ -24,18 +24,13 @@ namespace LC
 {
 namespace Lastfmscrobble
 {
-	HypedArtistsFetcher::HypedArtistsFetcher (QNetworkAccessManager *nam, Media::IHypesProvider::HypeType type, QObject *parent)
+	HypedArtistsFetcher::HypedArtistsFetcher (QNetworkAccessManager *nam, QObject *parent)
 	: QObject (parent)
 	, NAM_ (nam)
 	{
 		Promise_.reportStarted ();
 
-		QMap<QString, QString> params;
-		params ["limit"] = "20";
-		const auto& method = type == Media::IHypesProvider::HypeType::NewArtists ?
-				"chart.getHypedArtists" :
-				"chart.getTopArtists";
-		auto reply = Request (method, nam, params);
+		auto reply = Request ("chart.getTopArtists", nam, ParamsList_t { { "limit", "20" } });
 		Util::HandleReplySeq (reply, this) >>
 				Util::Visitor
 				{

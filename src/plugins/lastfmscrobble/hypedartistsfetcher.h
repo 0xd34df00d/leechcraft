@@ -28,7 +28,7 @@ namespace Lastfmscrobble
 
 		QFutureInterface<Media::IHypesProvider::HypeQueryResult_t> Promise_;
 	public:
-		HypedArtistsFetcher (QNetworkAccessManager*, Media::IHypesProvider::HypeType, QObject* = 0);
+		HypedArtistsFetcher (QNetworkAccessManager*, QObject* = 0);
 
 		QFuture<Media::IHypesProvider::HypeQueryResult_t> GetFuture ();
 	private:
