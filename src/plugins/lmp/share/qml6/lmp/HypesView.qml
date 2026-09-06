@@ -17,37 +17,11 @@ Rectangle {
         }
     }
 
-    TextButton {
-        id: modeButton
-        anchors.top: parent.top
-        anchors.horizontalCenter: parent.horizontalCenter
-        onReleased: modeState.state = (modeState.state == "topsMode" ? "newsMode" : "topsMode")
-
-        Item {
-            id: modeState
-            states: [
-                State {
-                    name: "topsMode"
-                    PropertyChanges { target: modeButton; text: newsText }
-                    PropertyChanges { target: artistsView; model: topArtistsModel }
-                    PropertyChanges { target: hypedTracksView; model: topTracksModel }
-                },
-                State {
-                    name: "newsMode"
-                    PropertyChanges { target: modeButton; text: topsText }
-                    PropertyChanges { target: artistsView; model: newArtistsModel }
-                    PropertyChanges { target: hypedTracksView; model: newTracksModel }
-                }
-            ]
-            state: "topsMode"
-        }
-    }
-
     Rectangle {
         id: artistsRect
 
         anchors.left: parent.left
-        anchors.top: modeButton.bottom
+        anchors.top: parent.top
         anchors.bottom: parent.bottom
         width: parent.width / 2
 
@@ -71,7 +45,7 @@ Rectangle {
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.top: parent.top
-            height: Math.max(artistNameLabel.height, modeButton.height)
+            height: artistNameLabel.height
 
             Text {
                 id: artistNameLabel
@@ -124,7 +98,7 @@ Rectangle {
 
     Rectangle {
         anchors.left: artistsRect.right
-        anchors.top: modeButton.bottom
+        anchors.top: parent.top
         anchors.bottom: parent.bottom
         anchors.right: parent.right
 
@@ -148,7 +122,7 @@ Rectangle {
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.top: parent.top
-            height: Math.max(artistNameLabel.height, modeButton.height)
+            height: artistNameLabel.height
 
             Text {
                 id: tracksNameLabel

@@ -62,9 +62,7 @@ namespace LC::LMP
 	HypesWidget::HypesWidget (QWidget *parent)
 	: QWidget { parent }
 	, HypesView_ { new QQuickWidget }
-	, NewArtistsModel_ { MakeSimilarModel (this) }
 	, TopArtistsModel_ { MakeSimilarModel (this) }
-	, NewTracksModel_ { MakeTracksModel (this) }
 	, TopTracksModel_ { MakeTracksModel (this) }
 	{
 		Ui_.setupUi (this);
@@ -80,14 +78,10 @@ namespace LC::LMP
 
 		auto objVar = [] (QObject *obj) { return QVariant::fromValue (obj); };
 		HypesView_->rootContext ()->setContextProperties ({
-					{ QStringLiteral ("newArtistsModel"), objVar (NewArtistsModel_) },
-					{ QStringLiteral ("newTracksModel"), objVar (NewTracksModel_) },
 					{ QStringLiteral ("topArtistsModel"), objVar (TopArtistsModel_) },
 					{ QStringLiteral ("topTracksModel"), objVar (TopTracksModel_) },
-					{ QStringLiteral ("artistsLabelText"), tr ("Hyped artists") },
-					{ QStringLiteral ("tracksLabelText"), tr ("Hyped tracks") },
-					{ QStringLiteral ("newsText"), tr ("Show novelties") },
-					{ QStringLiteral ("topsText"), tr ("Show tops") },
+					{ QStringLiteral ("artistsLabelText"), tr ("Top artists") },
+					{ QStringLiteral ("tracksLabelText"), tr ("Top tracks") },
 					{ QStringLiteral ("colorProxy"), objVar (new Util::ColorThemeProxy (GetProxyHolder ()->GetColorThemeManager (), this)) },
 				});
 
@@ -142,16 +136,14 @@ namespace LC::LMP
 					Util::Visitor
 					{
 						[] (const QString&) { /* TODO */ },
-						[=] (const auto& res) { std::invoke (Handler, ctx, Media::GetHypedInfo<Type> (res), Type); }
+						[=] (const auto& res) { std::invoke (Handler, ctx, Media::GetHypedInfo<Type> (res)); }
 					};
 		}
 	}
 
 	void HypesWidget::Request ()
 	{
-		NewArtistsModel_->SetItems ({});
 		TopArtistsModel_->SetItems ({});
-		NewTracksModel_->SetItems ({});
 		TopTracksModel_->SetItems ({});
 
 		const auto idx = Ui_.InfoProvider_->currentIndex ();
@@ -168,9 +160,7 @@ namespace LC::LMP
 		auto prov = qobject_cast<Media::IHypesProvider*> (provObj);
 
 		using enum Media::IHypesProvider::HypeType;
-		TryHype<NewArtists, &HypesWidget::HandleArtists> (this, prov);
 		TryHype<TopArtists, &HypesWidget::HandleArtists> (this, prov);
-		TryHype<NewTracks, &HypesWidget::HandleTracks> (this, prov);
 		TryHype<TopTracks, &HypesWidget::HandleTracks> (this, prov);
 
 		XmlSettingsManager::Instance ().setProperty ("LastUsedHypesProvider", prov->GetServiceName ());
@@ -193,12 +183,9 @@ namespace LC::LMP
 		}
 	}
 
-	void HypesWidget::HandleArtists (const QList<Media::HypedArtistInfo>& infos, Media::IHypesProvider::HypeType type)
+	void HypesWidget::HandleArtists (const QList<Media::HypedArtistInfo>& infos)
 	{
-		auto model = type == Media::IHypesProvider::HypeType::NewArtists ?
-				NewArtistsModel_ :
-				TopArtistsModel_;
-		model->SetItems (Util::MapAs<QVector> (infos,
+		TopArtistsModel_->SetItems (Util::MapAs<QVector> (infos,
 				[] (const Media::HypedArtistInfo& info)
 				{
 					SimilarArtistInfo prepared { info.Info_, *Core::Instance ().GetLocalCollection () };
@@ -210,12 +197,9 @@ namespace LC::LMP
 				}));
 	}
 
-	void HypesWidget::HandleTracks (const QList<Media::HypedTrackInfo>& infos, Media::IHypesProvider::HypeType type)
+	void HypesWidget::HandleTracks (const QList<Media::HypedTrackInfo>& infos)
 	{
-		auto model = type == Media::IHypesProvider::HypeType::NewTracks ?
-				NewTracksModel_ :
-				TopTracksModel_;
-		model->SetItems (Util::MapAs<QVector> (infos,
+		TopTracksModel_->SetItems (Util::MapAs<QVector> (infos,
 				[] (const Media::HypedTrackInfo& info) { return HypedTrack { info, GetStats (info).join ("; ") }; }));
 	}
 }

@@ -36,9 +36,7 @@ namespace LC::LMP
 
 		QQuickWidget * const HypesView_;
 
-		SimilarModel * const NewArtistsModel_;
 		SimilarModel * const TopArtistsModel_;
-		TracksModel * const NewTracksModel_;
 		TracksModel * const TopTracksModel_;
 
 		QList<QObject*> Providers_;
@@ -47,8 +45,8 @@ namespace LC::LMP
 
 		void InitializeProviders ();
 	private:
-		void HandleArtists (const QList<Media::HypedArtistInfo>&, Media::IHypesProvider::HypeType);
-		void HandleTracks (const QList<Media::HypedTrackInfo>&, Media::IHypesProvider::HypeType);
+		void HandleArtists (const QList<Media::HypedArtistInfo>&);
+		void HandleTracks (const QList<Media::HypedTrackInfo>&);
 		void Request ();
 	};
 }
