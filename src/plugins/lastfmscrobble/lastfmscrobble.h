@@ -16,7 +16,7 @@
 #include <interfaces/media/isimilarartists.h>
 #include <interfaces/media/irecommendedartists.h>
 #include <interfaces/media/iartistbiofetcher.h>
-#include <interfaces/media/ihypesprovider.h>
+#include <interfaces/media/itopprovider.h>
 
 namespace LC
 {
@@ -34,7 +34,7 @@ namespace Lastfmscrobble
 		, public Media::ISimilarArtists
 		, public Media::IRecommendedArtists
 		, public Media::IArtistBioFetcher
-		, public Media::IHypesProvider
+		, public Media::ITopProvider
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
@@ -44,7 +44,7 @@ namespace Lastfmscrobble
 				Media::ISimilarArtists
 				Media::IRecommendedArtists
 				Media::IArtistBioFetcher
-				Media::IHypesProvider)
+				Media::ITopProvider)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.LastFMScrobble")
 
@@ -81,8 +81,8 @@ namespace Lastfmscrobble
 
 		QFuture<IArtistBioFetcher::Result_t> RequestArtistBio (const QString&, bool);
 
-		bool SupportsHype (HypeType);
-		QFuture<HypeQueryResult_t> RequestHype (HypeType);
+		QFuture<TopArtistsResult_t> RequestTopArtists ();
+		QFuture<TopTracksResult_t> RequestTopTracks ();
 	};
 }
 }

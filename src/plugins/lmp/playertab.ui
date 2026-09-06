@@ -159,16 +159,16 @@
                </item>
               </layout>
              </widget>
-             <widget class="QWidget" name="HypesTab_">
+             <widget class="QWidget" name="ChartsTab_">
               <attribute name="title">
-               <string>Hypes</string>
+               <string>Charts</string>
               </attribute>
               <layout class="QVBoxLayout" name="verticalLayout_11">
                <property name="margin" stdset="0">
                 <number>1</number>
                </property>
                <item>
-                <widget class="LC::LMP::HypesWidget" name="HypesWidget_" native="true"/>
+                <widget class="LC::LMP::ChartsWidget" name="ChartsWidget_" native="true"/>
                </item>
               </layout>
              </widget>
@@ -278,9 +278,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>LC::LMP::HypesWidget</class>
+   <class>LC::LMP::ChartsWidget</class>
    <extends>QWidget</extends>
-   <header>hypeswidget.h</header>
+   <header>chartswidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

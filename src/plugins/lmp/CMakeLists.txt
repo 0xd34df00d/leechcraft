@@ -66,7 +66,7 @@ LC_DEFINE_PLUGIN (
 		sortingcriteria.cpp
 		sortingcriteriadialog.cpp
 		similarmodel.cpp
-		hypeswidget.cpp
+		chartswidget.cpp
 		bioviewmanager.cpp
 		similarviewmanager.cpp
 		artistbrowsertab.cpp

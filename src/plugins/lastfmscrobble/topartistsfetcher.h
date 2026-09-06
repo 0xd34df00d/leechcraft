@@ -11,7 +11,7 @@
 #include <QObject>
 #include <QFutureInterface>
 #include <util/sll/either.h>
-#include <interfaces/media/ihypesprovider.h>
+#include <interfaces/media/itopprovider.h>
 
 class QNetworkAccessManager;
 
@@ -22,15 +22,15 @@ namespace Lastfmscrobble
 	class TopArtistsFetcher : public QObject
 	{
 		QNetworkAccessManager *NAM_;
-		QList<Media::HypedArtistInfo> Infos_;
+		QList<Media::TopArtistInfo> Infos_;
 
 		int InfoCount_ = 0;
 
-		QFutureInterface<Media::IHypesProvider::HypeQueryResult_t> Promise_;
+		QFutureInterface<Media::ITopProvider::TopArtistsResult_t> Promise_;
 	public:
 		TopArtistsFetcher (QNetworkAccessManager*, QObject* = 0);
 
-		QFuture<Media::IHypesProvider::HypeQueryResult_t> GetFuture ();
+		QFuture<Media::ITopProvider::TopArtistsResult_t> GetFuture ();
 	private:
 		void DecrementWaiting ();
 		void HandleFinished (const QByteArray&);

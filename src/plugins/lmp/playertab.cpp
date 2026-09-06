@@ -183,7 +183,7 @@ namespace LMP
 		Ui_.DevicesBrowser_->InitializeUploaders ();
 		Ui_.EventsWidget_->InitializeProviders ();
 		Ui_.ReleasesWidget_->InitializeProviders ();
-		Ui_.HypesWidget_->InitializeProviders ();
+		Ui_.ChartsWidget_->InitializeProviders ();
 		Ui_.RecommendationsWidget_->InitializeProviders ();
 	}
 

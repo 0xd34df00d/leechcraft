@@ -10,11 +10,10 @@
 
 #include <QCoreApplication>
 #include <QWidget>
-#include <interfaces/media/ihypesprovider.h>
+#include <interfaces/media/itopprovider.h>
 #include "similarmodel.h"
-#include "ui_hypeswidget.h"
+#include "ui_chartswidget.h"
 
-class QStandardItemModel;
 class QQuickWidget;
 
 namespace LC::Util
@@ -25,28 +24,28 @@ namespace LC::Util
 
 namespace LC::LMP
 {
-	class HypesWidget : public QWidget
+	class ChartsWidget : public QWidget
 	{
-		Q_DECLARE_TR_FUNCTIONS (LC::LMP::HypesWidget)
+		Q_DECLARE_TR_FUNCTIONS (LC::LMP::ChartsWidget)
 	public:
-		struct HypedTrack;
-		using TracksModel = Util::NamedItemsModel<HypedTrack>;
+		struct TopTrack;
+		using TracksModel = Util::NamedItemsModel<TopTrack>;
 	private:
-		Ui::HypesWidget Ui_;
+		Ui::ChartsWidget Ui_;
 
-		QQuickWidget * const HypesView_;
+		QQuickWidget * const ChartsView_;
 
 		SimilarModel * const TopArtistsModel_;
 		TracksModel * const TopTracksModel_;
 
 		QList<QObject*> Providers_;
 	public:
-		explicit HypesWidget (QWidget* = nullptr);
+		explicit ChartsWidget (QWidget* = nullptr);
 
 		void InitializeProviders ();
 	private:
-		void HandleArtists (const QList<Media::HypedArtistInfo>&);
-		void HandleTracks (const QList<Media::HypedTrackInfo>&);
+		void HandleArtists (const QList<Media::TopArtistInfo>&);
+		void HandleTracks (const QList<Media::TopTrackInfo>&);
 		void Request ();
 	};
 }

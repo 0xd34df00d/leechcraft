@@ -43,7 +43,7 @@ namespace Lastfmscrobble
 				};
 	}
 
-	QFuture<Media::IHypesProvider::HypeQueryResult_t> TopArtistsFetcher::GetFuture ()
+	QFuture<Media::ITopProvider::TopArtistsResult_t> TopArtistsFetcher::GetFuture ()
 	{
 		return Promise_.future ();
 	}
@@ -79,7 +79,7 @@ namespace Lastfmscrobble
 
 			const auto& name = getText ("name");
 
-			Infos_ << Media::HypedArtistInfo
+			Infos_ << Media::TopArtistInfo
 			{
 				Media::ArtistInfo
 				{
@@ -91,7 +91,6 @@ namespace Lastfmscrobble
 					getText ("url"),
 					Media::TagInfos_t ()
 				},
-				getText ("percentagechange").toInt (),
 				getText ("playcount").toInt (),
 				getText ("listeners").toInt ()
 			};

@@ -35,7 +35,7 @@ namespace Lastfmscrobble
 				}.Finally ([this] { deleteLater (); });
 	}
 
-	QFuture<Media::IHypesProvider::HypeQueryResult_t> TopTracksFetcher::GetFuture ()
+	QFuture<Media::ITopProvider::TopTracksResult_t> TopTracksFetcher::GetFuture ()
 	{
 		return Promise_.future ();
 	}
@@ -52,7 +52,7 @@ namespace Lastfmscrobble
 			return;
 		}
 
-		QList<Media::HypedTrackInfo> tracks;
+		QList<Media::TopTrackInfo> tracks;
 
 		auto trackElem = doc
 				.documentElement ()
@@ -67,11 +67,10 @@ namespace Lastfmscrobble
 
 			const auto& artistElem = trackElem.firstChildElement ("artist");
 
-			tracks << Media::HypedTrackInfo
+			tracks << Media::TopTrackInfo
 			{
 				getText ("name"),
 				getText ("url"),
-				getText ("percentagechange").toInt (),
 				getText ("playcount").toInt (),
 				getText ("listeners").toInt (),
 				getText ("duration").toInt (),

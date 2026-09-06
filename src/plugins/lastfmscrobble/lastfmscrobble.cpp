@@ -15,7 +15,6 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/sll/unreachable.h>
 #include <util/threads/coro/task.h>
-#include <util/threads/futures.h>
 #include "lastfmsubmitter.h"
 #include "xmlsettingsmanager.h"
 #include "pendingsimilarartists.h"
@@ -143,37 +142,14 @@ namespace Lastfmscrobble
 		return (new PendingArtistBio (artist, Proxy_->GetNetworkAccessManager (), addImages, this))->GetFuture ();
 	}
 
-	bool Plugin::SupportsHype (HypeType type)
+	QFuture<Plugin::TopArtistsResult_t> Plugin::RequestTopArtists ()
 	{
-		switch (type)
-		{
-		case HypeType::NewArtists:
-		case HypeType::NewTracks:
-			return false;
-		case HypeType::TopArtists:
-		case HypeType::TopTracks:
-			return true;
-		}
-
-		Util::Unreachable ();
+		return (new TopArtistsFetcher (Proxy_->GetNetworkAccessManager (), this))->GetFuture ();
 	}
 
-	QFuture<Plugin::HypeQueryResult_t> Plugin::RequestHype (HypeType type)
+	QFuture<Plugin::TopTracksResult_t> Plugin::RequestTopTracks ()
 	{
-		auto nam = Proxy_->GetNetworkAccessManager ();
-
-		switch (type)
-		{
-		case HypeType::TopArtists:
-			return (new TopArtistsFetcher (nam, this))->GetFuture ();
-		case HypeType::TopTracks:
-			return (new TopTracksFetcher (nam, this))->GetFuture ();
-		case HypeType::NewArtists:
-		case HypeType::NewTracks:
-			break;
-		}
-
-		return Util::MakeReadyFuture<HypeQueryResult_t> (Util::Left { tr ("Unsupported hype type") });
+		return (new TopTracksFetcher (Proxy_->GetNetworkAccessManager (), this))->GetFuture ();
 	}
 }
 }

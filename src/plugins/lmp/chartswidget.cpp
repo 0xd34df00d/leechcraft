@@ -6,7 +6,7 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#include "hypeswidget.h"
+#include "chartswidget.h"
 #include <QQuickWidget>
 #include <QQmlContext>
 #include <QQmlEngine>
@@ -22,7 +22,7 @@
 #include <util/models/rolenamesmixin.h>
 #include <util/models/itemsmodel.h>
 #include <util/threads/futures.h>
-#include <interfaces/media/ihypesprovider.h>
+#include <interfaces/media/itopprovider.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -35,7 +35,7 @@
 
 namespace LC::LMP
 {
-	struct HypesWidget::HypedTrack : Media::HypedTrackInfo
+	struct ChartsWidget::TopTrack : Media::TopTrackInfo
 	{
 		QString Stats_;
 	};
@@ -45,39 +45,39 @@ namespace LC::LMP
 		auto MakeTracksModel (QObject *parent)
 		{
 			using Util::NamedMemberField_v;
-			return new HypesWidget::TracksModel
+			return new ChartsWidget::TracksModel
 			{
 				parent,
-				NamedMemberField_v<"trackName", &HypesWidget::HypedTrack::TrackName_>,
-				NamedMemberField_v<"trackURL", &HypesWidget::HypedTrack::TrackPage_>,
-				NamedMemberField_v<"artistName", &HypesWidget::HypedTrack::ArtistName_>,
-				NamedMemberField_v<"artistURL", &HypesWidget::HypedTrack::ArtistPage_>,
-				NamedMemberField_v<"thumbImageURL", &HypesWidget::HypedTrack::Image_>,
-				NamedMemberField_v<"fullURL", &HypesWidget::HypedTrack::LargeImage_>,
-				NamedMemberField_v<"change", &HypesWidget::HypedTrack::Stats_>,
+				NamedMemberField_v<"trackName", &ChartsWidget::TopTrack::TrackName_>,
+				NamedMemberField_v<"trackURL", &ChartsWidget::TopTrack::TrackPage_>,
+				NamedMemberField_v<"artistName", &ChartsWidget::TopTrack::ArtistName_>,
+				NamedMemberField_v<"artistURL", &ChartsWidget::TopTrack::ArtistPage_>,
+				NamedMemberField_v<"thumbImageURL", &ChartsWidget::TopTrack::Image_>,
+				NamedMemberField_v<"fullURL", &ChartsWidget::TopTrack::LargeImage_>,
+				NamedMemberField_v<"stats", &ChartsWidget::TopTrack::Stats_>,
 			};
 		}
 	}
 
-	HypesWidget::HypesWidget (QWidget *parent)
+	ChartsWidget::ChartsWidget (QWidget *parent)
 	: QWidget { parent }
-	, HypesView_ { new QQuickWidget }
+	, ChartsView_ { new QQuickWidget }
 	, TopArtistsModel_ { MakeSimilarModel (this) }
 	, TopTracksModel_ { MakeTracksModel (this) }
 	{
 		Ui_.setupUi (this);
-		layout ()->addWidget (HypesView_);
+		layout ()->addWidget (ChartsView_);
 
-		HypesView_->setResizeMode (QQuickWidget::SizeRootObjectToView);
+		ChartsView_->setResizeMode (QQuickWidget::SizeRootObjectToView);
 
-		HypesView_->engine ()->addImageProvider (Lits::ThemeIconsUriScheme, new Util::ThemeImageProvider (GetProxyHolder ()));
+		ChartsView_->engine ()->addImageProvider (Lits::ThemeIconsUriScheme, new Util::ThemeImageProvider (GetProxyHolder ()));
 
 		new Util::StandardNAMFactory (Lits::LmpSlashQml,
 				[] { return 50_mib; },
-				HypesView_->engine ());
+				ChartsView_->engine ());
 
 		auto objVar = [] (QObject *obj) { return QVariant::fromValue (obj); };
-		HypesView_->rootContext ()->setContextProperties ({
+		ChartsView_->rootContext ()->setContextProperties ({
 					{ QStringLiteral ("topArtistsModel"), objVar (TopArtistsModel_) },
 					{ QStringLiteral ("topTracksModel"), objVar (TopTracksModel_) },
 					{ QStringLiteral ("artistsLabelText"), tr ("Top artists") },
@@ -86,28 +86,28 @@ namespace LC::LMP
 				});
 
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, {}))
-			HypesView_->engine ()->addImportPath (cand);
+			ChartsView_->engine ()->addImportPath (cand);
 
-		HypesView_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, Lits::LmpQmlSubdir, QStringLiteral ("HypesView.qml")));
+		ChartsView_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, Lits::LmpQmlSubdir, QStringLiteral ("ChartsView.qml")));
 
 		connect (Ui_.InfoProvider_,
 				&QComboBox::activated,
 				this,
-				&HypesWidget::Request);
+				&ChartsWidget::Request);
 
-		new StdArtistActionsManager { *HypesView_, this };
+		new StdArtistActionsManager { *ChartsView_, this };
 	}
 
-	void HypesWidget::InitializeProviders ()
+	void ChartsWidget::InitializeProviders ()
 	{
-		const auto& lastProv = XmlSettingsManager::Instance ().Property ("LastUsedHypesProvider", QString {}).toString ();
+		const auto& lastProv = XmlSettingsManager::Instance ().Property ("LastUsedChartsProvider", QString {}).toString ();
 
 		bool lastFound = false;
 
-		Providers_ = GetProxyHolder ()->GetPluginsManager ()->GetAllCastableRoots<Media::IHypesProvider*> ();
+		Providers_ = GetProxyHolder ()->GetPluginsManager ()->GetAllCastableRoots<Media::ITopProvider*> ();
 		for (auto provObj : Providers_)
 		{
-			auto prov = qobject_cast<Media::IHypesProvider*> (provObj);
+			auto prov = qobject_cast<Media::ITopProvider*> (provObj);
 
 			Ui_.InfoProvider_->addItem (qobject_cast<IInfo*> (provObj)->GetIcon (),
 					prov->GetServiceName ());
@@ -124,24 +124,7 @@ namespace LC::LMP
 			Ui_.InfoProvider_->setCurrentIndex (-1);
 	}
 
-	namespace
-	{
-		template<Media::IHypesProvider::HypeType Type, auto Handler>
-		void TryHype (HypesWidget *ctx, Media::IHypesProvider *prov)
-		{
-			if (!prov->SupportsHype (Type))
-				return;
-
-			Util::Sequence (ctx, prov->RequestHype (Type)) >>
-					Util::Visitor
-					{
-						[] (const QString&) { /* TODO */ },
-						[=] (const auto& res) { std::invoke (Handler, ctx, Media::GetHypedInfo<Type> (res)); }
-					};
-		}
-	}
-
-	void HypesWidget::Request ()
+	void ChartsWidget::Request ()
 	{
 		TopArtistsModel_->SetItems ({});
 		TopTracksModel_->SetItems ({});
@@ -157,13 +140,22 @@ namespace LC::LMP
 					0);
 
 		auto provObj = Providers_.at (idx);
-		auto prov = qobject_cast<Media::IHypesProvider*> (provObj);
+		auto prov = qobject_cast<Media::ITopProvider*> (provObj);
 
-		using enum Media::IHypesProvider::HypeType;
-		TryHype<TopArtists, &HypesWidget::HandleArtists> (this, prov);
-		TryHype<TopTracks, &HypesWidget::HandleTracks> (this, prov);
+		Util::Sequence (this, prov->RequestTopArtists ()) >>
+				Util::Visitor
+				{
+					[] (const QString&) { /* TODO */ },
+					[this] (const QList<Media::TopArtistInfo>& infos) { HandleArtists (infos); }
+				};
+		Util::Sequence (this, prov->RequestTopTracks ()) >>
+				Util::Visitor
+				{
+					[] (const QString&) { /* TODO */ },
+					[this] (const QList<Media::TopTrackInfo>& infos) { HandleTracks (infos); }
+				};
 
-		XmlSettingsManager::Instance ().setProperty ("LastUsedHypesProvider", prov->GetServiceName ());
+		XmlSettingsManager::Instance ().setProperty ("LastUsedChartsProvider", prov->GetServiceName ());
 	}
 
 	namespace
@@ -172,21 +164,18 @@ namespace LC::LMP
 		QStringList GetStats (const T& info)
 		{
 			QStringList stats;
-			if (info.PercentageChange_)
-				stats << HypesWidget::tr ("Growth: x%1", "better use unicode multiplication sign here instead of 'x'")
-						.arg (info.PercentageChange_ / 100., 0, 'f', 2);
 			if (info.Listeners_)
-				stats << HypesWidget::tr ("%n listener(s)", 0, info.Listeners_);
+				stats << ChartsWidget::tr ("%n listener(s)", 0, info.Listeners_);
 			if (info.Playcount_)
-				stats << HypesWidget::tr ("%n playback(s)", 0, info.Playcount_);
+				stats << ChartsWidget::tr ("%n playback(s)", 0, info.Playcount_);
 			return stats;
 		}
 	}
 
-	void HypesWidget::HandleArtists (const QList<Media::HypedArtistInfo>& infos)
+	void ChartsWidget::HandleArtists (const QList<Media::TopArtistInfo>& infos)
 	{
 		TopArtistsModel_->SetItems (Util::MapAs<QVector> (infos,
-				[] (const Media::HypedArtistInfo& info)
+				[] (const Media::TopArtistInfo& info)
 				{
 					SimilarArtistInfo prepared { info.Info_, *Core::Instance ().GetLocalCollection () };
 					if (prepared.ShortDesc_.isEmpty ())
@@ -197,9 +186,9 @@ namespace LC::LMP
 				}));
 	}
 
-	void HypesWidget::HandleTracks (const QList<Media::HypedTrackInfo>& infos)
+	void ChartsWidget::HandleTracks (const QList<Media::TopTrackInfo>& infos)
 	{
 		TopTracksModel_->SetItems (Util::MapAs<QVector> (infos,
-				[] (const Media::HypedTrackInfo& info) { return HypedTrack { info, GetStats (info).join ("; ") }; }));
+				[] (const Media::TopTrackInfo& info) { return TopTrack { info, GetStats (info).join ("; ") }; }));
 	}
 }

@@ -180,7 +180,7 @@ Rectangle {
                 anchors.fill: parent
 
                 ListView {
-                    id: hypedTracksView
+                    id: tracksView
 
                     smooth: true
 
@@ -188,7 +188,7 @@ Rectangle {
 
                     delegate: Item {
                         height: 150
-                        width: hypedTracksView.width
+                        width: tracksView.width
                         smooth: true
 
                         Rectangle {
@@ -290,8 +290,8 @@ Rectangle {
                             }
 
                             Text {
-                                id: changeLabel
-                                text: change
+                                id: statsLabel
+                                text: stats
                                 color: colorProxy.color_TextBox_Aux1TextColor
                                 anchors.top: trackArtistNameLabel.bottom
                                 anchors.topMargin: 2
