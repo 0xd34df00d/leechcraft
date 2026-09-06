@@ -34,4 +34,3 @@ LC_DEFINE_PLUGIN (
 	INSTALL_SHARE
 	)
 
-SUBPLUGIN (GOOGLEDRIVE "Build support for Google Drive")
