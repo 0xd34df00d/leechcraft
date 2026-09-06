@@ -1090,10 +1090,11 @@ namespace Azoth
 					this,
 					[this, entry]
 					{
+						QPointer entryGuard { entry->GetQObject () };
 						const auto& nick = QInputDialog::getText (nullptr,
 								"LeechCraft",
 								tr ("Enter the nick of the participant to alert for:"));
-						if (!nick.isEmpty ())
+						if (!nick.isEmpty () && entryGuard)
 							NotificationsManager_.CreateParticipantEnterRule (*entry, nick);
 					});
 
