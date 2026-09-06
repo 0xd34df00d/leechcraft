@@ -18,7 +18,6 @@
 #include "icecastfetcher.h"
 #include "icecastmodel.h"
 #include "audioaddictstreamfetcher.h"
-#include "rockradiolistfetcher.h"
 #include "radiostation.h"
 #include "roles.h"
 #include "stringlistradiostation.h"
@@ -48,23 +47,26 @@ namespace HotStreams
 			};
 		Model_->appendRow (di);
 
-		auto sky = new QStandardItem ("SkyFM");
-		sky->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
-		sky->setEditable (false);
-		sky->setIcon (QIcon (":/hotstreams/resources/images/skyfm.png"));
-		Root2Fetcher_ [sky] = [nam, this] (QStandardItem *sky)
+		auto radiotunes = new QStandardItem ("RadioTunes");
+		radiotunes->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
+		radiotunes->setEditable (false);
+		radiotunes->setIcon (QIcon (":/hotstreams/resources/images/radiotunes.png"));
+		Root2Fetcher_ [radiotunes] = [nam, this] (QStandardItem *radiotunes)
 			{
-				new AudioAddictStreamFetcher (AudioAddictStreamFetcher::Service::SkyFM,
-						sky, nam, this);
+				new AudioAddictStreamFetcher (AudioAddictStreamFetcher::Service::RadioTunes,
+						radiotunes, nam, this);
 			};
-		Model_->appendRow (sky);
+		Model_->appendRow (radiotunes);
 
 		auto rr = new QStandardItem ("RockRadio");
 		rr->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
 		rr->setEditable (false);
 		rr->setIcon (QIcon (":/hotstreams/resources/images/rockradio.png"));
 		Root2Fetcher_ [rr] = [nam, this] (QStandardItem *rr)
-				{ new RockRadioListFetcher (rr, nam, this); };
+			{
+				new AudioAddictStreamFetcher (AudioAddictStreamFetcher::Service::RockRadio,
+						rr, nam, this);
+			};
 		Model_->appendRow (rr);
 
 		auto somafm = new QStandardItem ("SomaFM");

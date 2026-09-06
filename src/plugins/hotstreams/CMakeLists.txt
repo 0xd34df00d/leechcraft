@@ -9,7 +9,6 @@ LC_DEFINE_PLUGIN (
 		icecastfetcher.cpp
 		icecastmodel.cpp
 		radiostation.cpp
-		rockradiolistfetcher.cpp
 		somafmlistfetcher.cpp
 		stealkilllistfetcher.cpp
 		streamlistfetcherbase.cpp

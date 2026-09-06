@@ -20,12 +20,11 @@ namespace HotStreams
 		enum class Service
 		{
 			DI,
-			SkyFM
+			RadioTunes,
+			RockRadio
 		};
-	private:
-		const Service Service_;
 	public:
-		AudioAddictStreamFetcher (Service, QStandardItem*, QNetworkAccessManager*, QObject* = 0);
+		AudioAddictStreamFetcher (Service, QStandardItem*, QNetworkAccessManager*, QObject* = nullptr);
 	protected:
 		QList<StreamInfo> Parse (const QByteArray&);
 	};

@@ -18,17 +18,16 @@ namespace HotStreams
 {
 	namespace
 	{
-		const QString APIUsername = "ephemeron";
-		const QString APIPass = "dayeiph0ne@pp";
-
-		QString Service2ID (AudioAddictStreamFetcher::Service service)
+		QString Service2Domain (AudioAddictStreamFetcher::Service service)
 		{
 			switch (service)
 			{
 			case AudioAddictStreamFetcher::Service::DI:
-				return "di";
-			case AudioAddictStreamFetcher::Service::SkyFM:
-				return "sky";
+				return "di.fm";
+			case AudioAddictStreamFetcher::Service::RadioTunes:
+				return "radiotunes.com";
+			case AudioAddictStreamFetcher::Service::RockRadio:
+				return "rockradio.com";
 			}
 
 			Util::Unreachable ();
@@ -38,64 +37,29 @@ namespace HotStreams
 	AudioAddictStreamFetcher::AudioAddictStreamFetcher (Service service,
 			QStandardItem *root, QNetworkAccessManager *nam, QObject *parent)
 	: StreamListFetcherBase (root, nam, parent)
-	, Service_ (service)
 	{
-		const auto& abbr = Service2ID (service);
-
-		const auto& urlStr = QString ("http://api.audioaddict.com/v1/%1/mobile/batch_update?asset_group_key=mobile_icons&stream_set_key=").arg (abbr);
-		QNetworkRequest req { QUrl { urlStr } };
-		req.setRawHeader("Authorization",
-				"Basic " + QString ("%1:%2")
-					.arg (APIUsername)
-					.arg (APIPass)
-					.toLatin1 ()
-					.toBase64 ());
-		Request (req);
+		const auto& urlStr = QString ("http://listen.%1/public3/").arg (Service2Domain (service));
+		Request (QNetworkRequest { QUrl { urlStr } });
 	}
 
 	QList<StreamListFetcherBase::StreamInfo> AudioAddictStreamFetcher::Parse (const QByteArray& data)
 	{
 		QList<StreamInfo> result;
 
-		const auto& map = Util::ParseJson (data, Q_FUNC_INFO).toMap ();
-
-		if (!map.contains ("channel_filters"))
+		for (const auto& var : Util::ParseJson (data, Q_FUNC_INFO).toList ())
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "no 'channel_filters' key in the reply, but we have:"
-					<< map.keys ();
-			return result;
-		}
+			const auto& map = var.toMap ();
 
-		for (const auto& filterVar : map ["channel_filters"].toList ())
-		{
-			const auto& filter = filterVar.toMap ();
-			if (filter ["name"].toString () != "All")
-				continue;
-
-			for (const auto& channelVar : filter.value ("channels").toList ())
+			result << StreamInfo
 			{
-				const auto& channel = channelVar.toMap ();
-
-				const auto& key = channel ["key"].toString ();
-
-				const QUrl url (QString ("http://listen.%1.fm/public3/%2.pls")
-							.arg (Service2ID (Service_))
-							.arg (key));
-				const StreamInfo info
-				{
-					channel ["name"].toString (),
-					channel ["description"].toString (),
-					QStringList (),
-					url,
-					channel ["asset_url"].toString (),
-					channel ["channel_director"].toString (),
-					"pls"
-				};
-				result << info;
-			}
-
-			break;
+				map ["name"].toString (),
+				map ["description"].toString (),
+				QStringList (),
+				QUrl (map ["playlist"].toByteArray ()),
+				QUrl (),
+				QString (),
+				"pls"
+			};
 		}
 
 		return result;
