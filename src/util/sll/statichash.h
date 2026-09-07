@@ -8,28 +8,31 @@
 
 #pragma once
 
+#include <concepts>
+#include <cstddef>
+#include <cstdint>
+#include <initializer_list>
+#include <iterator>
 #include <string_view>
+#include <utility>
 
 namespace LC::Util
 {
-	namespace
+	template<typename K, typename V>
+	struct KVPair
 	{
-		template<typename K, typename V>
-		struct KVPair
+		const K Key_;
+		const V Val_;
+
+		consteval KVPair (K name, V val)
+		: Key_ { name }
+		, Val_ { val }
 		{
-			const K Key_;
-			const V Val_;
+		}
+	};
 
-			consteval KVPair (K name, V val)
-			: Key_ { name }
-			, Val_ { val }
-			{
-			}
-		};
-
-		template<size_t N, typename V>
-		KVPair (const char (&) [N], V) -> KVPair<std::string_view, V>;
-	}
+	template<size_t N, typename V>
+	KVPair (const char (&) [N], V) -> KVPair<std::string_view, V>;
 
 	template<typename K>
 	constexpr uint64_t DefaultHashImpl (K);
