@@ -17,92 +17,94 @@
 <context>
     <name>LC::AdvancedNotifications::Descriptions</name>
     <message>
-        <location filename="matchconfigwidget.cpp" line="270"/>
+        <location filename="matchconfigwidget.cpp" line="272"/>
         <source>is true</source>
+        <extracomment>Shown next to a boolean field name in the rules list, e.g. &quot;Terminal is active: is true&quot;.</extracomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="270"/>
+        <location filename="matchconfigwidget.cpp" line="272"/>
         <source>is false</source>
+        <extracomment>Shown next to a boolean field name in the rules list, e.g. &quot;Terminal is active: is true&quot;.</extracomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="295"/>
+        <location filename="matchconfigwidget.cpp" line="297"/>
         <source>matches regular expression `%1`</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="296"/>
+        <location filename="matchconfigwidget.cpp" line="298"/>
         <source>doesn&apos;t match regular expression `%1`</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="302"/>
+        <location filename="matchconfigwidget.cpp" line="304"/>
         <source>contains substring `%1`</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="303"/>
+        <location filename="matchconfigwidget.cpp" line="305"/>
         <source>doesn&apos;t contain substring `%1`</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="309"/>
+        <location filename="matchconfigwidget.cpp" line="311"/>
         <source>matches wildcard `%1`</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="310"/>
+        <location filename="matchconfigwidget.cpp" line="312"/>
         <source>doesn&apos;t match wildcard `%1`</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="316"/>
+        <location filename="matchconfigwidget.cpp" line="318"/>
         <source>is exactly `%1`</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="317"/>
+        <location filename="matchconfigwidget.cpp" line="319"/>
         <source>isn&apos;t exactly `%1`</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="329"/>
+        <location filename="matchconfigwidget.cpp" line="331"/>
         <source>contains a string matching regular expression `%1`</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="330"/>
+        <location filename="matchconfigwidget.cpp" line="332"/>
         <source>doesn&apos;t contain a string matching regular expression `%1`</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="350"/>
+        <location filename="matchconfigwidget.cpp" line="352"/>
         <source>contains the exact string `%1`</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="351"/>
+        <location filename="matchconfigwidget.cpp" line="353"/>
         <source>doesn&apos;t contain the exact string `%1`</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="336"/>
+        <location filename="matchconfigwidget.cpp" line="338"/>
         <source>contains a string with the substring `%1`</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="337"/>
+        <location filename="matchconfigwidget.cpp" line="339"/>
         <source>doesn&apos;t contain a string with the substring `%1`</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="343"/>
+        <location filename="matchconfigwidget.cpp" line="345"/>
         <source>contains a string matching wildcard `%1`</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="344"/>
+        <location filename="matchconfigwidget.cpp" line="346"/>
         <source>doesn&apos;t contain a string matching wildcard `%1`</source>
         <translation type="unfinished"></translation>
     </message>
@@ -151,45 +153,48 @@
         <translation>Descripción de la regla</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="293"/>
+        <location filename="notificationruleswidget.cpp" line="294"/>
         <source>&lt;empty matcher&gt;</source>
+        <extracomment>Shown in the rule description column when a field match lacks a condition.</extracomment>
         <translation>&lt;empty matcher&gt;</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="341"/>
+        <location filename="notificationruleswidget.cpp" line="344"/>
         <source>Custom field %1 (%2)</source>
+        <extracomment>%1 is the field name, %2 is its description.</extracomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="372"/>
+        <location filename="notificationruleswidget.cpp" line="376"/>
         <source>The rule has been changed. Do you want to save it?</source>
         <oldsource>The rule has been changed. Do you want to save it</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="462"/>
+        <location filename="notificationruleswidget.cpp" line="466"/>
         <source>Are you sure you want to replace all rules with the default set?</source>
         <translation>¿Está seguro que desea reemplazar todas las reglas con la configuración por defecto?</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="526"/>
+        <location filename="notificationruleswidget.cpp" line="530"/>
         <source>Select audio file</source>
         <translation>Selecciona el archivo de audio</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="528"/>
+        <location filename="notificationruleswidget.cpp" line="532"/>
         <source>Audio files (*.ogg *.wav *.flac *.mp3);;All files (*.*)</source>
         <translation>Audio archivos (*.ogg *.wav *.flac *.mp3);;Todos los archivos (*.*)</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="560"/>
+        <location filename="notificationruleswidget.cpp" line="564"/>
         <source>No plugin has been found to play %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="337"/>
-        <location filename="notificationruleswidget.cpp" line="348"/>
+        <location filename="notificationruleswidget.cpp" line="339"/>
+        <location filename="notificationruleswidget.cpp" line="352"/>
         <source>Please enter the argument:</source>
+        <extracomment>The argument for the command run by the rule.</extracomment>
         <translation>Por favor, introduzca el argumento:</translation>
     </message>
 </context>
@@ -294,18 +299,21 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="465"/>
+        <location filename="rulesmanager.cpp" line="466"/>
         <source>Name</source>
+        <extracomment>Column header of the notification rules list.</extracomment>
         <translation>Nombre</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="465"/>
+        <location filename="rulesmanager.cpp" line="466"/>
         <source>Category</source>
+        <extracomment>Column header of the notification rules list.</extracomment>
         <translation>Categoría</translation>
     </message>
     <message>
-        <location filename="rulesmanager.cpp" line="465"/>
+        <location filename="rulesmanager.cpp" line="466"/>
         <source>Type</source>
+        <extracomment>Column header of the notification rules list.</extracomment>
         <translation>Tipo</translation>
     </message>
 </context>
@@ -332,8 +340,9 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="matchconfigwidget.cpp" line="172"/>
+        <location filename="matchconfigwidget.cpp" line="173"/>
         <source>%1 (unknown)</source>
+        <extracomment>%1 is the raw ID of a value missing from the list of the known values for this field.</extracomment>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -348,23 +357,27 @@
 <context>
     <name>LC::AdvancedNotifications::UnhandledNotificationsKeeper</name>
     <message>
-        <location filename="unhandlednotificationskeeper.cpp" line="27"/>
+        <location filename="unhandlednotificationskeeper.cpp" line="28"/>
         <source>Title</source>
+        <extracomment>Column header of the missed notifications list.</extracomment>
         <translation>Título</translation>
     </message>
     <message>
-        <location filename="unhandlednotificationskeeper.cpp" line="27"/>
+        <location filename="unhandlednotificationskeeper.cpp" line="28"/>
         <source>Text</source>
+        <extracomment>Column header of the missed notifications list.</extracomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="unhandlednotificationskeeper.cpp" line="27"/>
+        <location filename="unhandlednotificationskeeper.cpp" line="28"/>
         <source>Category</source>
+        <extracomment>Column header of the missed notifications list.</extracomment>
         <translation>Categoría</translation>
     </message>
     <message>
-        <location filename="unhandlednotificationskeeper.cpp" line="27"/>
+        <location filename="unhandlednotificationskeeper.cpp" line="28"/>
         <source>Type</source>
+        <extracomment>Column header of the missed notifications list.</extracomment>
         <translation>Tipo</translation>
     </message>
 </context>
@@ -418,6 +431,7 @@
     <message>
         <location filename="notificationruleswidget.ui" line="103"/>
         <source>Default</source>
+        <extracomment>Replaces all rules with the default rule set.</extracomment>
         <translation>Predeterminado</translation>
     </message>
     <message>
@@ -464,6 +478,7 @@
         <location filename="notificationruleswidget.ui" line="49"/>
         <source>New from missed...</source>
         <oldsource>New from missed</oldsource>
+        <extracomment>Creates a rule from one of the recently missed notification events.</extracomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -481,16 +496,19 @@
     <message>
         <location filename="notificationruleswidget.ui" line="251"/>
         <source>Draw attention to the window</source>
+        <extracomment>Mark the LeechCraft window as demanding attention, e.g. by flashing it in the taskbar.</extracomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="258"/>
         <source>System-dependent</source>
+        <extracomment>Notify via the mechanism native to the operating system.</extracomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="268"/>
         <source>Single shot</source>
+        <extracomment>The rule gets disabled after it matches once.</extracomment>
         <translation>único disparo</translation>
     </message>
     <message>
@@ -523,6 +541,7 @@
     <message>
         <location filename="notificationruleswidget.ui" line="393"/>
         <source>Test</source>
+        <extracomment>Plays back the selected audio file.</extracomment>
         <translation>Prueba</translation>
     </message>
     <message>
@@ -571,6 +590,7 @@
     <message>
         <location filename="stringlikematcherconfigwidget.ui" line="23"/>
         <source>negate</source>
+        <extracomment>Inverts the condition to the right of this checkbox.</extracomment>
         <translation type="unfinished"></translation>
     </message>
 </context>
