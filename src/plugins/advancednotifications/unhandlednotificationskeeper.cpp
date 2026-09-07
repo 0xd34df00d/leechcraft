@@ -24,6 +24,7 @@ namespace LC::AdvancedNotifications
 	: QObject { parent }
 	, Model_ { new QStandardItemModel { this } }
 	{
+		//: Column header of the missed notifications list.
 		Model_->setHorizontalHeaderLabels ({ tr ("Title"), tr ("Text"), tr ("Category"), tr ("Type") });
 	}
 

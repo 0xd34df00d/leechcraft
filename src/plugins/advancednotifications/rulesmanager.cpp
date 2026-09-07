@@ -462,6 +462,7 @@ namespace LC::AdvancedNotifications
 	void RulesManager::ResetModel ()
 	{
 		RulesModel_->clear ();
+		//: Column header of the notification rules list.
 		RulesModel_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Category"), tr ("Type") });
 
 		for (const auto& rule : Rules_)
