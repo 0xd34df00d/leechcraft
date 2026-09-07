@@ -57,6 +57,12 @@
 				<option label="Lynx 2.8.7 with OpenSSL 🏺" name="Lynx/2.8.7dev.4 libwww-FM/2.14 SSL-MM/1.4.1 OpenSSL/0.9.8d">
 					<binary type="image" place="share">cstp/clients/console</binary>
 				</option>
+				<option label="NCSA Mosaic 2.0 🏺" name="NCSA_Mosaic/2.0 (Windows 3.1)">
+					<binary type="image" place="share">cstp/clients/mosaic</binary>
+				</option>
+				<option label="Netscape Navigator 4.08 🏺" name="Mozilla/4.08 [en] (X11; I; Linux 2.2.5 i686)">
+					<binary type="image" place="share">cstp/clients/netscape</binary>
+				</option>
 				<option label="Opera 9.52 (Linux x86_64) 🏺" name="Opera/9.52 (X11; Linux x86_64; U; en)">
 					<binary type="image" place="share">cstp/clients/opera</binary>
 				</option>
