@@ -17,15 +17,6 @@ namespace LC
 {
 namespace Util
 {
-	namespace
-	{
-		template<typename T>
-		void PrintType ()
-		{
-			qDebug () << Q_FUNC_INFO;
-		}
-	}
-
 	void TypeGetterTest::testArgType ()
 	{
 		const auto f = [] (int, const double) {};
