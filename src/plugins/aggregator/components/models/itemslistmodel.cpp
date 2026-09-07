@@ -22,7 +22,7 @@
 namespace LC::Aggregator
 {
 	ItemsListModel::ItemsListModel (IIconThemeManager *itm, QObject *parent)
-	: QAbstractItemModel { parent }
+	: QAbstractTableModel { parent }
 	, ItemHeaders_ { tr ("Name"), tr ("Date") }
 	, StarredIcon_ { itm->GetIcon ("mail-mark-important") }
 	, UnreadIcon_ { itm->GetIcon ("mail-mark-unread") }
@@ -296,11 +296,6 @@ namespace LC::Aggregator
 		return {};
 	}
 
-	Qt::ItemFlags ItemsListModel::flags (const QModelIndex&) const
-	{
-		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-	}
-
 	QVariant ItemsListModel::headerData (int column, Qt::Orientation orient, int role) const
 	{
 		if (column < 0 || column >= columnCount ())
@@ -309,19 +304,6 @@ namespace LC::Aggregator
 		if (orient == Qt::Horizontal && role == Qt::DisplayRole)
 			return ItemHeaders_.at (column);
 
-		return {};
-	}
-
-	QModelIndex ItemsListModel::index (int row, int column, const QModelIndex& parent) const
-	{
-		if (!hasIndex (row, column, parent))
-			return {};
-
-		return createIndex (row, column);
-	}
-
-	QModelIndex ItemsListModel::parent (const QModelIndex&) const
-	{
 		return {};
 	}
 

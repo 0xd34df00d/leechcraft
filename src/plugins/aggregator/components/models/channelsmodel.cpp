@@ -33,7 +33,7 @@ namespace LC::Aggregator
 {
 	ChannelsModel::ChannelsModel (const std::shared_ptr<const FeedsErrorManager>& errorMgr,
 			const ITagsManager *itm, QObject *parent)
-	: QAbstractItemModel { parent }
+	: QAbstractTableModel { parent }
 	, Headers_ { tr ("Feed"), tr ("Unread items"), tr ("Last build") }
 	, TagsManager_ { itm }
 	, FeedsErrorManager_ { errorMgr }
@@ -220,30 +220,12 @@ namespace LC::Aggregator
 		}
 	}
 
-	Qt::ItemFlags ChannelsModel::flags (const QModelIndex&) const
-	{
-		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-	}
-
 	QVariant ChannelsModel::headerData (int column, Qt::Orientation orient, int role) const
 	{
 		if (orient == Qt::Horizontal && role == Qt::DisplayRole)
 			return Headers_.at (column);
 		else
 			return {};
-	}
-
-	QModelIndex ChannelsModel::index (int row, int column, const QModelIndex& parent) const
-	{
-		if (!hasIndex (row, column, parent))
-			return {};
-
-		return createIndex (row, column);
-	}
-
-	QModelIndex ChannelsModel::parent (const QModelIndex&) const
-	{
-		return {};
 	}
 
 	int ChannelsModel::rowCount (const QModelIndex& parent) const

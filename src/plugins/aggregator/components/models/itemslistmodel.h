@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <QAbstractItemModel>
+#include <QAbstractTableModel>
 #include <QCoreApplication>
 #include <QStringList>
 #include <QSet>
@@ -21,7 +21,7 @@ class IIconThemeManager;
 
 namespace LC::Aggregator
 {
-	class ItemsListModel final : public QAbstractItemModel
+	class ItemsListModel final : public QAbstractTableModel
 							   , public IItemsModel
 	{
 		Q_DECLARE_TR_FUNCTIONS (LC::Aggregator::ItemsListModel)
@@ -50,10 +50,7 @@ namespace LC::Aggregator
 
 		int columnCount (const QModelIndex& = QModelIndex ()) const override;
 		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;
-		Qt::ItemFlags flags (const QModelIndex&) const override;
 		QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const override;
-		QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const override;
-		QModelIndex parent (const QModelIndex&) const override;
 		int rowCount (const QModelIndex& = QModelIndex ()) const override;
 	private:
 		void RemoveItems (const QSet<IDType_t>&);

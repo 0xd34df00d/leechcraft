@@ -9,7 +9,7 @@
 #pragma once
 
 #include <QCoreApplication>
-#include <QAbstractItemModel>
+#include <QAbstractTableModel>
 #include "channel.h"
 
 class QToolBar;
@@ -22,7 +22,7 @@ namespace LC::Aggregator
 	class FeedsErrorManager;
 	struct UnreadChange;
 
-	class ChannelsModel : public QAbstractItemModel
+	class ChannelsModel : public QAbstractTableModel
 	{
 		Q_DECLARE_TR_FUNCTIONS (ChannelsModel)
 
@@ -43,10 +43,7 @@ namespace LC::Aggregator
 
 		int columnCount (const QModelIndex& = QModelIndex ()) const override;
 		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;
-		Qt::ItemFlags flags (const QModelIndex&) const override;
 		QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const override;
-		QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const override;
-		QModelIndex parent (const QModelIndex&) const override;
 		int rowCount (const QModelIndex& = QModelIndex ()) const override;
 
 		const ChannelShort& GetChannelForIndex (const QModelIndex&) const;
