@@ -52,7 +52,7 @@ namespace LC::Aggregator
 		bool TapeMode_ = XmlSettingsManager::Instance ().Property ("ShowAsTape", false).toBool ();
 
 		const std::unique_ptr<ItemsListModel> ItemsModel_ = std::make_unique<ItemsListModel> (GetProxyHolder ()->GetIconThemeManager ());
-		const ItemsCategoriesTracker CategoriesTracker_ { *ItemsModel_ };
+		ItemsCategoriesTracker CategoriesTracker_ { *ItemsModel_ };
 		const std::unique_ptr<ItemsFilterModel> ItemsFilterModel_ = std::make_unique<ItemsFilterModel> (*ItemsModel_, Parent_);
 		const std::unique_ptr<ItemCategorySelector> ItemCategorySelector_ = std::make_unique<ItemCategorySelector> ();
 	};
