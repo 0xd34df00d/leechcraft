@@ -30,6 +30,8 @@ namespace LC::Aggregator
 		bool TapeMode_ = false;
 		QSet<IDType_t> CurrentItems_;
 		QTimer& ReadMarkTimer_;
+
+		bool ScheduledSyncToSelection_ = false;
 	public:
 		explicit ItemSelectionTracker (QAbstractItemView&, ItemActions&, QObject* = nullptr);
 
@@ -37,9 +39,7 @@ namespace LC::Aggregator
 		void SetTapeMode (bool);
 	private:
 		void SaveCurrentItems (const QList<QModelIndex>&);
-		void HandleCurrentRowChanged (const QModelIndex&);
-		void MarkCurrentRead ();
-		void MarkRead (const QModelIndex&);
+		void MarkRowAsRead (const QModelIndex&);
 	signals:
 		void refreshItemDisplay ();
 		void selectionChanged (const QSet<IDType_t>&);
