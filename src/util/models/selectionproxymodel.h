@@ -44,9 +44,9 @@ namespace LC::Util
 			if (Selections_ == selections)
 				return;
 
-			EmitByIds (std::exchange (Selections_, {}));
+			const auto changed = (Selections_ | selections) - (Selections_ & selections);
 			Selections_ = selections;
-			EmitByIds (Selections_);
+			EmitByIds (changed);
 		}
 
 		QVariant data (const QModelIndex& index, int role) const override
