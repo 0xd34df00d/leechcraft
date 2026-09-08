@@ -7,24 +7,21 @@
  **********************************************************************/
 
 #include "itemscategoriestracker.h"
+#include <QTimer>
 #include <util/models/modeliterator.h>
 #include <util/sll/util.h>
 #include <interfaces/aggregator/iitemsmodel.h>
 
 namespace LC::Aggregator
 {
-	namespace
+	auto ItemsCategoriesTracker::PrepareCountsChanging ()
 	{
-		auto PrepareCountsChanging (const QHash<QString, int>& counts, ItemsCategoriesTracker& tracker)
-		{
-			const auto initialSize = counts.size ();
-
-			return Util::MakeScopeGuard ([&, initialSize]
-					{
-						if (initialSize != counts.size ())
-							emit tracker.categoriesChanged (counts.keys ());
-					});
-		}
+		const auto initialSize = Counts_.size ();
+		return Util::MakeScopeGuard ([&, initialSize]
+				{
+					if (initialSize != Counts_.size ())
+						ScheduleCategoriesChangedSignal (Counts_.keys ());
+				});
 	}
 
 	ItemsCategoriesTracker::ItemsCategoriesTracker (QAbstractItemModel& model)
@@ -39,10 +36,10 @@ namespace LC::Aggregator
 					if (!Counts_.isEmpty ())
 					{
 						Counts_.clear ();
-						emit categoriesChanged ({});
+						ScheduleCategoriesChangedSignal ({});
 					}
 
-					const auto guard = PrepareCountsChanging (Counts_, *this);
+					const auto guard = PrepareCountsChanging ();
 					for (const auto& idx : Util::AllModelRows (Model_))
 						for (const auto& cat : idx.data (IItemsModel::ItemCategories).value<QStringList> ())
 							++Counts_ [cat];
@@ -52,7 +49,7 @@ namespace LC::Aggregator
 				this,
 				[this] (const QModelIndex&, int start, int end)
 				{
-					const auto guard = PrepareCountsChanging (Counts_, *this);
+					const auto guard = PrepareCountsChanging ();
 					for (const auto& idx : Util::ModelRows (Model_, start, end))
 						for (const auto& cat : idx.data (IItemsModel::ItemCategories).value<QStringList> ())
 							++Counts_ [cat];
@@ -62,11 +59,20 @@ namespace LC::Aggregator
 				this,
 				[this] (const QModelIndex&, int start, int end)
 				{
-					const auto guard = PrepareCountsChanging (Counts_, *this);
+					const auto guard = PrepareCountsChanging ();
 					for (const auto& idx : Util::ModelRows (Model_, start, end))
 						for (const auto& cat : idx.data (IItemsModel::ItemCategories).value<QStringList> ())
 							if (!--Counts_ [cat])
 								Counts_.remove (cat);
 				});
+	}
+
+	void ItemsCategoriesTracker::ScheduleCategoriesChangedSignal (QList<QString> categories)
+	{
+		if (!ScheduledCategories_)
+			QTimer::singleShot (0, this,
+					[this] { emit categoriesChanged (*std::exchange (ScheduledCategories_, std::nullopt)); });
+
+		ScheduledCategories_ = std::move (categories);
 	}
 }

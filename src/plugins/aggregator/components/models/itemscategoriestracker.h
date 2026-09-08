@@ -22,8 +22,13 @@ namespace LC::Aggregator
 
 		const QAbstractItemModel& Model_;
 		QHash<QString, int> Counts_;
+
+		std::optional<QList<QString>> ScheduledCategories_;
 	public:
 		explicit ItemsCategoriesTracker (QAbstractItemModel& model);
+	private:
+		auto PrepareCountsChanging ();
+		void ScheduleCategoriesChangedSignal (QList<QString>);
 	signals:
 		void categoriesChanged (const QList<QString>& categories);
 	};
