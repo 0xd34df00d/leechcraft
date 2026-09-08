@@ -62,7 +62,9 @@ namespace LC::Util
 		{
 			const auto lastColumn = sourceModel ()->columnCount () - 1;
 			for (const auto& idx : Config_.FindItems_ (ids))
-				emit dataChanged (idx.siblingAtColumn (0), idx.siblingAtColumn (lastColumn), { Config_.IsSelectedRole_ });
+				emit dataChanged (mapFromSource (idx.siblingAtColumn (0)),
+						mapFromSource (idx.siblingAtColumn (lastColumn)),
+						{ Config_.IsSelectedRole_ });
 		}
 	};
 }
