@@ -8,6 +8,7 @@
 
 #include "itemselectiontracker.h"
 #include <QAbstractItemView>
+#include <QMouseEvent>
 #include <QTimer>
 #include "interfaces/aggregator/iitemsmodel.h"
 #include "components/storage/storagebackendmanager.h"
@@ -32,6 +33,7 @@ namespace LC::Aggregator
 	ItemSelectionTracker::ItemSelectionTracker (QAbstractItemView& view, ItemActions& actions, QObject *parent)
 	: QObject { parent }
 	, View_ { view }
+	, Actions_ { actions }
 	, ReadMarkTimer_ { *new QTimer { this } }
 	{
 		ReadMarkTimer_.callOnTimeout (this, [this] { RunMarkAsRead (View_.currentIndex ()); });
@@ -39,39 +41,16 @@ namespace LC::Aggregator
 
 		const auto sm = view.selectionModel ();
 
-		const auto syncToSelection = [&, sm]
-		{
-			if (std::exchange (ScheduledSyncToSelection_, true))
-				return;
-
-			QTimer::singleShot (0,
-					this,
-					[&, sm]
-					{
-						ScheduledSyncToSelection_ = false;
-
-						const auto& rows = sm->selectedRows ();
-						actions.HandleSelectionChanged (rows);
-						if (!TapeMode_)
-							emit refreshItemDisplay ();
-
-						SaveCurrentItems (rows);
-						emit selectionChanged (CurrentItems_);
-
-						if (const auto& curIdx = sm->currentIndex ();
-							curIdx.isValid ())
-							MarkRowAsRead (curIdx);
-					});
-		};
+		View_.viewport ()->installEventFilter (this);
 
 		connect (sm,
 				&QItemSelectionModel::selectionChanged,
 				this,
-				syncToSelection);
+				&ItemSelectionTracker::HandleImmediateSelectionChange);
 		connect (view.model (),
 				&QAbstractItemModel::modelReset,
 				this,
-				syncToSelection);
+				&ItemSelectionTracker::HandleImmediateSelectionChange);
 
 		connect (view.model (),
 				&QAbstractItemModel::dataChanged,
@@ -83,7 +62,7 @@ namespace LC::Aggregator
 						const auto changedItemId = from.siblingAtRow (row).data (IItemsModel::ItemRole::ItemId).value<IDType_t> ();
 						if (CurrentItems_.contains (changedItemId))
 						{
-							actions.HandleSelectionChanged (sm->selectedRows ());
+							Actions_.HandleSelectionChanged (sm->selectedRows ());
 							return;
 						}
 					}
@@ -98,6 +77,65 @@ namespace LC::Aggregator
 	void ItemSelectionTracker::SetTapeMode (bool tape)
 	{
 		TapeMode_ = tape;
+	}
+
+	bool ItemSelectionTracker::eventFilter (QObject*, QEvent *ev)
+	{
+		switch (ev->type ())
+		{
+		case QEvent::MouseButtonDblClick:
+		case QEvent::MouseButtonPress:
+			if (static_cast<QMouseEvent*> (ev)->button () == Qt::LeftButton)
+			{
+				GestureActive_ = true;
+				ReadMarkTimer_.stop ();
+			}
+			break;
+		case QEvent::MouseButtonRelease:
+			if (static_cast<QMouseEvent*> (ev)->button () == Qt::LeftButton)
+				EndGesture ();
+			break;
+		case QEvent::UngrabMouse:
+			EndGesture ();
+			break;
+		default:
+			break;
+		}
+
+		return false;
+	}
+
+	void ItemSelectionTracker::EndGesture ()
+	{
+		if (std::exchange (GestureActive_, false) && ScheduledSyncToSelection_)
+			QTimer::singleShot (0, this, &ItemSelectionTracker::SyncToSelection);
+	}
+
+	void ItemSelectionTracker::HandleImmediateSelectionChange ()
+	{
+		if (std::exchange (ScheduledSyncToSelection_, true))
+			return;
+
+		QTimer::singleShot (0, this, &ItemSelectionTracker::SyncToSelection);
+	}
+
+	void ItemSelectionTracker::SyncToSelection ()
+	{
+		if (GestureActive_ || !std::exchange (ScheduledSyncToSelection_, false))
+			return;
+
+		const auto sm = View_.selectionModel ();
+		const auto& rows = sm->selectedRows ();
+		Actions_.HandleSelectionChanged (rows);
+		if (!TapeMode_)
+			emit refreshItemDisplay ();
+
+		SaveCurrentItems (rows);
+		emit selectionChanged (CurrentItems_);
+
+		if (const auto& curIdx = sm->currentIndex ();
+			curIdx.isValid ())
+			MarkRowAsRead (curIdx);
 	}
 
 	void ItemSelectionTracker::SaveCurrentItems (const QModelIndexList& rows)

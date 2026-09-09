@@ -26,18 +26,26 @@ namespace LC::Aggregator
 		Q_OBJECT
 
 		QAbstractItemView& View_;
+		ItemActions& Actions_;
 
 		bool TapeMode_ = false;
 		QSet<IDType_t> CurrentItems_;
 		QTimer& ReadMarkTimer_;
 
 		bool ScheduledSyncToSelection_ = false;
+		bool GestureActive_ = false;
 	public:
 		explicit ItemSelectionTracker (QAbstractItemView&, ItemActions&, QObject* = nullptr);
 
 		QSet<IDType_t> GetSelectedItems () const;
 		void SetTapeMode (bool);
+
+		bool eventFilter (QObject*, QEvent*) override;
 	private:
+		void EndGesture ();
+
+		void HandleImmediateSelectionChange ();
+		void SyncToSelection ();
 		void SaveCurrentItems (const QList<QModelIndex>&);
 		void MarkRowAsRead (const QModelIndex&);
 	signals:
