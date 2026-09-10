@@ -152,9 +152,7 @@ namespace LC::Aggregator
 		if (TapeMode_ || !row.isValid () || row.data (IItemsModel::ItemRole::IsRead).toBool ())
 			return;
 
-		if (const auto timeout = XmlSettingsManager::Instance ().property ("MarkAsReadTimeout").toInt ())
-			ReadMarkTimer_.start (std::chrono::seconds { timeout });
-		else
-			RunMarkAsRead (row);
+		const auto timeout = XmlSettingsManager::Instance ().property ("MarkAsReadTimeout").toInt ();
+		ReadMarkTimer_.start (std::chrono::seconds { timeout });
 	}
 }
