@@ -27,27 +27,40 @@ namespace LC::Aggregator
 
 		QAbstractItemView& View_;
 		ItemActions& Actions_;
+	public:
+		struct SelectedItem
+		{
+			IDType_t Channel_;
+			IDType_t Item_;
 
-		bool TapeMode_ = false;
-		QSet<IDType_t> CurrentItems_;
+			static SelectedItem FromIndex (const QModelIndex&);
+
+			auto operator<=> (const SelectedItem&) const = default;
+		};
+
+		friend std::size_t qHash (const SelectedItem& item, size_t seed);
+	private:
+		QSet<SelectedItem> CurrentItems_;
+
 		QTimer& ReadMarkTimer_;
 
+		bool TapeMode_ = false;
 		bool ScheduledSyncToSelection_ = false;
 		bool GestureActive_ = false;
 	public:
 		explicit ItemSelectionTracker (QAbstractItemView&, ItemActions&, QObject* = nullptr);
 
-		QSet<IDType_t> GetSelectedItems () const;
 		void SetTapeMode (bool);
 
 		bool eventFilter (QObject*, QEvent*) override;
 	private:
+		QSet<IDType_t> GetSelectedItems () const;
 		void EndGesture ();
 
 		void HandleImmediateSelectionChange ();
+		void ScheduleSyncToSelection ();
 		void SyncToSelection ();
-		void SaveCurrentItems (const QList<QModelIndex>&);
-		void MarkRowAsRead (const QModelIndex&);
+		void RearmMarkTimer ();
 	signals:
 		void refreshItemDisplay ();
 		void selectionChanged (const QSet<IDType_t>&);

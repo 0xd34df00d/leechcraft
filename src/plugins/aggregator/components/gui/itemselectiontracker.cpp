@@ -10,6 +10,7 @@
 #include <QAbstractItemView>
 #include <QMouseEvent>
 #include <QTimer>
+#include <util/sll/prelude.h>
 #include "interfaces/aggregator/iitemsmodel.h"
 #include "components/storage/storagebackendmanager.h"
 #include "xmlsettingsmanager.h"
@@ -18,16 +19,26 @@ namespace LC::Aggregator
 {
 	namespace
 	{
-		void RunMarkAsRead (const QModelIndex& index)
+		void RunMarkAsRead (const QSet<ItemSelectionTracker::SelectedItem>& items)
 		{
-			if (!index.isValid () || index.data (IItemsModel::ItemRole::IsRead).toBool ())
-				return;
-
 			const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-			const auto channelId = index.data (IItemsModel::ItemRole::ItemChannelId).value<IDType_t> ();
-			const auto itemId = index.data (IItemsModel::ItemRole::ItemId).value<IDType_t> ();
-			sb->SetItemUnread (channelId, itemId, false);
+			for (const auto& item : items)
+				sb->SetItemUnread (item.Channel_, item.Item_, false);
 		}
+	}
+
+	ItemSelectionTracker::SelectedItem ItemSelectionTracker::SelectedItem::FromIndex (const QModelIndex& idx)
+	{
+		return
+		{
+			.Channel_ = idx.data (IItemsModel::ItemRole::ItemChannelId).value<IDType_t> (),
+			.Item_ = idx.data (IItemsModel::ItemRole::ItemId).value<IDType_t> (),
+		};
+	}
+
+	std::size_t qHash (const ItemSelectionTracker::SelectedItem& item, size_t seed)
+	{
+		return qHashMulti (seed, item.Channel_, item.Item_);
 	}
 
 	ItemSelectionTracker::ItemSelectionTracker (QAbstractItemView& view, ItemActions& actions, QObject *parent)
@@ -36,7 +47,7 @@ namespace LC::Aggregator
 	, Actions_ { actions }
 	, ReadMarkTimer_ { *new QTimer { this } }
 	{
-		ReadMarkTimer_.callOnTimeout (this, [this] { RunMarkAsRead (View_.currentIndex ()); });
+		ReadMarkTimer_.callOnTimeout (this, [this] { RunMarkAsRead (CurrentItems_); });
 		ReadMarkTimer_.setSingleShot (true);
 
 		const auto sm = view.selectionModel ();
@@ -58,20 +69,17 @@ namespace LC::Aggregator
 				[&, sm] (const QModelIndex& from, const QModelIndex& to)
 				{
 					for (int row = from.row (); row <= to.row (); ++row)
-					{
-						const auto changedItemId = from.siblingAtRow (row).data (IItemsModel::ItemRole::ItemId).value<IDType_t> ();
-						if (CurrentItems_.contains (changedItemId))
+						if (CurrentItems_.contains (SelectedItem::FromIndex (from.siblingAtRow (row))))
 						{
 							Actions_.HandleSelectionChanged (sm->selectedRows ());
 							return;
 						}
-					}
 				});
 	}
 
 	QSet<IDType_t> ItemSelectionTracker::GetSelectedItems () const
 	{
-		return CurrentItems_;
+		return Util::Map (CurrentItems_, &SelectedItem::Item_);
 	}
 
 	void ItemSelectionTracker::SetTapeMode (bool tape)
@@ -107,15 +115,19 @@ namespace LC::Aggregator
 
 	void ItemSelectionTracker::EndGesture ()
 	{
-		if (std::exchange (GestureActive_, false) && ScheduledSyncToSelection_)
-			QTimer::singleShot (0, this, &ItemSelectionTracker::SyncToSelection);
+		if (std::exchange (GestureActive_, false))
+			ScheduleSyncToSelection ();
 	}
 
 	void ItemSelectionTracker::HandleImmediateSelectionChange ()
 	{
-		if (std::exchange (ScheduledSyncToSelection_, true))
-			return;
+		if (!ScheduledSyncToSelection_)
+			ScheduleSyncToSelection ();
+	}
 
+	void ItemSelectionTracker::ScheduleSyncToSelection ()
+	{
+		ScheduledSyncToSelection_ = true;
 		QTimer::singleShot (0, this, &ItemSelectionTracker::SyncToSelection);
 	}
 
@@ -130,26 +142,24 @@ namespace LC::Aggregator
 		if (!TapeMode_)
 			emit refreshItemDisplay ();
 
-		SaveCurrentItems (rows);
-		emit selectionChanged (CurrentItems_);
+		if (const auto isUnread = [] (const QModelIndex& row) { return !row.data (IItemsModel::ItemRole::IsRead).toBool (); };
+			std::ranges::any_of (rows, isUnread))
+			RearmMarkTimer ();
 
-		if (const auto& curIdx = sm->currentIndex ();
-			curIdx.isValid ())
-			MarkRowAsRead (curIdx);
+		if (auto currentItems = Util::MapAs<QSet> (rows, &SelectedItem::FromIndex);
+			currentItems != CurrentItems_)
+		{
+			CurrentItems_ = std::move (currentItems);
+
+			emit selectionChanged (GetSelectedItems ());
+		}
 	}
 
-	void ItemSelectionTracker::SaveCurrentItems (const QModelIndexList& rows)
-	{
-		CurrentItems_.clear ();
-		for (const auto& row : rows)
-			CurrentItems_ << row.data (IItemsModel::ItemRole::ItemId).value<IDType_t> ();
-	}
-
-	void ItemSelectionTracker::MarkRowAsRead (const QModelIndex& row)
+	void ItemSelectionTracker::RearmMarkTimer ()
 	{
 		ReadMarkTimer_.stop ();
 
-		if (TapeMode_ || !row.isValid () || row.data (IItemsModel::ItemRole::IsRead).toBool ())
+		if (TapeMode_)
 			return;
 
 		const auto timeout = XmlSettingsManager::Instance ().property ("MarkAsReadTimeout").toInt ();
