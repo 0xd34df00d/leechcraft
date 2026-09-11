@@ -121,6 +121,9 @@ namespace LC::Aggregator
 
 	void ItemSelectionTracker::HandleImmediateSelectionChange ()
 	{
+		if (!TapeMode_)
+			emit refreshItemDisplay ();
+
 		if (!ScheduledSyncToSelection_)
 			ScheduleSyncToSelection ();
 	}
@@ -139,8 +142,6 @@ namespace LC::Aggregator
 		const auto sm = View_.selectionModel ();
 		const auto& rows = sm->selectedRows ();
 		Actions_.HandleSelectionChanged (rows);
-		if (!TapeMode_)
-			emit refreshItemDisplay ();
 
 		if (const auto isUnread = [] (const QModelIndex& row) { return !row.data (IItemsModel::ItemRole::IsRead).toBool (); };
 			std::ranges::any_of (rows, isUnread))
