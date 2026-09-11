@@ -121,6 +121,8 @@ namespace LC::Aggregator
 
 	void ItemSelectionTracker::HandleImmediateSelectionChange ()
 	{
+		ReadMarkTimer_.stop ();
+
 		if (!TapeMode_)
 			emit refreshItemDisplay ();
 
