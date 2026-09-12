@@ -120,7 +120,16 @@ namespace LC::Aggregator
 
 		void AddFeed (const Feed&);
 		void UpdateItem (const Item&);
+
+		struct UnreadItemId
+		{
+			IDType_t Channel_;
+			IDType_t Item_;
+		};
+
 		void SetItemUnread (IDType_t, IDType_t, bool);
+		void SetItemsUnread (const QList<UnreadItemId>&, bool);
+
 		void AddChannel (const Channel&);
 		void AddItem (const Item&);
 		void RemoveItems (const QSet<IDType_t>&);

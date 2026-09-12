@@ -873,6 +873,40 @@ namespace LC::Aggregator
 		emit channelUnreadCountUpdated (channelId, UnreadDelta { unread ? 1 : -1 });
 	}
 
+	void SQLStorageBackend::SetItemsUnread (const QList<UnreadItemId>& items, bool unread)
+	{
+		QHash<IDType_t, QList<IDType_t>> affectedChannels;
+		for (const auto& item : items)
+			affectedChannels [item.Channel_] << item.Item_;
+
+		for (const auto [cid, chanItems] : affectedChannels.asKeyValueRange ())
+		{
+			QSet<IDType_t> affected;
+			affected.reserve (chanItems.size ());
+			{
+				Util::DBLock lock { DB_ };
+				lock.Init ();
+
+				for (const auto itemId : chanItems)
+				{
+					const bool itemChanged = Items_->Update (sph::f<&ItemR::Unread_> = unread,
+							sph::f<&ItemR::ItemID_> == itemId &&
+							sph::f<&ItemR::Unread_> == !unread);
+					if (itemChanged)
+						affected << itemId;
+				}
+
+				lock.Good ();
+			}
+			if (affected.isEmpty ())
+				continue;
+
+			emit itemsReadStatusUpdated (affected, unread);
+			const int affectedCount = affected.size ();
+			emit channelUnreadCountUpdated (cid, UnreadDelta { unread ? affectedCount : -affectedCount });
+		}
+	}
+
 	void SQLStorageBackend::AddChannel (const Channel& channel)
 	{
 		Channels_->Insert (ChannelR::FromOrig (channel));
