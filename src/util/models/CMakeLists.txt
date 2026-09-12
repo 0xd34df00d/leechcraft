@@ -9,7 +9,6 @@ add_util_library (util-models
 		checkableproxymodel.cpp
 		fixedstringfilterproxymodel.cpp
 		flatitemsmodelbase.cpp
-		flattenfiltermodel.cpp
 		flattofoldersproxymodel.cpp
 		mergemodel.cpp
 		modeliterator.cpp
