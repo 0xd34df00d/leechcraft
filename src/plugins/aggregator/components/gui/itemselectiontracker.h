@@ -44,13 +44,10 @@ namespace LC::Aggregator
 
 		QTimer& ReadMarkTimer_;
 
-		bool TapeMode_ = false;
 		bool ScheduledSyncToSelection_ = false;
 		bool GestureActive_ = false;
 	public:
 		explicit ItemSelectionTracker (QAbstractItemView&, ItemActions&, QObject* = nullptr);
-
-		void SetTapeMode (bool);
 
 		bool eventFilter (QObject*, QEvent*) override;
 	private:

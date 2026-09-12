@@ -43,7 +43,6 @@ namespace LC::Aggregator
 			ItemLinkOpen,
 			ItemLinkCopy,
 			HideReadItems,
-			ShowAsTape,
 			PrevUnreadItem,
 			NextUnreadItem,
 			PrevItem,
@@ -80,8 +79,6 @@ namespace LC::Aggregator
 				return MakeInfo (ItemActions::tr ("Copy news item link"), "edit-copy", "C"_qs);
 			case HideReadItems:
 				return MakeInfo (ItemActions::tr ("Hide read items"), "mail-mark-unread");
-			case ShowAsTape:
-				return MakeInfo (ItemActions::tr ("Show items as tape"), "format-list-unordered");
 			case PrevUnreadItem:
 				return MakeInfo (ItemActions::tr ("Previous unread item"), "go-first", "Shift+K"_qs);
 			case NextUnreadItem:
@@ -129,8 +126,6 @@ namespace LC::Aggregator
 		ToolbarActions_ << MakeAction (HideReadItems,
 				Deps_.SetHideRead_,
 				{ .Checked_ = xsm.property ("HideReadItems").toBool () });
-		ToolbarActions_ << MakeAction (ShowAsTape, deps.SetShowTape_,
-				{ .Checked_ = xsm.Property ("ShowAsTape", false).toBool () });
 
 		auto& nav = Deps_.ItemNavigator_;
 		InvisibleActions_ << MakeAction (PrevUnreadItem, [&nav] { nav.MoveToPrevUnread (); });

@@ -65,8 +65,6 @@ namespace Aggregator
 
 		void SetChannels (const QList<IDType_t>&);
 	private:
-		void SetTapeMode (bool);
-
 		void RenderSelectedItems ();
 	private slots:
 		void on_CaseSensitiveSearch__stateChanged (int);

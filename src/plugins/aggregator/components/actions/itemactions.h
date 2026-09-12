@@ -51,7 +51,6 @@ namespace LC::Aggregator
 			UpdatesManager& UpdatesManager_;
 
 			std::function<void (bool)> SetHideRead_;
-			std::function<void (bool)> SetShowTape_;
 
 			std::function<QList<QModelIndex> ()> GetSelection_;
 

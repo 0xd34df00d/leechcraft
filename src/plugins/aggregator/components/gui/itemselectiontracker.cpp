@@ -83,13 +83,6 @@ namespace LC::Aggregator
 		return Util::Map (CurrentItems_, &SelectedItem::Item_);
 	}
 
-	void ItemSelectionTracker::SetTapeMode (bool tape)
-	{
-		TapeMode_ = tape;
-		if (tape)
-			ReadMarkTimer_.stop ();
-	}
-
 	bool ItemSelectionTracker::eventFilter (QObject*, QEvent *ev)
 	{
 		switch (ev->type ())
@@ -126,8 +119,7 @@ namespace LC::Aggregator
 	{
 		ReadMarkTimer_.stop ();
 
-		if (!TapeMode_)
-			emit refreshItemDisplay ();
+		emit refreshItemDisplay ();
 
 		if (!ScheduledSyncToSelection_)
 			ScheduleSyncToSelection ();
@@ -163,11 +155,6 @@ namespace LC::Aggregator
 
 	void ItemSelectionTracker::RearmMarkTimer ()
 	{
-		ReadMarkTimer_.stop ();
-
-		if (TapeMode_)
-			return;
-
 		const auto timeout = XmlSettingsManager::Instance ().property ("MarkAsReadTimeout").toInt ();
 		ReadMarkTimer_.start (std::chrono::seconds { timeout });
 	}

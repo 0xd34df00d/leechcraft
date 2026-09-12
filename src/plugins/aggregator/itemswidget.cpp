@@ -49,8 +49,6 @@ namespace LC::Aggregator
 
 		QToolBar *ControlToolBar_ = nullptr;
 
-		bool TapeMode_ = XmlSettingsManager::Instance ().Property ("ShowAsTape", false).toBool ();
-
 		const std::unique_ptr<ItemsListModel> ItemsModel_ = std::make_unique<ItemsListModel> (GetProxyHolder ()->GetIconThemeManager ());
 		ItemsCategoriesTracker CategoriesTracker_ { *ItemsModel_ };
 		const std::unique_ptr<ItemsFilterModel> ItemsFilterModel_ = std::make_unique<ItemsFilterModel> (*ItemsModel_, Parent_);
@@ -81,7 +79,6 @@ namespace LC::Aggregator
 			.ShortcutsMgr_ = deps.ShortcutsMgr_,
 			.UpdatesManager_ = deps.UpdatesManager_,
 			.SetHideRead_ = [this] (bool hide) { Impl_->ItemsFilterModel_->SetHideRead (hide); },
-			.SetShowTape_ = [this] (bool tape) { SetTapeMode (tape); },
 			.GetSelection_ = [this] { return Impl_->Ui_.Items_->selectionModel ()->selectedRows (); },
 			.ItemNavigator_ = ItemNavigator
 			{
@@ -133,7 +130,6 @@ namespace LC::Aggregator
 				[this] (bool visible) { Impl_->Ui_.ItemView_->SetNavBarVisible (visible); });
 
 		SelectionTracker_ = std::make_unique<ItemSelectionTracker> (*Impl_->Ui_.Items_, *Actions_, this);
-		SelectionTracker_->SetTapeMode (Impl_->TapeMode_);
 		connect (SelectionTracker_.get (),
 				&ItemSelectionTracker::refreshItemDisplay,
 				this,
@@ -162,15 +158,6 @@ namespace LC::Aggregator
 		return Impl_->ControlToolBar_;
 	}
 
-	void ItemsWidget::SetTapeMode (bool tape)
-	{
-		Impl_->TapeMode_ = tape;
-		SelectionTracker_->SetTapeMode (tape);
-		RenderSelectedItems ();
-
-		XmlSettingsManager::Instance ().setProperty ("ShowAsTape", tape);
-	}
-
 	void ItemsWidget::SetChannels (const QList<IDType_t>& channels)
 	{
 		Impl_->ItemsModel_->SetChannels (channels);
@@ -193,16 +180,6 @@ namespace LC::Aggregator
 
 	namespace
 	{
-		QVector<IDType_t> GetAllDisplayedItems (const QAbstractItemModel& model)
-		{
-			QVector<IDType_t> result;
-			const auto size = model.rowCount ();
-			result.reserve (size);
-			for (int i = 0; i < size; ++ i)
-				result << model.index (i, 0).data (IItemsModel::ItemRole::ItemId).value<IDType_t> ();
-			return result;
-		}
-
 		QVector<IDType_t> ToItemIds (const QModelIndexList& idxes)
 		{
 			QVector<IDType_t> result;
@@ -216,9 +193,7 @@ namespace LC::Aggregator
 	void ItemsWidget::RenderSelectedItems ()
 	{
 		const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-		const auto& itemsToDisplay = Impl_->TapeMode_ ?
-				GetAllDisplayedItems (*Impl_->ItemsFilterModel_) :
-				ToItemIds (Impl_->Ui_.Items_->selectionModel ()->selectedRows ());
+		const auto& itemsToDisplay = ToItemIds (Impl_->Ui_.Items_->selectionModel ()->selectedRows ());
 
 		const auto preHtml = R"(<html><head><meta charset="UTF-8" /><title>News</title></head><body bgcolor=")"_qs +
 				palette ().color (QPalette::Base).name () +
