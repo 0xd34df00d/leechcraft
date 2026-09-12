@@ -22,8 +22,9 @@ namespace LC::Aggregator
 		void RunMarkAsRead (const QSet<ItemSelectionTracker::SelectedItem>& items)
 		{
 			const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-			for (const auto& item : items)
-				sb->SetItemUnread (item.Channel_, item.Item_, false);
+			const auto& idsList = Util::MapAs<QList> (items,
+					[] (const ItemSelectionTracker::SelectedItem& item) { return SQLStorageBackend::UnreadItemId { item.Channel_, item.Item_ }; });
+			sb->SetItemsUnread (idsList, false);
 		}
 	}
 
