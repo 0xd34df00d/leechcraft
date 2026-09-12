@@ -69,9 +69,9 @@ namespace LC::Aggregator
 				this,
 				&StorageBackendManager::channelDataUpdated);
 		connect (&backend,
-				&SQLStorageBackend::itemReadStatusUpdated,
+				&SQLStorageBackend::itemsReadStatusUpdated,
 				this,
-				&StorageBackendManager::itemReadStatusUpdated);
+				&StorageBackendManager::itemsReadStatusUpdated);
 		connect (&backend,
 				&SQLStorageBackend::itemDataUpdated,
 				this,

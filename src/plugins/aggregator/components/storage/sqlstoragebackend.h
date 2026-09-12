@@ -144,7 +144,7 @@ namespace LC::Aggregator
 		void channelAdded (const Channel& channel) const;
 		void channelUnreadCountUpdated (IDType_t channelId, const UnreadChange& unreadChange) const;
 		void channelDataUpdated (const Channel&) const;
-		void itemReadStatusUpdated (IDType_t channelId, IDType_t itemId, bool unread) const;
+		void itemsReadStatusUpdated (const QSet<IDType_t>&, bool unread) const;
 		void itemDataUpdated (const Item& item) const;
 		void itemsRemoved (const QSet<IDType_t>& items) const;
 		void channelRemoved (IDType_t channelId);

@@ -49,9 +49,9 @@ namespace LC::Aggregator
 						ItemDataUpdated (item);
 				});
 		connect (&StorageBackendManager::Instance (),
-				&StorageBackendManager::itemReadStatusUpdated,
+				&StorageBackendManager::itemsReadStatusUpdated,
 				this,
-				&ItemsListModel::HandleItemReadStatusUpdated);
+				&ItemsListModel::HandleItemsReadStatusUpdated);
 	}
 
 	QAbstractItemModel& ItemsListModel::GetQModel ()
@@ -319,19 +319,23 @@ namespace LC::Aggregator
 		return SB_.localData ();
 	}
 
-	void ItemsListModel::HandleItemReadStatusUpdated (IDType_t channelId, IDType_t itemId, bool unread)
+	void ItemsListModel::HandleItemsReadStatusUpdated (const QSet<IDType_t>& itemsIds, bool unread)
 	{
-		if (!CurrentChannels_.contains (channelId))
+		const auto isChanged  = [&itemsIds] (const auto& item) { return itemsIds.contains (item.ItemID_); };
+		const auto firstIt = std::ranges::find_if (CurrentItems_, isChanged);
+		if (firstIt == CurrentItems_.end ())
 			return;
 
-		const auto pos = std::ranges::find_if (CurrentItems_,
-				[&itemId] (const ItemShort& itemShort) { return itemShort.ItemID_ == itemId; });
-		if (pos == CurrentItems_.end ())
-			return;
+		firstIt->Unread_ = unread;
 
-		pos->Unread_ = unread;
+		auto lastIt = firstIt;
+		for (auto it = std::next (firstIt); it != CurrentItems_.end (); ++it)
+			if (isChanged (*it))
+			{
+				it->Unread_ = unread;
+				lastIt = it;
+			}
 
-		const auto distance = pos - CurrentItems_.begin ();
-		emit dataChanged (index (distance, 0), index (distance, 1));
+		emit dataChanged (index (firstIt - CurrentItems_.begin (), 0), index (lastIt - CurrentItems_.begin (), 1));
 	}
 }

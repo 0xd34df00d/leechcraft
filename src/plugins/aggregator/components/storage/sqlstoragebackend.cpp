@@ -869,7 +869,7 @@ namespace LC::Aggregator
 		if (!affected)
 			return;
 
-		emit itemReadStatusUpdated (channelId, itemId, unread);
+		emit itemsReadStatusUpdated ({ itemId }, unread);
 		emit channelUnreadCountUpdated (channelId, UnreadDelta { unread ? 1 : -1 });
 	}
 
@@ -955,9 +955,13 @@ namespace LC::Aggregator
 
 		emit channelUnreadCountUpdated (channelId, UnreadTotal { state ? oldItems.size () : 0 });
 
+		QSet<IDType_t> affectedItems;
+		affectedItems.reserve (oldItems.size ());
 		for (const auto& [itemId, oldState] : oldItems)
 			if (oldState != state)
-				emit itemReadStatusUpdated (channelId, itemId, state);
+				affectedItems << itemId;
+		if (!affectedItems.isEmpty ())
+			emit itemsReadStatusUpdated (affectedItems, state);
 	}
 
 	void SQLStorageBackend::WriteEnclosures (const QList<Enclosure>& enclosures)

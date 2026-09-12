@@ -46,7 +46,7 @@ namespace LC::Aggregator
 
 		void channelDataUpdated (const Channel&) const;
 
-		void itemReadStatusUpdated (IDType_t channelId, IDType_t itemId, bool unread) const;
+		void itemsReadStatusUpdated (const QSet<IDType_t>&, bool unread) const;
 
 		/** @brief Notifies about updated item information.
 		 *

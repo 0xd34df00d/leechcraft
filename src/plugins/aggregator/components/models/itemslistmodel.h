@@ -60,6 +60,6 @@ namespace LC::Aggregator
 		void RemoveChunked (F&&);
 
 		SQLStorageBackend_ptr GetSB () const;
-		void HandleItemReadStatusUpdated (IDType_t, IDType_t, bool);
+		void HandleItemsReadStatusUpdated (const QSet<IDType_t>&, bool);
 	};
 }
