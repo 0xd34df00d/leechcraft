@@ -12,12 +12,12 @@
 namespace LC::Aggregator
 {
 	ItemCategorySelector::ItemCategorySelector (QWidget *parent)
-	: Util::CategorySelector { parent }
+	: CategorySelector { parent }
 	{
 		SetCaption (tr ("Items categories"));
 		setWindowFlags (Qt::Widget);
 		setMinimumHeight (0);
-		SetButtonsMode (Util::CategorySelector::ButtonsMode::NoButtons);
+		SetButtonsMode (ButtonsMode::NoButtons);
 
 		XmlSettingsManager::Instance ().RegisterObject ("ShowCategorySelector", this,
 				[this] (bool visible)
@@ -29,7 +29,7 @@ namespace LC::Aggregator
 
 	void ItemCategorySelector::SetPossibleSelections (QStringList selections, bool sort)
 	{
-		Util::CategorySelector::SetPossibleSelections (selections, sort);
+		CategorySelector::SetPossibleSelections (selections, sort);
 		SelectAll ();
 		UpdateVisibility ();
 	}
