@@ -86,6 +86,8 @@ namespace LC::Aggregator
 	void ItemSelectionTracker::SetTapeMode (bool tape)
 	{
 		TapeMode_ = tape;
+		if (tape)
+			ReadMarkTimer_.stop ();
 	}
 
 	bool ItemSelectionTracker::eventFilter (QObject*, QEvent *ev)
