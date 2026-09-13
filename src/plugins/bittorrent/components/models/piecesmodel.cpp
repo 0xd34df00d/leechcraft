@@ -8,6 +8,7 @@
 
 #include "piecesmodel.h"
 #include <libtorrent/torrent_handle.hpp>
+#include <util/models/modelsanitizer.h>
 #include <util/sll/qtutil.h>
 #include "types.h"
 #include "ltutils.h"
@@ -24,6 +25,7 @@ namespace LC::BitTorrent
 	, Headers_ { tr ("Index"), tr ("State") }
 	, Index_ { index }
 	{
+		Util::InstallModelSanitizer (*this);
 	}
 
 	int PiecesModel::columnCount (const QModelIndex&) const

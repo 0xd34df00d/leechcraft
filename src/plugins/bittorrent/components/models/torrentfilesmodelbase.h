@@ -14,6 +14,7 @@
 #include <QString>
 #include <QAbstractItemModel>
 #include <util/models/modelitembase.h>
+#include <util/models/modelsanitizer.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 
@@ -88,6 +89,7 @@ namespace LC::BitTorrent
 		, HeaderData_ { std::move (headers) }
 		, RootNode_ { std::make_shared<T> (std::shared_ptr<T> {}) }
 		{
+			Util::InstallModelSanitizer (*this);
 		}
 
 		QModelIndex IndexForNode (T *node, int column = 0) const

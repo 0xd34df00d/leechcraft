@@ -12,6 +12,7 @@
 #include <libtorrent/peer_info.hpp>
 #include <libtorrent/torrent_handle.hpp>
 #include <libtorrent/torrent_status.hpp>
+#include <util/models/modelsanitizer.h>
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include <util/sll/qtutil.h>
@@ -36,6 +37,7 @@ namespace LC::BitTorrent
 	}
 	, Index_ { idx }
 	{
+		Util::InstallModelSanitizer (*this);
 	}
 
 	int PeersModel::columnCount (const QModelIndex&) const
