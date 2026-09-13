@@ -10,12 +10,12 @@
 
 #include <QObject>
 #include <QSet>
+#include <QTimer>
 #include "components/actions/itemactions.h"
 #include "common.h"
 
 class QAbstractItemView;
 class QModelIndex;
-class QTimer;
 
 namespace LC::Aggregator
 {
@@ -42,7 +42,7 @@ namespace LC::Aggregator
 	private:
 		QSet<SelectedItem> CurrentItems_;
 
-		QTimer& ReadMarkTimer_;
+		QTimer ReadMarkTimer_;
 
 		bool ScheduledSyncToSelection_ = false;
 		bool GestureActive_ = false;

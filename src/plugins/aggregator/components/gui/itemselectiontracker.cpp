@@ -46,7 +46,6 @@ namespace LC::Aggregator
 	: QObject { parent }
 	, View_ { view }
 	, Actions_ { actions }
-	, ReadMarkTimer_ { *new QTimer { this } }
 	{
 		ReadMarkTimer_.callOnTimeout (this, [this] { RunMarkAsRead (CurrentItems_); });
 		ReadMarkTimer_.setSingleShot (true);
