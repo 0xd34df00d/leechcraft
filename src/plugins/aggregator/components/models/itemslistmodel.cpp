@@ -12,6 +12,7 @@
 #include <QPalette>
 #include <QTextDocument>
 #include <QtDebug>
+#include <util/models/modelsanitizer.h>
 #include <util/sll/qtutil.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "components/parsers/utils.h"
@@ -52,6 +53,8 @@ namespace LC::Aggregator
 				&StorageBackendManager::itemsReadStatusUpdated,
 				this,
 				&ItemsListModel::HandleItemsReadStatusUpdated);
+
+		Util::InstallModelSanitizer (*this);
 	}
 
 	QAbstractItemModel& ItemsListModel::GetQModel ()

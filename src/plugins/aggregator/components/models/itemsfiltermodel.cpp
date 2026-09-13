@@ -9,6 +9,7 @@
 #include "itemsfiltermodel.h"
 #include <algorithm>
 #include <QtDebug>
+#include <util/models/modelsanitizer.h>
 #include <util/models/selectionproxymodel.h>
 #include <util/sll/containerconversions.h>
 #include "components/storage/storagebackendmanager.h"
@@ -35,6 +36,8 @@ namespace LC::Aggregator
 					UnreadOnTop_ = unreadOnTop;
 					invalidate ();
 				});
+
+		Util::InstallModelSanitizer (*this);
 	}
 
 	ItemsFilterModel::~ItemsFilterModel () = default;

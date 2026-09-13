@@ -16,6 +16,7 @@
 #include <QPalette>
 #include <QIcon>
 #include <QFontMetrics>
+#include <util/models/modelsanitizer.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
@@ -70,6 +71,7 @@ namespace LC::Aggregator
 				this,
 				&ChannelsModel::HandleFeedErrorsChanged);
 
+		Util::InstallModelSanitizer (*this);
 		PopulateChannels ();
 	}
 
