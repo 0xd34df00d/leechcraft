@@ -10,14 +10,10 @@
 
 #include <QSortFilterProxyModel>
 
-class QMenu;
-class QToolBar;
-
 namespace LC::Aggregator
 {
 	class JobHolderRepresentationModel : public QSortFilterProxyModel
 	{
-		QModelIndex Selected_;
 	public:
 		struct Deps
 		{
