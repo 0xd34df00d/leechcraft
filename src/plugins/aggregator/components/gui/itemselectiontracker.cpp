@@ -117,22 +117,19 @@ namespace LC::Aggregator
 	void ItemSelectionTracker::HandleImmediateSelectionChange ()
 	{
 		ReadMarkTimer_.stop ();
-
 		emit refreshItemDisplay ();
-
-		if (!ScheduledSyncToSelection_)
-			ScheduleSyncToSelection ();
+		ScheduleSyncToSelection ();
 	}
 
 	void ItemSelectionTracker::ScheduleSyncToSelection ()
 	{
-		ScheduledSyncToSelection_ = true;
-		QTimer::singleShot (0, this, &ItemSelectionTracker::SyncToSelection);
+		if (!std::exchange (ScheduledSyncToSelection_, true))
+			QTimer::singleShot (0, this, &ItemSelectionTracker::SyncToSelection);
 	}
 
 	void ItemSelectionTracker::SyncToSelection ()
 	{
-		if (GestureActive_ || !std::exchange (ScheduledSyncToSelection_, false))
+		if (!std::exchange (ScheduledSyncToSelection_, false) || GestureActive_)
 			return;
 
 		const auto sm = View_.selectionModel ();
