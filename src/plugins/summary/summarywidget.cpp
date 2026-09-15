@@ -162,7 +162,6 @@ namespace LC::Summary
 		connectAction (&QAbstractItemView::activated, &IJobHolderRepresentationHandler::HandleActivated);
 		connectAction (&QAbstractItemView::clicked, &IJobHolderRepresentationHandler::HandleClicked);
 		connectAction (&QAbstractItemView::doubleClicked, &IJobHolderRepresentationHandler::HandleDoubleClicked);
-		connectAction (&QAbstractItemView::entered, &IJobHolderRepresentationHandler::HandleEntered);
 		connectAction (&QAbstractItemView::pressed, &IJobHolderRepresentationHandler::HandlePressed);
 
 		connect (Ui_.PluginsTasksTree_->selectionModel (),

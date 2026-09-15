@@ -159,7 +159,6 @@ public:
 	virtual void HandleActivated (const QModelIndex&) {}
 	virtual void HandleClicked (const QModelIndex&) {}
 	virtual void HandleDoubleClicked (const QModelIndex&) {}
-	virtual void HandleEntered (const QModelIndex&) {}
 	virtual void HandlePressed (const QModelIndex&) {}
 
 	virtual QWidget* GetInfoWidget () { return nullptr; }
