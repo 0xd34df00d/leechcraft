@@ -153,8 +153,6 @@ public:
 	 */
 	virtual QAbstractItemModel& GetRepresentation () = 0;
 
-	virtual void HandleCurrentChanged (const QModelIndex&) {}
-	virtual void HandleCurrentColumnChanged (const QModelIndex&) {}
 	virtual void HandleCurrentRowChanged (const QModelIndex&) {}
 	virtual void HandleSelectedRowsChanged (const QList<QModelIndex>&) {}
 

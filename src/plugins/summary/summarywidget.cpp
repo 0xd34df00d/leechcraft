@@ -155,12 +155,8 @@ namespace LC::Summary
 		};
 
 		const auto connectChange = std::bind_front (connectViewSignal, Ui_.PluginsTasksTree_->selectionModel ());
-		connectChange (&QItemSelectionModel::currentChanged,
-				&IJobHolderRepresentationHandler::HandleCurrentChanged);
 		connectChange (&QItemSelectionModel::currentRowChanged,
 				&IJobHolderRepresentationHandler::HandleCurrentRowChanged);
-		connectChange (&QItemSelectionModel::currentColumnChanged,
-				&IJobHolderRepresentationHandler::HandleCurrentColumnChanged);
 
 		const auto connectAction = std::bind_front (connectViewSignal, Ui_.PluginsTasksTree_);
 		connectAction (&QAbstractItemView::activated, &IJobHolderRepresentationHandler::HandleActivated);
@@ -290,9 +286,7 @@ namespace LC::Summary
 			return;
 
 		const auto& prevHandler = SrcModel2Handler_.at (CurrentModel_);
-		prevHandler->HandleCurrentChanged ({});
 		prevHandler->HandleCurrentRowChanged ({});
-		prevHandler->HandleCurrentColumnChanged ({});
 
 		CurrentModel_ = srcModel;
 
