@@ -8,7 +8,6 @@
 
 #include "itemselectiontracker.h"
 #include <QAbstractItemView>
-#include <QMouseEvent>
 #include <QTimer>
 #include <util/sll/prelude.h>
 #include "interfaces/aggregator/iitemsmodel.h"
@@ -44,34 +43,38 @@ namespace LC::Aggregator
 
 	ItemSelectionTracker::ItemSelectionTracker (QAbstractItemView& view, ItemActions& actions, QObject *parent)
 	: QObject { parent }
-	, View_ { view }
+	, Tracker_ { view }
 	, Actions_ { actions }
 	{
 		ReadMarkTimer_.callOnTimeout (this, [this] { RunMarkAsRead (CurrentItems_); });
 		ReadMarkTimer_.setSingleShot (true);
 
-		const auto sm = view.selectionModel ();
-
-		View_.viewport ()->installEventFilter (this);
-
-		connect (sm,
-				&QItemSelectionModel::selectionChanged,
+		connect (&Tracker_,
+				&Util::ViewSelectionTracker::gestureStarted,
+				&ReadMarkTimer_,
+				&QTimer::stop);
+		connect (&Tracker_,
+				&Util::ViewSelectionTracker::selectionChanging,
 				this,
-				&ItemSelectionTracker::HandleImmediateSelectionChange);
-		connect (view.model (),
-				&QAbstractItemModel::modelReset,
+				[this]
+				{
+					ReadMarkTimer_.stop ();
+					emit refreshItemDisplay ();
+				});
+		connect (&Tracker_,
+				&Util::ViewSelectionTracker::selectionSettled,
 				this,
-				&ItemSelectionTracker::HandleImmediateSelectionChange);
+				&ItemSelectionTracker::HandleSelectionChanged);
 
 		connect (view.model (),
 				&QAbstractItemModel::dataChanged,
 				this,
-				[&, sm] (const QModelIndex& from, const QModelIndex& to)
+				[&] (const QModelIndex& from, const QModelIndex& to)
 				{
 					for (int row = from.row (); row <= to.row (); ++row)
 						if (CurrentItems_.contains (SelectedItem::FromIndex (from.siblingAtRow (row))))
 						{
-							Actions_.HandleSelectionChanged (sm->selectedRows ());
+							Actions_.HandleSelectionChanged (view.selectionModel ()->selectedRows ());
 							return;
 						}
 				});
@@ -82,58 +85,8 @@ namespace LC::Aggregator
 		return Util::Map (CurrentItems_, &SelectedItem::Item_);
 	}
 
-	bool ItemSelectionTracker::eventFilter (QObject*, QEvent *ev)
+	void ItemSelectionTracker::HandleSelectionChanged (const QList<QModelIndex>& rows)
 	{
-		switch (ev->type ())
-		{
-		case QEvent::MouseButtonDblClick:
-		case QEvent::MouseButtonPress:
-			if (static_cast<QMouseEvent*> (ev)->button () == Qt::LeftButton)
-			{
-				GestureActive_ = true;
-				ReadMarkTimer_.stop ();
-			}
-			break;
-		case QEvent::MouseButtonRelease:
-			if (static_cast<QMouseEvent*> (ev)->button () == Qt::LeftButton)
-				EndGesture ();
-			break;
-		case QEvent::UngrabMouse:
-			EndGesture ();
-			break;
-		default:
-			break;
-		}
-
-		return false;
-	}
-
-	void ItemSelectionTracker::EndGesture ()
-	{
-		if (std::exchange (GestureActive_, false))
-			ScheduleSyncToSelection ();
-	}
-
-	void ItemSelectionTracker::HandleImmediateSelectionChange ()
-	{
-		ReadMarkTimer_.stop ();
-		emit refreshItemDisplay ();
-		ScheduleSyncToSelection ();
-	}
-
-	void ItemSelectionTracker::ScheduleSyncToSelection ()
-	{
-		if (!std::exchange (ScheduledSyncToSelection_, true))
-			QTimer::singleShot (0, this, &ItemSelectionTracker::SyncToSelection);
-	}
-
-	void ItemSelectionTracker::SyncToSelection ()
-	{
-		if (!std::exchange (ScheduledSyncToSelection_, false) || GestureActive_)
-			return;
-
-		const auto sm = View_.selectionModel ();
-		const auto& rows = sm->selectedRows ();
 		Actions_.HandleSelectionChanged (rows);
 
 		if (const auto isUnread = [] (const QModelIndex& row) { return !row.data (IItemsModel::ItemRole::IsRead).toBool (); };

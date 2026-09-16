@@ -11,6 +11,7 @@
 #include <QObject>
 #include <QSet>
 #include <QTimer>
+#include <util/gui/viewselectiontracker.h>
 #include "components/actions/itemactions.h"
 #include "common.h"
 
@@ -25,7 +26,7 @@ namespace LC::Aggregator
 	{
 		Q_OBJECT
 
-		QAbstractItemView& View_;
+		Util::ViewSelectionTracker Tracker_;
 		ItemActions& Actions_;
 	public:
 		struct SelectedItem
@@ -43,20 +44,12 @@ namespace LC::Aggregator
 		QSet<SelectedItem> CurrentItems_;
 
 		QTimer ReadMarkTimer_;
-
-		bool ScheduledSyncToSelection_ = false;
-		bool GestureActive_ = false;
 	public:
 		explicit ItemSelectionTracker (QAbstractItemView&, ItemActions&, QObject* = nullptr);
-
-		bool eventFilter (QObject*, QEvent*) override;
 	private:
 		QSet<IDType_t> GetSelectedItems () const;
-		void EndGesture ();
 
-		void HandleImmediateSelectionChange ();
-		void ScheduleSyncToSelection ();
-		void SyncToSelection ();
+		void HandleSelectionChanged (const QList<QModelIndex>&);
 		void RearmMarkTimer ();
 	signals:
 		void refreshItemDisplay ();
