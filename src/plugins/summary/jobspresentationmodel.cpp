@@ -86,7 +86,7 @@ namespace LC::Summary
 						CachedRowInfos_.insert (first, last - first + 1, {});
 				});
 		connect (model,
-				&QAbstractItemModel::rowsAboutToBeRemoved,
+				&QAbstractItemModel::rowsRemoved,
 				this,
 				[this] (const QModelIndex& parent, int first, int last)
 				{
