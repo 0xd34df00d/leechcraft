@@ -173,9 +173,8 @@ namespace LC::Summary
 
 	Qt::ItemFlags JobsPresentationModel::flags (const QModelIndex& index) const
 	{
-		if (index.column () == 0)
-			return mapToSource (index).flags ();
-		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+		const auto rowIndex = index.column () > Name ? index.siblingAtColumn (Name) : index;
+		return QIdentityProxyModel::flags (rowIndex);
 	}
 
 	namespace
