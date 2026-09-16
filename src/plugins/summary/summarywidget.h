@@ -72,7 +72,6 @@ namespace LC::Summary
 		void SetFilterParams ();
 
 		void SetCurrentRow (const QModelIndex&);
-		void EnsureCurrentRowSelected ();
 	signals:
 		void removeTab () override;
 		void raiseTab () override;

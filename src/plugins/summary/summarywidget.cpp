@@ -137,10 +137,6 @@ namespace LC::Summary
 				&QItemSelectionModel::currentRowChanged,
 				this,
 				&SummaryWidget::SetCurrentRow);
-		connect (Ui_.PluginsTasksTree_->selectionModel (),
-				&QItemSelectionModel::currentRowChanged,
-				this,
-				&SummaryWidget::EnsureCurrentRowSelected);
 
 		auto connectViewSignal = [this] (auto emitter, auto signal, auto method)
 		{
@@ -303,13 +299,5 @@ namespace LC::Summary
 	void SummaryWidget::SetFilterParams ()
 	{
 		TagsFilterModel_.SetFilterString (SearchWidget_->GetEdit ().text ());
-	}
-
-	void SummaryWidget::EnsureCurrentRowSelected ()
-	{
-		const auto selm = Ui_.PluginsTasksTree_->selectionModel ();
-		if (const auto& cur = selm->currentIndex ();
-			cur.isValid () && !selm->rowIntersectsSelection (cur.row ()))
-			selm->select (cur, QItemSelectionModel::Select | QItemSelectionModel::Rows);
 	}
 }
