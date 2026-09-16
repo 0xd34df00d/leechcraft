@@ -33,6 +33,7 @@ add_util_library (util-gui
 		statesaver.cpp
 		menumodeladapter.cpp
 		progressdelegate.cpp
+		viewselectiontracker.cpp
 	DEPENDS
 		leechcraft-util-network
 		leechcraft-util-shortcuts
