@@ -137,16 +137,6 @@ namespace LC::Aggregator
 		}
 	}
 
-	namespace
-	{
-		QString GetChannelTitle (const ChannelShort& channel)
-		{
-			return channel.DisplayTitle_.isEmpty () ?
-					channel.Title_ :
-					channel.DisplayTitle_;
-		}
-	}
-
 	QVariant ChannelsModel::data (const QModelIndex& index, int role) const
 	{
 		if (!index.isValid ())
@@ -162,7 +152,7 @@ namespace LC::Aggregator
 			switch (column)
 			{
 			case ColumnTitle:
-				return GetChannelTitle (channel);
+				return channel.GetEffectiveTitle ();
 			case ColumnUnread:
 				return channel.Unread_;
 			case ColumnLastBuild:
@@ -210,7 +200,7 @@ namespace LC::Aggregator
 		case ChannelRoles::HumanReadableTags:
 			return TagsManager_->GetTags (channel.Tags_);
 		case ChannelRoles::ChannelTitle:
-			return GetChannelTitle (channel);
+			return channel.GetEffectiveTitle ();
 		case ChannelRoles::ChannelLink:
 			return channel.Link_;
 		case ChannelRoles::ChannelShortStruct:

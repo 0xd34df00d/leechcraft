@@ -113,12 +113,13 @@ namespace LC::Aggregator
 
 	void ChannelActions::Rename (const ChannelShort& channel)
 	{
+		const auto& title = channel.GetEffectiveTitle ();
 		const auto& newName = QInputDialog::getText (nullptr,
 				tr ("Rename feed"),
 				tr ("New feed name:"),
 				QLineEdit::Normal,
-				channel.Title_);
-		if (newName.isEmpty () || newName == channel.Title_)
+				title);
+		if (newName.isEmpty () || newName == title)
 			return;
 
 		StorageBackendManager::Instance ().MakeStorageBackendForThread ()->SetChannelDisplayTitle (channel.ChannelID_, newName);
