@@ -67,25 +67,13 @@ namespace LC::Aggregator
 		return *JobHolderRepresentation_;
 	}
 
-	void RepresentationManager::HandleCurrentRowChanged (const QModelIndex& index)
-	{
-		if (index.isValid ())
-		{
-			CurrentChannel_ = index.data (ChannelRoles::ChannelShortStruct).value<ChannelShort> ();
-			SelectedIdProxyModel_->SetSelections ({ CurrentChannel_->ChannelID_ });
-		}
-		else
-		{
-			CurrentChannel_.reset ();
-			SelectedIdProxyModel_->SetSelections ({});
-		}
-	}
-
 	void RepresentationManager::HandleSelectedRowsChanged (const QList<QModelIndex>& indices)
 	{
 		SelectedChannels_ = Util::Map (indices,
 				[] (const QModelIndex& idx) { return idx.data (ChannelRoles::ChannelShortStruct).value<ChannelShort> (); });
-		ReprWidget_->SetChannels (Util::Map (SelectedChannels_, &ChannelShort::ChannelID_));
+		const auto& ids = Util::Map (SelectedChannels_, &ChannelShort::ChannelID_);
+		ReprWidget_->SetChannels (ids);
+		SelectedIdProxyModel_->SetSelections ({ ids.begin (), ids.end () });
 	}
 
 	QWidget* RepresentationManager::GetInfoWidget ()
@@ -105,18 +93,21 @@ namespace LC::Aggregator
 
 	bool RepresentationManager::NavigateChannel (ChannelDirection dir)
 	{
-		if (!CurrentChannel_)
+		if (SelectedChannels_.size () != 1)
 			return false;
 
+		// TODO notify the representation view about the new index and rework the following
+		return false;
+
+		const auto& id = SelectedChannels_ [0].ChannelID_;
 		for (const auto& idx : Util::AllModelRows (*JobHolderRepresentation_))
-			if (idx.data (ChannelID) == CurrentChannel_->ChannelID_)
+			if (idx.data (ChannelID) == id)
 			{
 				const auto& nextIdx = idx.siblingAtRow (idx.row () + ToRowDelta (dir));
 				if (!nextIdx.isValid ())
 					return false;
 
-				// TODO notify the representation view about the new index
-				HandleCurrentRowChanged (nextIdx);
+				HandleSelectedRowsChanged ({ nextIdx });
 				return true;
 			}
 

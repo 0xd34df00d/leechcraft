@@ -43,7 +43,6 @@ namespace LC::Aggregator
 		const std::unique_ptr<SelectionProxy_t> SelectedIdProxyModel_;
 		const std::unique_ptr<JobHolderRepresentationModel> JobHolderRepresentation_;
 
-		std::optional<ChannelShort> CurrentChannel_;
 		QList<ChannelShort> SelectedChannels_;
 
 		QMenu& ContextMenu_;
@@ -62,7 +61,6 @@ namespace LC::Aggregator
 
 		QAbstractItemModel& GetRepresentation () override;
 
-		void HandleCurrentRowChanged (const QModelIndex&) override;
 		void HandleSelectedRowsChanged (const QList<QModelIndex>&) override;
 
 		QWidget* GetInfoWidget () override;
