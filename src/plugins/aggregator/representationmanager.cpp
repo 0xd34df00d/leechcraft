@@ -36,7 +36,6 @@ namespace LC::Aggregator
 				.ShortcutManager_ = deps.ShortcutManager_,
 				.UpdatesManager_ = deps.UpdatesManager_,
 				.DBUpThread_ = deps.DBUpThread_,
-				.GetCurrentChannel_ = [this] { return CurrentChannel_; },
 				.GetAllSelectedChannels_ = [this] { return SelectedChannels_; },
 			}) }
 	, ReprWidget_ { std::make_unique<ItemsWidget> (ItemsWidget::Dependencies {

@@ -39,7 +39,6 @@ namespace LC::Aggregator
 			UpdatesManager& UpdatesManager_;
 			DBUpdateThread& DBUpThread_;
 
-			std::function<std::optional<ChannelShort> ()> GetCurrentChannel_;
 			std::function<QList<ChannelShort> ()> GetAllSelectedChannels_;
 		};
 	private:

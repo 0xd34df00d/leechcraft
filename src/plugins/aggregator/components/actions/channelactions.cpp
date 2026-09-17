@@ -150,8 +150,8 @@ namespace LC::Aggregator
 		{
 			return [=]
 			{
-				if (const auto& channel = deps.GetCurrentChannel_ ())
-					std::invoke (handler, pThis, *channel);
+				for (const auto& channel : deps.GetAllSelectedChannels_ ())
+					std::invoke (handler, pThis, channel);
 			};
 		}
 
@@ -161,7 +161,7 @@ namespace LC::Aggregator
 			return [=]
 			{
 				if (const auto& chans = deps.GetAllSelectedChannels_ ();
-						!chans.isEmpty ())
+					!chans.isEmpty ())
 					std::invoke (handler, pThis, chans);
 			};
 		}

@@ -35,12 +35,6 @@ namespace LC::Aggregator
 				.ShortcutManager_ = deps.ShortcutManager_,
 				.UpdatesManager_ = deps.UpdatesManager_,
 				.DBUpThread_ = deps.DBUpThread_,
-				.GetCurrentChannel_ = [this] () -> std::optional<ChannelShort>
-				{
-					if (const auto& idx = Ui_.Feeds_->currentIndex (); idx.isValid ())
-						return idx.data (ChannelShortStruct).value<ChannelShort> ();
-					return {};
-				},
 				.GetAllSelectedChannels_ = [this]
 				{
 					return Util::Map (Ui_.Feeds_->selectionModel ()->selectedRows (),
