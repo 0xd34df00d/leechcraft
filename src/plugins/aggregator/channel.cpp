@@ -19,6 +19,11 @@ namespace LC
 {
 namespace Aggregator
 {
+	QString ChannelShort::GetEffectiveTitle () const
+	{
+		return DisplayTitle_.isEmpty () ? Title_ : DisplayTitle_;
+	}
+
 	Channel Channel::CreateForFeed (IDType_t feedId)
 	{
 		Channel ch;

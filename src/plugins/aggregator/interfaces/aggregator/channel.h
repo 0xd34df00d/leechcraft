@@ -34,6 +34,8 @@ namespace Aggregator
 		QDateTime LastBuild_;
 		QImage Favicon_;
 		int Unread_ = 0;
+
+		QString GetEffectiveTitle () const;
 	};
 
 	struct Channel
