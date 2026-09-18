@@ -117,9 +117,10 @@ namespace CSTP
 				return *Core::Instance ().GetRepresentationModel ();
 			}
 
-			void HandleCurrentRowChanged (const QModelIndex& index) override
+			void HandleSelectedRowsChanging (const RowSelection& selection) override
 			{
-				Core::Instance ().ItemSelected (index);
+				// TODO support multiselection
+				Core::Instance ().ItemSelected (selection.Current_);
 			}
 
 			QToolBar* GetControls () override

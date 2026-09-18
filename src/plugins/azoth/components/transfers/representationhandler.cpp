@@ -34,9 +34,9 @@ namespace LC::Azoth
 
 	RepresentationHandler::~RepresentationHandler () = default;
 
-	void RepresentationHandler::HandleSelectedRowsChanged (const QList<QModelIndex>& selected)
+	void RepresentationHandler::HandleSelectedRowsChanging (const RowSelection& selected)
 	{
-		Selected_ = selected;
+		Selected_ = selected.Rows_;
 	}
 
 	QAbstractItemModel& RepresentationHandler::GetRepresentation ()

@@ -20,6 +20,11 @@
 #include "ui_summarywidget.h"
 #include "jobspresentationmodel.h"
 
+namespace LC::Util
+{
+	class ViewSelectionTracker;
+}
+
 namespace LC::Summary
 {
 	class SearchWidget;
@@ -46,8 +51,21 @@ namespace LC::Summary
 		Util::TagsFilterModel TagsFilterModel_;
 		JobsPresentationModel PresentationModel_;
 
+		std::unique_ptr<Util::ViewSelectionTracker> SelectionTracker_;
+
 		std::unordered_map<const QAbstractItemModel*, IJobHolderRepresentationHandler_ptr> SrcModel2Handler_;
-		QSet<const QAbstractItemModel*> PreviouslySelectedModels_;
+
+		struct SelectedModelsTracker
+		{
+			SummaryWidget& Parent_;
+			void (IJobHolderRepresentationHandler::*Callback_) (const IJobHolderRepresentationHandler::RowSelection&);
+			QSet<const QAbstractItemModel*> Models_ {};
+
+			void Refresh (const QModelIndexList& selected, const QModelIndex& current);
+		};
+
+		SelectedModelsTracker Changing_ { *this, &IJobHolderRepresentationHandler::HandleSelectedRowsChanging };
+		SelectedModelsTracker Settled_ { *this, &IJobHolderRepresentationHandler::HandleSelectedRowsSettled };
 
 		const QAbstractItemModel *CurrentModel_ = nullptr;
 	public:
@@ -71,7 +89,10 @@ namespace LC::Summary
 
 		void SetFilterParams ();
 
-		void SetCurrentRow (const QModelIndex&);
+		using Model2Rows = QHash<const QAbstractItemModel*, QModelIndexList>;
+		Model2Rows CollectModel2Rows (const QModelIndexList&) const;
+
+		void EnsureControlsFor (const QModelIndex&);
 	signals:
 		void removeTab () override;
 		void raiseTab () override;

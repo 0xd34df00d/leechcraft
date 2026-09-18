@@ -59,18 +59,14 @@ namespace LC::BitTorrent
 		return *Core::Instance ();
 	}
 
-	void RepresentationHandler::HandleCurrentRowChanged (const QModelIndex& index)
+	void RepresentationHandler::HandleSelectedRowsChanging (const RowSelection& selection)
 	{
-		CurrentRow_ = index;
+		Actions_.SetCurrentSelection (selection.Rows_);
 
-		Actions_.SetCurrentIndex (index);
+		CurrentRow_ = selection.Current_;
+		Actions_.SetCurrentIndex (CurrentRow_);
 		if (TabWidget_)
-			TabWidget_->SetCurrentTorrent (index);
-	}
-
-	void RepresentationHandler::HandleSelectedRowsChanged (const QModelIndexList& indexes)
-	{
-		Actions_.SetCurrentSelection (indexes);
+			TabWidget_->SetCurrentTorrent (CurrentRow_);
 	}
 
 	QWidget* RepresentationHandler::GetInfoWidget ()

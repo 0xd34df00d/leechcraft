@@ -20,6 +20,7 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <util/gui/progressdelegate.h>
+#include <util/gui/viewselectiontracker.h>
 #include <util/sll/qtutil.h>
 #include "jobspresentationmodel.h"
 #include "util.h"
@@ -49,6 +50,24 @@ namespace LC::Summary
 			return Edit_;
 		}
 	};
+
+	void SummaryWidget::SelectedModelsTracker::Refresh (const QModelIndexList& selected, const QModelIndex& current)
+	{
+		using RowSelection = IJobHolderRepresentationHandler::RowSelection;
+
+		const auto& model2rows = Parent_.CollectModel2Rows (selected);
+		const auto& curMapped = Parent_.MapToSourceRecursively (current);
+		for (const auto& [model, rows] : model2rows.asKeyValueRange ())
+		{
+			const auto& thisSelected = rows.contains (curMapped) ? curMapped : QModelIndex {};
+			std::invoke (Callback_, *Parent_.SrcModel2Handler_.at (model), RowSelection { rows, thisSelected });
+		}
+
+		const QSet<const QAbstractItemModel*> curModels { model2rows.keyBegin (), model2rows.keyEnd () };
+		for (const auto model : Models_ - curModels)
+			std::invoke (Callback_, *Parent_.SrcModel2Handler_.at (model), RowSelection {});
+		Models_ = curModels;
+	}
 
 	namespace
 	{
@@ -133,14 +152,25 @@ namespace LC::Summary
 		PresentationModel_.setSourceModel (&TagsFilterModel_);
 		Ui_.PluginsTasksTree_->setModel (&PresentationModel_);
 
-		connect (Ui_.PluginsTasksTree_->selectionModel (),
-				&QItemSelectionModel::currentRowChanged,
+		SelectionTracker_ = std::make_unique<Util::ViewSelectionTracker> (*Ui_.PluginsTasksTree_);
+		connect (&*SelectionTracker_,
+				&Util::ViewSelectionTracker::selectionChanging,
 				this,
-				&SummaryWidget::SetCurrentRow);
+				[this]
+				{
+					EnsureControlsFor (Ui_.PluginsTasksTree_->currentIndex ());
 
-		auto connectViewSignal = [this] (auto emitter, auto signal, auto method)
+					const auto sm = Ui_.PluginsTasksTree_->selectionModel ();
+					Changing_.Refresh (sm->selectedRows (), sm->currentIndex ());
+				});
+		connect (&*SelectionTracker_,
+				&Util::ViewSelectionTracker::selectionSettled,
+				this,
+				std::bind_front (&SelectedModelsTracker::Refresh, &Settled_));
+
+		const auto connectAction = [this] (auto signal, auto method)
 		{
-			connect (emitter,
+			connect (Ui_.PluginsTasksTree_,
 					signal,
 					this,
 					[this, method] (const QModelIndex& current)
@@ -150,35 +180,10 @@ namespace LC::Summary
 					});
 		};
 
-		const auto connectChange = std::bind_front (connectViewSignal, Ui_.PluginsTasksTree_->selectionModel ());
-		connectChange (&QItemSelectionModel::currentRowChanged,
-				&IJobHolderRepresentationHandler::HandleCurrentRowChanged);
-
-		const auto connectAction = std::bind_front (connectViewSignal, Ui_.PluginsTasksTree_);
 		connectAction (&QAbstractItemView::activated, &IJobHolderRepresentationHandler::HandleActivated);
 		connectAction (&QAbstractItemView::clicked, &IJobHolderRepresentationHandler::HandleClicked);
 		connectAction (&QAbstractItemView::doubleClicked, &IJobHolderRepresentationHandler::HandleDoubleClicked);
 		connectAction (&QAbstractItemView::pressed, &IJobHolderRepresentationHandler::HandlePressed);
-
-		connect (Ui_.PluginsTasksTree_->selectionModel (),
-				&QItemSelectionModel::selectionChanged,
-				[this]
-				{
-					QHash<const QAbstractItemModel*, QModelIndexList> newSelections;
-					for (const auto& row : Ui_.PluginsTasksTree_->selectionModel ()->selectedRows ())
-					{
-						const auto& mapped = MapToSourceRecursively (row);
-						newSelections [mapped.model ()] << mapped;
-					}
-
-					for (const auto& [model, rows] : Util::Stlize (newSelections))
-						SrcModel2Handler_.at (model)->HandleSelectedRowsChanged (rows);
-
-					const QSet<const QAbstractItemModel*> curModels { newSelections.keyBegin (), newSelections.keyEnd () };
-					for (const auto model : PreviouslySelectedModels_ - curModels)
-						SrcModel2Handler_.at (model)->HandleSelectedRowsChanged ({});
-					PreviouslySelectedModels_ = curModels;
-				});
 
 		connect (Ui_.PluginsTasksTree_,
 				&QWidget::customContextMenuRequested,
@@ -249,7 +254,7 @@ namespace LC::Summary
 		if (!index.isValid ())
 			return {};
 
-		return MergeModel_.mapToSource (TagsFilterModel_.mapToSource (PresentationModel_.mapToSource (index)));
+		return MergeModel_.mapToSource (TagsFilterModel_.mapToSource (PresentationModel_.mapToSource (index.siblingAtColumn (0))));
 	}
 
 	IJobHolderRepresentationHandler& SummaryWidget::GetHandler (const QModelIndex& index) const
@@ -273,15 +278,23 @@ namespace LC::Summary
 		return { { .Name_ = GetTabClassInfo ().VisibleName_ } };
 	}
 
-	void SummaryWidget::SetCurrentRow (const QModelIndex& index)
+	SummaryWidget::Model2Rows SummaryWidget::CollectModel2Rows (const QModelIndexList& indices) const
+	{
+		Model2Rows newSelections;
+		for (const auto& row : indices)
+		{
+			const auto& mapped = MapToSourceRecursively (row);
+			newSelections [mapped.model ()] << mapped;
+		}
+		return newSelections;
+	}
+
+	void SummaryWidget::EnsureControlsFor (const QModelIndex& index)
 	{
 		const auto& srcIdx = MapToSourceRecursively (index);
 		const auto srcModel = srcIdx.model ();
 		if (srcModel == CurrentModel_)
 			return;
-
-		const auto& prevHandler = SrcModel2Handler_.at (CurrentModel_);
-		prevHandler->HandleCurrentRowChanged ({});
 
 		CurrentModel_ = srcModel;
 

@@ -40,8 +40,7 @@ namespace LC::BitTorrent
 
 		QAbstractItemModel& GetRepresentation () override;
 
-		void HandleCurrentRowChanged (const QModelIndex& index) override;
-		void HandleSelectedRowsChanged (const QModelIndexList& indexes) override;
+		void HandleSelectedRowsChanging (const RowSelection&) override;
 
 		QWidget* GetInfoWidget () override;
 		QToolBar* GetControls () override;

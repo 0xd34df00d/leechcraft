@@ -29,7 +29,7 @@ namespace LC::Azoth
 		explicit RepresentationHandler (TransferModelManager&, QObject* = nullptr);
 		~RepresentationHandler () override;
 
-		void HandleSelectedRowsChanged (const QList<QModelIndex>&) override;
+		void HandleSelectedRowsChanging (const RowSelection&) override;
 
 		QAbstractItemModel& GetRepresentation () override;
 		QToolBar* GetControls () override;

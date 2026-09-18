@@ -67,9 +67,9 @@ namespace LC::Aggregator
 		return *JobHolderRepresentation_;
 	}
 
-	void RepresentationManager::HandleSelectedRowsChanged (const QList<QModelIndex>& indices)
+	void RepresentationManager::HandleSelectedRowsChanging (const RowSelection& selection)
 	{
-		SelectedChannels_ = Util::Map (indices,
+		SelectedChannels_ = Util::Map (selection.Rows_,
 				[] (const QModelIndex& idx) { return idx.data (ChannelRoles::ChannelShortStruct).value<ChannelShort> (); });
 		const auto& ids = Util::Map (SelectedChannels_, &ChannelShort::ChannelID_);
 		ReprWidget_->SetChannels (ids);
@@ -99,6 +99,7 @@ namespace LC::Aggregator
 		// TODO notify the representation view about the new index and rework the following
 		return false;
 
+		/*
 		const auto& id = SelectedChannels_ [0].ChannelID_;
 		for (const auto& idx : Util::AllModelRows (*JobHolderRepresentation_))
 			if (idx.data (ChannelID) == id)
@@ -107,10 +108,11 @@ namespace LC::Aggregator
 				if (!nextIdx.isValid ())
 					return false;
 
-				HandleSelectedRowsChanged ({ nextIdx });
+				HandleSelectedRowsChanging ({ nextIdx });
 				return true;
 			}
 
 		return false;
+		*/
 	}
 }

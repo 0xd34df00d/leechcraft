@@ -9,12 +9,12 @@
 #pragma once
 
 #include <memory>
+#include <QModelIndex>
 #include <QtPlugin>
 #include "interfaces/structures.h"
 
 class QAbstractItemModel;
 class QMenu;
-class QModelIndex;
 class QToolBar;
 
 template<typename>
@@ -153,9 +153,39 @@ public:
 	 */
 	virtual QAbstractItemModel& GetRepresentation () = 0;
 
-	virtual void HandleCurrentRowChanged (const QModelIndex&) {}
-	virtual void HandleSelectedRowsChanged (const QList<QModelIndex>&) {}
+	/** @brief The rows of this handler's representation selected in the view.
+	 */
+	struct RowSelection
+	{
+		QList<QModelIndex> Rows_;	///< The selected rows, at the 0'th column.
+		QModelIndex Current_;		///< One of Rows_ (at the 0'th column), or invalid
+	};
 
+	/** @brief Called synchronously whenever the selection changes.
+	 *
+	 * This is invoked from within the view's selection model signals (or
+	 * on a model reset), so the implementation may update its own state
+	 * and widgets, but must not modify the representation model's
+	 * structure.
+	 *
+	 * @param[in] selection The selected rows, empty if none of this
+	 * handler's rows are selected anymore.
+	 */
+	virtual void HandleSelectedRowsChanging ([[maybe_unused]] const RowSelection& selection) {}
+
+	/** @brief Called from a clean stack once the selection has settled.
+	 *
+	 * Multiple changes are coalesced, and this is never invoked while the
+	 * left mouse button is held on the view. The implementation may modify
+	 * the representation model, for example, hide the rows deselected by
+	 * the user.
+	 *
+	 * @param[in] selection The selected rows, as in
+	 * HandleSelectedRowsChanging().
+	 */
+	virtual void HandleSelectedRowsSettled ([[maybe_unused]] const RowSelection& selection) {}
+
+	// Invoked synchronously from the corresponding QAbstractItemView signals.
 	virtual void HandleActivated (const QModelIndex&) {}
 	virtual void HandleClicked (const QModelIndex&) {}
 	virtual void HandleDoubleClicked (const QModelIndex&) {}
