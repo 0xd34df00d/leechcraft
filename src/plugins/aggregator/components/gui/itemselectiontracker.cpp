@@ -50,17 +50,13 @@ namespace LC::Aggregator
 		ReadMarkTimer_.setSingleShot (true);
 
 		connect (&Tracker_,
-				&Util::ViewSelectionTracker::gestureStarted,
+				&Util::ViewSelectionTracker::selectionStartedChanging,
 				&ReadMarkTimer_,
 				&QTimer::stop);
 		connect (&Tracker_,
 				&Util::ViewSelectionTracker::selectionChanging,
 				this,
-				[this]
-				{
-					ReadMarkTimer_.stop ();
-					emit refreshItemDisplay ();
-				});
+				&ItemSelectionTracker::refreshItemDisplay);
 		connect (&Tracker_,
 				&Util::ViewSelectionTracker::selectionSettled,
 				this,
