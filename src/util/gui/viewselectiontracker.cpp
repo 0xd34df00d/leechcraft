@@ -24,11 +24,15 @@ namespace LC::Util
 		connect (sm,
 				&QItemSelectionModel::selectionChanged,
 				this,
-				&ViewSelectionTracker::HandleImmediateSelectionChange);
+				&ViewSelectionTracker::HandleSelectionChange);
+		connect (sm,
+				&QItemSelectionModel::currentRowChanged,
+				this,
+				&ViewSelectionTracker::HandleSelectionChange);
 		connect (view.model (),
 				&QAbstractItemModel::modelReset,
 				this,
-				&ViewSelectionTracker::HandleImmediateSelectionChange);
+				&ViewSelectionTracker::HandleSelectionChange);
 	}
 
 	bool ViewSelectionTracker::eventFilter (QObject*, QEvent *ev)
@@ -63,9 +67,9 @@ namespace LC::Util
 			ScheduleSyncToSelection ();
 	}
 
-	void ViewSelectionTracker::HandleImmediateSelectionChange ()
+	void ViewSelectionTracker::HandleSelectionChange ()
 	{
-		emit selectionChanging ();
+		SelectionDirty_ = true;
 		ScheduleSyncToSelection ();
 	}
 
@@ -77,7 +81,13 @@ namespace LC::Util
 
 	void ViewSelectionTracker::SyncToSelection ()
 	{
-		if (!std::exchange (ScheduledSyncToSelection_, false) || GestureActive_)
+		if (!std::exchange (ScheduledSyncToSelection_, false))
+			return;
+
+		if (std::exchange (SelectionDirty_, false))
+			emit selectionChanging ();
+
+		if (GestureActive_)
 			return;
 
 		const auto sm = View_.selectionModel ();

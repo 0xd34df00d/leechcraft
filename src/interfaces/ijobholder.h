@@ -161,12 +161,14 @@ public:
 		QModelIndex Current_;		///< One of Rows_ (at the 0'th column), or invalid
 	};
 
-	/** @brief Called synchronously whenever the selection changes.
+	/** @brief Called from a clean stack whenever the selection or the
+	 * current row changes.
 	 *
-	 * This is invoked from within the view's selection model signals (or
-	 * on a model reset), so the implementation may update its own state
+	 * Changes are coalesced and reported before the next repaint, but
+	 * possibly while a mouse gesture (like a click or a drag selection) is
+	 * still in progress, so the implementation may update its own state
 	 * and widgets, but must not modify the representation model's
-	 * structure.
+	 * structure: the rows would shift under the pressed pointer.
 	 *
 	 * @param[in] selection The selected rows, empty if none of this
 	 * handler's rows are selected anymore.

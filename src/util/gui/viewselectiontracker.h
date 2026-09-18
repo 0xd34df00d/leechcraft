@@ -23,13 +23,15 @@ namespace LC::Util
 	 * news item or an email after it's been read and deselected) is unsafe
 	 * inside the selection model's signals: those are also emitted from
 	 * within the model's own structural changes, where Qt forbids further
-	 * modification. Hence selection changes are coalesced and reported via
-	 * selectionSettled() from a clean stack.
+	 * modification. Besides, the selection model updates the current index
+	 * and the selection in separate steps, so a synchronous observer also
+	 * sees intermediate states. Hence changes are coalesced and reported
+	 * via selectionChanging() from a clean stack, before the next repaint.
 	 *
 	 * Moreover, removing rows while the left mouse button is held shifts
 	 * the rows under the press position the view's drag selection is
-	 * anchored to, so selectionSettled() is also withheld until the button
-	 * is released.
+	 * anchored to, so model modifications shall wait for selectionSettled(),
+	 * which is withheld until the button is released.
 	 *
 	 * @note The view's model and selection model must be set before
 	 * constructing this object and never replaced afterwards.
@@ -42,6 +44,7 @@ namespace LC::Util
 
 		QAbstractItemView& View_;
 		bool ScheduledSyncToSelection_ = false;
+		bool SelectionDirty_ = false;
 		bool GestureActive_ = false;
 	public:
 		explicit ViewSelectionTracker (QAbstractItemView&, QObject* = nullptr);
@@ -58,7 +61,7 @@ namespace LC::Util
 		 */
 		void EndGesture ();
 	private:
-		void HandleImmediateSelectionChange ();
+		void HandleSelectionChange ();
 		void ScheduleSyncToSelection ();
 		void SyncToSelection ();
 	signals:
@@ -66,20 +69,22 @@ namespace LC::Util
 		 */
 		void gestureStarted ();
 
-		/** @brief Emitted synchronously when the selection changes or the
-		 * model is reset.
+		/** @brief Emitted from a clean stack whenever the selection or the
+		 * current row changes, or the model is reset.
 		 *
-		 * This is emitted from within the selection model's or the model's
-		 * own signal, so receivers may update the display, but must not
-		 * modify the model or the selection.
+		 * Changes within one event loop iteration are coalesced into a
+		 * single emission before the next repaint. This may be emitted while
+		 * the left mouse button is held on the viewport, so receivers may
+		 * update the display, but must not modify the model or the
+		 * selection.
 		 */
 		void selectionChanging ();
 
 		/** @brief Emitted from a clean stack once the selection has settled.
 		 *
-		 * Changes within one event loop iteration are coalesced into a
-		 * single emission, and nothing is emitted while the left mouse
-		 * button is held on the viewport. Receivers may modify the model.
+		 * This follows selectionChanging(), but nothing is emitted while the
+		 * left mouse button is held on the viewport. Receivers may modify
+		 * the model.
 		 *
 		 * @param[out] rows The selected rows, as in QItemSelectionModel::selectedRows().
 		 * @param[out] current The current index, as in QItemSelectionModel::currentIndex().
