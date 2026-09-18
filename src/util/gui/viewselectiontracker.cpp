@@ -80,6 +80,7 @@ namespace LC::Util
 		if (!std::exchange (ScheduledSyncToSelection_, false) || GestureActive_)
 			return;
 
-		emit selectionSettled (View_.selectionModel ()->selectedRows ());
+		const auto sm = View_.selectionModel ();
+		emit selectionSettled (sm->selectedRows (), sm->currentIndex ());
 	}
 }

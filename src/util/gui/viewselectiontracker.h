@@ -82,7 +82,8 @@ namespace LC::Util
 		 * button is held on the viewport. Receivers may modify the model.
 		 *
 		 * @param[out] rows The selected rows, as in QItemSelectionModel::selectedRows().
+		 * @param[out] current The current index, as in QItemSelectionModel::currentIndex().
 		 */
-		void selectionSettled (const QModelIndexList& rows);
+		void selectionSettled (const QModelIndexList& rows, const QModelIndex& current);
 	};
 }
