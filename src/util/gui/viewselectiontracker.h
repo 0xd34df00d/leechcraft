@@ -69,6 +69,16 @@ namespace LC::Util
 		 */
 		void gestureStarted ();
 
+		/** @brief Emitted synchronously when a change is detected that
+		 * selectionChanging() will report.
+		 *
+		 * This is emitted from within the selection model's or the model's
+		 * own signal, so receivers must not modify the model or the
+		 * selection. This is intended for cancelling pending reactions to
+		 * the previous selection, like stopping a timer.
+		 */
+		void selectionStartedChanging ();
+
 		/** @brief Emitted from a clean stack whenever the selection or the
 		 * current row changes, or the model is reset.
 		 *

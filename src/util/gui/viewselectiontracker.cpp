@@ -69,6 +69,8 @@ namespace LC::Util
 
 	void ViewSelectionTracker::HandleSelectionChange ()
 	{
+		emit selectionStartedChanging ();
+
 		SelectionDirty_ = true;
 		ScheduleSyncToSelection ();
 	}
