@@ -28,7 +28,7 @@ namespace LC::Aggregator
 		Q_INTERFACES (LC::Aggregator::IItemsModel)
 
 		const QStringList ItemHeaders_;
-		QVector<IDType_t> CurrentChannels_;
+		QSet<IDType_t> CurrentChannels_;
 		items_shorts_t CurrentItems_;
 
 		const QIcon StarredIcon_;
@@ -43,7 +43,7 @@ namespace LC::Aggregator
 
 		const ItemShort& GetItem (const QModelIndex&) const;
 		const items_shorts_t& GetAllItems () const;
-		void SetChannels (const QVector<IDType_t>&) override;
+		ChannelsChange SetChannels (const QVector<IDType_t>&) override;
 		void ItemDataUpdated (const Item&);
 
 		QList<QModelIndex> FindItems (const QSet<IDType_t>&) const override;

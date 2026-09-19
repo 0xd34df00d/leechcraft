@@ -72,11 +72,13 @@ namespace LC::Aggregator
 		return CurrentItems_;
 	}
 
-	void ItemsListModel::SetChannels (const QVector<IDType_t>& channels)
+	auto ItemsListModel::SetChannels (const QVector<IDType_t>& channels) -> ChannelsChange
 	{
-		beginResetModel ();
+		if (const QSet<IDType_t> newChannels { channels.begin (), channels.end () };
+			std::exchange (CurrentChannels_, newChannels) == newChannels)
+			return ChannelsChange::NotChanged;
 
-		CurrentChannels_ = channels;
+		beginResetModel ();
 
 		CurrentItems_.clear ();
 
@@ -84,6 +86,8 @@ namespace LC::Aggregator
 			CurrentItems_ += GetSB ()->GetItems (channel);
 
 		endResetModel ();
+
+		return ChannelsChange::Changed;
 	}
 
 	QList<QModelIndex> ItemsListModel::FindItems (const QSet<IDType_t>& ids) const

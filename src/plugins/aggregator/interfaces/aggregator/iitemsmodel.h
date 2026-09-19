@@ -40,7 +40,13 @@ namespace Aggregator
 
 		virtual QAbstractItemModel& GetQModel () = 0;
 
-		virtual void SetChannels (const QVector<IDType_t>& channelIds) = 0;
+		enum class ChannelsChange
+		{
+			Changed,
+			NotChanged,
+		};
+
+		virtual ChannelsChange SetChannels (const QVector<IDType_t>& channelIds) = 0;
 
 		virtual QList<QModelIndex> FindItems (const QSet<IDType_t>&) const = 0;
 	};
