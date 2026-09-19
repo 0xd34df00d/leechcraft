@@ -62,6 +62,7 @@ namespace LC::Aggregator
 		QAbstractItemModel& GetRepresentation () override;
 
 		void HandleSelectedRowsChanging (const RowSelection&) override;
+		void HandleSelectedRowsSettled (const RowSelection& selection) override;
 
 		QWidget* GetInfoWidget () override;
 		QToolBar* GetControls () override;

@@ -8,6 +8,7 @@
 
 #include "representationmanager.h"
 #include <QModelIndex>
+#include <QSet>
 #include <util/models/modeliterator.h>
 #include <util/models/selectionproxymodel.h>
 #include <util/sll/prelude.h>
@@ -73,7 +74,13 @@ namespace LC::Aggregator
 				[] (const QModelIndex& idx) { return idx.data (ChannelRoles::ChannelShortStruct).value<ChannelShort> (); });
 		const auto& ids = Util::Map (SelectedChannels_, &ChannelShort::ChannelID_);
 		ReprWidget_->SetChannels (ids);
-		SelectedIdProxyModel_->SetSelections ({ ids.begin (), ids.end () });
+	}
+
+	void RepresentationManager::HandleSelectedRowsSettled (const RowSelection& selection)
+	{
+		const auto& ids = Util::MapAs<QSet> (selection.Rows_,
+				[] (const QModelIndex& idx) { return idx.data (ChannelRoles::ChannelID).value<IDType_t> (); });
+		SelectedIdProxyModel_->SetSelections (ids);
 	}
 
 	QWidget* RepresentationManager::GetInfoWidget ()
