@@ -174,8 +174,8 @@ namespace LC::Aggregator
 			if (hasImportant && hasUnimportant && hasRead && hasUnread && hasCommentsRss)
 				break;
 
-			const auto& item = idx.data (IItemsModel::ItemRole::FullItem).value<Item> ();
-			if (item.CommentsLink_.isEmpty ())
+			if (const auto& item = idx.data (IItemsModel::ItemRole::FullItem).value<Item> ();
+				!item.CommentsLink_.isEmpty ())
 				hasCommentsRss = true;
 		}
 
