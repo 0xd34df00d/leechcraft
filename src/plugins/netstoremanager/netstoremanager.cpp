@@ -138,7 +138,7 @@ namespace NetStoreManager
 		return XSD_;
 	}
 
-	IJobHolderRepresentationHandler_ptr Plugin::CreateRepresentationHandler ()
+	IJobHolderRepresentationHandler_ptr Plugin::CreateRepresentationHandler (const ViewCallbacks&)
 	{
 		return UpManager_->CreateReprHandler ();
 	}

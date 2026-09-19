@@ -83,15 +83,17 @@ namespace LC::Summary
 		std::optional<TabSaveInfo> GetTabSaveInfo () const override;
 	private:
 		QModelIndex MapToSourceRecursively (const QModelIndex&) const;
+		QModelIndex MapFromSource (const QModelIndex&) const;
+
 		IJobHolderRepresentationHandler& GetHandler (const QModelIndex&) const;
 
 		void ClearToolbar ();
-
 		void SetFilterParams ();
 
 		using Model2Rows = QHash<const QAbstractItemModel*, QModelIndexList>;
 		Model2Rows CollectModel2Rows (const QModelIndexList&) const;
 
+		void SetSelection (const IJobHolderRepresentationHandler::RowSelection&);
 		void EnsureControlsFor (const QModelIndex&);
 	signals:
 		void removeTab () override;

@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <functional>
 #include <memory>
 #include <QModelIndex>
 #include <QtPlugin>
@@ -229,7 +230,25 @@ class Q_DECL_EXPORT IJobHolder
 protected:
 	virtual ~IJobHolder () = default;
 public:
-	virtual IJobHolderRepresentationHandler_ptr CreateRepresentationHandler () = 0;
+	/** @brief The callbacks into the view showing the handler's representation.
+	 */
+	struct ViewCallbacks
+	{
+		/** @brief Selects the given rows of the handler's representation.
+		 *
+		 * Replaces the view's selection with those of the given rows the
+		 * view shows, possibly none, making RowSelection::Current_ the
+		 * current one.
+		 *
+		 * The resulting selection is reported via the handler's hooks from
+		 * a clean stack, never before this returns. Shall not be called
+		 * from within CreateRepresentationHandler(): the view is not set
+		 * up yet by then.
+		 */
+		std::function<void (IJobHolderRepresentationHandler::RowSelection)> SetSelection_;
+	};
+
+	virtual IJobHolderRepresentationHandler_ptr CreateRepresentationHandler (const ViewCallbacks&) = 0;
 };
 
 Q_DECLARE_METATYPE (LC::RowInfo)

@@ -83,7 +83,7 @@ namespace LC::LMP::Graffiti
 					<< tabClass;
 	}
 
-	IJobHolderRepresentationHandler_ptr Plugin::CreateRepresentationHandler ()
+	IJobHolderRepresentationHandler_ptr Plugin::CreateRepresentationHandler (const ViewCallbacks&)
 	{
 		return ProgressMgr_->CreateReprHandler ();
 	}

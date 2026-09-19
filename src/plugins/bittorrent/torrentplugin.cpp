@@ -279,7 +279,7 @@ namespace LC::BitTorrent
 		return result;
 	}
 
-	IJobHolderRepresentationHandler_ptr TorrentPlugin::CreateRepresentationHandler ()
+	IJobHolderRepresentationHandler_ptr TorrentPlugin::CreateRepresentationHandler (const ViewCallbacks&)
 	{
 		auto handler = std::make_unique<RepresentationHandler> ();
 

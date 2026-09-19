@@ -43,7 +43,7 @@ namespace Zalil
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 
-		IJobHolderRepresentationHandler_ptr CreateRepresentationHandler ();
+		IJobHolderRepresentationHandler_ptr CreateRepresentationHandler (const ViewCallbacks&) override;
 
 		QStringList GetServiceVariants () const;
 		void UploadFile (const QString&, const QString&);

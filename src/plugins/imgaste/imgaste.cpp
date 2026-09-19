@@ -136,7 +136,7 @@ namespace LC::Imgaste
 		return result;
 	}
 
-	IJobHolderRepresentationHandler_ptr Plugin::CreateRepresentationHandler ()
+	IJobHolderRepresentationHandler_ptr Plugin::CreateRepresentationHandler (const ViewCallbacks&)
 	{
 		return ProgressManager_.CreateDefaultHandler ();
 	}

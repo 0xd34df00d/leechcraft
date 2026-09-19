@@ -101,7 +101,7 @@ namespace CSTP
 		return Core::Instance ().AddTask (e);
 	}
 
-	IJobHolderRepresentationHandler_ptr CSTP::CreateRepresentationHandler ()
+	IJobHolderRepresentationHandler_ptr CSTP::CreateRepresentationHandler (const ViewCallbacks&)
 	{
 		struct Handler : IJobHolderRepresentationHandler
 		{

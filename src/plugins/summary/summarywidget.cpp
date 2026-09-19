@@ -142,7 +142,9 @@ namespace LC::Summary
 
 		for (const auto plugin : GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<IJobHolder*> ())
 		{
-			auto reprHandler = plugin->CreateRepresentationHandler ();
+			auto reprHandler = plugin->CreateRepresentationHandler ({
+						.SetSelection_ = std::bind_front (&SummaryWidget::SetSelection, this),
+					});
 			auto& model = reprHandler->GetRepresentation ();
 			MergeModel_.AddModel (&model);
 			SrcModel2Handler_ [&model] = std::move (reprHandler);
@@ -257,6 +259,14 @@ namespace LC::Summary
 		return MergeModel_.mapToSource (TagsFilterModel_.mapToSource (PresentationModel_.mapToSource (index.siblingAtColumn (0))));
 	}
 
+	QModelIndex SummaryWidget::MapFromSource (const QModelIndex& index) const
+	{
+		if (!index.isValid ())
+			return {};
+
+		return PresentationModel_.mapFromSource (TagsFilterModel_.mapFromSource (MergeModel_.mapFromSource (index)));
+	}
+
 	IJobHolderRepresentationHandler& SummaryWidget::GetHandler (const QModelIndex& index) const
 	{
 		const auto pos = SrcModel2Handler_.find (index.model ());
@@ -287,6 +297,23 @@ namespace LC::Summary
 			newSelections [mapped.model ()] << mapped;
 		}
 		return newSelections;
+	}
+
+	void SummaryWidget::SetSelection (const IJobHolderRepresentationHandler::RowSelection& selection)
+	{
+		QItemSelection visible;
+		for (const auto& row : selection.Rows_)
+			if (const auto& mapped = MapFromSource (row);
+				mapped.isValid ())
+				visible.select (mapped, mapped);
+
+		auto curMapped = MapFromSource (selection.Current_);
+		if (!curMapped.isValid () && !visible.isEmpty ())
+			curMapped = visible.indexes ().front ();
+
+		const auto sm = Ui_.PluginsTasksTree_->selectionModel ();
+		sm->select (visible, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+		sm->setCurrentIndex (curMapped, QItemSelectionModel::NoUpdate);
 	}
 
 	void SummaryWidget::EnsureControlsFor (const QModelIndex& index)

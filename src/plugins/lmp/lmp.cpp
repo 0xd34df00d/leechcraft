@@ -408,7 +408,7 @@ namespace LMP
 				EffectsMgr_->RegisterEffect (effect);
 	}
 
-	IJobHolderRepresentationHandler_ptr Plugin::CreateRepresentationHandler ()
+	IJobHolderRepresentationHandler_ptr Plugin::CreateRepresentationHandler (const ViewCallbacks&)
 	{
 		return Core::Instance ().GetProgressManager ()->CreateDefaultHandler ();
 	}

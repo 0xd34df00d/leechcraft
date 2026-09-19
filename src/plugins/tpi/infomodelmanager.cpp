@@ -127,7 +127,9 @@ namespace TPI
 	{
 		for (const auto ijh : GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<IJobHolder*> ())
 		{
-			auto handler = ijh->CreateRepresentationHandler ();
+			auto handler = ijh->CreateRepresentationHandler ({
+						.SetSelection_ = [] (const IJobHolderRepresentationHandler::RowSelection&) {},
+					});
 			Concat_.addSourceModel (&handler->GetRepresentation ());
 			Handlers_.emplace_back (std::move (handler));
 		}

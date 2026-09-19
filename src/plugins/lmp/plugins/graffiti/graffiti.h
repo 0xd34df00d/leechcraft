@@ -69,7 +69,7 @@ namespace Graffiti
 		TabClasses_t GetTabClasses () const override;
 		void TabOpenRequested (const QByteArray& tabClass) override;
 
-		IJobHolderRepresentationHandler_ptr CreateRepresentationHandler () override;
+		IJobHolderRepresentationHandler_ptr CreateRepresentationHandler (const ViewCallbacks&) override;
 
 		void SetLMPProxy (ILMPProxy_ptr) override;
 	private:

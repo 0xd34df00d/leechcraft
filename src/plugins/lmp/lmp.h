@@ -100,7 +100,7 @@ namespace LMP
 		QSet<QByteArray> GetExpectedPluginClasses () const override;
 		void AddPlugin (QObject* plugin) override;
 
-		IJobHolderRepresentationHandler_ptr CreateRepresentationHandler () override;
+		IJobHolderRepresentationHandler_ptr CreateRepresentationHandler (const ViewCallbacks&) override;
 
 		QString GetFilterVerb () const override;
 		QList<FilterVariant> GetFilterVariants (const QVariant&) const override;

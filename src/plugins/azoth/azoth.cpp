@@ -153,7 +153,7 @@ namespace Azoth
 		return XmlSettingsDialog_;
 	}
 
-	IJobHolderRepresentationHandler_ptr Plugin::CreateRepresentationHandler ()
+	IJobHolderRepresentationHandler_ptr Plugin::CreateRepresentationHandler (const ViewCallbacks&)
 	{
 		return std::make_unique<RepresentationHandler> (*TransferModelManager_);
 	}
