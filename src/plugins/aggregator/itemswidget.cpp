@@ -160,7 +160,8 @@ namespace LC::Aggregator
 
 	void ItemsWidget::SetChannels (const QList<IDType_t>& channels)
 	{
-		Impl_->ItemsModel_->SetChannels (channels);
+		if (Impl_->ItemsModel_->SetChannels (channels) == IItemsModel::ChannelsChange::NotChanged)
+			return;
 
 		Impl_->Ui_.Items_->scrollToTop ();
 		RenderSelectedItems ();
