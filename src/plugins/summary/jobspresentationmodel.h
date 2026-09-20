@@ -33,6 +33,8 @@ namespace LC::Summary
 			ColumnCount
 		};
 
+		explicit JobsPresentationModel (QObject* = nullptr);
+
 		void setSourceModel (QAbstractItemModel *sourceModel) override;
 
 		int columnCount (const QModelIndex& parent) const override;

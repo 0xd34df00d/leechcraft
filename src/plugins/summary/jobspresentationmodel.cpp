@@ -10,6 +10,7 @@
 #include <QStringList>
 #include <interfaces/ijobholder.h>
 #include <interfaces/structures.h>
+#include <util/models/modelsanitizer.h>
 #include <util/sll/visitor.h>
 #include <util/util.h>
 #include "util.h"
@@ -38,6 +39,12 @@ namespace LC::Summary
 
 			return false;
 		}
+	}
+
+	JobsPresentationModel::JobsPresentationModel (QObject *parent)
+	: QIdentityProxyModel { parent }
+	{
+		Util::InstallModelSanitizer (*this);
 	}
 
 	void JobsPresentationModel::setSourceModel (QAbstractItemModel *model)
