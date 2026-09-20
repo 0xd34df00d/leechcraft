@@ -30,6 +30,7 @@
 #include <util/network/networkdiskcache.h>
 #include <util/sll/slotclosure.h>
 #include <util/sll/qtutil.h>
+#include <util/gui/util.h>
 #include "interfaces/blasq/iaccount.h"
 #include "interfaces/blasq/isupportuploads.h"
 #include "interfaces/blasq/isupportdeletes.h"
@@ -637,7 +638,7 @@ namespace Blasq
 	void PhotosTab::handleAlbumSelected (const QVariant& var)
 	{
 		const auto& index = var.value<QModelIndex> ();
-		Ui_.CollectionsTree_->setCurrentIndex (ProxyModel_->mapToSource (index));
+		Util::SetCurrentRow (*Ui_.CollectionsTree_, ProxyModel_->mapToSource (index));
 	}
 
 	void PhotosTab::handleSingleImageMode (bool single)
@@ -694,7 +695,7 @@ namespace Blasq
 		if (!idx.isValid ())
 			return;
 
-		Ui_.CollectionsTree_->setCurrentIndex (idx);
+		Util::SetCurrentRow (*Ui_.CollectionsTree_, idx);
 	}
 }
 }
