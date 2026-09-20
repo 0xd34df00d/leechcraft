@@ -48,7 +48,7 @@ namespace LC::Aggregator
 				.AppWideActions_ = deps.AppWideActions_,
 				.ChannelActions_ = *ChannelActions_,
 				.UpdatesManager_ = deps.UpdatesManager_,
-				.ChannelNavigator_ = [this] (auto dir) { return NavigateChannel (dir); },
+				.ChannelNavigator_ = [this] (auto dir) { NavigateChannel (dir); },
 			}) }
 	{
 		ChannelsFilterModel_->setSourceModel (&deps.ChannelsModel_);
@@ -145,52 +145,68 @@ namespace LC::Aggregator
 			return false;
 		}
 
-		QModelIndex NavigateSibling (ChannelDirection dir, QModelIndex index)
+		int Depth (QModelIndex index)
 		{
-			const auto delta = ToRowDelta (dir);
-			do
-			{
-				index = index.siblingAtRow (index.row () + delta);
-			} while (index.isValid () && !HasUnreadItems (index));
-			return index;
+			int depth = 0;
+			while ((index = index.parent ()).isValid ())
+				++depth;
+			return depth;
 		}
 
-		QModelIndex NavigateViaParent (ChannelDirection dir, QModelIndex parent)
+		QModelIndexList RowsAtDepth (const QAbstractItemModel& model, const QModelIndex& parent, int depth)
 		{
-			parent = NavigateSibling (dir, parent);
-			if (!parent.isValid ())
-				return {};
-
-			const auto model = parent.model ();
-
-			QModelIndex child;
-			switch (dir)
+			QModelIndexList rows;
+			for (int r = 0; r < model.rowCount (parent); ++r)
 			{
-			case ChannelDirection::NextUnread:
-				child = model->index (0, 0, parent);
-				break;
-			case ChannelDirection::PreviousUnread:
-				child = model->index (model->rowCount (parent) - 1, 0, parent);
-				break;
+				const auto& idx = model.index (r, 0, parent);
+				if (depth)
+					rows += RowsAtDepth (model, idx, depth - 1);
+				else
+					rows << idx;
 			}
+			return rows;
+		}
 
-			return HasUnreadItems (child) ? child : NavigateSibling (dir, child);
+		QModelIndexList Leaves (const QAbstractItemModel& model, const QModelIndex& parent)
+		{
+			QModelIndexList rows;
+			for (int r = 0; r < model.rowCount (parent); ++r)
+			{
+				const auto& idx = model.index (r, 0, parent);
+				if (model.rowCount (idx))
+					rows += Leaves (model, idx);
+				else
+					rows << idx;
+			}
+			return rows;
 		}
 	}
 
-	bool AggregatorTab::NavigateChannel (ChannelDirection dir)
+	void AggregatorTab::NavigateChannel (ChannelDirection dir)
 	{
-		const auto& index = Ui_.Feeds_->currentIndex ();
+		const auto& model = *Ui_.Feeds_->model ();
+		const auto& current = Ui_.Feeds_->currentIndex ().siblingAtColumn (0);
 
-		auto newIndex = NavigateSibling (dir, index);
-		if (!newIndex.isValid () && index.parent ().isValid ())
-			newIndex = NavigateViaParent (dir, index.parent ());
+		// navigate among the rows at the current row's level, or among the channels if there is none
+		const auto& rows = current.isValid () ?
+				RowsAtDepth (model, {}, Depth (current)) :
+				Leaves (model, {});
+		const auto count = rows.size ();
+		const auto delta = ToRowDelta (dir);
 
-		if (!newIndex.isValid ())
-			return false;
-
-		Ui_.Feeds_->setCurrentIndex (newIndex);
-		return true;
+		// wrap around, visiting every other row at most once, starting from an end if there is no current row
+		const auto pos = rows.indexOf (current);
+		const auto origin = pos >= 0 ? pos : (delta > 0 ? -1 : count);
+		const auto steps = pos >= 0 ? count - 1 : count;
+		for (qsizetype step = 1; step <= steps; ++step)
+		{
+			const auto& idx = rows [((origin + step * delta) % count + count) % count];
+			if (HasUnreadItems (idx))
+			{
+				Ui_.Feeds_->setCurrentIndex (idx);
+				return;
+			}
+		}
 	}
 
 	void AggregatorTab::HandleFeedsContextMenuRequested (const QPoint& pos)

@@ -73,7 +73,7 @@ namespace LC::Aggregator
 
 		std::optional<TabSaveInfo> GetTabSaveInfo () const override;
 	private:
-		bool NavigateChannel (ChannelDirection);
+		void NavigateChannel (ChannelDirection);
 
 		void HandleFeedsContextMenuRequested (const QPoint&);
 		void CurrentChannelChanged ();
