@@ -155,6 +155,6 @@ namespace LC::BitTorrent
 
 	void TorrentTab::SetCurrentTorrent (const QModelIndex& idx)
 	{
-		Ui_.TorrentsView_->setCurrentIndex (ViewFilter_->mapFromSource (idx));
+		Util::SetCurrentRow (*Ui_.TorrentsView_, ViewFilter_->mapFromSource (idx));
 	}
 }
