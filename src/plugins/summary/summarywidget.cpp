@@ -107,8 +107,8 @@ namespace LC::Summary
 		}
 	}
 
-	SummaryWidget::SummaryWidget (QObject& plugin)
-	: Plugin_ { plugin }
+	SummaryWidget::SummaryWidget (QObject& parentPlugin)
+	: Plugin_ { parentPlugin }
 	, SearchWidget_ { new SearchWidget { this } }
 	, Toolbar_ { new QToolBar }
 	, MergeModel_ { { {}, {}, {} } }
