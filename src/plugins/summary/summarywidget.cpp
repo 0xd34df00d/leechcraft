@@ -57,7 +57,7 @@ namespace LC::Summary
 		using RowSelection = IJobHolderRepresentationHandler::RowSelection;
 
 		const auto& model2rows = Parent_.CollectModel2Rows (selected);
-		const auto& curMapped = Parent_.MapToSourceRecursively (current);
+		const auto& curMapped = Parent_.MapToSource (current);
 		for (const auto& [model, rows] : model2rows.asKeyValueRange ())
 		{
 			const auto& thisSelected = rows.contains (curMapped) ? curMapped : QModelIndex {};
@@ -178,7 +178,7 @@ namespace LC::Summary
 					this,
 					[this, method] (const QModelIndex& current)
 					{
-						const auto& thisMapped = MapToSourceRecursively (current);
+						const auto& thisMapped = MapToSource (current);
 						std::invoke (method, GetHandler (thisMapped), thisMapped);
 					});
 		};
@@ -194,7 +194,7 @@ namespace LC::Summary
 				[this] (const QPoint& pos)
 				{
 					const auto& current = Ui_.PluginsTasksTree_->currentIndex ();
-					if (const auto menu = GetHandler (MapToSourceRecursively (current)).GetContextMenu ())
+					if (const auto menu = GetHandler (MapToSource (current)).GetContextMenu ())
 						menu->popup (Ui_.PluginsTasksTree_->viewport ()->mapToGlobal (pos));
 				});
 
@@ -252,7 +252,7 @@ namespace LC::Summary
 		return GetStaticTabClassInfo ();
 	}
 
-	QModelIndex SummaryWidget::MapToSourceRecursively (const QModelIndex& index) const
+	QModelIndex SummaryWidget::MapToSource (const QModelIndex& index) const
 	{
 		if (!index.isValid ())
 			return {};
@@ -296,7 +296,7 @@ namespace LC::Summary
 		Model2Rows newSelections;
 		for (const auto& row : indices)
 		{
-			const auto& mapped = MapToSourceRecursively (row);
+			const auto& mapped = MapToSource (row);
 			newSelections [mapped.model ()] << mapped;
 		}
 		return newSelections;
@@ -321,7 +321,7 @@ namespace LC::Summary
 
 	void SummaryWidget::EnsureControlsFor (const QModelIndex& index)
 	{
-		const auto& srcIdx = MapToSourceRecursively (index);
+		const auto& srcIdx = MapToSource (index);
 		const auto srcModel = srcIdx.model ();
 		if (srcModel == CurrentModel_)
 			return;

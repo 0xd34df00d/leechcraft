@@ -82,7 +82,7 @@ namespace LC::Summary
 
 		std::optional<TabSaveInfo> GetTabSaveInfo () const override;
 	private:
-		QModelIndex MapToSourceRecursively (const QModelIndex&) const;
+		QModelIndex MapToSource (const QModelIndex&) const;
 		QModelIndex MapFromSource (const QModelIndex&) const;
 
 		IJobHolderRepresentationHandler& GetHandler (const QModelIndex&) const;
