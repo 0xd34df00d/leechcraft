@@ -91,7 +91,7 @@ namespace LC::Summary
 		void SetFilterParams ();
 
 		using Model2Rows = QHash<const QAbstractItemModel*, QModelIndexList>;
-		Model2Rows CollectModel2Rows (const QModelIndexList&) const;
+		Model2Rows CollectModel2Rows (QModelIndexList) const;
 
 		void SetSelection (const IJobHolderRepresentationHandler::RowSelection&);
 		void EnsureControlsFor (const QModelIndex&);

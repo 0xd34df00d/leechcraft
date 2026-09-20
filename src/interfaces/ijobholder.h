@@ -159,8 +159,8 @@ public:
 	 */
 	struct RowSelection
 	{
-		QList<QModelIndex> Rows_;	///< The selected rows, at the 0'th column.
-		QModelIndex Current_;		///< One of Rows_ (at the 0'th column), or invalid
+		QList<QModelIndex> Rows_;		///< The selected rows, at the 0'th column, in the view's order.
+		QModelIndex Current_;			///< One of Rows_ (at the 0'th column), or invalid.
 
 		static RowSelection FromMaybe (const std::optional<QModelIndex>& row)
 		{

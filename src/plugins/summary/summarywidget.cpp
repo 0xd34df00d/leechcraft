@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "summarywidget.h"
+#include <algorithm>
 #include <QGuiApplication>
 #include <QMenu>
 #include <QStyleHints>
@@ -288,8 +289,10 @@ namespace LC::Summary
 		return { { .Name_ = GetTabClassInfo ().VisibleName_ } };
 	}
 
-	SummaryWidget::Model2Rows SummaryWidget::CollectModel2Rows (const QModelIndexList& indices) const
+	SummaryWidget::Model2Rows SummaryWidget::CollectModel2Rows (QModelIndexList indices) const
 	{
+		std::ranges::sort (indices, {}, &QModelIndex::row);
+
 		Model2Rows newSelections;
 		for (const auto& row : indices)
 		{
