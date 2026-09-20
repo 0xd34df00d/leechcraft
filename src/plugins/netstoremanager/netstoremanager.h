@@ -54,28 +54,28 @@ namespace NetStoreManager
 
 		ICoreProxy_ptr Proxy_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		QByteArray GetUniqueID () const override;
+		void Release () override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		TabClasses_t GetTabClasses () const;
-		void TabOpenRequested (const QByteArray&);
+		TabClasses_t GetTabClasses () const override;
+		void TabOpenRequested (const QByteArray&) override;
 
-		QSet<QByteArray> GetExpectedPluginClasses () const;
-		void AddPlugin (QObject*);
+		QSet<QByteArray> GetExpectedPluginClasses () const override;
+		void AddPlugin (QObject*) override;
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 
 		IJobHolderRepresentationHandler_ptr CreateRepresentationHandler (const ViewCallbacks&) override;
 
-		QStringList GetServiceVariants () const;
-		void UploadFile (const QString& filename, const QString& service);
+		QStringList GetServiceVariants () const override;
+		void UploadFile (const QString& filename, const QString& service) override;
 	signals:
-		void fileUploaded (const QString&, const QUrl&);
+		void fileUploaded (const QString&, const QUrl&) override;
 	};
 
 // 	QDataStream& operator<< (QDataStream& out, const QList<SyncerInfo>& info);
