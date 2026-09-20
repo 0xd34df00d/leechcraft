@@ -9,6 +9,7 @@
 #include "itemnavigator.h"
 #include <ranges>
 #include <QAbstractItemView>
+#include <util/gui/util.h>
 #include "interfaces/aggregator/iitemsmodel.h"
 #include "../models/channelsmodel.h"
 
@@ -35,7 +36,7 @@ namespace LC::Aggregator
 		const auto& current = View_.currentIndex ();
 		const auto& target = current.siblingAtRow (current.row () + delta);
 		if (target.isValid ())
-			View_.setCurrentIndex (target);
+			Util::SetCurrentRow (View_, target);
 	}
 
 	void ItemNavigator::MoveToPrevUnread () const
@@ -77,7 +78,7 @@ namespace LC::Aggregator
 			const auto index = model.index (row, 0);
 			if (!index.data (IItemsModel::ItemRole::IsRead).toBool ())
 			{
-				View_.setCurrentIndex (index);
+				Util::SetCurrentRow (View_, index);
 				return true;
 			}
 		}

@@ -12,6 +12,7 @@
 #include <QMenu>
 #include <interfaces/core/icoreproxy.h>
 #include <util/gui/statesaver.h>
+#include <util/gui/util.h>
 #include <util/models/flattofoldersproxymodel.h>
 #include <util/sll/qtutil.h>
 #include <util/tags/tagscompleter.h>
@@ -203,7 +204,7 @@ namespace LC::Aggregator
 			const auto& idx = rows [((origin + step * delta) % count + count) % count];
 			if (HasUnreadItems (idx))
 			{
-				Ui_.Feeds_->setCurrentIndex (idx);
+				Util::SetCurrentRow (*Ui_.Feeds_, idx);
 				return;
 			}
 		}
