@@ -8,7 +8,9 @@
 
 #include "util.h"
 #include <QSize>
+#include <QAbstractItemView>
 #include <QApplication>
+#include <QItemSelectionModel>
 #include <QKeyEvent>
 #include <QTimer>
 #include <QLabel>
@@ -87,6 +89,11 @@ namespace LC::Util
 		label->installEventFilter (new AADisplayEventFilter (label));
 		label->move (topLeftPos);
 		return label;
+	}
+
+	void SetCurrentRow (QAbstractItemView& view, const QModelIndex& index)
+	{
+		view.selectionModel ()->setCurrentIndex (index, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
 	}
 
 	QColor TintColors (const QColor& c1, const QColor& c2, double alpha)

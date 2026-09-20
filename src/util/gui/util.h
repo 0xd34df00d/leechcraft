@@ -21,6 +21,8 @@ class QLabel;
 class QColor;
 class QWidget;
 class QStyleOptionViewItem;
+class QAbstractItemView;
+class QModelIndex;
 
 namespace LC::Util
 {
@@ -42,6 +44,21 @@ namespace LC::Util
 	 * @ingroup GuiUtil
 	 */
 	UTIL_GUI_API QLabel* ShowPixmapLabel (const QPixmap& pixmap, const QPoint& pos = QPoint ());
+
+	/** @brief Makes the given row current and the only selected one.
+	 *
+	 * Unlike QAbstractItemView::setCurrentIndex(), this ignores the keyboard
+	 * modifiers held at the moment of the call. That one derives the
+	 * selection command from them, so, on a view allowing multiple selection,
+	 * calling it from a Shift- or Ctrl-modified shortcut (or while such a key
+	 * happens to be held) extends or toggles the selection instead of moving it.
+	 *
+	 * @param[in] view The view to set the current row of.
+	 * @param[in] index The index of the row to make current.
+	 *
+	 * @ingroup GuiUtil
+	 */
+	UTIL_GUI_API void SetCurrentRow (QAbstractItemView& view, const QModelIndex& index);
 
 	/** @brief Mixes two colors with the given weights.
 	 *
