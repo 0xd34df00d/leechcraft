@@ -14,7 +14,7 @@
 
 namespace LC::Aggregator
 {
-	ItemNavigator::ItemNavigator (QAbstractItemView& view, std::function<bool (ChannelDirection)> selectChannel)
+	ItemNavigator::ItemNavigator (QAbstractItemView& view, std::function<void (ChannelDirection)> selectChannel)
 	: View_ { view }
 	, SelectChannel_ { std::move (selectChannel) }
 	{
@@ -40,18 +40,14 @@ namespace LC::Aggregator
 
 	void ItemNavigator::MoveToPrevUnread () const
 	{
-		if (MoveToPrevUnreadInChannel ())
-			return;
-		if (SelectChannel_ (ChannelDirection::PreviousUnread))
-			MoveToPrevUnreadInChannel ();
+		if (!MoveToPrevUnreadInChannel ())
+			SelectChannel_ (ChannelDirection::PreviousUnread);
 	}
 
 	void ItemNavigator::MoveToNextUnread () const
 	{
-		if (MoveToNextUnreadInChannel ())
-			return;
-		if (SelectChannel_ (ChannelDirection::NextUnread))
-			MoveToNextUnreadInChannel ();
+		if (!MoveToNextUnreadInChannel ())
+			SelectChannel_ (ChannelDirection::NextUnread);
 	}
 
 	namespace v = std::views;

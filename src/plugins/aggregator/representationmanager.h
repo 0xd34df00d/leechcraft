@@ -36,16 +36,6 @@ namespace LC::Aggregator
 	class RepresentationManager : public QObject
 								, public IJobHolderRepresentationHandler
 	{
-		using SelectionProxy_t = Util::SelectionProxyModel<IDType_t>;
-
-		const std::unique_ptr<ChannelActions> ChannelActions_;
-		const std::unique_ptr<ItemsWidget> ReprWidget_;
-		const std::unique_ptr<SelectionProxy_t> SelectedIdProxyModel_;
-		const std::unique_ptr<JobHolderRepresentationModel> JobHolderRepresentation_;
-
-		QList<ChannelShort> SelectedChannels_;
-
-		QMenu& ContextMenu_;
 	public:
 		struct Deps
 		{
@@ -54,8 +44,23 @@ namespace LC::Aggregator
 			ChannelsModel& ChannelsModel_;
 			UpdatesManager& UpdatesManager_;
 			DBUpdateThread& DBUpThread_;
-		};
 
+			std::function<void (RowSelection)> RowSelector_;
+		};
+	private:
+		using SelectionProxy_t = Util::SelectionProxyModel<IDType_t>;
+
+		const std::unique_ptr<ChannelActions> ChannelActions_;
+		const std::unique_ptr<ItemsWidget> ReprWidget_;
+		const std::unique_ptr<SelectionProxy_t> SelectedIdProxyModel_;
+		const std::unique_ptr<JobHolderRepresentationModel> JobHolderRepresentation_;
+
+		const std::function<void (RowSelection)> RowSelector_;
+
+		QList<ChannelShort> SelectedChannels_;
+
+		QMenu& ContextMenu_;
+	public:
 		explicit RepresentationManager (const Deps&);
 		~RepresentationManager () override;
 
@@ -68,6 +73,6 @@ namespace LC::Aggregator
 		QToolBar* GetControls () override;
 		QMenu* GetContextMenu () override;
 	private:
-		bool NavigateChannel (ChannelDirection);
+		void NavigateChannel (ChannelDirection);
 	};
 }

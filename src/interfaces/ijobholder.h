@@ -10,6 +10,7 @@
 
 #include <functional>
 #include <memory>
+#include <optional>
 #include <QModelIndex>
 #include <QtPlugin>
 #include "interfaces/structures.h"
@@ -160,6 +161,18 @@ public:
 	{
 		QList<QModelIndex> Rows_;	///< The selected rows, at the 0'th column.
 		QModelIndex Current_;		///< One of Rows_ (at the 0'th column), or invalid
+
+		static RowSelection FromMaybe (const std::optional<QModelIndex>& row)
+		{
+			if (!row)
+				return {};
+			return FromSingle (*row);
+		}
+
+		static RowSelection FromSingle (const QModelIndex& row)
+		{
+			return { .Rows_ { row }, .Current_ { row } };
+		}
 	};
 
 	/** @brief Called from a clean stack whenever the selection or the

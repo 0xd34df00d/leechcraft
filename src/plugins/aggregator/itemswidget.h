@@ -41,7 +41,7 @@ namespace Aggregator
 		const AppWideActions& AppWideActions_;
 		const ChannelActions& ChannelActions_;
 		UpdatesManager& UpdatesManager_;
-		std::function<bool (ChannelDirection)> ChannelNavigator_;
+		std::function<void (ChannelDirection)> ChannelNavigator_;
 	};
 
 	class ItemsWidget : public QWidget

@@ -177,7 +177,7 @@ namespace Aggregator
 		return XmlSettingsDialog_;
 	}
 
-	IJobHolderRepresentationHandler_ptr Aggregator::CreateRepresentationHandler (const ViewCallbacks&)
+	IJobHolderRepresentationHandler_ptr Aggregator::CreateRepresentationHandler (const ViewCallbacks& callbacks)
 	{
 		return std::make_unique<RepresentationManager> (RepresentationManager::Deps {
 					.ShortcutManager_ = *ShortcutMgr_,
@@ -185,6 +185,7 @@ namespace Aggregator
 					.ChannelsModel_ = *ChannelsModel_,
 					.UpdatesManager_ = *UpdatesManager_,
 					.DBUpThread_ = *DBUpThread_,
+					.RowSelector_ = callbacks.SetSelection_,
 				});
 	}
 

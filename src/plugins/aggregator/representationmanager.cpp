@@ -44,7 +44,7 @@ namespace LC::Aggregator
 				.AppWideActions_ = deps.AppWideActions_,
 				.ChannelActions_ = *ChannelActions_,
 				.UpdatesManager_ = deps.UpdatesManager_,
-				.ChannelNavigator_ = [this] (auto dir) { return NavigateChannel (dir); },
+				.ChannelNavigator_ = [this] (auto dir) { NavigateChannel (dir); },
 			})}
 	, SelectedIdProxyModel_ { std::make_unique<SelectionProxy_t> (deps.ChannelsModel_, SelectionProxy_t::Config {
 				.IsSelectedRole_ = ChannelRoles::ChannelRoleMax + 1,
@@ -54,6 +54,7 @@ namespace LC::Aggregator
 	, JobHolderRepresentation_ { std::make_unique<JobHolderRepresentationModel> (JobHolderRepresentationModel::Deps {
 				.SelectedRole_ = SelectedIdProxyModel_->GetIsSelectedRole ()
 			})}
+	, RowSelector_ { deps.RowSelector_ }
 	, ContextMenu_ { CreateMenu (*ChannelActions_, deps.AppWideActions_, *ReprWidget_) }
 	{
 		JobHolderRepresentation_->setSourceModel (&*SelectedIdProxyModel_);
@@ -98,28 +99,79 @@ namespace LC::Aggregator
 		return &ContextMenu_;
 	}
 
-	bool RepresentationManager::NavigateChannel (ChannelDirection dir)
+	namespace
 	{
-		if (SelectedChannels_.size () != 1)
-			return false;
+		std::optional<QModelIndex> FindChannelIndex (const QAbstractItemModel& model, const IDType_t& id)
+		{
+			for (const auto& idx : Util::AllModelRows (model))
+				if (idx.data (ChannelID) == id)
+					return idx;
+			return {};
+		}
 
-		// TODO notify the representation view about the new index and rework the following
-		return false;
+		std::optional<QModelIndex> StepIndex (ChannelDirection dir, QModelIndex idx)
+		{
+			idx = idx.siblingAtRow (idx.row () + ToRowDelta (dir));
+			if (!idx.isValid ())
+				return {};
+			return idx;
+		}
 
-		/*
-		const auto& id = SelectedChannels_ [0].ChannelID_;
-		for (const auto& idx : Util::AllModelRows (*JobHolderRepresentation_))
-			if (idx.data (ChannelID) == id)
+		std::optional<QModelIndex> FindUnread (ChannelDirection dir, QModelIndex idx)
+		{
+			while (true)
 			{
-				const auto& nextIdx = idx.siblingAtRow (idx.row () + ToRowDelta (dir));
-				if (!nextIdx.isValid ())
-					return false;
+				if (idx.data (ChannelRoles::UnreadCount).toInt ())
+					return idx;
 
-				HandleSelectedRowsChanging ({ nextIdx });
-				return true;
+				if (const auto step = StepIndex (dir, idx))
+					idx = *step;
+				else
+					return {};
 			}
+		}
+	}
 
-		return false;
-		*/
+	void RepresentationManager::NavigateChannel (ChannelDirection dir)
+	{
+		const auto rowCount = JobHolderRepresentation_->rowCount ();
+		if (!rowCount)
+			return;
+
+		const auto wraparoundIdx = [&] -> QModelIndex
+		{
+			switch (dir)
+			{
+			case ChannelDirection::PreviousUnread:
+				return JobHolderRepresentation_->index (rowCount - 1, 0);
+			case ChannelDirection::NextUnread:
+				return JobHolderRepresentation_->index (0, 0);
+			}
+			return {};
+		} ();
+
+		const auto id = [&] -> std::optional<IDType_t>
+		{
+			if (SelectedChannels_.isEmpty ())
+				return {};
+
+			switch (dir)
+			{
+			case ChannelDirection::NextUnread:
+				return SelectedChannels_.back ().ChannelID_;
+			case ChannelDirection::PreviousUnread:
+				return SelectedChannels_.front ().ChannelID_;
+			}
+			return {};
+		} ();
+
+		const auto& row = id
+				.and_then (std::bind_front (FindChannelIndex, std::ref (*JobHolderRepresentation_)))
+				.and_then (std::bind_front (StepIndex, dir))
+				.and_then (std::bind_front (FindUnread, dir))
+				.or_else ([&] { return FindUnread (dir, wraparoundIdx); })
+				;
+		if (row)
+			RowSelector_ (RowSelection::FromSingle (*row));
 	}
 }
