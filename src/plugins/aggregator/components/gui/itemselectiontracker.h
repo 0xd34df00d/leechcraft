@@ -42,6 +42,7 @@ namespace LC::Aggregator
 		friend std::size_t qHash (const SelectedItem& item, size_t seed);
 	private:
 		QSet<SelectedItem> CurrentItems_;
+		QList<SelectedItem> PendingReadMark_;
 
 		QTimer ReadMarkTimer_;
 	public:
@@ -50,7 +51,7 @@ namespace LC::Aggregator
 		QSet<IDType_t> GetSelectedItems () const;
 
 		void HandleSelectionChanged (const QList<QModelIndex>&);
-		void RearmMarkTimer ();
+		void RearmMarkTimer (const QList<QModelIndex>&);
 	signals:
 		void refreshItemDisplay ();
 		void selectionChanged (const QSet<IDType_t>&);

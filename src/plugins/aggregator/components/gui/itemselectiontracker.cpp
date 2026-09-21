@@ -18,10 +18,10 @@ namespace LC::Aggregator
 {
 	namespace
 	{
-		void RunMarkAsRead (const QSet<ItemSelectionTracker::SelectedItem>& items)
+		void RunMarkAsRead (const QList<ItemSelectionTracker::SelectedItem>& items)
 		{
 			const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-			const auto& idsList = Util::MapAs<QList> (items,
+			const auto& idsList = Util::Map (items,
 					[] (const ItemSelectionTracker::SelectedItem& item) { return SQLStorageBackend::UnreadItemId { item.Channel_, item.Item_ }; });
 			sb->SetItemsUnread (idsList, false);
 		}
@@ -46,7 +46,7 @@ namespace LC::Aggregator
 	, Tracker_ { view }
 	, Actions_ { actions }
 	{
-		ReadMarkTimer_.callOnTimeout (this, [this] { RunMarkAsRead (CurrentItems_); });
+		ReadMarkTimer_.callOnTimeout (this, [this] { RunMarkAsRead (PendingReadMark_); });
 		ReadMarkTimer_.setSingleShot (true);
 
 		connect (&Tracker_,
@@ -81,14 +81,18 @@ namespace LC::Aggregator
 		return Util::Map (CurrentItems_, &SelectedItem::Item_);
 	}
 
+	namespace
+	{
+		bool IsUnread (const QModelIndex& row)
+		{
+			return !row.data (IItemsModel::ItemRole::IsRead).toBool ();
+		}
+	}
+
 	void ItemSelectionTracker::HandleSelectionChanged (const QList<QModelIndex>& rows)
 	{
 		Actions_.HandleSelectionChanged (rows);
-
-		if (const auto isUnread = [] (const QModelIndex& row) { return !row.data (IItemsModel::ItemRole::IsRead).toBool (); };
-			std::ranges::any_of (rows, isUnread))
-			RearmMarkTimer ();
-
+		RearmMarkTimer (rows);
 		if (auto currentItems = Util::MapAs<QSet> (rows, &SelectedItem::FromIndex);
 			currentItems != CurrentItems_)
 		{
@@ -98,8 +102,14 @@ namespace LC::Aggregator
 		}
 	}
 
-	void ItemSelectionTracker::RearmMarkTimer ()
+	void ItemSelectionTracker::RearmMarkTimer (const QList<QModelIndex>& selected)
 	{
+		const auto unread = Util::Filter (selected, IsUnread);
+		if (unread.isEmpty ())
+			return;
+
+		PendingReadMark_ = Util::Map (unread, &SelectedItem::FromIndex);
+
 		const auto timeout = XmlSettingsManager::Instance ().property ("MarkAsReadTimeout").toInt ();
 		ReadMarkTimer_.start (std::chrono::seconds { timeout });
 	}
