@@ -9,7 +9,7 @@
 #pragma once
 
 #include <QObject>
-#include <QModelIndex>
+#include <QPersistentModelIndex>
 
 class QTreeView;
 
@@ -22,7 +22,7 @@ namespace Snails
 	class MessageListEditorManager : public QObject
 	{
 		QTreeView * const View_;
-		QModelIndex LastEdited_;
+		QPersistentModelIndex LastEdited_;
 		MailListMode Mode_;
 	public:
 		MessageListEditorManager (QTreeView*, QObject* = nullptr);

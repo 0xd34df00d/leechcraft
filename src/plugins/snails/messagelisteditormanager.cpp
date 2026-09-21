@@ -64,7 +64,7 @@ namespace Snails
 		if (LastEdited_.isValid ())
 		{
 			View_->closePersistentEditor (LastEdited_);
-			LastEdited_ = {};
+			LastEdited_ = QPersistentModelIndex {};
 		}
 	}
 }
