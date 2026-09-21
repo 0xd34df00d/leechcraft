@@ -14,7 +14,6 @@
 #include <QStringList>
 #include <QNetworkProxy>
 #include <QNetworkAccessManager>
-#include <QSet>
 #include <QUrl>
 #include <util/sll/eitherfwd.h>
 #include <interfaces/iinfo.h>
@@ -51,7 +50,6 @@ namespace CSTP
 		tasks_t ActiveTasks_;
 		bool SaveScheduled_ = false;
 		QNetworkAccessManager *NetworkAccessManager_ = nullptr;
-		QSet<QNetworkReply*> FinishedReplies_;
 		QModelIndex Selected_;
 		ICoreProxy_ptr CoreProxy_;
 
@@ -85,8 +83,6 @@ namespace CSTP
 		EntityTestHandleResult CouldDownload (const LC::Entity&);
 		QAbstractItemModel* GetRepresentationModel ();
 		QNetworkAccessManager* GetNetworkAccessManager () const;
-		bool HasFinishedReply (QNetworkReply*) const;
-		void RemoveFinishedReply (QNetworkReply*);
 
 		int columnCount (const QModelIndex& = QModelIndex ()) const override;
 		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;
@@ -107,7 +103,6 @@ namespace CSTP
 		void done (bool);
 		void updateInterface ();
 		void writeSettings ();
-		void finishedReply (QNetworkReply*);
 	private:
 		QFuture<IDownload::Result> AddTask (const QUrl&,
 				const QString&,
@@ -115,12 +110,6 @@ namespace CSTP
 				const QString&,
 				const QStringList&,
 				const QVariantMap&,
-				LC::TaskParameters = LC::NoParameters);
-		QFuture<IDownload::Result> AddTask (QNetworkReply*,
-				const QString&,
-				const QString&,
-				const QString&,
-				const QStringList&,
 				LC::TaskParameters = LC::NoParameters);
 		QFuture<IDownload::Result> AddTask (TaskDescr&);
 		void ReadSettings ();

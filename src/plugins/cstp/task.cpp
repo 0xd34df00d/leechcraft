@@ -22,7 +22,6 @@
 #include <util/threads/futures.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
-#include "core.h"
 #include "xmlsettingsmanager.h"
 
 namespace LC
@@ -34,10 +33,7 @@ namespace CSTP
 		void LateDelete (QNetworkReply *rep)
 		{
 			if (rep)
-			{
-				Core::Instance ().RemoveFinishedReply (rep);
 				rep->deleteLater ();
-			}
 		}
 
 		QVariantMap Augment (QVariantMap map, const QList<QPair<QString, QVariant>>& pairs)
@@ -74,28 +70,6 @@ namespace CSTP
 				SIGNAL (timeout ()),
 				this,
 				SIGNAL (updateInterface ()));
-	}
-
-	Task::Task (QNetworkReply *reply)
-	: Reply_ (reply, &LateDelete)
-	, Timer_ (new QTimer (this))
-	, Operation_ (reply->operation ())
-	, Headers_
-	{
-		{
-			"Content-Type",
-			reply->request ().header (QNetworkRequest::ContentTypeHeader).toByteArray ()
-		}
-	}
-	{
-		RestartTime ();
-
-		connect (Timer_,
-				SIGNAL (timeout ()),
-				this,
-				SIGNAL (updateInterface ()));
-
-		Promise_.reportStarted ();
 	}
 
 	namespace
@@ -168,79 +142,54 @@ namespace CSTP
 		FileSizeAtStart_ = tof->size ();
 		To_ = tof;
 
-		if (!Reply_)
+		if (URL_.scheme () == "file")
 		{
-			if (URL_.scheme () == "file")
-			{
-				QTimer::singleShot (100,
-						this,
-						SLOT (handleLocalTransfer ()));
-				return;
-			}
-
-			auto ua = XmlSettingsManager::Instance ().property ("UserUserAgent").toString ();
-			if (ua.isEmpty ())
-				ua = XmlSettingsManager::Instance ().property ("PredefinedUserAgent").toString ();
-
-			if (ua == "%leechcraft%")
-				ua = "LeechCraft.CSTP/" + Core::Instance ().GetCoreProxy ()->GetVersion ();
-
-			QNetworkRequest req { URL_ };
-			if (tof->size ())
-				req.setRawHeader ("Range", QString ("bytes=%1-").arg (tof->size ()).toLatin1 ());
-			req.setRawHeader ("User-Agent", ua.toLatin1 ());
-
-			if (Referer_.isEmpty ())
-				req.setRawHeader ("Referer", QString (QString ("http://") + URL_.host ()).toLatin1 ());
-			else
-				req.setRawHeader ("Referer", Referer_.toEncoded ());
-
-			req.setRawHeader ("Host", URL_.host ().toLatin1 ());
-			req.setRawHeader ("Origin", URL_.scheme ().toLatin1 () + "://" + URL_.host ().toLatin1 ());
-			req.setRawHeader ("Accept", "*/*");
-
-			RestartTime ();
-
-			for (const auto& pair : Util::Stlize (Headers_))
-				req.setRawHeader (pair.first.toLatin1 (), pair.second.toByteArray ());
-
-			auto nam = Core::Instance ().GetNetworkAccessManager ();
-			switch (Operation_)
-			{
-			case QNetworkAccessManager::GetOperation:
-				Reply_.reset (nam->get (req));
-				break;
-			case QNetworkAccessManager::PostOperation:
-				Reply_.reset (nam->post (req, UploadData_));
-				break;
-			default:
-				qWarning () << Q_FUNC_INFO
-						<< "unsupported operation";
-				HandleError (IDownload::Error::Type::ProtocolError, tr ("Unsupported operation."));
-				return;
-			}
+			QTimer::singleShot (100,
+					this,
+					SLOT (handleLocalTransfer ()));
+			return;
 		}
-		else
-		{
-			handleMetaDataChanged ();
 
-			qint64 contentLength = Reply_->header (QNetworkRequest::ContentLengthHeader).toInt ();
-			if (contentLength &&
-					Reply_->bytesAvailable () == contentLength)
-			{
-				handleReadyRead ();
-				handleFinished ();
-				return;
-			}
-			else if (!Reply_->isOpen ())
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "reply is not open";
-				HandleError (IDownload::Error::Type::LocalError, "Reply is not open.");
-				return;
-			}
-			else if (handleReadyRead ())
-				return;
+		auto ua = XmlSettingsManager::Instance ().property ("UserUserAgent").toString ();
+		if (ua.isEmpty ())
+			ua = XmlSettingsManager::Instance ().property ("PredefinedUserAgent").toString ();
+
+		if (ua == "%leechcraft%")
+			ua = "LeechCraft.CSTP/" + GetProxyHolder ()->GetVersion ();
+
+		QNetworkRequest req { URL_ };
+		if (tof->size ())
+			req.setRawHeader ("Range", QString ("bytes=%1-").arg (tof->size ()).toLatin1 ());
+		req.setRawHeader ("User-Agent", ua.toLatin1 ());
+
+		if (Referer_.isEmpty ())
+			req.setRawHeader ("Referer", QString (QString ("http://") + URL_.host ()).toLatin1 ());
+		else
+			req.setRawHeader ("Referer", Referer_.toEncoded ());
+
+		req.setRawHeader ("Host", URL_.host ().toLatin1 ());
+		req.setRawHeader ("Origin", URL_.scheme ().toLatin1 () + "://" + URL_.host ().toLatin1 ());
+		req.setRawHeader ("Accept", "*/*");
+
+		RestartTime ();
+
+		for (const auto& pair : Util::Stlize (Headers_))
+			req.setRawHeader (pair.first.toLatin1 (), pair.second.toByteArray ());
+
+		auto nam = GetProxyHolder ()->GetNetworkAccessManager ();
+		switch (Operation_)
+		{
+		case QNetworkAccessManager::GetOperation:
+			Reply_.reset (nam->get (req));
+			break;
+		case QNetworkAccessManager::PostOperation:
+			Reply_.reset (nam->post (req, UploadData_));
+			break;
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< "unsupported operation";
+			HandleError (IDownload::Error::Type::ProtocolError, tr ("Unsupported operation."));
+			return;
 		}
 
 		if (!Timer_->isActive ())
@@ -352,7 +301,7 @@ namespace CSTP
 
 	bool Task::IsRunning () const
 	{
-		return Reply_ && !URL_.isEmpty ();
+		return static_cast<bool> (Reply_);
 	}
 
 	QString Task::GetErrorString () const
@@ -655,33 +604,23 @@ namespace CSTP
 				SLOT (handleFinished ()));
 	}
 
-	bool Task::handleReadyRead ()
+	void Task::handleReadyRead ()
 	{
-		if (Reply_)
+		quint64 avail = Reply_->bytesAvailable ();
+		quint64 res = To_->write (Reply_->readAll ());
+		if (static_cast<quint64> (-1) == res ||
+				res != avail)
 		{
-			quint64 avail = Reply_->bytesAvailable ();
-			quint64 res = To_->write (Reply_->readAll ());
-			if (static_cast<quint64> (-1) == res ||
-					res != avail)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "Error writing to file:"
-						<< To_->fileName ()
-						<< To_->errorString ();
+			qWarning () << Q_FUNC_INFO
+					<< "Error writing to file:"
+					<< To_->fileName ()
+					<< To_->errorString ();
 
-				const auto& errString = tr ("Error writing to file %1: %2")
-						.arg (To_->fileName ())
-						.arg (To_->errorString ());
-				HandleError (IDownload::Error::Type::LocalError, errString);
-			}
+			const auto& errString = tr ("Error writing to file %1: %2")
+					.arg (To_->fileName ())
+					.arg (To_->errorString ());
+			HandleError (IDownload::Error::Type::LocalError, errString);
 		}
-		if (URL_.isEmpty () &&
-				Core::Instance ().HasFinishedReply (Reply_.get ()))
-		{
-			handleFinished ();
-			return true;
-		}
-		return false;
 	}
 
 	void Task::handleFinished ()

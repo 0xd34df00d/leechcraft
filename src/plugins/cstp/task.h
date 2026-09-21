@@ -56,7 +56,6 @@ namespace CSTP
 		QFutureInterface<IDownload::Result> Promise_;
 	public:
 		explicit Task (const QUrl& url = QUrl (), const QVariantMap& params = QVariantMap ());
-		explicit Task (QNetworkReply*);
 
 		void Start (const std::shared_ptr<QFile>&);
 		void Stop ();
@@ -88,9 +87,7 @@ namespace CSTP
 		void redirectedConstruction (const QUrl&);
 		void handleMetaDataChanged ();
 		void handleLocalTransfer ();
-		/** Returns true if the reply is at end after this read.
-			*/
-		bool handleReadyRead ();
+		void handleReadyRead ();
 		void handleFinished ();
 	signals:
 		void updateInterface ();

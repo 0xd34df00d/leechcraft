@@ -33,7 +33,6 @@
 #include "xmlsettingsmanager.h"
 #include "addtask.h"
 
-Q_DECLARE_METATYPE (QNetworkReply*)
 Q_DECLARE_METATYPE (QToolBar*)
 
 extern "C"
@@ -56,7 +55,6 @@ namespace CSTP
 	{
 		setObjectName ("CSTP Core");
 		qRegisterMetaType<std::shared_ptr<QFile>> ("std::shared_ptr<QFile>");
-		qRegisterMetaType<QNetworkReply*> ("QNetworkReply*");
 
 		ReadSettings ();
 	}
@@ -75,12 +73,7 @@ namespace CSTP
 	void Core::SetCoreProxy (ICoreProxy_ptr proxy)
 	{
 		CoreProxy_ = proxy;
-
 		NetworkAccessManager_ = proxy->GetNetworkAccessManager ();
-		connect (NetworkAccessManager_,
-				SIGNAL (finished (QNetworkReply*)),
-				this,
-				SLOT (finishedReply (QNetworkReply*)));
 	}
 
 	ICoreProxy_ptr Core::GetCoreProxy () const
@@ -137,8 +130,7 @@ namespace CSTP
 			if (e.Additional_.contains ("Filename"))
 				return e.Additional_ ["Filename"].toString ();
 
-			const auto& url = e.Entity_.toUrl ();
-			return MakeFilename (url.isValid () ? url : e.Additional_ ["SourceURL"].toUrl ());
+			return MakeFilename (e.Entity_.toUrl ());
 		}
 	}
 
@@ -146,20 +138,11 @@ namespace CSTP
 	{
 		auto url = e.Entity_.toUrl ();
 		const auto& urlList = e.Entity_.value<QList<QUrl>> ();
-		QNetworkReply *rep = e.Entity_.value<QNetworkReply*> ();
 		const auto& tags = e.Additional_ [" Tags"].toStringList ();
 
 		const QFileInfo fi (e.Location_);
 		const auto& dir = fi.isDir () ? e.Location_ : fi.dir ().path ();
 		const auto& file = MakeFilename (e);
-
-		if (rep)
-			return AddTask (rep,
-					dir,
-					file,
-					QString (),
-					tags,
-					e.Parameters_);
 
 		AddTask::Task task
 		{
@@ -208,25 +191,6 @@ namespace CSTP
 					e.Parameters_);
 
 		return mkErr (IDownload::Error::Type::LocalError, "Incorrect task parameters");
-	}
-
-	QFuture<IDownload::Result> Core::AddTask (QNetworkReply *rep,
-			const QString& path,
-			const QString& filename,
-			const QString& comment,
-			const QStringList& tags,
-			LC::TaskParameters tp)
-	{
-		TaskDescr td;
-		td.Task_.reset (new Task (rep));
-
-		QDir dir (path);
-		td.File_.reset (new QFile (QDir::cleanPath (dir.filePath (filename))));
-		td.Comment_ = comment;
-		td.Parameters_ = tp;
-		td.Tags_ = tags;
-
-		return AddTask (td);
 	}
 
 	QFuture<IDownload::Result> Core::AddTask (const QUrl& url,
@@ -341,9 +305,6 @@ namespace CSTP
 
 	EntityTestHandleResult Core::CouldDownload (const Entity& e)
 	{
-		if (e.Entity_.value<QNetworkReply*> ())
-			return EntityTestHandleResult (EntityTestHandleResult::PHigh);
-
 		const auto& url = e.Entity_.toUrl ();
 		const auto& urlList = e.Entity_.value<QList<QUrl>> ();
 		if (url.isValid ())
@@ -373,16 +334,6 @@ namespace CSTP
 	QNetworkAccessManager* Core::GetNetworkAccessManager () const
 	{
 		return NetworkAccessManager_;
-	}
-
-	bool Core::HasFinishedReply (QNetworkReply *rep) const
-	{
-		return FinishedReplies_.contains (rep);
-	}
-
-	void Core::RemoveFinishedReply (QNetworkReply *rep)
-	{
-		FinishedReplies_.remove (rep);
 	}
 
 	int Core::columnCount (const QModelIndex&) const
@@ -716,11 +667,6 @@ namespace CSTP
 		}
 		SaveScheduled_ = false;
 		settings.endArray ();
-	}
-
-	void Core::finishedReply (QNetworkReply *rep)
-	{
-		FinishedReplies_.insert (rep);
 	}
 
 	void Core::ReadSettings ()
