@@ -8,7 +8,6 @@
 
 #include "chathistorywidget.h"
 #include <algorithm>
-#include <ranges>
 #include <QSortFilterProxyModel>
 #include <QMessageBox>
 #include <QToolBar>
@@ -447,11 +446,8 @@ namespace LC::Azoth::ChatHistory
 
 	void ChatHistoryWidget::ClearHistory ()
 	{
-		const auto acc = GetCurrentAccount ();
-		if (!acc)
+		if (!GetCurrentAccount ())
 			return;
-
-		const auto entry = GetCurrentEntry ();
 
 		auto selected = Util::Map (Ui_.Contacts_->selectionModel ()->selectedRows (),
 				[&] (const QModelIndex& idx) { return SortFilter_->mapToSource (idx).row (); });
@@ -461,12 +457,13 @@ namespace LC::Azoth::ChatHistory
 		if (selected.isEmpty ())
 			return;
 
-		std::ranges::sort (std::ranges::reverse_view (selected));
+		const auto& allEntries = EntriesModel_.GetItems ();
+		const auto& entries = Util::Map (selected, [&allEntries] (int row) { return allEntries [row]; });
 
-		const auto& msg = selected.size () == 1 ?
+		const auto& msg = entries.size () == 1 ?
 				tr ("Are you sure you wish to delete chat history with %1?")
-					.arg (EntriesModel_.GetItems () [selected.front ()].Base_.HumanReadableId_) :
-				tr ("Are you sure you wish to delete chat history with %n entry(ies)?", nullptr, selected.size ());
+					.arg (entries.front ().Base_.HumanReadableId_) :
+				tr ("Are you sure you wish to delete chat history with %n entry(ies)?", nullptr, entries.size ());
 		if (QMessageBox::question (nullptr, "LeechCraft", msg, QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
 
@@ -474,10 +471,14 @@ namespace LC::Azoth::ChatHistory
 
 		{
 			const QSignalBlocker blocker { Ui_.Contacts_->selectionModel () };
-			for (const auto row : selected)
+			for (const auto& entry : entries)
 			{
-				Params_.StorageThread_.Run (&Storage2::ClearHistory, EntriesModel_.GetItems () [row].Base_);
-				EntriesModel_.RemoveItem (row);
+				Params_.StorageThread_.Run (&Storage2::ClearHistory, entry.Base_);
+
+				const auto& items = EntriesModel_.GetItems ();
+				if (const auto pos = std::ranges::find (items, entry.Id_, &DisplayEntry::Id_);
+					pos != items.end ())
+					EntriesModel_.RemoveItem (pos);
 			}
 		}
 
