@@ -49,8 +49,6 @@ namespace LC::SeekThru
 		Ui_.ButtonRemove_->setEnabled (current.isValid ());
 		Ui_.InfoBox_->setEnabled (current.isValid ());
 
-		Current_ = current;
-
 		QString description = current.data (Core::RoleDescription).toString ();
 		if (description.isEmpty ())
 			Ui_.Description_->setText (tr ("No description"));
@@ -116,6 +114,7 @@ namespace LC::SeekThru
 
 	void SearchersList::on_Tags__editingFinished ()
 	{
-		Core::Instance ().SetTags (Current_, Proxy_->GetTagsManager ()->Split (Ui_.Tags_->text ()));
+		Core::Instance ().SetTags (Ui_.SearchersView_->selectionModel ()->currentIndex (),
+				Proxy_->GetTagsManager ()->Split (Ui_.Tags_->text ()));
 	}
 }

@@ -25,7 +25,6 @@ namespace SeekThru
 		const ICoreProxy_ptr Proxy_;
 
 		Ui::SearchersList Ui_;
-		QModelIndex Current_;
 	public:
 		explicit SearchersList (const ICoreProxy_ptr&, QWidget* = nullptr);
 	private slots:
