@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <source_location>
 #include <QAbstractItemModel>
 #include "modelsconfig.h"
 
@@ -34,5 +35,8 @@ namespace LC::Util
 	protected:
 		virtual int GetItemsCount () const = 0;
 		virtual QVariant GetData (int row, int col, int role) const = 0;
+
+		[[noreturn, gnu::cold, gnu::noinline]]
+		static void NotifyRowOutOfRange (const FlatItemsModelBase& model, int row, int count, const std::source_location& loc);
 	};
 }

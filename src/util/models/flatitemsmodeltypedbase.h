@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <source_location>
 #include "flatitemsmodelbase.h"
 
 namespace LC::Util
@@ -72,7 +73,7 @@ namespace LC::Util
 
 		void SetItem (int idx, const T& item)
 		{
-			Items_ [idx] = item;
+			ItemAt (idx) = item;
 			emit dataChanged (index (idx, 0),
 					index (idx, columnCount ({}) - 1));
 		}
@@ -80,13 +81,14 @@ namespace LC::Util
 		template<typename F>
 		void EditItem (int idx, F&& editor)
 		{
-			std::invoke (std::forward<F> (editor), Items_ [idx]);
+			std::invoke (std::forward<F> (editor), ItemAt (idx));
 			emit dataChanged (index (idx, 0),
 					index (idx, columnCount ({}) - 1));
 		}
 
 		void RemoveItem (int idx)
 		{
+			CheckRow (idx, std::source_location::current ());
 			beginRemoveRows ({}, idx, idx);
 			Items_.removeAt (idx);
 			endRemoveRows ();
@@ -100,6 +102,18 @@ namespace LC::Util
 		int GetItemsCount () const override
 		{
 			return Items_.size ();
+		}
+
+		auto& ItemAt (this auto&& self, int row, const std::source_location& loc = std::source_location::current ())
+		{
+			self.CheckRow (row, loc);
+			return self.Items_ [row];
+		}
+	private:
+		void CheckRow (int row, const std::source_location& loc) const
+		{
+			if (row < 0 || row >= Items_.size ())
+				NotifyRowOutOfRange (*this, row, Items_.size (), loc);
 		}
 	};
 }

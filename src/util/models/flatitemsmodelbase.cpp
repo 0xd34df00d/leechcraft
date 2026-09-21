@@ -68,4 +68,11 @@ namespace LC::Util
 		if (const auto rows = GetItemsCount ())
 			emit dataChanged (index (0, 0), index (rows - 1, Headers_.size () - 1), { role });
 	}
+
+	[[noreturn, gnu::cold, gnu::noinline]]
+	void FlatItemsModelBase::NotifyRowOutOfRange (const FlatItemsModelBase& model, int row, int count, const std::source_location& loc)
+	{
+		const QMessageLogger logger { loc.file_name (), static_cast<int> (loc.line ()), loc.function_name () };
+		logger.fatal ("row %d is out of range for %d items of %s", row, count, model.metaObject ()->className ());
+	}
 }

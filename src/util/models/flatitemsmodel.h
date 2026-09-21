@@ -43,12 +43,12 @@ namespace LC::Util
 		QVariant GetData (int row, int col, int role) const override
 		{
 			if (role == this->DataRole)
-				return QVariant::fromValue (this->Items_.at (row));
+				return QVariant::fromValue (this->ItemAt (row));
 
 			if (role != Qt::DisplayRole)
 				return {};
 
-			return detail::GetField (this->Items_.at (row), col);
+			return detail::GetField (this->ItemAt (row), col);
 		}
 	};
 }

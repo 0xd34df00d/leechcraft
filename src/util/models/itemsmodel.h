@@ -156,10 +156,11 @@ namespace LC::Util
 		template<auto F, typename V>
 		void SetField (int idx, V&& value)
 		{
-			if (this->Items_ [idx].*F == value)
+			auto& item = this->ItemAt (idx);
+			if (item.*F == value)
 				return;
 
-			this->Items_ [idx].*F = std::forward<V> (value);
+			item.*F = std::forward<V> (value);
 			emit this->dataChanged (this->index (idx, 0), this->index (idx, 0),
 					{ std::decay_t<decltype (T {}.*F)>::Role });
 		}
@@ -167,13 +168,14 @@ namespace LC::Util
 		template<auto... Fs, typename... Vs>
 		void SetFields (int idx, Vs&&... values)
 		{
+			auto& item = this->ItemAt (idx);
 			QList<int> changedRoles;
 			changedRoles.reserve (sizeof... (values));
-			(([&, this]
+			(([&]
 			{
-				if (this->Items_ [idx].*Fs != std::forward<Vs> (values))
+				if (item.*Fs != std::forward<Vs> (values))
 				{
-					this->Items_ [idx].*Fs = std::forward<Vs> (values);
+					item.*Fs = std::forward<Vs> (values);
 					changedRoles << std::decay_t<decltype (T {}.*Fs)>::Role;
 				}
 			} ()), ...);
@@ -185,7 +187,7 @@ namespace LC::Util
 		QVariant GetData (int row, int, int role) const override
 		{
 			if (const auto getter = Role2Getter_.value (role))
-				return getter (this->Items_.at (row));
+				return getter (this->ItemAt (row));
 			return {};
 		}
 	};
@@ -227,7 +229,7 @@ namespace LC::Util
 		QVariant GetData (int row, int, int role) const override
 		{
 			if (const auto getter = Fields_.value (role - this->DataRole - 1))
-				return getter (this->Items_.at (row));
+				return getter (this->ItemAt (row));
 			return {};
 		}
 	private:
@@ -413,7 +415,7 @@ namespace LC::Util
 
 		bool setData (const QModelIndex& index, const QVariant& value, int role) override
 		{
-			auto& item = this->Items_ [index.row ()];
+			auto& item = this->ItemAt (index.row ());
 			if ((Extensions::SetData (item, index.row (), index.column (), value, role) ||...))
 			{
 				emit this->dataChanged (index, index);
@@ -430,7 +432,7 @@ namespace LC::Util
 	protected:
 		QVariant GetData (int row, int column, int role) const override
 		{
-			const auto& item = this->Items_ [row];
+			const auto& item = this->ItemAt (row);
 
 			switch (role)
 			{
