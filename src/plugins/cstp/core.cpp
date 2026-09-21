@@ -70,17 +70,6 @@ namespace CSTP
 		writeSettings ();
 	}
 
-	void Core::SetCoreProxy (ICoreProxy_ptr proxy)
-	{
-		CoreProxy_ = proxy;
-		NetworkAccessManager_ = proxy->GetNetworkAccessManager ();
-	}
-
-	ICoreProxy_ptr Core::GetCoreProxy () const
-	{
-		return CoreProxy_;
-	}
-
 	void Core::ItemSelected (const QModelIndex& i)
 	{
 		Selected_ = i;
@@ -331,11 +320,6 @@ namespace CSTP
 		return this;
 	}
 
-	QNetworkAccessManager* Core::GetNetworkAccessManager () const
-	{
-		return NetworkAccessManager_;
-	}
-
 	int Core::columnCount (const QModelIndex&) const
 	{
 		return Headers_.size ();
@@ -582,12 +566,12 @@ namespace CSTP
 			{
 				auto nah = new Util::NotificationActionHandler (e);
 				nah->AddFunction (tr ("Handle..."),
-						[this, filename]
+						[filename]
 						{
 							auto e = Util::MakeEntity (QUrl::fromLocalFile (filename),
 									{},
 									FromUserInitiated);
-							CoreProxy_->GetEntityManager ()->HandleEntity (e);
+							GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 						});
 				nah->AddFunction (tr ("Open externally"),
 						[filename]
@@ -602,7 +586,7 @@ namespace CSTP
 						});
 			}
 
-			CoreProxy_->GetEntityManager ()->HandleEntity (e);
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 		}
 
 		if (!err)
@@ -617,7 +601,7 @@ namespace CSTP
 						{},
 						tp);
 				e.Additional_ [" Tags"] = tags;
-				CoreProxy_->GetEntityManager ()->HandleEntity (e);
+				GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 			}
 		}
 		else

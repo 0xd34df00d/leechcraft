@@ -12,7 +12,6 @@
 #include <memory>
 #include <QAbstractItemModel>
 #include <QStringList>
-#include <QNetworkProxy>
 #include <QNetworkAccessManager>
 #include <QUrl>
 #include <util/sll/eitherfwd.h>
@@ -49,9 +48,7 @@ namespace CSTP
 		typedef std::vector<TaskDescr> tasks_t;
 		tasks_t ActiveTasks_;
 		bool SaveScheduled_ = false;
-		QNetworkAccessManager *NetworkAccessManager_ = nullptr;
 		QModelIndex Selected_;
-		ICoreProxy_ptr CoreProxy_;
 
 		explicit Core ();
 	public:
@@ -74,15 +71,12 @@ namespace CSTP
 
 		static Core& Instance ();
 		void Release ();
-		void SetCoreProxy (ICoreProxy_ptr);
-		ICoreProxy_ptr GetCoreProxy () const;
 		void ItemSelected (const QModelIndex&);
 
 		QFuture<IDownload::Result> AddTask (const Entity&);
 		qint64 GetTotalDownloadSpeed () const;
 		EntityTestHandleResult CouldDownload (const LC::Entity&);
 		QAbstractItemModel* GetRepresentationModel ();
-		QNetworkAccessManager* GetNetworkAccessManager () const;
 
 		int columnCount (const QModelIndex& = QModelIndex ()) const override;
 		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;

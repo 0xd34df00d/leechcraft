@@ -27,12 +27,8 @@ namespace LC
 {
 namespace CSTP
 {
-	void CSTP::Init (ICoreProxy_ptr coreProxy)
+	void CSTP::Init (ICoreProxy_ptr)
 	{
-		Proxy_ = coreProxy;
-
-		Core::Instance ().SetCoreProxy (coreProxy);
-
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"cstpsettings.xml");
@@ -78,7 +74,7 @@ namespace CSTP
 
 	QIcon CSTP::GetIcon () const
 	{
-		return Proxy_->GetIconThemeManager ()->GetPluginIcon ();
+		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
 	qint64 CSTP::GetDownloadSpeed () const
@@ -189,7 +185,7 @@ namespace CSTP
 
 	void CSTP::handleFileExists (Core::FileExistsBehaviour *remove)
 	{
-		auto rootWM = Core::Instance ().GetCoreProxy ()->GetRootWindowsManager ();
+		auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 		auto userReply = QMessageBox::warning (rootWM->GetPreferredWindow (),
 				tr ("File exists"),
 				tr ("File %1 already exists, continue download?"),
@@ -204,7 +200,7 @@ namespace CSTP
 
 	void CSTP::handleError (const QString& error)
 	{
-		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("HTTP error", error, Priority::Critical));
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeNotification ("HTTP error", error, Priority::Critical));
 	}
 }
 }
