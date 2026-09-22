@@ -279,7 +279,7 @@ namespace LC::BitTorrent
 		return result;
 	}
 
-	IJobHolderRepresentationHandler_ptr TorrentPlugin::CreateRepresentationHandler (const ViewCallbacks&)
+	std::vector<IJobHolderRepresentationHandler_ptr> TorrentPlugin::CreateRepresentationHandlers (const ViewCallbacks&)
 	{
 		auto handler = std::make_unique<RepresentationHandler> ();
 
@@ -299,7 +299,7 @@ namespace LC::BitTorrent
 					TabOpenRequested (TabTC_.TabClass_);
 				});
 
-		return handler;
+		return MakeHandlers (std::move (handler));
 	}
 
 	void TorrentPlugin::SetTags (int torrent, const QStringList& tags)

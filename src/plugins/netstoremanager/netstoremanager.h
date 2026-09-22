@@ -70,7 +70,7 @@ namespace NetStoreManager
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 
-		IJobHolderRepresentationHandler_ptr CreateRepresentationHandler (const ViewCallbacks&) override;
+		std::vector<IJobHolderRepresentationHandler_ptr> CreateRepresentationHandlers (const ViewCallbacks&) override;
 
 		QStringList GetServiceVariants () const override;
 		void UploadFile (const QString& filename, const QString& service) override;

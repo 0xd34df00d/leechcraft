@@ -56,7 +56,7 @@ namespace LC::LMP::BrainSlugz
 
 		QSet<QByteArray> GetPluginClasses () const override;
 
-		IJobHolderRepresentationHandler_ptr CreateRepresentationHandler (const ViewCallbacks&) override;
+		std::vector<IJobHolderRepresentationHandler_ptr> CreateRepresentationHandlers (const ViewCallbacks&) override;
 
 		void SetLMPProxy (ILMPProxy_ptr) override;
 	};

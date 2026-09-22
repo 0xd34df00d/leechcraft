@@ -8,9 +8,11 @@
 
 #pragma once
 
+#include <concepts>
 #include <functional>
 #include <memory>
 #include <optional>
+#include <vector>
 #include <QModelIndex>
 #include <QtPlugin>
 #include "interfaces/structures.h"
@@ -261,7 +263,16 @@ public:
 		std::function<void (IJobHolderRepresentationHandler::RowSelection)> SetSelection_;
 	};
 
-	virtual IJobHolderRepresentationHandler_ptr CreateRepresentationHandler (const ViewCallbacks&) = 0;
+	virtual std::vector<IJobHolderRepresentationHandler_ptr> CreateRepresentationHandlers (const ViewCallbacks& callbacks) = 0;
+protected:
+	template<std::derived_from<IJobHolderRepresentationHandler>... Handlers>
+	static std::vector<IJobHolderRepresentationHandler_ptr> MakeHandlers (std::unique_ptr<Handlers>... handlers)
+	{
+		std::vector<IJobHolderRepresentationHandler_ptr> result;
+		result.reserve (sizeof... (Handlers));
+		(result.push_back (std::move (handlers)), ...);
+		return result;
+	}
 };
 
 Q_DECLARE_METATYPE (LC::RowInfo)

@@ -153,9 +153,9 @@ namespace Azoth
 		return XmlSettingsDialog_;
 	}
 
-	IJobHolderRepresentationHandler_ptr Plugin::CreateRepresentationHandler (const ViewCallbacks&)
+	std::vector<IJobHolderRepresentationHandler_ptr> Plugin::CreateRepresentationHandlers (const ViewCallbacks&)
 	{
-		return std::make_unique<RepresentationHandler> (*TransferModelManager_);
+		return MakeHandlers (std::make_unique<RepresentationHandler> (*TransferModelManager_));
 	}
 
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace aep) const

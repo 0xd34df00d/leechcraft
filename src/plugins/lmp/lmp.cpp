@@ -408,9 +408,9 @@ namespace LMP
 				EffectsMgr_->RegisterEffect (effect);
 	}
 
-	IJobHolderRepresentationHandler_ptr Plugin::CreateRepresentationHandler (const ViewCallbacks&)
+	std::vector<IJobHolderRepresentationHandler_ptr> Plugin::CreateRepresentationHandlers (const ViewCallbacks&)
 	{
-		return Core::Instance ().GetProgressManager ()->CreateDefaultHandler ();
+		return MakeHandlers (Core::Instance ().GetProgressManager ()->CreateDefaultHandler ());
 	}
 
 	QString Plugin::GetFilterVerb () const

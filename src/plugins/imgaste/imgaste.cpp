@@ -136,9 +136,9 @@ namespace LC::Imgaste
 		return result;
 	}
 
-	IJobHolderRepresentationHandler_ptr Plugin::CreateRepresentationHandler (const ViewCallbacks&)
+	std::vector<IJobHolderRepresentationHandler_ptr> Plugin::CreateRepresentationHandlers (const ViewCallbacks&)
 	{
-		return ProgressManager_.CreateDefaultHandler ();
+		return MakeHandlers (ProgressManager_.CreateDefaultHandler ());
 	}
 
 	namespace

@@ -83,9 +83,9 @@ namespace LC::LMP::Graffiti
 					<< tabClass;
 	}
 
-	IJobHolderRepresentationHandler_ptr Plugin::CreateRepresentationHandler (const ViewCallbacks&)
+	std::vector<IJobHolderRepresentationHandler_ptr> Plugin::CreateRepresentationHandlers (const ViewCallbacks&)
 	{
-		return ProgressMgr_->CreateReprHandler ();
+		return MakeHandlers (ProgressMgr_->CreateReprHandler ());
 	}
 
 	void Plugin::SetLMPProxy (ILMPProxy_ptr proxy)

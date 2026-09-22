@@ -138,9 +138,9 @@ namespace NetStoreManager
 		return XSD_;
 	}
 
-	IJobHolderRepresentationHandler_ptr Plugin::CreateRepresentationHandler (const ViewCallbacks&)
+	std::vector<IJobHolderRepresentationHandler_ptr> Plugin::CreateRepresentationHandlers (const ViewCallbacks&)
 	{
-		return UpManager_->CreateReprHandler ();
+		return MakeHandlers (UpManager_->CreateReprHandler ());
 	}
 
 	QStringList Plugin::GetServiceVariants () const

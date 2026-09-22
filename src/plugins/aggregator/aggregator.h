@@ -96,7 +96,7 @@ namespace Aggregator
 		TabClasses_t GetTabClasses () const override;
 		void TabOpenRequested (const QByteArray&) override;
 
-		IJobHolderRepresentationHandler_ptr CreateRepresentationHandler (const ViewCallbacks&) override;
+		std::vector<IJobHolderRepresentationHandler_ptr> CreateRepresentationHandlers (const ViewCallbacks&) override;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 

@@ -84,7 +84,7 @@ namespace Azoth
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 
-		IJobHolderRepresentationHandler_ptr CreateRepresentationHandler (const ViewCallbacks&) override;
+		std::vector<IJobHolderRepresentationHandler_ptr> CreateRepresentationHandlers (const ViewCallbacks&) override;
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const override;
 		QMap<QString, QList<QAction*>> GetMenuActions () const override;

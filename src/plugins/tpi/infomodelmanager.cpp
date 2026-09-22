@@ -125,14 +125,17 @@ namespace TPI
 
 	void InfoModelManager::SecondInit ()
 	{
-		for (const auto ijh : GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<IJobHolder*> ())
+		const IJobHolder::ViewCallbacks callbacks
 		{
-			auto handler = ijh->CreateRepresentationHandler ({
-						.SetSelection_ = [] (const IJobHolderRepresentationHandler::RowSelection&) {},
-					});
-			Concat_.addSourceModel (&handler->GetRepresentation ());
-			Handlers_.emplace_back (std::move (handler));
-		}
+			.SetSelection_ = [] (const IJobHolderRepresentationHandler::RowSelection&) {},
+		};
+
+		for (const auto ijh : GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<IJobHolder*> ())
+			for (auto&& handler : ijh->CreateRepresentationHandlers (callbacks))
+			{
+				Concat_.addSourceModel (&handler->GetRepresentation ());
+				Handlers_.emplace_back (std::move (handler));
+			}
 	}
 }
 }

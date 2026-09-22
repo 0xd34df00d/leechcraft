@@ -55,7 +55,7 @@ namespace CSTP
 		EntityTestHandleResult CouldDownload (const LC::Entity&) const override;
 		QFuture<Result> AddJob (LC::Entity) override;
 
-		IJobHolderRepresentationHandler_ptr CreateRepresentationHandler (const ViewCallbacks&) override;
+		std::vector<IJobHolderRepresentationHandler_ptr> CreateRepresentationHandlers (const ViewCallbacks&) override;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 	private:

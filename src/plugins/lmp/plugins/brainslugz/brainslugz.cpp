@@ -68,9 +68,9 @@ namespace LC::LMP::BrainSlugz
 		return { "org.LeechCraft.LMP.General" };
 	}
 
-	IJobHolderRepresentationHandler_ptr Plugin::CreateRepresentationHandler (const ViewCallbacks&)
+	std::vector<IJobHolderRepresentationHandler_ptr> Plugin::CreateRepresentationHandlers (const ViewCallbacks&)
 	{
-		return ProgressModelManager_->CreateReprHandler ();
+		return MakeHandlers (ProgressModelManager_->CreateReprHandler ());
 	}
 
 	void Plugin::SetLMPProxy (ILMPProxy_ptr proxy)

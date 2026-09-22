@@ -63,9 +63,9 @@ namespace Zalil
 		Manager_->Upload (filename, service, Progress_);
 	}
 
-	IJobHolderRepresentationHandler_ptr Plugin::CreateRepresentationHandler (const ViewCallbacks&)
+	std::vector<IJobHolderRepresentationHandler_ptr> Plugin::CreateRepresentationHandlers (const ViewCallbacks&)
 	{
-		return Progress_.CreateDefaultHandler ();
+		return MakeHandlers (Progress_.CreateDefaultHandler ());
 	}
 }
 }

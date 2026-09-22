@@ -141,15 +141,17 @@ namespace LC::Summary
 
 		Ui_.ControlsDockWidget_->hide ();
 
-		for (const auto plugin : GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<IJobHolder*> ())
+		const IJobHolder::ViewCallbacks viewCallbacks
 		{
-			auto reprHandler = plugin->CreateRepresentationHandler ({
-						.SetSelection_ = std::bind_front (&SummaryWidget::SetSelection, this),
-					});
-			auto& model = reprHandler->GetRepresentation ();
-			MergeModel_.AddModel (&model);
-			SrcModel2Handler_ [&model] = std::move (reprHandler);
-		}
+			.SetSelection_ = std::bind_front (&SummaryWidget::SetSelection, this),
+		};
+		for (const auto plugin : GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<IJobHolder*> ())
+			for (auto&& reprHandler : plugin->CreateRepresentationHandlers (viewCallbacks))
+			{
+				auto& model = reprHandler->GetRepresentation ();
+				MergeModel_.AddModel (&model);
+				SrcModel2Handler_ [&model] = std::move (reprHandler);
+			}
 		TagsFilterModel_.SetTagsRole (+CustomDataRoles::Tags);
 		TagsFilterModel_.setSourceModel (&MergeModel_);
 		PresentationModel_.setSourceModel (&TagsFilterModel_);

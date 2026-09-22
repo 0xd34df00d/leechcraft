@@ -172,9 +172,9 @@ namespace Aggregator
 		return XmlSettingsDialog_;
 	}
 
-	IJobHolderRepresentationHandler_ptr Aggregator::CreateRepresentationHandler (const ViewCallbacks& callbacks)
+	std::vector<IJobHolderRepresentationHandler_ptr> Aggregator::CreateRepresentationHandlers (const ViewCallbacks& callbacks)
 	{
-		return std::make_unique<RepresentationManager> (RepresentationManager::Deps {
+		auto channels = std::make_unique<RepresentationManager> (RepresentationManager::Deps {
 					.ShortcutManager_ = *ShortcutMgr_,
 					.AppWideActions_ = *AppWideActions_,
 					.ChannelsModel_ = *ChannelsModel_,
@@ -182,6 +182,7 @@ namespace Aggregator
 					.DBUpThread_ = *DBUpThread_,
 					.RowSelector_ = callbacks.SetSelection_,
 				});
+		return MakeHandlers (std::move (channels));
 	}
 
 	EntityTestHandleResult Aggregator::CouldHandle (const Entity& e) const

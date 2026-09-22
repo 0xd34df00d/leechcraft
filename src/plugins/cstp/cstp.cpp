@@ -97,7 +97,7 @@ namespace CSTP
 		return Core::Instance ().AddTask (e);
 	}
 
-	IJobHolderRepresentationHandler_ptr CSTP::CreateRepresentationHandler (const ViewCallbacks&)
+	std::vector<IJobHolderRepresentationHandler_ptr> CSTP::CreateRepresentationHandlers (const ViewCallbacks&)
 	{
 		struct Handler : IJobHolderRepresentationHandler
 		{
@@ -125,7 +125,7 @@ namespace CSTP
 			}
 		};
 
-		return std::make_unique<Handler> (Toolbar_);
+		return MakeHandlers (std::make_unique<Handler> (Toolbar_));
 	}
 
 	Util::XmlSettingsDialog_ptr CSTP::GetSettingsDialog () const
