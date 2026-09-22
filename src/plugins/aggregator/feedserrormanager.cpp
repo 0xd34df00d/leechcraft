@@ -10,8 +10,6 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <util/gui/util.h>
-#include <util/sll/visitor.h>
-#include <util/xpc/downloaderrorstrings.h>
 #include <util/xpc/util.h>
 
 namespace LC::Aggregator
@@ -33,29 +31,16 @@ namespace LC::Aggregator
 		errors << error;
 		emit gotErrors (id);
 
-		struct ErrorInfo
-		{
-			QString Short_;
-			QString Full_;
-		};
-
-		const auto& errInfo = Util::Visit (error,
-				[] (const ParseError& e)
-					{ return ErrorInfo { tr ("parse error"), tr ("Parse error: ") + e.Message_ }; },
-				[] (const IDownload::Error& e)
-					{ return ErrorInfo { Util::GetErrorString (e.Type_), e.Message_ }; });
-
 		auto e = Util::MakeAN (NotificationTitle,
 				tr ("Error updating feed %1: %2.")
-					.arg (Util::FormatName (feedName))
-					.arg (errInfo.Short_),
+					.arg (Util::FormatName (feedName), error.Message_),
 				Priority::Warning,
 				PluginId,
 				AN::CatNews, AN::TypeNewsSourceBroken,
 				MakeEventId (id),
 				{},
 				0, 1,
-				errInfo.Full_);
+				error.Message_);
 		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 

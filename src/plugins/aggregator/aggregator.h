@@ -90,7 +90,6 @@ namespace Aggregator
 		QString GetName () const override;
 		QString GetInfo () const override;
 		QStringList Provides () const override;
-		QStringList Needs () const override;
 		QStringList Uses () const override;
 		QIcon GetIcon () const override;
 

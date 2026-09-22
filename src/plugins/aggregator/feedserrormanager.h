@@ -8,10 +8,8 @@
 
 #pragma once
 
-#include <variant>
 #include <QObject>
 #include <QHash>
-#include <interfaces/idownload.h>
 #include "common.h"
 
 namespace LC::Aggregator
@@ -20,13 +18,12 @@ namespace LC::Aggregator
 	{
 		Q_OBJECT
 	public:
-		struct ParseError
+		struct Error
 		{
 			QString Message_;
 
-			bool operator<=> (const ParseError&) const = default;
+			bool operator== (const Error&) const = default;
 		};
-		using Error = std::variant<IDownload::Error, ParseError>;
 	private:
 		QHash<IDType_t, QList<Error>> Errors_;
 	public:

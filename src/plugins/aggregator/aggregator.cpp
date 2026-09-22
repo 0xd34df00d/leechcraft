@@ -132,11 +132,6 @@ namespace Aggregator
 		return { "rss" };
 	}
 
-	QStringList Aggregator::Needs () const
-	{
-		return { "http" };
-	}
-
 	QStringList Aggregator::Uses () const
 	{
 		return { "webbrowser" };

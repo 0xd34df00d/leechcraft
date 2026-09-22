@@ -20,7 +20,6 @@
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
-#include <util/xpc/downloaderrorstrings.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/itagsmanager.h>
@@ -100,29 +99,11 @@ namespace LC::Aggregator
 						QVariant {};
 		}
 
-		QString ErrorToString (const FeedsErrorManager::Error& error)
-		{
-			return Util::Visit (error,
-					[] (const FeedsErrorManager::ParseError& e) { return ChannelsModel::tr ("Parse error: ") + e.Message_; },
-					[] (const IDownload::Error& e)
-					{
-						auto str = ChannelsModel::tr ("Error downloading the feed: %1.")
-								.arg (Util::GetErrorString (e.Type_));
-						if (!e.Message_.isEmpty ())
-							str += " " + e.Message_;
-						return str;
-					});
-		}
-
 		QVariant GetTooltip (const ITagsManager *itm, const FeedsErrorManager& errMgr, const ChannelShort& cs)
 		{
-			const auto& errors = errMgr.GetFeedErrors (cs.FeedID_);
-			if (!errors.isEmpty ())
-			{
-				auto errorsStrings = Util::Map (errors, ErrorToString);
-				errorsStrings.removeDuplicates ();
-				return errorsStrings.join ('\n');
-			}
+			if (const auto& errors = errMgr.GetFeedErrors (cs.FeedID_);
+				!errors.isEmpty ())
+				return Util::Map (errors, &FeedsErrorManager::Error::Message_).join ('\n');
 
 			auto tb = TooltipBuilder { cs.Title_ }
 					.Add (ChannelsModel::tr ("Author"), cs.Author_)

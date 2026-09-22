@@ -10,17 +10,12 @@
 #include <QDateTime>
 #include <QDomDocument>
 #include <QTimer>
-#include <interfaces/idownload.h>
 #include <interfaces/core/ientitymanager.h>
-#include <util/gui/util.h>
 #include <util/sll/debugprinters.h>
 #include <util/sll/either.h>
 #include <util/sll/qtutil.h>
-#include <util/sll/visitor.h>
-#include <util/threads/coro/future.h>
 #include <util/threads/coro.h>
 #include <util/threads/coro/throttle.h>
-#include <util/sys/paths.h>
 #include <util/xpc/util.h>
 #include "components/parsers/parse.h"
 #include "components/storage/sqlstoragebackend.h"
@@ -33,19 +28,12 @@ namespace LC::Aggregator
 {
 	namespace
 	{
-		using ParseResult = Util::Either<FeedsErrorManager::ParseError, channels_container_t>;
+		using ParseResult = Util::Either<QString, channels_container_t>;
 
-		ParseResult ParseChannels (const QString& path, const QString& url, IDType_t feedId)
+		ParseResult ParseChannels (const QByteArray& data, const QString& url, IDType_t feedId)
 		{
-			QFile file { path };
-			if (!file.open (QIODevice::ReadOnly))
-			{
-				qWarning () << "unable to open the local file" << path;
-				return Util::Left { UpdatesManager::tr ("Unable to open the temporary file.") };
-			}
-
 			QDomDocument doc;
-			if (const auto parseResult = doc.setContent (&file, QDomDocument::ParseOption::UseNamespaceProcessing);
+			if (const auto parseResult = doc.setContent (data, QDomDocument::ParseOption::UseNamespaceProcessing);
 				!parseResult)
 			{
 				qWarning () << "error parsing XML for" << url << parseResult;
@@ -163,22 +151,13 @@ namespace LC::Aggregator
 
 	namespace
 	{
-		Util::ContextTask<Util::Either<QString, channels_container_t>> FetchChannels (IDType_t feedId,
-				QString urlStr,
-				auto errorHandler)
+		Util::Task<Util::Either<QString, channels_container_t>> FetchChannels (IDType_t feedId, QString urlStr)
 		{
-			const auto& filename = Util::GetTemporaryName ();
-			const auto& e = Util::MakeEntity (QUrl { urlStr }, filename,
-					Internal | DoNotNotifyUser | DoNotSaveInHistory | NotPersistent | DoNotAnnounceEntity);
-			const auto fileGuard = Util::MakeScopeGuard ([filename] { QFile::remove (filename); });
-
-			const auto& delegateResult = GetProxyHolder ()->GetEntityManager ()->DelegateEntity (e);
-			if (!delegateResult)
-				co_return Util::Left { UpdatesManager::tr ("Could not find plugin for feed with URL %1").arg (urlStr) };
-
-			const auto downloadResult = co_await delegateResult.DownloadResult_;
-			const auto success [[maybe_unused]] = co_await WithHandler (downloadResult, errorHandler);
-			co_return co_await WithHandler (ParseChannels (filename, urlStr, feedId), errorHandler);
+			QNetworkRequest req { QUrl { urlStr } };
+			req.setHeader (QNetworkRequest::UserAgentHeader, "LeechCraft.Aggregator/"_qba + GetProxyHolder ()->GetVersion ().toLatin1 ());
+			const auto result = co_await *GetProxyHolder ()->GetNetworkAccessManager ()->get (req);
+			const auto response = co_await result.ToEither ();
+			co_return co_await ParseChannels (response, urlStr, feedId);
 		}
 	}
 
@@ -193,17 +172,14 @@ namespace LC::Aggregator
 
 		const auto& url = sb->GetFeed (feedId).URL_;
 
-		const auto channelsResult = co_await FetchChannels (feedId, url,
-				[=, errMgr = FeedsErrorManager_] (const auto& error)
-				{
-					const auto& channels = sb->GetChannels (feedId);
-					const auto& feedName = channels.size () == 1 ? channels [0].Title_ : url;
-					errMgr->AddFeedError (feedId, feedName, error);
-					return error.Message_;
-				});
+		const auto channelsResult = co_await FetchChannels (feedId, url);
 		const auto channels = co_await WithHandler (channelsResult,
-				[] (const QString& error)
+				[=, this] (const QString& error)
 				{
+					const auto& existingChannels = sb->GetChannels (feedId);
+					const auto& feedName = existingChannels.size () == 1 ? existingChannels [0].Title_ : url;
+					FeedsErrorManager_->AddFeedError (feedId, feedName, FeedsErrorManager::Error { error });
+
 					const auto& e = Util::MakeNotification (NotificationTitle, error, Priority::Critical);
 					GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 				});
