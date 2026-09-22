@@ -97,7 +97,7 @@ namespace Monocle
 		explicit Components (DocumentTab& tab, QToolBar& toolbar, const DocumentTab::Deps& deps)
 		: LayoutManager_ { tab.Ui_.PagesView_ }
 		, Navigator_ { LayoutManager_, deps.Loader_ }
-		, FormManager_ { tab.Ui_.PagesView_, Navigator_.GetNavigationContext () }
+		, FormManager_ { tab.Scene_, Navigator_.GetNavigationContext () }
 		, AnnManager_ { Navigator_.GetNavigationContext () }
 		, ViewPosTracker_ { *tab.Ui_.PagesView_, LayoutManager_ }
 		, DockWidget_ { {

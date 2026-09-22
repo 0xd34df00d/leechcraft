@@ -12,7 +12,6 @@
 #include <QGraphicsProxyWidget>
 #include "interfaces/monocle/idocument.h"
 
-class QGraphicsView;
 class QGraphicsScene;
 class QButtonGroup;
 
@@ -28,11 +27,11 @@ namespace LC::Monocle
 	class FormManager : public QObject
 	{
 		LinkExecutionContext& ExecutionContext_;
-		QGraphicsScene * const Scene_;
+		QGraphicsScene& Scene_;
 
 		QHash<QList<int>, std::shared_ptr<QButtonGroup>> RadioGroups_;
 	public:
-		explicit FormManager (QGraphicsView*, LinkExecutionContext&);
+		explicit FormManager (QGraphicsScene&, LinkExecutionContext&);
 
 		void HandleDoc (IDocument&, const QVector<PageGraphicsItem*>&);
 	private:

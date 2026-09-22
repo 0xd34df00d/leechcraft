@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "formmanager.h"
-#include <QGraphicsView>
+#include <QGraphicsScene>
 #include <QGraphicsProxyWidget>
 #include <QLineEdit>
 #include <QTextEdit>
@@ -26,10 +26,10 @@
 
 namespace LC::Monocle
 {
-	FormManager::FormManager (QGraphicsView *view, LinkExecutionContext& ec)
-	: QObject { view }
+	FormManager::FormManager (QGraphicsScene& scene, LinkExecutionContext& ec)
+	: QObject { &scene }
 	, ExecutionContext_ { ec }
-	, Scene_ { view->scene () }
+	, Scene_ { scene }
 	{
 	}
 
@@ -93,7 +93,7 @@ namespace LC::Monocle
 					this,
 					[field] (const QString& text) { field->SetText (text); });
 
-			return Scene_->addWidget (edit);
+			return Scene_.addWidget (edit);
 		}
 		case IFormFieldText::Type::Multiline:
 		{
@@ -107,7 +107,7 @@ namespace LC::Monocle
 					this,
 					[=] { field->SetText (edit->toPlainText ()); });
 
-			return Scene_->addWidget (edit);
+			return Scene_.addWidget (edit);
 		}
 		case IFormFieldText::Type::File:
 			qWarning () << "unsupported File field type, please send the file to upstream";
@@ -183,7 +183,7 @@ namespace LC::Monocle
 					this,
 					updateField);
 
-			auto proxy = Scene_->addWidget (edit);
+			auto proxy = Scene_.addWidget (edit);
 			edit->view ()->installEventFilter (new PopupZOrderFixer (proxy));
 			return proxy;
 		}
@@ -208,7 +208,7 @@ namespace LC::Monocle
 						field->SetCurrentChoices (choices);
 					});
 
-			return Scene_->addWidget (edit);
+			return Scene_.addWidget (edit);
 		}
 
 		qWarning () << "unsupported type" << static_cast<int> (field->GetChoiceType ());
@@ -229,7 +229,7 @@ namespace LC::Monocle
 					this,
 					[this, field] { ExecuteLinkAction (field->GetActivationAction (), ExecutionContext_); });
 
-			return Scene_->addWidget (button);
+			return Scene_.addWidget (button);
 		}
 		case IFormFieldButton::Type::Checkbox:
 		{
@@ -242,7 +242,7 @@ namespace LC::Monocle
 					this,
 					[field] (Qt::CheckState state) { field->SetChecked (state == Qt::Checked); });
 
-			return Scene_->addWidget (box);
+			return Scene_.addWidget (box);
 		}
 		case IFormFieldButton::Type::Radiobutton:
 		{
@@ -264,7 +264,7 @@ namespace LC::Monocle
 					this,
 					[field] (bool checked) { field->SetChecked (checked); });
 
-			return Scene_->addWidget (radio);
+			return Scene_.addWidget (radio);
 		}
 		}
 
