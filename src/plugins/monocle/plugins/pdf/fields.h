@@ -70,7 +70,6 @@ namespace LC::Monocle::PDF
 	class FormFieldChoice final : public FormField<Poppler::FormFieldChoice>
 								, public IFormFieldChoice
 	{
-		std::shared_ptr<Poppler::FormFieldChoice> Field_;
 	public:
 		using FormField::FormField;
 
@@ -93,7 +92,6 @@ namespace LC::Monocle::PDF
 	class FormFieldButton final : public FormField<Poppler::FormFieldButton>
 						        , public IFormFieldButton
 	{
-		std::shared_ptr<Poppler::FormFieldButton> Field_;
 		Document * const Doc_;
 		QList<int> ButtonGroup_;
 	public:
