@@ -173,10 +173,10 @@ namespace LC::LMP
 		emit syncEvent (XcodingStarted { transcodingData });
 
 		QProcess ffmpeg;
-		ffmpeg.start ("ffmpeg"_qs, BuildFfmpegArgs (origPath, transcodedPath, Params_));
 #ifdef Q_OS_UNIX
-		setpriority (PRIO_PROCESS, ffmpeg.processId (), 19);
+		ffmpeg.setChildProcessModifier ([] { setpriority (PRIO_PROCESS, 0, 19); });
 #endif
+		ffmpeg.start ("ffmpeg"_qs, BuildFfmpegArgs (origPath, transcodedPath, Params_));
 
 		co_await ffmpeg;
 		if (ffmpeg.exitStatus () == QProcess::NormalExit && !ffmpeg.exitCode ())
