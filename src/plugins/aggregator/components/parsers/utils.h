@@ -23,12 +23,6 @@ namespace LC::Aggregator
 	using Item_ptr = std::shared_ptr<Item>;
 }
 
-#ifdef leechcraft_aggregator_EXPORTS
-#define AGGREGATOR_EXPORT Q_DECL_EXPORT
-#else
-#define AGGREGATOR_EXPORT Q_DECL_IMPORT
-#endif
-
 namespace LC::Aggregator::Parsers
 {
 	Item_ptr ParseCommonItem (const QDomElement& entry, IDType_t channelId);

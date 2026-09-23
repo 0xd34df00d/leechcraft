@@ -13,6 +13,12 @@
 #include <interfaces/structures.h>
 #include <interfaces/ijobholder.h>
 
+#ifdef leechcraft_aggregator_EXPORTS
+#define AGGREGATOR_EXPORT Q_DECL_EXPORT
+#else
+#define AGGREGATOR_EXPORT Q_DECL_IMPORT
+#endif
+
 namespace LC::Aggregator
 {
 	using IDType_t = quint64;
