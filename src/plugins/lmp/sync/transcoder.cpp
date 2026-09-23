@@ -117,6 +117,7 @@ namespace LC::LMP
 		{
 			for (const auto& file : files)
 				Results_.Send ({ file, Result::Success { file } });
+			Results_.Close ();
 			return;
 		}
 
