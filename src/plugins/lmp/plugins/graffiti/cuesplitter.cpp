@@ -389,6 +389,11 @@ namespace LC::LMP::Graffiti
 		args << item.SourceFile_ << QStringLiteral ("-o") << item.TargetFile_;
 
 		auto process = new QProcess (this);
+#ifdef Q_OS_UNIX
+		// PRIO_MAX is actually the highest _niceness_ value,
+		// so it's the lowest priority.
+		process->setChildProcessModifier ([] { setpriority (PRIO_PROCESS, 0, PRIO_MAX - 1); });
+#endif
 		process->start (QStringLiteral ("flac"), args);
 
 		CurrentProcesses_ << process;
@@ -406,12 +411,6 @@ namespace LC::LMP::Graffiti
 				&QProcess::errorOccurred,
 				this,
 				[this, process] { HandleProcessError (*process); });
-
-#ifdef Q_OS_UNIX
-		// PRIO_MAX is actually the highest _niceness_ value,
-		// so it's the lowest priority.
-		setpriority (PRIO_PROCESS, process->processId (), PRIO_MAX - 1);
-#endif
 	}
 
 	void CueSplitter::HandleProcessError (QProcess& process)
