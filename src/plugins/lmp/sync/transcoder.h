@@ -50,6 +50,8 @@ namespace LC::LMP
 
 		Util::Channel<Result>& GetResults ();
 	private:
+		Util::ContextTask<void> Run (QStringList);
+		Util::ContextTask<void> DrainTranscodeQueue ();
 		Util::ContextTask<void> TranscodeFile (const QString& origPath);
 	signals:
 		void syncEvent (const SyncEvents::Event&);

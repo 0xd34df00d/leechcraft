@@ -11,6 +11,7 @@
 #include <QFileInfo>
 #include <QUuid>
 #include <util/sll/qtutil.h>
+#include <util/sll/util.h>
 #include <util/threads/coro.h>
 #include <util/threads/coro/inparallel.h>
 #include <taglib/tag.h>
@@ -119,39 +120,45 @@ namespace LC::LMP
 			return;
 		}
 
-		QTimer::singleShot (0,
-				this,
-				[this, files]
-				{
-					int skipped = 0;
-					for (const auto& file : files)
-					{
-						if (Params_.OnlyLossless_ && !IsLossless (file))
-						{
-							Results_.Send ({ file, Result::Success { file } });
-							++skipped;
-						}
-						else
-							ToTranscode_.Send (file);
-					}
-					emit syncEvent (SyncEvents::XcodingSkipped { skipped });
-
-					ToTranscode_.Close ();
-
-					Util::NCopies (Params_.NumThreads_,
-							[this] -> Util::ContextTask<void> // NOLINT(*-avoid-capturing-lambda-coroutines)
-							{
-								co_await Util::AddContextObject { *this };
-								while (const auto maybeNextFile = co_await ToTranscode_)
-									co_await TranscodeFile (*maybeNextFile);
-							},
-							[this] { Results_.Close (); });
-				});
+		Run (files);
 	}
 
 	Util::Channel<Transcoder::Result>& Transcoder::GetResults ()
 	{
 		return Results_;
+	}
+
+	Util::ContextTask<void> Transcoder::Run (QStringList files)
+	{
+		using namespace std::chrono_literals;
+
+		co_await Util::AddContextObject { *this };
+		co_await 0ms;		// effectively QTimer::singleShot to allow consumers connecting to the signals emitted here
+
+		int skipped = 0;
+		for (const auto& file : files)
+		{
+			if (Params_.OnlyLossless_ && !IsLossless (file))
+			{
+				Results_.Send ({ file, Result::Success { file } });
+				++skipped;
+			}
+			else
+				ToTranscode_.Send (file);
+		}
+		emit syncEvent (SyncEvents::XcodingSkipped { skipped });
+
+		ToTranscode_.Close ();
+
+		const auto resultsGuard = Util::MakeScopeGuard ([this] { Results_.Close (); });
+		co_await Util::NCopies (Params_.NumThreads_, std::bind_front (&Transcoder::DrainTranscodeQueue, this));
+	}
+
+	Util::ContextTask<void> Transcoder::DrainTranscodeQueue ()
+	{
+		co_await Util::AddContextObject { *this };
+		while (const auto maybeNextFile = co_await ToTranscode_)
+			co_await TranscodeFile (*maybeNextFile);
 	}
 
 	Util::ContextTask<void> Transcoder::TranscodeFile (const QString& origPath)
