@@ -17,27 +17,18 @@
 
 namespace LC::Aggregator::Parsers
 {
+	bool IsRss20Root (QStringView rootName)
+	{
+		return rootName == "rss"_ql;
+	}
+
+	bool IsRss10Root (QStringView rootName)
+	{
+		return rootName == "RDF"_ql;
+	}
+
 	namespace
 	{
-		bool IsRss091 (const QDomElement& root)
-		{
-			if (root.tagName () != "rss"_ql)
-				return false;
-			const auto& version = root.attribute ("version"_qs);
-			return version == "0.91"_ql || version == "0.92"_ql;
-		}
-
-		bool IsRss10 (const QDomElement& root)
-		{
-			return root.tagName () == "RDF"_ql;
-		}
-
-		bool IsRss20 (const QDomElement& root)
-		{
-			return root.tagName () == "rss"_ql &&
-					root.attribute ("version"_qs) == "2.0"_ql;
-		}
-
 		Item_ptr ParseCommonRssRdfItem (const QDomElement& entry, IDType_t channelId)
 		{
 			auto result = ParseCommonItem (entry, channelId);
@@ -136,19 +127,10 @@ namespace LC::Aggregator::Parsers
 		}
 	}
 
-	std::optional<channels_container_t> Rss091 (const QDomDocument& doc, IDType_t feedId)
-	{
-		const auto& root = doc.documentElement ();
-		if (!IsRss091 (root))
-			return {};
-
-		return ParseRssDocument (root, feedId);
-	}
-
 	std::optional<channels_container_t> Rss20 (const QDomDocument& doc, IDType_t feedId)
 	{
 		const auto& root = doc.documentElement ();
-		if (!IsRss20 (root))
+		if (!IsRss20Root (root.tagName ()))
 			return {};
 
 		return ParseRssDocument (root, feedId);
@@ -162,7 +144,7 @@ namespace LC::Aggregator::Parsers
 	std::optional<channels_container_t> Rss10 (const QDomDocument& doc, IDType_t feedId)
 	{
 		const auto& root = doc.documentElement ();
-		if (!IsRss10 (root))
+		if (!IsRss10Root (root.tagName ()))
 			return {};
 
 		channels_container_t channels;

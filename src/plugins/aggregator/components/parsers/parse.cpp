@@ -45,7 +45,6 @@ namespace LC::Aggregator::Parsers
 			&Atom10,
 			&Rss20,
 			&Atom03,
-			&Rss091,
 			&Rss10,
 		};
 
