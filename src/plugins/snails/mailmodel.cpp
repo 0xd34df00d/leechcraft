@@ -13,6 +13,7 @@
 #include <util/util.h>
 #include <util/sll/prelude.h>
 #include <util/models/modelitembase.h>
+#include <util/models/modelsanitizer.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "messagelistactionsmanager.h"
@@ -59,6 +60,7 @@ namespace Snails
 	, Folder_ { "INBOX" }
 	, Root_ { std::make_shared<TreeNode> () }
 	{
+		Util::InstallModelSanitizer (*this);
 	}
 
 	QVariant MailModel::headerData (int section, Qt::Orientation orient, int role) const

@@ -12,6 +12,7 @@
 #include <QFont>
 #include <QMimeData>
 #include <QtDebug>
+#include <util/models/modelsanitizer.h>
 #include "account.h"
 #include "core.h"
 #include "storage.h"
@@ -76,6 +77,7 @@ namespace Snails
 	, Headers_ { tr ("Folder"), tr ("Messages") }
 	, RootFolder_ { new FolderDescr {} }
 	{
+		Util::InstallModelSanitizer (*this);
 	}
 
 	QVariant FoldersModel::headerData (int section, Qt::Orientation orient, int role) const
