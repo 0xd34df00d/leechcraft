@@ -95,6 +95,8 @@ namespace Snails
 		void UpdateParents (const QByteArray&, bool);
 
 		void RemoveNode (const TreeNode_ptr&);
+		void AppendRoots (const QList<TreeNode_ptr>&);
+		QByteArray FindParentFolderId (const MessageInfo&) const;
 		bool AppendStructured (const MessageInfo&);
 
 		void EmitRowChanged (const TreeNode_ptr&);

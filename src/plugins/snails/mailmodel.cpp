@@ -310,22 +310,7 @@ namespace Snails
 
 	void MailModel::Append (QList<MessageInfo> messages)
 	{
-		if (messages.isEmpty ())
-			return;
-
-		for (auto i = messages.begin (); i != messages.end (); )
-		{
-			const auto& msg = *i;
-
-			if (msg.Folder_ != Folder_)
-			{
-				i = messages.erase (i);
-				continue;
-			}
-
-			++i;
-		}
-
+		messages.removeIf ([this] (const MessageInfo& msg) { return msg.Folder_ != Folder_; });
 		if (messages.isEmpty ())
 			return;
 
@@ -338,19 +323,34 @@ namespace Snails
 				MsgId2FolderId_ [msgId] = msg.FolderId_;
 		}
 
+		QList<TreeNode_ptr> roots;
+		QList<MessageInfo> replies;
 		for (const auto& msg : messages)
-			if (!AppendStructured (msg))
-			{
-				const auto node = std::make_shared<TreeNode> (msg, Root_);
+			if (FindParentFolderId (msg).isEmpty ())
+				roots << std::make_shared<TreeNode> (msg, Root_);
+			else
+				replies << msg;
 
-				const auto childrenCount = Root_->GetRowCount ();
-				beginInsertRows ({}, childrenCount, childrenCount);
-				Root_->AppendExisting (node);
-				FolderId2Nodes_ [msg.FolderId_] << node;
-				endInsertRows ();
-			}
+		AppendRoots (roots);
+
+		for (const auto& msg : replies)
+			if (!AppendStructured (msg))
+				AppendRoots ({ std::make_shared<TreeNode> (msg, Root_) });
 
 		emit messageListUpdated ();
+	}
+
+	void MailModel::AppendRoots (const QList<TreeNode_ptr>& nodes)
+	{
+		if (nodes.isEmpty ())
+			return;
+
+		const auto first = Root_->GetRowCount ();
+		beginInsertRows ({}, first, first + nodes.size () - 1);
+		Root_->AppendExisting (nodes);
+		for (const auto& node : nodes)
+			FolderId2Nodes_ [node->Msg_.FolderId_] << node;
+		endInsertRows ();
 	}
 
 	bool MailModel::Remove (const QByteArray& id)
@@ -474,23 +474,24 @@ namespace Snails
 		endRemoveRows ();
 	}
 
-	bool MailModel::AppendStructured (const MessageInfo& msg)
+	QByteArray MailModel::FindParentFolderId (const MessageInfo& msg) const
 	{
 		auto refs = msg.References_;
 		for (const auto& replyTo : msg.InReplyTo_)
 			if (!refs.contains (replyTo))
 				refs << replyTo;
 
-		if (refs.isEmpty ())
-			return false;
-
-		QByteArray folderId;
 		for (int i = refs.size () - 1; i >= 0; --i)
-		{
-			folderId = MsgId2FolderId_.value (refs.at (i));
-			if (!folderId.isEmpty ())
-				break;
-		}
+			if (const auto& folderId = MsgId2FolderId_.value (refs.at (i));
+				!folderId.isEmpty ())
+				return folderId;
+
+		return {};
+	}
+
+	bool MailModel::AppendStructured (const MessageInfo& msg)
+	{
+		const auto& folderId = FindParentFolderId (msg);
 		if (folderId.isEmpty ())
 			return false;
 
