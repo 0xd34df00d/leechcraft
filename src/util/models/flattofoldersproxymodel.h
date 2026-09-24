@@ -36,6 +36,7 @@ namespace LC::Util
 		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;
 		QVariant headerData (int, Qt::Orientation, int) const override;
 		Qt::ItemFlags flags (const QModelIndex&) const override;
+		bool setData (const QModelIndex&, const QVariant&, int = Qt::EditRole) override;
 		QModelIndex index (int, int, const QModelIndex& = {}) const override;
 		QModelIndex parent (const QModelIndex&) const override;
 		int rowCount (const QModelIndex& = {}) const override;

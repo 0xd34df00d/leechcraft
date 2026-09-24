@@ -118,6 +118,19 @@ namespace LC::Util
 				Qt::ItemIsDropEnabled;
 	}
 
+	bool FlatToFoldersProxyModel::setData (const QModelIndex& index, const QVariant& value, int role)
+	{
+		if (!index.isValid ())
+			return false;
+
+		const auto fti = ToFlat (index);
+		if (fti->Type_ != FlatTreeItem::Type::Item)
+			return false;
+
+		const auto& source = fti->Index_;
+		return SourceModel_->setData (source.sibling (source.row (), index.column ()), value, role);
+	}
+
 	QModelIndex FlatToFoldersProxyModel::index (int row, int column, const QModelIndex& parent) const
 	{
 		if (!hasIndex (row, column, parent))
