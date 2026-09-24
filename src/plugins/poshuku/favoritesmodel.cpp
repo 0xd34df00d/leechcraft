@@ -124,25 +124,24 @@ namespace Poshuku
 	bool FavoritesModel::setData (const QModelIndex& index,
 			const QVariant& value, int)
 	{
+		auto& item = Items_ [index.row ()];
 		switch (index.column ())
 		{
 		case ColumnTags:
-		{
-			const auto& userTags = value.toStringList ();
-			const auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
-			Items_ [index.row ()].Tags_ = tm->GetIDs (userTags);
-			Core::Instance ().GetStorageBackend ()->UpdateFavorites (Items_ [index.row ()]);
-			return true;
-		}
+			item.Tags_ = Core::Instance ().GetProxy ()->GetTagsManager ()->GetIDs (value.toStringList ());
+			break;
 		case ColumnTitle:
-			Items_ [index.row ()].Title_ = value.toString ();
-			Core::Instance ().GetStorageBackend ()->UpdateFavorites (Items_ [index.row ()]);
-			return true;
+			item.Title_ = value.toString ();
+			break;
 		case ColumnURL:
 			return true;
 		default:
 			return false;
 		}
+
+		Core::Instance ().GetStorageBackend ()->UpdateFavorites (item);
+		emit dataChanged (index.siblingAtColumn (0), index.siblingAtColumn (columnCount () - 1));
+		return true;
 	}
 
 	QModelIndex FavoritesModel::addItem (const QString& title,
