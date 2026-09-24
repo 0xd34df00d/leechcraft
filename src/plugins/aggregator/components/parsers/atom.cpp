@@ -15,6 +15,11 @@
 
 namespace LC::Aggregator::Parsers
 {
+	bool IsAtomRoot (QStringView rootName)
+	{
+		return rootName == "feed"_ql;
+	}
+
 	namespace
 	{
 		QString ParseAtomAuthor (const QDomElement& parent)
@@ -81,14 +86,14 @@ namespace LC::Aggregator::Parsers
 
 		bool IsAtom03 (const QDomElement& root)
 		{
-			if (root.tagName () != "feed"_ql || !root.hasAttribute ("version"_qs))
+			if (!IsAtomRoot (root.tagName ()) || !root.hasAttribute ("version"_qs))
 				return false;
 			return root.attribute ("version"_qs) == "0.3"_ql;
 		}
 
 		bool IsAtom10 (const QDomElement& root)
 		{
-			if (root.tagName () != "feed"_ql)
+			if (!IsAtomRoot (root.tagName ()))
 				return false;
 			if (!root.hasAttribute ("version"_qs))
 				return true;

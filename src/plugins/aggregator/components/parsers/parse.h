@@ -9,6 +9,7 @@
 #pragma once
 
 #include <optional>
+#include <QStringView>
 #include "channel.h"
 #include "common.h"
 
@@ -17,5 +18,6 @@ class QUrl;
 
 namespace LC::Aggregator::Parsers
 {
+	AGGREGATOR_EXPORT bool IsFeedRootName (QStringView rootName);
 	AGGREGATOR_EXPORT std::optional<channels_container_t> TryParse (const QDomDocument& doc, IDType_t feedId, const QUrl& feedUrl);
 }

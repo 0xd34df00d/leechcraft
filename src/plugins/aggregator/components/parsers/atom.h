@@ -9,12 +9,15 @@
 #pragma once
 
 #include <optional>
+#include <QStringView>
 #include "channel.h"
 
 class QDomDocument;
 
 namespace LC::Aggregator::Parsers
 {
+	bool IsAtomRoot (QStringView rootName);
+
 	std::optional<channels_container_t> Atom03 (const QDomDocument& doc, IDType_t feedId);
 	std::optional<channels_container_t> Atom10 (const QDomDocument& doc, IDType_t feedId);
 }

@@ -17,6 +17,11 @@
 
 namespace LC::Aggregator::Parsers
 {
+	bool IsFeedRootName (QStringView rootName)
+	{
+		return IsRss20Root (rootName) || IsRss10Root (rootName) || IsAtomRoot (rootName);
+	}
+
 	namespace
 	{
 		QString FixItemTitle (QString&& title)

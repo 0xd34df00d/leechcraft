@@ -21,6 +21,7 @@
 #include "components/actions/itemactions.h"
 #include "components/importexport/opmladder.h"
 #include "components/models/channelsmodel.h"
+#include "components/parsers/parse.h"
 #include "components/storage/storagebackendmanager.h"
 #include "addfeeddialog.h"
 #include "xmlsettingsmanager.h"
@@ -205,7 +206,7 @@ namespace Aggregator
 			if (!xmlReader.readNextStartElement ())
 				return {};
 
-			return xmlReader.name () == "rss" || xmlReader.name () == "atom" ?
+			return Parsers::IsFeedRootName (xmlReader.name ()) ?
 					EntityTestHandleResult { EntityTestHandleResult::PIdeal } :
 					EntityTestHandleResult {};
 		}
