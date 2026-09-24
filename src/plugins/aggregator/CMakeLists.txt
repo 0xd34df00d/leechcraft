@@ -67,3 +67,4 @@ SUBPLUGIN (BODYFETCH "Enable BodyFetch for fetching full bodies of news items" O
 SUBPLUGIN (WEBACCESS "Enable WebAccess for providing HTTP access to Aggregator" OFF)
 
 AddAggregatorTest (parsers_utils components/parsers/tests/utils_test)
+AddAggregatorTest (parsers_parse components/parsers/tests/parse_test)
