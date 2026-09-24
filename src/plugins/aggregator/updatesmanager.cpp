@@ -40,7 +40,7 @@ namespace LC::Aggregator
 				return Util::Left { UpdatesManager::tr ("XML parse error for the feed %1.").arg (url) };
 			}
 
-			if (auto maybeChannels = Parsers::TryParse (doc, feedId))
+			if (auto maybeChannels = Parsers::TryParse (doc, feedId, QUrl { url }))
 				return *maybeChannels;
 
 			qWarning () << "no parser for" << url;

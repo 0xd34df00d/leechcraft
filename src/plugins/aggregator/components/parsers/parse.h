@@ -10,10 +10,12 @@
 
 #include <optional>
 #include "channel.h"
+#include "common.h"
 
 class QDomDocument;
+class QUrl;
 
 namespace LC::Aggregator::Parsers
 {
-	std::optional<channels_container_t> TryParse (const QDomDocument& doc, IDType_t feedId);
+	AGGREGATOR_EXPORT std::optional<channels_container_t> TryParse (const QDomDocument& doc, IDType_t feedId, const QUrl& feedUrl);
 }
