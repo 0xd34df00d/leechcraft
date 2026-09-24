@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <QCoreApplication>
 #include <QIdentityProxyModel>
 
 namespace LC
@@ -20,7 +19,7 @@ namespace LC::Summary
 {
 	class JobsPresentationModel : public QIdentityProxyModel
 	{
-		Q_DECLARE_TR_FUNCTIONS (LC::Summary::JobsPresentationModel)
+		Q_OBJECT
 
 		mutable QList<std::optional<RowInfo>> CachedRowInfos_;
 	public:

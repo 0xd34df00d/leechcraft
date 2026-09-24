@@ -14,6 +14,8 @@ namespace LC::Aggregator
 {
 	class JobHolderRepresentationModel : public QSortFilterProxyModel
 	{
+		Q_OBJECT
+
 	public:
 		struct Deps
 		{
