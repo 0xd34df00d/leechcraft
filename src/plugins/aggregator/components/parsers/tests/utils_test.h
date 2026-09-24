@@ -17,6 +17,8 @@ namespace LC::Aggregator::Parsers
 		Q_OBJECT
 	private slots:
 		void testUnescapeHTML ();
+		void testParseContentXhtml ();
+		void testParseContentEscaped ();
 	};
 }
 

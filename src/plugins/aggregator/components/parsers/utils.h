@@ -56,7 +56,20 @@ namespace LC::Aggregator::Parsers
 
 namespace LC::Aggregator::Parsers::Atom
 {
-	QString ParseEscapeAware (const QDomElement&);
+	/** @brief Returns the text of an Atom text construct.
+	 *
+	 * `type="text"` and `type="html"` are returned verbatim, `type="xhtml"`
+	 * is flattened to its text, and Atom 0.3's `mode="escaped"` is unescaped.
+	 */
+	AGGREGATOR_EXPORT QString ParseEscapeAware (const QDomElement&);
+
+	/** @brief Returns the contents of an Atom text construct as HTML.
+	 *
+	 * Unlike ParseEscapeAware(), the inline XHTML of `type="xhtml"` (or
+	 * Atom 0.3's `mode="xml"`) is serialized back to markup, the wrapping
+	 * XHTML `div` excluded.
+	 */
+	AGGREGATOR_EXPORT QString ParseContent (const QDomElement&);
 
 	QList<Enclosure> GetEnclosures (const QDomElement& entry, IDType_t itemId);
 }

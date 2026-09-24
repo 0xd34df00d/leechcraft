@@ -41,7 +41,7 @@ namespace LC::Aggregator::Parsers
 				!atomAuthor.isEmpty ())
 				item->Author_ = atomAuthor;
 
-			item->Description_ = Atom::ParseEscapeAware (GetBestDescription (entry, { "content"_qs, "summary"_qs }));
+			item->Description_ = Atom::ParseContent (GetBestDescription (entry, { "content"_qs, "summary"_qs }));
 
 			return item;
 		}

@@ -10,6 +10,7 @@
 #include <QDomElement>
 #include <QRegularExpression>
 #include <QStringList>
+#include <QTextStream>
 #include <QtDebug>
 #include <util/sll/domchildrenrange.h>
 #include <util/sll/prelude.h>
@@ -304,6 +305,30 @@ namespace LC::Aggregator::Parsers::Atom
 			return parent.text ();
 
 		return UnescapeHTML (parent.text ());
+	}
+
+	namespace
+	{
+		QString SerializeChildren (const QDomNode& parent)
+		{
+			QString result;
+			QTextStream stream { &result };
+			for (auto child = parent.firstChild (); !child.isNull (); child = child.nextSibling ())
+				child.save (stream, -1);
+
+			// QDom declares the XHTML namespace on each element it serializes, which is just noise in HTML.
+			result.remove (" xmlns=\"http://www.w3.org/1999/xhtml\""_ql);
+			return result;
+		}
+	}
+
+	QString ParseContent (const QDomElement& parent)
+	{
+		if (parent.attribute ("type"_qs) != "xhtml"_ql && parent.attribute ("mode"_qs) != "xml"_ql)
+			return ParseEscapeAware (parent);
+
+		const auto& div = parent.firstChildElement ("div"_qs);
+		return SerializeChildren (div.isNull () ? parent : div);
 	}
 
 	QList<Enclosure> GetEnclosures (const QDomElement& entry, IDType_t itemId)
