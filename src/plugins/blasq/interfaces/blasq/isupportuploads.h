@@ -10,7 +10,6 @@
 
 #include <QtPlugin>
 
-class QModelIndex;
 class QUrl;
 
 namespace LC
@@ -46,9 +45,19 @@ namespace Blasq
 
 		virtual bool HasUploadFeature (Feature) const = 0;
 
-		virtual void CreateCollection (const QModelIndex& parent) = 0;
+		/** @brief Creates a new collection, asking the user for its details.
+		 *
+		 * @param[in] parentId The CollectionRole::ID of the collection to
+		 * create the new one in, or an empty string for the top level.
+		 */
+		virtual void CreateCollection (const QString& parentId) = 0;
 
-		virtual void UploadImages (const QModelIndex& collection, const QList<UploadItem>& paths) = 0;
+		/** @brief Uploads the given items to the collection.
+		 *
+		 * @param[in] collectionId The CollectionRole::ID of the collection.
+		 * @param[in] items The items to upload.
+		 */
+		virtual void UploadImages (const QString& collectionId, const QList<UploadItem>& items) = 0;
 	protected:
 		virtual void itemUploaded (const UploadItem&, const QUrl&) = 0;
 	};

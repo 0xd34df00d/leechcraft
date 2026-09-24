@@ -9,7 +9,6 @@
 #pragma once
 
 #include <memory>
-#include <functional>
 #include <QWidget>
 #include <QModelIndex>
 #include <QToolBar>
@@ -95,7 +94,6 @@ namespace Blasq
 
 		void FinishUploadDialog (UploadPhotosDialog*);
 
-		void PerformCtxMenu (std::function<void (QModelIndex)>);
 	private slots:
 		void handleAccountChosen (int);
 		void handleRowChanged (const QModelIndex&);
@@ -105,18 +103,13 @@ namespace Blasq
 		void handleScaleSlider (int);
 
 		void uploadPhotos ();
-		void handleUploadRequested ();
 
 		void handleImageSelected (const QString&);
 		void handleToggleSelectionSet (const QString&);
 		void handleImageOpenRequested (const QVariant&);
-		void handleImageOpenRequested ();
 		void handleImageDownloadRequested (const QVariant&);
-		void handleImageDownloadRequested ();
 		void handleCopyURLRequested (const QVariant&);
-		void handleCopyURLRequested ();
 		void handleDeleteRequested (const QString&);
-		void handleDeleteRequested ();
 		void handleAlbumSelected (const QVariant&);
 		void handleSingleImageMode (bool);
 

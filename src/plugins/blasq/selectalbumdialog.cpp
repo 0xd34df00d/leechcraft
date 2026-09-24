@@ -50,8 +50,15 @@ namespace Blasq
 
 	void SelectAlbumDialog::on_AddButton__released ()
 	{
+		auto current = Filter_->mapToSource (Ui_.View_->currentIndex ());
+		if (current.data (CollectionRole::Type).toInt () == ItemType::Image)
+			current = current.parent ();
+		const auto& parentId = current.data (CollectionRole::Type).toInt () == ItemType::Collection ?
+				current.data (CollectionRole::ID).toString () :
+				QString {};
+
 		auto isu = qobject_cast<ISupportUploads*> (Acc_->GetQObject ());
-		isu->CreateCollection (Ui_.View_->currentIndex ());
+		isu->CreateCollection (parentId);
 	}
 }
 }

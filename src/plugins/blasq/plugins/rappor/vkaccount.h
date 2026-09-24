@@ -88,11 +88,11 @@ namespace Rappor
 		void UpdateCollections () override;
 
 		bool HasUploadFeature (Feature) const override;
-		void CreateCollection (const QModelIndex& parent) override;
-		void UploadImages (const QModelIndex& collection, const QList<UploadItem>& paths) override;
+		void CreateCollection (const QString& parentId) override;
+		void UploadImages (const QString& collectionId, const QList<UploadItem>& items) override;
 
 		bool SupportsFeature (DeleteFeature) const override;
-		void Delete (const QModelIndex&) override;
+		void Delete (const ItemRef&) override;
 	private:
 		void HandleAlbumElement (const QDomElement&);
 		bool HandlePhotoElement (const QDomElement&, bool atEnd = true);

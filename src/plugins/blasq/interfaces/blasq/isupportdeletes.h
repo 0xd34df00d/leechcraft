@@ -9,8 +9,7 @@
 #pragma once
 
 #include <QtPlugin>
-
-class QModelIndex;
+#include "collection.h"
 
 namespace LC
 {
@@ -27,7 +26,9 @@ namespace Blasq
 	public:
 		virtual ~ISupportDeletes () {}
 
-		virtual void Delete (const QModelIndex&) = 0;
+		/** @brief Deletes the given collection or image.
+		 */
+		virtual void Delete (const ItemRef&) = 0;
 
 		virtual bool SupportsFeature (DeleteFeature) const = 0;
 	};

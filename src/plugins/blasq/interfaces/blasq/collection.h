@@ -11,6 +11,7 @@
 #include <Qt>
 #include <QHash>
 #include <QByteArray>
+#include <QString>
 #include <util/models/rolenamesmixin.h>
 
 namespace LC::Blasq
@@ -70,5 +71,13 @@ namespace LC::Blasq
 		Collection,
 		AllPhotos,
 		Image
+	};
+
+	/** @brief Identifies an item of an account's collections model.
+	 */
+	struct ItemRef
+	{
+		ItemType Type_;
+		QString ID_;		///< The value of CollectionRole::ID.
 	};
 }

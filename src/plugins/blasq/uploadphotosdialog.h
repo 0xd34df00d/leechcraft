@@ -32,7 +32,7 @@ namespace Blasq
 		ISupportUploads * const ISU_;
 
 		QStandardItemModel * const FilesModel_;
-		QModelIndex SelectedCollection_;
+		QString SelectedCollection_;
 
 		enum Role
 		{
@@ -41,8 +41,8 @@ namespace Blasq
 	public:
 		UploadPhotosDialog (QObject *accObj, QWidget* = 0);
 
-		QModelIndex GetSelectedCollection () const;
-		void SetSelectedCollection (const QModelIndex&);
+		QString GetSelectedCollection () const;
+		void SetSelectedCollection (const QString& id, const QString& name);
 
 		QList<UploadItem> GetSelectedFiles () const;
 		void SetFiles (const QList<UploadItem>&);

@@ -51,15 +51,15 @@ namespace Blasq
 		validate ();
 	}
 
-	QModelIndex UploadPhotosDialog::GetSelectedCollection () const
+	QString UploadPhotosDialog::GetSelectedCollection () const
 	{
 		return SelectedCollection_;
 	}
 
-	void UploadPhotosDialog::SetSelectedCollection (const QModelIndex& index)
+	void UploadPhotosDialog::SetSelectedCollection (const QString& id, const QString& name)
 	{
-		SelectedCollection_ = index;
-		Ui_.AlbumName_->setText (index.data (CollectionRole::Name).toString ());
+		SelectedCollection_ = id;
+		Ui_.AlbumName_->setText (name);
 		validate ();
 	}
 
@@ -93,7 +93,8 @@ namespace Blasq
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
-		SetSelectedCollection (dia.GetSelectedCollection ());
+		const auto& index = dia.GetSelectedCollection ();
+		SetSelectedCollection (index.data (CollectionRole::ID).toString (), index.data (CollectionRole::Name).toString ());
 	}
 
 	void UploadPhotosDialog::AppendPhotoItem (const UploadItem& uploadItem)
@@ -156,7 +157,7 @@ namespace Blasq
 			valid = false;
 
 		if (ISU_->HasUploadFeature (ISupportUploads::Feature::RequiresAlbumOnUpload) &&
-				!SelectedCollection_.isValid ())
+				SelectedCollection_.isEmpty ())
 			valid = false;
 
 		Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (valid);

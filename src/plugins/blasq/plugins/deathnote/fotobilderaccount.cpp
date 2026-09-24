@@ -137,7 +137,7 @@ namespace DeathNote
 				});
 	}
 
-	void FotoBilderAccount::CreateCollection (const QModelIndex&)
+	void FotoBilderAccount::CreateCollection (const QString&)
 	{
 		AlbumSettingsDialog dia ({}, Login_, this);
 		if (dia.exec () != QDialog::Accepted)
@@ -166,13 +166,12 @@ namespace DeathNote
 		Util::Unreachable ();
 	}
 
-	void FotoBilderAccount::UploadImages (const QModelIndex& collection, const QList<UploadItem>& items)
+	void FotoBilderAccount::UploadImages (const QString& collectionId, const QList<UploadItem>& items)
 	{
 		if (!items.count ())
 			return;
 
-		const auto& aidStr = collection.data (CollectionRole::ID).toByteArray ();
-		UploadImagesRequest (aidStr, items);
+		UploadImagesRequest (collectionId.toUtf8 (), items);
 	}
 
 	namespace

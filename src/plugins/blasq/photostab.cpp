@@ -357,20 +357,6 @@ namespace Blasq
 		};
 	}
 
-	void PhotosTab::PerformCtxMenu (std::function<void (QModelIndex)> functor)
-	{
-		const auto& idx = sender ()->property ("Blasq/Index").value<QModelIndex> ();
-		if (!idx.isValid ())
-			return;
-
-		auto rows = Ui_.CollectionsTree_->selectionModel ()->selectedRows ();
-		if (!rows.contains (idx))
-			rows.prepend (idx);
-
-		for (const auto& row : rows)
-			functor (row);
-	}
-
 	void PhotosTab::handleAccountChosen (int idx)
 	{
 		auto accVar = AccountsBox_->itemData (idx, AccountsManager::Role::AccountObj);
@@ -433,48 +419,42 @@ namespace Blasq
 		if (!idx.isValid ())
 			return;
 
-		const auto type = idx.data (CollectionRole::Type).toInt ();
+		const auto type = static_cast<ItemType> (idx.data (CollectionRole::Type).toInt ());
+		const auto& id = idx.data (CollectionRole::ID).toString ();
+		const auto& name = idx.data (CollectionRole::Name).toString ();
 		const auto isAll = type == ItemType::AllPhotos;
 		const auto isColl = type == ItemType::Collection;
 		const auto isImage = type == ItemType::Image;
 
+		const auto itm = Proxy_->GetIconThemeManager ();
+
 		QMenu menu;
 		if (isImage)
 		{
-			menu.addAction (Proxy_->GetIconThemeManager ()->GetIcon ("go-jump-locationbar"),
-					tr ("Open in browser"),
-					this,
-					SLOT (handleImageOpenRequested ()));
-			menu.addAction (Proxy_->GetIconThemeManager ()->GetIcon ("download"),
-					tr ("Download original"),
-					this,
-					SLOT (handleImageDownloadRequested ()));
-			menu.addAction (Proxy_->GetIconThemeManager ()->GetIcon ("edit-copy"),
-					tr ("Copy image URL"),
-					this,
-					SLOT (handleCopyURLRequested ()));
+			const auto& url = idx.data (CollectionRole::Original).toUrl ();
+			menu.addAction (itm->GetIcon ("go-jump-locationbar"), tr ("Open in browser"),
+					this, [this, url] { handleImageOpenRequested (url); });
+			menu.addAction (itm->GetIcon ("download"), tr ("Download original"),
+					this, [this, url] { handleImageDownloadRequested (url); });
+			menu.addAction (itm->GetIcon ("edit-copy"), tr ("Copy image URL"),
+					this, [this, url] { handleCopyURLRequested (url); });
 		}
 
-		if (auto isd = qobject_cast<ISupportDeletes*> (CurAccObj_))
-		{
+		if (const auto isd = qobject_cast<ISupportDeletes*> (CurAccObj_))
 			if ((isColl && isd->SupportsFeature (DeleteFeature::DeleteCollections)) ||
 				(isImage && isd->SupportsFeature (DeleteFeature::DeleteImages)))
-				menu.addAction (Proxy_->GetIconThemeManager ()->GetIcon ("list-remove"),
-						tr ("Delete"),
-						this,
-						SLOT (handleDeleteRequested ()));
-		}
+				menu.addAction (itm->GetIcon ("list-remove"), tr ("Delete"),
+						this, [isd, ref = ItemRef { type, id }] { isd->Delete (ref); });
 
-		if (auto isu = qobject_cast<ISupportUploads*> (CurAccObj_))
+		if (const auto isu = qobject_cast<ISupportUploads*> (CurAccObj_))
 			if (isColl || (isAll && !isu->HasUploadFeature (ISupportUploads::Feature::RequiresAlbumOnUpload)))
-				menu.addAction (Proxy_->GetIconThemeManager ()->GetIcon ("svn-commit"),
-						tr ("Upload"),
-						this,
-						SLOT (handleUploadRequested ()));
-
-		const auto idxVar = QVariant::fromValue (idx);
-		for (auto act : menu.actions ())
-			act->setProperty ("Blasq/Index", idxVar);
+				menu.addAction (itm->GetIcon ("svn-commit"), tr ("Upload"),
+						this, [this, id, name]
+						{
+							const auto dia = new UploadPhotosDialog { CurAccObj_, this };
+							dia->SetSelectedCollection (id, name);
+							FinishUploadDialog (dia);
+						});
 
 		if (!menu.actions ().isEmpty ())
 			menu.exec (Ui_.CollectionsTree_->viewport ()->mapToGlobal (point));
@@ -505,19 +485,10 @@ namespace Blasq
 		if (curSelectedIdx.data (CollectionRole::Type).toInt () == ItemType::Image)
 			curSelectedIdx = curSelectedIdx.parent ();
 		if (curSelectedIdx.data (CollectionRole::Type).toInt () == ItemType::Collection)
-			dia->SetSelectedCollection (curSelectedIdx);
+			dia->SetSelectedCollection (curSelectedIdx.data (CollectionRole::ID).toString (),
+					curSelectedIdx.data (CollectionRole::Name).toString ());
 
 		FinishUploadDialog (dia);
-	}
-
-	void PhotosTab::handleUploadRequested ()
-	{
-		PerformCtxMenu ([this] (const QModelIndex& idx)
-				{
-					const auto dia = new UploadPhotosDialog (CurAccObj_, this);
-					dia->SetSelectedCollection (idx);
-					FinishUploadDialog (dia);
-				});
 	}
 
 	void PhotosTab::handleImageSelected (const QString& id)
@@ -553,16 +524,6 @@ namespace Blasq
 		Proxy_->GetEntityManager ()->HandleEntity (entity);
 	}
 
-	void PhotosTab::handleImageOpenRequested ()
-	{
-		PerformCtxMenu ([this] (const QModelIndex& idx) -> void
-				{
-					const auto& url = idx.data (CollectionRole::Original).toUrl ();
-					const auto& entity = Util::MakeEntity (url, QString (), FromUserInitiated | OnlyHandle);
-					Proxy_->GetEntityManager ()->HandleEntity (entity);
-				});
-	}
-
 	void PhotosTab::handleImageDownloadRequested (const QVariant& var)
 	{
 		const auto& url = var.toUrl ();
@@ -576,16 +537,6 @@ namespace Blasq
 
 		const auto& entity = Util::MakeEntity (url, QString (), FromUserInitiated | OnlyDownload);
 		Proxy_->GetEntityManager ()->HandleEntity (entity);
-	}
-
-	void PhotosTab::handleImageDownloadRequested ()
-	{
-		PerformCtxMenu ([this] (const QModelIndex& idx) -> void
-				{
-					const auto& url = idx.data (CollectionRole::Original).toUrl ();
-					const auto& entity = Util::MakeEntity (url, QString (), FromUserInitiated | OnlyDownload);
-					Proxy_->GetEntityManager ()->HandleEntity (entity);
-				});
 	}
 
 	void PhotosTab::handleCopyURLRequested (const QVariant& var)
@@ -603,36 +554,10 @@ namespace Blasq
 		cb->setText (url.toString (), QClipboard::Clipboard);
 	}
 
-	void PhotosTab::handleCopyURLRequested ()
-	{
-		auto cb = qApp->clipboard ();
-		PerformCtxMenu ([cb] (const QModelIndex& idx) -> void
-				{
-					const auto& url = idx.data (CollectionRole::Original).toUrl ();
-					cb->setText (url.toString (), QClipboard::Clipboard);
-				});
-	}
-
 	void PhotosTab::handleDeleteRequested (const QString& id)
 	{
-		auto isd = qobject_cast<ISupportDeletes*> (CurAccObj_);
-		if (!isd)
-			return;
-
-		const auto& idx = ImageID2Index (id);
-		if (idx.isValid ())
-			isd->Delete (idx);
-	}
-
-	void PhotosTab::handleDeleteRequested ()
-	{
-		auto isd = qobject_cast<ISupportDeletes*> (CurAccObj_);
-		if (!isd)
-			return;
-
-		const auto& idx = sender ()->property ("Blasq/Index").value<QModelIndex> ();
-		if (idx.isValid ())
-			isd->Delete (idx);
+		if (const auto isd = qobject_cast<ISupportDeletes*> (CurAccObj_))
+			isd->Delete ({ ItemType::Image, id });
 	}
 
 	void PhotosTab::handleAlbumSelected (const QVariant& var)

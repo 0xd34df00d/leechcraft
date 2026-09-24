@@ -184,7 +184,7 @@ namespace Rappor
 		return false;
 	}
 
-	void VkAccount::CreateCollection (const QModelIndex&)
+	void VkAccount::CreateCollection (const QString&)
 	{
 		AlbumSettingsDialog dia ({}, Proxy_);
 		if (dia.exec () != QDialog::Accepted)
@@ -225,10 +225,9 @@ namespace Rappor
 		AuthMgr_->GetAuthKey ();
 	}
 
-	void VkAccount::UploadImages (const QModelIndex& collection, const QList<UploadItem>& items)
+	void VkAccount::UploadImages (const QString& collectionId, const QList<UploadItem>& items)
 	{
-		const auto& aidStr = collection.data (CollectionRole::ID).toString ();
-		UploadManager_->Upload (aidStr, items);
+		UploadManager_->Upload (collectionId, items);
 	}
 
 	bool VkAccount::SupportsFeature (DeleteFeature feature) const
@@ -247,11 +246,10 @@ namespace Rappor
 		return false;
 	}
 
-	void VkAccount::Delete (const QModelIndex& item)
+	void VkAccount::Delete (const ItemRef& item)
 	{
-		const auto type = item.data (CollectionRole::Type).toInt ();
-		const auto& id = item.data (CollectionRole::ID).toString ();
-		switch (type)
+		const auto& id = item.ID_;
+		switch (item.Type_)
 		{
 		case ItemType::AllPhotos:
 			break;
@@ -278,17 +276,19 @@ namespace Rappor
 				});
 			AuthMgr_->GetAuthKey ();
 
-			CollectionsModel_->removeRow (item.row (), item.parent ());
-			for (const auto& albumItem : Albums_)
-				for (int i = 0; i < albumItem->rowCount (); ++i)
-				{
-					const auto subItem = albumItem->child (i, 0);
-					if (subItem->data (CollectionRole::ID).toString () == id)
+			const auto removeFrom = [&id] (QStandardItem *parentItem)
+			{
+				for (int i = 0; i < parentItem->rowCount (); ++i)
+					if (parentItem->child (i, 0)->data (CollectionRole::ID).toString () == id)
 					{
-						albumItem->removeRow (subItem->row ());
+						parentItem->removeRow (i);
 						break;
 					}
-				}
+			};
+			if (AllPhotosItem_)
+				removeFrom (AllPhotosItem_);
+			for (const auto& albumItem : Albums_)
+				removeFrom (albumItem);
 			break;
 		}
 	}

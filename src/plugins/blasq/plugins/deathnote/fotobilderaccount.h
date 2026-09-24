@@ -69,9 +69,9 @@ namespace DeathNote
 
 		QAbstractItemModel* GetCollectionsModel () const override;
 
-		void CreateCollection (const QModelIndex& parent) override;
+		void CreateCollection (const QString& parentId) override;
 		bool HasUploadFeature (Feature) const override;
-		void UploadImages (const QModelIndex& collection, const QList<UploadItem>& paths) override;
+		void UploadImages (const QString& collectionId, const QList<UploadItem>& items) override;
 
 		void Login ();
 		void RequestGalleries ();
