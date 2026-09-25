@@ -8,6 +8,38 @@
 
 #include "process.h"
 #include <QProcess>
+#include <QtDebug>
+#include <util/sll/visitor.h>
+
+namespace LC::Util
+{
+	QDebug operator<< (QDebug dbg, const ProcessFailedToStart& failed)
+	{
+		QDebugStateSaver saver { dbg };
+		dbg.nospace () << "ProcessFailedToStart { " << failed.Error_ << " }";
+		return dbg;
+	}
+
+	QDebug operator<< (QDebug dbg, const ProcessCrashed& crashed)
+	{
+		QDebugStateSaver saver { dbg };
+		dbg.nospace () << "ProcessCrashed { code: " << crashed.Code_ << " }";
+		return dbg;
+	}
+
+	QDebug operator<< (QDebug dbg, const ProcessExited& exited)
+	{
+		QDebugStateSaver saver { dbg };
+		dbg.nospace () << "ProcessExited { code: " << exited.Code_ << " }";
+		return dbg;
+	}
+
+	QDebug operator<< (QDebug dbg, const ProcessOutcome& outcome)
+	{
+		Visit (outcome, [&dbg] (const auto& alternative) { dbg << alternative; });
+		return dbg;
+	}
+}
 
 namespace LC::Util::detail
 {
@@ -33,8 +65,15 @@ namespace LC::Util::detail
 				});
 	}
 
-	void ProcessAwaiter::await_resume () const noexcept
+	ProcessOutcome ProcessAwaiter::await_resume () const
 	{
+		if (Process_.error () == QProcess::FailedToStart)
+			return ProcessFailedToStart { Process_.errorString () };
+
+		if (Process_.exitStatus () == QProcess::CrashExit)
+			return ProcessCrashed { Process_.exitCode () };
+
+		return ProcessExited { Process_.exitCode () };
 	}
 }
 

@@ -9,25 +9,59 @@
 #pragma once
 
 #include <coroutine>
-#include <QMetaObject>
+#include <variant>
+#include <QObject>
+#include <QString>
 #include <util/sll/raiisignalconnection.h>
 #include "../threadsconfig.h"
 
+class QDebug;
 class QProcess;
 
-namespace LC::Util::detail
+namespace LC::Util
 {
-	struct UTIL_THREADS_API ProcessAwaiter
+	struct ProcessFailedToStart
 	{
-		QProcess& Process_;
+		QString Error_;
 
-		RaiiSignalConnection FinishedConn_ {};
-		RaiiSignalConnection ErrorConn_ {};
-
-		bool await_ready () const noexcept;
-		void await_suspend (std::coroutine_handle<> handle) noexcept;
-		void await_resume () const noexcept;
+		auto operator<=> (const ProcessFailedToStart&) const = default;
 	};
+
+	struct ProcessCrashed
+	{
+		int Code_;
+
+		auto operator<=> (const ProcessCrashed&) const = default;
+	};
+
+	struct ProcessExited
+	{
+		int Code_;
+
+		auto operator<=> (const ProcessExited&) const = default;
+	};
+
+	using ProcessOutcome = std::variant<ProcessFailedToStart, ProcessCrashed, ProcessExited>;
+
+	UTIL_THREADS_API QDebug operator<< (QDebug, const ProcessFailedToStart&);
+	UTIL_THREADS_API QDebug operator<< (QDebug, const ProcessCrashed&);
+	UTIL_THREADS_API QDebug operator<< (QDebug, const ProcessExited&);
+	UTIL_THREADS_API QDebug operator<< (QDebug, const ProcessOutcome&);
+
+	namespace detail
+	{
+		struct UTIL_THREADS_API ProcessAwaiter
+		{
+			QProcess& Process_;
+
+			RaiiSignalConnection FinishedConn_ {};
+			RaiiSignalConnection ErrorConn_ {};
+
+			bool await_ready () const noexcept;
+			void await_suspend (std::coroutine_handle<> handle);
+			ProcessOutcome await_resume () const;
+		};
+	}
 }
 
 namespace LC
