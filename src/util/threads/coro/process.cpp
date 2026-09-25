@@ -48,21 +48,19 @@ namespace LC::Util::detail
 		return Process_.state () == QProcess::NotRunning;
 	}
 
-	void ProcessAwaiter::await_suspend (std::coroutine_handle<> handle) noexcept
+	void ProcessAwaiter::await_suspend (std::coroutine_handle<> handle)
 	{
-		FinishedConn_ = QObject::connect (&Process_,
-				&QProcess::finished,
-				handle);
-		ErrorConn_ = QObject::connect (&Process_,
-				&QProcess::errorOccurred,
-				[this, handle]
-				{
-					if (await_ready ())
-					{
-						QObject::disconnect (std::move (FinishedConn_).Release ());
-						handle ();
-					}
-				});
+		const auto resumeLater = [this, handle]
+		{
+			if (!await_ready ())
+				return;
+
+			QObject::disconnect (std::move (FinishedConn_).Release ());
+			QObject::disconnect (std::move (ErrorConn_).Release ());
+			QMetaObject::invokeMethod (&CoroResumeGuard_, handle, Qt::QueuedConnection);
+		};
+		FinishedConn_ = QObject::connect (&Process_, &QProcess::finished, resumeLater);
+		ErrorConn_ = QObject::connect (&Process_, &QProcess::errorOccurred, resumeLater);
 	}
 
 	ProcessOutcome ProcessAwaiter::await_resume () const

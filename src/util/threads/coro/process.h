@@ -54,6 +54,8 @@ namespace LC::Util
 		{
 			QProcess& Process_;
 
+			QObject CoroResumeGuard_ {};
+
 			RaiiSignalConnection FinishedConn_ {};
 			RaiiSignalConnection ErrorConn_ {};
 
