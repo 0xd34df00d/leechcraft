@@ -131,7 +131,7 @@ namespace LC::Util
 	}
 
 	template<auto F>
-	constexpr auto FromField = +[] (const ArgType_t<decltype (F), 0>& t) { return QVariant::fromValue (t.*F); };
+	constexpr auto FromField = +[] (const ArgType_t<decltype (F), 0>& t) { return QVariant::fromValue (std::invoke (F, t)); };
 
 	template<typename T>
 	class RoledItemsModel : public FlatItemsModelTypedBase<T>
