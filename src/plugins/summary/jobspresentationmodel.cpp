@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "jobspresentationmodel.h"
+#include <optional>
 #include <QStringList>
 #include <interfaces/ijobholder.h>
 #include <interfaces/structures.h>
@@ -79,9 +80,19 @@ namespace LC::Summary
 
 					const auto& thisTopLeft = mapFromSource (topLeft);
 					const auto& thisBottomRight = mapFromSource (bottomRight);
+					std::optional<std::pair<int, int>> span;
 					for (int c = 0; c < ColumnCount; ++c)
 						if (IsColumnAffected (c, roles))
-							emit dataChanged (thisTopLeft.siblingAtColumn (c), thisBottomRight.siblingAtColumn (c), displayRole);
+						{
+							if (!span)
+								span.emplace (c, c);
+							else
+								span->second = c;
+						}
+					if (span)
+						emit dataChanged (thisTopLeft.siblingAtColumn (span->first),
+								thisBottomRight.siblingAtColumn (span->second),
+								displayRole);
 				});
 
 		connect (model,
