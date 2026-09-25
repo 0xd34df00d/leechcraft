@@ -59,6 +59,12 @@ namespace LC::Util
 		void testContextDestrDoesntWaitProcess ();
 		void testContextDestrDoesntWaitFuture ();
 
+		void testProcessOutcomeExited ();
+		void testProcessOutcomeFailedToStart ();
+#ifdef Q_OS_UNIX
+		void testProcessOutcomeCrashed ();
+#endif
+
 #ifdef QT_DBUS_LIB
 		void testDBus ();
 #endif

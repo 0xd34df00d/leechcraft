@@ -7,6 +7,9 @@
  **********************************************************************/
 
 #include "corotasktest.h"
+#include <csignal>
+#include <variant>
+#include <QProcess>
 #include <QtConcurrentRun>
 #include <QtTest>
 #ifdef QT_DBUS_LIB
@@ -853,6 +856,39 @@ namespace LC::Util
 					co_await QtConcurrent::run ([] { QThread::sleep (LongDelay); });
 				}));
 	}
+
+	namespace
+	{
+		Task<ProcessOutcome> RunProcess (QString program, QStringList args)
+		{
+			QProcess process;
+			process.start (program, args);
+			co_return co_await process;
+		}
+	}
+
+	void CoroTaskTest::testProcessOutcomeExited ()
+	{
+		const auto outcome = GetTaskResult (RunProcess ("sh"_qs, { "-c"_qs, "exit 3"_qs }));
+		QVERIFY (std::holds_alternative<ProcessExited> (outcome));
+		QCOMPARE (std::get<ProcessExited> (outcome).Code_, 3);
+	}
+
+	void CoroTaskTest::testProcessOutcomeFailedToStart ()
+	{
+		const auto outcome = GetTaskResult (RunProcess ("lc-definitely-not-an-existing-binary"_qs, {}));
+		QVERIFY (std::holds_alternative<ProcessFailedToStart> (outcome));
+		QVERIFY (!std::get<ProcessFailedToStart> (outcome).Error_.isEmpty ());
+	}
+
+#ifdef Q_OS_UNIX
+	void CoroTaskTest::testProcessOutcomeCrashed ()
+	{
+		const auto outcome = GetTaskResult (RunProcess ("sh"_qs, { "-c"_qs, "kill -SEGV $$"_qs }));
+		QVERIFY (std::holds_alternative<ProcessCrashed> (outcome));
+		QCOMPARE (std::get<ProcessCrashed> (outcome).Code_, SIGSEGV);
+	}
+#endif
 
 #ifdef QT_DBUS_LIB
 	void CoroTaskTest::testDBus ()
