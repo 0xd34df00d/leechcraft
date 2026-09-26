@@ -55,7 +55,7 @@ namespace LC::Util
 	{
 		QVector<Task> tasks;
 		for (auto&& input : inputs)
-			tasks << std::invoke (mkTask, std::move (input), std::forward<MkTaskArgs> (mkTaskArgs)...);
+			tasks << std::invoke (mkTask, std::move (input), mkTaskArgs...);
 
 		if constexpr (IsVoid)
 			for (const auto& task : tasks)
