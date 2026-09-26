@@ -347,6 +347,78 @@ namespace LC::Util
 		QCOMPARE_LT (executionElapsed, linearizedExecTime / 2);
 	}
 
+	void CoroTaskTest::testNCopies ()
+	{
+		constexpr auto count = 10;
+		static constexpr auto unit = 10ms;
+
+		auto mkTask = [] (int index) -> Task<int>
+		{
+			co_await Precisely { unit * (count - index) };
+			co_return index;
+		};
+
+		int created = 0;
+		QElapsedTimer timer;
+		timer.start ();
+		auto task = NCopies (count, [&] { return mkTask (created++); });
+		const auto creationElapsed = timer.elapsed ();
+
+		static_assert (std::is_same_v<decltype (task), Task<QVector<int>>>);
+		QCOMPARE (created, count);
+		QCOMPARE_LT (creationElapsed, unit.count ());
+
+		timer.restart ();
+		const auto result = GetTaskResult (task);
+		const auto executionElapsed = timer.elapsed ();
+
+		QVector<int> expected;
+		for (int i = 0; i < count; ++i)
+			expected << i;
+		QCOMPARE (result, expected);
+
+		constexpr auto tolerance = 0.05;
+		QCOMPARE_GE (executionElapsed, count * unit.count () * (1 - tolerance));
+		const auto linearizedExecTime = unit.count () * count * (count + 1) / 2;
+		QCOMPARE_LT (executionElapsed, linearizedExecTime / 2);
+	}
+
+	void CoroTaskTest::testNCopiesVoid ()
+	{
+		constexpr auto count = 5;
+		auto mkTask = [] (int& finished) -> Task<void>
+		{
+			co_await 10ms;
+			++finished;
+		};
+
+		int finished = 0;
+		auto task = NCopies (count, [&] { return mkTask (finished); });
+		static_assert (std::is_same_v<decltype (task), Task<void>>);
+		QCOMPARE (finished, 0);
+
+		GetTaskResult (task);
+		QCOMPARE (finished, count);
+
+		[[maybe_unused]] auto mkContextTask = [] () -> ContextTask<void> { co_return; };
+		static_assert (std::is_same_v<decltype (NCopies (1, mkContextTask)), ContextTask<void>>,
+				"extensions did not survive the delegation");
+	}
+
+	void CoroTaskTest::testNCopiesZero ()
+	{
+		int created = 0;
+		auto mkTask = [] (int& created) -> Task<int>
+		{
+			++created;
+			co_return 0;
+		};
+
+		const auto result = GetTaskResult (NCopies (0, [&] { return mkTask (created); }));
+		QVERIFY (result.isEmpty ());
+		QCOMPARE (created, 0);
+	}
+
 	void CoroTaskTest::testSharedTaskManyAwaiters ()
 	{
 		auto shared = [] () -> SharedTask<int>
