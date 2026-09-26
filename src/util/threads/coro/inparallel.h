@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <ranges>
 #include <QVector>
 #include "task.h"
 
@@ -37,36 +38,16 @@ namespace LC::Util
 	}
 
 	template<
-			typename Inputs,
+			std::ranges::range Inputs,
 			typename F,
-			typename... MkTaskArgs,
-			typename Task = std::invoke_result_t<F&,
-					std::add_rvalue_reference_t<typename std::decay_t<Inputs>::value_type>,
-					MkTaskArgs&&...
-				>,
-			bool IsVoid = std::is_same_v<typename Task::ResultType_t, void>
+			typename... MkTaskArgs
 		>
-	auto InParallel (Inputs inputs, F mkTask, MkTaskArgs&&... mkTaskArgs) ->
-			std::conditional_t<
-				IsVoid,
-				typename Task::template ReplaceResult_t<void>,
-				typename Task::template ApplyResult_t<QVector>
-			>
+	auto InParallel (Inputs inputs, F mkTask, MkTaskArgs&&... mkTaskArgs)
 	{
-		QVector<Task> tasks;
+		QVector<decltype (std::invoke (mkTask, std::move (*inputs.begin ()), mkTaskArgs...))> tasks;
 		for (auto&& input : inputs)
 			tasks << std::invoke (mkTask, std::move (input), mkTaskArgs...);
-
-		if constexpr (IsVoid)
-			for (const auto& task : tasks)
-				co_await task;
-		else
-		{
-			QVector<typename Task::ResultType_t> result;
-			for (const auto& task : tasks)
-				result << co_await task;
-			co_return result;
-		}
+		return InParallel (std::move (tasks));
 	}
 
 	template<typename... Ts, template<typename> typename... Exts>
@@ -76,30 +57,12 @@ namespace LC::Util
 	}
 
 	auto NCopies (size_t count, auto taskFactory)
-			-> decltype (taskFactory ())::template ApplyResult_t<QVector>
-		requires (!std::is_same_v<void, typename decltype (taskFactory ())::ResultType_t>)
 	{
 		using Task_t = decltype (taskFactory ());
 
 		QVector<Task_t> tasks;
 		std::generate_n (std::back_inserter (tasks), count, taskFactory);
-
-		QVector<typename Task_t::ResultType_t> results;
-		for (auto& task : tasks)
-			results << co_await task;
-		co_return results;
+		return InParallel (std::move (tasks));
 	}
 
-	auto NCopies (size_t count, auto taskFactory)
-			-> decltype (taskFactory ())::template ReplaceResult_t<void>
-		requires (std::is_same_v<void, typename decltype (taskFactory ())::ResultType_t>)
-	{
-		using Task_t = decltype (taskFactory ());
-
-		QVector<Task_t> tasks;
-		std::generate_n (std::back_inserter (tasks), count, taskFactory);
-		for (auto& task : tasks)
-			co_await task;
-
-	}
 }
