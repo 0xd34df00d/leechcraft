@@ -8,6 +8,7 @@
 
 #include "otrhandler.h"
 #include <cstring>
+#include <gcrypt.h>
 #include <util/sys/paths.h>
 #include <util/xpc/util.h>
 #include <QMenu>

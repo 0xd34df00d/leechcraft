@@ -11,6 +11,7 @@
 #include <type_traits>
 #include <memory>
 #include <vector>
+#include <gcrypt.h>
 #include <QIcon>
 #include <QString>
 #include <QFile>

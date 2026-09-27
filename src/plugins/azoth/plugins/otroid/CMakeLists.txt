@@ -4,6 +4,7 @@ include (InitLCPlugin NO_POLICY_SCOPE)
 
 find_package (PkgConfig)
 pkg_check_modules (OTR REQUIRED IMPORTED_TARGET libotr>=4.0.0)
+pkg_check_modules (GCRYPT REQUIRED IMPORTED_TARGET libgcrypt)
 
 LC_DEFINE_PLUGIN (
 	SRCS
@@ -16,6 +17,6 @@ LC_DEFINE_PLUGIN (
 		util.cpp
 	SETTINGS azothotroidsettings.xml
 	QT_COMPONENTS Concurrent Widgets
-	LINK_LIBRARIES leechcraft-azoth-util PkgConfig::OTR
+	LINK_LIBRARIES leechcraft-azoth-util PkgConfig::OTR PkgConfig::GCRYPT
 	INSTALL_SHARE
 	)
