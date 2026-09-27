@@ -179,9 +179,6 @@ namespace LC::Aggregator
 					const auto& existingChannels = sb->GetChannels (feedId);
 					const auto& feedName = existingChannels.size () == 1 ? existingChannels [0].Title_ : url;
 					FeedsErrorManager_->AddFeedError (feedId, feedName, FeedsErrorManager::Error { error });
-
-					const auto& e = Util::MakeNotification (NotificationTitle, error, Priority::Critical);
-					GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 				});
 		FeedsErrorManager_->ClearFeedErrors (feedId);
 		DBUpThread_->UpdateFeed (channels, url);
