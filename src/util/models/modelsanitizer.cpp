@@ -19,7 +19,6 @@ namespace LC::Util
 {
 	void InstallModelSanitizer ([[maybe_unused]] QAbstractItemModel& model)
 	{
-#ifdef WITH_MODEL_SANITIZER
 		static const auto mode = [] -> std::optional<QAbstractItemModelTester::FailureReportingMode>
 		{
 			const auto& str = qgetenv ("LC_MODEL_SANITIZER_MODE");
@@ -36,8 +35,12 @@ namespace LC::Util
 			return {};
 		} ();
 
+#ifdef WITH_MODEL_SANITIZER
 		if (mode)
 			new QAbstractItemModelTester { &model, *mode, &model };
+#else
+		if (mode)
+			qWarning () << "model sanitizer is not supported";
 #endif
 	}
 }
