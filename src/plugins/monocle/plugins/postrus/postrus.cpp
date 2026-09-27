@@ -96,13 +96,11 @@ namespace LC::Monocle::Postrus
 					filename,
 					*target
 				});
-		co_await process;
-
-		qDebug () << process.exitStatus () << process.exitCode () << process.error ();
-
-		if (process.exitStatus () == QProcess::NormalExit && !process.exitCode ())
+		const auto outcome = co_await process;
+		if (outcome == Util::ProcessOutcome { Util::ProcessExited { .Code_ = 0 }})
 			co_return RedirectionResult { .TargetPath_ = *target };
 
+		qWarning () << "ps2pdf failed for" << filename << outcome;
 		co_return {};
 	}
 
