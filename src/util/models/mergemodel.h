@@ -118,11 +118,9 @@ namespace LC::Util
 		 *
 		 * The newly added model is appended to the end.
 		 *
-		 * If the model already exists in the list, it is added
-		 * again, and bad things would happen, as all the signals and
-		 * slots would be connected and called twice. So it's your
-		 * duty to ensure that you don't add the same model more than
-		 * once.
+		 * Adding a model that is already in the list is an invariant
+		 * violation, as its signals would be connected and handled
+		 * twice, and is reported via qFatal().
 		 *
 		 * @param[in] model The model to append to the list.
 		 */

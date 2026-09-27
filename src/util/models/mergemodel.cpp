@@ -204,6 +204,9 @@ namespace LC::Util
 		if (!model)
 			return;
 
+		if (FindModel (model) != Models_.end ())
+			qFatal () << Q_FUNC_INFO << "model already added:" << model;
+
 		Models_.push_back (model);
 
 		auto withModel = [this, model]<typename... Args> (void (MergeModel::*method) (QAbstractItemModel*, Args...))
