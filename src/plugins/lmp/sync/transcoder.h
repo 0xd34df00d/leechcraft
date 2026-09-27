@@ -9,7 +9,6 @@
 #pragma once
 
 #include <QObject>
-#include <QProcess>
 #include <util/sll/either.h>
 #include <util/threads/coro/channel.h>
 #include <util/threads/coro/taskfwd.h>
@@ -33,7 +32,6 @@ namespace LC::LMP
 			struct Failure
 			{
 				QString TargetPath_;
-				QProcess::ExitStatus ExitStatus_;
 				QString Reason_;
 			};
 

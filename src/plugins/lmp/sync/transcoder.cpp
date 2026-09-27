@@ -7,11 +7,15 @@
  **********************************************************************/
 
 #include "transcoder.h"
+#include <functional>
+#include <optional>
 #include <QDir>
 #include <QFileInfo>
+#include <QProcess>
 #include <QUuid>
 #include <util/sll/qtutil.h>
 #include <util/sll/util.h>
+#include <util/sll/visitor.h>
 #include <util/threads/coro.h>
 #include <util/threads/coro/inparallel.h>
 #include <taglib/tag.h>
@@ -178,19 +182,24 @@ namespace LC::LMP
 #endif
 		ffmpeg.start ("ffmpeg"_qs, BuildFfmpegArgs (origPath, transcodedPath, Params_));
 
-		co_await ffmpeg;
-		if (ffmpeg.exitStatus () == QProcess::NormalExit && !ffmpeg.exitCode ())
+		const auto outcome = co_await ffmpeg;
+		if (outcome == Util::ProcessOutcome { Util::ProcessExited { .Code_ = 0 } })
 		{
 			CopyTags (origPath, transcodedPath);
 			emit syncEvent (XcodingFinished { transcodingData });
 			Results_.Send ({ origPath, Result::Success { transcodedPath } });
+			co_return;
 		}
-		else
-		{
-			const auto& ffmpegErr = ffmpeg.readAllStandardError ();
-			qDebug () << ffmpeg.exitStatus () << ffmpeg.error () << ffmpeg.exitCode () << ffmpegErr;
-			emit syncEvent (XcodingFailed { transcodingData, ffmpegErr });
-			Results_.Send ({ origPath, { Util::AsLeft, Result::Failure { transcodedPath, ffmpeg.exitStatus (), ffmpegErr } } });
-		}
+
+		const auto errorText = Util::Visit (outcome,
+				[] (const Util::ProcessExited& err) { return tr ("ffmpeg exited with code %1.").arg (err.Code_); },
+				[] (const Util::ProcessCrashed& err) { return tr ("ffmpeg crashed with code %1.").arg (err.Code_); },
+				[] (const Util::ProcessFailedToStart& err) { return tr ("ffmpeg failed to start: %1").arg (err.Error_); });
+
+		const auto& stderrText = QString::fromUtf8 (ffmpeg.readAllStandardError ()).trimmed ();
+		const auto& message = stderrText.isEmpty () ? errorText : errorText + u'\n' + stderrText;
+		qWarning () << "transcoding failed for" << origPath << outcome << stderrText;
+		emit syncEvent (XcodingFailed { transcodingData, message });
+		Results_.Send ({ origPath, { Util::AsLeft, Result::Failure { transcodedPath, message } } });
 	}
 }
