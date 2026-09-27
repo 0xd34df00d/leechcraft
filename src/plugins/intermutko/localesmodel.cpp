@@ -8,11 +8,18 @@
 
 #include "localesmodel.h"
 #include <QtDebug>
+#include <util/models/modelsanitizer.h>
 #include <util/sll/util.h>
 #include "util.h"
 
 namespace LC::Intermutko
 {
+	LocalesModel::LocalesModel (QObject *parent)
+	: QAbstractItemModel { parent }
+	{
+		Util::InstallModelSanitizer (*this);
+	}
+
 	int LocalesModel::columnCount (const QModelIndex& parent) const
 	{
 		return parent.isValid () ?

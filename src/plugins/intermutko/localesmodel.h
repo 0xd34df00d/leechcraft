@@ -41,7 +41,7 @@ namespace LC::Intermutko
 			LocaleEntry = Qt::UserRole + 1
 		};
 
-		using QAbstractItemModel::QAbstractItemModel;
+		explicit LocalesModel (QObject* = nullptr);
 
 		int columnCount (const QModelIndex& = {}) const override;
 		int rowCount (const QModelIndex& = {}) const override;
