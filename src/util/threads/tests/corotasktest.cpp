@@ -302,8 +302,7 @@ namespace LC::Util
 		QCOMPARE (result, expected);
 		QCOMPARE_LT (creationElapsed, 1);
 
-		constexpr auto tolerance = 0.05;
-		QCOMPARE_GE (executionElapsed, max * (1 - tolerance));
+		QCOMPARE_GE (executionElapsed, MinElapsed (max * 1ms));
 		const auto linearizedExecTime = max * (max + 1) / 2;
 		QCOMPARE_LT (executionElapsed, linearizedExecTime / 2);
 	}
@@ -354,8 +353,7 @@ namespace LC::Util
 		QCOMPARE (result, expected);
 		QCOMPARE_LT (creationElapsed, 1);
 
-		constexpr auto tolerance = 0.05;
-		QCOMPARE_GE (executionElapsed, max * (1 - tolerance));
+		QCOMPARE_GE (executionElapsed, MinElapsed (max * 1ms));
 		const auto linearizedExecTime = max * (max + 1) / 2;
 		QCOMPARE_LT (executionElapsed, linearizedExecTime / 2);
 	}
@@ -390,8 +388,7 @@ namespace LC::Util
 			expected << i;
 		QCOMPARE (result, expected);
 
-		constexpr auto tolerance = 0.05;
-		QCOMPARE_GE (executionElapsed, count * unit.count () * (1 - tolerance));
+		QCOMPARE_GE (executionElapsed, MinElapsed (count * unit));
 		const auto linearizedExecTime = unit.count () * count * (count + 1) / 2;
 		QCOMPARE_LT (executionElapsed, linearizedExecTime / 2);
 	}
