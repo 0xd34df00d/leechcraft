@@ -19,7 +19,6 @@ namespace LC::Azoth::Sarin
 	public:
 		explicit AccRegisterDetailsPage (QWidget* = nullptr);
 
-		QString GetId () const;
 		QString GetNickname () const;
 	};
 }
