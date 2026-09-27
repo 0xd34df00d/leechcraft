@@ -11,11 +11,15 @@
 #include <QDomDocument>
 #include <QTimer>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <util/sll/debugprinters.h>
 #include <util/sll/either.h>
+#include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <util/threads/coro.h>
 #include <util/threads/coro/throttle.h>
+#include <util/threads/coro/inparallel.h>
+#include <util/xpc/progressmanager.h>
 #include <util/xpc/util.h>
 #include "components/parsers/parse.h"
 #include "components/storage/sqlstoragebackend.h"
@@ -57,6 +61,7 @@ namespace LC::Aggregator
 	, UpdateTimer_ { new QTimer { this } }
 	, CustomUpdateTimer_ { new QTimer { this } }
 	, UpdateThrottle_ { 500ms }
+	, ProgressManager_ { *new Util::ProgressManager { this } }
 	{
 		UpdateTimer_->setSingleShot (true);
 		connect (UpdateTimer_,
@@ -101,6 +106,11 @@ namespace LC::Aggregator
 				});
 	}
 
+	IJobHolderRepresentationHandler_ptr UpdatesManager::CreateJobRepresentationHandler ()
+	{
+		return ProgressManager_.CreateDefaultHandler ();
+	}
+
 	namespace
 	{
 		bool IsCustomTimer (const SQLStorageBackend& sb, IDType_t feedId)
@@ -111,26 +121,25 @@ namespace LC::Aggregator
 
 	void UpdatesManager::UpdateFeeds ()
 	{
-		for (const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-			 const auto id : sb->GetFeedsIDs ())
-			if (!IsCustomTimer (*sb, id))
-				UpdateFeed (id);
-
 		XmlSettingsManager::Instance ().setProperty ("LastUpdateDateTime", QDateTime::currentDateTime ());
 		if (int interval = XmlSettingsManager::Instance ().property ("UpdateInterval").toInt ())
 			UpdateTimer_->start (interval * 60 * 1000);
+
+		const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+		const auto isStandardTimer = [&sb] (IDType_t id) { return !IsCustomTimer (*sb, id); };
+		UpdateFeedsAsync (Util::Filter (sb->GetFeedsIDs (), isStandardTimer), sb);
 	}
 
 	void UpdatesManager::UpdateFeed (IDType_t feedId)
 	{
-		UpdateFeedAsync (feedId);
+		UpdateFeedsAsync ({ feedId }, StorageBackendManager::Instance ().MakeStorageBackendForThread ());
 	}
 
 	void UpdatesManager::HandleCustomUpdates ()
 	{
 		const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-		if (!sb)
-			return;
+
+		ids_t feeds;
 
 		const auto& current = QDateTime::currentDateTime ();
 		for (const auto id : sb->GetFeedsIDs ())
@@ -143,10 +152,46 @@ namespace LC::Aggregator
 			if (!Updates_.contains (id) ||
 					Updates_ [id].secsTo (current) >= feedSettings->UpdateTimeout_ * 60)
 			{
-				UpdateFeed (id);
+				feeds << id;
 				Updates_ [id] = QDateTime::currentDateTime ();
 			}
 		}
+
+		UpdateFeedsAsync (feeds, sb);
+	}
+
+	namespace
+	{
+		QString GetRowName (const ids_t& feeds, const SQLStorageBackend_ptr& sb)
+		{
+			if (feeds.size () != 1)
+				return UpdatesManager::tr ("Updating feeds…");
+
+			const auto feed = sb->GetFeed (feeds [0]);
+			const auto channels = sb->GetChannels (feeds [0]);
+			const auto& title = channels.empty () ? feed.URL_ : channels [0].GetEffectiveTitle ();
+			return UpdatesManager::tr ("Updating %1…").arg (title);
+		}
+	}
+
+	Util::ContextTask<void> UpdatesManager::UpdateFeedsAsync (ids_t feeds, SQLStorageBackend_ptr sb)
+	{
+		if (feeds.isEmpty ())
+			co_return;
+
+		co_await Util::AddContextObject { *this };
+
+		const auto& iconName = feeds.size () == 1 ? "view-refresh"_qs : "mail-receive"_qs;
+		const auto row = ProgressManager_.AddRow ({
+					.Name_ = GetRowName (feeds, sb),
+					.Specific_ = ProcessInfo { .Kind_ = ProcessKind::Generic },
+				},
+				{
+					.Total_ = feeds.size (),
+					.Icon_ = GetProxyHolder ()->GetIconThemeManager ()->GetIcon (iconName),
+				});
+
+		co_await Util::InParallel (feeds, [&] (IDType_t id) { return UpdateFeedAsync (id, *row, sb); });
 	}
 
 	namespace
@@ -161,11 +206,9 @@ namespace LC::Aggregator
 		}
 	}
 
-	Util::ContextTask<void> UpdatesManager::UpdateFeedAsync (IDType_t feedId)
+	Util::ContextTask<void> UpdatesManager::UpdateFeedAsync (IDType_t feedId, Util::ProgressModelRow& row, SQLStorageBackend_ptr sb)
 	{
-		const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-		if (!sb)
-			co_return;
+		const auto bumpRow = Util::MakeScopeGuard ([&row] { ++row; });
 
 		co_await Util::AddContextObject { *this };
 		co_await UpdateThrottle_;

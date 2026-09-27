@@ -183,7 +183,7 @@ namespace Aggregator
 					.DBUpThread_ = *DBUpThread_,
 					.RowSelector_ = callbacks.SetSelection_,
 				});
-		return MakeHandlers (std::move (channels));
+		return MakeHandlers (std::move (channels), UpdatesManager_->CreateJobRepresentationHandler ());
 	}
 
 	EntityTestHandleResult Aggregator::CouldHandle (const Entity& e) const

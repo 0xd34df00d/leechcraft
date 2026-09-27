@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QList>
 #include <QMetaType>
 #include <interfaces/structures.h>
@@ -73,6 +74,9 @@ namespace LC::Aggregator
 	extern const QByteArray PluginId;
 
 	struct Item;
+
+	class SQLStorageBackend;
+	using SQLStorageBackend_ptr = std::shared_ptr<SQLStorageBackend>;
 }
 
 Q_DECLARE_METATYPE (LC::Aggregator::IDType_t)

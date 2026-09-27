@@ -9,7 +9,6 @@
 #pragma once
 
 #include <memory>
-#include <QCoreApplication>
 #include <QObject>
 #include <util/threads/coro/taskfwd.h>
 #include <util/threads/coro/throttle.h>
@@ -17,6 +16,12 @@
 #include "dbupdatethread.h"
 
 class QTimer;
+
+namespace LC::Util
+{
+	class ProgressManager;
+	class ProgressModelRow;
+}
 
 namespace LC::Aggregator
 {
@@ -35,6 +40,8 @@ namespace LC::Aggregator
 		QMap<IDType_t, QDateTime> Updates_;
 
 		Util::Throttle UpdateThrottle_;
+
+		Util::ProgressManager& ProgressManager_;
 	public:
 		struct InitParams
 		{
@@ -43,11 +50,14 @@ namespace LC::Aggregator
 		};
 		explicit UpdatesManager (const InitParams&, QObject* = nullptr);
 
+		IJobHolderRepresentationHandler_ptr CreateJobRepresentationHandler ();
+
 		void UpdateFeed (IDType_t);
 		void UpdateFeeds ();
 	private:
 		void HandleCustomUpdates ();
 
-		Util::ContextTask<void> UpdateFeedAsync (IDType_t);
+		Util::ContextTask<void> UpdateFeedsAsync (ids_t, SQLStorageBackend_ptr);
+		Util::ContextTask<void> UpdateFeedAsync (IDType_t, Util::ProgressModelRow&, SQLStorageBackend_ptr);
 	};
 }
