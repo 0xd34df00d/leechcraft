@@ -14,6 +14,7 @@
 #include <QFileInfo>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
+#include <util/models/modelsanitizer.h>
 #include <util/sll/prelude.h>
 #include <util/sll/views.h>
 #include <util/xpc/defaulthookproxy.h>
@@ -37,6 +38,8 @@ namespace Poshuku
 		ItemHeaders_ << tr ("Title")
 			<< tr ("URL")
 			<< tr ("Tags");
+
+		Util::InstallModelSanitizer (*this);
 	}
 
 	void FavoritesModel::HandleStorageReady ()

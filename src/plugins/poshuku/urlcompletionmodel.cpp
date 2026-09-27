@@ -12,6 +12,7 @@
 #include <QTimer>
 #include <QApplication>
 #include <QtDebug>
+#include <util/models/modelsanitizer.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <interfaces/core/icoreproxy.h>
 #include "core.h"
@@ -30,6 +31,8 @@ namespace Poshuku
 				this,
 				SLOT (validate ()));
 		ValidateTimer_->setInterval (QApplication::keyboardInputInterval () / 2);
+
+		Util::InstallModelSanitizer (*this);
 	}
 
 	int URLCompletionModel::columnCount (const QModelIndex&) const
