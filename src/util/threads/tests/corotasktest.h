@@ -34,6 +34,12 @@ namespace LC::Util
 		void testNCopies ();
 		void testNCopiesVoid ();
 		void testNCopiesZero ();
+		void testWaitManyJoinsAfterFailure ();
+		void testWaitManyVoidJoinsAfterFailure ();
+		void testWaitManyFirstFailureInOrderWins ();
+		void testWaitManyInvokingFactoryThrows ();
+		void testNCopiesFactoryThrows ();
+		void testWaitManyContextDeathSilenced ();
 		void testSharedTaskManyAwaiters ();
 		void testSharedTaskAwaiterRemovedOnOuterDestruction ();
 		void testSharedTaskExceptionManyAwaiters ();

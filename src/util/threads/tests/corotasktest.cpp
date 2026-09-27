@@ -8,8 +8,11 @@
 
 #include "corotasktest.h"
 #include <csignal>
+#include <stdexcept>
+#include <string>
 #include <variant>
 #include <QProcess>
+#include <QRegularExpression>
 #include <QtConcurrentRun>
 #include <QtTest>
 #ifdef QT_DBUS_LIB
@@ -34,6 +37,16 @@ using namespace std::chrono_literals;
 
 namespace LC::Util
 {
+	namespace
+	{
+		constexpr auto TimerTolerance = 0.05;
+
+		constexpr auto MinElapsed (std::chrono::milliseconds expected)
+		{
+			return expected.count () * (1 - TimerTolerance);
+		}
+	}
+
 	void CoroTaskTest::testReturn ()
 	{
 		auto task = [] () -> Task<int> { co_return 42; } ();
@@ -417,6 +430,136 @@ namespace LC::Util
 		const auto result = GetTaskResult (NCopies (0, [&] { return mkTask (created); }));
 		QVERIFY (result.isEmpty ());
 		QCOMPARE (created, 0);
+	}
+
+	namespace
+	{
+		Task<int> SlowSuccess (std::chrono::milliseconds delay, bool& done)
+		{
+			co_await Precisely { delay };
+			done = true;
+			co_return 0;
+		}
+
+		Task<int> SlowFailure (std::chrono::milliseconds delay, std::string what)
+		{
+			co_await Precisely { delay };
+			throw std::runtime_error { what };
+		}
+
+		QString ThrownMessage (auto&& f)
+		{
+			try
+			{
+				f ();
+			}
+			catch (const std::exception& e)
+			{
+				return QString::fromUtf8 (e.what ());
+			}
+			return {};
+		}
+	}
+
+	void CoroTaskTest::testWaitManyJoinsAfterFailure ()
+	{
+		constexpr auto slowDelay = 60ms;
+		bool slowDone = false;
+		QElapsedTimer timer;
+		timer.start ();
+		const auto message = ThrownMessage ([&] { GetTaskResult (InParallel ({ SlowFailure (10ms, "early"), SlowSuccess (slowDelay, slowDone) })); });
+		const auto elapsed = timer.elapsed ();
+
+		QCOMPARE (message, "early"_qs);
+		QVERIFY (slowDone);
+		QCOMPARE_GE (elapsed, MinElapsed (slowDelay));
+	}
+
+	void CoroTaskTest::testWaitManyVoidJoinsAfterFailure ()
+	{
+		auto slowSuccess = [] (bool& done) -> Task<void>
+		{
+			co_await Precisely { 50ms };
+			done = true;
+		};
+		auto earlyFailure = [] () -> Task<void>
+		{
+			co_await Precisely { 5ms };
+			throw std::runtime_error { "early" };
+		};
+
+		bool slowDone = false;
+		const auto message = ThrownMessage ([&] { GetTaskResult (InParallel ({ earlyFailure (), slowSuccess (slowDone) })); });
+		QCOMPARE (message, "early"_qs);
+		QVERIFY (slowDone);
+	}
+
+	void CoroTaskTest::testWaitManyFirstFailureInOrderWins ()
+	{
+		QTest::ignoreMessage (QtWarningMsg, "dropping a subsequent exception: first in time");
+
+		const auto message = ThrownMessage ([] { GetTaskResult (InParallel ({ SlowFailure (40ms, "first in order"), SlowFailure (10ms, "first in time") })); });
+		QCOMPARE (message, "first in order"_qs);
+	}
+
+	void CoroTaskTest::testWaitManyInvokingFactoryThrows ()
+	{
+		constexpr auto delay = 40ms;
+		QVector<bool> done (5, false);
+		int created = 0;
+		auto mkTask = [&] (int index)
+		{
+			if (index == 2)
+				throw std::runtime_error { "factory" };
+			++created;
+			return SlowSuccess (delay, done [index]);
+		};
+
+		QElapsedTimer timer;
+		timer.start ();
+		const auto message = ThrownMessage ([&] { GetTaskResult (InParallel (QVector { 0, 1, 2, 3, 4 }, mkTask)); });
+		const auto elapsed = timer.elapsed ();
+
+		QCOMPARE (message, "factory"_qs);
+		QCOMPARE (created, 2);
+		QCOMPARE (done, (QVector { true, true, false, false, false }));
+		QCOMPARE_GE (elapsed, MinElapsed (delay));
+	}
+
+	void CoroTaskTest::testNCopiesFactoryThrows ()
+	{
+		bool done = false;
+		int calls = 0;
+		auto taskFactory = [&]
+		{
+			if (calls++ == 1)
+				throw std::runtime_error { "factory" };
+			return SlowSuccess (30ms, done);
+		};
+
+		const auto message = ThrownMessage ([&] { GetTaskResult (NCopies (3, taskFactory)); });
+		QCOMPARE (message, "factory"_qs);
+		QCOMPARE (calls, 2);
+		QVERIFY (done);
+	}
+
+	void CoroTaskTest::testWaitManyContextDeathSilenced ()
+	{
+		QTest::failOnWarning (QRegularExpression { "dropping a subsequent"_qs });
+
+		auto context = std::make_unique<QObject> ();
+		auto mkTask = [] (QObject *context) -> ContextTask<void>
+		{
+			co_await AddContextObject { *context };
+			co_await 500ms;
+		};
+		auto task = InParallel ({ mkTask (context.get ()), mkTask (context.get ()), mkTask (context.get ()) });
+		QTimer::singleShot (10ms, [context = std::move (context)] () mutable { context.reset (); });
+
+		QElapsedTimer timer;
+		timer.start ();
+		QVERIFY_THROWS_EXCEPTION (ContextDeadException, GetTaskResult (task));
+		QCOMPARE_LT (timer.elapsed (), 250);
 	}
 
 	void CoroTaskTest::testSharedTaskManyAwaiters ()

@@ -2,6 +2,7 @@ add_util_library (util-threads
 	SRCS
 		coro/asdomdocument.cpp
 		coro/context.cpp
+		coro/inparallel.cpp
 		coro/networkreply.cpp
 		coro/networkresult.cpp
 		coro/process.cpp
