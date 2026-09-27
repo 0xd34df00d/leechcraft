@@ -13,6 +13,7 @@
 #include <QtDebug>
 #include <util/sll/qtutil.h>
 #include "mergemodel.h"
+#include "modelsanitizer.h"
 
 namespace LC::Util
 {
@@ -21,6 +22,7 @@ namespace LC::Util
 	, Headers_ (std::move (headers))
 	, Root_ (std::make_shared<ModelItem> ())
 	{
+		InstallModelSanitizer (*this);
 	}
 
 	int MergeModel::columnCount (const QModelIndex& index) const

@@ -10,6 +10,7 @@
 
 #include <source_location>
 #include "flatitemsmodelbase.h"
+#include "modelsanitizer.h"
 
 namespace LC::Util
 {
@@ -19,7 +20,11 @@ namespace LC::Util
 	protected:
 		QList<T> Items_;
 	public:
-		using FlatItemsModelBase::FlatItemsModelBase;
+		explicit FlatItemsModelTypedBase (QStringList headers, QObject *parent = nullptr)
+		: FlatItemsModelBase { std::move (headers), parent }
+		{
+			InstallModelSanitizer (*this);
+		}
 
 		void SetItems (QList<T> items)
 		{

@@ -14,6 +14,7 @@
 #include <util/sll/prelude.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/core/itagsmanager.h>
+#include "modelsanitizer.h"
 
 namespace LC::Util
 {
@@ -57,6 +58,7 @@ namespace LC::Util
 	, TM_ { itm }
 	, Root_ { std::make_shared<FlatTreeItem> () }
 	{
+		InstallModelSanitizer (*this);
 	}
 
 	int FlatToFoldersProxyModel::columnCount (const QModelIndex&) const

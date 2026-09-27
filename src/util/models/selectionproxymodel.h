@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QIdentityProxyModel>
+#include "modelsanitizer.h"
 
 namespace LC::Util
 {
@@ -32,6 +33,7 @@ namespace LC::Util
 		, Config_ { config }
 		{
 			QIdentityProxyModel::setSourceModel (&source);
+			InstallModelSanitizer (*this);
 		}
 
 		int GetIsSelectedRole () const
