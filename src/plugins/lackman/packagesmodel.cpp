@@ -9,6 +9,7 @@
 #include "packagesmodel.h"
 #include <QIcon>
 #include <QApplication>
+#include <util/models/modelsanitizer.h>
 #include <util/util.h>
 #include "core.h"
 #include "storage.h"
@@ -21,6 +22,7 @@ namespace LackMan
 	PackagesModel::PackagesModel (QObject *parent)
 	: QAbstractItemModel (parent)
 	{
+		Util::InstallModelSanitizer (*this);
 	}
 
 	int PackagesModel::columnCount (const QModelIndex&) const
