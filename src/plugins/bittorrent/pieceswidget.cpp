@@ -20,6 +20,9 @@ namespace LC::BitTorrent
 		QVector<QPair<int, int>> FindTrues (const libtorrent::bitfield& pieces)
 		{
 			QVector<QPair<int, int>> result;
+			if (pieces.empty ())
+				return result;
+
 			bool prevVal = pieces [0];
 			int prevPos = 0;
 			int size = static_cast<int> (pieces.size ());
