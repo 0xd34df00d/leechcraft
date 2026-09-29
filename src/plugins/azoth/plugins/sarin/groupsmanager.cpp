@@ -33,7 +33,7 @@ namespace LC::Azoth::Sarin
 
 	Util::ContextTask<GroupsManager::JoinResult> GroupsManager::Join (QString groupId, QString nick, QString password)
 	{
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 
 		auto tox = Acc_.GetTox ();
 		if (!tox)

@@ -11,6 +11,7 @@
 #include <QMap>
 #include <QStringList>
 #include <util/threads/coro/taskfwd.h>
+#include <util/threads/coro/corocontext.h>
 #include <interfaces/structures.h>
 #include <interfaces/iactionsexporter.h>
 #include "concretehandlerbase.h"
@@ -63,5 +64,7 @@ namespace LC::AdvancedNotifications
 		void DismissNotification (const EventKey&);
 	signals:
 		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace);
+
+		LC_CORO_CONTEXT
 	};
 }

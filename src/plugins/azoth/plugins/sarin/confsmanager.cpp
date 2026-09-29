@@ -98,7 +98,7 @@ namespace LC::Azoth::Sarin
 
 	Util::ContextTask<void> ConfsManager::Join (QByteArray cookie, ConfType type, uint32_t friendNum)
 	{
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 
 		const auto tox = Acc_.GetTox ();
 		if (!tox)

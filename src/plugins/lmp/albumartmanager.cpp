@@ -131,7 +131,7 @@ namespace LC::LMP
 		if (!XmlSettingsManager::Instance ().property ("AutoFetchAlbumArt").toBool ())
 			co_return;
 
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 
 		for (const auto& artist : std::as_const (artists))
 			for (const auto& album : artist.Albums_)

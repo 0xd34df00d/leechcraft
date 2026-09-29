@@ -10,6 +10,7 @@
 
 #include <QObject>
 #include <util/threads/coro/taskfwd.h>
+#include <util/threads/coro/corocontext.h>
 #include <interfaces/iinfo.h>
 
 namespace LC::NamAuth
@@ -32,5 +33,7 @@ namespace LC::NamAuth
 	private:
 		Util::ContextTask<> StartChecks ();
 		void InitStorage (const ICoreProxy_ptr&);
+
+		LC_CORO_CONTEXT
 	};
 }

@@ -12,6 +12,7 @@
 #include <QObject>
 #include <QFile>
 #include <util/threads/coro/taskfwd.h>
+#include <util/threads/coro/corocontext.h>
 #include "filetransferbase.h"
 
 namespace LC::Azoth::Sarin
@@ -52,5 +53,7 @@ namespace LC::Azoth::Sarin
 		void HandleKill ();
 		void HandlePause ();
 		void HandleResume ();
+
+		LC_CORO_CONTEXT
 	};
 }

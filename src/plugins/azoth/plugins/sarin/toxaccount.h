@@ -13,6 +13,7 @@
 #include <util/sll/either.h>
 #include <util/sll/void.h>
 #include <util/threads/coro/taskfwd.h>
+#include <util/threads/coro/corocontext.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/isupportmediacalls.h>
 #include "toxaccountconfiguration.h"
@@ -135,5 +136,7 @@ namespace LC::Azoth::Sarin
 		void threadChanged (const std::shared_ptr<ToxRunner>&);
 
 		void called (QObject*) override;
+
+		LC_CORO_CONTEXT
 	};
 }

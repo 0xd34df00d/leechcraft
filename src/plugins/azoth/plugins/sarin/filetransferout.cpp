@@ -51,7 +51,7 @@ namespace LC::Azoth::Sarin
 
 	Util::ContextTask<void> FileTransferOut::Start ()
 	{
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 
 		using namespace Transfers;
 

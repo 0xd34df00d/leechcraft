@@ -174,7 +174,7 @@ namespace LC::Vrooby::UDisks2
 	{
 		namespace dbus = org::freedesktop::DBus;
 
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 
 		const auto sb = QDBusConnection::systemBus ();
 		UDisksObj_ = new dbus::ObjectManager (UDisks2Service, "/org/freedesktop/UDisks2"_qs, sb);

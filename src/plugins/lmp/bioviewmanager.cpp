@@ -144,7 +144,7 @@ namespace LC::LMP
 		if (QueryReleaseImageLocal (info))
 			co_return;
 
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 
 		const auto& channel = GetAlbumArtUrls (GetProxyHolder (), info.Artist_, info.Album_);
 		if (const auto result = co_await *channel)

@@ -12,6 +12,7 @@
 #include <util/sll/either.h>
 #include <util/threads/coro/channel.h>
 #include <util/threads/coro/taskfwd.h>
+#include <util/threads/coro/corocontext.h>
 #include "syncevents.h"
 #include "transcodingparams.h"
 
@@ -53,5 +54,7 @@ namespace LC::LMP
 		Util::ContextTask<void> TranscodeFile (const QString& origPath);
 	signals:
 		void syncEvent (const SyncEvents::Event&);
+
+		LC_CORO_CONTEXT
 	};
 }

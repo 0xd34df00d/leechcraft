@@ -10,6 +10,7 @@
 
 #include <memory>
 #include <QDialog>
+#include <util/threads/coro/corocontext.h>
 #include "ui_docinfodialog.h"
 
 class QStandardItemModel;
@@ -29,5 +30,7 @@ namespace LC::Monocle
 		explicit DocInfoDialog (IDocument&, QWidget* = nullptr);
 	private:
 		void HandleFontsInfo (const QList<FontInfo>&);
+
+		LC_CORO_CONTEXT
 	};
 }

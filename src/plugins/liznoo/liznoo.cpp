@@ -132,7 +132,7 @@ namespace Liznoo
 
 		[] (Entity e, Plugin *pThis) -> Util::ContextTask<void>
 		{
-			co_await Util::AddContextObject { *pThis };
+			co_await Util::AddContext { pThis->CoroContext_ };
 			co_await pThis->EnsurePlatformReady ();
 			pThis->Platform_->ProhibitScreensaver (e.Additional_ ["Enable"].toBool (), e.Additional_ ["ContextID"].toString ());
 		} (entity, this);
@@ -211,7 +211,7 @@ namespace Liznoo
 
 	Util::SharedContextTask<void> Plugin::InitializePlatform (QPointer<QuarkManager> qm)
 	{
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 		Platform_ = co_await PlatformObjects::Create ();
 		connect (Platform_.get (),
 				&PlatformObjects::batteryInfoUpdated,
@@ -245,7 +245,7 @@ namespace Liznoo
 
 	Util::ContextTask<void> Plugin::HandleStateRequested (PowerActions::Platform::State state)
 	{
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 		co_await EnsurePlatformReady ();
 		Util::Visit (co_await Platform_->ChangeState (state),
 				[] (PlatformObjects::ChangeStateSucceeded) {},
@@ -308,7 +308,7 @@ namespace Liznoo
 
 	Util::ContextTask<void> Plugin::HandleSettingsButton (QString button)
 	{
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 		co_await EnsurePlatformReady ();
 		const auto res = [&button, this]
 		{

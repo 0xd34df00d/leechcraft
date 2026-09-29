@@ -30,7 +30,7 @@ namespace LC::Azoth::Sarin
 
 	Util::ContextTask<void> MessagesManager::SendMessage (Pubkey pkey, QPointer<ChatMessage> msg)
 	{
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 		const auto& body = msg->GetBody ();
 
 		const auto runner = Acc_.GetTox ();
@@ -74,7 +74,7 @@ namespace LC::Azoth::Sarin
 
 	Util::ContextTask<void> MessagesManager::HandleInMessage (qint32 friendId, QString body)
 	{
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 
 		const auto runner = co_await Util::NonEmpty (Acc_.GetTox (), "got message in offline");
 		const auto maybePubkey = co_await runner->Run (&ToxW::GetFriendPubkey, friendId);

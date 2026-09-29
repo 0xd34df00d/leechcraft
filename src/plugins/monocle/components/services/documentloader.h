@@ -10,6 +10,7 @@
 
 #include <QObject>
 #include <util/threads/coro/taskfwd.h>
+#include <util/threads/coro/corocontext.h>
 #include "interfaces/monocle/idocument.h"
 #include "defaultbackendmanager.h"
 
@@ -30,5 +31,7 @@ namespace LC::Monocle
 		bool CanHandleMime (const QString&) const;
 		bool CanLoadDocument (const QString&) const;
 		Util::ContextTask<IDocument_ptr> LoadDocument (QString);
+
+		LC_CORO_CONTEXT
 	};
 }

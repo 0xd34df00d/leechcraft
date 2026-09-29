@@ -49,7 +49,7 @@ namespace Dolozhee
 
 		[this] -> Util::ContextTask<void>
 		{
-			co_await Util::AddContextObject { *this };
+			co_await Util::AddContext { CoroContext_ };
 
 			const QUrl url { "https://dev.leechcraft.org/projects/leechcraft.xml?include=issue_categories"_qs };
 			const auto result = co_await Util::DownloadAsTemporary (*Proxy_->GetEntityManager (), url);

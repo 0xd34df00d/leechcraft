@@ -15,6 +15,7 @@
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/iquarkcomponentprovider.h>
 #include <util/threads/coro/sharedtask.h>
+#include <util/threads/coro/corocontext.h>
 #include "platform/poweractions/platform.h"
 #include "batteryhistory.h"
 #include "batteryinfo.h"
@@ -86,6 +87,8 @@ namespace Liznoo
 		void handleHistoryTriggered (const QString&);
 	signals:
 		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace) override;
+
+		LC_CORO_CONTEXT
 	};
 }
 }

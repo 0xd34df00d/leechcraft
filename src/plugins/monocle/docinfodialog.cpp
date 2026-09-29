@@ -40,7 +40,7 @@ namespace LC::Monocle
 		if (ihf)
 			[] (IHaveFontInfo *ihf, DocInfoDialog *pThis) -> Util::ContextTask<>
 			{
-				co_await Util::AddContextObject { *pThis };
+				co_await Util::AddContext { pThis->CoroContext_ };
 				pThis->HandleFontsInfo (co_await ihf->RequestFontInfos ());
 			} (ihf, this);
 	}

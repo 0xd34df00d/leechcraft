@@ -84,7 +84,7 @@ namespace LC::Monocle
 			co_return {};
 		}
 
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 
 		for (const auto redirector : redirectors)
 		{

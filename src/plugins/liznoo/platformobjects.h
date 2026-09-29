@@ -11,6 +11,7 @@
 #include <memory>
 #include <QObject>
 #include <util/threads/coro/taskfwd.h>
+#include <util/threads/coro/corocontext.h>
 #include <interfaces/core/icoreproxyfwd.h>
 #include "platform/poweractions/platform.h"
 
@@ -78,5 +79,7 @@ namespace LC::Liznoo
 		bool EmitTestWakeup ();
 	signals:
 		void batteryInfoUpdated (const Liznoo::BatteryInfo&);
+
+		LC_CORO_CONTEXT
 	};
 }

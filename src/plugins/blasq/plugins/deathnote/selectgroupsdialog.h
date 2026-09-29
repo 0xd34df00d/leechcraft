@@ -12,6 +12,7 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <util/threads/coro/taskfwd.h>
+#include <util/threads/coro/corocontext.h>
 #include "ui_selectgroupsdialog.h"
 
 class QStandardItemModel;
@@ -57,6 +58,8 @@ namespace DeathNote
 		Util::ContextTask<> FriendsGroupsRequest (const QString& challenge);
 		QNetworkRequest CreateNetworkRequest ();
 		QByteArray GetFriendsGroupsRequestBody (const QString& challenge);
+
+		LC_CORO_CONTEXT
 	};
 }
 }

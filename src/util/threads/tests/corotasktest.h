@@ -67,6 +67,14 @@ namespace LC::Util
 		void testContextDestrDoesntWaitNetwork ();
 		void testContextDestrDoesntWaitProcess ();
 		void testContextDestrDoesntWaitFuture ();
+		void testContextDestrParentOutlivesChild ();
+		void testContextDestrDoesntResumeFinishedSibling ();
+		void testContextDestrFromRunningCoro ();
+		void testContextDestrFromRunningCoroNoAwait ();
+		void testContextDestrFromRunningCoroDoesntTouchAwaitable ();
+		void testContextOfIsPerObject ();
+		void testContextOfDiesWithObject ();
+		void testContextOfRejectsForeignThread ();
 
 		void testProcessOutcomeExited ();
 		void testProcessOutcomeFailedToStart ();

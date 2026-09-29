@@ -14,6 +14,7 @@
 #include <interfaces/media/ialbumartprovider.h>
 #include <util/threads/coro/taskfwd.h>
 #include <util/threads/coro/channel.h>
+#include <util/threads/coro/corocontext.h>
 #include "interfaces/lmp/collectiontypes.h"
 
 namespace LC::LMP
@@ -34,5 +35,7 @@ namespace LC::LMP
 	private:
 		Util::ContextTask<void> CheckNewArtists (Collection::Artists_t);
 		void HandleCoversPath (const QString&);
+
+		LC_CORO_CONTEXT
 	};
 }

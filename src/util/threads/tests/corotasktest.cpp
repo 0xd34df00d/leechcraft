@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "corotasktest.h"
+#include <algorithm>
 #include <csignal>
 #include <stdexcept>
 #include <string>
@@ -30,6 +31,7 @@
 #include <util/threads/futures.h>
 #include <util/sll/debugprinters.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/util.h>
 
 QTEST_GUILESS_MAIN (LC::Util::CoroTaskTest)
 
@@ -544,10 +546,10 @@ namespace LC::Util
 	{
 		QTest::failOnWarning (QRegularExpression { "dropping a subsequent"_qs });
 
-		auto context = std::make_unique<QObject> ();
-		auto mkTask = [] (QObject *context) -> ContextTask<void>
+		auto context = std::make_unique<CoroContext> ();
+		auto mkTask = [] (CoroContext *context) -> ContextTask<void>
 		{
-			co_await AddContextObject { *context };
+			co_await AddContext { *context };
 			co_await 500ms;
 		};
 		auto task = InParallel ({ mkTask (context.get ()), mkTask (context.get ()), mkTask (context.get ()) });
@@ -590,10 +592,10 @@ namespace LC::Util
 			co_return co_await shared;
 		} ();
 
-		auto context = std::make_unique<QObject> ();
-		auto cancelledAwaiter = [&shared] (QObject *context) -> ContextTask<int>
+		auto context = std::make_unique<CoroContext> ();
+		auto cancelledAwaiter = [&shared] (CoroContext *context) -> ContextTask<int>
 		{
-			co_await AddContextObject { *context };
+			co_await AddContext { *context };
 			co_return co_await shared;
 		} (&*context);
 		QTimer::singleShot (destructionDelay, [context = std::move (context)] () mutable { context.reset (); });
@@ -675,10 +677,10 @@ namespace LC::Util
 
 	void CoroTaskTest::testSharedContextTaskManyAwaitersContextAlive ()
 	{
-		auto context = std::make_unique<QObject> ();
-		auto shared = [] (QObject *ctx) -> SharedContextTask<int>
+		auto context = std::make_unique<CoroContext> ();
+		auto shared = [] (CoroContext *ctx) -> SharedContextTask<int>
 		{
-			co_await AddContextObject { *ctx };
+			co_await AddContext { *ctx };
 			co_await 10ms;
 			co_return 42;
 		} (&*context);
@@ -694,10 +696,10 @@ namespace LC::Util
 
 	void CoroTaskTest::testSharedContextTaskContextDeadFansOutToAll ()
 	{
-		auto context = std::make_unique<QObject> ();
-		auto shared = [] (QObject *ctx) -> SharedContextTask<int>
+		auto context = std::make_unique<CoroContext> ();
+		auto shared = [] (CoroContext *ctx) -> SharedContextTask<int>
 		{
-			co_await AddContextObject { *ctx };
+			co_await AddContext { *ctx };
 			co_await 500ms;
 			co_return 42;
 		} (&*context);
@@ -725,10 +727,10 @@ namespace LC::Util
 	{
 		struct TestSharedContextException : std::exception {};
 
-		auto context = std::make_unique<QObject> ();
-		auto shared = [] (QObject *ctx) -> SharedContextTask<>
+		auto context = std::make_unique<CoroContext> ();
+		auto shared = [] (CoroContext *ctx) -> SharedContextTask<>
 		{
-			co_await AddContextObject { *ctx };
+			co_await AddContext { *ctx };
 			co_await 10ms;
 			throw TestSharedContextException {};
 		} (&*context);
@@ -752,10 +754,10 @@ namespace LC::Util
 
 	void CoroTaskTest::testSharedContextTaskContextDeadDoesntWaitLong ()
 	{
-		auto context = std::make_unique<QObject> ();
-		auto shared = [] (QObject *ctx) -> SharedContextTask<>
+		auto context = std::make_unique<CoroContext> ();
+		auto shared = [] (CoroContext *ctx) -> SharedContextTask<>
 		{
-			co_await AddContextObject { *ctx };
+			co_await AddContext { *ctx };
 			co_await 500ms;
 		} (&*context);
 
@@ -774,26 +776,26 @@ namespace LC::Util
 
 	void CoroTaskTest::testSharedContextTaskMixedAwaitersOwnContextDies ()
 	{
-		auto sharedCtx = std::make_unique<QObject> ();
-		auto aliveCtx = std::make_unique<QObject> ();
-		auto dyingCtx = std::make_unique<QObject> ();
+		auto sharedCtx = std::make_unique<CoroContext> ();
+		auto aliveCtx = std::make_unique<CoroContext> ();
+		auto dyingCtx = std::make_unique<CoroContext> ();
 
-		auto shared = [] (QObject *ctx) -> SharedContextTask<int>
+		auto shared = [] (CoroContext *ctx) -> SharedContextTask<int>
 		{
-			co_await AddContextObject { *ctx };
+			co_await AddContext { *ctx };
 			co_await 100ms;
 			co_return 42;
 		} (&*sharedCtx);
 
-		auto aliveAwaiter = [&shared] (QObject *ctx) -> ContextTask<int>
+		auto aliveAwaiter = [&shared] (CoroContext *ctx) -> ContextTask<int>
 		{
-			co_await AddContextObject { *ctx };
+			co_await AddContext { *ctx };
 			co_return co_await shared;
 		} (&*aliveCtx);
 
-		auto dyingAwaiter = [&shared] (QObject *ctx) -> ContextTask<int>
+		auto dyingAwaiter = [&shared] (CoroContext *ctx) -> ContextTask<int>
 		{
-			co_await AddContextObject { *ctx };
+			co_await AddContext { *ctx };
 			co_return co_await shared;
 		} (&*dyingCtx);
 
@@ -945,12 +947,12 @@ namespace LC::Util
 
 	void CoroTaskTest::testContextDestrBeforeFinish ()
 	{
-		auto context = std::make_unique<QObject> ();
-		auto task = [] (QObject *context) -> ContextTask<int>
+		auto context = std::make_unique<CoroContext> ();
+		auto task = [] (CoroContext *context) -> ContextTask<QString>
 		{
-			co_await AddContextObject { *context };
+			co_await AddContext { *context };
 			co_await LongDelay;
-			co_return context->children ().size ();
+			co_return context->GetName ();
 		} (&*context);
 		context.reset ();
 
@@ -959,23 +961,24 @@ namespace LC::Util
 
 	void CoroTaskTest::testContextDestrAfterFinish ()
 	{
-		auto context = std::make_unique<QObject> ();
-		auto task = [] (QObject *context) -> ContextTask<int>
+		const auto ctxName = "some name"_qs;
+		auto context = std::make_unique<CoroContext> (ctxName);
+		auto task = [] (CoroContext *context) -> ContextTask<QString>
 		{
-			co_await AddContextObject { *context };
+			co_await AddContext { *context };
 			co_await ShortDelay;
-			co_return context->children ().size ();
+			co_return context->GetName ();
 		} (&*context);
 
-		QCOMPARE (GetTaskResult (task), 0);
+		QCOMPARE (GetTaskResult (task), ctxName);
 	}
 
 	void CoroTaskTest::testContextDestrAwaitedSubtask ()
 	{
-		auto context = std::make_unique<QObject> ();
-		auto task = [] (QObject *context) -> ContextTask<int>
+		auto context = std::make_unique<CoroContext> ();
+		auto task = [] (CoroContext *context) -> ContextTask<QString>
 		{
-			co_await AddContextObject { *context };
+			co_await AddContext { *context };
 
 			const auto nestedSubtask = [] -> ContextTask<int>
 			{
@@ -984,7 +987,7 @@ namespace LC::Util
 			} ();
 
 			co_await nestedSubtask;
-			co_return context->children ().size ();
+			co_return context->GetName ();
 		} (&*context);
 		context.reset ();
 
@@ -996,7 +999,7 @@ namespace LC::Util
 		template<typename... Ts>
 		auto WithContext (auto&& taskGen, Ts&&... taskArgs)
 		{
-			auto context = std::make_unique<QObject> ();
+			auto context = std::make_unique<CoroContext> ();
 			auto task = taskGen (&*context, std::forward<Ts> (taskArgs)...);
 			QTimer::singleShot (ShortDelay, [context = std::move (context)] () mutable { context.reset (); });
 			return task;
@@ -1013,9 +1016,9 @@ namespace LC::Util
 
 	void CoroTaskTest::testContextDestrDoesntWaitTimer ()
 	{
-		WithDestroyTimer (WithContext ([] (QObject *context) -> ContextTask<void>
+		WithDestroyTimer (WithContext ([] (CoroContext *context) -> ContextTask<void>
 				{
-					co_await AddContextObject { *context };
+					co_await AddContext { *context };
 					co_await LongDelay;
 				}));
 	}
@@ -1034,9 +1037,9 @@ namespace LC::Util
 					}
 				});
 
-		WithDestroyTimer (WithContext ([] (QObject *context, QNetworkAccessManager *nam) -> ContextTask<QByteArray>
+		WithDestroyTimer (WithContext ([] (CoroContext *context, QNetworkAccessManager *nam) -> ContextTask<QByteArray>
 				{
-					co_await AddContextObject { *context };
+					co_await AddContext { *context };
 					const auto reply = co_await *nam->get (QNetworkRequest { QUrl { "http://example.com/foo.txt"_qs } });
 					co_return reply.GetReplyData ();
 				}, &*nam));
@@ -1044,9 +1047,9 @@ namespace LC::Util
 
 	void CoroTaskTest::testContextDestrDoesntWaitProcess ()
 	{
-		WithDestroyTimer (WithContext ([] (QObject *context) -> ContextTask<>
+		WithDestroyTimer (WithContext ([] (CoroContext *context) -> ContextTask<>
 				{
-					co_await AddContextObject { *context };
+					co_await AddContext { *context };
 
 					const auto process = new QProcess {};
 					const auto delay = std::chrono::duration_cast<std::chrono::milliseconds> (LongDelay);
@@ -1062,11 +1065,156 @@ namespace LC::Util
 
 	void CoroTaskTest::testContextDestrDoesntWaitFuture ()
 	{
-		WithDestroyTimer (WithContext ([] (QObject *context) -> ContextTask<>
+		WithDestroyTimer (WithContext ([] (CoroContext *context) -> ContextTask<>
 				{
-					co_await AddContextObject { *context };
+					co_await AddContext { *context };
 					co_await QtConcurrent::run ([] { QThread::sleep (LongDelay); });
 				}));
+	}
+
+	void CoroTaskTest::testContextDestrParentOutlivesChild ()
+	{
+		QStringList destrLog;
+		auto task = WithContext ([] (CoroContext *context, QStringList& log) -> ContextTask<void>
+				{
+					co_await AddContext { *context };
+					const auto cleanup = MakeScopeGuard ([&log] { log << "parent"_qs; });
+					co_await [] (CoroContext *context, QStringList& log) -> ContextTask<void>
+					{
+						const auto childCleanup = MakeScopeGuard ([&log] { log << "child"_qs; });
+						co_await AddContext { *context };
+						co_await LongDelay;
+					} (context, log);
+				}, destrLog);
+		WithDestroyTimer (task);
+
+		QCOMPARE (destrLog, (QStringList { "child"_qs, "parent"_qs }));
+	}
+
+	void CoroTaskTest::testContextDestrDoesntResumeFinishedSibling ()
+	{
+		QStringList log;
+		auto task = WithContext ([] (CoroContext *context, QStringList& log) -> ContextTask<void>
+				{
+					co_await AddContext { *context };
+					const auto cleanup = MakeScopeGuard ([&log] { log << "parent"_qs; });
+
+					auto child = [] (CoroContext *context, QStringList& log, std::chrono::milliseconds delay, QString name) -> ContextTask<void>
+					{
+						const auto cleanup = MakeScopeGuard ([&log, name] { log << name; });
+						co_await AddContext { *context };
+						co_await delay;
+					};
+					co_await InParallel ({ child (context, log, 1ms, "fast"_qs), child (context, log, LongDelay, "slow"_qs) });
+				}, log);
+		WithDestroyTimer (task);
+
+		std::ranges::sort (log);
+		QCOMPARE (log, (QStringList { "fast"_qs, "parent"_qs, "slow"_qs }));
+	}
+
+	void CoroTaskTest::testContextDestrFromRunningCoro ()
+	{
+		auto context = std::make_unique<CoroContext> ();
+		int after = 0;
+		auto task = [] (std::unique_ptr<CoroContext>& context, int& after) -> ContextTask<void>
+		{
+			co_await AddContext { *context };
+			co_await ShortDelay;
+			context.reset ();
+			++after;
+			co_await ShortDelay;
+			++after;
+		} (context, after);
+
+		QVERIFY_THROWS_EXCEPTION (ContextDeadException, GetTaskResult (task));
+		QCOMPARE (after, 1);
+	}
+
+	void CoroTaskTest::testContextDestrFromRunningCoroNoAwait ()
+	{
+		auto context = std::make_unique<CoroContext> ();
+		auto task = [] (std::unique_ptr<CoroContext>& context) -> ContextTask<int>
+		{
+			co_await AddContext { *context };
+			co_await ShortDelay;
+			context.reset ();
+			co_return 42;
+		} (context);
+
+		QCOMPARE (GetTaskResult (task), 42);
+	}
+
+	namespace
+	{
+		struct TouchRecordingAwaiter
+		{
+			bool& Touched_;
+
+			bool await_ready () noexcept
+			{
+				Touched_ = true;
+				return true;
+			}
+
+			void await_suspend (std::coroutine_handle<>) noexcept {}
+			void await_resume () noexcept {}
+		};
+	}
+
+	void CoroTaskTest::testContextDestrFromRunningCoroDoesntTouchAwaitable ()
+	{
+		auto context = std::make_unique<CoroContext> ();
+		bool touched = false;
+		auto task = [] (std::unique_ptr<CoroContext>& context, bool& touched) -> ContextTask<void>
+		{
+			co_await AddContext { *context };
+			co_await ShortDelay;
+			context.reset ();
+			co_await TouchRecordingAwaiter { touched };
+		} (context, touched);
+
+		QVERIFY_THROWS_EXCEPTION (ContextDeadException, GetTaskResult (task));
+		QVERIFY (!touched);
+	}
+
+	void CoroTaskTest::testContextOfIsPerObject ()
+	{
+		QObject first;
+		QObject second;
+		QVERIFY (&CoroContext::Of (first) == &CoroContext::Of (first));
+		QVERIFY (&CoroContext::Of (first) != &CoroContext::Of (second));
+	}
+
+	void CoroTaskTest::testContextOfDiesWithObject ()
+	{
+		auto object = std::make_unique<QObject> ();
+		auto task = [] (QObject *object) -> ContextTask<void>
+		{
+			co_await AddContext { CoroContext::Of (*object) };
+			co_await LongDelay;
+		} (object.get ());
+		QTimer::singleShot (ShortDelay, [object = std::move (object)] () mutable { object.reset (); });
+		WithDestroyTimer (task);
+	}
+
+	void CoroTaskTest::testContextOfRejectsForeignThread ()
+	{
+		QObject object;
+		const auto thrown = QtConcurrent::run ([&object]
+				{
+					try
+					{
+						CoroContext::Of (object);
+						return false;
+					}
+					catch (const std::runtime_error&)
+					{
+						return true;
+					}
+				}).result ();
+		QVERIFY (thrown);
+		QVERIFY (&CoroContext::Of (object) == &CoroContext::Of (object));
 	}
 
 	namespace

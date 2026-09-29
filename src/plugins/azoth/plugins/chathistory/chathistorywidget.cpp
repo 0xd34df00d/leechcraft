@@ -184,7 +184,7 @@ namespace LC::Azoth::ChatHistory
 
 	Util::ContextTask<void> ChatHistoryWidget::LoadAccounts ()
 	{
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 
 		const auto& accToFocus = FocusEntry_.transform ([] (const FocusEntry& fe) { return fe.AccId_; }).value_or ({});
 
@@ -208,7 +208,7 @@ namespace LC::Azoth::ChatHistory
 		if (idx < 0 || idx >= AccountsModel_.rowCount ())
 			co_return;
 
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 
 		const auto accountId = AccountsModel_.GetItems () [idx].Id_;
 		const auto entries = co_await Params_.StorageThread_.Run (&Storage2::GetEntries, accountId);
@@ -269,7 +269,7 @@ namespace LC::Azoth::ChatHistory
 
 		ShowLoading ();
 
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 		const auto messages = co_await Params_.StorageThread_.Run (&Storage2::GetMessages, entry->Base_, pagination);
 		co_await GuardEntryChanged (entry->Id_);
 		RenderMessages (messages);
@@ -284,7 +284,7 @@ namespace LC::Azoth::ChatHistory
 		ShowLoading ();
 		FindBox_->Clear ();
 
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 		const auto& messages = co_await Params_.StorageThread_.Run (&Storage2::GetMessagesDated, entry->Base_, date);
 		co_await GuardEntryChanged (entry->Id_);
 		RenderMessages (messages);
@@ -298,7 +298,7 @@ namespace LC::Azoth::ChatHistory
 		if (!entry)
 			co_return;
 
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 
 		const auto year = Ui_.Calendar_->yearShown ();
 		const auto month = Ui_.Calendar_->monthShown ();
@@ -324,7 +324,7 @@ namespace LC::Azoth::ChatHistory
 		if (!entry)
 			co_return;
 
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 
 		const auto eitherResult = co_await SearchHandler_->HandleSearch (entry->Base_, text, flags);
 		co_await GuardEntryChanged (entry->Id_);

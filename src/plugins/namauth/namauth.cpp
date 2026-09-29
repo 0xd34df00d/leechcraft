@@ -55,7 +55,7 @@ namespace LC::NamAuth
 
 	Util::ContextTask<> Plugin::StartChecks ()
 	{
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 
 		namespace CC = Util::ConsistencyChecker;
 

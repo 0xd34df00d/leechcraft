@@ -12,6 +12,7 @@
 #include <QObject>
 #include <QImage>
 #include <util/threads/coro/taskfwd.h>
+#include <util/threads/coro/corocontext.h>
 #include <interfaces/media/idiscographyprovider.h>
 
 class QQuickWidget;
@@ -62,5 +63,7 @@ namespace LC::LMP
 		void HandleDiscographyReady (QList<Media::ReleaseInfo>);
 	signals:
 		void gotArtistImage (const QString&, const QUrl&);
+
+		LC_CORO_CONTEXT
 	};
 }

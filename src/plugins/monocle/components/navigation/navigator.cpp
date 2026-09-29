@@ -94,7 +94,7 @@ namespace LC::Monocle
 
 		[] (auto pThis, auto path, auto options, auto targetPos) -> Util::ContextTask<>
 		{
-			co_await Util::AddContextObject (*pThis);
+			co_await Util::AddContext { pThis->CoroContext_ };
 			const auto& document = co_await pThis->Loader_.LoadDocument (path);
 			if (!document || !document->IsValid ())
 			{

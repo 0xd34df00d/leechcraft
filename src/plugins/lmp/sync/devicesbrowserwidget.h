@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QWidget>
+#include <util/threads/coro/corocontext.h>
 #include "syncevents.h"
 #include "ui_devicesbrowserwidget.h"
 
@@ -52,5 +53,7 @@ namespace LC::LMP
 		static QString ToString (const SyncEvents::Event&);
 	private slots:
 		void on_UploadButton__released ();
+
+		LC_CORO_CONTEXT
 	};
 }

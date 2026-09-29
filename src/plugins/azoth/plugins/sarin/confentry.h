@@ -10,6 +10,7 @@
 
 #include <QObject>
 #include <util/threads/coro/taskfwd.h>
+#include <util/threads/coro/corocontext.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/imucentry.h>
 #include "types.h"
@@ -97,5 +98,7 @@ namespace LC::Azoth::Sarin
 		void AppendMessage (ConfMessage*);
 	private:
 		Util::ContextTask<void> RunLeave ();
+
+		LC_CORO_CONTEXT
 	};
 }

@@ -61,8 +61,8 @@ namespace Azoth
 			co_return;
 		}
 
-		co_await Util::AddContextObject { *this };
-		co_await Util::AddContextObject { *acc->GetQObject () };
+		co_await Util::AddContext { CoroContext_ };
+		co_await Util::AddContext { Util::CoroContext::Of (*acc->GetQObject ()) };
 
 		auto results = co_await Util::InParallel (Storages_, &IHistoryPlugin::RequestMaxTimestamp, *acc)
 				| std::views::filter ([] (const auto& opt) { return opt.has_value (); })
@@ -75,7 +75,7 @@ namespace Azoth
 	Util::ContextTask<void> HistorySyncer::RequestAccountFrom (IAccount *acc, const std::optional<QDateTime>& from)
 	{
 		qDebug () << acc->GetAccountID () << from;
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 
 		const auto ihsh = qobject_cast<IHaveServerHistory*> (acc->GetQObject ());
 		const auto history = co_await ihsh->FetchServerHistory (from);

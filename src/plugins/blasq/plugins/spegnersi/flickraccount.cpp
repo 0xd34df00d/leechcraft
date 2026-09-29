@@ -232,7 +232,7 @@ namespace Spegnersi
 
 	Util::ContextTask<> FlickrAccount::UpdateCollectionsPage (std::optional<int> page)
 	{
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 
 		if (!co_await AuthGate { *AuthMgr_ })
 		{

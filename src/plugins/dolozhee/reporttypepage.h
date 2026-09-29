@@ -10,6 +10,7 @@
 
 #include <QWizardPage>
 #include <interfaces/core/icoreproxy.h>
+#include <util/threads/coro/corocontext.h>
 #include "ui_reporttypepage.h"
 
 namespace LC
@@ -48,6 +49,8 @@ namespace Dolozhee
 		Priority GetPriority () const;
 	private:
 		void ParseCategories (const QByteArray&);
+
+		LC_CORO_CONTEXT
 	};
 }
 }

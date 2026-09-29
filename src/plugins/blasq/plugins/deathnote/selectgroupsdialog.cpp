@@ -64,7 +64,7 @@ namespace DeathNote
 
 	Util::ContextTask<> SelectGroupsDialog::RequestFriendsGroups ()
 	{
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 
 		const auto& challengeResponse = co_await Util::LJ::RequestChallenge ({
 				.NAM_ = *GetProxyHolder ()->GetNetworkAccessManager (),

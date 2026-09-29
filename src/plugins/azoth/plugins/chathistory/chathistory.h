@@ -19,6 +19,7 @@
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/ihistoryplugin.h>
+#include <util/threads/coro/corocontext.h>
 
 namespace LC::Azoth
 {
@@ -113,5 +114,7 @@ namespace LC::Azoth::ChatHistory
 		void gotLastMessages (QObject*, const QList<QObject*>&) override;
 
 		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace) override;
+
+		LC_CORO_CONTEXT
 	};
 }

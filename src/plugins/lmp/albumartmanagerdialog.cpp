@@ -137,7 +137,7 @@ namespace LC::LMP
 
 	Util::ContextTask<void> AlbumArtManagerDialog::AddImage (AlbumArtInfo<QImage> info)
 	{
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 
 		const auto iconSize = Ui_.ArtView_->iconSize ();
 		const auto scaled = co_await QtConcurrent::run ([image = info.AlbumArt_, iconSize]
@@ -167,7 +167,7 @@ namespace LC::LMP
 		Ui_.QueryProgress_->setVisible (true);
 		const auto guard = Util::MakeScopeGuard ([this] { Ui_.QueryProgress_->setVisible (false); });
 
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 
 		const auto channel = GetAlbumArtImages (GetProxyHolder (), artist, album);
 		while (auto image = co_await *channel)

@@ -69,7 +69,7 @@ namespace LC::Liznoo
 
 	Util::ContextTask<void> PlatformObjects::Init ()
 	{
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 #ifdef Q_OS_LINUX
 		const auto [upowerEvents, ckEvents, logindEvents] = co_await Util::InParallel (Events::UPower::Create (),
 				Events::ConsoleKit::Create (),
@@ -127,7 +127,7 @@ namespace LC::Liznoo
 		if (!PowerActPlatform_)
 			co_return { Util::AsLeft, ChangeStateFailed { Unavailable } };
 
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 
 		co_await co_await PowerActPlatform_->CanChangeState (state);
 		co_await co_await PowerActPlatform_->ChangeState (state);

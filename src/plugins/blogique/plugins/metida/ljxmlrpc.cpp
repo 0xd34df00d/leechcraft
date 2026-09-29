@@ -365,7 +365,7 @@ namespace Metida
 
 	Util::ContextTask<> LJXmlRPC::GenerateChallenge ()
 	{
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 
 		const auto result = co_await Util::LJ::RequestChallenge ({
 					.NAM_ = *GetProxyHolder ()->GetNetworkAccessManager (),

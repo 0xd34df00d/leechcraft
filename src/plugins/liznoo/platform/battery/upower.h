@@ -10,6 +10,7 @@
 
 #include <util/dbus/async.h>
 #include <util/threads/coro/taskfwd.h>
+#include <util/threads/coro/corocontext.h>
 #include "platform.h"
 
 namespace LC::Liznoo::Battery
@@ -27,5 +28,7 @@ namespace LC::Liznoo::Battery
 		Util::ContextTask<void> EnumerateDevices ();
 	private slots:
 		void handlePropertiesChanged (const QDBusMessage&);
+
+		LC_CORO_CONTEXT
 	};
 }

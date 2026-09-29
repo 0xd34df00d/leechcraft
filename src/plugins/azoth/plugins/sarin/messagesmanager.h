@@ -13,6 +13,7 @@
 #include <QPointer>
 #include <QHash>
 #include <util/threads/coro/taskfwd.h>
+#include <util/threads/coro/corocontext.h>
 #include "types.h"
 
 namespace LC::Azoth::Sarin
@@ -34,5 +35,7 @@ namespace LC::Azoth::Sarin
 		Util::ContextTask<void> HandleInMessage (qint32, QString);
 
 		void SetThread (const std::shared_ptr<ToxRunner>&);
+
+		LC_CORO_CONTEXT
 	};
 }

@@ -195,7 +195,7 @@ namespace LC::Azoth::Sarin
 
 	Util::ContextTask<void> ConfEntry::RunLeave ()
 	{
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 
 		const auto runner = Mgr_.GetAccount ().GetTox ();
 		if (!runner)

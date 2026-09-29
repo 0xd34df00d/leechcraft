@@ -10,6 +10,7 @@
 
 #include <QObject>
 #include <util/sll/either.h>
+#include <util/threads/coro/corocontext.h>
 #include "chatfindbox.h"
 #include "storage2.h"
 #include "types.h"
@@ -41,5 +42,7 @@ namespace LC::Azoth::ChatHistory
 		void Reset ();
 	signals:
 		void wrappedAround ();
+
+		LC_CORO_CONTEXT
 	};
 }

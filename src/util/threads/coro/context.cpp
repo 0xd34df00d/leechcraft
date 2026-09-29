@@ -10,29 +10,12 @@
 
 namespace LC::Util
 {
-	namespace
-	{
-		auto MakeDeadObjectMessage (const detail::DeadObjectInfo& info)
-		{
-			const std::string prefix = "coroutine's context object " + info.ClassName_;
-			if (info.ObjectName_.isEmpty ())
-				return prefix + " died";
-			else
-				return prefix + " (" + info.ObjectName_.toStdString () + ") died";
-		}
-	}
-
-	ContextDeadException::ContextDeadException (const detail::DeadObjectInfo& info)
-	: std::runtime_error { MakeDeadObjectMessage (info) }
-	{
-	}
-
 	namespace detail
 	{
-		void CheckDeadObjects (const QVector<DeadObjectInfo>& deadObjects)
+		void CheckDeadContexts (const ContextExtensionBase& promise)
 		{
-			if (!deadObjects.isEmpty ())
-				throw ContextDeadException { deadObjects.front () };
+			if (promise.HasDeadContexts ())
+				throw ContextDeadException { promise.DeadContexts_.join (';') };
 		}
 	}
 }

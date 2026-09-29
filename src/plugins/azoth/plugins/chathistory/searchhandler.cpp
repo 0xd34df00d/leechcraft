@@ -19,7 +19,7 @@ namespace LC::Azoth::ChatHistory
 
 	Util::ContextTask<SearchHandler::SearchResult> SearchHandler::HandleSearch (Entry entry, QString text, ChatFindBox::FindFlags flags)
 	{
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 
 		if (PreviousSearchText_ != text)
 		{

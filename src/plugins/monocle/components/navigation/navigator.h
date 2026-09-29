@@ -11,6 +11,7 @@
 #include <optional>
 #include <QObject>
 #include <util/sll/bitflags.h>
+#include <util/threads/coro/corocontext.h>
 #include "interfaces/monocle/idocument.h"
 #include "components/services/linkexecutioncontext.h"
 
@@ -68,6 +69,8 @@ namespace LC::Monocle
 		void loaded (const IDocument_ptr& doc, const QString& path);
 
 		void positionRequested (const NavigationAction&);
+
+		LC_CORO_CONTEXT
 	};
 
 	DECLARE_BIT_FLAGS (Navigator::DocumentOpenOption)

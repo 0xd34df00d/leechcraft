@@ -149,8 +149,8 @@ namespace LC::Azoth::ChatHistory
 		const auto accId = account->GetAccountID ();
 		const auto entryHRId = entry.GetHumanReadableID ();
 
-		co_await Util::AddContextObject { *this };
-		co_await Util::AddContextObject { *entry.GetQObject () };
+		co_await Util::AddContext { CoroContext_ };
+		co_await Util::AddContext { Util::CoroContext::Of (*entry.GetQObject ()) };
 		const auto messages = co_await StorageThread_->Run (&Storage2::GetLastMessages, accId, entryHRId, count);
 
 		const auto mucEntry = qobject_cast<IMUCEntry*> (entry.GetQObject ());

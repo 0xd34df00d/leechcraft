@@ -137,7 +137,7 @@ namespace LC::LMP
 	{
 		using namespace std::chrono_literals;
 
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 		co_await 0ms;		// effectively QTimer::singleShot to allow consumers connecting to the signals emitted here
 
 		int skipped = 0;
@@ -161,14 +161,14 @@ namespace LC::LMP
 
 	Util::ContextTask<void> Transcoder::DrainTranscodeQueue ()
 	{
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 		while (const auto maybeNextFile = co_await ToTranscode_)
 			co_await TranscodeFile (*maybeNextFile);
 	}
 
 	Util::ContextTask<void> Transcoder::TranscodeFile (const QString& origPath)
 	{
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 
 		const auto& transcodedPath = BuildTranscodedPath (origPath, Params_);
 

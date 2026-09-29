@@ -11,6 +11,7 @@
 #include <QObject>
 #include <QIcon>
 #include <util/models/itemsmodel.h>
+#include <util/threads/coro/corocontext.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/lmp/ilmpplugin.h>
@@ -73,5 +74,7 @@ namespace LC::LMP::MTPSync
 		Util::ContextTask<UploadResult> Upload (UploadJob) override;
 	private:
 		void AddDevices (const QList<MtpDeviceInfo>&);
+
+		LC_CORO_CONTEXT
 	};
 }

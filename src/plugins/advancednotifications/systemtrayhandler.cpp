@@ -148,7 +148,7 @@ namespace LC::AdvancedNotifications
 
 	Util::ContextTask<void> SystemTrayHandler::FetchLazyPixmap (EventKey key, QFuture<QImage> pxFuture)
 	{
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 
 		const auto& px = co_await pxFuture;
 

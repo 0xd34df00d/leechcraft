@@ -47,7 +47,7 @@ namespace LC::LMP::MTPSync
 
 		[] (auto *mtp, Plugin *plugin) -> Util::ContextTask<void>
 		{
-			co_await Util::AddContextObject { *plugin };
+			co_await Util::AddContext { plugin->CoroContext_ };
 			plugin->AddDevices (co_await mtp->Run (&Mtp::GetCurrentDevices));
 		} (&*Mtp_, this);
 

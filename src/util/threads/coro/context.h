@@ -9,31 +9,12 @@
 #pragma once
 
 #include <coroutine>
-#include <stdexcept>
-#include <vector>
-#include <QMetaObject>
-#include <QObject>
-#include <QVector>
-#include <util/sll/raiisignalconnection.h>
+#include <utility>
 #include "../threadsconfig.h"
+#include "corocontext.h"
 
 namespace LC::Util
 {
-	namespace detail
-	{
-		struct DeadObjectInfo
-		{
-			std::string ClassName_;
-			QString ObjectName_;
-		};
-	}
-
-	class UTIL_THREADS_API ContextDeadException : public std::runtime_error
-	{
-	public:
-		explicit ContextDeadException (const detail::DeadObjectInfo& info);
-	};
-
 	namespace detail
 	{
 		template<typename T>
@@ -57,7 +38,7 @@ namespace LC::Util
 			}
 		}
 
-		UTIL_THREADS_API void CheckDeadObjects (const QVector<DeadObjectInfo>&);
+		UTIL_THREADS_API void CheckDeadContexts (const ContextExtensionBase&);
 
 		template<typename Promise, typename OrigAwaiter>
 		struct AwaitableWrapper
@@ -67,28 +48,40 @@ namespace LC::Util
 
 			bool await_ready ()
 			{
-				return Orig_.await_ready ();
+				// If the coro is near death due to a context death, awaiting it is futile at best and UB at worst
+				// (for instance, if the thing being awaited is guarded by the `CoroContext` who killed the coro).
+				return Promise_.HasDeadContexts () || Orig_.await_ready ();
 			}
 
 			decltype (auto) await_suspend (auto handle)
 			{
-				return Orig_.await_suspend (handle);
+				Promise_.Suspended_ = true;
+				try
+				{
+					return Orig_.await_suspend (handle);
+				}
+				catch (...)
+				{
+					Promise_.Suspended_ = false;
+					throw;
+				}
 			}
 
 			decltype (auto) await_resume ()
 			{
-				CheckDeadObjects (Promise_.DeadObjects_);
+				Promise_.Suspended_ = false;
+				CheckDeadContexts (Promise_);
 				return Orig_.await_resume ();
 			}
 		};
 	}
 
-	struct [[nodiscard]] AddContextObject
+	struct [[nodiscard]] AddContext
 	{
-		const QObject& Context_;
+		CoroContext& Ctx_;
 
-		explicit AddContextObject (const QObject& context)
-		: Context_ { context }
+		explicit AddContext (CoroContext& ctx)
+		: Ctx_ { ctx }
 		{
 		}
 
@@ -101,32 +94,36 @@ namespace LC::Util
 			requires requires { typename Promise::HasContextExtension; }
 		bool await_suspend (std::coroutine_handle<Promise> handle)
 		{
-			auto conn = QObject::connect (&Context_,
-					&QObject::destroyed,
-					[handle] (QObject *object)
-					{
-						auto className = object->metaObject ()->className ();
-						handle.promise ().DeadObjects_.push_back ({ className, object->objectName () });
-						handle.resume ();
-					});
-			handle.promise ().ContextConnections_.emplace_back (conn);
+			// children should die first (as they are registered last)
+			Ctx_.Coros_.push_front ({ handle, &handle.promise () });
+			const auto it = Ctx_.Coros_.begin ();
+			handle.promise ().Contexts_.push_back ({ &Ctx_, it });
 			return false;
 		}
 
-		void await_resume ()
+		void await_resume () const noexcept
 		{
 		}
 	};
 
-	template<typename>
-	struct ContextExtension
+	struct UTIL_THREADS_API ContextExtensionBase
 	{
-		using HasContextExtension = void;
+		CoroContext::Registrations Contexts_;
+		QStringList DeadContexts_;
+		bool Suspended_ = false;
 
-		std::vector<RaiiSignalConnection> ContextConnections_;
-		QVector<detail::DeadObjectInfo> DeadObjects_;
+		~ContextExtensionBase ()
+		{
+			for (auto [ctx, thisPos] : Contexts_)
+				ctx->Coros_.erase (thisPos);
+		}
 
-		AddContextObject await_transform (AddContextObject awaitable) const
+		bool HasDeadContexts () const
+		{
+			return !DeadContexts_.isEmpty ();
+		}
+
+		AddContext await_transform (AddContext awaitable) const
 		{
 			return awaitable;
 		}
@@ -135,7 +132,13 @@ namespace LC::Util
 		auto await_transform (T&& awaitable)
 		{
 			using OrigAwaiter = decltype (detail::Awaiter (std::forward<T> (awaitable)));
-			return detail::AwaitableWrapper<ContextExtension, OrigAwaiter> { *this, detail::Awaiter (std::forward<T> (awaitable)) };
+			return detail::AwaitableWrapper<ContextExtensionBase, OrigAwaiter> { *this, detail::Awaiter (std::forward<T> (awaitable)) };
 		}
+	};
+
+	template<typename>
+	struct ContextExtension : ContextExtensionBase
+	{
+		using HasContextExtension = void;
 	};
 }

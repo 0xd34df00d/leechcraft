@@ -110,7 +110,7 @@ namespace Dolozhee
 		Util::ContextTask<UploadResult> UploadPending (QList<FileInfo> pendingFiles,
 				ReportWizard *wiz, std::invocable<QString> auto progressReporter)
 		{
-			co_await Util::AddContextObject { *wiz };
+			co_await Util::AddContext { Util::CoroContext::Of (*wiz) };
 
 			QList<UploadFileResult_t> uploadResults;
 			uploadResults.reserve (pendingFiles.size ());
@@ -185,7 +185,7 @@ namespace Dolozhee
 
 	Util::ContextTask<void> FinalPage::RunUploading ()
 	{
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 
 		auto wiz = static_cast<ReportWizard*> (wizard ());
 

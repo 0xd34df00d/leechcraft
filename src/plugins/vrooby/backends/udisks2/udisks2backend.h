@@ -14,6 +14,7 @@
 #include <interfaces/devices/deviceroles.h>
 #include <util/models/itemsmodel.h>
 #include <util/threads/coro/taskfwd.h>
+#include <util/threads/coro/corocontext.h>
 #include "dbus/manager.h"
 
 class QDBusObjectPath;
@@ -91,6 +92,8 @@ namespace LC::Vrooby::UDisks2
 		void toggleMount (const QString&) override;
 	private slots:
 		void handleDeviceChanged (const QDBusMessage&);
+
+		LC_CORO_CONTEXT
 	};
 
 	static_assert (DevBackendType<Backend>);

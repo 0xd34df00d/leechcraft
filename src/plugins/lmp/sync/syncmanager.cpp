@@ -21,7 +21,7 @@ namespace LC::LMP
 {
 	Util::ContextTask<void> SyncManager::RunUpload (QStringList files, TranscodingParams params, Context context)
 	{
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 
 		Transcoder transcoder { files, params };
 		connect (&transcoder,
@@ -36,7 +36,7 @@ namespace LC::LMP
 	{
 		using namespace SyncEvents;
 
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 		const auto& transcoded = (co_await result.Transcoded_).TargetPath_;
 
 		const CopyData copyData { { { result.OrigPath_ } }, transcoded };

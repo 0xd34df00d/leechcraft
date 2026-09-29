@@ -10,6 +10,7 @@
 
 #include <QWidget>
 #include <util/models/itemsmodel.h>
+#include <util/threads/coro/corocontext.h>
 #include <interfaces/ihavetabs.h>
 #include "chatfindbox.h"
 #include "types.h"
@@ -116,5 +117,7 @@ namespace LC::Azoth::ChatHistory
 		void ClearHistory ();
 	signals:
 		void removeTab () override;
+
+		LC_CORO_CONTEXT
 	};
 }

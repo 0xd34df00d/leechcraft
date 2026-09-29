@@ -24,7 +24,7 @@ namespace LC::Liznoo::Battery
 
 	Util::ContextTask<void> UPower::EnumerateDevices ()
 	{
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 		const auto& eitherPaths = co_await UPower_.Call<QList<QDBusObjectPath>> ("EnumerateDevices"_qs);
 		const auto& paths = co_await Util::WithHandler (eitherPaths,
 				[] (const QDBusError& err) { qWarning () << "unable to enumerate devices:" << err; });
@@ -59,7 +59,7 @@ namespace LC::Liznoo::Battery
 
 	Util::ContextTask<void> UPower::RequeryDevice (QString id)
 	{
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 		const Util::DBus::Endpoint device
 		{
 			.Service = "org.freedesktop.UPower"_qs,

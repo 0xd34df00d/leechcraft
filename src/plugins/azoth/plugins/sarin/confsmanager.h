@@ -11,6 +11,7 @@
 #include <QHash>
 #include <QObject>
 #include <util/threads/coro/taskfwd.h>
+#include <util/threads/coro/corocontext.h>
 #include "types.h"
 
 namespace LC::Azoth::Sarin
@@ -36,5 +37,7 @@ namespace LC::Azoth::Sarin
 	private:
 		void HandleInvited (const ConfInvitationEvent&);
 		void HandleToxThreadChanged (const std::shared_ptr<ToxRunner>&);
+
+		LC_CORO_CONTEXT
 	};
 }

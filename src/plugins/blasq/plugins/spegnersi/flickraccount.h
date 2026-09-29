@@ -9,6 +9,7 @@
 #pragma once
 
 #include <util/threads/coro/taskfwd.h>
+#include <util/threads/coro/corocontext.h>
 #include <interfaces/blasq/iaccount.h>
 #include <interfaces/core/icoreproxy.h>
 
@@ -61,6 +62,8 @@ namespace Spegnersi
 		void accountChanged (FlickrAccount*);
 
 		void doneUpdating ();
+
+		LC_CORO_CONTEXT
 	};
 }
 }

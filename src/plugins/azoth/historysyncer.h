@@ -11,6 +11,7 @@
 #include <QObject>
 #include <QSet>
 #include <util/threads/coro/taskfwd.h>
+#include <util/threads/coro/corocontext.h>
 #include "interfaces/azoth/ihaveserverhistory.h"
 
 class QDateTime;
@@ -39,6 +40,8 @@ namespace Azoth
 		Util::ContextTask<void> RequestAccountFrom (IAccount*, const std::optional<QDateTime>&);
 
 		void AppendItems (const QList<History::SomeEntryWithMessages>&);
+
+		LC_CORO_CONTEXT
 	};
 }
 }

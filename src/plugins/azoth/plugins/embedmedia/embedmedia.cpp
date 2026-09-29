@@ -111,7 +111,7 @@ namespace LC::Azoth::EmbedMedia
 
 		[] (QUrl url, QWidget *chatTab) -> Util::ContextTask<>
 		{
-			co_await Util::AddContextObject { *chatTab };
+			co_await Util::AddContext { Util::CoroContext::Of (*chatTab) };
 
 			const auto reply = GetProxyHolder ()->GetNetworkAccessManager ()->get (QNetworkRequest { url });
 

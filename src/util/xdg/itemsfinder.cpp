@@ -222,7 +222,7 @@ namespace LC::Util::XDG
 
 		[this] () -> ContextTask<void>
 		{
-			co_await AddContextObject { *this };
+			co_await AddContext { CoroContext_ };
 			const auto& cat2id2item = co_await QtConcurrent::run (FindAndParse, Types_);
 			const auto& result = co_await QtConcurrent::run (Merge, Items_, cat2id2item);
 

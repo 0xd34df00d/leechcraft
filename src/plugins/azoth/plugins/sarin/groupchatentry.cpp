@@ -190,7 +190,7 @@ namespace LC::Azoth::Sarin
 
 	Util::ContextTask<void> GroupChatEntry::RunLeave (QString msg, int retry)
 	{
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 
 		const auto tox = Mgr_.GetAccount ().GetTox ();
 		if (!tox)
@@ -239,7 +239,7 @@ namespace LC::Azoth::Sarin
 
 	Util::ContextTask<void> GroupChatEntry::RunSetNick (QString nick, int retry)
 	{
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 
 		const auto tox = Mgr_.GetAccount ().GetTox ();
 		if (!tox)

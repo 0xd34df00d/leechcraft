@@ -12,6 +12,7 @@
 #include <QObject>
 #include <util/threads/coro/taskfwd.h>
 #include <util/threads/coro/throttle.h>
+#include <util/threads/coro/corocontext.h>
 #include "common.h"
 #include "dbupdatethread.h"
 
@@ -59,5 +60,7 @@ namespace LC::Aggregator
 
 		Util::ContextTask<void> UpdateFeedsAsync (ids_t, SQLStorageBackend_ptr);
 		Util::ContextTask<void> UpdateFeedAsync (IDType_t, Util::ProgressModelRow&, SQLStorageBackend_ptr);
+
+		LC_CORO_CONTEXT
 	};
 }

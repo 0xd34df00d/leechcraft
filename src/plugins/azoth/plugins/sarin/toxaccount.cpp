@@ -252,7 +252,7 @@ namespace LC::Azoth::Sarin
 
 	Util::ContextTask<void> ToxAccount::RunRequestAuth (Pubkey toxId, QString msg)
 	{
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 
 		auto tox = Tox_;
 		if (!tox)
@@ -300,7 +300,7 @@ namespace LC::Azoth::Sarin
 
 	Util::ContextTask<void> ToxAccount::RunRemoveEntry (ToxContact *entry)
 	{
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 		if (!Tox_)
 			co_return;
 
@@ -369,7 +369,7 @@ namespace LC::Azoth::Sarin
 
 	Util::ContextTask<void> ToxAccount::SetTypingState (Pubkey pkey, bool isTyping)
 	{
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 		if (!Tox_)
 			co_return;
 
@@ -393,7 +393,7 @@ namespace LC::Azoth::Sarin
 
 	Util::ContextTask<void> ToxAccount::InitThread (EntryStatus status)
 	{
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 
 		Tox_ = std::make_shared<ToxRunner> (ToxW::InitContext { Nick_, ToxState_, ToxConfig_ });
 		ConnectSignalsPreRun ();
@@ -533,7 +533,7 @@ namespace LC::Azoth::Sarin
 
 	Util::ContextTask<void> ToxAccount::HandleToxIdRequested ()
 	{
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 		if (!Tox_)
 			co_return;
 
@@ -541,7 +541,7 @@ namespace LC::Azoth::Sarin
 		dialog->show ();
 		dialog->setAttribute (Qt::WA_DeleteOnClose);
 
-		co_await Util::AddContextObject { *dialog };
+		co_await Util::AddContext { Util::CoroContext::Of (*dialog) };
 
 		const auto& toxId = co_await Tox_->Run (&ToxW::GetToxId);
 		dialog->setToxId (QString::fromLatin1 (toxId));

@@ -11,6 +11,7 @@
 #include <QObject>
 #include <QHash>
 #include <interfaces/azoth/imucentry.h>
+#include <util/threads/coro/corocontext.h>
 #include "clientconnection.h"
 #include "roomparticipantentry.h"
 
@@ -110,6 +111,8 @@ namespace Xoox
 		void SendLeave (const QString& reason);
 		void RemoveParticipants ();
 		void RemoveThis ();
+
+		LC_CORO_CONTEXT
 	};
 }
 }

@@ -179,7 +179,7 @@ namespace LC::Aggregator
 		if (feeds.isEmpty ())
 			co_return;
 
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 
 		const auto& iconName = feeds.size () == 1 ? "view-refresh"_qs : "mail-receive"_qs;
 		const auto row = ProgressManager_.AddRow ({
@@ -210,7 +210,7 @@ namespace LC::Aggregator
 	{
 		const auto bumpRow = Util::MakeScopeGuard ([&row] { ++row; });
 
-		co_await Util::AddContextObject { *this };
+		co_await Util::AddContext { CoroContext_ };
 		co_await UpdateThrottle_;
 
 		const auto& url = sb->GetFeed (feedId).URL_;

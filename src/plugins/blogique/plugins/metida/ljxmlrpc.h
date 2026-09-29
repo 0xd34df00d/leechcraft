@@ -15,6 +15,7 @@
 #include <QDomElement>
 #include <QNetworkReply>
 #include <util/threads/coro/taskfwd.h>
+#include <util/threads/coro/corocontext.h>
 #include <interfaces/core/icoreproxyfwd.h>
 #include "profiletypes.h"
 #include "ljaccount.h"
@@ -188,6 +189,8 @@ namespace Metida
 		void commentSent (const QUrl& url);
 		
 		void gotTags (const QHash<QString, int>& tags);
+
+		LC_CORO_CONTEXT
 	};
 }
 }

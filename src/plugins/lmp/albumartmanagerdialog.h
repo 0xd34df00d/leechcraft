@@ -14,6 +14,7 @@
 #include <util/threads/coro/taskfwd.h>
 #include <interfaces/lmp/collectiontypes.h>
 #include <util/lmp/util.h>
+#include <util/threads/coro/corocontext.h>
 #include "ui_albumartmanagerdialog.h"
 
 class QStandardItemModel;
@@ -51,5 +52,7 @@ namespace LC::LMP
 		void BrowseImage ();
 		Util::ContextTask<void> AddImage (AlbumArtInfo<QImage>);
 		Util::ContextTask<void> Request ();
+
+		LC_CORO_CONTEXT
 	};
 }

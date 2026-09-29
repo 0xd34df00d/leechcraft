@@ -10,6 +10,7 @@
 
 #include <QWizardPage>
 #include <util/threads/coro/taskfwd.h>
+#include <util/threads/coro/corocontext.h>
 #include <interfaces/core/icoreproxy.h>
 #include "ui_finalpage.h"
 #include "structures.h"
@@ -35,6 +36,8 @@ namespace Dolozhee
 		Util::ContextTask<void> RunUploading ();
 	private slots:
 		void on_Status__linkActivated (const QString&);
+
+		LC_CORO_CONTEXT
 	};
 }
 }

@@ -12,6 +12,7 @@
 #include <QObject>
 #include <QHash>
 #include <interfaces/core/icoreproxy.h>
+#include <util/threads/coro/corocontext.h>
 #include "xdgconfig.h"
 
 namespace LC::Util::XDG
@@ -103,5 +104,7 @@ namespace LC::Util::XDG
 		/** @brief Notifies when the list of items changes in any way.
 		 */
 		void itemsListChanged ();
+
+		LC_CORO_CONTEXT
 	};
 }

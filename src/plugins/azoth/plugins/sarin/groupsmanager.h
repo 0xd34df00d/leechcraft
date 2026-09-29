@@ -12,6 +12,7 @@
 #include <QObject>
 #include <util/threads/coro/taskfwd.h>
 #include <util/sll/void.h>
+#include <util/threads/coro/corocontext.h>
 #include "types.h"
 
 namespace LC::Azoth::Sarin
@@ -38,5 +39,7 @@ namespace LC::Azoth::Sarin
 		void HandleLeft (uint32_t groupNum);
 	private:
 		void HandleToxThreadChanged (const std::shared_ptr<ToxRunner>&);
+
+		LC_CORO_CONTEXT
 	};
 }

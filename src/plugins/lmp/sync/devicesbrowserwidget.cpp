@@ -303,7 +303,7 @@ namespace LC::LMP
 		paths.sort ();
 		[&, this] -> Util::ContextTask<void>
 		{
-			co_await Util::AddContextObject { *this };
+			co_await Util::AddContext { CoroContext_ };
 
 			const auto count = paths.size ();
 

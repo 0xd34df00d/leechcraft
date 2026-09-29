@@ -154,7 +154,7 @@ namespace LC::LMP::BrainSlugz
 
 			[] (QPersistentModelIndex index, QStandardItemModel *model, QString artist, QString release) -> Util::ContextTask<void>
 			{
-				co_await Util::AddContextObject { *model };
+				co_await Util::AddContext { Util::CoroContext::Of (*model) };
 				const auto urlsChan = GetAlbumArtUrls (GetProxyHolder (), artist, release);
 				if (const auto url = co_await *urlsChan;
 					url && index.isValid ())

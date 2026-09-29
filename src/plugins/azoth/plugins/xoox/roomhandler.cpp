@@ -84,7 +84,7 @@ namespace Xoox
 	{
 		[] (RoomHandler *pthis, QString server) -> Util::ContextTask<void>
 		{
-			co_await Util::AddContextObject { *pthis };
+			co_await Util::AddContext { pthis->CoroContext_ };
 			const auto discoMgr = pthis->Account_->GetClientConnection ()->GetQXmppDiscoveryManager ();
 			const auto eitherReply = Util::EitherFromSwapped (co_await discoMgr->info (server));
 			const auto discoInfo = co_await Util::WithHandler (eitherReply,
