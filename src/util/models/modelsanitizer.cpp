@@ -12,13 +12,14 @@
 #include <optional>
 #include <QAbstractItemModelTester>
 #include <QByteArray>
-#include <QtDebug>
 #endif
+#include <QtDebug>
 
 namespace LC::Util
 {
 	void InstallModelSanitizer ([[maybe_unused]] QAbstractItemModel& model)
 	{
+#ifdef WITH_MODEL_SANITIZER
 		static const auto mode = [] -> std::optional<QAbstractItemModelTester::FailureReportingMode>
 		{
 			const auto& str = qgetenv ("LC_MODEL_SANITIZER_MODE");
@@ -35,11 +36,11 @@ namespace LC::Util
 			return {};
 		} ();
 
-#ifdef WITH_MODEL_SANITIZER
 		if (mode)
 			new QAbstractItemModelTester { &model, *mode, &model };
 #else
-		if (mode)
+		static const auto requested = !qEnvironmentVariableIsEmpty ("LC_MODEL_SANITIZER_MODE");
+		if (requested)
 			qWarning () << "model sanitizer is not supported";
 #endif
 	}
