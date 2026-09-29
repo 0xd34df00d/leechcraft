@@ -129,7 +129,8 @@ public:
 	 * RowInfo via JobHolderRole::RowInfo, and process rows should
 	 * also provide JobHolderProcessRole values (Done, Total, State,
 	 * StateCustomText). Inside of LeechCraft the model would be
-	 * merged with other models from other plugins.
+	 * merged with the models of other handlers, both of this and of
+	 * other plugins.
 	 *
 	 * This model is also used to retrieve controls and additional info
 	 * for a given index via the CustomDataRoles::RoleControls and
@@ -225,16 +226,17 @@ using IJobHolderRepresentationHandler_ptr = std::unique_ptr<IJobHolderRepresenta
  * to implement this interface to display itself in plugins like
  * Summary.
  *
- * The model with jobs and state info is obtained via GetRepresentation(),
- * and various roles are used to retrieve controls and information pane
- * of the plugin from that model, as well as some metadata like job
- * progress (see JobHolderRole and JobHolderProcessRole enumerations,
- * and RowInfo for an example).
+ * The models with jobs and state info, as well as the controls and the
+ * information panes for them, are provided by the handlers created via
+ * CreateRepresentationHandlers(). The rows of the models carry some
+ * metadata like job progress via the JobHolderRole and
+ * JobHolderProcessRole enumerations (see RowInfo for an example).
  *
- * Controls and additional information pane are only visible when a job
- * handled by the plugin is selected.
+ * Controls and additional information pane of a handler are only
+ * visible when a job of that handler is selected.
  *
- * @sa IDownloader
+ * @sa IJobHolderRepresentationHandler
+ * @sa IDownload
  * @sa CustomDataRoles
  * @sa JobHolderRole
  * @sa JobHolderProcessRole
@@ -245,7 +247,7 @@ class Q_DECL_EXPORT IJobHolder
 protected:
 	virtual ~IJobHolder () = default;
 public:
-	/** @brief The callbacks into the view showing the handler's representation.
+	/** @brief The callbacks into the view showing the handlers' representations.
 	 */
 	struct ViewCallbacks
 	{
@@ -257,14 +259,43 @@ public:
 		 *
 		 * The resulting selection is reported via the handler's hooks from
 		 * a clean stack, never before this returns. Shall not be called
-		 * from within CreateRepresentationHandler(): the view is not set
+		 * from within CreateRepresentationHandlers(): the view is not set
 		 * up yet by then.
 		 */
 		std::function<void (IJobHolderRepresentationHandler::RowSelection)> SetSelection_;
 	};
 
+	/** @brief Creates the handlers representing the jobs of this plugin.
+	 *
+	 * Each handler is presented as if it came from a separate plugin:
+	 * its model is merged with the others in the returned order, and its
+	 * controls, info widget, context menu and selection hooks are the
+	 * ones used while a row of its model is current or selected. Thus a
+	 * plugin whose jobs come in kinds needing different controls, like
+	 * unread channels and running feed updates, returns a handler per
+	 * kind.
+	 *
+	 * The models of the returned handlers shall be distinct, as the views
+	 * merge them by identity. A model may still be shared with the
+	 * handlers returned to other views: this function is invoked once per
+	 * view showing the jobs, and each view keeps the handlers it got for
+	 * as long as it exists.
+	 *
+	 * @param[in] callbacks The callbacks into the view the handlers are
+	 * created for.
+	 * @return The handlers, possibly none.
+	 *
+	 * @sa MakeHandlers()
+	 * @sa IJobHolderRepresentationHandler
+	 */
 	virtual std::vector<IJobHolderRepresentationHandler_ptr> CreateRepresentationHandlers (const ViewCallbacks& callbacks) = 0;
 protected:
+	/** @brief Wraps the given handlers into the list to be returned from
+	 * CreateRepresentationHandlers().
+	 *
+	 * A braced list can't do that: std::initializer_list only ever yields
+	 * const elements, while the handlers are move-only.
+	 */
 	template<std::derived_from<IJobHolderRepresentationHandler>... Handlers>
 	static std::vector<IJobHolderRepresentationHandler_ptr> MakeHandlers (std::unique_ptr<Handlers>... handlers)
 	{
