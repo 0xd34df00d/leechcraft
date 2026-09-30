@@ -52,7 +52,8 @@ namespace LC::BitTorrent
 	{
 		qint64 result = 0;
 		const auto& pieces = StatusKeeper_.GetStatus (Handle_, th::query_pieces).pieces;
-		for (int i = ReadPos_; pieces [i]; ++i)
+		const auto piecesCount = std::min (NumPieces_, static_cast<int> (pieces.size ()));
+		for (int i = ReadPos_; i < piecesCount && pieces [i]; ++i)
 			result += TI_.piece_size (i);
 		result -= Offset_;
 		if (result < 0)
@@ -81,10 +82,11 @@ namespace LC::BitTorrent
 
 	bool LiveStreamDevice::seek (qint64 pos)
 	{
-		QIODevice::seek (pos);
+		if (pos < 0 || pos > size () || !QIODevice::seek (pos))
+			return false;
 
 		int i = 0;
-		while (pos >= TI_.piece_size (i))
+		while (i < NumPieces_ && pos >= TI_.piece_size (i))
 			pos -= TI_.piece_size (i++);
 		ReadPos_ = i;
 		Offset_ = pos;
@@ -108,10 +110,13 @@ namespace LC::BitTorrent
 
 	void LiveStreamDevice::CheckReady ()
 	{
-		if (IsReady_)
+		if (IsReady_ || !NumPieces_)
 			return;
 
 		const auto& pieces = StatusKeeper_.GetStatus (Handle_, th::query_pieces).pieces;
+		if (pieces.size () < NumPieces_)
+			return;
+
 		if (pieces [0] &&
 				pieces [NumPieces_ - 1])
 		{
@@ -125,6 +130,9 @@ namespace LC::BitTorrent
 
 	qint64 LiveStreamDevice::readData (char *data, qint64 max)
 	{
+		if (max <= 0 || ReadPos_ >= NumPieces_)
+			return 0;
+
 		if (!File_.open (QIODevice::ReadOnly))
 		{
 			qWarning () << Q_FUNC_INFO
@@ -133,14 +141,21 @@ namespace LC::BitTorrent
 				<< File_.errorString ();
 			return -1;
 		}
-		qint64 ba = bytesAvailable ();
-		File_.seek (pos ());
+		const qint64 ba = bytesAvailable ();
+		if (!File_.seek (pos ()))
+		{
+			File_.close ();
+			return -1;
+		}
 		const qint64 result = File_.read (data, std::min (max, ba));
 		File_.close ();
+		if (result <= 0)
+			return result;
 
-		Offset_ += result;
-		while (Offset_ >= TI_.piece_size (ReadPos_))
-			Offset_ -= TI_.piece_size (ReadPos_++);
+		qint64 offset = Offset_ + result;
+		while (ReadPos_ < NumPieces_ && offset >= TI_.piece_size (ReadPos_))
+			offset -= TI_.piece_size (ReadPos_++);
+		Offset_ = static_cast<int> (offset);
 
 		return result;
 	}
@@ -154,8 +169,9 @@ namespace LC::BitTorrent
 	{
 		bool hasMoreData = false;
 		const auto& pieces = StatusKeeper_.GetStatus (Handle_, th::query_pieces).pieces;
+		const auto piecesCount = std::min (NumPieces_, static_cast<int> (pieces.size ()));
 		for (int i = ReadPos_ + 1;
-				i < NumPieces_ && pieces [i];
+				i < piecesCount && pieces [i];
 				++i, hasMoreData = true);
 
 		if (hasMoreData)
@@ -179,6 +195,9 @@ namespace LC::BitTorrent
 	{
 		const auto& status = StatusKeeper_.GetStatus (Handle_, th::query_pieces);
 		const auto& pieces = status.pieces;
+		if (!NumPieces_ || pieces.size () < NumPieces_)
+			return;
+
 		int speed = status.download_payload_rate;
 		int size = TI_.piece_length ();
 		const int time = speed ?
