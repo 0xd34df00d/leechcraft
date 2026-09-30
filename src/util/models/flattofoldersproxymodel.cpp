@@ -158,6 +158,9 @@ namespace LC::Util
 
 	int FlatToFoldersProxyModel::rowCount (const QModelIndex& index) const
 	{
+		if (index.column () > 0)
+			return 0;
+
 		return ToFlatOrRoot (index).C_.size ();
 	}
 
