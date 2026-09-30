@@ -34,7 +34,8 @@ namespace LC::Util
 	{
 		for (const auto [_, base, _] : Coros_)
 			if (base->State_ == detail::PromiseBase::CoroState::Running)
-				qFatal () << "destroying the context" << Name_ << "while its child coro is running";
+				qFatal () << "destroying the context" << Name_ << "while its child coro is running; "
+						<< "defer the destruction with `QObject::deleteLater()` or a timer";
 
 		while (!Coros_.empty ())
 		{
