@@ -106,13 +106,11 @@ set (RESOURCES
 	$<$<PLATFORM_ID:Windows>:../../../tools/win32/leechcraft.rc>
 	)
 
-CreateTrs (COMPILED_TRANSLATIONS)
-
 add_executable (leechcraft-core WIN32
-	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${RESOURCES}
 	)
+CreateTrs (leechcraft-core)
 if (NOT APPLE)
 	set_target_properties (leechcraft-core PROPERTIES
 		OUTPUT_NAME leechcraft${LC_LIBSUFFIX}

@@ -30,19 +30,21 @@ macro (FindQtLibs Target)
 endmacro ()
 
 # Plugin definition helpers
-function (CreateTrs CompiledTranVar)
+function (CreateTrs Target)
 	file (GLOB TS_SOURCES "*.ts")
-	if (TS_SOURCES)
-		list (TRANSFORM TS_SOURCES REPLACE "(.*)\\.ts" "\\1.qm" OUTPUT_VARIABLE QM_RESULTS)
-		add_custom_command (OUTPUT ${QM_RESULTS}
-			COMMAND Qt${LC_QT_VERSION}::lrelease ${TS_SOURCES}
-			DEPENDS ${TS_SOURCES}
-			)
-		install (FILES ${QM_RESULTS} DESTINATION ${LC_TRANSLATIONS_DEST})
-	else ()
-		set (QM_RESULTS)
+	if (NOT TS_SOURCES)
+		return ()
 	endif ()
-	set (${CompiledTranVar} ${QM_RESULTS} PARENT_SCOPE)
+
+	qt_add_lrelease (
+		TS_FILES ${TS_SOURCES}
+		LRELEASE_TARGET ${Target}_lrelease
+		QM_FILES_OUTPUT_VARIABLE QM_RESULTS
+		OPTIONS -silent
+		)
+	add_dependencies (${Target} ${Target}_lrelease)
+
+	install (FILES ${QM_RESULTS} DESTINATION ${LC_TRANSLATIONS_DEST})
 endfunction ()
 
 function (add_util_library name)
@@ -79,19 +81,18 @@ function (LC_DEFINE_PLUGIN)
 		${LEECHCRAFT_INCLUDE_DIR}
 	)
 
-	CreateTrs (QM_RESULTS)
-
 	set (FULL_NAME leechcraft_${PROJECT_NAME})
 	string (TOUPPER ${PROJECT_NAME} PROJECT_NAME_UPPER)
 	string (REPLACE "_" "-" PROJECT_NAME_DASHES ${PROJECT_NAME})
 
 	add_library (${FULL_NAME} SHARED
-		${QM_RESULTS}
 		${P_SRCS}
 		${P_RESOURCES}
 		)
 	set_target_properties (${FULL_NAME} PROPERTIES AUTOUIC TRUE AUTORCC TRUE)
 	target_link_libraries (${FULL_NAME} ${LEECHCRAFT_LIBRARIES} ${P_LINK_LIBRARIES})
+
+	CreateTrs (${FULL_NAME})
 
 	if (P_PLUGIN_VISIBLE_NAME)
 		target_compile_definitions (${FULL_NAME} PRIVATE PLUGIN_VISIBLE_NAME="${P_PLUGIN_VISIBLE_NAME}"_qs)
