@@ -11,6 +11,7 @@
 #include <coroutine>
 #include <utility>
 #include "../threadsconfig.h"
+#include "task.h"
 #include "corocontext.h"
 
 namespace LC::Util
@@ -55,21 +56,21 @@ namespace LC::Util
 
 			decltype (auto) await_suspend (auto handle)
 			{
-				Promise_.Suspended_ = true;
+				Promise_.State_ = PromiseBase::CoroState::Suspended;
 				try
 				{
 					return Orig_.await_suspend (handle);
 				}
 				catch (...)
 				{
-					Promise_.Suspended_ = false;
+					Promise_.State_ = PromiseBase::CoroState::Running;
 					throw;
 				}
 			}
 
 			decltype (auto) await_resume ()
 			{
-				Promise_.Suspended_ = false;
+				Promise_.State_ = PromiseBase::CoroState::Running;
 				CheckDeadContexts (Promise_);
 				return Orig_.await_resume ();
 			}
@@ -95,7 +96,7 @@ namespace LC::Util
 		bool await_suspend (std::coroutine_handle<Promise> handle)
 		{
 			// children should die first (as they are registered last)
-			Ctx_.Coros_.push_front ({ handle, &handle.promise () });
+			Ctx_.Coros_.push_front ({ handle, &handle.promise (), &handle.promise () });
 			const auto it = Ctx_.Coros_.begin ();
 			handle.promise ().Contexts_.push_back ({ &Ctx_, it });
 			return false;
@@ -110,7 +111,6 @@ namespace LC::Util
 	{
 		CoroContext::Registrations Contexts_;
 		QStringList DeadContexts_;
-		bool Suspended_ = false;
 
 		~ContextExtensionBase ()
 		{
@@ -123,16 +123,16 @@ namespace LC::Util
 			return !DeadContexts_.isEmpty ();
 		}
 
-		AddContext await_transform (AddContext awaitable) const
+		AddContext await_transform (AddContext awaitable)
 		{
 			return awaitable;
 		}
 
-		template<typename T>
-		auto await_transform (T&& awaitable)
+		template<typename Self, typename T>
+		auto await_transform (this Self&& self, T&& awaitable)
 		{
 			using OrigAwaiter = decltype (detail::Awaiter (std::forward<T> (awaitable)));
-			return detail::AwaitableWrapper<ContextExtensionBase, OrigAwaiter> { *this, detail::Awaiter (std::forward<T> (awaitable)) };
+			return detail::AwaitableWrapper<std::decay_t<Self>, OrigAwaiter> { self, detail::Awaiter (std::forward<T> (awaitable)) };
 		}
 	};
 

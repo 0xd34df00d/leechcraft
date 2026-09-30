@@ -27,6 +27,11 @@ namespace LC::Util
 
 	struct ContextExtensionBase;
 
+	namespace detail
+	{
+		struct PromiseBase;
+	}
+
 	class UTIL_THREADS_API CoroContext
 	{
 		friend struct AddContext;
@@ -36,6 +41,7 @@ namespace LC::Util
 		struct Coro
 		{
 			std::coroutine_handle<> Handle_;
+			detail::PromiseBase *Base_;
 			ContextExtensionBase *Promise_;
 		};
 		using Coros = std::list<Coro>;

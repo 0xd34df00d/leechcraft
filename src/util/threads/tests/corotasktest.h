@@ -67,11 +67,12 @@ namespace LC::Util
 		void testContextDestrDoesntWaitNetwork ();
 		void testContextDestrDoesntWaitProcess ();
 		void testContextDestrDoesntWaitFuture ();
+		void testContextDestrDoesntWaitPlainTask ();
 		void testContextDestrParentOutlivesChild ();
 		void testContextDestrDoesntResumeFinishedSibling ();
-		void testContextDestrFromRunningCoro ();
-		void testContextDestrFromRunningCoroNoAwait ();
-		void testContextDestrFromRunningCoroDoesntTouchAwaitable ();
+		void testContextDestrSwallowedDoesntTouchNextAwaitable ();
+		void testContextDestrFromRunningCoroAborts_data ();
+		void testContextDestrFromRunningCoroAborts ();
 		void testContextOfIsPerObject ();
 		void testContextOfDiesWithObject ();
 		void testContextOfRejectsForeignThread ();

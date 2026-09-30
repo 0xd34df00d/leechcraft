@@ -11,6 +11,7 @@
 #include <QThread>
 #include <QtDebug>
 #include "context.h"
+#include "task.h"
 
 namespace LC::Util
 {
@@ -31,15 +32,19 @@ namespace LC::Util
 
 	CoroContext::~CoroContext ()
 	{
+		for (const auto [_, base, _] : Coros_)
+			if (base->State_ == detail::PromiseBase::CoroState::Running)
+				qFatal () << "destroying the context" << Name_ << "while its child coro is running";
+
 		while (!Coros_.empty ())
 		{
-			const auto [handle, promise] = Coros_.front ();
+			const auto [handle, base, promise] = Coros_.front ();
 			Coros_.pop_front ();
 
 			std::erase_if (promise->Contexts_, [this] (const Registration& reg) { return reg.Ctx_ == this; });
 			promise->DeadContexts_ << Name_;
 
-			if (promise->Suspended_ && !handle.done ())
+			if (!handle.done ())
 				handle.resume ();
 		}
 	}

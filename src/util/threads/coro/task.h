@@ -24,6 +24,14 @@ namespace LC::Util
 		{
 			std::atomic<size_t> Refs_ = 1;
 			std::exception_ptr Exception_ {};
+
+			enum class CoroState : std::uint8_t
+			{
+				Unset,
+				Suspended,
+				Running,
+			};
+			CoroState State_ = CoroState::Unset;
 		};
 
 		template<typename R>
@@ -171,7 +179,11 @@ namespace LC::Util
 
 			std::suspend_never initial_suspend () const noexcept { return {}; }
 
-			auto final_suspend () noexcept { return detail::FinalSuspender<promise_type> { *this }; }
+			auto final_suspend () noexcept
+			{
+				this->State_ = detail::PromiseBase::CoroState::Unset;
+				return detail::FinalSuspender<promise_type> { *this };
+			}
 
 			void unhandled_exception ()
 			{

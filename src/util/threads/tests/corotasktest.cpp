@@ -9,10 +9,13 @@
 #include "corotasktest.h"
 #include <algorithm>
 #include <csignal>
+#include <functional>
 #include <stdexcept>
 #include <string>
+#include <thread>
 #include <variant>
 #include <QProcess>
+#include <QProcessEnvironment>
 #include <QRegularExpression>
 #include <QtConcurrentRun>
 #include <QtTest>
@@ -32,6 +35,9 @@
 #include <util/sll/debugprinters.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/util.h>
+
+using Scenario = std::function<void ()>;
+Q_DECLARE_METATYPE (Scenario)
 
 QTEST_GUILESS_MAIN (LC::Util::CoroTaskTest)
 
@@ -1072,6 +1078,16 @@ namespace LC::Util
 				}));
 	}
 
+	void CoroTaskTest::testContextDestrDoesntWaitPlainTask ()
+	{
+		// a plain Task child is parked, not running: the parent is cancelled now and the child detached
+		WithDestroyTimer (WithContext ([] (CoroContext *context) -> ContextTask<void>
+				{
+					co_await AddContext { *context };
+					co_await [] () -> Task<void> { co_await LongDelay; } ();
+				}));
+	}
+
 	void CoroTaskTest::testContextDestrParentOutlivesChild ()
 	{
 		QStringList destrLog;
@@ -1113,38 +1129,6 @@ namespace LC::Util
 		QCOMPARE (log, (QStringList { "fast"_qs, "parent"_qs, "slow"_qs }));
 	}
 
-	void CoroTaskTest::testContextDestrFromRunningCoro ()
-	{
-		auto context = std::make_unique<CoroContext> ();
-		int after = 0;
-		auto task = [] (std::unique_ptr<CoroContext>& context, int& after) -> ContextTask<void>
-		{
-			co_await AddContext { *context };
-			co_await ShortDelay;
-			context.reset ();
-			++after;
-			co_await ShortDelay;
-			++after;
-		} (context, after);
-
-		QVERIFY_THROWS_EXCEPTION (ContextDeadException, GetTaskResult (task));
-		QCOMPARE (after, 1);
-	}
-
-	void CoroTaskTest::testContextDestrFromRunningCoroNoAwait ()
-	{
-		auto context = std::make_unique<CoroContext> ();
-		auto task = [] (std::unique_ptr<CoroContext>& context) -> ContextTask<int>
-		{
-			co_await AddContext { *context };
-			co_await ShortDelay;
-			context.reset ();
-			co_return 42;
-		} (context);
-
-		QCOMPARE (GetTaskResult (task), 42);
-	}
-
 	namespace
 	{
 		struct TouchRecordingAwaiter
@@ -1162,20 +1146,125 @@ namespace LC::Util
 		};
 	}
 
-	void CoroTaskTest::testContextDestrFromRunningCoroDoesntTouchAwaitable ()
+	void CoroTaskTest::testContextDestrSwallowedDoesntTouchNextAwaitable ()
 	{
-		auto context = std::make_unique<CoroContext> ();
+		// any generic handler swallows the cancellation by accident (a retry loop, say); the coro must still die at its very
+		// next co_await, and before touching the awaitable: the drain runs while the owner's other members are alive, so
+		// parking in `UpdateThrottle_`'s queue here would leak the frame and leave a dangling reference in its awaiter
 		bool touched = false;
-		auto task = [] (std::unique_ptr<CoroContext>& context, bool& touched) -> ContextTask<void>
+		auto task = WithContext ([] (CoroContext *context, bool& touched) -> ContextTask<void>
+				{
+					co_await AddContext { *context };
+					try
+					{
+						co_await LongDelay;
+					}
+					catch (const std::exception&)
+					{
+					}
+					co_await TouchRecordingAwaiter { touched };	// the retry delay
+				}, touched);
+		WithDestroyTimer (task);
+		QVERIFY (!touched);
+	}
+
+	namespace
+	{
+		using Context_ptr = std::unique_ptr<CoroContext>;
+
+		ContextTask<void> DestroyingChild (Context_ptr& context)
 		{
 			co_await AddContext { *context };
 			co_await ShortDelay;
 			context.reset ();
-			co_await TouchRecordingAwaiter { touched };
-		} (context, touched);
+		}
 
-		QVERIFY_THROWS_EXCEPTION (ContextDeadException, GetTaskResult (task));
-		QVERIFY (!touched);
+		ContextTask<void> ImmediateDestroyingChild (Context_ptr& context)
+		{
+			co_await AddContext { *context };
+			context.reset ();	// the frame has never suspended at this point
+		}
+
+		ContextTask<void> SleepingChild (Context_ptr& context)
+		{
+			co_await AddContext { *context };
+			co_await LongDelay;
+		}
+
+		Task<void> PlainMiddle (Context_ptr& context)
+		{
+			co_await DestroyingChild (context);
+		}
+
+		auto ParallelChildren (Context_ptr& context)
+		{
+			return InParallel ({ DestroyingChild (context), SleepingChild (context) });
+		}
+
+		ContextTask<void> Parent (Context_ptr& context, auto mkChild)
+		{
+			co_await AddContext { *context };
+			co_await mkChild (context);
+		}
+
+		// runs the coro to completion, whichever way it ends
+		void RunCoro (auto mkTask)
+		{
+			auto context = std::make_unique<CoroContext> ("doomed"_qs);
+			GetTaskResult (mkTask (context));
+		}
+
+		void RunUnderParent (auto mkChild)
+		{
+			RunCoro ([&] (Context_ptr& context) { return Parent (context, mkChild); });
+		}
+
+		constexpr auto DeathChildEnvVar = "LC_COROTASKTEST_DEATH_CHILD";
+
+		// gtest's "threadsafe" death test: the scenario runs in a fresh copy of this test binary invoked
+		// for just the current test function (and data row), which is expected to die with the given message
+		void ExpectFatal (const QString& message, auto scenario)
+		{
+			if (qEnvironmentVariableIsSet (DeathChildEnvVar))
+			{
+				scenario ();
+				QFAIL ("the scenario was expected to abort");
+			}
+
+			auto testName = QString::fromLatin1 (QTest::currentTestFunction ());
+			if (const auto tag = QTest::currentDataTag ())
+				testName += ':' + QString::fromLatin1 (tag);
+
+			auto env = QProcessEnvironment::systemEnvironment ();
+			env.insert (DeathChildEnvVar, "1"_qs);
+
+			QProcess child;
+			child.setProcessEnvironment (env);
+			child.setProcessChannelMode (QProcess::MergedChannels);
+			child.start (QCoreApplication::applicationFilePath (), { "-nocrashhandler"_qs, testName });
+			QVERIFY (child.waitForFinished ());
+
+			const auto output = QString::fromUtf8 (child.readAll ());
+			QVERIFY2 (child.exitStatus () == QProcess::CrashExit, qPrintable (output));
+			QVERIFY2 (output.contains (message), qPrintable (output));
+		}
+	}
+
+	void CoroTaskTest::testContextDestrFromRunningCoroAborts_data ()
+	{
+		QTest::addColumn<Scenario> ("scenario");
+
+		QTest::newRow ("self") << Scenario { [] { RunCoro (&DestroyingChild); } };
+		QTest::newRow ("child") << Scenario { [] { RunUnderParent (&DestroyingChild); } };
+		QTest::newRow ("child via plain task") << Scenario { [] { RunUnderParent (&PlainMiddle); } };
+		QTest::newRow ("child before first await") << Scenario { [] { RunUnderParent (&ImmediateDestroyingChild); } };
+		QTest::newRow ("child in InParallel") << Scenario { [] { RunUnderParent (&ParallelChildren); } };
+	}
+
+	void CoroTaskTest::testContextDestrFromRunningCoroAborts ()
+	{
+		QFETCH (const Scenario, scenario);
+		ExpectFatal ("destroying the context \"doomed\" while its child coro is running"_qs, scenario);
 	}
 
 	void CoroTaskTest::testContextOfIsPerObject ()
@@ -1201,18 +1290,19 @@ namespace LC::Util
 	void CoroTaskTest::testContextOfRejectsForeignThread ()
 	{
 		QObject object;
-		const auto thrown = QtConcurrent::run ([&object]
+		bool thrown = false;
+		// a real thread: QtConcurrent::run () + result () may steal the runnable and run it right here
+		std::thread { [&]
 				{
 					try
 					{
 						CoroContext::Of (object);
-						return false;
 					}
 					catch (const std::runtime_error&)
 					{
-						return true;
+						thrown = true;
 					}
-				}).result ();
+				} }.join ();
 		QVERIFY (thrown);
 		QVERIFY (&CoroContext::Of (object) == &CoroContext::Of (object));
 	}
