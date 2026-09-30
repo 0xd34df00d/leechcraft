@@ -113,6 +113,9 @@ namespace LC::Util
 
 	Qt::ItemFlags FlatToFoldersProxyModel::flags (const QModelIndex& index) const
 	{
+		if (!index.isValid ())
+			return Qt::ItemIsDropEnabled;
+
 		if (const auto fti = ToFlat (index);
 			fti && fti->Type_ == FlatTreeItem::Type::Item)
 			return fti->Index_.flags ();
