@@ -70,6 +70,9 @@ namespace LC::Util
 
 	QVariant FlatToFoldersProxyModel::data (const QModelIndex& index, int role) const
 	{
+		if (!index.isValid ())
+			return {};
+
 		const auto fti = ToFlat (index);
 
 		if (fti->Type_ == FlatTreeItem::Type::Item)
