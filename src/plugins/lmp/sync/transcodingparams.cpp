@@ -9,6 +9,7 @@
 #include "transcodingparams.h"
 #include <QDataStream>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 
 namespace LC
 {
@@ -16,14 +17,14 @@ namespace LMP
 {
 	QDataStream& operator<< (QDataStream& out, const TranscodingParams& params)
 	{
-		auto fmtStr = "unknown";
+		auto fmtStr = "unknown"_qba;
 		switch (params.BitrateType_)
 		{
 		case Format::BitrateType::CBR:
-			fmtStr = "cbr";
+			fmtStr = "cbr"_qba;
 			break;
 		case Format::BitrateType::VBR:
-			fmtStr = "vbr";
+			fmtStr = "vbr"_qba;
 			break;
 		}
 		out << static_cast<quint8> (3)
@@ -45,15 +46,15 @@ namespace LMP
 			return in;
 		}
 
-		QString fmtStr;
+		QByteArray fmtStr;
 		in >> params.FormatID_
 				>> fmtStr
 				>> params.Quality_
 				>> params.NumThreads_
 				>> params.OnlyLossless_;
-		if (fmtStr == "cbr")
+		if (fmtStr == "cbr"_qba)
 			params.BitrateType_ = Format::BitrateType::CBR;
-		else if (fmtStr == "vbr")
+		else if (fmtStr == "vbr"_qba)
 			params.BitrateType_ = Format::BitrateType::VBR;
 		return in;
 	}
