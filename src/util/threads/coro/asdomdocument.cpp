@@ -8,6 +8,7 @@
 
 #include "asdomdocument.h"
 #include <QtDebug>
+#include <util/sll/debugprinters.h>
 #include <util/sll/logging.h>
 
 namespace LC::Util
@@ -15,8 +16,9 @@ namespace LC::Util
 	AsDomDocument::AsDomDocument (const QByteArray& data, const QString& errorMessage, const std::source_location& loc)
 	: ErrorMessage_ { errorMessage }
 	{
-		if (!Doc_.setContent (data))
-			LogAt (loc).warning () << "failed to parse" << data;
+		if (const auto result = Doc_.setContent (data);
+			!result)
+			LogAt (loc).warning () << "failed to parse" << result << data;
 	}
 
 	bool AsDomDocument::await_ready () const
