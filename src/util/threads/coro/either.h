@@ -11,6 +11,7 @@
 #include <source_location>
 #include <QtDebug>
 #include <util/sll/either.h>
+#include <util/sll/logging.h>
 #include <util/sll/void.h>
 #include "task.h"
 
@@ -96,7 +97,7 @@ namespace LC::Util
 		if (t)
 			return t;
 
-		QMessageLogger { loc.file_name (), static_cast<int> (loc.line ()), loc.function_name () }.warning () << msg;
+		LogAt (loc).warning () << msg;
 		return { AsLeft, Void {} };
 	}
 
@@ -109,8 +110,7 @@ namespace LC::Util
 
 		std::apply ([&]<typename... AMsgs> (AMsgs&&... amsgs)
 		{
-			const QMessageLogger log { loc.file_name (), static_cast<int> (loc.line ()), loc.function_name () };
-			(log.warning () << ... << std::forward<AMsgs> (amsgs));
+			(LogAt (loc).warning () << ... << std::forward<AMsgs> (amsgs));
 		}, msgsTuple);
 		return { AsLeft, Void {} };
 	}

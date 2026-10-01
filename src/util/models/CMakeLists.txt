@@ -15,6 +15,7 @@ add_util_library (util-models
 		modelitem.cpp
 		modelsanitizer.cpp
 		selectionproxymodel.cpp
+	DEPENDS leechcraft-util-sll
 	USES Widgets ${MODEL_SANITIZER_QT_COMPONENT}
 	DEFINES $<$<BOOL:${WITH_MODEL_SANITIZER}>:WITH_MODEL_SANITIZER>
 	)

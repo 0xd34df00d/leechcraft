@@ -18,6 +18,7 @@ add_util_library (util-sll
 		trackingpointer.cpp
 		qobjectrefcast.cpp
 		demangle.cpp
+		logging.cpp
 	USES Concurrent Xml
 	)
 

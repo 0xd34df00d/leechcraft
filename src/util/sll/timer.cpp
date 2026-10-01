@@ -8,6 +8,7 @@
 
 #include "timer.h"
 #include <QtDebug>
+#include "logging.h"
 
 namespace LC::Util
 {
@@ -41,8 +42,7 @@ namespace LC::Util
 			suffix = "us";
 		}
 
-		const QMessageLogger logger { loc.file_name (), static_cast<int> (loc.line ()), loc.function_name () };
-		logger.debug () << context << "took" << diff << suffix;
+		LogAt (loc).debug () << context << "took" << diff << suffix;
 		Timer_.restart ();
 	}
 }

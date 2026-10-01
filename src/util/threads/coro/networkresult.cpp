@@ -8,6 +8,7 @@
 
 #include "networkresult.h"
 #include <util/sll/either.h>
+#include <util/sll/logging.h>
 #include <util/sll/visitor.h>
 
 namespace LC::Util
@@ -61,7 +62,7 @@ namespace LC::Util
 				[] (const NetworkReplySuccess& success) { return Result_t { success.Data_ }; },
 				[&loc] (const NetworkReplyError& error)
 				{
-					QMessageLogger { loc.file_name (), static_cast<int> (loc.line ()), loc.function_name () }.warning () << error;
+					LogAt (loc).warning () << error;
 					return Result_t { error.ErrorText_ };
 				});
 	}

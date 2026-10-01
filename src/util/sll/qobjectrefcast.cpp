@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "qobjectrefcast.h"
+#include "logging.h"
 #include "demangle.h"
 
 namespace LC::Util::detail
@@ -14,8 +15,7 @@ namespace LC::Util::detail
 	[[noreturn, gnu::cold, gnu::noinline]]
 	void NotifyCastError (const QObject *object, const char *target, const std::source_location& loc)
 	{
-		const QMessageLogger logger { loc.file_name (), static_cast<int> (loc.line ()), loc.function_name () };
-		logger.critical ("unable to cast %s to %s",
+		LogAt (loc).critical ("unable to cast %s to %s",
 				object ? object->metaObject ()->className () : "nullptr",
 				Demangle (target).toLatin1 ().constData ());
 

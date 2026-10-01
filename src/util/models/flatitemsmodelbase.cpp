@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "flatitemsmodelbase.h"
+#include <util/sll/logging.h>
 
 namespace LC::Util
 {
@@ -72,7 +73,6 @@ namespace LC::Util
 	[[noreturn, gnu::cold, gnu::noinline]]
 	void FlatItemsModelBase::NotifyRowOutOfRange (const FlatItemsModelBase& model, int row, int count, const std::source_location& loc)
 	{
-		const QMessageLogger logger { loc.file_name (), static_cast<int> (loc.line ()), loc.function_name () };
-		logger.fatal ("row %d is out of range for %d items of %s", row, count, model.metaObject ()->className ());
+		LogAt (loc).fatal ("row %d is out of range for %d items of %s", row, count, model.metaObject ()->className ());
 	}
 }
