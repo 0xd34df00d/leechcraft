@@ -27,7 +27,7 @@ namespace LC::Util
 		constexpr auto repCount = 100;
 		constexpr auto sleepLength = 1ms;
 
-		Channel<int> ch { this };
+		Channel<int> ch;
 
 		std::vector<std::thread> threads;
 		std::atomic_int expected;
@@ -109,13 +109,13 @@ namespace LC::Util
 				sum.fetch_add (GetTaskResult (reader));
 			});
 
-		for (auto& thread : producers)
-			thread.join ();
+		for (auto& producer : producers)
+			producer.join ();
 
 		ch.Close ();
 
-		for (auto& thread : consumers)
-			thread.join ();
+		for (auto& consumer : consumers)
+			consumer.join ();
 
 		QCOMPARE (sum, expected);
 	}

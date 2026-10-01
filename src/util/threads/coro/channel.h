@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <atomic>
 #include <coroutine>
 #include <deque>
 #include <mutex>
@@ -24,6 +23,8 @@ namespace LC::Util
 	{
 		struct ReceiveAwaiter
 		{
+			QObject Ctx_;
+
 			Channel& Ch_;
 			std::optional<T> Slot_;
 			std::coroutine_handle<> Handle_;
@@ -41,6 +42,10 @@ namespace LC::Util
 					std::lock_guard guard { Ch_.Lock_ };
 					std::erase (Ch_.Awaiters_, this);
 				}
+
+				// channel consumer died while scheduled but without consuming the slot
+				if (Slot_)
+					Ch_.SendImpl (std::move (*Slot_), SendClosedBehavior::Ignore);
 			}
 
 			bool await_ready () const noexcept
@@ -69,15 +74,13 @@ namespace LC::Util
 
 			std::optional<T> await_resume () noexcept
 			{
-				return std::move (Slot_);
+				return std::exchange (Slot_, std::nullopt);
 			}
 		};
 
 		mutable std::mutex Lock_;
 		std::deque<T> Elems_;
 		std::deque<ReceiveAwaiter*> Awaiters_;
-
-		std::function<void (std::coroutine_handle<>)> RunHandle_ { [] (std::coroutine_handle<> handle) { handle (); } };
 
 		bool Closed_ = false;
 	public:
@@ -90,54 +93,22 @@ namespace LC::Util
 		Channel& operator= (const Channel&) = delete;
 		Channel& operator= (Channel&&) = delete;
 
-		explicit Channel (QObject *context)
-		: RunHandle_ { [context] (auto handle) { QMetaObject::invokeMethod (context, handle); } }
-		{
-		}
-
 		void Close ()
 		{
-			std::deque<ReceiveAwaiter*> awaiters;
-
 			{
 				std::lock_guard guard { Lock_ };
-				if (Closed_)
+				if (std::exchange (Closed_, true))
 					return;
-
-				Closed_ = true;
-				awaiters = std::exchange (Awaiters_, {});
-				for (auto awaiter : awaiters)
-					awaiter->Registered_ = false;
 			}
 
-			for (auto awaiter : awaiters)
-				RunHandle_ (awaiter->Handle_);
+			while (const auto next = PopNextAwaiter ())
+				Invoke (*next);
 		}
 
 		template<typename U = T>
 		void Send (U&& value)
 		{
-			ReceiveAwaiter *next = nullptr;
-			{
-				std::lock_guard guard { Lock_ };
-				if (Closed_)
-					throw std::runtime_error { "sending into a closed channel" };
-
-				if (!Awaiters_.empty ())
-				{
-					next = Awaiters_.front ();
-					Awaiters_.pop_front ();
-					next->Registered_ = false;
-				}
-				else
-					Elems_.emplace_back (std::forward<U> (value));
-			}
-
-			if (next)
-			{
-				next->Slot_.emplace (std::forward<U> (value));
-				RunHandle_ (next->Handle_);
-			}
+			SendImpl (std::forward<U> (value), SendClosedBehavior::Throw);
 		}
 
 		bool IsEmpty () const
@@ -154,6 +125,53 @@ namespace LC::Util
 		auto operator co_await ()
 		{
 			return Receive ();
+		}
+	private:
+		enum class SendClosedBehavior : std::uint8_t { Ignore, Throw };
+
+		template<typename U = T>
+		void SendImpl (U&& value, SendClosedBehavior closedBehavior)
+		{
+			const auto next = [&]
+			{
+				std::lock_guard guard { Lock_ };
+				if (Closed_ && closedBehavior == SendClosedBehavior::Throw)
+					throw std::runtime_error { "sending into a closed channel" };
+
+				const auto awaiter = PopNextAwaiterUnlocked ();
+				if (!awaiter)
+					Elems_.emplace_back (std::forward<U> (value));
+				return awaiter;
+			} ();
+
+			if (next)
+			{
+				next->Slot_.emplace (std::forward<U> (value));
+				Invoke (*next);
+			}
+		}
+
+		ReceiveAwaiter* PopNextAwaiter ()
+		{
+			std::lock_guard guard { Lock_ };
+			return PopNextAwaiterUnlocked ();
+		}
+
+		ReceiveAwaiter* PopNextAwaiterUnlocked ()
+		{
+			if (Awaiters_.empty ())
+				return nullptr;
+			auto next = Awaiters_.front ();
+			Awaiters_.pop_front ();
+			next->Registered_ = false;
+			return next;
+		}
+
+		void Invoke (ReceiveAwaiter& awaiter)
+		{
+			QMetaObject::invokeMethod (&awaiter.Ctx_,
+					[&awaiter] { awaiter.Handle_ (); },
+					Qt::QueuedConnection);
 		}
 	};
 }
