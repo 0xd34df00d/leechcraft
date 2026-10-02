@@ -13,12 +13,7 @@
 #include <QBuffer>
 #include <QFile>
 #include <QtConcurrentRun>
-#if QT_VERSION_MAJOR < 6
-#include "qt5compat.h"
-#include <poppler-qt5.h>
-#else
 #include <poppler-qt6.h>
-#endif
 #include <poppler-form.h>
 #include <poppler-version.h>
 #include <util/sll/prelude.h>
@@ -214,10 +209,6 @@ namespace LC::Monocle::PDF
 			result.push_back (std::move (box));
 		}
 
-#if QT_VERSION_MAJOR < 6
-		qDeleteAll (popplerBoxes);
-#endif
-
 		return result;
 	}
 
@@ -248,11 +239,7 @@ namespace LC::Monocle::PDF
 
 		QList<IAnnotation_ptr> annotations;
 		for (auto&& ann : page->annotations ())
-#if QT_VERSION_MAJOR >= 6
 			if (const auto wrapper = MakeAnnotation (this, std::move (ann)))
-#else
-			if (const auto wrapper = MakeAnnotation (this, std::unique_ptr { ann }))
-#endif
 				annotations << wrapper;
 		return annotations;
 	}
