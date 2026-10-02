@@ -46,4 +46,8 @@ namespace LC::Util
 		}
 		return version;
 	}
+
+	extern template UTIL_SYS_API std::optional<quint8> EnsureVersion<quint8> (QDataStream&, quint8, quint8, std::source_location);
+	extern template UTIL_SYS_API std::optional<qint8> EnsureVersion<qint8> (QDataStream&, qint8, qint8, std::source_location);
+	extern template UTIL_SYS_API std::optional<quint16> EnsureVersion<quint16> (QDataStream&, quint16, quint16, std::source_location);
 }
