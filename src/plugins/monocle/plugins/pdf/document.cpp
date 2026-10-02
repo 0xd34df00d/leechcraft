@@ -250,14 +250,10 @@ namespace LC::Monocle::PDF
 		if (!page)
 			return {};
 
-		// TODO remove this intermediate step after porting to Qt 6
-		QList<std::shared_ptr<Poppler::FormField>> popplerFields;
-		for (auto&& field : page->formFields ())
-			popplerFields << std::shared_ptr<Poppler::FormField> (std::move (field));
-
+		auto popplerFields = page->formFields ();
 		IFormFields_t fields;
 		fields.reserve (popplerFields.size ());
-		for (const auto& field : popplerFields)
+		for (auto&& field : popplerFields)
 		{
 			if (!field->isVisible ())
 				continue;
@@ -265,13 +261,13 @@ namespace LC::Monocle::PDF
 			switch (field->type ())
 			{
 			case Poppler::FormField::FormText:
-				fields << std::make_shared<FormFieldText> (field);
+				fields << std::make_shared<FormFieldText> (std::move (field));
 				break;
 			case Poppler::FormField::FormChoice:
-				fields << std::make_shared<FormFieldChoice> (field);
+				fields << std::make_shared<FormFieldChoice> (std::move (field));
 				break;
 			case Poppler::FormField::FormButton:
-				fields << std::make_shared<FormFieldButton> (field, this);
+				fields << std::make_shared<FormFieldButton> (std::move (field), this);
 				break;
 			default:
 				break;
