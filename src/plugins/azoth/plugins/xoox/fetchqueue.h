@@ -28,7 +28,7 @@ namespace Xoox
 		QTimer *FetchTimer_;
 		QStringList Queue_;
 		std::function<void (const QString&, bool)> FetchFunction_;
-		int PerShot_;
+		qsizetype PerShot_;
 		QSet<QString> Reports_;
 	public:
 		enum Priority

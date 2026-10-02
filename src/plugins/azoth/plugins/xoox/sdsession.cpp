@@ -303,16 +303,15 @@ namespace Xoox
 			JID2Node2Item_ [item.jid ()] [item.node ()] = items.at (0);
 		}
 
-		[=] (this auto self, int start)
+		[=] (this auto self, qsizetype start)
 		{
 			if (!ptr ||
 					start >= items.size ())
 				return;
 
-			const auto batchSize = 300;
+			constexpr auto batchSize = 300;
 
-			// TODO remove the cast after done migrating to Qt 6
-			for (int end = std::min (start + batchSize, static_cast<int> (items.size ())); start < end; ++start)
+			for (int end = std::min (start + batchSize, items.size ()); start < end; ++start)
 			{
 				const auto& item = items.at (start);
 				ptr->Account_->GetClientConnection ()->GetDiscoManagerWrapper ()->RequestInfo (item.jid (),
