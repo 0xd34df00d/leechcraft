@@ -12,9 +12,7 @@
 #include <QMetaType>
 #include "formats.h"
 
-namespace LC
-{
-namespace LMP
+namespace LC::LMP
 {
 	struct TranscodingParams
 	{
@@ -36,7 +34,6 @@ namespace LMP
 
 	QDataStream& operator<< (QDataStream&, const TranscodingParams&);
 	QDataStream& operator>> (QDataStream&, TranscodingParams&);
-}
 }
 
 Q_DECLARE_METATYPE (LC::LMP::TranscodingParams)

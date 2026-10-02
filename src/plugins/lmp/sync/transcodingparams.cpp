@@ -8,13 +8,13 @@
 
 #include "transcodingparams.h"
 #include <QDataStream>
-#include <QtDebug>
 #include <util/sll/qtutil.h>
+#include <util/sys/serialization.h>
 
-namespace LC
+namespace LC::LMP
 {
-namespace LMP
-{
+	constexpr quint8 CurVersion = 3;
+
 	QDataStream& operator<< (QDataStream& out, const TranscodingParams& params)
 	{
 		auto fmtStr = "unknown"_qba;
@@ -27,7 +27,7 @@ namespace LMP
 			fmtStr = "vbr"_qba;
 			break;
 		}
-		out << static_cast<quint8> (3)
+		out << CurVersion
 				<< params.FormatID_
 				<< fmtStr
 				<< params.Quality_
@@ -38,13 +38,8 @@ namespace LMP
 
 	QDataStream& operator>> (QDataStream& in, TranscodingParams& params)
 	{
-		quint8 version = 0;
-		in >> version;
-		if (version != 3)
-		{
-			qWarning () << "unsupported version" << version;
+		if (!Util::EnsureVersion<quint8> (in, 3, CurVersion))
 			return in;
-		}
 
 		QByteArray fmtStr;
 		in >> params.FormatID_
@@ -58,5 +53,4 @@ namespace LMP
 			params.BitrateType_ = Format::BitrateType::VBR;
 		return in;
 	}
-}
 }
