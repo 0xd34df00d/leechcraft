@@ -28,8 +28,8 @@ namespace LC::Monocle::PDF
 	protected:
 		std::shared_ptr<T> Field_;
 	public:
-		explicit FormField (const std::shared_ptr<Poppler::FormField>& field)
-		: Field_ { std::dynamic_pointer_cast<T> (field) }
+		explicit FormField (std::shared_ptr<Poppler::FormField> field)
+		: Field_ { std::dynamic_pointer_cast<T> (std::move (field)) }
 		{
 		}
 
