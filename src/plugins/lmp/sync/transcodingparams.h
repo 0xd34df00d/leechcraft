@@ -25,11 +25,11 @@ namespace LC::LMP
 		 * - wma
 		 */
 		QString FormatID_;
-		Format::BitrateType BitrateType_;
-		int Quality_;
-		int NumThreads_;
+		Format::BitrateType BitrateType_ {};
+		int Quality_ = 50;
+		int NumThreads_ = 1;
 
-		bool OnlyLossless_;
+		bool OnlyLossless_ = true;
 	};
 
 	QDataStream& operator<< (QDataStream&, const TranscodingParams&);
