@@ -26,7 +26,7 @@ namespace LC::LMP
 		 */
 		QString FormatID_;
 		Format::BitrateType BitrateType_ {};
-		int Quality_ = 50;
+		int Quality_ = 6;
 		int NumThreads_ = 1;
 
 		bool OnlyLossless_ = true;
