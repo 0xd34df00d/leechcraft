@@ -123,12 +123,13 @@ namespace LC::Util
 			return !DeadContexts_.isEmpty ();
 		}
 
-		AddContext await_transform (AddContext awaitable)
+		AddContext await_transform (AddContext awaitable) const noexcept
 		{
 			return awaitable;
 		}
 
 		template<typename Self, typename T>
+			requires (!std::same_as<std::decay_t<T>, AddContext>)
 		auto await_transform (this Self&& self, T&& awaitable)
 		{
 			using OrigAwaiter = decltype (detail::Awaiter (std::forward<T> (awaitable)));
