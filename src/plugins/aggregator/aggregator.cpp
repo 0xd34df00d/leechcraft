@@ -105,11 +105,12 @@ namespace Aggregator
 
 	void Aggregator::Release ()
 	{
-		PluginManager_.reset ();
 		AggregatorTab_.reset ();
-		ChannelsModel_.reset ();
-		DBUpThread_.reset ();
+		PluginManager_.reset ();
 		AppWideActions_.reset ();
+		ChannelsModel_.reset ();
+		UpdatesManager_.reset ();
+		DBUpThread_.reset ();
 		StorageBackendManager::Instance ().Release ();
 	}
 
