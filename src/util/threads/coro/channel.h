@@ -72,9 +72,17 @@ namespace LC::Util
 				return true;
 			}
 
-			std::optional<T> await_resume () noexcept
+			std::optional<T> await_resume ()
 			{
-				return std::exchange (Slot_, std::nullopt);
+				if (Slot_)
+					return std::exchange (Slot_, {});
+
+				std::lock_guard guard { Ch_.Lock_ };
+				if (Ch_.Elems_.empty ())
+					return {};
+				auto value = std::move (Ch_.Elems_.front ());
+				Ch_.Elems_.pop_front ();
+				return value;
 			}
 		};
 
