@@ -15,6 +15,15 @@ namespace LC::Util
 	class CoroChannelTest : public QObject
 	{
 		Q_OBJECT
+	public:
+		enum class Event
+		{
+			Sent,
+			Closed,
+			Received,
+			ReceivedEnd,
+		};
+		Q_ENUM (Event)
 	private slots:
 		void testSingleRecv ();
 		void testManyRecvs ();
@@ -23,5 +32,12 @@ namespace LC::Util
 		void testSingleThreadedTimered ();
 
 		void testMerge ();
+
+		void testSendDefersWakeup ();
+		void testCloseDefersWakeup ();
+		void testCancelledReceiverDoesntTakeValue ();
+		void testCancelledReceiverDoesntStrandValueBehindClose ();
+		void testReceiverMayDestroyProducerOnSend ();
+		void testReceiverMayDestroyProducerOnClose ();
 	};
 }
