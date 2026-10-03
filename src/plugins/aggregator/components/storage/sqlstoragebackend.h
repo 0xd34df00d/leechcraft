@@ -162,6 +162,4 @@ namespace LC::Aggregator
 		void hookItemLoad (LC::IHookProxy_ptr proxy, Item *item) const;
 		void hookItemAdded (LC::IHookProxy_ptr proxy, const Item& item) const;
 	};
-
-	using SQLStorageBackend_ptr = std::shared_ptr<SQLStorageBackend>;
 }
