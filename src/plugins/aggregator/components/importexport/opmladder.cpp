@@ -112,7 +112,8 @@ namespace LC::Aggregator::Opml
 		{
 			const auto remoteResult = co_await HandleOpmlUrl (url);
 			const auto localFile = co_await WithHandler (remoteResult, ReportError);
-			HandleOpmlFile (localFile.Path_, *updatesManager.lock ());
+			if (const auto um = updatesManager.lock ())
+				HandleOpmlFile (localFile.Path_, *um);
 		} (e.Entity_.toUrl (), std::move (updatesManager));
 	}
 }
