@@ -15,6 +15,15 @@ namespace LC::Util
 	class CoroTaskTest : public QObject
 	{
 		Q_OBJECT
+	public:
+		enum class Event
+		{
+			Parent,
+			Child,
+			FastChild,
+			SlowChild,
+		};
+		Q_ENUM (Event)
 	private slots:
 		void testReturn ();
 		void testMoveOnlyReturn ();

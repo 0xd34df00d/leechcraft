@@ -1088,45 +1088,50 @@ namespace LC::Util
 				}));
 	}
 
+	namespace
+	{
+		using Event = CoroTaskTest::Event;
+	}
+
 	void CoroTaskTest::testContextDestrParentOutlivesChild ()
 	{
-		QStringList destrLog;
-		auto task = WithContext ([] (CoroContext *context, QStringList& log) -> ContextTask<void>
+		QList<Event> destrLog;
+		auto task = WithContext ([] (CoroContext *context, QList<Event>& log) -> ContextTask<void>
 				{
 					co_await AddContext { *context };
-					const auto cleanup = MakeScopeGuard ([&log] { log << "parent"_qs; });
-					co_await [] (CoroContext *context, QStringList& log) -> ContextTask<void>
+					const auto cleanup = MakeScopeGuard ([&log] { log << Event::Parent; });
+					co_await [] (CoroContext *context, QList<Event>& log) -> ContextTask<void>
 					{
-						const auto childCleanup = MakeScopeGuard ([&log] { log << "child"_qs; });
+						const auto childCleanup = MakeScopeGuard ([&log] { log << Event::Child; });
 						co_await AddContext { *context };
 						co_await LongDelay;
 					} (context, log);
 				}, destrLog);
 		WithDestroyTimer (task);
 
-		QCOMPARE (destrLog, (QStringList { "child"_qs, "parent"_qs }));
+		QCOMPARE (destrLog, (QList { Event::Child, Event::Parent }));
 	}
 
 	void CoroTaskTest::testContextDestrDoesntResumeFinishedSibling ()
 	{
-		QStringList log;
-		auto task = WithContext ([] (CoroContext *context, QStringList& log) -> ContextTask<void>
+		QList<Event> log;
+		auto task = WithContext ([] (CoroContext *context, QList<Event>& log) -> ContextTask<void>
 				{
 					co_await AddContext { *context };
-					const auto cleanup = MakeScopeGuard ([&log] { log << "parent"_qs; });
+					const auto cleanup = MakeScopeGuard ([&log] { log << Event::Parent; });
 
-					auto child = [] (CoroContext *context, QStringList& log, std::chrono::milliseconds delay, QString name) -> ContextTask<void>
+					auto child = [] (CoroContext *context, QList<Event>& log, std::chrono::milliseconds delay, Event name) -> ContextTask<void>
 					{
 						const auto cleanup = MakeScopeGuard ([&log, name] { log << name; });
 						co_await AddContext { *context };
 						co_await delay;
 					};
-					co_await InParallel ({ child (context, log, 1ms, "fast"_qs), child (context, log, LongDelay, "slow"_qs) });
+					co_await InParallel ({ child (context, log, 1ms, Event::FastChild), child (context, log, LongDelay, Event::SlowChild) });
 				}, log);
 		WithDestroyTimer (task);
 
-		std::ranges::sort (log);
-		QCOMPARE (log, (QStringList { "fast"_qs, "parent"_qs, "slow"_qs }));
+		std::ranges::sort (log);	// threat the log as a set and ensure it contains all expected events
+		QCOMPARE (log, (QList { Event::Parent, Event::FastChild, Event::SlowChild }));
 	}
 
 	namespace
@@ -1148,9 +1153,6 @@ namespace LC::Util
 
 	void CoroTaskTest::testContextDestrSwallowedDoesntTouchNextAwaitable ()
 	{
-		// any generic handler swallows the cancellation by accident (a retry loop, say); the coro must still die at its very
-		// next co_await, and before touching the awaitable: the drain runs while the owner's other members are alive, so
-		// parking in `UpdateThrottle_`'s queue here would leak the frame and leave a dangling reference in its awaiter
 		bool touched = false;
 		auto task = WithContext ([] (CoroContext *context, bool& touched) -> ContextTask<void>
 				{
