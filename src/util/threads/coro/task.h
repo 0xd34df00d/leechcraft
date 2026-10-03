@@ -27,11 +27,11 @@ namespace LC::Util
 
 			enum class CoroState : std::uint8_t
 			{
-				Unset,
-				Suspended,
 				Running,
+				Suspended,
+				Finished,
 			};
-			CoroState State_ = CoroState::Unset;
+			CoroState State_ = CoroState::Running;
 		};
 
 		template<typename R>
@@ -181,7 +181,7 @@ namespace LC::Util
 
 			auto final_suspend () noexcept
 			{
-				this->State_ = detail::PromiseBase::CoroState::Unset;
+				this->State_ = detail::PromiseBase::CoroState::Finished;
 				return detail::FinalSuspender<promise_type> { *this };
 			}
 
