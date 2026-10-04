@@ -32,7 +32,6 @@ namespace LC::LMP
 
 			struct Failure
 			{
-				QString TargetPath_;
 				QString Reason_;
 			};
 

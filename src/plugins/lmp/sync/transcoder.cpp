@@ -10,6 +10,7 @@
 #include <functional>
 #include <optional>
 #include <QDir>
+#include <QFile>
 #include <QFileInfo>
 #include <QProcess>
 #include <QUuid>
@@ -176,6 +177,8 @@ namespace LC::LMP
 		const TranscodingData transcodingData { { origPath }, transcodedPath };
 		emit syncEvent (XcodingStarted { transcodingData });
 
+		auto removePartialOutput = Util::MakeScopeGuard ([&transcodedPath] { QFile::remove (transcodedPath); });
+
 		QProcess ffmpeg;
 #ifdef Q_OS_UNIX
 		ffmpeg.setChildProcessModifier ([] { setpriority (PRIO_PROCESS, 0, 19); });
@@ -185,6 +188,7 @@ namespace LC::LMP
 		const auto outcome = co_await ffmpeg;
 		if (outcome == Util::ProcessOutcome { Util::ProcessExited { .Code_ = 0 } })
 		{
+			removePartialOutput.Dismiss ();
 			CopyTags (origPath, transcodedPath);
 			emit syncEvent (XcodingFinished { transcodingData });
 			Results_.Send ({ origPath, Result::Success { transcodedPath } });
@@ -200,6 +204,6 @@ namespace LC::LMP
 		const auto& message = stderrText.isEmpty () ? errorText : errorText + u'\n' + stderrText;
 		qWarning () << "transcoding failed for" << origPath << outcome << stderrText;
 		emit syncEvent (XcodingFailed { transcodingData, message });
-		Results_.Send ({ origPath, { Util::AsLeft, Result::Failure { transcodedPath, message } } });
+		Results_.Send ({ origPath, { Util::AsLeft, Result::Failure { message } } });
 	}
 }
