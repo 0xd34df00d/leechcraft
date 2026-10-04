@@ -117,8 +117,11 @@ namespace LC::Util
 			return Qt::ItemIsDropEnabled;
 
 		if (const auto fti = ToFlat (index);
-			fti && fti->Type_ == FlatTreeItem::Type::Item)
-			return fti->Index_.flags ();
+			fti->Type_ == FlatTreeItem::Type::Item)
+		{
+			const auto& source = fti->Index_;
+			return source.sibling (source.row (), index.column ()).flags ();
+		}
 
 		return Qt::ItemIsSelectable |
 				Qt::ItemIsEnabled |
