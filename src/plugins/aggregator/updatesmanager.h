@@ -38,7 +38,7 @@ namespace LC::Aggregator
 		QTimer * const UpdateTimer_;
 		QTimer * const CustomUpdateTimer_;
 
-		QMap<IDType_t, QDateTime> Updates_;
+		QHash<IDType_t, QDateTime> Updates_;
 
 		Util::Throttle UpdateThrottle_;
 
@@ -56,6 +56,7 @@ namespace LC::Aggregator
 		void UpdateFeed (IDType_t);
 		void UpdateFeeds ();
 	private:
+		void RestartUpdateTimer (std::chrono::minutes);
 		void HandleCustomUpdates ();
 
 		Util::ContextTask<void> UpdateFeedsAsync (ids_t, SQLStorageBackend_ptr);
