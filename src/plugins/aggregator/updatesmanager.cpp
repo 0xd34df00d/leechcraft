@@ -53,6 +53,8 @@ namespace LC::Aggregator
 	}
 
 	using namespace std::chrono_literals;
+	using minutes = std::chrono::minutes;
+	using seconds = std::chrono::seconds;
 
 	UpdatesManager::UpdatesManager (const InitParams& initParams, QObject *parent)
 	: QObject { parent }
@@ -69,7 +71,7 @@ namespace LC::Aggregator
 				this,
 				&UpdatesManager::UpdateFeeds);
 
-		CustomUpdateTimer_->start (60 * 1000);
+		CustomUpdateTimer_->start (60s);
 		connect (CustomUpdateTimer_,
 				&QTimer::timeout,
 				this,
@@ -79,27 +81,28 @@ namespace LC::Aggregator
 
 		auto now = QDateTime::currentDateTime ();
 		auto lastUpdated = xsm.Property ("LastUpdateDateTime", now).toDateTime ();
-		if (auto interval = xsm.property ("UpdateInterval").toInt ())
+		if (const auto interval = minutes { xsm.property ("UpdateInterval").toInt () };
+			interval != minutes::zero ())
 		{
-			auto updateDiff = lastUpdated.secsTo (now);
-			if (xsm.property ("UpdateOnStartup").toBool () ||
-					updateDiff > interval * 60)
-				QTimer::singleShot (7000,
+			const seconds updateDiff { lastUpdated.secsTo (now) };
+			if (xsm.property ("UpdateOnStartup").toBool () || updateDiff > interval)
+				QTimer::singleShot (7s,
 						this,
 						&UpdatesManager::UpdateFeeds);
 			else
-				UpdateTimer_->start (updateDiff * 1000);
+				UpdateTimer_->start (updateDiff);
 		}
 
 		xsm.RegisterObject ("UpdateInterval", this,
-				[this] (int min)
+				[this] (int minRaw)
 				{
-					if (min)
+					if (const auto min = minutes { minRaw };
+						min != minutes::zero ())
 					{
 						if (UpdateTimer_->isActive ())
-							UpdateTimer_->setInterval (min * 60 * 1000);
+							UpdateTimer_->setInterval (min);
 						else
-							UpdateTimer_->start (min * 60 * 1000);
+							UpdateTimer_->start (min);
 					}
 					else
 						UpdateTimer_->stop ();
@@ -122,8 +125,9 @@ namespace LC::Aggregator
 	void UpdatesManager::UpdateFeeds ()
 	{
 		XmlSettingsManager::Instance ().setProperty ("LastUpdateDateTime", QDateTime::currentDateTime ());
-		if (int interval = XmlSettingsManager::Instance ().property ("UpdateInterval").toInt ())
-			UpdateTimer_->start (interval * 60 * 1000);
+		if (const auto interval = minutes { XmlSettingsManager::Instance ().property ("UpdateInterval").toInt () };
+			interval != minutes::zero ())
+			UpdateTimer_->start (interval);
 
 		const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 		const auto isStandardTimer = [&sb] (IDType_t id) { return !IsCustomTimer (*sb, id); };
@@ -150,7 +154,7 @@ namespace LC::Aggregator
 				continue;
 
 			if (!Updates_.contains (id) ||
-					Updates_ [id].secsTo (current) >= feedSettings->UpdateTimeout_ * 60)
+					seconds { Updates_ [id].secsTo (current) } >= minutes { feedSettings->UpdateTimeout_ })
 			{
 				feeds << id;
 				Updates_ [id] = QDateTime::currentDateTime ();
