@@ -60,9 +60,6 @@ namespace LC::Poshuku::CleanWeb
 
 	Util::StringPathTrie<PslHandler::Kind> PslHandler::ParseFile (QStringView contents)
 	{
-		static_assert (QT_VERSION >= QT_VERSION_CHECK (5, 15, 2),
-				"upgrade your Qt, since QStringView::left() is broken before Qt 5.15.2");
-
 		Util::StringPathTrie<Kind> trie;
 
 		for (auto line : Util::Tokenize { contents, '\n' })
