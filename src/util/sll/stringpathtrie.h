@@ -25,7 +25,6 @@ namespace LC::Util
 	{
 		std::optional<V> Value_;
 
-		// TODO C++20 use transparent hashes and unordered_map
 		QHash<QString, StringPathTrie> Children_;
 	public:
 		const std::optional<V>& GetValue () const
@@ -35,7 +34,7 @@ namespace LC::Util
 
 		const StringPathTrie* GetChild (QStringView view) const
 		{
-			const auto pos = Children_.find (view.toString ());
+			const auto pos = Children_.find (view);
 			if (pos == Children_.end ())
 				return nullptr;
 
@@ -57,10 +56,9 @@ namespace LC::Util
 				return;
 			}
 
-			const auto& strRef = (*begin).toString ();
-			auto pos = Children_.find (strRef);
+			auto pos = Children_.find (*begin);
 			if (pos == Children_.end ())
-				pos = Children_.insert (strRef, {});
+				pos = Children_.insert ((*begin).toString (), {});
 			pos->Add (std::next (begin), end, std::move (value));
 		}
 
@@ -105,8 +103,7 @@ namespace LC::Util
 			if (begin == end)
 				return lastGood;
 
-			const auto& strRef = (*begin).toString ();
-			const auto pos = Children_.find (strRef);
+			const auto pos = Children_.find (*begin);
 			if (pos == Children_.end ())
 				return lastGood;
 
