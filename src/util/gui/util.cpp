@@ -120,7 +120,7 @@ namespace LC::Util
 
 	QString FormatName (const QString& name)
 	{
-		return "<em>" + name + "</em>";
+		return "<i>" + name + "</i>";
 	}
 
 	QString FormatHumanReadableList (QStringList items)
