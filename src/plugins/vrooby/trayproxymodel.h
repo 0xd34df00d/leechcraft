@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QSortFilterProxyModel>
 #include <interfaces/devices/deviceroles.h>
 
@@ -15,6 +16,8 @@ namespace LC::Vrooby
 {
 	class TrayProxyModel : public QSortFilterProxyModel
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Vrooby::TrayProxyModel)
+
 		QSet<QString> Hidden_;
 		bool FilterEnabled_ = true;
 	public:
