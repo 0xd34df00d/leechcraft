@@ -29,7 +29,6 @@ namespace LC::Azoth::Acetamide
 			return QString { pat }.remove ('\n').remove ('\t').remove (' ');
 		}
 
-		// TODO C++20 replace with constexpr std::strings when they become more widely available
 		const auto host = With (R"( {subdomain}(\.{subdomain})* )", { { "{subdomain}", R"( [a-zA-Z][-\w]+ )" } });
 
 		constexpr auto nick = R"( (\w | [\[\]\`^{|}-])+ )";
