@@ -51,13 +51,9 @@ namespace LC::BitTorrent
 		switch (sp)
 		{
 		case Preset::MinMemoryUsage:
-			// TODO file_checks_delay_per_block = 15
-			// max_paused_peerlist_size = 50
+			// TODO max_paused_peerlist_size = 50
 			// recv_socket_buffer_size = 16 * 1024
 			// send_socket_buffer_size = 16 * 1024
-			// optimize_hashing_for_speed = false
-			// coalesce_reads = false
-			// coalesce_writes = false
 			xsm.setProperty ("WholePiecesThreshold", 2);
 			xsm.setProperty ("UseParoleMode", false);
 			xsm.setProperty ("PrioritizePartialPieces", true);
@@ -73,9 +69,6 @@ namespace LC::BitTorrent
 			xsm.setProperty ("MaxRejects", 10);
 			break;
 		case Preset::HighPerfSeed:
-			// TODO read_cache_line_size = 512
-			// write_cache_line_size = 512
-			// optimize_hashing_for_speed = true
 			xsm.setProperty ("FilePoolSize", 500);
 			xsm.setProperty ("AllowMultipleConnectionsPerIP", true);
 			xsm.setProperty ("CloseRedundantConnections", true);
