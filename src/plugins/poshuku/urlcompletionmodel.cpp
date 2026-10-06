@@ -60,8 +60,11 @@ namespace Poshuku
 		}
 	}
 
-	Qt::ItemFlags URLCompletionModel::flags (const QModelIndex&) const
+	Qt::ItemFlags URLCompletionModel::flags (const QModelIndex& index) const
 	{
+		if (!index.isValid ())
+			return {};
+
 		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 	}
 

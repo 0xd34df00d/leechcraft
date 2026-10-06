@@ -568,6 +568,8 @@ namespace Poshuku
 		bool oneClick = XmlSettingsManager::Instance ().property ("BookmarkInOneClick").toBool ();
 
 		const auto& index = FavoritesModel_->addItem (title, url, QStringList ());
+		if (!index.isValid ())
+			return;
 
 		if (!oneClick)
 			FavoritesModel_->EditBookmark (index);

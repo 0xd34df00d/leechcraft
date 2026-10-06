@@ -87,6 +87,9 @@ namespace Poshuku
 
 	Qt::ItemFlags FavoritesModel::flags (const QModelIndex& index) const
 	{
+		if (!index.isValid ())
+			return Qt::ItemIsDropEnabled;
+
 		Qt::ItemFlags result = Qt::ItemIsEnabled |
 				Qt::ItemIsSelectable |
 				Qt::ItemIsDragEnabled |
@@ -127,7 +130,10 @@ namespace Poshuku
 	bool FavoritesModel::setData (const QModelIndex& index,
 			const QVariant& value, int)
 	{
-		auto& item = Items_ [index.row ()];
+		if (!index.isValid () || index.row () >= Items_.size ())
+			return false;
+
+		auto item = Items_ [index.row ()];
 		switch (index.column ())
 		{
 		case ColumnTags:
@@ -166,7 +172,7 @@ namespace Poshuku
 		catch (const std::exception& e)
 		{
 			qWarning () << Q_FUNC_INFO << e.what ();
-			return QModelIndex ();
+			return {};
 		}
 
 		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
@@ -272,6 +278,9 @@ namespace Poshuku
 
 	void FavoritesModel::EditBookmark (const QModelIndex& source)
 	{
+		if (!source.isValid ())
+			return;
+
 		const auto& currentURL = source.sibling (source.row (),
 				FavoritesModel::ColumnURL).data ().toString ();
 
@@ -347,9 +356,7 @@ namespace Poshuku
 
 	void FavoritesModel::removeItem (const QModelIndex& index)
 	{
-		if (!index.isValid () ||
-				index.row () < 0 ||
-				index.row () > Items_.size ())
+		if (!index.isValid () || index.row () >= Items_.size ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "invalid index"
@@ -388,9 +395,8 @@ namespace Poshuku
 
 		*pos = item;
 
-		int n = std::distance (Items_.begin (), pos);
-
-		emit dataChanged (index (n, 0), index (n, 2));
+		const int n = std::distance (Items_.begin (), pos);
+		emit dataChanged (index (n, 0), index (n, columnCount () - 1));
 	}
 
 	void FavoritesModel::handleItemRemoved (const FavoritesModel::FavoritesItem& item)
@@ -402,7 +408,7 @@ namespace Poshuku
 			return;
 		}
 
-		int n = std::distance (Items_.begin (), pos);
+		const int n = std::distance (Items_.begin (), pos);
 		beginRemoveRows (QModelIndex (), n, n);
 		Items_.erase (pos);
 		endRemoveRows ();
@@ -416,7 +422,8 @@ namespace Poshuku
 		if (!items.size ())
 			return;
 
-		beginInsertRows (QModelIndex (), 0, items.size () - 1);
+		const auto first = Items_.size ();
+		beginInsertRows (QModelIndex (), first, first + items.size () - 1);
 		for (items_t::iterator i = items.begin (), end = items.end (); i != end; ++i)
 		{
 			for (const auto& tag : QStringList { i->Tags_ })
