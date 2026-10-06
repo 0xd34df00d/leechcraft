@@ -245,7 +245,7 @@ namespace Poshuku
 
 	void SQLStorageBackend::LoadFavorites (FavoritesModel::items_t& items) const
 	{
-		for (const auto& fav : Favorites_->Select.Build ().Order (oral::OrderBy<sph::desc<&Favorites::Title_>>) ())
+		for (const auto& fav : Favorites_->Select.Build ().Order (oral::OrderBy<sph::asc<&Favorites::Title_>>) ())
 			items.push_back (fav.ToFavoritesItem ());
 	}
 
