@@ -57,11 +57,11 @@ namespace Poshuku
 
 	struct SQLStorageBackend::Favorites
 	{
-		oral::PKey<QString, oral::NoAutogen> Title_;
-		QString URL_;
+		oral::PKey<oral::NotNull<QString>, oral::NoAutogen> URL_;
+		QString Title_;
 		QString Tags_;
 
-		constexpr static auto ClassName = "Favorites"_ct;
+		constexpr static auto ClassName = "Favorites2"_ct;
 
 		FavoritesModel::FavoritesItem ToFavoritesItem () const
 		{
@@ -77,8 +77,8 @@ namespace Poshuku
 		{
 			return
 			{
-				item.Title_,
 				item.URL_,
+				item.Title_,
 				item.Tags_.join (" ")
 			};
 		}
@@ -98,8 +98,8 @@ ORAL_ADAPT_STRUCT (LC::Poshuku::SQLStorageBackend::History,
 		Title_,
 		URL_)
 ORAL_ADAPT_STRUCT (LC::Poshuku::SQLStorageBackend::Favorites,
-		Title_,
 		URL_,
+		Title_,
 		Tags_)
 ORAL_ADAPT_STRUCT (LC::Poshuku::SQLStorageBackend::FormsNever,
 		URL_)
@@ -108,6 +108,36 @@ namespace LC
 {
 namespace Poshuku
 {
+	namespace
+	{
+		void ImportLegacyFavorites (QSqlDatabase& db)
+		{
+			Util::DBLock lock { db };
+			lock.Init ();
+
+			int total = 0;
+			int urlless = 0;
+			{
+				// Finalize the query before the DROP, or SQLite reports the table as locked.
+				auto query = Util::RunTextQuery (db, "SELECT COUNT (*), SUM (URL IS NULL OR URL = '') FROM Favorites;");
+				query.next ();
+				total = query.value (0).toInt ();
+				urlless = query.value (1).toInt ();
+			}
+
+			constexpr auto copy = "INSERT OR IGNORE INTO " + SQLStorageBackend::Favorites::ClassName +
+					" (URL, Title, Tags) SELECT URL, Title, Tags FROM Favorites WHERE URL IS NOT NULL AND URL != '' ORDER BY rowid;";
+			const auto copied = Util::RunTextQuery (db, Util::ToString<copy> ()).numRowsAffected ();
+			if (urlless)
+				qWarning () << "dropped" << urlless << "favorites without a URL";
+			if (const auto dupes = total - urlless - copied)
+				qWarning () << "dropped" << dupes << "favorites sharing a URL with an earlier one";
+
+			Util::RunTextQuery (db, "DROP TABLE Favorites;");
+			lock.Good ();
+		}
+	}
+
 	SQLStorageBackend::SQLStorageBackend ()
 	: DBGuard_ { Util::MakeScopeGuard ([this] { DB_.close (); }) }
 	{
@@ -124,6 +154,9 @@ namespace Poshuku
 		Util::RunTextQuery (DB_, "PRAGMA journal_mode = WAL;");
 
 		oral::AdaptPtrs (DB_, History_, Favorites_, FormsNever_);
+
+		if (DB_.tables ().contains ("Favorites"_qs, Qt::CaseInsensitive))
+			ImportLegacyFavorites (DB_);
 	}
 
 	SQLStorageBackend::~SQLStorageBackend () = default;
