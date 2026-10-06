@@ -16,8 +16,6 @@
 #include "common.h"
 #include "dbupdatethread.h"
 
-class QTimer;
-
 namespace LC::Util
 {
 	class ProgressManager;
@@ -34,9 +32,6 @@ namespace LC::Aggregator
 
 		const DBUpdateThread_ptr DBUpThread_;
 		const std::shared_ptr<FeedsErrorManager> FeedsErrorManager_;
-
-		QTimer * const UpdateTimer_;
-		QTimer * const CustomUpdateTimer_;
 
 		QHash<IDType_t, QDateTime> Updates_;
 
@@ -56,7 +51,7 @@ namespace LC::Aggregator
 		void UpdateFeed (IDType_t);
 		void UpdateFeeds ();
 	private:
-		void RestartUpdateTimer (std::chrono::minutes);
+		void Tick ();
 		void HandleCustomUpdates ();
 
 		Util::ContextTask<void> UpdateFeedsAsync (ids_t, SQLStorageBackend_ptr);

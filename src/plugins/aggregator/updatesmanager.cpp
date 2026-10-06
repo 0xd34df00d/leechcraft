@@ -60,38 +60,16 @@ namespace LC::Aggregator
 	: QObject { parent }
 	, DBUpThread_ { initParams.DBUpThread_ }
 	, FeedsErrorManager_ { initParams.FeedsErrorManager_ }
-	, UpdateTimer_ { new QTimer { this } }
-	, CustomUpdateTimer_ { new QTimer { this } }
 	, UpdateThrottle_ { 500ms }
 	, ProgressManager_ { *new Util::ProgressManager { this } }
 	{
-		UpdateTimer_->setSingleShot (true);
-		connect (UpdateTimer_,
-				&QTimer::timeout,
-				this,
-				&UpdatesManager::UpdateFeeds);
+		const auto tickTimer = new QTimer { this };
+		tickTimer->setTimerType (Qt::VeryCoarseTimer);
+		tickTimer->start (60s);
+		tickTimer->callOnTimeout (this, &UpdatesManager::Tick);
 
-		CustomUpdateTimer_->start (60s);
-		connect (CustomUpdateTimer_,
-				&QTimer::timeout,
-				this,
-				&UpdatesManager::HandleCustomUpdates);
-
-		auto& xsm = XmlSettingsManager::Instance ();
-		xsm.RegisterObject ("UpdateInterval", this,
-				[this] (int minRaw) { RestartUpdateTimer (minutes { minRaw }); },
-				XmlSettingsManager::Apply);
-
-		const auto now = QDateTime::currentDateTime ();
-		const seconds sinceLast { xsm.Property ("LastUpdateDateTime", now).toDateTime ().secsTo (now) };
-		const auto interval = minutes { xsm.property ("UpdateInterval").toInt () };
-		const auto hasInterval = interval != minutes::zero ();
-		const auto stale = hasInterval && sinceLast > interval;
-
-		if (xsm.property ("UpdateOnStartup").toBool () || stale)
-			UpdateTimer_->start (7s);
-		else if (hasInterval)
-			UpdateTimer_->start (interval - std::max (sinceLast, 0s));
+		if (XmlSettingsManager::Instance ().property ("UpdateOnStartup").toBool ())
+			QTimer::singleShot (7s, this, &UpdatesManager::UpdateFeeds);
 	}
 
 	IJobHolderRepresentationHandler_ptr UpdatesManager::CreateJobRepresentationHandler ()
@@ -105,12 +83,22 @@ namespace LC::Aggregator
 		{
 			return sb.GetFeedSettings (feedId).value_or (Feed::FeedSettings {}).UpdateTimeout_;
 		}
+
+		bool ShouldUpdateNow ()
+		{
+			auto& xsm = XmlSettingsManager::Instance ();
+
+			const auto now = QDateTime::currentDateTime ();
+			const seconds sinceLast { xsm.Property ("LastUpdateDateTime", now).toDateTime ().secsTo (now) };
+
+			const auto interval = minutes { xsm.property ("UpdateInterval").toInt () };
+			return interval != minutes::zero () && sinceLast >= interval;
+		}
 	}
 
 	void UpdatesManager::UpdateFeeds ()
 	{
 		XmlSettingsManager::Instance ().setProperty ("LastUpdateDateTime", QDateTime::currentDateTime ());
-		RestartUpdateTimer (minutes { XmlSettingsManager::Instance ().property ("UpdateInterval").toInt () });
 
 		const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 		const auto isStandardTimer = [&sb] (IDType_t id) { return !IsCustomTimer (*sb, id); };
@@ -122,12 +110,12 @@ namespace LC::Aggregator
 		UpdateFeedsAsync ({ feedId }, StorageBackendManager::Instance ().MakeStorageBackendForThread ());
 	}
 
-	void UpdatesManager::RestartUpdateTimer (std::chrono::minutes interval)
+	void UpdatesManager::Tick ()
 	{
-		if (interval != minutes::zero ())
-			UpdateTimer_->start (interval);
-		else
-			UpdateTimer_->stop ();
+		if (ShouldUpdateNow ())
+			UpdateFeeds ();
+
+		HandleCustomUpdates ();
 	}
 
 	void UpdatesManager::HandleCustomUpdates ()
