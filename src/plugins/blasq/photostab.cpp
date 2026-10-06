@@ -84,6 +84,7 @@ namespace Blasq
 				return XmlSettingsManager::Instance ()
 						.property ("CacheSize").toInt () * 1024 * 1024;
 			},
+			*Proxy_->GetSettingsManager (),
 			engine);
 
 		const auto& path = Util::GetSysPath (Util::SysPath::QML, "blasq", "PhotoView.qml");

@@ -74,6 +74,7 @@ namespace LC::LMP
 
 		new Util::StandardNAMFactory (Lits::LmpSlashQml,
 				[] { return 50_mib; },
+				*GetProxyHolder ()->GetSettingsManager (),
 				ChartsView_->engine ());
 
 		auto objVar = [] (QObject *obj) { return QVariant::fromValue (obj); };

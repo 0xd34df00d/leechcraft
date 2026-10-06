@@ -85,6 +85,7 @@ namespace LC::LMP::BrainSlugz
 		{
 			QStringLiteral ("lmp/qml"),
 			[] { return 50_mib; },
+			*GetProxyHolder ()->GetSettingsManager (),
 			CheckView_->engine ()
 		};
 

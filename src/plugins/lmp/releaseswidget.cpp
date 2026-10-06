@@ -80,6 +80,7 @@ namespace LMP
 
 		new Util::StandardNAMFactory ("lmp/qml",
 				[] { return 50 * 1024 * 1024; },
+				*GetProxyHolder ()->GetSettingsManager (),
 				ReleasesView_->engine ());
 
 		ReleasesView_->engine ()->addImageProvider (Lits::ThemeIconsUriScheme, new Util::ThemeImageProvider (GetProxyHolder ()));

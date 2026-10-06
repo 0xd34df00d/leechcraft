@@ -28,6 +28,7 @@ namespace LMP
 
 		new Util::StandardNAMFactory ("lmp/qml",
 				[] { return 50 * 1024 * 1024; },
+				*GetProxyHolder ()->GetSettingsManager (),
 				engine ());
 
 		setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "SimilarView.qml"));

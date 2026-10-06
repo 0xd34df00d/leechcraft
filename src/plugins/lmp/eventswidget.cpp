@@ -87,6 +87,7 @@ namespace LC::LMP
 
 		new Util::StandardNAMFactory (Lits::LmpSlashQml,
 				[] { return 50_mib; },
+				*GetProxyHolder ()->GetSettingsManager (),
 				View_->engine ());
 
 		View_->setResizeMode (QQuickWidget::SizeRootObjectToView);

@@ -37,6 +37,7 @@ namespace LC::LMP
 
 		new Util::StandardNAMFactory (Lits::LmpSlashQml,
 				[] { return 50_mib; },
+				*GetProxyHolder ()->GetSettingsManager (),
 				View_->engine ());
 		View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML,
 				Lits::LmpQmlSubdir,

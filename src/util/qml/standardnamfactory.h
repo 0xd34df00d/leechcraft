@@ -17,6 +17,8 @@ class QQmlEngine;
 
 namespace LC::Util
 {
+	class BaseSettingsManager;
+
 	/** @brief A standard QML QNetworkAccessManager factory.
 	 *
 	 * StandardNAMFactory allows easily creating QNetworkAccessManager
@@ -30,6 +32,11 @@ namespace LC::Util
 	 * location. In this case, the minimum value of the cache size would
 	 * be used as the maximum.
 	 *
+	 * The created managers follow the non-cache network properties of the
+	 * settings manager passed to the constructor, including the changes
+	 * made during their lifetime. In particular, that is:
+	 * - `TransferTimeout`
+	 *
 	 * @ingroup QmlUtil
 	 */
 	class UTIL_QML_API StandardNAMFactory : public QQmlNetworkAccessManagerFactory
@@ -42,6 +49,7 @@ namespace LC::Util
 		using CacheSizeGetter_f = std::function<int ()>;
 	private:
 		CacheSizeGetter_f CacheSizeGetter_;
+		BaseSettingsManager& Settings_;
 	public:
 		/** @brief Constructs a new StandardNAMFactory.
 		 *
@@ -52,11 +60,15 @@ namespace LC::Util
 		 * @param[in] getter The function that would be queried during
 		 * periodical cache garbage collection to fetch the current
 		 * maximum cache size.
+		 * @param[in] settings The settings manager whose settings
+		 * the created managers follow, typically the one returned by
+		 * `ICoreProxy::GetSettingsManager()`.
 		 * @param[in] engine The QML engine where this factory should be
 		 * installed, if not null.
 		 */
 		StandardNAMFactory (QString subpath,
 				CacheSizeGetter_f getter,
+				BaseSettingsManager& settings,
 				QQmlEngine *engine = nullptr);
 
 		/** @brief Creates the network access manager with the given

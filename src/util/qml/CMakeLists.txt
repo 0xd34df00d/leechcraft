@@ -20,6 +20,7 @@ add_util_library (util-qml
 		leechcraft-util-network
 		leechcraft-util-sll
 		leechcraft-util-sys
+		leechcraft-xsd
 		$<$<BOOL:${WITH_QWT}>:PkgConfig::Qwt>
 	USES Network Quick QuickWidgets
 	DEFINES $<$<BOOL:${WITH_QWT}>:WITH_QWT>
