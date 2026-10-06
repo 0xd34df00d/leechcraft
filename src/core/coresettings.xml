@@ -154,6 +154,9 @@
 			<item type="pushbutton" property="ClearCache">
 				<label lang="en" value="Clear cache" />
 			</item>
+			<item type="spinbox" property="TransferTimeout" default="120" minimum="0" maximum="3600" step="10" label="Abort a HTTP(S) transfer after no data for:" suffix="s" special="never">
+				<tooltip>The timeout restarts whenever any data is sent or received, so slow but live transfers are not affected.</tooltip>
+			</item>
 		</tab>
 		<tab>
 			<label value="Privacy" />

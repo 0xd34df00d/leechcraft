@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "networkaccessmanager.h"
+#include <chrono>
 #include <stdexcept>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -58,6 +59,9 @@ namespace LC
 		XmlSettingsManager::Instance ()->RegisterObject ("CookiesBlacklist",
 				this,
 				[this] (const QStringList& strs) { CookieJar_->SetBlacklist (GetRxList (strs)); });
+		XmlSettingsManager::Instance ()->RegisterObject ("TransferTimeout",
+				this,
+				[this] (int seconds) { setTransferTimeout (std::chrono::seconds { seconds }); });
 
 		try
 		{
