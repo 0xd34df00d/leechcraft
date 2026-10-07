@@ -99,10 +99,15 @@ namespace LC::Util
 			return Data_ [pos];
 		}
 
-		constexpr operator QStringView () const noexcept
+		constexpr explicit(false) operator QStringView () const noexcept
 			requires std::is_same_v<Char, char16_t>
 		{
 			return QStringView { Data_, Size };
+		}
+
+		constexpr explicit(false) operator std::basic_string_view<Char> () const noexcept
+		{
+			return { Data_, Size };
 		}
 
 		constexpr auto Data () const noexcept
