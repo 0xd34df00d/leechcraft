@@ -32,6 +32,15 @@
 				<item type="checkbox" property="UpdateOnStartup" default="false" label="Update feeds on startup" />
 				<item type="spinbox" property="UpdateInterval" default="180" minimum="0" maximum="30000" step="5" label="Update interval:" suffix="min" />
 			</groupbox>
+			<groupbox label="Network">
+				<item type="checkbox" property="UpdateOnMetered" default="false" label="Update feeds on metered connections" />
+				<item type="checkbox" property="UpdateRespectReachability" default="true" label="Update feeds only when the network is reported to be online">
+					<tooltip>
+						When enabled, Aggregator respects reachability of the network and only updates the feeds when the network is reported as online or of unknown status.
+						You might want to disable this option if this heuristic doesn't work for you, for example, if you're on an intranet and your feeds are served from a local server.
+					</tooltip>
+				</item>
+			</groupbox>
 			<groupbox label="Automatic downloading">
 				<item type="path" property="EnclosuresDownloadPath" label="Download directory for enclosures:" />
 			</groupbox>

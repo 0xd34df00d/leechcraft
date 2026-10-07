@@ -21,6 +21,7 @@
 #include <util/threads/coro/inparallel.h>
 #include <util/xpc/progressmanager.h>
 #include <util/xpc/util.h>
+#include "components/network/availability.h"
 #include "components/parsers/parse.h"
 #include "components/storage/sqlstoragebackend.h"
 #include "components/storage/storagebackendmanager.h"
@@ -62,14 +63,16 @@ namespace LC::Aggregator
 	, FeedsErrorManager_ { initParams.FeedsErrorManager_ }
 	, UpdateThrottle_ { 500ms }
 	, ProgressManager_ { *new Util::ProgressManager { this } }
+	, DoStartupUpdate_ { XmlSettingsManager::Instance ().property ("UpdateOnStartup").toBool () }
 	{
 		const auto tickTimer = new QTimer { this };
 		tickTimer->setTimerType (Qt::VeryCoarseTimer);
 		tickTimer->start (60s);
 		tickTimer->callOnTimeout (this, &UpdatesManager::Tick);
 
-		if (XmlSettingsManager::Instance ().property ("UpdateOnStartup").toBool ())
-			QTimer::singleShot (7s, this, &UpdatesManager::UpdateFeeds);
+		QTimer::singleShot (5s,
+				this,
+				&UpdatesManager::Tick);
 	}
 
 	IJobHolderRepresentationHandler_ptr UpdatesManager::CreateJobRepresentationHandler ()
@@ -112,7 +115,10 @@ namespace LC::Aggregator
 
 	void UpdatesManager::Tick ()
 	{
-		if (ShouldUpdateNow ())
+		if (!IsNetworkAllowed<FeedsUpdate> ())
+			return;
+
+		if (std::exchange (DoStartupUpdate_, false) || ShouldUpdateNow ())
 			UpdateFeeds ();
 
 		HandleCustomUpdates ();

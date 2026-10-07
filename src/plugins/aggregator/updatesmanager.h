@@ -34,10 +34,11 @@ namespace LC::Aggregator
 		const std::shared_ptr<FeedsErrorManager> FeedsErrorManager_;
 
 		QHash<IDType_t, QDateTime> Updates_;
-
 		Util::Throttle UpdateThrottle_;
 
 		Util::ProgressManager& ProgressManager_;
+
+		bool DoStartupUpdate_ = false;
 	public:
 		struct InitParams
 		{

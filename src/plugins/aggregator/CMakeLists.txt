@@ -30,6 +30,7 @@ LC_DEFINE_PLUGIN (
 		components/models/itemsfiltermodel.cpp
 		components/models/itemslistmodel.cpp
 		components/models/jobholderrepresentationmodel.cpp
+		components/network/availability.cpp
 		components/parsers/atom.cpp
 		components/parsers/mediarss.cpp
 		components/parsers/parse.cpp
