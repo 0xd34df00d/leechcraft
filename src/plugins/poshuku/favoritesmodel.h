@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <algorithm>
 #include <QAbstractItemModel>
 #include <QStringList>
 #include <QList>
@@ -30,8 +31,6 @@ namespace Poshuku
 			QString URL_;
 			/// Contains ids of the real tags.
 			QStringList Tags_;
-
-			bool operator== (const FavoritesItem&) const;
 		};
 		typedef QList<FavoritesItem> items_t;
 	private:
@@ -71,7 +70,10 @@ namespace Poshuku
 		bool IsUrlExists (const QString&) const;
 	private:
 		QStringList GetVisibleTags (int) const;
-		FavoritesItem GetItemFromUrl (const QString& url);
+		auto FindItem (this auto&& self, const QString& url)
+		{
+			return std::ranges::find (self.Items_, url, &FavoritesItem::URL_);
+		}
 	public slots:
 		QModelIndex addItem (const QString&, const QString&, const QStringList&);
 		QList<QVariant> getItemsMap () const;

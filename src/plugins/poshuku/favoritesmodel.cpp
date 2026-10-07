@@ -25,13 +25,6 @@ namespace LC
 {
 namespace Poshuku
 {
-	bool FavoritesModel::FavoritesItem::operator== (const FavoritesModel::FavoritesItem& item) const
-	{
-		return Title_ == item.Title_ &&
-			URL_ == item.URL_ &&
-			Tags_ == item.Tags_;
-	}
-
 	FavoritesModel::FavoritesModel (QObject *parent)
 	: QAbstractItemModel (parent)
 	{
@@ -142,32 +135,42 @@ namespace Poshuku
 		case ColumnTitle:
 			item.Title_ = value.toString ();
 			break;
-		case ColumnURL:
-			return true;
 		default:
 			return false;
 		}
 
-		Core::Instance ().GetStorageBackend ()->UpdateFavorites (item);
-		emit dataChanged (index.siblingAtColumn (0), index.siblingAtColumn (columnCount () - 1));
+		try
+		{
+			// The storage's `updated` signal applies the change to Items_ and emits dataChanged.
+			Core::Instance ().GetStorageBackend ()->UpdateFavorites (item);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO << e.what ();
+			return false;
+		}
+
 		return true;
 	}
 
 	QModelIndex FavoritesModel::addItem (const QString& title,
 			const QString& url, const QStringList& visibleTags)
 	{
-		const auto& tags = Core::Instance ().GetProxy ()->GetTagsManager ()->GetIDs (visibleTags);
-
-		FavoritesItem item =
+		if (url.isEmpty ())
 		{
-			title,
-			url,
-			tags
-		};
+			qWarning () << Q_FUNC_INFO << "refusing to add a favorite without a URL:" << title;
+			return {};
+		}
+
+		if (const auto pos = FindItem (url); pos != Items_.end ())
+			return index (std::distance (Items_.begin (), pos), 0);
+
+		const auto& tags = Core::Instance ().GetProxy ()->GetTagsManager ()->GetIDs (visibleTags);
 
 		try
 		{
-			Core::Instance ().GetStorageBackend ()->AddToFavorites (item);
+			// The storage's `added` signal appends the item to Items_.
+			Core::Instance ().GetStorageBackend ()->AddToFavorites ({ title, url, tags });
 		}
 		catch (const std::exception& e)
 		{
@@ -178,7 +181,8 @@ namespace Poshuku
 		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		emit hookAddedToFavorites (proxy, title, url, visibleTags);
 
-		return createIndex (Items_.size () - 1, 0);
+		const auto pos = FindItem (url);
+		return pos == Items_.end () ? QModelIndex {} : index (std::distance (Items_.begin (), pos), 0);
 	}
 
 	QList<QVariant> FavoritesModel::getItemsMap() const
@@ -243,18 +247,21 @@ namespace Poshuku
 				visibleTags << visible;
 		}
 
-		auto tryAddUrl = [&visibleTags, this] (const QString& title, const QUrl& url) -> void
+		auto tryAddUrl = [&visibleTags, this] (const QString& title, const QUrl& url)
 		{
-			const auto pos = std::find_if (Items_.begin (), Items_.end (),
-					[&title] (const FavoritesItem& item) { return item.Title_ == title; });
+			const auto& urlStr = url.toString ();
+			const auto pos = FindItem (urlStr);
 			if (pos == Items_.end ())
-				addItem (title, url.toString (), visibleTags);
-			else
 			{
-				auto tags = pos->Tags_;
-				tags += visibleTags;
-				setData (index (std::distance (Items_.begin (), pos), ColumnTags), tags);
+				addItem (title, urlStr, visibleTags);
+				return;
 			}
+
+			const auto row = std::distance (Items_.begin (), pos);
+			auto tags = GetVisibleTags (row);
+			tags += visibleTags;
+			tags.removeDuplicates ();
+			setData (index (row, ColumnTags), tags);
 		};
 
 		if (urls.size () == 1 && !data->text ().isEmpty ())
@@ -312,24 +319,6 @@ namespace Poshuku
 		return Items_;
 	}
 
-	namespace
-	{
-		struct ItemFinder
-		{
-			const QString& URL_;
-
-			ItemFinder (const QString& url)
-			: URL_ (url)
-			{
-			}
-
-			bool operator() (const FavoritesModel::FavoritesItem& item) const
-			{
-				return item.URL_ == URL_;
-			}
-		};
-	};
-
 	void FavoritesModel::SetCheckResults (const QMap<QString, QString>& res)
 	{
 		CheckResults_ = res;
@@ -337,21 +326,12 @@ namespace Poshuku
 
 	bool FavoritesModel::IsUrlExists (const QString& url) const
 	{
-		return std::any_of (Items_.begin (), Items_.end (), ItemFinder (url));
+		return FindItem (url) != Items_.end ();
 	}
 
 	QStringList FavoritesModel::GetVisibleTags (int index) const
 	{
 		return Core::Instance ().GetProxy ()->GetTagsManager ()->GetTags (Items_ [index].Tags_);
-	}
-
-	FavoritesModel::FavoritesItem FavoritesModel::GetItemFromUrl (const QString& url)
-	{
-		for (const auto& item : Items_)
-			if (item.URL_ == url)
-				return item;
-
-		return {};
 	}
 
 	void FavoritesModel::removeItem (const QModelIndex& index)
@@ -365,14 +345,24 @@ namespace Poshuku
 			return;
 		}
 
-		const QString url = Items_ [index.row ()].URL_;
-		Core::Instance ().GetStorageBackend ()->RemoveFromFavorites (Items_ [index.row ()]);
-		Core::Instance ().RemoveFromFavorites (url);
+		// A copy: the storage's `removed` signal erases the element synchronously.
+		const auto item = Items_ [index.row ()];
+		Core::Instance ().GetStorageBackend ()->RemoveFromFavorites (item);
+		Core::Instance ().RemoveFromFavorites (item.URL_);
 	}
 
 	void FavoritesModel::removeItem (const QString& url)
 	{
-		const FavoritesItem& item = GetItemFromUrl (url);
+		const auto pos = FindItem (url);
+		if (pos == Items_.end ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no favorite with URL"
+					<< url;
+			return;
+		}
+
+		const auto item = *pos;
 		Core::Instance ().GetStorageBackend ()->RemoveFromFavorites (item);
 		Core::Instance ().RemoveFromFavorites (url);
 	}
@@ -386,7 +376,7 @@ namespace Poshuku
 
 	void FavoritesModel::handleItemUpdated (const FavoritesModel::FavoritesItem& item)
 	{
-		const auto pos = std::find_if (Items_.begin (), Items_.end (), ItemFinder (item.URL_));
+		const auto pos = FindItem (item.URL_);
 		if (pos == Items_.end ())
 		{
 			qWarning () << Q_FUNC_INFO << "not found updated item";
@@ -401,7 +391,7 @@ namespace Poshuku
 
 	void FavoritesModel::handleItemRemoved (const FavoritesModel::FavoritesItem& item)
 	{
-		const auto pos = std::find (Items_.begin (), Items_.end (), item);
+		const auto pos = FindItem (item.URL_);
 		if (pos == Items_.end ())
 		{
 			qWarning () << Q_FUNC_INFO << "not found removed item";
