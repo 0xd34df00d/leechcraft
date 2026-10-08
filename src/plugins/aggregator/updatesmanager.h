@@ -49,8 +49,8 @@ namespace LC::Aggregator
 
 		IJobHolderRepresentationHandler_ptr CreateJobRepresentationHandler ();
 
-		void UpdateFeed (IDType_t);
-		void UpdateFeeds ();
+		void UpdateFeeds (const ids_t&);
+		void UpdateAllFeeds ();
 	private:
 		void Tick ();
 		void HandleCustomUpdates ();

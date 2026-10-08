@@ -252,7 +252,7 @@ namespace Aggregator
 
 		AddFeedDialog af { str };
 		if (af.exec () == QDialog::Accepted)
-			AddFeed ({ .URL_ = af.GetURL (), .Tags_ = af.GetTags (), .UpdatesManager_ = *UpdatesManager_ });
+			AddFeed (*UpdatesManager_, { .URL_ = af.GetURL (), .Tags_ = af.GetTags () });
 	}
 
 	void Aggregator::SetShortcut (const QByteArray& name, const QKeySequences_t& shortcuts)

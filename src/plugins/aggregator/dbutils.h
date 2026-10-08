@@ -23,8 +23,8 @@ namespace LC::Aggregator
 		QString URL_;
 		QStringList Tags_;
 		std::optional<Feed::FeedSettings> FeedSettings_ {};
-
-		UpdatesManager& UpdatesManager_;
 	};
-	void AddFeed (const AddFeedParams&);
+	void AddFeeds (UpdatesManager&, const QList<AddFeedParams>&);
+
+	void AddFeed (UpdatesManager&, const AddFeedParams&);
 }

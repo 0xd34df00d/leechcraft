@@ -284,10 +284,10 @@ namespace LC::Aggregator
 			if (commentRss.isEmpty ())
 				continue;
 
-			AddFeed ({
+			AddFeed (Deps_.UpdatesManager_,
+				{
 					.URL_ = commentRss,
 					.Tags_ = item->Categories_ + commentTags,
-					.UpdatesManager_ = Deps_.UpdatesManager_
 				});
 		}
 	}

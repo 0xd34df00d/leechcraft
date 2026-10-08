@@ -13,8 +13,6 @@
 #include <QMenu>
 #include <QList>
 
-class QModelIndex;
-
 namespace LC::Util
 {
 	class ShortcutManager;

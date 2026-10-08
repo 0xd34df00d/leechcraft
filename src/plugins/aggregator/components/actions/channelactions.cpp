@@ -9,10 +9,10 @@
 #include "channelactions.h"
 #include <concepts>
 #include <QMessageBox>
-#include <QModelIndex>
 #include <QInputDialog>
 #include <interfaces/core/iiconthememanager.h>
 #include <util/shortcuts/shortcutmanager.h>
+#include <util/sll/prelude.h>
 #include <util/gui/util.h>
 #include <util/util.h>
 #include "components/models/channelsmodel.h"
@@ -107,8 +107,7 @@ namespace LC::Aggregator
 
 	void ChannelActions::Update (const QList<ChannelShort>& channels)
 	{
-		for (const auto& channel : channels)
-			Deps_.UpdatesManager_.UpdateFeed (channel.FeedID_);
+		Deps_.UpdatesManager_.UpdateFeeds (Util::Map (channels, &ChannelShort::FeedID_));
 	}
 
 	void ChannelActions::Rename (const ChannelShort& channel)

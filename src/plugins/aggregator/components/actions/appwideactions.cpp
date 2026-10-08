@@ -67,10 +67,10 @@ namespace LC::Aggregator
 		{
 			AddFeedDialog af;
 			if (af.exec () == QDialog::Accepted)
-				Aggregator::AddFeed ({
+				AddFeed (um,
+					{
 						.URL_ = af.GetURL (),
 						.Tags_ = af.GetTags (),
-						.UpdatesManager_ = um,
 					});
 		}
 	}
@@ -105,7 +105,7 @@ namespace LC::Aggregator
 		using enum ActionId;
 		auto& um = deps.UpdatesManager_;
 		FastActions_ << makeAction (AddFeed, [&um] { RunAddFeed (um); });
-		FastActions_ << makeAction (UpdateFeeds, [&um] { um.UpdateFeeds (); });
+		FastActions_ << makeAction (UpdateFeeds, [&um] { um.UpdateAllFeeds (); });
 		ToolsMenu_.addSeparator ();
 		makeAction (MarkAllChannelsRead,
 				[&dbup = deps.DBUpThread_]

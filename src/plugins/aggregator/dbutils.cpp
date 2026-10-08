@@ -31,34 +31,54 @@ namespace LC::Aggregator
 		return result;
 	}
 
-	void AddFeed (const AddFeedParams& params)
+	void AddFeeds (UpdatesManager& updatesManager, const QList<AddFeedParams>& paramsList)
 	{
-		auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+		const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 
-		const auto& fixedUrl = QUrl::fromUserInput (params.URL_);
-		const auto& url = fixedUrl.toString ();
-		if (sb->FindFeed (url))
+		QList<QString> duplicates;
+
+		ids_t feedIDs;
+		feedIDs.reserve (paramsList.size ());
+		for (const auto& params : paramsList)
 		{
-			auto e = Util::MakeNotification (NotificationTitle,
-					QObject::tr ("The feed %1 is already added")
-						.arg (url),
-					Priority::Critical);
+			const auto& fixedUrl = QUrl::fromUserInput (params.URL_);
+			const auto& url = fixedUrl.toString ();
+			if (sb->FindFeed (url))
+			{
+				duplicates << url;
+				continue;
+			}
+
+			Feed feed;
+			feed.URL_ = url;
+			sb->AddFeed (feed);
+			sb->SetFeedTags (feed.FeedID_, GetProxyHolder ()->GetTagsManager ()->GetIDs (params.Tags_));
+			if (params.FeedSettings_)
+			{
+				auto fs = *params.FeedSettings_;
+				fs.FeedID_ = feed.FeedID_;
+				sb->SetFeedSettings (fs);
+			}
+			feedIDs << feed.FeedID_;
+		}
+
+		updatesManager.UpdateFeeds (feedIDs);
+
+		if (!duplicates.isEmpty ())
+		{
+			qWarning () << "skipped duplicates:" << duplicates;
+
+			const auto& msg = duplicates.size () > 1 ?
+					QObject::tr ("%n already existing feed(s) were not added.", nullptr, duplicates.size ()) :
+					QObject::tr ("Already existing feed %1 was not added.").arg (duplicates [0]);
+
+			auto e = Util::MakeNotification (NotificationTitle, msg, Priority::Warning);
 			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
-			return;
 		}
+	}
 
-		Feed feed;
-		feed.URL_ = url;
-		sb->AddFeed (feed);
-		sb->SetFeedTags (feed.FeedID_, GetProxyHolder ()->GetTagsManager ()->GetIDs (params.Tags_));
-
-		if (params.FeedSettings_)
-		{
-			auto fs = *params.FeedSettings_;
-			fs.FeedID_ = feed.FeedID_;
-			sb->SetFeedSettings (fs);
-		}
-
-		params.UpdatesManager_.UpdateFeed (feed.FeedID_);
+	void AddFeed (UpdatesManager& updatesManager, const AddFeedParams& params)
+	{
+		AddFeeds (updatesManager, { params });
 	}
 }

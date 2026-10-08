@@ -90,6 +90,7 @@ namespace LC::Aggregator::Opml
 		if (importDialog.exec () == QDialog::Rejected)
 			return;
 
+		QList<AddFeedParams> feeds;
 		const auto& tags = GetProxyHolder ()->GetTagsManager ()->Split (importDialog.GetTags ());
 		for (const auto& item : importDialog.GetSelectedItems ())
 		{
@@ -97,13 +98,13 @@ namespace LC::Aggregator::Opml
 			if (item.CustomFetchInterval_)
 				interval = item.FetchInterval_;
 
-			AddFeed ({
+			feeds.push_back ({
 						.URL_ = item.URL_,
 						.Tags_ = tags + item.Categories_,
 						.FeedSettings_ = { { IDNotFound, interval, item.MaxArticleNumber_, item.MaxArticleAge_, false } },
-						.UpdatesManager_ = updatesManager,
 					});
 		}
+		AddFeeds (updatesManager, feeds);
 	}
 
 	void HandleOpmlEntity (const Entity& e, std::weak_ptr<UpdatesManager> updatesManager)

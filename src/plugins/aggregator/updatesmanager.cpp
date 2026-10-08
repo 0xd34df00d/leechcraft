@@ -99,7 +99,7 @@ namespace LC::Aggregator
 		}
 	}
 
-	void UpdatesManager::UpdateFeeds ()
+	void UpdatesManager::UpdateAllFeeds ()
 	{
 		XmlSettingsManager::Instance ().setProperty ("LastUpdateDateTime", QDateTime::currentDateTime ());
 
@@ -108,9 +108,9 @@ namespace LC::Aggregator
 		UpdateFeedsAsync (Util::Filter (sb->GetFeedsIDs (), isStandardTimer), sb);
 	}
 
-	void UpdatesManager::UpdateFeed (IDType_t feedId)
+	void UpdatesManager::UpdateFeeds (const ids_t& feeds)
 	{
-		UpdateFeedsAsync ({ feedId }, StorageBackendManager::Instance ().MakeStorageBackendForThread ());
+		UpdateFeedsAsync (feeds, StorageBackendManager::Instance ().MakeStorageBackendForThread ());
 	}
 
 	void UpdatesManager::Tick ()
@@ -119,7 +119,7 @@ namespace LC::Aggregator
 			return;
 
 		if (std::exchange (DoStartupUpdate_, false) || ShouldUpdateNow ())
-			UpdateFeeds ();
+			UpdateAllFeeds ();
 
 		HandleCustomUpdates ();
 	}
