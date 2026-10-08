@@ -46,14 +46,23 @@ namespace LC::Util::detail
 				QMetaObject::invokeMethod (this, Cont_, Qt::QueuedConnection);
 			}
 
+			void HandleDestroyed ()
+			{
+				if (!Result_)
+					QMetaObject::invokeMethod (this, Cont_, Qt::QueuedConnection);
+			}
+
 			auto GetRet ()
 			{
 				constexpr auto BrgsCount = sizeof... (Brgs);
 
 				if constexpr (BrgsCount == 1)
-					return std::move (std::get<0> (*Result_));
+					return std::move (Result_)
+							.transform ([] (std::tuple<Brgs...>&& tup) { return std::get<0> (std::move (tup)); });
 				else if constexpr (BrgsCount > 1)
-					return std::move (*Result_);
+					return std::move (Result_);
+				else
+					return static_cast<bool> (Result_);
 			}
 		};
 
@@ -76,6 +85,10 @@ namespace LC::Util::detail
 					&Holder_,
 					&Holder::Handle,
 					Qt::SingleShotConnection);
+			QObject::connect (&Obj_,
+					&QObject::destroyed,
+					&Holder_,
+					&Holder::HandleDestroyed);
 		}
 
 		auto await_resume ()

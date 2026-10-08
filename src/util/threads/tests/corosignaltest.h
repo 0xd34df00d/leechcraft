@@ -52,6 +52,8 @@ namespace LC::Util
 		void testManyAwaitersOneEmission ();
 		void testReawaitSame ();
 
+		void testSenderDeathYieldsNullopt ();
+		void testEmissionBeforeDeathKeepsValue ();
 		void testContextDeathDisconnects ();
 		void testEmittedFromAnotherThread ();
 	};

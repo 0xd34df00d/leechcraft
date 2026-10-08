@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <functional>
 #include <memory>
+#include <optional>
 #include <tuple>
 #include <type_traits>
 #include <QThread>
@@ -28,17 +29,13 @@ namespace LC::Util
 	void CoroSignalTest::testNoArgs ()
 	{
 		SignalEmitter emitter;
-		bool resumed = false;
-		auto task = [] (SignalEmitter& emitter, bool& resumed) -> Task<void>
+		auto task = [] (SignalEmitter& emitter) -> Task<bool>
 		{
-			co_await Signal { emitter, &SignalEmitter::NoArgs };
-			resumed = true;
-		} (emitter, resumed);
+			co_return co_await Signal { emitter, &SignalEmitter::NoArgs };
+		} (emitter);
 
-		QVERIFY (!resumed);
 		emit emitter.NoArgs ();
-		GetTaskResult (task);
-		QVERIFY (resumed);
+		QVERIFY (GetTaskResult (task));
 	}
 
 	void CoroSignalTest::testOneArg ()
@@ -46,7 +43,9 @@ namespace LC::Util
 		SignalEmitter emitter;
 		auto task = [] (SignalEmitter& emitter) -> Task<int>
 		{
-			co_return co_await Signal { emitter, &SignalEmitter::OneArg };
+			auto value = co_await Signal { emitter, &SignalEmitter::OneArg };
+			static_assert (std::is_same_v<decltype (value), std::optional<int>>);
+			co_return value.value ();
 		} (emitter);
 
 		emit emitter.OneArg (42);
@@ -58,7 +57,9 @@ namespace LC::Util
 		SignalEmitter emitter;
 		auto task = [] (SignalEmitter& emitter) -> Task<std::tuple<int, QString>>
 		{
-			co_return co_await Signal { emitter, &SignalEmitter::TwoArgs };
+			auto value = co_await Signal { emitter, &SignalEmitter::TwoArgs };
+			static_assert (std::is_same_v<decltype (value), std::optional<std::tuple<int, QString>>>);
+			co_return value.value ();
 		} (emitter);
 
 		emit emitter.TwoArgs (7, "seven"_qs);
@@ -73,8 +74,8 @@ namespace LC::Util
 		auto task = [] (SignalEmitter& emitter) -> Task<QString>
 		{
 			auto value = co_await Signal { emitter, &SignalEmitter::RefArg };
-			static_assert (std::is_same_v<decltype (value), QString>);
-			co_return value;
+			static_assert (std::is_same_v<decltype (value), std::optional<QString>>);
+			co_return value.value ();
 		} (emitter);
 
 		emit emitter.RefArg (QString::number (42));
@@ -86,7 +87,7 @@ namespace LC::Util
 		SignalEmitter emitter;
 		auto task = [] (SignalEmitter& emitter) -> Task<QString>
 		{
-			co_return co_await Signal { emitter, qOverload<const QString&> (&SignalEmitter::Overloaded) };
+			co_return (co_await Signal { emitter, qOverload<const QString&> (&SignalEmitter::Overloaded) }).value ();
 		} (emitter);
 
 		emit emitter.Overloaded (1);
@@ -99,19 +100,19 @@ namespace LC::Util
 	{
 		QTimer timer;
 		timer.setSingleShot (true);
-		auto timedOut = [] (QTimer& timer) -> Task<void>
+		auto timedOut = [] (QTimer& timer) -> Task<bool>
 		{
 			co_return co_await Signal { timer, &QTimer::timeout };
 		} (timer);
 		timer.start (0);
-		GetTaskResult (timedOut);
+		QVERIFY (GetTaskResult (timedOut));
 
 		QObject object;
 		auto renamed = [] (QObject& object) -> Task<QString>
 		{
 			auto name = co_await Signal { object, &QObject::objectNameChanged };
-			static_assert (std::is_same_v<decltype (name), QString>);
-			co_return name;
+			static_assert (std::is_same_v<decltype (name), std::optional<QString>>);
+			co_return name.value ();
 		} (object);
 		object.setObjectName ("renamed"_qs);
 		QCOMPARE (GetTaskResult (renamed), "renamed"_qs);
@@ -120,14 +121,16 @@ namespace LC::Util
 	void CoroSignalTest::testBaseClassThroughDerived ()
 	{
 		auto emitter = std::make_unique<SignalEmitter> ();
-		auto task = [] (SignalEmitter& emitter) -> Task<QObject*>
+		auto task = [] (SignalEmitter& emitter) -> Task<std::optional<QObject*>>
 		{
 			co_return co_await Signal { emitter, &QObject::destroyed };
 		} (*emitter);
 
 		QObject *expected = emitter.get ();
 		emitter.reset ();
-		QCOMPARE (GetTaskResult (task), expected);
+		const auto result = GetTaskResult (task);
+		QVERIFY (result.has_value ());
+		QCOMPARE (*result, expected);
 	}
 
 	void CoroSignalTest::testResumesAfterEmitReturns ()
@@ -168,7 +171,7 @@ namespace LC::Util
 		int resumes = 0;
 		auto task = [] (SignalEmitter& emitter, int& resumes) -> Task<int>
 		{
-			const auto value = co_await Signal { emitter, &SignalEmitter::OneArg };
+			const auto value = (co_await Signal { emitter, &SignalEmitter::OneArg }).value ();
 			++resumes;
 			co_return value;
 		} (emitter, resumes);
@@ -186,16 +189,19 @@ namespace LC::Util
 	{
 		SignalEmitter emitter;
 		QVERIFY (!emitter.IsConnected (&SignalEmitter::OneArg));
+		QVERIFY (!emitter.IsConnected (&QObject::destroyed));
 
 		auto task = [] (SignalEmitter& emitter) -> Task<int>
 		{
-			co_return co_await Signal { emitter, &SignalEmitter::OneArg };
+			co_return (co_await Signal { emitter, &SignalEmitter::OneArg }).value ();
 		} (emitter);
 		QVERIFY (emitter.IsConnected (&SignalEmitter::OneArg));
+		QVERIFY (emitter.IsConnected (&QObject::destroyed));
 
 		emit emitter.OneArg (5);
 		QCOMPARE (GetTaskResult (task), 5);
 		QVERIFY (!emitter.IsConnected (&SignalEmitter::OneArg));
+		QVERIFY (!emitter.IsConnected (&QObject::destroyed));
 	}
 
 	void CoroSignalTest::testManyAwaitersOneEmission ()
@@ -203,7 +209,7 @@ namespace LC::Util
 		SignalEmitter emitter;
 		const auto awaitOneArg = [] (SignalEmitter& emitter) -> Task<int>
 		{
-			co_return co_await Signal { emitter, &SignalEmitter::OneArg };
+			co_return (co_await Signal { emitter, &SignalEmitter::OneArg }).value ();
 		};
 		auto first = awaitOneArg (emitter);
 		auto second = awaitOneArg (emitter);
@@ -226,7 +232,7 @@ namespace LC::Util
 			const Signal signal { emitter, &SignalEmitter::OneArg };
 			QList<int> values;
 			while (values.size () < 3)
-				values << co_await signal;
+				values << (co_await signal).value ();
 			co_return values;
 		} (emitter);
 
@@ -236,6 +242,54 @@ namespace LC::Util
 		QVERIFY (std::ranges::adjacent_find (values, std::greater_equal {}) == values.end ());
 	}
 
+	void CoroSignalTest::testSenderDeathYieldsNullopt ()
+	{
+		auto emitter = std::make_unique<SignalEmitter> ();
+		bool resumed = false;
+		auto noArgs = [] (SignalEmitter& emitter) -> Task<bool>
+		{
+			co_return co_await Signal { emitter, &SignalEmitter::NoArgs };
+		} (*emitter);
+		auto oneArg = [] (SignalEmitter& emitter, bool& resumed) -> Task<std::optional<int>>
+		{
+			const auto value = co_await Signal { emitter, &SignalEmitter::OneArg };
+			resumed = true;
+			co_return value;
+		} (*emitter, resumed);
+		auto twoArgs = [] (SignalEmitter& emitter) -> Task<std::optional<std::tuple<int, QString>>>
+		{
+			co_return co_await Signal { emitter, &SignalEmitter::TwoArgs };
+		} (*emitter);
+
+		emitter.reset ();
+		QVERIFY (!resumed);
+
+		QVERIFY (!GetTaskResult (noArgs));
+		QVERIFY (!GetTaskResult (oneArg).has_value ());
+		QVERIFY (!GetTaskResult (twoArgs).has_value ());
+	}
+
+	void CoroSignalTest::testEmissionBeforeDeathKeepsValue ()
+	{
+		auto emitter = std::make_unique<SignalEmitter> ();
+		int resumes = 0;
+		auto task = [] (SignalEmitter& emitter, int& resumes) -> Task<std::optional<int>>
+		{
+			const auto value = co_await Signal { emitter, &SignalEmitter::OneArg };
+			++resumes;
+			co_return value;
+		} (*emitter, resumes);
+
+		emit emitter->OneArg (5);
+		emitter.reset ();
+
+		const auto result = GetTaskResult (task);
+		QVERIFY (result.has_value ());
+		QCOMPARE (*result, 5);
+		QTest::qWait (10);
+		QCOMPARE (resumes, 1);
+	}
+
 	void CoroSignalTest::testContextDeathDisconnects ()
 	{
 		SignalEmitter emitter;
@@ -243,12 +297,13 @@ namespace LC::Util
 		auto task = [] (CoroContext *context, SignalEmitter& emitter) -> ContextTask<int>
 		{
 			co_await AddContext { *context };
-			co_return co_await Signal { emitter, &SignalEmitter::OneArg };
+			co_return (co_await Signal { emitter, &SignalEmitter::OneArg }).value ();
 		} (&*context, emitter);
 		QVERIFY (emitter.IsConnected (&SignalEmitter::OneArg));
 
 		context.reset ();
 		QVERIFY (!emitter.IsConnected (&SignalEmitter::OneArg));
+		QVERIFY (!emitter.IsConnected (&QObject::destroyed));
 
 		emit emitter.OneArg (42);
 		QVERIFY_THROWS_EXCEPTION (ContextDeadException, GetTaskResult (task));
@@ -265,7 +320,7 @@ namespace LC::Util
 		QThread *resumedOn = nullptr;
 		auto task = [] (SignalEmitter& emitter, QThread*& resumedOn) -> Task<int>
 		{
-			const auto value = co_await Signal { emitter, &SignalEmitter::OneArg };
+			const auto value = (co_await Signal { emitter, &SignalEmitter::OneArg }).value ();
 			resumedOn = QThread::currentThread ();
 			co_return value;
 		} (emitter, resumedOn);
