@@ -60,23 +60,16 @@ namespace LC::Monocle::Boop
 		return attrValue;
 	}
 
-	namespace
-	{
-		void BuildId2ElementMap (const QDomElement& elem, QHash<QString, QDomElement>& result)
-		{
-			if (const auto& id = elem.attribute ("id"_qs); !id.isEmpty ())
-				result [QUrl::fromPercentEncoding (id.toUtf8 ())] = elem;
-
-			for (const auto& child : Util::DomChildren (elem, {}))
-				BuildId2ElementMap (child, result);
-		}
-	}
-
 	QHash<QString, QDomElement> BuildId2ElementMap (const QDomElement& root)
 	{
 		QHash<QString, QDomElement> result;
-		// TODO C++23 deducing this
-		BuildId2ElementMap (root, result);
+		[&result] (this const auto& self, const QDomElement& elem) -> void
+		{
+			if (const auto& id = elem.attribute ("id"_qs); !id.isEmpty ())
+				result [QUrl::fromPercentEncoding (id.toUtf8 ())] = elem;
+			for (const auto& child : Util::DomChildren (elem, {}))
+				self (child);
+		} (root);
 		return result;
 	}
 }
