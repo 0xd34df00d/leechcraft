@@ -16,7 +16,7 @@ LC_DEFINE_PLUGIN (
 		microcssparser.cpp
 		toc.cpp
 		util.cpp
-	QT_COMPONENTS Core5Compat Gui Xml
+	QT_COMPONENTS Core5Compat Gui Xml  # TODO remove Core5Compat once target distros migrate off Quazip ≤1.7.1
 	LINK_LIBRARIES PkgConfig::QuaZip leechcraft-monocle-util
 	INSTALL_DESKTOP
 	)
