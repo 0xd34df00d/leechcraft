@@ -15,4 +15,5 @@
 #include "coro/task.h"
 #include "coro/timer.h"
 #include "coro/networkresult.h"
+#include "coro/signal.h"
 #include "coro/context.h"
