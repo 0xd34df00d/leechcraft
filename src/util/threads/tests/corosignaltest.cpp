@@ -11,6 +11,7 @@
 #include <functional>
 #include <memory>
 #include <optional>
+#include <stdexcept>
 #include <tuple>
 #include <type_traits>
 #include <QThread>
@@ -240,6 +241,164 @@ namespace LC::Util
 		ticker.stop ();
 		QCOMPARE (values.size (), 3);
 		QVERIFY (std::ranges::adjacent_find (values, std::greater_equal {}) == values.end ());
+	}
+
+	void CoroSignalTest::testHandlerResultIsAwaited ()
+	{
+		SignalEmitter emitter;
+		auto task = [] (SignalEmitter& emitter) -> Task<double>
+		{
+			auto value = co_await Signal { emitter, &SignalEmitter::OneArg, [] (int value) { return value / 2.0; } };
+			static_assert (std::is_same_v<decltype (value), std::optional<double>>);
+			co_return value.value ();
+		} (emitter);
+
+		emit emitter.OneArg (21);
+		QCOMPARE (GetTaskResult (task), 10.5);
+	}
+
+	void CoroSignalTest::testHandlerRunsInsideEmit ()
+	{
+		SignalEmitter emitter;
+		int stage = 0;
+		int stageInHandler = -1;
+		int stageAtResume = -1;
+		auto task = [] (SignalEmitter& emitter, const int& stage, int& stageInHandler, int& stageAtResume) -> Task<void>
+		{
+			co_await Signal { emitter, &SignalEmitter::NoArgs, [&] { stageInHandler = stage; return true; } };
+			stageAtResume = stage;
+		} (emitter, stage, stageInHandler, stageAtResume);
+
+		emit emitter.NoArgs ();
+		stage = 1;
+		GetTaskResult (task);
+		QCOMPARE (stageInHandler, 0);
+		QCOMPARE (stageAtResume, 1);
+	}
+
+	void CoroSignalTest::testHandlerSnapshotsDyingSender ()
+	{
+		auto emitter = std::make_unique<SignalEmitter> ();
+		emitter->setObjectName ("snapshot"_qs);
+		auto task = [] (SignalEmitter& emitter) -> Task<std::optional<QString>>
+		{
+			co_return co_await Signal { emitter, &SignalEmitter::NoArgs, [&emitter] { return emitter.objectName (); } };
+		} (*emitter);
+
+		emit emitter->NoArgs ();
+		emitter.reset ();
+		const auto result = GetTaskResult (task);
+		QVERIFY (result.has_value ());
+		QCOMPARE (*result, "snapshot"_qs);
+	}
+
+	void CoroSignalTest::testHandlerTupleArgs ()
+	{
+		SignalEmitter emitter;
+		auto task = [] (SignalEmitter& emitter) -> Task<QString>
+		{
+			const auto handler = [] (int number, const QString& name) { return name + u':' + QString::number (number); };
+			co_return (co_await Signal { emitter, &SignalEmitter::TwoArgs, handler }).value ();
+		} (emitter);
+
+		emit emitter.TwoArgs (7, "seven"_qs);
+		QCOMPARE (GetTaskResult (task), "seven:7"_qs);
+	}
+
+	void CoroSignalTest::testHandlerPrivateTagStripped ()
+	{
+		QTimer timer;
+		timer.setSingleShot (true);
+		auto timedOut = [] (QTimer& timer) -> Task<std::optional<int>>
+		{
+			co_return co_await Signal { timer, &QTimer::timeout, [] { return 42; } };
+		} (timer);
+		timer.start (0);
+		QCOMPARE (GetTaskResult (timedOut).value (), 42);
+
+		QObject object;
+		auto renamed = [] (QObject& object) -> Task<QString>
+		{
+			co_return (co_await Signal { object, &QObject::objectNameChanged, [] (const QString& name) { return name.toUpper (); } }).value ();
+		} (object);
+		object.setObjectName ("renamed"_qs);
+		QCOMPARE (GetTaskResult (renamed), "RENAMED"_qs);
+	}
+
+	void CoroSignalTest::testHandlerRunsOnce ()
+	{
+		SignalEmitter emitter;
+		int calls = 0;
+		auto task = [] (SignalEmitter& emitter, int& calls) -> Task<int>
+		{
+			co_return (co_await Signal { emitter, &SignalEmitter::OneArg, [&calls] (int value) { ++calls; return value; } }).value ();
+		} (emitter, calls);
+
+		emit emitter.OneArg (1);
+		emit emitter.OneArg (2);
+		QCOMPARE (GetTaskResult (task), 1);
+		QCOMPARE (calls, 1);
+	}
+
+	void CoroSignalTest::testHandlerSenderDeathYieldsNullopt ()
+	{
+		auto emitter = std::make_unique<SignalEmitter> ();
+		bool handlerRan = false;
+		auto task = [] (SignalEmitter& emitter, bool& handlerRan) -> Task<std::optional<int>>
+		{
+			co_return co_await Signal { emitter, &SignalEmitter::OneArg, [&handlerRan] (int value) { handlerRan = true; return value; } };
+		} (*emitter, handlerRan);
+
+		emitter.reset ();
+		QVERIFY (!GetTaskResult (task).has_value ());
+		QVERIFY (!handlerRan);
+	}
+
+	void CoroSignalTest::testHandlerExceptionRethrownAtAwait ()
+	{
+		auto emitter = std::make_unique<SignalEmitter> ();
+		int resumes = 0;
+		QString caught;
+		auto task = [] (SignalEmitter& emitter, int& resumes, QString& caught) -> Task<void>
+		{
+			try
+			{
+				co_await Signal { emitter, &SignalEmitter::OneArg, [] (int) -> int { throw std::runtime_error { "boom" }; } };
+			}
+			catch (const std::runtime_error& e)
+			{
+				caught = QString::fromUtf8 (e.what ());
+			}
+			++resumes;
+		} (*emitter, resumes, caught);
+
+		emit emitter->OneArg (1);
+		emitter.reset ();
+		GetTaskResult (task);
+		QCOMPARE (caught, "boom"_qs);
+		QTest::qWait (10);
+		QCOMPARE (resumes, 1);
+	}
+
+	void CoroSignalTest::testHandlerCopiedPerAwait ()
+	{
+		SignalEmitter emitter;
+		QTimer ticker;
+		ticker.callOnTimeout ([&] { emit emitter.OneArg (10); });
+		ticker.start (0);
+
+		auto task = [] (SignalEmitter& emitter) -> Task<QList<int>>
+		{
+			const Signal signal { emitter, &SignalEmitter::OneArg, [calls = 0] (int value) mutable { return value + calls++; } };
+			QList<int> values;
+			while (values.size () < 3)
+				values << (co_await signal).value ();
+			co_return values;
+		} (emitter);
+
+		const auto values = GetTaskResult (task);
+		ticker.stop ();
+		QCOMPARE (values, (QList<int> { 10, 10, 10 }));
 	}
 
 	void CoroSignalTest::testSenderDeathYieldsNullopt ()

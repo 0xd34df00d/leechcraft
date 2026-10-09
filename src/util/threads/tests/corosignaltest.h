@@ -52,6 +52,16 @@ namespace LC::Util
 		void testManyAwaitersOneEmission ();
 		void testReawaitSame ();
 
+		void testHandlerResultIsAwaited ();
+		void testHandlerRunsInsideEmit ();
+		void testHandlerSnapshotsDyingSender ();
+		void testHandlerTupleArgs ();
+		void testHandlerPrivateTagStripped ();
+		void testHandlerRunsOnce ();
+		void testHandlerSenderDeathYieldsNullopt ();
+		void testHandlerExceptionRethrownAtAwait ();
+		void testHandlerCopiedPerAwait ();
+
 		void testSenderDeathYieldsNullopt ();
 		void testEmissionBeforeDeathKeepsValue ();
 		void testContextDeathDisconnects ();
