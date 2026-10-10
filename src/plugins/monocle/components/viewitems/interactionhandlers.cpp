@@ -483,7 +483,7 @@ namespace LC::Monocle
 
 			item.RegisterChildRect (rectItem.get (),
 					box.Rect_,
-					[&rectItem] (const PageAbsoluteRect& rect) { rectItem->setRect (rect.ToRectF ()); });
+					[rawItem = rectItem.get ()] (const PageAbsoluteRect& rect) { rawItem->setRect (rect.ToRectF ()); });
 			infos.emplace_back (box, std::move (rectItem));
 		}
 
