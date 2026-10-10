@@ -14,7 +14,6 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <util/sll/debugprinters.h>
 #include <util/sll/either.h>
-#include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <util/threads/coro.h>
 #include <util/threads/coro/throttle.h>
@@ -82,9 +81,9 @@ namespace LC::Aggregator
 
 	namespace
 	{
-		bool IsCustomTimer (const SQLStorageBackend& sb, IDType_t feedId)
+		void StampStandardUpdate ()
 		{
-			return sb.GetFeedSettings (feedId).value_or (Feed::FeedSettings {}).UpdateTimeout_;
+			XmlSettingsManager::Instance ().setProperty ("LastUpdateDateTime", QDateTime::currentDateTime ());
 		}
 
 		bool ShouldUpdateNow ()
@@ -97,14 +96,37 @@ namespace LC::Aggregator
 			const auto interval = minutes { xsm.property ("UpdateInterval").toInt () };
 			return interval != minutes::zero () && sinceLast >= interval;
 		}
+
+		auto GetUpdateIds ()
+		{
+			struct
+			{
+				ids_t Standard_;
+				QList<QPair<IDType_t, std::chrono::minutes>> Custom_;
+			} result;
+
+			const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+
+			const auto& allIds = sb->GetFeedsIDs ();
+			result.Standard_.reserve (allIds.size ());
+			result.Custom_.reserve (allIds.size ());
+
+			for (const auto id : allIds)
+				if (const auto timeout = sb->GetFeedSettings (id).value_or ({}).UpdateTimeout_)
+					result.Custom_ << QPair { id, std::chrono::minutes { timeout } };
+				else
+					result.Standard_ << id;
+
+			return result;
+		}
 	}
 
 	void UpdatesManager::UpdateAllFeeds ()
 	{
-		RunStandardUpdates ();
+		StampStandardUpdate ();
 
-		CustomUpdatesStamps_.clear ();
-		RunCustomUpdates ();
+		const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+		UpdateFeeds (sb->GetFeedsIDs ());
 	}
 
 	void UpdatesManager::UpdateFeeds (const ids_t& feeds)
@@ -117,44 +139,22 @@ namespace LC::Aggregator
 		if (!IsNetworkAllowed<FeedsUpdate> ())
 			return;
 
+		const auto& ids = GetUpdateIds ();
+
+		ids_t toUpdate;
 		if (std::exchange (DoStartupUpdate_, false) || ShouldUpdateNow ())
-			RunStandardUpdates ();
-
-		RunCustomUpdates ();
-	}
-
-	void UpdatesManager::RunStandardUpdates ()
-	{
-		XmlSettingsManager::Instance ().setProperty ("LastUpdateDateTime", QDateTime::currentDateTime ());
-
-		const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-		const auto isStandardTimer = [&sb] (IDType_t id) { return !IsCustomTimer (*sb, id); };
-		UpdateFeedsAsync (Util::Filter (sb->GetFeedsIDs (), isStandardTimer), sb);
-	}
-
-	void UpdatesManager::RunCustomUpdates ()
-	{
-		const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-
-		ids_t feeds;
-
-		const auto& current = QDateTime::currentDateTime ();
-		for (const auto id : sb->GetFeedsIDs ())
 		{
-			const auto& feedSettings = sb->GetFeedSettings (id);
-			// It's handled by normal timer.
-			if (!feedSettings || !feedSettings->UpdateTimeout_)
-				continue;
-
-			if (!CustomUpdatesStamps_.contains (id) ||
-					seconds { CustomUpdatesStamps_ [id].secsTo (current) } >= minutes { feedSettings->UpdateTimeout_ })
-			{
-				feeds << id;
-				CustomUpdatesStamps_ [id] = QDateTime::currentDateTime ();
-			}
+			StampStandardUpdate ();
+			toUpdate = ids.Standard_;
 		}
 
-		UpdateFeedsAsync (feeds, sb);
+		const auto& now = QDateTime::currentDateTime ();
+		for (const auto& [id, interval] : ids.Custom_)
+			if (const auto& lastUpdate = UpdatesStamps_ [id];
+				!lastUpdate.isValid () || seconds { lastUpdate.secsTo (now) } >= interval)
+				toUpdate << id;
+
+		UpdateFeeds (toUpdate);
 	}
 
 	namespace
@@ -205,6 +205,8 @@ namespace LC::Aggregator
 
 	Util::ContextTask<void> UpdatesManager::UpdateFeedAsync (IDType_t feedId, Util::ProgressModelRow& row, SQLStorageBackend_ptr sb)
 	{
+		UpdatesStamps_ [feedId] = QDateTime::currentDateTime ();
+
 		const auto bumpRow = Util::MakeScopeGuard ([&row] { ++row; });
 
 		co_await Util::AddContext { CoroContext_ };
