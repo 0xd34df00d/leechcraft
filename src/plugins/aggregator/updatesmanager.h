@@ -33,7 +33,7 @@ namespace LC::Aggregator
 		const DBUpdateThread_ptr DBUpThread_;
 		const std::shared_ptr<FeedsErrorManager> FeedsErrorManager_;
 
-		QHash<IDType_t, QDateTime> Updates_;
+		QHash<IDType_t, QDateTime> CustomUpdatesStamps_;
 		Util::Throttle UpdateThrottle_;
 
 		Util::ProgressManager& ProgressManager_;
@@ -53,7 +53,8 @@ namespace LC::Aggregator
 		void UpdateAllFeeds ();
 	private:
 		void Tick ();
-		void HandleCustomUpdates ();
+		void RunStandardUpdates ();
+		void RunCustomUpdates ();
 
 		Util::ContextTask<void> UpdateFeedsAsync (ids_t, SQLStorageBackend_ptr);
 		Util::ContextTask<void> UpdateFeedAsync (IDType_t, Util::ProgressModelRow&, SQLStorageBackend_ptr);

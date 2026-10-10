@@ -101,11 +101,10 @@ namespace LC::Aggregator
 
 	void UpdatesManager::UpdateAllFeeds ()
 	{
-		XmlSettingsManager::Instance ().setProperty ("LastUpdateDateTime", QDateTime::currentDateTime ());
+		RunStandardUpdates ();
 
-		const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
-		const auto isStandardTimer = [&sb] (IDType_t id) { return !IsCustomTimer (*sb, id); };
-		UpdateFeedsAsync (Util::Filter (sb->GetFeedsIDs (), isStandardTimer), sb);
+		CustomUpdatesStamps_.clear ();
+		RunCustomUpdates ();
 	}
 
 	void UpdatesManager::UpdateFeeds (const ids_t& feeds)
@@ -119,12 +118,21 @@ namespace LC::Aggregator
 			return;
 
 		if (std::exchange (DoStartupUpdate_, false) || ShouldUpdateNow ())
-			UpdateAllFeeds ();
+			RunStandardUpdates ();
 
-		HandleCustomUpdates ();
+		RunCustomUpdates ();
 	}
 
-	void UpdatesManager::HandleCustomUpdates ()
+	void UpdatesManager::RunStandardUpdates ()
+	{
+		XmlSettingsManager::Instance ().setProperty ("LastUpdateDateTime", QDateTime::currentDateTime ());
+
+		const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
+		const auto isStandardTimer = [&sb] (IDType_t id) { return !IsCustomTimer (*sb, id); };
+		UpdateFeedsAsync (Util::Filter (sb->GetFeedsIDs (), isStandardTimer), sb);
+	}
+
+	void UpdatesManager::RunCustomUpdates ()
 	{
 		const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 
@@ -138,11 +146,11 @@ namespace LC::Aggregator
 			if (!feedSettings || !feedSettings->UpdateTimeout_)
 				continue;
 
-			if (!Updates_.contains (id) ||
-					seconds { Updates_ [id].secsTo (current) } >= minutes { feedSettings->UpdateTimeout_ })
+			if (!CustomUpdatesStamps_.contains (id) ||
+					seconds { CustomUpdatesStamps_ [id].secsTo (current) } >= minutes { feedSettings->UpdateTimeout_ })
 			{
 				feeds << id;
-				Updates_ [id] = QDateTime::currentDateTime ();
+				CustomUpdatesStamps_ [id] = QDateTime::currentDateTime ();
 			}
 		}
 
