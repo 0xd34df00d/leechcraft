@@ -21,6 +21,7 @@
 #include <util/xpc/progressmanager.h>
 #include <util/xpc/util.h>
 #include "components/network/availability.h"
+#include "components/network/util.h"
 #include "components/parsers/parse.h"
 #include "components/storage/sqlstoragebackend.h"
 #include "components/storage/storagebackendmanager.h"
@@ -196,7 +197,7 @@ namespace LC::Aggregator
 		Util::Task<Util::Either<QString, channels_container_t>> FetchChannels (IDType_t feedId, QString urlStr)
 		{
 			QNetworkRequest req { QUrl { urlStr } };
-			req.setHeader (QNetworkRequest::UserAgentHeader, "LeechCraft.Aggregator/"_qba + GetProxyHolder ()->GetVersion ().toLatin1 ());
+			SetStandardHeaders (req);
 			const auto result = co_await *GetProxyHolder ()->GetNetworkAccessManager ()->get (req);
 			const auto response = co_await result.ToEither ();
 			co_return co_await ParseChannels (response, urlStr, feedId);
