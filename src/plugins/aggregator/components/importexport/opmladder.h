@@ -25,6 +25,6 @@ namespace LC::Aggregator::Opml
 {
 	bool IsOpmlEntity (const Entity&);
 
-	void HandleOpmlFile (const QString&, UpdatesManager&);
+	void StartFileImport (UpdatesManager&);
 	void HandleOpmlEntity (const Entity&, std::weak_ptr<UpdatesManager>);
 }

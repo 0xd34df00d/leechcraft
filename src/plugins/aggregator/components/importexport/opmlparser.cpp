@@ -69,18 +69,17 @@ namespace LC::Aggregator
 		}
 	}
 
-	Util::Either<QString, OPMLParseResult> ParseOPML (const QString& filename)
+	Util::Either<QString, OPMLParseResult> ParseOPML (QIODevice& device, const QString& context)
 	{
-		QFile file { filename };
-		if (!file.open (QIODevice::ReadOnly))
-			return Util::Left { QObject::tr ("could not open file %1 for reading").arg (filename) };
+		if (!device.isOpen () && !device.open (QIODevice::ReadOnly))
+			return Util::Left { QObject::tr ("could not open source %1 for reading").arg (context) };
 
 		QDomDocument document;
-		if (const auto res = document.setContent (&file, QDomDocument::ParseOption::UseNamespaceProcessing);
+		if (const auto res = document.setContent (&device, QDomDocument::ParseOption::UseNamespaceProcessing);
 			!res)
 		{
-			qWarning () << "unable to parse" << filename << res;
-			return Util::Left { QObject::tr ("malformed XML file").arg (filename) };
+			qWarning () << "unable to parse" << context << res;
+			return Util::Left { QObject::tr ("malformed XML source %1").arg (context) };
 		}
 
 		return OPMLParseResult { .Info_ = ParseInfo (document), .Items_ = ParseOutlines (document) };

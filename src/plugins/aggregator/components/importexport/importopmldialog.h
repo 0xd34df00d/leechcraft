@@ -37,17 +37,22 @@ namespace LC::Aggregator
 
 		QHash<QStringView, QLabel*> Fields_;
 	public:
-		explicit ImportOPMLDialog (const QString& = {}, QWidget* = nullptr);
+		struct Browse {};
+		struct FilePath { QString File_; };
+		struct OpmlContents { QByteArray Contents_; QString SourceName_; };
+
+		using Source = std::variant<Browse, FilePath, OpmlContents>;
+
+		explicit ImportOPMLDialog (const Source& = Browse {}, QWidget* = nullptr);
 		~ImportOPMLDialog () override;
 
-		QString GetFilename () const;
 		QString GetTags () const;
 		QList<OPMLItem> GetSelectedItems () const;
 	private:
 		void HandleFilePathEdited (const QString&);
 		void BrowseFile ();
 
-		void HandleFile (const QString&);
+		void HandleDevice (QIODevice&, const QString&);
 		void Reset ();
 	};
 }

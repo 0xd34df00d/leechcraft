@@ -24,5 +24,5 @@ namespace LC::Aggregator
 		QList<OPMLItem> Items_;
 	};
 
-	Util::Either<QString, OPMLParseResult> ParseOPML (const QString& filename);
+	Util::Either<QString, OPMLParseResult> ParseOPML (QIODevice& device, const QString& context);
 }

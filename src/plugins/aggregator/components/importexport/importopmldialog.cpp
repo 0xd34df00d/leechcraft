@@ -7,14 +7,16 @@
  **********************************************************************/
 
 #include "importopmldialog.h"
+#include <QBuffer>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTimer>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <util/gui/util.h>
-#include <util/sll/qtutil.h>
 #include <util/sll/either.h>
+#include <util/sll/qtutil.h>
+#include <util/sll/visitor.h>
 #include <util/tags/tagseditdelegate.h>
 #include "common.h"
 #include "exportutils.h"
@@ -29,7 +31,7 @@ namespace LC::Aggregator
 		URL,
 	};
 
-	ImportOPMLDialog::ImportOPMLDialog (const QString& file, QWidget *parent)
+	ImportOPMLDialog::ImportOPMLDialog (const Source& source, QWidget *parent)
 	: QDialog { parent }
 	, Model_ {
 		std::tuple { Util::ItemsEditable::Param { { 1, 2 } } },
@@ -40,8 +42,6 @@ namespace LC::Aggregator
 	{
 		Ui_.setupUi (this);
 		setWindowIcon (GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ());
-
-		ManageLastPath ({ *Ui_.File_, "OPMLImportLastPath", {}, *this });
 
 		Ui_.FeedsView_->setModel (&Model_);
 		Ui_.FeedsView_->setItemDelegateForColumn (Categories,
@@ -67,21 +67,29 @@ namespace LC::Aggregator
 				this,
 				&ImportOPMLDialog::HandleFilePathEdited);
 
-		if (file.isEmpty ())
-			BrowseFile ();
-		else
-		{
-			Ui_.File_->setText (file);
-			HandleFilePathEdited (file);
-		}
+		Util::Visit (source,
+				[this] (Browse)
+				{
+					ManageLastPath ({ *Ui_.File_, "OPMLImportLastPath", {}, *this });
+					BrowseFile ();
+				},
+				[this] (const FilePath& path)
+				{
+					ManageLastPath ({ *Ui_.File_, "OPMLImportLastPath", {}, *this });
+					Ui_.File_->setText (path.File_);
+					HandleFilePathEdited (path.File_);
+				},
+				[this] (OpmlContents contents)
+				{
+					Ui_.File_->setText (contents.SourceName_);
+					Ui_.File_->setEnabled (false);
+					Ui_.Browse_->setEnabled (false);
+					QBuffer buffer { &contents.Contents_ };
+					HandleDevice (buffer, contents.SourceName_);
+				});
 	}
 
 	ImportOPMLDialog::~ImportOPMLDialog () = default;
-
-	QString ImportOPMLDialog::GetFilename () const
-	{
-		return Ui_.File_->text ();
-	}
 
 	QString ImportOPMLDialog::GetTags () const
 	{
@@ -100,7 +108,10 @@ namespace LC::Aggregator
 	void ImportOPMLDialog::HandleFilePathEdited (const QString& newFilename)
 	{
 		if (QFile::exists (newFilename))
-			HandleFile (newFilename);
+		{
+			QFile file { newFilename };
+			HandleDevice (file, newFilename);
+		}
 		else
 			Reset ();
 	}
@@ -122,12 +133,13 @@ namespace LC::Aggregator
 
 		Ui_.File_->setText (filename);
 
-		HandleFile (filename);
+		QFile file { filename };
+		HandleDevice (file, filename);
 	}
 
-	void ImportOPMLDialog::HandleFile (const QString& filename)
+	void ImportOPMLDialog::HandleDevice (QIODevice& device, const QString& context)
 	{
-		Util::Visit (ParseOPML (filename),
+		Util::Visit (ParseOPML (device, context),
 				[this] (const QString& error)
 				{
 					QMessageBox::critical (this, MessageBoxTitle, error);

@@ -114,7 +114,7 @@ namespace LC::Aggregator
 						dbup.SetAllChannelsRead ();
 				});
 		ToolsMenu_.addSection (tr ("Import/export"));
-		makeAction (ImportOPML, [&um] { Opml::HandleOpmlFile ({}, um); });
+		makeAction (ImportOPML, [&um] { Opml::StartFileImport (um); });
 		makeAction (ExportChannels, [&cm = deps.ChannelsModel_] { RunExportChannels (cm); });
 		makeAction (ExportItems, [&cm = deps.ChannelsModel_] { RunExportItems (cm); });
 

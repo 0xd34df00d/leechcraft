@@ -15,10 +15,9 @@
 #include <util/sll/either.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
-#include <util/sys/paths.h>
-#include <util/threads/coro/future.h>
 #include <util/threads/coro.h>
 #include <util/xpc/util.h>
+#include "components/network/util.h"
 #include "common.h"
 #include "dbutils.h"
 #include "importopmldialog.h"
@@ -47,65 +46,71 @@ namespace LC::Aggregator::Opml
 			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 		}
 
-		struct LocalFile
+		QUrl FixupItpc (QUrl url)
 		{
-			QString Path_;
-			[[maybe_unused]] Util::SharedScopeGuard RemoveGuard_;
-		};
+			if (url.scheme () == "itpc"_ql)
+				url.setScheme ("http"_qs);
+			return url;
+		}
 
-		Util::Task<Util::Either<QString, LocalFile>> HandleOpmlUrl (const QUrl& url)
+		struct LocalFile { QString Path_; };
+		struct RemoteContents { QByteArray Contents_; QUrl Url_; };
+		using FetchedOpml = std::variant<RemoteContents, LocalFile>;
+
+		Util::Task<Util::Either<QString, FetchedOpml>> HandleOpmlUrl (QUrl url)
 		{
 			if (url.isLocalFile ())
-				co_return LocalFile { url.toLocalFile (), [] {} };
+				co_return LocalFile { url.toLocalFile () };
 
-			const auto& name = Util::GetTemporaryName ();
-
-			auto removeGuard = Util::MakeScopeGuard ([name] { QFile::remove (name); });
-
-			const auto& dlEntity = Util::MakeEntity (url,
-					name,
-					Internal |
-							DoNotNotifyUser |
-							DoNotSaveInHistory |
-							NotPersistent |
-							DoNotAnnounceEntity);
-
-			const auto& handleResult = GetProxyHolder ()->GetEntityManager ()->DelegateEntity (dlEntity);
-			if (!handleResult)
-				co_return Util::Left { QObject::tr ("Could not find plugin to download OPML %1.")
-						.arg (url.toString ()) };
-
-			const auto result = co_await handleResult.DownloadResult_;
-			co_await WithHandler (result, [] (const IDownload::Error& error)
+			QNetworkRequest req { FixupItpc (url) };
+			SetStandardHeaders (req);
+			const auto result = co_await *GetProxyHolder ()->GetNetworkAccessManager ()->get (req);
+			const auto contents = co_await result.ToEither ()
+					.MapLeft ([&] (const QString& error)
 					{
-						return QObject::tr ("Unable to download the OPML file: %1.").arg (error.Message_);
+						return QObject::tr ("Unable to download the OPML file %1: %2.").arg (url.toString (), error);
 					});
+			co_return RemoteContents { contents, url };
+		}
 
-			co_return LocalFile { name, std::move (removeGuard).Shared () };
+		auto ToDialogSource (const FetchedOpml& opml)
+		{
+			using DialogSource = ImportOPMLDialog::Source;
+			return Util::Visit (opml,
+					[] (const LocalFile& file) -> DialogSource { return ImportOPMLDialog::FilePath { file.Path_ }; },
+					[] (const RemoteContents& remote) -> DialogSource
+					{
+						return ImportOPMLDialog::OpmlContents { remote.Contents_, remote.Url_.toString () };
+					});
+		}
+
+		void HandleOpml (const ImportOPMLDialog::Source& source, UpdatesManager& updatesManager)
+		{
+			ImportOPMLDialog importDialog { source };
+			if (importDialog.exec () == QDialog::Rejected)
+				return;
+
+			QList<AddFeedParams> feeds;
+			const auto& tags = GetProxyHolder ()->GetTagsManager ()->Split (importDialog.GetTags ());
+			for (const auto& item : importDialog.GetSelectedItems ())
+			{
+				int interval = 0;
+				if (item.CustomFetchInterval_)
+					interval = item.FetchInterval_;
+
+				feeds.push_back ({
+							.URL_ = item.URL_,
+							.Tags_ = tags + item.Categories_,
+							.FeedSettings_ = { { IDNotFound, interval, item.MaxArticleNumber_, item.MaxArticleAge_, false } },
+						});
+			}
+			AddFeeds (updatesManager, feeds);
 		}
 	}
 
-	void HandleOpmlFile (const QString& file, UpdatesManager& updatesManager)
+	void StartFileImport (UpdatesManager& updatesManager)
 	{
-		ImportOPMLDialog importDialog { file };
-		if (importDialog.exec () == QDialog::Rejected)
-			return;
-
-		QList<AddFeedParams> feeds;
-		const auto& tags = GetProxyHolder ()->GetTagsManager ()->Split (importDialog.GetTags ());
-		for (const auto& item : importDialog.GetSelectedItems ())
-		{
-			int interval = 0;
-			if (item.CustomFetchInterval_)
-				interval = item.FetchInterval_;
-
-			feeds.push_back ({
-						.URL_ = item.URL_,
-						.Tags_ = tags + item.Categories_,
-						.FeedSettings_ = { { IDNotFound, interval, item.MaxArticleNumber_, item.MaxArticleAge_, false } },
-					});
-		}
-		AddFeeds (updatesManager, feeds);
+		return HandleOpml (ImportOPMLDialog::Browse {}, updatesManager);
 	}
 
 	void HandleOpmlEntity (const Entity& e, std::weak_ptr<UpdatesManager> updatesManager)
@@ -113,12 +118,12 @@ namespace LC::Aggregator::Opml
 		[] (QUrl url, std::weak_ptr<UpdatesManager> updatesManager) -> Util::Task<void>
 		{
 			const auto remoteResult = co_await HandleOpmlUrl (url);
-			const auto localFile = co_await WithHandler (remoteResult, ReportError);
+			const auto opml = co_await WithHandler (remoteResult, ReportError);
 			if (const auto um = updatesManager.lock ())
 			{
-				// `HandleOpmlFile` spins a nested event loop inside, and while it's safe in this particular coro,
+				// `HandleOpml` spins a nested event loop inside, and while it's safe in this particular coro,
 				// it's annoyingly fragile, so it's safer and more robust to invoke it from outside the coro frame.
-				QTimer::singleShot (0, [=] { HandleOpmlFile (localFile.Path_, *um); });
+				QTimer::singleShot (0, [=] { HandleOpml (ToDialogSource (opml), *um); });
 			}
 		} (e.Entity_.toUrl (), std::move (updatesManager));
 	}
