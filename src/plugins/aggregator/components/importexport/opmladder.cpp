@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "opmladder.h"
+#include <QTimer>
 #include <QUrl>
 #include <interfaces/structures.h>
 #include <interfaces/core/ientitymanager.h>
@@ -114,7 +115,11 @@ namespace LC::Aggregator::Opml
 			const auto remoteResult = co_await HandleOpmlUrl (url);
 			const auto localFile = co_await WithHandler (remoteResult, ReportError);
 			if (const auto um = updatesManager.lock ())
-				HandleOpmlFile (localFile.Path_, *um);
+			{
+				// `HandleOpmlFile` spins a nested event loop inside, and while it's safe in this particular coro,
+				// it's annoyingly fragile, so it's safer and more robust to invoke it from outside the coro frame.
+				QTimer::singleShot (0, [=] { HandleOpmlFile (localFile.Path_, *um); });
+			}
 		} (e.Entity_.toUrl (), std::move (updatesManager));
 	}
 }

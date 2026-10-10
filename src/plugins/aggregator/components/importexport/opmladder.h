@@ -8,9 +8,7 @@
 
 #pragma once
 
-#include <optional>
 #include <memory>
-#include <QObject>
 #include "feed.h"
 
 namespace LC
