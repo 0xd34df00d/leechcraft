@@ -21,6 +21,7 @@
 #include "components/actions/itemactions.h"
 #include "components/importexport/opmladder.h"
 #include "components/models/channelsmodel.h"
+#include "components/network/util.h"
 #include "components/parsers/parse.h"
 #include "components/storage/storagebackendmanager.h"
 #include "addfeeddialog.h"
@@ -241,16 +242,7 @@ namespace Aggregator
 			return;
 		}
 
-		QUrl url = e.Entity_.toUrl ();
-		QString str = url.toString ();
-		if (str.startsWith ("feed://"))
-			str.replace (0, 4, "http");
-		else if (str.startsWith ("feed:"))
-			str.remove  (0, 5);
-		else if (str.startsWith ("itpc://"))
-			str.replace (0, 4, "http");
-
-		AddFeedDialog af { str };
+		AddFeedDialog af { FixupFeedScheme (e.Entity_.toUrl ()).toString () };
 		if (af.exec () == QDialog::Accepted)
 			AddFeed (*UpdatesManager_, { .URL_ = af.GetURL (), .Tags_ = af.GetTags () });
 	}

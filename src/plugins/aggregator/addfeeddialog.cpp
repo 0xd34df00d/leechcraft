@@ -7,11 +7,12 @@
  **********************************************************************/
 
 #include "addfeeddialog.h"
+#include <QUrl>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/itagsmanager.h>
 #include <util/tags/tagscompleter.h>
-#include <util/sll/qtutil.h>
+#include "components/network/util.h"
 
 namespace LC::Aggregator
 {
@@ -28,10 +29,7 @@ namespace LC::Aggregator
 
 	QString AddFeedDialog::GetURL () const
 	{
-		auto result = Ui_.URL_->text ().simplified ();
-		if (result.startsWith ("itpc"_ql))
-			result.replace (0, 4, "http"_ql);
-		return result;
+		return FixupFeedScheme (QUrl { Ui_.URL_->text ().simplified () }).toString ();
 	}
 
 	QStringList AddFeedDialog::GetTags () const

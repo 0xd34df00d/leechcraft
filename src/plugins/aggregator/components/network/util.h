@@ -9,8 +9,10 @@
 #pragma once
 
 class QNetworkRequest;
+class QUrl;
 
 namespace LC::Aggregator
 {
 	void SetStandardHeaders (QNetworkRequest&);
+	QUrl FixupFeedScheme (QUrl);
 }

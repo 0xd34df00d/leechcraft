@@ -8,6 +8,7 @@
 
 #include "util.h"
 #include <QNetworkRequest>
+#include <QUrl>
 #include <interfaces/core/icoreproxy.h>
 #include <util/sll/qtutil.h>
 
@@ -16,5 +17,21 @@ namespace LC::Aggregator
 	void SetStandardHeaders (QNetworkRequest& req)
 	{
 		req.setHeader (QNetworkRequest::UserAgentHeader, "LeechCraft.Aggregator/"_qba + GetProxyHolder ()->GetVersion ().toLatin1 ());
+	}
+
+	QUrl FixupFeedScheme (QUrl url)
+	{
+		const auto& scheme = url.scheme ();
+		constexpr auto feedMarker = "feed"_ql;
+		constexpr auto itpcMarker = "itpc"_ql;
+		if (scheme == feedMarker && url.host ().isEmpty ())
+		{
+			// feed:http://… kind of URLs
+			return QUrl { url.toString ().sliced (feedMarker.size () + "://"_ql.size ()) };
+		}
+
+		if (scheme == feedMarker || scheme == itpcMarker)
+			url.setScheme ("http"_qs);
+		return url;
 	}
 }

@@ -46,13 +46,6 @@ namespace LC::Aggregator::Opml
 			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 		}
 
-		QUrl FixupItpc (QUrl url)
-		{
-			if (url.scheme () == "itpc"_ql)
-				url.setScheme ("http"_qs);
-			return url;
-		}
-
 		struct LocalFile { QString Path_; };
 		struct RemoteContents { QByteArray Contents_; QUrl Url_; };
 		using FetchedOpml = std::variant<RemoteContents, LocalFile>;
@@ -62,7 +55,7 @@ namespace LC::Aggregator::Opml
 			if (url.isLocalFile ())
 				co_return LocalFile { url.toLocalFile () };
 
-			QNetworkRequest req { FixupItpc (url) };
+			QNetworkRequest req { FixupFeedScheme (url) };
 			SetStandardHeaders (req);
 			const auto result = co_await *GetProxyHolder ()->GetNetworkAccessManager ()->get (req);
 			const auto contents = co_await result.ToEither ()
