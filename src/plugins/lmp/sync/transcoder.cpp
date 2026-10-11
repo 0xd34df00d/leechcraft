@@ -177,7 +177,7 @@ namespace LC::LMP
 		const TranscodingData transcodingData { { origPath }, transcodedPath };
 		emit syncEvent (XcodingStarted { transcodingData });
 
-		auto removePartialOutput = Util::MakeScopeGuard ([&transcodedPath] { QFile::remove (transcodedPath); });
+		auto removeOutput = Util::MakeScopeGuard ([transcodedPath] { QFile::remove (transcodedPath); });
 
 		QProcess ffmpeg;
 #ifdef Q_OS_UNIX
@@ -188,10 +188,9 @@ namespace LC::LMP
 		const auto outcome = co_await ffmpeg;
 		if (outcome == Util::ProcessOutcome { Util::ProcessExited { .Code_ = 0 } })
 		{
-			removePartialOutput.Dismiss ();
 			CopyTags (origPath, transcodedPath);
 			emit syncEvent (XcodingFinished { transcodingData });
-			Results_.Send ({ origPath, Result::Success { transcodedPath } });
+			Results_.Send ({ origPath, Result::Success { transcodedPath, std::move (removeOutput).Shared () } });
 			co_return;
 		}
 

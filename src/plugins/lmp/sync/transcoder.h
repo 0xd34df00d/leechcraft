@@ -10,6 +10,7 @@
 
 #include <QObject>
 #include <util/sll/either.h>
+#include <util/sll/util.h>
 #include <util/threads/coro/channel.h>
 #include <util/threads/coro/taskfwd.h>
 #include <util/threads/coro/corocontext.h>
@@ -38,6 +39,7 @@ namespace LC::LMP
 			struct Success
 			{
 				QString TargetPath_;
+				Util::SharedScopeGuard Cleanup_ = [] {};
 			};
 			Util::Either<Failure, Success> Transcoded_;
 		};

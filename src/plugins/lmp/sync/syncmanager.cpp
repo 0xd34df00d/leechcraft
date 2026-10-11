@@ -9,7 +9,6 @@
 #include "syncmanager.h"
 #include <QStringList>
 #include <QtDebug>
-#include <QFileInfo>
 #include <util/sll/either.h>
 #include <util/threads/coro.h>
 #include <util/lmp/util.h>
@@ -50,9 +49,6 @@ namespace LC::LMP
 					.Target_ = context.Target_,
 					.Config_ = context.Config_,
 				});
-
-		if (transcoded != result.OrigPath_)
-			QFile::remove (transcoded);
 
 		Util::Visit (uploadResult,
 				[&, this] (ISyncPlugin::UploadSuccess) { emit syncEvent (CopyFinished { copyData }); },
