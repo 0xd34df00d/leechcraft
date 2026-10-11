@@ -34,6 +34,7 @@ extern "C"
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <util/azoth/util.h>
 #include "util.h"
 #include "authenticator.h"
 
@@ -263,18 +264,6 @@ namespace OTRoid
 		otrl_userstate_free (UserState_);
 	}
 
-	namespace
-	{
-		QString GetVisibleEntryNameImpl (ICLEntry *entry)
-		{
-			const auto& id = entry->GetHumanReadableID ();
-			const auto& name = entry->GetEntryName ();
-			return name != id ?
-					QString ("%1 (%2)").arg (name).arg (id) :
-					id;
-		}
-	}
-
 	void OtrHandler::HandleMessageCreated (bool& cancel, ICLEntry& entry, OutgoingMessage& msg)
 	{
 		if (IsGenerating_)
@@ -378,7 +367,7 @@ namespace OTRoid
 		if (tlv)
 		{
 			const auto& message = tr ("%1 has ended the private conversation with you, you should do the same.")
-					.arg (GetVisibleEntryNameImpl (entry));
+					.arg (FormatNameWithAddress (*entry));
 			NotifyConvFlow (*entry, message);
 		}
 		otrl_tlv_free (tlvs);
@@ -529,7 +518,7 @@ namespace OTRoid
 			return entryId;
 		}
 
-		return GetVisibleEntryNameImpl (entry);
+		return FormatNameWithAddress (*entry);
 	}
 
 	void OtrHandler::CreatePrivkey (const char *accName, const char *proto, bool confirm)

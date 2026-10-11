@@ -53,6 +53,7 @@
 #ifdef ENABLE_CRYPT
 #include "interfaces/azoth/isupportpgp.h"
 #endif
+#include "util/azoth/util.h"
 #include "components/dialogs/bookmarksmanagerdialog.h"
 #include "components/dialogs/userslistwidget.h"
 #include "components/util/entries.h"
@@ -455,9 +456,7 @@ namespace Azoth
 		const auto entry = GetEntry<ICLEntry> ();
 
 		const int parts = muc->GetParticipants ().size ();
-		QString text = entry->GetEntryName ();
-		if (entry->GetHumanReadableID () != text)
-			text += " (" + entry->GetHumanReadableID () + ")";
+		auto text = FormatNameWithAddress (*entry);
 		text += ' ' + tr ("[%n participant(s)]", nullptr, parts);
 		Ui_.EntryInfo_->setText (text);
 	}
@@ -908,9 +907,7 @@ namespace Azoth
 	void ChatTab::handleChatPartStateChanged (const ChatPartState& state, const QString&)
 	{
 		auto entry = GetEntry<ICLEntry> ();
-		QString text = entry->GetEntryName ();
-		if (entry->GetHumanReadableID () != text)
-			text += " (" + entry->GetHumanReadableID () + ")";
+		auto text = FormatNameWithAddress (*entry);
 
 		QString chatState;
 		switch (state)
@@ -1250,10 +1247,7 @@ namespace Azoth
 
 		handleVariantsChanged (entry->Variants ());
 
-		auto infoText = entry->GetEntryName ();
-		if (entry->GetHumanReadableID () != infoText)
-			infoText += " (" + entry->GetHumanReadableID () + ")";
-		Ui_.EntryInfo_->setText (infoText);
+		Ui_.EntryInfo_->setText (FormatNameWithAddress (*entry));
 
 		const auto& accName = entry->GetParentAccount ()->GetAccountName ();
 		Ui_.AccountName_->setText (accName);

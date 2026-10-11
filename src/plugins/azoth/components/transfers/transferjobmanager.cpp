@@ -315,11 +315,10 @@ namespace Azoth
 		Entry2Incoming_ [&*offer.Entry_] << offer;
 
 		const auto e = Util::MakeNotification ("Azoth",
-				tr ("File %1 (%2) offered from %3 (%4).")
+				tr ("File %1 (%2) offered from %3.")
 					.arg (offer.Name_,
 							Util::MakePrettySize (offer.Size_),
-							offer.Entry_->GetEntryName (),
-							offer.Entry_->GetHumanReadableAddress ()),
+							FormatNameWithAddress (*offer.Entry_)),
 				Priority::Info);
 
 		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, &*offer.Entry_)) >>

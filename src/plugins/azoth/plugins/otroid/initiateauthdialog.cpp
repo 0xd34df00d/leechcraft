@@ -9,6 +9,7 @@
 #include "initiateauthdialog.h"
 #include <QtDebug>
 #include <interfaces/azoth/iclentry.h>
+#include <util/azoth/util.h>
 #include "authenticator.h"
 
 namespace LC
@@ -19,13 +20,9 @@ namespace OTRoid
 {
 	InitiateAuthDialog::InitiateAuthDialog (ICLEntry *entry)
 	{
-		const auto& hrId = entry->GetHumanReadableID ();
-		const auto& name = entry->GetEntryName ();
-
 		Ui_.setupUi (this);
-		Ui_.TextLabel_->setText (tr ("Choose authentication method for %1 (%2):")
-					.arg (name)
-					.arg (hrId));
+		Ui_.TextLabel_->setText (tr ("Choose authentication method for %1:")
+					.arg (FormatNameWithAddress (*entry)));
 	}
 
 	SmpMethod InitiateAuthDialog::GetMethod () const

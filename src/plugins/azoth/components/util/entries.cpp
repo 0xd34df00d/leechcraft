@@ -64,23 +64,20 @@ namespace LC::Azoth
 	bool ChoosePGPKey (ISupportPGP *pgp, ICLEntry *entry)
 	{
 #ifdef ENABLE_CRYPT
-		const auto& address = entry->GetHumanReadableAddress ();
-
 		const auto persistentId = entry->GetGlobalPersistentID ();
 		if (!persistentId)
 		{
 			QMessageBox::critical (nullptr,
 					QObject::tr ("LeechCraft"),
 					QObject::tr ("PGP keys can only be bound to contacts with a persistent identifier. "
-								"Unfortunately, %1 (%2) does not have one on the protocol level.")
-						.arg (entry->GetEntryName (), address));
-			qWarning () << "no persistent ID for" << address;
+								"Unfortunately, %1 does not have one on the protocol level.")
+						.arg (FormatNameWithAddress (*entry)));
+			qWarning () << "no persistent ID for" << entry->GetHumanReadableAddress ();
 			return false;
 		}
 
-		const auto& str = QObject::tr ("Please select the key for %1 (%2).")
-				.arg (entry->GetEntryName ())
-				.arg (address);
+		const auto& str = QObject::tr ("Please select the key for %1.")
+				.arg (FormatNameWithAddress (*entry));
 		PGPKeySelectionDialog dia { str, PGPKeySelectionDialog::TPublic,
 				pgp->GetEntryKey (entry->GetQObject ()) };
 		if (dia.exec () != QDialog::Accepted)

@@ -12,6 +12,7 @@
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/iprotocol.h"
+#include "util/azoth/util.h"
 
 Q_DECLARE_METATYPE (LC::Azoth::ICLEntry*);
 
@@ -26,10 +27,8 @@ namespace Azoth
 	{
 		Ui_.setupUi (this);
 
-		const QString& name = entry->GetEntryName ();
-		const QString& hrID = entry->GetHumanReadableAddress ();
 		Ui_.MessageLabel_->setText (tr ("Select items to be shared with %1:")
-					.arg (name.isEmpty () ? hrID : name + " (" + hrID + ")"));
+					.arg (FormatNameWithAddress (*entry)));
 
 		connect (Ui_.AllAccountsBox_,
 				SIGNAL (toggled (bool)),

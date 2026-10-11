@@ -85,6 +85,15 @@ namespace LC::Azoth
 		return "error"_qs;
 	}
 
+	QString FormatNameWithAddress (const ICLEntry& entry)
+	{
+		const auto& name = entry.GetEntryName ();
+		const auto& address = entry.GetHumanReadableAddress ();
+		if (name.isEmpty () || name == address)
+			return address;
+		return name + " (" + address + ")";
+	}
+
 	void RejoinMuc (const IMUCEntry& entry)
 	{
 		const auto acc = dynamic_cast<const ICLEntry&> (entry).GetParentAccount ();

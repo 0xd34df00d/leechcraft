@@ -10,6 +10,7 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <interfaces/azoth/iclentry.h>
+#include <util/azoth/util.h>
 #include "initiateauthdialog.h"
 
 namespace LC
@@ -21,8 +22,6 @@ namespace OTRoid
 	Authenticator::Authenticator (ICLEntry *entry)
 	: QObject { entry->GetQObject () }
 	, Entry_ { entry }
-	, HrId_ { Entry_->GetHumanReadableID () }
-	, Name_ { Entry_->GetEntryName () }
 	{
 	}
 
@@ -37,15 +36,13 @@ namespace OTRoid
 		switch (method)
 		{
 		case SmpMethod::Question:
-			str = tr ("%1 (%2) wants to authenticate with you via a question. The question is:")
-					.arg (Name_)
-					.arg (HrId_);
+			str = tr ("%1 wants to authenticate with you via a question. The question is:")
+					.arg (FormatNameWithAddress (*Entry_));
 			str += " <em>" + question + "</em>";
 			break;
 		case SmpMethod::SharedSecret:
-			str = tr ("%1 (%2) wants to authenticate with you via a shared secret.")
-					.arg (Name_)
-					.arg (HrId_);
+			str = tr ("%1 wants to authenticate with you via a shared secret.")
+					.arg (FormatNameWithAddress (*Entry_));
 			break;
 		}
 
@@ -78,27 +75,24 @@ namespace OTRoid
 	{
 		QMessageBox::critical (nullptr,
 				tr ("OTR authentication"),
-				tr ("Failed to authenticate %1 (%2).")
-						.arg ("<em>" + Name_ + "</em>")
-						.arg ("<em>" + HrId_ + "</em>"));
+				tr ("Failed to authenticate %1.")
+						.arg (FormatNameWithAddress (*Entry_)));
 	}
 
 	void Authenticator::Cheated ()
 	{
 		QMessageBox::critical (nullptr,
 				tr ("OTR authentication"),
-				tr ("Failed to authenticate %1 (%2): cheating detected.")
-						.arg ("<em>" + Name_ + "</em>")
-						.arg ("<em>" + HrId_ + "</em>"));
+				tr ("Failed to authenticate %1: cheating detected.")
+						.arg (FormatNameWithAddress (*Entry_)));
 	}
 
 	void Authenticator::Success ()
 	{
 		QMessageBox::information (nullptr,
 				tr ("OTR authentication"),
-				tr ("Congratulations! Contact %1 (%2) authenticated successfully!")
-						.arg ("<em>" + Name_ + "</em>")
-						.arg ("<em>" + HrId_ + "</em>"));
+				tr ("Congratulations! Contact %1 authenticated successfully!")
+						.arg (FormatNameWithAddress (*Entry_)));
 	}
 }
 }

@@ -24,6 +24,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "interfaces/azoth/iclentry.h"
+#include "util/azoth/util.h"
 #include "components/dialogs/addcontactdialog.h"
 #include "components/dialogs/bookmarksmanagerdialog.h"
 #include "components/dialogs/setstatusdialog.h"
@@ -280,10 +281,7 @@ namespace Azoth
 		UsersListWidget w (entries,
 				[accCount] (ICLEntry *entry)
 				{
-					QString text = entry->GetEntryName ();
-					if (text != entry->GetHumanReadableID ())
-						text += " (" + entry->GetHumanReadableID () + ")";
-
+					auto text = FormatNameWithAddress (*entry);
 					if (accCount <= 1)
 						return text;
 

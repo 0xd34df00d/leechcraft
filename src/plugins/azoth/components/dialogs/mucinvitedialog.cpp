@@ -10,6 +10,7 @@
 #include <QtDebug>
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/iclentry.h"
+#include "util/azoth/util.h"
 
 namespace LC
 {
@@ -38,11 +39,8 @@ namespace Azoth
 			if (entry->GetEntryType () != requestedType)
 				continue;
 
-			const QString& id = entry->GetConventionalID ().ToString ();
-			Ui_.Invitee_->addItem (QString ("%1 (%2)")
-						.arg (entry->GetEntryName ())
-						.arg (id),
-					id);
+			Ui_.Invitee_->addItem (FormatNameWithAddress (*entry),
+					entry->GetConventionalID ().ToString ());
 		}
 	}
 

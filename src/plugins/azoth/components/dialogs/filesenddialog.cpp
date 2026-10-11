@@ -17,6 +17,7 @@
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/itransfermanager.h"
+#include "util/azoth/util.h"
 #include "components/transfers/pendinguploadpaster.h"
 #include "components/transfers/transferjobmanager.h"
 #include "core.h"
@@ -41,10 +42,7 @@ namespace Azoth
 				SLOT (send ()));
 		show ();
 
-		auto name = entry->GetEntryName ();
-		if (name != entry->GetHumanReadableID ())
-			name += " (" + entry->GetHumanReadableID () + ")";
-		Ui_.TargetLabel_->setText (name);
+		Ui_.TargetLabel_->setText (FormatNameWithAddress (*entry));
 
 		auto acc = Entry_->GetParentAccount ();
 		auto itm = qobject_cast<ITransferManager*> (acc->GetTransferManager ());

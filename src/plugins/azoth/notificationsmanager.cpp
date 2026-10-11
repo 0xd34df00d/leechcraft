@@ -217,11 +217,10 @@ namespace Azoth
 				if (!XmlSettingsManager::Instance ().property (settingName).toBool ())
 					return;
 
-				const auto& name = Util::FormatName (entry.GetEntryName ());
-				const auto& address = entry.GetHumanReadableAddress ();
+				const auto& name = Util::FormatName (FormatNameWithAddress (entry));
 				const auto& str = msg.isEmpty () ?
-						patternLite.arg (name, address) :
-						patternFull.arg (name, address, msg);
+						patternLite.arg (name) :
+						patternFull.arg (name, msg);
 
 				auto e = Util::MakeNotification (EventTitle, str, Priority::Info);
 				e.Additional_ [AN::EF::EventType] = eventType;
@@ -330,14 +329,14 @@ namespace Azoth
 				&Emitters::Account::itemSubscribed,
 				this,
 				NotifyWithReason (*AvatarsMgr_, "NotifySubscriptions", AN::TypeIMSubscrSub,
-						tr ("%1 (%2) subscribed to us."),
-						tr ("%1 (%2) subscribed to us: %3.")));
+						tr ("%1 subscribed to us."),
+						tr ("%1 subscribed to us: %2.")));
 		connect (&emitter,
 				qOverload<ICLEntry&, const QString&> (&Emitters::Account::itemUnsubscribed),
 				this,
 				NotifyWithReason (*AvatarsMgr_, "NotifyUnsubscriptions", AN::TypeIMSubscrUnsub,
-						tr ("%1 (%2) unsubscribed from us."),
-						tr ("%1 (%2) unsubscribed from us: %3.")));
+						tr ("%1 unsubscribed from us."),
+						tr ("%1 unsubscribed from us: %2.")));
 		connect (&emitter,
 				qOverload<const QString&, const QString&> (&Emitters::Account::itemUnsubscribed),
 				this,
@@ -346,14 +345,14 @@ namespace Azoth
 				&Emitters::Account::itemCancelledSubscription,
 				this,
 				NotifyWithReason (*AvatarsMgr_, "NotifySubCancels", AN::TypeIMSubscrRevoke,
-						tr ("%1 (%2) cancelled our subscription."),
-						tr ("%1 (%2) cancelled our subscription: %3.")));
+						tr ("%1 cancelled our subscription."),
+						tr ("%1 cancelled our subscription: %2.")));
 		connect (&emitter,
 				&Emitters::Account::itemGrantedSubscription,
 				this,
 				NotifyWithReason (*AvatarsMgr_, "NotifySubGrants", AN::TypeIMSubscrGrant,
-						tr ("%1 (%2) granted subscription."),
-						tr ("%1 (%2) granted subscription: %3.")));
+						tr ("%1 granted subscription."),
+						tr ("%1 granted subscription: %2.")));
 		connect (&emitter,
 				&Emitters::Account::authorizationRequested,
 				this,
@@ -442,10 +441,7 @@ namespace Azoth
 
 	void NotificationsManager::CreateChangesStateRule (const ICLEntry& entry)
 	{
-		const auto& name = entry.GetEntryName ();
-		const auto& address = entry.GetHumanReadableAddress ();
-
-		const auto& e = Util::MakeANRule (tr ("Notify when %1 (%2) changes state").arg (name, address),
+		const auto& e = Util::MakeANRule (tr ("Notify when %1 changes state").arg (FormatNameWithAddress (entry)),
 				"org.LeechCraft.Azoth",
 				AN::CatIM,
 				{ AN::TypeIMStatusChange },
@@ -457,10 +453,7 @@ namespace Azoth
 
 	void NotificationsManager::CreateBecomesOnlineRule (const ICLEntry& entry)
 	{
-		const auto& name = entry.GetEntryName ();
-		const auto& address = entry.GetHumanReadableAddress ();
-
-		const auto& e = Util::MakeANRule (tr ("Notify when %1 (%2) becomes online").arg (name, address),
+		const auto& e = Util::MakeANRule (tr ("Notify when %1 becomes online").arg (FormatNameWithAddress (entry)),
 				"org.LeechCraft.Azoth",
 				AN::CatIM,
 				{ AN::TypeIMStatusChange },
@@ -475,11 +468,7 @@ namespace Azoth
 
 	void NotificationsManager::CreateParticipantEnterRule (const ICLEntry& mucEntry, const QString& nick)
 	{
-		const auto& name = mucEntry.GetEntryName ();
-		const auto& address = mucEntry.GetHumanReadableAddress ();
-		const auto& ruleName = name == address ?
-				tr ("Notify when %1 joins %2").arg (nick, name) :
-				tr ("Notify when %1 joins %2 (%3)").arg (nick, name, address);
+		const auto& ruleName = tr ("Notify when %1 joins %2").arg (nick, FormatNameWithAddress (mucEntry));
 		const auto& e = Util::MakeANRule (ruleName,
 				"org.LeechCraft.Azoth",
 				AN::CatIM,

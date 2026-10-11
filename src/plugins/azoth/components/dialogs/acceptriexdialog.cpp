@@ -11,6 +11,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "interfaces/azoth/iclentry.h"
+#include "util/azoth/util.h"
 #include "core.h"
 
 namespace LC
@@ -62,9 +63,7 @@ namespace Azoth
 		Ui_.ItemsTree_->setModel (Model_);
 
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-		const QString& id = entry->GetEntryName ().isEmpty () ?
-				entry->GetHumanReadableAddress () :
-				entry->GetEntryName () + " (" + entry->GetHumanReadableAddress () + ")";
+		const auto& id = FormatNameWithAddress (*entry);
 
 		const QString& text = message.isEmpty () ?
 				tr ("%1 has suggested to modify your contact list:")
