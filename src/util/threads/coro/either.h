@@ -114,13 +114,19 @@ namespace LC::Util
 		}, msgsTuple);
 		return { AsLeft, Void {} };
 	}
+
+	template<typename L, typename R>
+	detail::EitherAwaiter<L, R, std::identity> GetAwaiter (const Either<L, R>& either, AwaiterCPO)
+	{
+		return { either, {} };
+	}
 }
 
 namespace LC
 {
 	template<typename L, typename R>
-	Util::detail::EitherAwaiter<L, R, std::identity> operator co_await (const Util::Either<L, R>& either)
+	auto operator co_await (const Util::Either<L, R>& either)
 	{
-		return { either, {} };
+		return Util::GetAwaiter (either, {});
 	}
 }

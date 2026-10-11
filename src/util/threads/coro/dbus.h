@@ -15,6 +15,7 @@
 #include <QDBusPendingReply>
 #include <util/sll/either.h>
 #include <util/sll/void.h>
+#include "taskfwd.h"
 
 namespace LC::Util::detail
 {
@@ -74,15 +75,6 @@ namespace LC::Util::detail
 	};
 }
 
-namespace LC
-{
-	template<typename... Rets>
-	Util::detail::DBusAwaiter<Rets...> operator co_await (const QDBusPendingReply<Rets...>& reply)
-	{
-		return { reply };
-	}
-}
-
 namespace LC::Util
 {
 	template<typename... Rets>
@@ -99,6 +91,21 @@ namespace LC::Util
 
 	template<typename... Rets, typename... Actual>
 	detail::DBusAwaiter<Rets...> Typed (const QDBusPendingReply<Actual...>&) = delete ("do not use Util::Typed to await typed QDBusPendingReply<...>");
+
+	template<typename... Rets>
+	detail::DBusAwaiter<Rets...> GetAwaiter (const QDBusPendingReply<Rets...>& reply, AwaiterCPO)
+	{
+		return { reply };
+	}
+}
+
+namespace LC
+{
+	template<typename... Rets>
+	auto operator co_await (const QDBusPendingReply<Rets...>& reply)
+	{
+		return Util::GetAwaiter (reply, {});
+	}
 }
 
 namespace LC::Util::DBus

@@ -11,6 +11,7 @@
 #include <coroutine>
 #include <QFuture>
 #include <QFutureWatcher>
+#include "taskfwd.h"
 
 namespace LC::Util::detail
 {
@@ -44,11 +45,20 @@ namespace LC::Util::detail
 	};
 }
 
+namespace LC::Util
+{
+	template<typename R>
+	detail::FutureAwaiter<R> GetAwaiter (QFuture<R> future, AwaiterCPO)
+	{
+		return { future };
+	}
+}
+
 namespace LC
 {
 	template<typename R>
-	Util::detail::FutureAwaiter<R> operator co_await (QFuture<R> future)
+	auto operator co_await (QFuture<R> future)
 	{
-		return { future };
+		return Util::GetAwaiter (std::move (future), {});
 	}
 }

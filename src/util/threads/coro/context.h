@@ -28,7 +28,9 @@ namespace LC::Util
 		template<typename T>
 		decltype (auto) Awaiter (T&& obj)
 		{
-			if constexpr (requires { operator co_await (std::forward<T> (obj)); })
+			if constexpr (requires { GetAwaiter (std::forward<T> (obj), AwaiterCPO {}); })
+				return GetAwaiter (std::forward<T> (obj), AwaiterCPO {});
+			else if constexpr (requires { operator co_await (std::forward<T> (obj)); })
 				return operator co_await (std::forward<T> (obj));
 			else if constexpr (requires { std::forward<T> (obj).operator co_await (); })
 				return std::forward<T> (obj).operator co_await ();

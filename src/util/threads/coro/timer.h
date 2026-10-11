@@ -11,6 +11,7 @@
 #include <chrono>
 #include <coroutine>
 #include <QTimer>
+#include "taskfwd.h"
 #include "../threadsconfig.h"
 
 namespace LC::Util
@@ -43,9 +44,17 @@ namespace LC::Util
 	using Precisely = WithPrecision<Qt::PreciseTimer>;
 	using Coarsely = WithPrecision<Qt::CoarseTimer>;
 	using VeryCoarsely = WithPrecision<Qt::VeryCoarseTimer>;
+
+	inline detail::TimerAwaiter GetAwaiter (std::chrono::milliseconds duration, AwaiterCPO)
+	{
+		return detail::TimerAwaiter { duration, Qt::CoarseTimer };
+	}
 }
 
 namespace LC
 {
-	UTIL_THREADS_API Util::detail::TimerAwaiter operator co_await (std::chrono::milliseconds duration);
+	inline auto operator co_await (std::chrono::milliseconds duration)
+	{
+		return Util::GetAwaiter (duration, {});
+	}
 }

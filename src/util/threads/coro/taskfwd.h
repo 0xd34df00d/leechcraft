@@ -18,4 +18,6 @@ namespace LC::Util
 
 	template<typename R = void>
 	using ContextTask = Task<R, ContextExtension>;
+
+	struct AwaiterCPO {};
 }

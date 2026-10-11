@@ -7,7 +7,6 @@
  **********************************************************************/
 
 #include "timer.h"
-#include <QTimer>
 
 namespace LC::Util::detail
 {
@@ -31,13 +30,5 @@ namespace LC::Util::detail
 
 	void TimerAwaiter::await_resume () const noexcept
 	{
-	}
-}
-
-namespace LC
-{
-	Util::detail::TimerAwaiter operator co_await (std::chrono::milliseconds duration)
-	{
-		return Util::detail::TimerAwaiter { duration, Qt::CoarseTimer };
 	}
 }

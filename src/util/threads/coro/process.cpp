@@ -74,11 +74,3 @@ namespace LC::Util::detail
 		return ProcessExited { Process_.exitCode () };
 	}
 }
-
-namespace LC
-{
-	UTIL_THREADS_API Util::detail::ProcessAwaiter operator co_await (QProcess& reply)
-	{
-		return { reply };
-	}
-}

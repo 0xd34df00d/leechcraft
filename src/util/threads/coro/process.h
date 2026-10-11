@@ -14,6 +14,7 @@
 #include <QString>
 #include <util/sll/raiisignalconnection.h>
 #include "../threadsconfig.h"
+#include "taskfwd.h"
 
 class QDebug;
 class QProcess;
@@ -64,9 +65,17 @@ namespace LC::Util
 			ProcessOutcome await_resume () const;
 		};
 	}
+
+	inline detail::ProcessAwaiter GetAwaiter (QProcess& process, AwaiterCPO)
+	{
+		return detail::ProcessAwaiter { process };
+	}
 }
 
 namespace LC
 {
-	UTIL_THREADS_API Util::detail::ProcessAwaiter operator co_await (QProcess& process);
+	inline auto operator co_await (QProcess& process)
+	{
+		return Util::GetAwaiter (process, {});
+	}
 }

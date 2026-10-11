@@ -9,9 +9,9 @@
 #pragma once
 
 #include <coroutine>
-#include <QMetaObject>
 #include <util/sll/raiisignalconnection.h>
 #include "../threadsconfig.h"
+#include "taskfwd.h"
 
 class QNetworkReply;
 
@@ -35,9 +35,17 @@ namespace LC::Util
 			NetworkResult await_resume () const noexcept;
 		};
 	}
+
+	inline detail::NRAwaiter GetAwaiter (QNetworkReply& reply, AwaiterCPO)
+	{
+		return { reply };
+	}
 }
 
 namespace LC
 {
-	UTIL_THREADS_API Util::detail::NRAwaiter operator co_await (QNetworkReply& reply);
+	inline auto operator co_await (QNetworkReply& reply)
+	{
+		return Util::GetAwaiter (reply, {});
+	}
 }

@@ -44,11 +44,3 @@ namespace LC::Util::detail
 		return NetworkReplySuccess { Reply_.readAll (), Reply_.header (QNetworkRequest::LocationHeader) };
 	}
 }
-
-namespace LC
-{
-	UTIL_THREADS_API Util::detail::NRAwaiter operator co_await (QNetworkReply& reply)
-	{
-		return { reply };
-	}
-}
