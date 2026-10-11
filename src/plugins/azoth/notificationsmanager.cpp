@@ -112,16 +112,16 @@ namespace Azoth
 				.EventTypes_ = havingSourceFields,
 			},
 			{
-				.ID_ = Fields::ParentSourceName,
-				.Name_ = tr ("Sender's parent entry name"),
-				.Description_ = tr ("Human-readable name of the parent entry of the sender of the message, like MUC name for a chat participant."),
+				.ID_ = Fields::RoomName,
+				.Name_ = tr ("Room name"),
+				.Description_ = tr ("Human-readable name of the room the event happened in."),
 				.Type_ = QMetaType::QString,
 				.EventTypes_ = havingSourceFields,
 			},
 			{
-				.ID_ = Fields::ParentSourceID,
-				.Name_ = tr ("Sender's parent ID"),
-				.Description_ = tr ("Non-human-readable ID of the parent entry of the sender of the message, like MUC name for a chat participant."),
+				.ID_ = Fields::RoomID,
+				.Name_ = tr ("Room ID"),
+				.Description_ = tr ("Non-human-readable ID of the room the event happened in (protocol-specific)."),
 				.Type_ = QMetaType::QString,
 				.EventTypes_ = havingSourceFields,
 			},
@@ -142,6 +142,57 @@ namespace Azoth
 						[] (State st) { return AN::FieldData::AllowedValue { StateToID (st).toUtf8 (), StateToString (st) }; }),
 			}
 		};
+	}
+
+	namespace
+	{
+		template<typename T>
+		struct EntryField
+		{
+			const QString& Id_;
+			T (*Get_) (const ICLEntry&);
+		};
+
+		namespace Extract
+		{
+			QString Name (const ICLEntry& e) { return e.GetEntryName (); }
+			QString ID (const ICLEntry& e) { return e.GetEntryID (); }
+			QStringList Groups (const ICLEntry& e) { return e.Groups (); }
+		}
+
+		namespace Source
+		{
+			constexpr EntryField<QString> Name { Fields::SourceName, &Extract::Name };
+			constexpr EntryField<QString> ID { Fields::SourceID, &Extract::ID };
+			constexpr EntryField<QStringList> Groups { Fields::SourceGroups, &Extract::Groups };
+		}
+
+		namespace Room
+		{
+			constexpr EntryField<QString> Name { Fields::RoomName, &Extract::Name };
+			constexpr EntryField<QString> ID { Fields::RoomID, &Extract::ID };
+		}
+
+		QPair<QString, AN::ValueMatcher> Match (const EntryField<QString>& field, const ICLEntry& entry)
+		{
+			return { field.Id_, AN::StringValueMatcher { field.Get_ (entry) } };
+		}
+
+		template<typename... Fs>
+		QVariantMap FieldsOf (const ICLEntry& entry, const Fs&... fields)
+		{
+			return { { fields.Id_, QVariant::fromValue (fields.Get_ (entry)) }... };
+		}
+	}
+
+	QVariantMap NotificationsManager::SourceFields (const ICLEntry& entry)
+	{
+		return FieldsOf (entry, Source::Name, Source::ID, Source::Groups);
+	}
+
+	QVariantMap NotificationsManager::RoomFields (const ICLEntry& room)
+	{
+		return FieldsOf (room, Room::Name, Room::ID);
 	}
 
 	NotificationsManager::NotificationsManager (AvatarsManager *am, QObject *parent)
@@ -400,12 +451,7 @@ namespace Azoth
 				{ AN::TypeIMStatusChange },
 				AN::NotifyPersistent | AN::NotifyTransient | AN::NotifySingleShot,
 				false,
-				{
-					{
-						"org.LC.Plugins.Azoth.SourceID",
-						AN::StringValueMatcher { entry.GetEntryID () }
-					}
-				});
+				{ Match (Source::ID, entry) });
 		EntityMgr_.HandleEntity (e);
 	}
 
@@ -421,14 +467,8 @@ namespace Azoth
 				AN::NotifyPersistent | AN::NotifyTransient | AN::NotifySingleShot,
 				false,
 				{
-					{
-						"org.LC.Plugins.Azoth.SourceID",
-						AN::StringValueMatcher { entry.GetEntryID () }
-					},
-					{
-						"org.LC.Plugins.Azoth.NewStatus",
-						AN::StringValueMatcher { StateToID (SOnline) }
-					}
+					Match (Source::ID, entry),
+					{ Fields::NewStatus, AN::StringValueMatcher { StateToID (SOnline) } }
 				});
 		EntityMgr_.HandleEntity (e);
 	}
@@ -447,14 +487,8 @@ namespace Azoth
 				AN::NotifyPersistent | AN::NotifyTransient | AN::NotifySingleShot,
 				false,
 				{
-					{
-						"org.LC.Plugins.Azoth.SourceName",
-						AN::StringValueMatcher { nick }
-					},
-					{
-						"org.LC.Plugins.Azoth.ParentSourceID",
-						AN::StringValueMatcher { mucEntry.GetEntryID () }
-					}
+					{ Fields::SourceName, AN::StringValueMatcher { nick } },
+					Match (Room::ID, mucEntry)
 				});
 		EntityMgr_.HandleEntity (e);
 	}

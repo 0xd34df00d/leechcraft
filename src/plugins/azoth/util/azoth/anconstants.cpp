@@ -16,7 +16,7 @@ namespace LC::Azoth::Fields
 	const QString SourceName = "org.LC.Plugins.Azoth.SourceName"_qs;
 	const QString SourceID = "org.LC.Plugins.Azoth.SourceID"_qs;
 	const QString SubSourceID = "org.LC.Plugins.Azoth.SubSourceID"_qs;
-	const QString ParentSourceName = "org.LC.Plugins.Azoth.ParentSourceName"_qs;
-	const QString ParentSourceID = "org.LC.Plugins.Azoth.ParentSourceID"_qs;
+	const QString RoomName = "org.LC.Plugins.Azoth.RoomName"_qs;
+	const QString RoomID = "org.LC.Plugins.Azoth.RoomID"_qs;
 	const QString SourceGroups = "org.LC.Plugins.Azoth.SourceGroups"_qs;
 }

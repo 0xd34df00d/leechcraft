@@ -20,7 +20,6 @@
 #include <util/xpc/util.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/iregmanagedaccount.h>
-#include "util/azoth/anconstants.h"
 #include "components/chat/chattab.h"
 #include "components/dialogs/filesenddialog.h"
 #include "components/transfers/transferjobmanager.h"
@@ -29,6 +28,7 @@
 #include "../../core.h"
 #include "../../chattabsmanager.h"
 #include "../../hooksinstance.h"
+#include "../../notificationsmanager.h"
 
 namespace LC::Azoth
 {
@@ -89,6 +89,16 @@ namespace LC::Azoth
 		return allSuccess;
 	}
 
+	namespace
+	{
+		// TODO drop once the room comes from the event rather than the entry:
+		// participants will be able to belong to several rooms.
+		ICLEntry* RoomOf (const ICLEntry& entry)
+		{
+			return entry.GetParentCLEntry ();
+		}
+	}
+
 	QFuture<Entity> BuildNotification (AvatarsManager *avatarsMgr,
 			Entity e, ICLEntry *other, const QString& id, ICLEntry *avatarSource)
 	{
@@ -115,15 +125,9 @@ namespace LC::Azoth
 
 		e.Additional_ [AN::EF::WindowIndex] = win;
 
-		e.Additional_ [Fields::SourceName] = other->GetEntryName ();
-		e.Additional_ [Fields::SourceID] = other->GetEntryID ();
-		e.Additional_ [Fields::SourceGroups] = other->Groups ();
-
-		if (const auto parent = other->GetParentCLEntry ())
-		{
-			e.Additional_ [Fields::ParentSourceID] = parent->GetEntryID ();
-			e.Additional_ [Fields::ParentSourceName] = parent->GetEntryName ();
-		}
+		e.Additional_.insert (NotificationsManager::SourceFields (*other));
+		if (const auto room = RoomOf (*other))
+			e.Additional_.insert (NotificationsManager::RoomFields (*room));
 
 		if (!avatarSource)
 			avatarSource = other;

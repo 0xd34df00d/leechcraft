@@ -43,6 +43,8 @@ namespace Azoth
 		QHash<QString, bool> ShouldNotifyNextTyping_;
 	public:
 		static QList<AN::FieldData> GetANFields ();
+		static QVariantMap SourceFields (const ICLEntry&);
+		static QVariantMap RoomFields (const ICLEntry&);
 
 		NotificationsManager (AvatarsManager*, QObject* = nullptr);
 

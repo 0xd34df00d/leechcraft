@@ -18,7 +18,7 @@ namespace LC::Azoth::Fields
 	AZOTH_UTIL_API extern const QString SourceName;
 	AZOTH_UTIL_API extern const QString SourceID;
 	AZOTH_UTIL_API extern const QString SubSourceID;
-	AZOTH_UTIL_API extern const QString ParentSourceName;
-	AZOTH_UTIL_API extern const QString ParentSourceID;
+	AZOTH_UTIL_API extern const QString RoomName;
+	AZOTH_UTIL_API extern const QString RoomID;
 	AZOTH_UTIL_API extern const QString SourceGroups;
 }
