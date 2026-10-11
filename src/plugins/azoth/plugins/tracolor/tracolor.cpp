@@ -16,6 +16,7 @@
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/iaccount.h>
+#include <util/azoth/anconstants.h>
 #include "entryeventsmanager.h"
 #include "iconsmanager.h"
 #include "xmlsettingsmanager.h"
@@ -90,7 +91,7 @@ namespace Tracolor
 	{
 		const bool can = e.Mime_.startsWith ("x-leechcraft/notification") &&
 				e.Additional_ [AN::EF::EventCategory].toString () != AN::CatEventCancel &&
-				e.Additional_.contains ("org.LC.Plugins.Azoth.SourceID");
+				e.Additional_.contains (Fields::SourceID);
 		return can ?
 				EntityTestHandleResult { EntityTestHandleResult::PIdeal } :
 				EntityTestHandleResult {};
@@ -98,14 +99,14 @@ namespace Tracolor
 
 	void Plugin::Handle (Entity e)
 	{
-		const auto& sourceId = e.Additional_ ["org.LC.Plugins.Azoth.SourceID"].toString ();
+		const auto& sourceId = e.Additional_ [Fields::SourceID].toString ();
 		const auto& eventId = e.Additional_ [AN::EF::EventType].toString ();
 
 		EventsManager_->HandleEvent (sourceId.toUtf8 (), eventId.toUtf8 ());
 
-		if (e.Additional_.contains ("org.LC.Plugins.Azoth.SubSourceID"))
+		if (e.Additional_.contains (Fields::SubSourceID))
 		{
-			const auto& subId = e.Additional_ ["org.LC.Plugins.Azoth.SubSourceID"].toString ();
+			const auto& subId = e.Additional_ [Fields::SubSourceID].toString ();
 			EventsManager_->HandleEvent (subId.toUtf8 (), eventId.toUtf8 ());
 		}
 	}

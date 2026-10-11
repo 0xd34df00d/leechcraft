@@ -11,13 +11,16 @@
 #include <QFuture>
 #include <QMessageBox>
 #include <QWizard>
+#include <interfaces/entityconstants.h>
 #include <interfaces/an/constants.h>
+#include <interfaces/an/entityfields.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/sll/qtutil.h>
 #include <util/xpc/util.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/iregmanagedaccount.h>
+#include "util/azoth/anconstants.h"
 #include "components/chat/chattab.h"
 #include "components/dialogs/filesenddialog.h"
 #include "components/transfers/transferjobmanager.h"
@@ -89,12 +92,12 @@ namespace LC::Azoth
 	QFuture<Entity> BuildNotification (AvatarsManager *avatarsMgr,
 			Entity e, ICLEntry *other, const QString& id, ICLEntry *avatarSource)
 	{
-		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.Azoth";
-		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = AN::CatIM;
-		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
+		e.Additional_ [AN::EF::SenderID] = "org.LeechCraft.Azoth";
+		e.Additional_ [AN::EF::EventCategory] = AN::CatIM;
+		e.Additional_ [AN::EF::EventID] =
 				"org.LC.Plugins.Azoth." + (id.isEmpty () ? "IncomingMessageFrom"_qs : id) + '/' + other->GetEntryID ();
 
-		e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList (other->GetEntryName ());
+		e.Additional_ [AN::EF::VisualPath] = QStringList (other->GetEntryName ());
 
 		int win = 0;
 		const auto tab = Core::Instance ().GetChatTabsManager ()->GetChatTab (other->GetEntryID ());
@@ -110,16 +113,16 @@ namespace LC::Azoth
 			win = rootWM->GetPreferredWindowIndex (tc.TabClass_);
 		}
 
-		e.Additional_ ["org.LC.AdvNotifications.WindowIndex"] = win;
+		e.Additional_ [AN::EF::WindowIndex] = win;
 
-		e.Additional_ ["org.LC.Plugins.Azoth.SourceName"] = other->GetEntryName ();
-		e.Additional_ ["org.LC.Plugins.Azoth.SourceID"] = other->GetEntryID ();
-		e.Additional_ ["org.LC.Plugins.Azoth.SourceGroups"] = other->Groups ();
+		e.Additional_ [Fields::SourceName] = other->GetEntryName ();
+		e.Additional_ [Fields::SourceID] = other->GetEntryID ();
+		e.Additional_ [Fields::SourceGroups] = other->Groups ();
 
 		if (const auto parent = other->GetParentCLEntry ())
 		{
-			e.Additional_ ["org.LC.Plugins.Azoth.ParentSourceID"] = parent->GetEntryID ();
-			e.Additional_ ["org.LC.Plugins.Azoth.ParentSourceName"] = parent->GetEntryName ();
+			e.Additional_ [Fields::ParentSourceID] = parent->GetEntryID ();
+			e.Additional_ [Fields::ParentSourceName] = parent->GetEntryName ();
 		}
 
 		if (!avatarSource)
@@ -134,7 +137,7 @@ namespace LC::Azoth
 			else
 				return {};
 		};
-		e.Additional_ ["NotificationPixmap"] = QVariant::fromValue<Util::LazyNotificationPixmap_t> (avatarFutureGetter);
+		e.Additional_ [EF::NotificationPixmap] = QVariant::fromValue<Util::LazyNotificationPixmap_t> (avatarFutureGetter);
 		return QtFuture::makeReadyValueFuture (e);
 	}
 

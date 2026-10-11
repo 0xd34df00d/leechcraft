@@ -31,7 +31,6 @@
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
-#include <interfaces/an/constants.h>
 #include "util/azoth/util.h"
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/imucperms.h"

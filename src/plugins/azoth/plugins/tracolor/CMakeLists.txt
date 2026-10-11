@@ -10,4 +10,5 @@ LC_DEFINE_PLUGIN (
 		eventssettingsmanager.cpp
 	SETTINGS azothtracolorsettings.xml
 	QT_COMPONENTS Widgets
+	LINK_LIBRARIES leechcraft-azoth-util
 	)

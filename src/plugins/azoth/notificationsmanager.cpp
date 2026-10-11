@@ -35,6 +35,7 @@
 #include "interfaces/azoth/ihavecontactactivity.h"
 #include "interfaces/azoth/moodinfo.h"
 #include "interfaces/azoth/activityinfo.h"
+#include "util/azoth/anconstants.h"
 #include "util/azoth/util.h"
 #include "components/dialogs/activitydialog.h"
 #include "components/dialogs/joinconferencedialog.h"
@@ -51,18 +52,6 @@ namespace LC
 {
 namespace Azoth
 {
-	namespace Fields
-	{
-		const auto SubSourceID = "org.LC.Plugins.Azoth.SubSourceID"_qs;
-		const auto Msg = "org.LC.Plugins.Azoth.Msg"_qs;
-		const auto NewStatus = "org.LC.Plugins.Azoth.NewStatus"_qs;
-		const auto SourceName = "org.LC.Plugins.Azoth.SourceName"_qs;
-		const auto SourceID = "org.LC.Plugins.Azoth.SourceID"_qs;
-		const auto ParentSourceName = "org.LC.Plugins.Azoth.ParentSourceName"_qs;
-		const auto ParentSourceID = "org.LC.Plugins.Azoth.ParentSourceID"_qs;
-		const auto SourceGroups = "org.LC.Plugins.Azoth.SourceGroups"_qs;
-	}
-
 	QList<AN::FieldData> NotificationsManager::GetANFields ()
 	{
 		const QStringList havingMsgField

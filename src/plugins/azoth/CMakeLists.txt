@@ -40,9 +40,10 @@ add_util_library (azoth-util
 		util/azoth/emitters/mucentry.cpp
 		util/azoth/emitters/mucperms.cpp
 		util/azoth/emitters/transfermanager.cpp
-		util/azoth/hooks.cpp
+		util/azoth/anconstants.cpp
 		util/azoth/globalstrongestidmap.cpp
 		util/azoth/globalstrongestidtracker.cpp
+		util/azoth/hooks.cpp
 		util/azoth/util.cpp
 	USES Widgets
 	DEPENDS leechcraft-util-sll
