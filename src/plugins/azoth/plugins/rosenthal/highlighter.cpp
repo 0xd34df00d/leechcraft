@@ -25,7 +25,7 @@ namespace Rosenthal
 
 	void Highlighter::highlightBlock (const QString& text)
 	{
-		QRegularExpression sr ("\\W+");
+		QRegularExpression sr ("\\W+", QRegularExpression::UseUnicodePropertiesOption);
 		const auto& splitted = text.split (sr, Qt::SkipEmptyParts);
 		int prevStopPos = 0;
 		for (const auto& str : splitted)
