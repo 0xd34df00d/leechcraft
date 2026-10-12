@@ -13,7 +13,6 @@
 #include <util/sll/visitor.h>
 #include <util/sys/paths.h>
 #include <util/xpc/util.h>
-#include <util/threads/coro/future.h>
 #include <util/threads/coro.h>
 #include <interfaces/core/ientitymanager.h>
 
