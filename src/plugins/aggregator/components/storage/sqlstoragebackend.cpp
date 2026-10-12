@@ -736,6 +736,7 @@ namespace LC::Aggregator
 	void SQLStorageBackend::SetChannelPixmap (IDType_t id, const std::optional<QImage>& img)
 	{
 		// TODO no need for value_or when oral will support setting NULL
+		// although migration will be needed: `UPDATE channels SET Pixmap_ = NULL WHERE Pixmap_ = x''`
 		Channels_->Update (sph::f<&ChannelR::Pixmap_> = img.value_or (QImage {}), sph::f<&ChannelR::ChannelID_> == id);
 		emit channelDataUpdated (GetChannel (id));
 	}
