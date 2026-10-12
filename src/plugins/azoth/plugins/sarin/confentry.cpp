@@ -139,6 +139,11 @@ namespace LC::Azoth::Sarin
 	{
 	}
 
+	const ICLEntry& ConfEntry::AsCLEntry () const
+	{
+		return *this;
+	}
+
 	IMUCEntry::MUCFeatures ConfEntry::GetMUCFeatures () const
 	{
 		return MUCFCanHaveSubject;

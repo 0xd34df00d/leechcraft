@@ -76,6 +76,7 @@ namespace LC::Azoth::Sarin
 		void MarkMsgsRead () override;
 		void ChatTabClosed () override;
 
+		const ICLEntry& AsCLEntry () const override;
 		MUCFeatures GetMUCFeatures () const override;
 		QString GetMUCSubject () const override;
 		void SetMUCSubject (const QString& subject) override;

@@ -69,6 +69,7 @@ namespace LC::Azoth::Acetamide
 		void ShowInfo () override;
 
 		// IMUCEntry
+		const ICLEntry& AsCLEntry () const override;
 		MUCFeatures GetMUCFeatures () const override;
 		QString GetMUCSubject () const override;
 		bool CanChangeSubject () const override;

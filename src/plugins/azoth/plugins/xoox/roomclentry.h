@@ -86,6 +86,7 @@ namespace Xoox
 		void ChatTabClosed () override;
 
 		// IMUCEntry
+		const ICLEntry& AsCLEntry () const override;
 		MUCFeatures GetMUCFeatures () const override;
 		QString GetMUCSubject () const override;
 		bool CanChangeSubject () const override;

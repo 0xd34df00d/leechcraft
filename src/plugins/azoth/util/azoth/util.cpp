@@ -96,7 +96,7 @@ namespace LC::Azoth
 
 	void RejoinMuc (const IMUCEntry& entry)
 	{
-		const auto acc = dynamic_cast<const ICLEntry&> (entry).GetParentAccount ();
+		const auto acc = entry.AsCLEntry ().GetParentAccount ();
 		RejoinMuc (*acc, entry.GetIdentifyingData ());
 	}
 

@@ -122,6 +122,11 @@ namespace LC::Azoth::Sarin
 	{
 	}
 
+	const ICLEntry& GroupChatEntry::AsCLEntry () const
+	{
+		return *this;
+	}
+
 	IMUCEntry::MUCFeatures GroupChatEntry::GetMUCFeatures () const
 	{
 		return MUCFCanHaveSubject;

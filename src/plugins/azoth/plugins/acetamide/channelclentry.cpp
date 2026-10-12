@@ -207,6 +207,11 @@ namespace LC::Azoth::Acetamide
 	{
 	}
 
+	const ICLEntry& ChannelCLEntry::AsCLEntry () const
+	{
+		return *this;
+	}
+
 	IMUCEntry::MUCFeatures ChannelCLEntry::GetMUCFeatures () const
 	{
 		return MUCFCanHaveSubject;

@@ -56,6 +56,14 @@ namespace Azoth
 
 		Q_DECLARE_FLAGS (MUCFeatures, MUCFeature)
 
+		/** @brief Returns this MUC as a contact list entry.
+		 *
+		 * Every IMUCEntry also implements ICLEntry, but the two
+		 * interfaces are siblings, so this is the way back to the
+		 * entry that does not need RTTI.
+		 */
+		virtual const ICLEntry& AsCLEntry () const = 0;
+
 		/** @brief The list of features of this MUC.
 		 *
 		 * Returns the list of features supported by this MUC.

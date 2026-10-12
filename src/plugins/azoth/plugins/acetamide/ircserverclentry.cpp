@@ -89,6 +89,11 @@ namespace LC::Azoth::Acetamide
 		new ServerCommandMessage (message.Body_, this);
 	}
 
+	const ICLEntry& IrcServerCLEntry::AsCLEntry () const
+	{
+		return *this;
+	}
+
 	IMUCEntry::MUCFeatures IrcServerCLEntry::GetMUCFeatures () const
 	{
 		return {};

@@ -239,6 +239,11 @@ namespace Xoox
 	{
 	}
 
+	const ICLEntry& RoomCLEntry::AsCLEntry () const
+	{
+		return *this;
+	}
+
 	IMUCEntry::MUCFeatures RoomCLEntry::GetMUCFeatures () const
 	{
 		return MUCFCanBeConfigured | MUCFCanInvite;
