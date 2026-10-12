@@ -1137,7 +1137,7 @@ namespace Poshuku
 
 	namespace
 	{
-		const QRegularExpression UrlInText (R"(://|www\.|\w\.\w)");
+		const QRegularExpression UrlInText (R"(://|www\.|\w\.\w)", QRegularExpression::UseUnicodePropertiesOption);
 
 		void SavePixmap (const QPixmap& px, const QUrl& url, IEntityManager *iem)
 		{
