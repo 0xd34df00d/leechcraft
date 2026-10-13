@@ -110,6 +110,8 @@ namespace Azoth
 				.Description_ = tr ("The account to which the sender belongs."),
 				.Type_ = QMetaType::QString,
 				.EventTypes_ = havingSourceFields,
+				.AllowedValues_ = Util::Map (Core::Instance ().GetAccounts (),
+						[] (IAccount *acc) { return AN::FieldData::AllowedValue { acc->GetAccountID (), acc->GetAccountName () }; }),
 			},
 			{
 				.ID_ = Fields::SourceHumanReadableAddress,
