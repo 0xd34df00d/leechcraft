@@ -11,6 +11,7 @@
 #include <utility>
 #include <QDataStream>
 #include <QtDebug>
+#include <util/sll/logging.h>
 #include <util/sys/serialization.h>
 #include "util.h"
 
@@ -129,17 +130,17 @@ namespace LC::Azoth
 	}
 
 	template<AnyEntryId Id>
-	std::optional<Id> Deserialize (const QByteArray& data)
+	std::optional<Id> Deserialize (const QByteArray& data, std::source_location loc)
 	{
 		QDataStream stream { data };
-		if (!Util::EnsureVersion<quint8> (stream, 1, BytesVersion))
+		if (!Util::EnsureVersion<quint8> (stream, 1, BytesVersion, loc))
 			return {};
 
 		Id id;
 		stream >> id;
 		if (stream.status () != QDataStream::Ok)
 		{
-			qWarning () << "corrupt entry id:" << stream.status ();
+			Util::LogAt (loc).warning () << "corrupt entry id:" << stream.status ();
 			return {};
 		}
 
@@ -153,9 +154,12 @@ namespace LC::Azoth
 	}
 
 	template<AnyEntryId Id>
-	std::optional<Id> Deserialize (QStringView str)
+	std::optional<Id> Deserialize (QStringView str, std::source_location loc)
 	{
-		return FromSerializedString (std::type_identity<Id> {}, str);
+		auto result = FromSerializedString (std::type_identity<Id> {}, str);
+		if (!result)
+			Util::LogAt (loc).warning () << "unparseable entry id:" << str;
+		return result;
 	}
 
 	template AZOTH_UTIL_API QByteArray SerializeBytes (const EntryPersistentId&);
@@ -165,12 +169,12 @@ namespace LC::Azoth
 	template AZOTH_UTIL_API QByteArray SerializeBytes (const EntryStrongestId&);
 	template AZOTH_UTIL_API QByteArray SerializeBytes (const GlobalStrongestId&);
 
-	template AZOTH_UTIL_API std::optional<EntryPersistentId> Deserialize<EntryPersistentId> (const QByteArray&);
-	template AZOTH_UTIL_API std::optional<EntryConventionalId> Deserialize<EntryConventionalId> (const QByteArray&);
-	template AZOTH_UTIL_API std::optional<GlobalPersistentId> Deserialize<GlobalPersistentId> (const QByteArray&);
-	template AZOTH_UTIL_API std::optional<GlobalConventionalId> Deserialize<GlobalConventionalId> (const QByteArray&);
-	template AZOTH_UTIL_API std::optional<EntryStrongestId> Deserialize<EntryStrongestId> (const QByteArray&);
-	template AZOTH_UTIL_API std::optional<GlobalStrongestId> Deserialize<GlobalStrongestId> (const QByteArray&);
+	template AZOTH_UTIL_API std::optional<EntryPersistentId> Deserialize<EntryPersistentId> (const QByteArray&, std::source_location);
+	template AZOTH_UTIL_API std::optional<EntryConventionalId> Deserialize<EntryConventionalId> (const QByteArray&, std::source_location);
+	template AZOTH_UTIL_API std::optional<GlobalPersistentId> Deserialize<GlobalPersistentId> (const QByteArray&, std::source_location);
+	template AZOTH_UTIL_API std::optional<GlobalConventionalId> Deserialize<GlobalConventionalId> (const QByteArray&, std::source_location);
+	template AZOTH_UTIL_API std::optional<EntryStrongestId> Deserialize<EntryStrongestId> (const QByteArray&, std::source_location);
+	template AZOTH_UTIL_API std::optional<GlobalStrongestId> Deserialize<GlobalStrongestId> (const QByteArray&, std::source_location);
 
 	template AZOTH_UTIL_API QString SerializeString (const EntryPersistentId&);
 	template AZOTH_UTIL_API QString SerializeString (const EntryConventionalId&);
@@ -179,10 +183,10 @@ namespace LC::Azoth
 	template AZOTH_UTIL_API QString SerializeString (const EntryStrongestId&);
 	template AZOTH_UTIL_API QString SerializeString (const GlobalStrongestId&);
 
-	template AZOTH_UTIL_API std::optional<EntryPersistentId> Deserialize<EntryPersistentId> (QStringView);
-	template AZOTH_UTIL_API std::optional<EntryConventionalId> Deserialize<EntryConventionalId> (QStringView);
-	template AZOTH_UTIL_API std::optional<GlobalPersistentId> Deserialize<GlobalPersistentId> (QStringView);
-	template AZOTH_UTIL_API std::optional<GlobalConventionalId> Deserialize<GlobalConventionalId> (QStringView);
-	template AZOTH_UTIL_API std::optional<EntryStrongestId> Deserialize<EntryStrongestId> (QStringView);
-	template AZOTH_UTIL_API std::optional<GlobalStrongestId> Deserialize<GlobalStrongestId> (QStringView);
+	template AZOTH_UTIL_API std::optional<EntryPersistentId> Deserialize<EntryPersistentId> (QStringView, std::source_location);
+	template AZOTH_UTIL_API std::optional<EntryConventionalId> Deserialize<EntryConventionalId> (QStringView, std::source_location);
+	template AZOTH_UTIL_API std::optional<GlobalPersistentId> Deserialize<GlobalPersistentId> (QStringView, std::source_location);
+	template AZOTH_UTIL_API std::optional<GlobalConventionalId> Deserialize<GlobalConventionalId> (QStringView, std::source_location);
+	template AZOTH_UTIL_API std::optional<EntryStrongestId> Deserialize<EntryStrongestId> (QStringView, std::source_location);
+	template AZOTH_UTIL_API std::optional<GlobalStrongestId> Deserialize<GlobalStrongestId> (QStringView, std::source_location);
 }
