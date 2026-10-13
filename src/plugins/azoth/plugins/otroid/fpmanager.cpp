@@ -22,6 +22,8 @@ extern "C"
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/iclentry.h>
+#include <util/azoth/entryidops.h>
+#include <util/azoth/util.h>
 #include "util.h"
 
 namespace LC
@@ -60,15 +62,12 @@ namespace OTRoid
 		}
 
 		QList<QStandardItem*> MakeEntryItems (IProxyObject *proxy,
-				const QString& accId, const QString& entryId, const QString& protoId)
+				const QString& accId, const GlobalStrongestId& entryId, const QString& protoId)
 		{
 			const auto entryObj = proxy->GetEntry (entryId, accId);
 			if (!entryObj)
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "no entry for"
-						<< accId
-						<< entryId;
+				qWarning () << "no entry for" << accId << entryId;
 				return {};
 			}
 
@@ -84,7 +83,7 @@ namespace OTRoid
 			{
 				item->setEditable (false);
 				item->setData (FPManager::TypeEntry, FPManager::RoleType);
-				item->setData (entryId, FPManager::RoleEntryId);
+				item->setData (QVariant::fromValue (entryId), FPManager::RoleEntryId);
 				item->setData (accId, FPManager::RoleAccId);
 				item->setData (protoId, FPManager::RoleProtoId);
 			}
@@ -107,7 +106,10 @@ namespace OTRoid
 				continue;
 
 			const auto& accStr = QString::fromUtf8 (context->accountname);
-			const auto& userStr = QString::fromUtf8 (context->username);
+			const auto& entryId = Deserialize<GlobalStrongestId> (QString::fromUtf8 (context->username));
+			if (!entryId)
+				continue;
+
 			const auto& protoStr = QString::fromUtf8 (context->protocol);
 
 			auto& accInfo = Account2User2Fp_ [accStr];
@@ -119,10 +121,10 @@ namespace OTRoid
 					continue;
 			}
 
-			auto& entryInfo = accInfo.Entries_ [userStr] ;
+			auto& entryInfo = accInfo.Entries_ [*entryId] ;
 			if (entryInfo.EntryItems_.isEmpty ())
 			{
-				entryInfo.EntryItems_ = MakeEntryItems (AzothProxy_, accStr, userStr, protoStr);
+				entryInfo.EntryItems_ = MakeEntryItems (AzothProxy_, accStr, *entryId, protoStr);
 
 				if (!entryInfo.EntryItems_.isEmpty ())
 					accInfo.AccItem_->appendRow (entryInfo.EntryItems_);
@@ -156,11 +158,6 @@ namespace OTRoid
 		}
 
 		return count;
-	}
-
-	FPInfos_t FPManager::GetFingerprints (const QString& accId, const QString& userId) const
-	{
-		return Account2User2Fp_.value (accId).Entries_.value (userId).FPs_;
 	}
 
 	QAbstractItemModel* FPManager::GetModel () const
@@ -247,11 +244,11 @@ namespace OTRoid
 
 			const auto parent = item->parent ();
 
-			const auto& entryId = parent->data (RoleEntryId).toString ().toUtf8 ();
+			const auto& entryId = parent->data (RoleEntryId).value<GlobalStrongestId> ();
 			const auto& accId = parent->data (RoleAccId).toString ().toUtf8 ();
 			const auto& protoId = parent->data (RoleProtoId).toString ().toUtf8 ();
 			const auto context = otrl_context_find (UserState_,
-					entryId.constData (),
+					SerializeString (entryId).toUtf8 ().constData (),
 					accId.constData (),
 					protoId.constData (),
 					OTRL_INSTAG_BEST,

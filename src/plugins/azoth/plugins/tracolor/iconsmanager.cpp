@@ -29,18 +29,22 @@ namespace Tracolor
 	, SettingsMgr_ { settingsMgr }
 	{
 		connect (EvMgr_,
-				SIGNAL (entryEventRateChanged (QByteArray)),
+				&EntryEventsManager::entryEventRateChanged,
 				this,
-				SLOT (handleEntryEventRateChanged (QByteArray)));
+				[this] (const GlobalStrongestId& entryId)
+				{
+					RegenCache (entryId);
+					emit iconUpdated (entryId);
+				});
 		connect (SettingsMgr_,
-				SIGNAL (eventsSettingsChanged ()),
+				&EventsSettingsManager::eventsSettingsChanged,
 				this,
-				SLOT (updateCaches ()));
+				&IconsManager::RegenCaches);
 
-		XmlSettingsManager::Instance ().RegisterObject ("HidingThreshold", this, "updateCaches");
+		XmlSettingsManager::Instance ().RegisterObject ("HidingThreshold", this, [this] { RegenCaches (); });
 	}
 
-	QList<QIcon> IconsManager::GetIcons (const QByteArray& entryId)
+	QList<QIcon> IconsManager::GetIcons (const GlobalStrongestId& entryId)
 	{
 		if (!IconsCache_.contains (entryId))
 			RegenCache (entryId);
@@ -48,7 +52,7 @@ namespace Tracolor
 		return Util::Map (IconsCache_.value (entryId), &IconsCacheEntry::Icon_);
 	}
 
-	void IconsManager::RegenCache (const QByteArray& entryId)
+	void IconsManager::RegenCache (const GlobalStrongestId& entryId)
 	{
 		const auto tolerance = 10;
 
@@ -83,19 +87,9 @@ namespace Tracolor
 		IconsCache_ [entryId] = icons;
 	}
 
-	void IconsManager::handleEntryEventRateChanged (const QByteArray& entryId)
+	void IconsManager::RegenCaches ()
 	{
-		RegenCache (entryId);
-		emit iconUpdated (entryId);
-	}
-
-	void IconsManager::updateCaches ()
-	{
-		decltype (IconsCache_) oldCache;
-		using std::swap;
-		swap (oldCache, IconsCache_);
-
-		for (const auto& pair : Util::Stlize (oldCache))
+		for (const auto& pair : Util::Stlize (std::exchange (IconsCache_, {})))
 		{
 			RegenCache (pair.first);
 

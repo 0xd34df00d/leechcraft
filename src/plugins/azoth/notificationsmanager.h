@@ -26,6 +26,7 @@ namespace Azoth
 {
 	class IMessage;
 	class ICLEntry;
+	class IMUCEntry;
 	class IAccount;
 	class AvatarsManager;
 	struct EntryStatus;
@@ -44,7 +45,7 @@ namespace Azoth
 	public:
 		static QList<AN::FieldData> GetANFields ();
 		static QVariantMap SourceFields (const ICLEntry&);
-		static QVariantMap RoomFields (const ICLEntry&);
+		static QVariantMap RoomFields (const IMUCEntry&);
 
 		NotificationsManager (AvatarsManager*, QObject* = nullptr);
 
@@ -56,7 +57,7 @@ namespace Azoth
 
 		void CreateChangesStateRule (const ICLEntry&);
 		void CreateBecomesOnlineRule (const ICLEntry&);
-		void CreateParticipantEnterRule (const ICLEntry& mucEntry, const QString& nick);
+		void CreateParticipantEnterRule (const IMUCEntry&, const QString& nick);
 
 		void HandleMessage (IMessage*);
 	private:

@@ -16,9 +16,15 @@ namespace LC::Azoth::Fields
 	AZOTH_UTIL_API extern const QString Msg;
 	AZOTH_UTIL_API extern const QString NewStatus;
 	AZOTH_UTIL_API extern const QString SourceName;
-	AZOTH_UTIL_API extern const QString SourceID;
-	AZOTH_UTIL_API extern const QString SubSourceID;
-	AZOTH_UTIL_API extern const QString RoomName;
-	AZOTH_UTIL_API extern const QString RoomID;
+	AZOTH_UTIL_API extern const QString SourceAccountID;
+	AZOTH_UTIL_API extern const QString SourceHumanReadableAddress;
 	AZOTH_UTIL_API extern const QString SourceGroups;
+	AZOTH_UTIL_API extern const QString RoomName;
+	AZOTH_UTIL_API extern const QString RoomHumanReadableAddress;
+}
+
+namespace LC::Azoth::Fields::Internal
+{
+	AZOTH_UTIL_API extern const QString SourceGlobalStrongestID;
+	AZOTH_UTIL_API extern const QString RoomGlobalStrongestID;
 }

@@ -12,6 +12,7 @@
 #include <QHash>
 #include <QList>
 #include <QDateTime>
+#include <interfaces/azoth/azothcommon.h>
 
 namespace LC
 {
@@ -28,20 +29,20 @@ namespace Tracolor
 			QDateTime DT_;
 			double Rate_;
 		};
-		QHash<QByteArray, QHash<QByteArray, EntryEventInfo>> EntryEvents_;
+		QHash<GlobalStrongestId, QHash<QByteArray, EntryEventInfo>> EntryEvents_;
 	public:
 		EntryEventsManager (QObject* = nullptr);
 
 		void AddEntry (QObject*);
 		void RemoveEntry (QObject*);
 
-		void HandleEvent (const QByteArray& entryId, const QByteArray& eventId);
+		void HandleEvent (const GlobalStrongestId& entryId, const QByteArray& eventId);
 
-		double GetEntryEventRate (const QByteArray& entryId, const QByteArray& eventId) const;
+		double GetEntryEventRate (const GlobalStrongestId& entryId, const QByteArray& eventId) const;
 	private slots:
 		void decayRates ();
 	signals:
-		void entryEventRateChanged (const QByteArray&);
+		void entryEventRateChanged (const GlobalStrongestId&);
 	};
 }
 }

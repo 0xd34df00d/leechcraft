@@ -9,6 +9,7 @@
 #include "entryeventsmanager.h"
 #include <cmath>
 #include <QTimer>
+#include <util/sll/qobjectrefcast.h>
 #include <util/sll/qtutil.h>
 #include <interfaces/azoth/iclentry.h>
 #include "xmlsettingsmanager.h"
@@ -38,16 +39,16 @@ namespace Tracolor
 
 	void EntryEventsManager::RemoveEntry (QObject *entryObj)
 	{
-		EntryEvents_.remove (qobject_cast<ICLEntry*> (entryObj)->GetEntryID ().toUtf8 ());
+		EntryEvents_.remove (qobject_ref_cast<ICLEntry> (entryObj).GetGlobalStrongestID ());
 	}
 
-	void EntryEventsManager::HandleEvent (const QByteArray& entryId, const QByteArray& eventId)
+	void EntryEventsManager::HandleEvent (const GlobalStrongestId& entryId, const QByteArray& eventId)
 	{
 		EntryEvents_ [entryId] [eventId].DT_ = QDateTime::currentDateTime ();
 		emit entryEventRateChanged (entryId);
 	}
 
-	double EntryEventsManager::GetEntryEventRate (const QByteArray& entryId, const QByteArray& eventId) const
+	double EntryEventsManager::GetEntryEventRate (const GlobalStrongestId& entryId, const QByteArray& eventId) const
 	{
 		const auto& date = EntryEvents_.value (entryId).value (eventId).DT_;
 		if (!date.isValid ())

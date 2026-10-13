@@ -16,6 +16,7 @@
 #include <interfaces/an/entityfields.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <util/sll/qobjectrefcast.h>
 #include <util/sll/qtutil.h>
 #include <util/xpc/util.h>
 #include <interfaces/azoth/iaccount.h>
@@ -93,31 +94,40 @@ namespace LC::Azoth
 	{
 		// TODO drop once the room comes from the event rather than the entry:
 		// participants will be able to belong to several rooms.
-		ICLEntry* RoomOf (const ICLEntry& entry)
+		IMUCEntry* RoomOf (ICLEntry& entry)
 		{
-			return entry.GetParentCLEntry ();
+			if (entry.GetEntryType () == ICLEntry::EntryType::MUC)
+				return &qobject_ref_cast<IMUCEntry> (entry.GetQObject ());
+
+			if (const auto parent = entry.GetParentCLEntry ();
+				parent && parent->GetEntryType () == ICLEntry::EntryType::MUC)
+				return &qobject_ref_cast<IMUCEntry> (parent->GetQObject ());
+			return nullptr;
 		}
 	}
 
 	QFuture<Entity> BuildNotification (AvatarsManager *avatarsMgr,
-			Entity e, ICLEntry *other, const QString& id, ICLEntry *avatarSource)
+			Entity e, ICLEntry *conversation, const QString& id, ICLEntry *actor)
 	{
+		if (!actor)
+			actor = conversation;
+
 		e.Additional_ [AN::EF::SenderID] = "org.LeechCraft.Azoth";
 		e.Additional_ [AN::EF::EventCategory] = AN::CatIM;
 		e.Additional_ [AN::EF::EventID] =
-				"org.LC.Plugins.Azoth." + (id.isEmpty () ? "IncomingMessageFrom"_qs : id) + '/' + other->GetEntryID ();
+				"org.LC.Plugins.Azoth." + (id.isEmpty () ? "IncomingMessageFrom"_qs : id) + '/' + conversation->GetEntryID ();
 
-		e.Additional_ [AN::EF::VisualPath] = QStringList (other->GetEntryName ());
+		e.Additional_ [AN::EF::VisualPath] = QStringList (conversation->GetEntryName ());
 
 		int win = 0;
-		const auto tab = Core::Instance ().GetChatTabsManager ()->GetChatTab (other->GetEntryID ());
+		const auto tab = Core::Instance ().GetChatTabsManager ()->GetChatTab (conversation->GetEntryID ());
 
 		const auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 		if (tab)
 			win = rootWM->GetWindowForTab (tab);
 		if (!tab || win == -1)
 		{
-			const auto& tc = other->GetEntryType () == ICLEntry::EntryType::MUC ?
+			const auto& tc = conversation->GetEntryType () == ICLEntry::EntryType::MUC ?
 					ChatTab::GetMUCTabClassInfo () :
 					ChatTab::GetChatTabClassInfo ();
 			win = rootWM->GetPreferredWindowIndex (tc.TabClass_);
@@ -125,15 +135,12 @@ namespace LC::Azoth
 
 		e.Additional_ [AN::EF::WindowIndex] = win;
 
-		e.Additional_.insert (NotificationsManager::SourceFields (*other));
-		if (const auto room = RoomOf (*other))
+		e.Additional_.insert (NotificationsManager::SourceFields (*actor));
+		if (const auto room = RoomOf (*actor))
 			e.Additional_.insert (NotificationsManager::RoomFields (*room));
 
-		if (!avatarSource)
-			avatarSource = other;
-
 		QPointer<AvatarsManager> mgr { avatarsMgr };
-		QPointer<QObject> src { avatarSource->GetQObject () };
+		QPointer<QObject> src { actor->GetQObject () };
 		const auto& avatarFutureGetter = [mgr, src] () -> Util::LazyNotificationPixmap_t::result_type
 		{
 			if (mgr && src)

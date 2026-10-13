@@ -105,10 +105,24 @@ namespace Azoth
 				.EventTypes_ = havingSourceFields,
 			},
 			{
-				.ID_ = Fields::SourceID,
-				.Name_ = tr ("Sender ID"),
-				.Description_ = tr ("Non-human-readable ID of the sender (protocol-specific)."),
+				.ID_ = Fields::SourceAccountID,
+				.Name_ = tr ("Sender account"),
+				.Description_ = tr ("The account to which the sender belongs."),
 				.Type_ = QMetaType::QString,
+				.EventTypes_ = havingSourceFields,
+			},
+			{
+				.ID_ = Fields::SourceHumanReadableAddress,
+				.Name_ = tr ("Sender address"),
+				.Description_ = tr ("Human-readable address of the sender (protocol-specific)."),
+				.Type_ = QMetaType::QString,
+				.EventTypes_ = havingSourceFields,
+			},
+			{
+				.ID_ = Fields::SourceGroups,
+				.Name_ = tr ("Sender groups"),
+				.Description_ = tr ("Groups to which the sender belongs."),
+				.Type_ = QMetaType::QStringList,
 				.EventTypes_ = havingSourceFields,
 			},
 			{
@@ -119,17 +133,10 @@ namespace Azoth
 				.EventTypes_ = havingSourceFields,
 			},
 			{
-				.ID_ = Fields::RoomID,
-				.Name_ = tr ("Room ID"),
-				.Description_ = tr ("Non-human-readable ID of the room the event happened in (protocol-specific)."),
+				.ID_ = Fields::RoomHumanReadableAddress,
+				.Name_ = tr ("Room address"),
+				.Description_ = tr ("Human-readable address of the room the event happened in."),
 				.Type_ = QMetaType::QString,
-				.EventTypes_ = havingSourceFields,
-			},
-			{
-				.ID_ = Fields::SourceGroups,
-				.Name_ = tr ("Sender groups"),
-				.Description_ = tr ("Groups to which the sender belongs."),
-				.Type_ = QMetaType::QStringList,
 				.EventTypes_ = havingSourceFields,
 			},
 			{
@@ -147,33 +154,50 @@ namespace Azoth
 	namespace
 	{
 		template<typename T>
+		using Extractor = T (*) (const ICLEntry&);
+
+		template<typename T>
 		struct EntryField
 		{
 			const QString& Id_;
-			T (*Get_) (const ICLEntry&);
+			Extractor<T> Get_;
 		};
 
 		namespace Extract
 		{
 			QString Name (const ICLEntry& e) { return e.GetEntryName (); }
-			QString ID (const ICLEntry& e) { return e.GetEntryID (); }
+			QString AccountID (const ICLEntry& e) { return QString::fromUtf8 (e.GetParentAccount ()->GetAccountID ()); }
+			QString HumanReadableAddress (const ICLEntry& e) { return e.GetHumanReadableAddress (); }
 			QStringList Groups (const ICLEntry& e) { return e.Groups (); }
+
+			GlobalStrongestId GlobalStrongestID (const ICLEntry& e) { return e.GetGlobalStrongestID (); }
 		}
 
 		namespace Source
 		{
-			constexpr EntryField<QString> Name { Fields::SourceName, &Extract::Name };
-			constexpr EntryField<QString> ID { Fields::SourceID, &Extract::ID };
-			constexpr EntryField<QStringList> Groups { Fields::SourceGroups, &Extract::Groups };
+			constexpr EntryField Name { Fields::SourceName, &Extract::Name };
+			constexpr EntryField AccountID { Fields::SourceAccountID, &Extract::AccountID };
+			constexpr EntryField HumanReadableAddress { Fields::SourceHumanReadableAddress, &Extract::HumanReadableAddress };
+			constexpr EntryField Groups { Fields::SourceGroups, &Extract::Groups };
+
+			namespace Internal
+			{
+				constexpr EntryField GlobalStrongestID { Fields::Internal::SourceGlobalStrongestID, &Extract::GlobalStrongestID };
+			}
 		}
 
 		namespace Room
 		{
-			constexpr EntryField<QString> Name { Fields::RoomName, &Extract::Name };
-			constexpr EntryField<QString> ID { Fields::RoomID, &Extract::ID };
+			constexpr EntryField Name { Fields::RoomName, &Extract::Name };
+			constexpr EntryField HumanReadableAddress { Fields::RoomHumanReadableAddress, &Extract::HumanReadableAddress };
+
+			namespace Internal
+			{
+				constexpr EntryField GlobalStrongestID { Fields::Internal::RoomGlobalStrongestID, &Extract::GlobalStrongestID };
+			}
 		}
 
-		QPair<QString, AN::ValueMatcher> Match (const EntryField<QString>& field, const ICLEntry& entry)
+		QPair<QString, AN::ValueMatcher> MatcherFor (const EntryField<QString>& field, const ICLEntry& entry)
 		{
 			return { field.Id_, AN::StringValueMatcher { field.Get_ (entry) } };
 		}
@@ -187,12 +211,20 @@ namespace Azoth
 
 	QVariantMap NotificationsManager::SourceFields (const ICLEntry& entry)
 	{
-		return FieldsOf (entry, Source::Name, Source::ID, Source::Groups);
+		return FieldsOf (entry,
+				Source::Name,
+				Source::AccountID,
+				Source::HumanReadableAddress,
+				Source::Groups,
+				Source::Internal::GlobalStrongestID);
 	}
 
-	QVariantMap NotificationsManager::RoomFields (const ICLEntry& room)
+	QVariantMap NotificationsManager::RoomFields (const IMUCEntry& room)
 	{
-		return FieldsOf (room, Room::Name, Room::ID);
+		return FieldsOf (room.AsCLEntry (),
+				Room::Name,
+				Room::HumanReadableAddress,
+				Room::Internal::GlobalStrongestID);
 	}
 
 	NotificationsManager::NotificationsManager (AvatarsManager *am, QObject *parent)
@@ -439,6 +471,21 @@ namespace Azoth
 			entry->GetCLEntryEmitter ().disconnect (this);
 	}
 
+	namespace
+	{
+		QList<QPair<QString, AN::ValueMatcher>> WithEntryIdent (const ICLEntry& entry,
+				std::initializer_list<QPair<QString, AN::ValueMatcher>> extra = {})
+		{
+			QList result
+			{
+				MatcherFor (Source::AccountID, entry),
+				MatcherFor (Source::HumanReadableAddress, entry),
+			};
+			result.append ({ extra });
+			return result;
+		}
+	}
+
 	void NotificationsManager::CreateChangesStateRule (const ICLEntry& entry)
 	{
 		const auto& e = Util::MakeANRule (tr ("Notify when %1 changes state").arg (FormatNameWithAddress (entry)),
@@ -447,7 +494,7 @@ namespace Azoth
 				{ AN::TypeIMStatusChange },
 				AN::NotifyPersistent | AN::NotifyTransient | AN::NotifySingleShot,
 				false,
-				{ Match (Source::ID, entry) });
+				WithEntryIdent (entry));
 		EntityMgr_.HandleEntity (e);
 	}
 
@@ -459,16 +506,14 @@ namespace Azoth
 				{ AN::TypeIMStatusChange },
 				AN::NotifyPersistent | AN::NotifyTransient | AN::NotifySingleShot,
 				false,
-				{
-					Match (Source::ID, entry),
-					{ Fields::NewStatus, AN::StringValueMatcher { StateToID (SOnline) } }
-				});
+				WithEntryIdent (entry, { { Fields::NewStatus, AN::StringValueMatcher { StateToID (SOnline) } } }));
 		EntityMgr_.HandleEntity (e);
 	}
 
-	void NotificationsManager::CreateParticipantEnterRule (const ICLEntry& mucEntry, const QString& nick)
+	void NotificationsManager::CreateParticipantEnterRule (const IMUCEntry& mucEntry, const QString& nick)
 	{
-		const auto& ruleName = tr ("Notify when %1 joins %2").arg (nick, FormatNameWithAddress (mucEntry));
+		const auto& mucCLEntry = mucEntry.AsCLEntry ();
+		const auto& ruleName = tr ("Notify when %1 joins %2").arg (nick, FormatNameWithAddress (mucCLEntry));
 		const auto& e = Util::MakeANRule (ruleName,
 				"org.LeechCraft.Azoth",
 				AN::CatIM,
@@ -477,7 +522,8 @@ namespace Azoth
 				false,
 				{
 					{ Fields::SourceName, AN::StringValueMatcher { nick } },
-					Match (Room::ID, mucEntry)
+					MatcherFor (Source::AccountID, mucCLEntry),
+					MatcherFor (Room::HumanReadableAddress, mucCLEntry),
 				});
 		EntityMgr_.HandleEntity (e);
 	}
@@ -535,18 +581,18 @@ namespace Azoth
 		if (msgString.isEmpty ())
 			e.Mime_ += "+advanced";
 
-		auto entry = msg->GetMessageType () == IMessage::Type::MUCMessage ?
+		const auto conversation = msg->GetMessageType () == IMessage::Type::MUCMessage ?
 				parentCL :
 				other;
 
-		const auto count = ++UnreadCounts_ [entry];
+		const auto count = ++UnreadCounts_ [conversation];
 		if (msg->GetMessageType () == IMessage::Type::MUCMessage)
 		{
-			e.Additional_ [Fields::SubSourceID] = other->GetEntryID ();
 			e.Additional_ [AN::EF::EventType] = isHighlightMsg ? AN::TypeIMMUCHighlight : AN::TypeIMMUCMsg;
 
 			const auto& mucName = Util::FormatName (parentCL->GetEntryName ());
 			const auto notifMsg = isHighlightMsg ?
+					// TODO this is wrong count for highlight messages
 					tr ("%n message(s) from %1 in %2", nullptr, count).arg (fmtEntryName, mucName) :
 					tr ("%n message(s) in %1", nullptr, count).arg (mucName);
 			e.Additional_ [AN::EF::FullText] = notifMsg;
@@ -566,7 +612,7 @@ namespace Azoth
 				[parentCL] { Core::Instance ().GetChatTabsManager ()->OpenChat (*parentCL, true); });
 		nh->AddDependentObject (parentCL->GetQObject ());
 
-		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, {}, other)) >>
+		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, conversation, {}, other)) >>
 				[this] (const Entity& e) { EntityMgr_.HandleEntity (e); };
 	}
 

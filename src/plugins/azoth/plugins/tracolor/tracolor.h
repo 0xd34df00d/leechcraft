@@ -65,7 +65,6 @@ namespace Tracolor
 		void initPlugin (QObject*);
 		void hookCollectContactIcons (LC::IHookProxy_ptr, QObject*, QList<QIcon>&) const;
 	private slots:
-		void handleIconsUpdated (const QByteArray&);
 		void handleEnableTracolorChanged ();
 	};
 }

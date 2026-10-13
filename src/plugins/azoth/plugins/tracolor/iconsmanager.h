@@ -11,6 +11,7 @@
 #include <QObject>
 #include <QHash>
 #include <QIcon>
+#include <interfaces/azoth/azothcommon.h>
 
 namespace LC
 {
@@ -34,18 +35,16 @@ namespace Tracolor
 			QColor Color_;
 			double Rate_;
 		};
-		QHash<QByteArray, QHash<QString, IconsCacheEntry>> IconsCache_;
+		QHash<GlobalStrongestId, QHash<QString, IconsCacheEntry>> IconsCache_;
 	public:
 		IconsManager (EntryEventsManager*, EventsSettingsManager*, QObject* = nullptr);
 
-		QList<QIcon> GetIcons (const QByteArray& entryId);
+		QList<QIcon> GetIcons (const GlobalStrongestId& entryId);
 	private:
-		void RegenCache (const QByteArray&);
-	private slots:
-		void handleEntryEventRateChanged (const QByteArray&);
-		void updateCaches ();
+		void RegenCache (const GlobalStrongestId&);
+		void RegenCaches ();
 	signals:
-		void iconUpdated (const QByteArray&);
+		void iconUpdated (const GlobalStrongestId&);
 	};
 }
 }

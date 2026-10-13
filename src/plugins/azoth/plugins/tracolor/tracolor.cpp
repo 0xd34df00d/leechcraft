@@ -16,6 +16,7 @@
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/iaccount.h>
+#include <util/sll/qobjectrefcast.h>
 #include <util/azoth/anconstants.h>
 #include "entryeventsmanager.h"
 #include "iconsmanager.h"
@@ -34,9 +35,13 @@ namespace Tracolor
 		EventsManager_ = new EntryEventsManager;
 		IconsManager_ = new IconsManager { EventsManager_, eventsSettingsManager };
 		connect (IconsManager_,
-				SIGNAL (iconUpdated (QByteArray)),
+				&IconsManager::iconUpdated,
 				this,
-				SLOT (handleIconsUpdated (QByteArray)));
+				[this] (const GlobalStrongestId& entryId)
+				{
+					if (const auto entry = AzothProxy_ ? AzothProxy_->GetEntry (entryId) : nullptr)
+						AzothProxy_->RedrawItem (entry);
+				});
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothtracolorsettings.xml");
@@ -91,7 +96,7 @@ namespace Tracolor
 	{
 		const bool can = e.Mime_.startsWith ("x-leechcraft/notification") &&
 				e.Additional_ [AN::EF::EventCategory].toString () != AN::CatEventCancel &&
-				e.Additional_.contains (Fields::SourceID);
+				e.Additional_.contains (Fields::Internal::SourceGlobalStrongestID);
 		return can ?
 				EntityTestHandleResult { EntityTestHandleResult::PIdeal } :
 				EntityTestHandleResult {};
@@ -99,15 +104,16 @@ namespace Tracolor
 
 	void Plugin::Handle (Entity e)
 	{
-		const auto& sourceId = e.Additional_ [Fields::SourceID].toString ();
+		const auto& sourceId = e.Additional_ [Fields::Internal::SourceGlobalStrongestID].value<GlobalStrongestId> ();
 		const auto& eventId = e.Additional_ [AN::EF::EventType].toString ();
 
-		EventsManager_->HandleEvent (sourceId.toUtf8 (), eventId.toUtf8 ());
+		EventsManager_->HandleEvent (sourceId, eventId.toUtf8 ());
 
-		if (e.Additional_.contains (Fields::SubSourceID))
+		if (const auto roomIdVar = e.Additional_.value (Fields::Internal::RoomGlobalStrongestID);
+			roomIdVar.isValid ())
 		{
-			const auto& subId = e.Additional_ [Fields::SubSourceID].toString ();
-			EventsManager_->HandleEvent (subId.toUtf8 (), eventId.toUtf8 ());
+			const auto& roomId = roomIdVar.value<GlobalStrongestId> ();
+			EventsManager_->HandleEvent (roomId, eventId.toUtf8 ());
 		}
 	}
 
@@ -116,30 +122,15 @@ namespace Tracolor
 		AzothProxy_ = qobject_cast<IProxyObject*> (proxyObj);
 	}
 
-	void Plugin::hookCollectContactIcons (IHookProxy_ptr,
-			QObject *entryObj, QList<QIcon>& icons) const
+	void Plugin::hookCollectContactIcons (IHookProxy_ptr, QObject *entryObj, QList<QIcon>& icons) const
 	{
 		if (!XmlSettingsManager::Instance ().property ("EnableTracolor").toBool ())
 			return;
 
-		const auto entry = qobject_cast<ICLEntry*> (entryObj);
-		const auto& sourceId = entry->GetEntryID ().toUtf8 ();
-
-		const auto& newIcons = IconsManager_->GetIcons (sourceId);
-		if (!newIcons.isEmpty ())
+		const auto& entry = qobject_ref_cast<ICLEntry> (entryObj);
+		if (const auto& newIcons = IconsManager_->GetIcons (entry.GetGlobalStrongestID ());
+			!newIcons.isEmpty ())
 			icons = newIcons + icons;
-	}
-
-	void Plugin::handleIconsUpdated (const QByteArray& entryId)
-	{
-		if (!AzothProxy_)
-			return;
-
-		const auto entry = AzothProxy_->GetEntry (entryId);
-		if (!entry)
-			return;
-
-		AzothProxy_->RedrawItem (entry);
 	}
 
 	void Plugin::handleEnableTracolorChanged ()

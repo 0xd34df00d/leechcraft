@@ -216,7 +216,7 @@ namespace LC::Azoth
 		return Util::Map (Core::Instance ().GetAccounts (), &IAccount::GetQObject);
 	}
 
-	QObject* ProxyObject::GetEntry (const QString& entryID, const QString&) const
+	QObject* ProxyObject::GetEntry (const GlobalStrongestId& entryID, const QString&) const
 	{
 		return Core::Instance ().GetEntryOrNull<QObject> (entryID);
 	}

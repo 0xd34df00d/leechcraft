@@ -17,6 +17,8 @@ extern "C"
 #include <libotr/proto.h>
 }
 
+#include <interfaces/azoth/azothcommon.h>
+
 class QStandardItemModel;
 class QStandardItem;
 
@@ -53,7 +55,7 @@ namespace OTRoid
 		struct AccState
 		{
 			QStandardItem *AccItem_ = nullptr;
-			QHash<QString, EntryState> Entries_;
+			QHash<GlobalStrongestId, EntryState> Entries_;
 		};
 		QHash<QString, AccState> Account2User2Fp_;
 
@@ -85,8 +87,6 @@ namespace OTRoid
 		FPManager (const OtrlUserState, IProxyObject*, QObject* = 0);
 
 		int HandleNew (const char*, const char*, const char*, unsigned char [20]);
-
-		FPInfos_t GetFingerprints (const QString& accId, const QString& userId) const;
 
 		QAbstractItemModel* GetModel () const;
 	public slots:

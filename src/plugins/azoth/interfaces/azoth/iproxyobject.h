@@ -240,7 +240,7 @@ namespace Azoth
 		 *
 		 * @return Entry object, or NULL if no such entry exists.
 		 */
-		virtual QObject* GetEntry (const QString& entryID, const QString& accID = {}) const = 0;
+		virtual QObject* GetEntry (const GlobalStrongestId& entryID, const QString& accID = {}) const = 0;
 
 		/** @brief Opens the chat with the given entry.
 		 *

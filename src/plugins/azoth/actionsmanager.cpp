@@ -1094,7 +1094,7 @@ namespace Azoth
 								"LeechCraft",
 								tr ("Enter the nick of the participant to alert for:"));
 						if (!nick.isEmpty () && entryGuard)
-							NotificationsManager_.CreateParticipantEnterRule (*entry, nick);
+							NotificationsManager_.CreateParticipantEnterRule (qobject_ref_cast<IMUCEntry> (entry->GetQObject ()), nick);
 					});
 
 		const auto accObj = entry->GetParentAccount ()->GetQObject ();
