@@ -229,13 +229,13 @@ namespace Azoth
 		 */
 		virtual QList<QObject*> GetAllAccounts () const = 0;
 
-		/** @brief Returns the entry object for the given entry ID.
+		/** @brief Returns the entry for the given entry ID.
 		 *
 		 * @param[in] entryID The entry ID.
 		 *
-		 * @return Entry object, or NULL if no such entry exists.
+		 * @return Entry, or `nullptr` if no such entry exists.
 		 */
-		virtual QObject* GetEntry (const GlobalStrongestId& entryID) const = 0;
+		virtual ICLEntry* GetEntry (const GlobalStrongestId& entryID) const = 0;
 
 		/** @brief Opens the chat with the given entry.
 		 *
@@ -289,7 +289,7 @@ namespace Azoth
 		 */
 		virtual QStringList GetCustomStatusNames () const = 0;
 
-		virtual void RedrawItem (QObject*) const = 0;
+		virtual void RedrawItem (ICLEntry*) const = 0;
 
 		virtual QObject* GetFirstUnreadMessage (QObject *entryObj) const = 0;
 

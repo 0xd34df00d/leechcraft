@@ -197,8 +197,9 @@ namespace LC::Azoth
 				this,
 				[this] (QObject *entryObj)
 				{
-					Entry2SmoothAvatarCache_.remove (qobject_cast<ICLEntry*> (entryObj));
-					UpdateItem (entryObj);
+					const auto entry = qobject_cast<ICLEntry*> (entryObj);
+					Entry2SmoothAvatarCache_.remove (entry);
+					UpdateItem (entry);
 				});
 		connect (AvatarsManager_.get (),
 				&AvatarsManager::accountAvatarInvalidated,
@@ -557,9 +558,9 @@ namespace LC::Azoth
 		return nullptr;
 	}
 
-	void Core::UpdateItem (QObject *entryObj)
+	void Core::UpdateItem (ICLEntry *entry)
 	{
-		for (const auto item : Entry2Items_.value (qobject_cast<ICLEntry*> (entryObj)))
+		for (const auto item : Entry2Items_.value (entry))
 			CLModel_->dataChanged (item->index (), item->index ());
 	}
 
@@ -1397,7 +1398,7 @@ namespace LC::Azoth
 									Qt::KeepAspectRatio, Qt::SmoothTransformation);
 					Entry2SmoothAvatarCache_.insert (entry, new QImage { avatar }, avatar.sizeInBytes ());
 
-					UpdateItem (obj);
+					UpdateItem (entry);
 				};
 
 		return ResourcesManager::Instance ().GetDefaultAvatar (size);

@@ -64,14 +64,12 @@ namespace OTRoid
 		QList<QStandardItem*> MakeEntryItems (IProxyObject *proxy,
 				const QString& accId, const GlobalStrongestId& entryId, const QString& protoId)
 		{
-			const auto entryObj = proxy->GetEntry (entryId);
-			if (!entryObj)
+			const auto entry = proxy->GetEntry (entryId);
+			if (!entry)
 			{
 				qWarning () << "no entry for" << accId << entryId;
 				return {};
 			}
-
-			const auto entry = qobject_cast<ICLEntry*> (entryObj);
 
 			const QList<QStandardItem*> result
 			{

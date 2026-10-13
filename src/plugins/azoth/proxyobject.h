@@ -56,7 +56,7 @@ namespace Azoth
 		AuthStatus AuthStatusFromString (const QByteArray&) const override;
 		QObject* GetAccount (const QString&) const override;
 		QList<QObject*> GetAllAccounts () const override;
-		QObject* GetEntry (const GlobalStrongestId&) const override;
+		ICLEntry* GetEntry (const GlobalStrongestId&) const override;
 		void OpenChat (const QString&, const QString&, const QString&, const QString&) const override;
 		QWidget* FindOpenedChat (const QString&, const QByteArray&) const override;
 		Util::ResourceLoader* GetResourceLoader (PublicResourceLoader) const override;
@@ -74,7 +74,7 @@ namespace Azoth
 
 		QImage GetDefaultAvatar (int) const override;
 
-		void RedrawItem (QObject*) const override;
+		void RedrawItem (ICLEntry*) const override;
 
 		QObject* GetFirstUnreadMessage (QObject *entryObj) const override;
 

@@ -216,9 +216,9 @@ namespace LC::Azoth
 		return Util::Map (Core::Instance ().GetAccounts (), &IAccount::GetQObject);
 	}
 
-	QObject* ProxyObject::GetEntry (const GlobalStrongestId& entryID) const
+	ICLEntry* ProxyObject::GetEntry (const GlobalStrongestId& entryID) const
 	{
-		return Core::Instance ().GetEntryOrNull<QObject> (entryID);
+		return Core::Instance ().GetEntryOrNull<ICLEntry> (entryID);
 	}
 
 	void ProxyObject::OpenChat (const QString& entryID, const QString&, const QString& message, const QString& variant) const
@@ -332,7 +332,7 @@ namespace LC::Azoth
 		return ResourcesManager::Instance ().GetDefaultAvatar (size);
 	}
 
-	void ProxyObject::RedrawItem (QObject *entryObj) const
+	void ProxyObject::RedrawItem (ICLEntry *entryObj) const
 	{
 		Core::Instance ().UpdateItem (entryObj);
 	}

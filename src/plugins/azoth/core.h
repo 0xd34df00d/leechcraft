@@ -150,7 +150,7 @@ namespace LC::Azoth
 		QList<IProtocol*> GetProtocols () const;
 		IAccount* GetAccount (const QByteArray&) const;
 
-		void UpdateItem (QObject*);
+		void UpdateItem (ICLEntry*);
 
 		/** Returns the list of all groups of all chat entries.
 		 */

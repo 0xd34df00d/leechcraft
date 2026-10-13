@@ -508,7 +508,7 @@ namespace OTRoid
 
 	ICLEntry* OtrHandler::GetEntry (const QString& accId, const GlobalStrongestId& entryId)
 	{
-		return qobject_cast<ICLEntry*> (AzothProxy_->GetEntry (entryId));
+		return AzothProxy_->GetEntry (entryId);
 	}
 
 	QString OtrHandler::GetVisibleEntryName (const QString& accId, const GlobalStrongestId& entryId)
