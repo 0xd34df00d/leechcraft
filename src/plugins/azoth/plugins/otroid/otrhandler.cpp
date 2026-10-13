@@ -457,13 +457,9 @@ namespace OTRoid
 
 	int OtrHandler::IsLoggedIn (const QString& accId, const GlobalStrongestId& entryId)
 	{
-		QObject *entryObj = AzothProxy_->GetEntry (entryId);
-		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-
-		if (!entry)
-			return OTR::UnknownUser;
-
-		return entry->Variants ().isEmpty () ? 0 : 1;
+		if (const auto entry = GetEntry (accId, entryId))
+			return entry->Variants ().isEmpty () ? 0 : 1;
+		return OTR::UnknownUser;
 	}
 
 	void OtrHandler::NotifyConvFlow (const ConnContext *ctx, const QString& msg)
@@ -517,8 +513,7 @@ namespace OTRoid
 
 	QString OtrHandler::GetVisibleEntryName (const QString& accId, const GlobalStrongestId& entryId)
 	{
-		QObject *entryObj = AzothProxy_->GetEntry (entryId);
-		auto entry = qobject_cast<ICLEntry*> (entryObj);
+		const auto entry = GetEntry (accId, entryId);
 		if (!entry)
 		{
 			qWarning () << "no such entry" << entryId << accId;
@@ -609,7 +604,7 @@ namespace OTRoid
 		if (!entryId)
 			return;
 
-		const auto entry = qobject_cast<ICLEntry*> (AzothProxy_->GetEntry (*entryId));
+		const auto entry = GetEntry (QString::fromUtf8 (context->accountname), *entryId);
 		if (!entry)
 		{
 			qWarning () << "no such entry" << entryId << context->accountname;
