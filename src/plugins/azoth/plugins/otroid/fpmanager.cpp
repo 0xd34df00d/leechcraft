@@ -64,7 +64,7 @@ namespace OTRoid
 		QList<QStandardItem*> MakeEntryItems (IProxyObject *proxy,
 				const QString& accId, const GlobalStrongestId& entryId, const QString& protoId)
 		{
-			const auto entryObj = proxy->GetEntry (entryId, accId);
+			const auto entryObj = proxy->GetEntry (entryId);
 			if (!entryObj)
 			{
 				qWarning () << "no entry for" << accId << entryId;

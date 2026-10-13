@@ -457,7 +457,7 @@ namespace OTRoid
 
 	int OtrHandler::IsLoggedIn (const QString& accId, const GlobalStrongestId& entryId)
 	{
-		QObject *entryObj = AzothProxy_->GetEntry (entryId, accId);
+		QObject *entryObj = AzothProxy_->GetEntry (entryId);
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 
 		if (!entry)
@@ -512,12 +512,12 @@ namespace OTRoid
 
 	ICLEntry* OtrHandler::GetEntry (const QString& accId, const GlobalStrongestId& entryId)
 	{
-		return qobject_cast<ICLEntry*> (AzothProxy_->GetEntry (entryId, accId));
+		return qobject_cast<ICLEntry*> (AzothProxy_->GetEntry (entryId));
 	}
 
 	QString OtrHandler::GetVisibleEntryName (const QString& accId, const GlobalStrongestId& entryId)
 	{
-		QObject *entryObj = AzothProxy_->GetEntry (entryId, accId);
+		QObject *entryObj = AzothProxy_->GetEntry (entryId);
 		auto entry = qobject_cast<ICLEntry*> (entryObj);
 		if (!entry)
 		{
@@ -609,7 +609,7 @@ namespace OTRoid
 		if (!entryId)
 			return;
 
-		const auto entry = qobject_cast<ICLEntry*> (AzothProxy_->GetEntry (*entryId, QString::fromUtf8 (context->accountname)));
+		const auto entry = qobject_cast<ICLEntry*> (AzothProxy_->GetEntry (*entryId));
 		if (!entry)
 		{
 			qWarning () << "no such entry" << entryId << context->accountname;
