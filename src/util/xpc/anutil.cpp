@@ -241,6 +241,9 @@ namespace LC::Util::AN
 
 	bool Matches (const QVariant& var, QMetaType::Type expected, const LC::AN::ValueMatcher& matcher)
 	{
+		if (!var.isValid ())
+			return false;
+
 		if (var.metaType ().id () != expected)
 		{
 			qCritical () << "expected" << QMetaType { expected } << "; got" << var.metaType () << var;
