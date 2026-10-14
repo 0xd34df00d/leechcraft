@@ -89,18 +89,13 @@ namespace OTRoid
 		}
 	}
 
-	int FPManager::HandleNew (const char *account,
-			const char*, const char *user, unsigned char [20])
+	int FPManager::RunReload ()
 	{
-		const bool matchAll = !account || !user;
-
 		int count = 0;
 
 		for (auto context = UserState_->context_root; context; context = context->next)
 		{
-			if (!matchAll &&
-					(strcmp (user, context->username) ||
-					strcmp (account, context->accountname)))
+			if (context->their_instance != OTRL_INSTAG_MASTER)
 				continue;
 
 			const auto& accStr = QString::fromUtf8 (context->accountname);
@@ -129,21 +124,14 @@ namespace OTRoid
 				else
 					continue;
 			}
-			else if (auto rc = entryInfo.EntryItems_.at (0)->rowCount ())
-				entryInfo.EntryItems_.at (0)->removeRows (0, rc);
-
-			auto& fpInfos = entryInfo.FPs_;
-			fpInfos.clear ();
 
 			int fpCount = 0;
 			for (auto fp = context->fingerprint_root.next; fp; ++fpCount, fp = fp->next)
 			{
 				char fpHash [OTRL_PRIVKEY_FPRINT_HUMAN_LEN];
 				otrl_privkey_hash_to_human (fpHash, fp->fingerprint);
-				QString fpHashStr { fpHash };
-				fpInfos.append ({ fpHashStr, QString::fromUtf8 (fp->trust) });
 
-				auto fpItem = new QStandardItem { fpHashStr };
+				auto fpItem = new QStandardItem { QString::fromLatin1 (fpHash) };
 				fpItem->setEditable (false);
 				fpItem->setFont (QFont { "Monospace" });
 				fpItem->setData (FPManager::TypeFP, FPManager::RoleType);
@@ -169,11 +157,8 @@ namespace OTRoid
 		Model_->clear ();
 		Model_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Entry ID"), tr ("Keys count") });
 
-		const int count = HandleNew (nullptr, nullptr, nullptr, nullptr);
-		qDebug () << Q_FUNC_INFO
-				<< "reloaded"
-				<< count
-				<< "fps";
+		const int count = RunReload ();
+		qDebug () << "reloaded" << count << "fps";
 
 		ReloadScheduled_ = false;
 	}

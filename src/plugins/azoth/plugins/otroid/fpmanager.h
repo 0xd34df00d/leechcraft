@@ -30,14 +30,6 @@ class IProxyObject;
 
 namespace OTRoid
 {
-	struct FPInfo
-	{
-		QString FP_;
-		QString Trust_;
-	};
-
-	using FPInfos_t = QList<FPInfo>;
-
 	class FPManager : public QObject
 	{
 		Q_OBJECT
@@ -49,7 +41,6 @@ namespace OTRoid
 		struct EntryState
 		{
 			QList<QStandardItem*> EntryItems_;
-			FPInfos_t FPs_;
 		};
 
 		struct AccState
@@ -86,7 +77,7 @@ namespace OTRoid
 
 		FPManager (const OtrlUserState, IProxyObject*, QObject* = 0);
 
-		int HandleNew (const char*, const char*, const char*, unsigned char [20]);
+		int RunReload ();
 
 		QAbstractItemModel* GetModel () const;
 	public slots:
