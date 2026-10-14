@@ -62,9 +62,9 @@ namespace OTRoid
 		}
 
 		QList<QStandardItem*> MakeEntryItems (IProxyObject *proxy,
-				const QString& accId, const GlobalStrongestId& entryId, const QString& protoId)
+				const QString& accId, const EntryStrongestId& entryId, const QString& protoId)
 		{
-			const auto entry = proxy->GetEntry (entryId);
+			const auto entry = proxy->GetEntry (AsGlobalId (accId, entryId));
 			if (!entry)
 			{
 				qWarning () << "no entry for" << accId << entryId;
@@ -104,7 +104,7 @@ namespace OTRoid
 				continue;
 
 			const auto& accStr = QString::fromUtf8 (context->accountname);
-			const auto& entryId = Deserialize<GlobalStrongestId> (QString::fromUtf8 (context->username));
+			const auto& entryId = Deserialize<EntryStrongestId> (QString::fromUtf8 (context->username));
 			if (!entryId)
 				continue;
 
@@ -242,7 +242,7 @@ namespace OTRoid
 
 			const auto parent = item->parent ();
 
-			const auto& entryId = parent->data (RoleEntryId).value<GlobalStrongestId> ();
+			const auto& entryId = parent->data (RoleEntryId).value<EntryStrongestId> ();
 			const auto& accId = parent->data (RoleAccId).toString ().toUtf8 ();
 			const auto& protoId = parent->data (RoleProtoId).toString ().toUtf8 ();
 			const auto context = otrl_context_find (UserState_,

@@ -52,7 +52,7 @@ namespace OTRoid
 		int IsLoggedIn (void *opData, const char *accName,
 				const char*, const char *recipient)
 		{
-			const auto entryId = Deserialize<GlobalStrongestId> (QString::fromUtf8 (recipient));
+			const auto entryId = Deserialize<EntryStrongestId> (QString::fromUtf8 (recipient));
 			return entryId ?
 					static_cast<OtrHandler*> (opData)->IsLoggedIn (QString::fromUtf8 (accName), *entryId) :
 					UnknownUser;
@@ -62,7 +62,7 @@ namespace OTRoid
 				const char*, const char *recipient, const char *msg)
 		{
 			const auto plugin = static_cast<OtrHandler*> (opData);
-			const auto entryId = Deserialize<GlobalStrongestId> (QString::fromUtf8 (recipient));
+			const auto entryId = Deserialize<EntryStrongestId> (QString::fromUtf8 (recipient));
 			if (!entryId)
 				return;
 
@@ -113,7 +113,7 @@ namespace OTRoid
 			qDebug () << event << message;
 
 			auto plugin = static_cast<OtrHandler*> (opData);
-			const auto entryId = Deserialize<GlobalStrongestId> (QString::fromUtf8 (context->username));
+			const auto entryId = Deserialize<EntryStrongestId> (QString::fromUtf8 (context->username));
 			if (!entryId)
 				return;
 
@@ -195,7 +195,7 @@ namespace OTRoid
 			QString hrHash (fpHash); // human readable fingerprint
 
 			const auto plugin = static_cast<OtrHandler*> (opData);
-			const auto entryId = Deserialize<GlobalStrongestId> (QString::fromUtf8 (username));
+			const auto entryId = Deserialize<EntryStrongestId> (QString::fromUtf8 (username));
 			if (!entryId)
 				return;
 
@@ -294,7 +294,7 @@ namespace OTRoid
 				this,
 				acc->GetAccountID ().constData (),
 				proto->GetProtocolID ().constData (),
-				SerializeString (entry.GetGlobalStrongestID ()).toUtf8 ().constData (),
+				SerializeString (entry.GetStrongestID ()).toUtf8 ().constData (),
 				OTRL_INSTAG_BEST,
 				msg.Body_.toUtf8 ().constData (),
 				nullptr,
@@ -366,7 +366,7 @@ namespace OTRoid
 		int ignore = otrl_message_receiving (UserState_, &OtrOps_, this,
 				acc->GetAccountID ().constData (),
 				proto->GetProtocolID ().constData (),
-				SerializeString (entry->GetGlobalStrongestID ()).toUtf8 ().constData (),
+				SerializeString (entry->GetStrongestID ()).toUtf8 ().constData (),
 				msg->GetBody ().toUtf8 ().constData (),
 				&newMsg,
 				&tlvs,
@@ -455,7 +455,7 @@ namespace OTRoid
 		return UserState_;
 	}
 
-	int OtrHandler::IsLoggedIn (const QString& accId, const GlobalStrongestId& entryId)
+	int OtrHandler::IsLoggedIn (const QString& accId, const EntryStrongestId& entryId)
 	{
 		if (const auto entry = GetEntry (accId, entryId))
 			return entry->Variants ().isEmpty () ? 0 : 1;
@@ -464,11 +464,11 @@ namespace OTRoid
 
 	void OtrHandler::NotifyConvFlow (const ConnContext *ctx, const QString& msg)
 	{
-		if (const auto entryId = Deserialize<GlobalStrongestId> (QString::fromUtf8 (ctx->username)))
+		if (const auto entryId = Deserialize<EntryStrongestId> (QString::fromUtf8 (ctx->username)))
 			NotifyConvFlow (QString::fromUtf8 (ctx->accountname), *entryId, msg);
 	}
 
-	void OtrHandler::NotifyConvFlow (const QString& accId, const GlobalStrongestId& entryId, const QString& msg)
+	void OtrHandler::NotifyConvFlow (const QString& accId, const EntryStrongestId& entryId, const QString& msg)
 	{
 		if (const auto entry = GetEntry (accId, entryId))
 			NotifyConvFlow (*entry, msg);
@@ -506,12 +506,12 @@ namespace OTRoid
 		return acc->GetAccountName ();
 	}
 
-	ICLEntry* OtrHandler::GetEntry (const QString& accId, const GlobalStrongestId& entryId)
+	ICLEntry* OtrHandler::GetEntry (const QString& accId, const EntryStrongestId& entryId)
 	{
-		return AzothProxy_->GetEntry (entryId);
+		return AzothProxy_->GetEntry (AsGlobalId (accId, entryId));
 	}
 
-	QString OtrHandler::GetVisibleEntryName (const QString& accId, const GlobalStrongestId& entryId)
+	QString OtrHandler::GetVisibleEntryName (const QString& accId, const EntryStrongestId& entryId)
 	{
 		const auto entry = GetEntry (accId, entryId);
 		if (!entry)
@@ -600,7 +600,7 @@ namespace OTRoid
 	{
 		qDebug () << Q_FUNC_INFO << smpEvent << progressPercent << question;
 
-		const auto entryId = Deserialize<GlobalStrongestId> (QString::fromUtf8 (context->username));
+		const auto entryId = Deserialize<EntryStrongestId> (QString::fromUtf8 (context->username));
 		if (!entryId)
 			return;
 
@@ -769,7 +769,7 @@ namespace OTRoid
 		{
 			otrl_message_disconnect (UserState_, &OtrOps_, this,
 					accId.constData (), protoId.constData (),
-					SerializeString (entry->GetGlobalStrongestID ()).toUtf8 ().constData (), OTRL_INSTAG_BEST);
+					SerializeString (entry->GetStrongestID ()).toUtf8 ().constData (), OTRL_INSTAG_BEST);
 			NotifyConvFlow (*entry, tr ("Private conversation closed"));
 			return;
 		}
@@ -814,7 +814,7 @@ namespace OTRoid
 		const auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 
 		const auto context = otrl_context_find (UserState_,
-				SerializeString (entry->GetGlobalStrongestID ()).toUtf8 ().constData (),
+				SerializeString (entry->GetStrongestID ()).toUtf8 ().constData (),
 				acc->GetAccountID ().constData (),
 				proto->GetProtocolID ().constData (),
 				OTRL_INSTAG_BEST,

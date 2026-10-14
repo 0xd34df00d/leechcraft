@@ -81,17 +81,17 @@ namespace OTRoid
 
 		OtrlUserState GetUserState () const;
 
-		int IsLoggedIn (const QString& accId, const GlobalStrongestId& entryId);
+		int IsLoggedIn (const QString& accId, const EntryStrongestId& entryId);
 
 		void NotifyConvFlow (const ConnContext*, const QString& msg);
-		void NotifyConvFlow (const QString& accId, const GlobalStrongestId& entryId, const QString& msg);
+		void NotifyConvFlow (const QString& accId, const EntryStrongestId& entryId, const QString& msg);
 		void NotifyConvFlow (ICLEntry& entry, const QString& msg);
 
 		void Notify (Priority, const QString& title, const QString& primary, const QString& secondary);
 
 		QString GetAccountName (const QString& accId);
-		ICLEntry* GetEntry (const QString& accId, const GlobalStrongestId& entryId);
-		QString GetVisibleEntryName (const QString& accId, const GlobalStrongestId& entryId);
+		ICLEntry* GetEntry (const QString& accId, const EntryStrongestId& entryId);
+		QString GetVisibleEntryName (const QString& accId, const EntryStrongestId& entryId);
 
 		void CreatePrivkey (const char*, const char*, bool confirm = true);
 		void CreateInstag (const char*, const char*);
