@@ -24,7 +24,6 @@ extern "C"
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/iclentry.h>
 #include <util/azoth/entryidops.h>
-#include <util/azoth/util.h>
 #include "util.h"
 
 namespace LC
@@ -150,7 +149,7 @@ namespace OTRoid
 		return Model_;
 	}
 
-	void FPManager::reloadAll ()
+	void FPManager::ReloadAll ()
 	{
 		Account2User2Fp_.clear ();
 		Model_->clear ();
@@ -158,19 +157,6 @@ namespace OTRoid
 
 		const int count = RunReload ();
 		qDebug () << "reloaded" << count << "fps";
-
-		ReloadScheduled_ = false;
-	}
-
-	void FPManager::scheduleReload ()
-	{
-		if (ReloadScheduled_)
-			return;
-
-		ReloadScheduled_ = true;
-		QTimer::singleShot (2000,
-				this,
-				SLOT (reloadAll ()));
 	}
 
 	namespace
@@ -266,7 +252,7 @@ namespace OTRoid
 	void FPManager::customButtonPressed (const QString&, const QByteArray& id, int)
 	{
 		if (id == "refresh")
-			reloadAll ();
+			ReloadAll ();
 	}
 }
 }

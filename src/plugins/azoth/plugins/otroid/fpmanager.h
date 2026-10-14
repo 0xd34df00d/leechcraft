@@ -50,8 +50,6 @@ namespace OTRoid
 		};
 		QHash<QString, AccState> Account2User2Fp_;
 
-		bool ReloadScheduled_ = false;
-
 		enum Column
 		{
 			ColumnEntryName,
@@ -80,9 +78,8 @@ namespace OTRoid
 		int RunReload ();
 
 		QAbstractItemModel* GetModel () const;
-	public slots:
-		void reloadAll ();
-		void scheduleReload ();
+	private:
+		void ReloadAll ();
 	private slots:
 		void removeRequested (const QString&, const QModelIndexList&);
 		void customButtonPressed (const QString&, const QByteArray&, int);
