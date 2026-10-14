@@ -32,6 +32,9 @@ namespace OTRoid
 {
 	QIcon GetAccountIcon (IAccount *account)
 	{
+		if (!account)
+			return {};
+
 		const auto accObj = account->GetQObject ();
 
 		const auto extSelf = qobject_cast<IExtSelfInfoAccount*> (accObj);

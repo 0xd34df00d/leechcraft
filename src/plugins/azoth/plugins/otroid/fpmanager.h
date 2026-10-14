@@ -46,7 +46,7 @@ namespace OTRoid
 		struct AccState
 		{
 			QStandardItem *AccItem_ = nullptr;
-			QHash<EntryStrongestId, EntryState> Entries_;
+			QHash<QString, EntryState> Entries_;
 		};
 		QHash<QString, AccState> Account2User2Fp_;
 

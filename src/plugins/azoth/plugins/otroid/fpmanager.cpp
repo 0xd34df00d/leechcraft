@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "fpmanager.h"
+#include <QGuiApplication>
 #include <QStandardItemModel>
 #include <QMessageBox>
 #include <QtDebug>
@@ -44,47 +45,52 @@ namespace OTRoid
 	{
 		QStandardItem* MakeAccountItem (IProxyObject *proxy, const QString& accId)
 		{
-			const auto accObj = proxy->GetAccount (accId);
-			if (!accObj)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "no account for"
-						<< accId;
-				return nullptr;
-			}
+			const auto acc = qobject_cast<IAccount*> (proxy->GetAccount (accId));
+			if (!acc)
+				qWarning () << "no account for" << accId;
 
-			const auto acc = qobject_cast<IAccount*> (accObj);
-
-			auto item = new QStandardItem { GetAccountIcon (acc), acc->GetAccountName () };
+			const auto& icon = acc ? GetAccountIcon (acc) : QIcon::fromTheme (QIcon::ThemeIcon::DialogWarning);
+			const auto item = new QStandardItem { icon, acc ? acc->GetAccountName () : accId };
 			item->setEditable (false);
 			item->setData (FPManager::TypeAcc, FPManager::RoleType);
 			return item;
 		}
 
 		QList<QStandardItem*> MakeEntryItems (IProxyObject *proxy,
-				const QString& accId, const EntryStrongestId& entryId, const QString& protoId)
+				const QString& accId, const QString& entryIdStr, const QString& protoId, const QIcon& defaultAvatar)
 		{
-			const auto entry = proxy->GetEntry (AsGlobalId (accId, entryId));
-			if (!entry)
+			const auto& entryId = Deserialize<EntryStrongestId> (entryIdStr);
+			const auto entry = entryId ? proxy->GetEntry (AsGlobalId (accId, *entryId)) : nullptr;
+			const QList result
 			{
-				qWarning () << "no entry for" << accId << entryId;
-				return {};
-			}
-
-			const QList<QStandardItem*> result
-			{
-				new QStandardItem { entry->GetEntryName () },
-				new QStandardItem { entry->GetHumanReadableID () },
+				new QStandardItem { defaultAvatar, entry ? entry->GetEntryName () : FPManager::tr ("Unknown entry") },
+				new QStandardItem { entry ? entry->GetHumanReadableAddress () : entryIdStr },
 				new QStandardItem { "0" }
 			};
+
 			for (const auto item : result)
 			{
 				item->setEditable (false);
 				item->setData (FPManager::TypeEntry, FPManager::RoleType);
-				item->setData (QVariant::fromValue (entryId), FPManager::RoleEntryId);
+				item->setData (entryIdStr, FPManager::RoleEntryId);
 				item->setData (accId, FPManager::RoleAccId);
 				item->setData (protoId, FPManager::RoleProtoId);
 			}
+
+			if (!entry)
+			{
+				const auto fgBrush = QGuiApplication::palette ().brush (QPalette::Disabled, QPalette::Text);
+				const auto& tooltip = entryId ?
+						FPManager::tr ("Entry not found.") :
+						FPManager::tr ("Unable to parse entry ID.");
+				for (const auto item : result)
+				{
+					item->setForeground (fgBrush);
+					item->setToolTip (tooltip);
+				}
+				result [0]->setIcon (QIcon::fromTheme (QIcon::ThemeIcon::DialogWarning));
+			}
+
 			return result;
 		}
 	}
@@ -93,36 +99,29 @@ namespace OTRoid
 	{
 		int count = 0;
 
+		const QIcon defaultAvatar { QPixmap::fromImage (AzothProxy_->GetDefaultAvatar ()) };
+
 		for (auto context = UserState_->context_root; context; context = context->next)
 		{
 			if (context->their_instance != OTRL_INSTAG_MASTER)
 				continue;
 
 			const auto& accStr = QString::fromUtf8 (context->accountname);
-			const auto& entryId = Deserialize<EntryStrongestId> (QString::fromUtf8 (context->username));
-			if (!entryId)
-				continue;
-
+			const auto& entryIdStr = QString::fromUtf8 (context->username);
 			const auto& protoStr = QString::fromUtf8 (context->protocol);
 
 			auto& accInfo = Account2User2Fp_ [accStr];
 			if (!accInfo.AccItem_)
 			{
-				if ((accInfo.AccItem_ = MakeAccountItem (AzothProxy_, accStr)))
-					Model_->appendRow (accInfo.AccItem_);
-				else
-					continue;
+				accInfo.AccItem_ = MakeAccountItem (AzothProxy_, accStr);
+				Model_->appendRow (accInfo.AccItem_);
 			}
 
-			auto& entryInfo = accInfo.Entries_ [*entryId] ;
+			auto& entryInfo = accInfo.Entries_ [entryIdStr] ;
 			if (entryInfo.EntryItems_.isEmpty ())
 			{
-				entryInfo.EntryItems_ = MakeEntryItems (AzothProxy_, accStr, *entryId, protoStr);
-
-				if (!entryInfo.EntryItems_.isEmpty ())
-					accInfo.AccItem_->appendRow (entryInfo.EntryItems_);
-				else
-					continue;
+				entryInfo.EntryItems_ = MakeEntryItems (AzothProxy_, accStr, entryIdStr, protoStr, defaultAvatar);
+				accInfo.AccItem_->appendRow (entryInfo.EntryItems_);
 			}
 
 			int fpCount = 0;
@@ -227,11 +226,11 @@ namespace OTRoid
 
 			const auto parent = item->parent ();
 
-			const auto& entryId = parent->data (RoleEntryId).value<EntryStrongestId> ();
+			const auto& entryId = parent->data (RoleEntryId).toString ().toUtf8 ();
 			const auto& accId = parent->data (RoleAccId).toString ().toUtf8 ();
 			const auto& protoId = parent->data (RoleProtoId).toString ().toUtf8 ();
 			const auto context = otrl_context_find (UserState_,
-					SerializeString (entryId).toUtf8 ().constData (),
+					entryId.constData (),
 					accId.constData (),
 					protoId.constData (),
 					OTRL_INSTAG_BEST,
@@ -251,12 +250,7 @@ namespace OTRoid
 				otrl_context_forget_fingerprint (fp, true);
 			}
 			else
-				qWarning () << Q_FUNC_INFO
-						<< "fingerprint for"
-						<< entryId
-						<< accId
-						<< protoId
-						<< context
+				qWarning () << "fingerprint for" << entryId << accId << protoId << context
 						<< item->data (RoleSourceFP).toByteArray ().toHex ()
 						<< "not found";
 
