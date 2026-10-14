@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "highlighter.h"
+#include <QRegularExpression>
 
 namespace LC
 {
@@ -25,32 +26,24 @@ namespace Rosenthal
 
 	void Highlighter::highlightBlock (const QString& text)
 	{
-		QRegularExpression sr ("\\W+", QRegularExpression::UseUnicodePropertiesOption);
-		const auto& splitted = text.split (sr, Qt::SkipEmptyParts);
-		int prevStopPos = 0;
-		for (const auto& str : splitted)
+		static const QRegularExpression wordRx ("\\w+", QRegularExpression::UseUnicodePropertiesOption);
+		for (const auto& match : wordRx.globalMatch (text))
 		{
-			if (str.size () <= 1)
+			const auto& word = match.captured ();
+			if (word.size () <= 1)
 				continue;
 
-			const auto val = SpellcheckCache_ [str];
+			const auto val = SpellcheckCache_ [word];
 
 			const auto isCorrect = val ?
 					val->IsCorrect_ :
-					Checker_->IsCorrect (str);
+					Checker_->IsCorrect (word);
 
 			if (!val)
-				SpellcheckCache_.insert (str, new SCResult { isCorrect }, str.size ());
+				SpellcheckCache_.insert (word, new SCResult { isCorrect }, word.size ());
 
-			if (isCorrect)
-				continue;
-
-			const int pos = text.indexOf (str, prevStopPos);
-			if (pos >= 0)
-			{
-				setFormat (pos, str.length (), SpellCheckFormat_);
-				prevStopPos = pos + str.length ();
-			}
+			if (!isCorrect)
+				setFormat (match.capturedStart (), match.capturedLength (), SpellCheckFormat_);
 		}
 	}
 }
