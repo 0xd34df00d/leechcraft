@@ -797,35 +797,7 @@ namespace Xoox
 
 	void EntryBase::SetDiscoIdentities (const QString& variant, const QList<QXmppDiscoIdentity>& ids)
 	{
-		OnVariant (variant, [&, this] (VariantInfo& varInfo)
-		{
-			varInfo.Identities_ = ids;
-
-			const QString& name = ids.value (0).name ();
-			const QString& type = ids.value (0).type ();
-			if (name.contains ("Kopete"))
-			{
-				varInfo.ClientInfo_ ["client_type"] = "kopete";
-				varInfo.ClientInfo_ ["client_name"] = "Kopete";
-				varInfo.ClientInfo_ ["raw_client_name"] = "kopete";
-				emit Emitter_.statusChanged (GetStatus (variant), variant);
-			}
-			else if (name.contains ("emacs", Qt::CaseInsensitive) ||
-					name.contains ("jabber.el", Qt::CaseInsensitive))
-			{
-				varInfo.ClientInfo_ ["client_type"] = "jabber.el";
-				varInfo.ClientInfo_ ["client_name"] = "Emacs Jabber.El";
-				varInfo.ClientInfo_ ["raw_client_name"] = "jabber.el";
-				emit Emitter_.statusChanged (GetStatus (variant), variant);
-			}
-			else if (type == "mrim")
-			{
-				varInfo.ClientInfo_ ["client_type"] = "mailruagent";
-				varInfo.ClientInfo_ ["client_name"] = "Mail.Ru Agent Gateway";
-				varInfo.ClientInfo_ ["raw_client_name"] = "mailruagent";
-				emit Emitter_.statusChanged (GetStatus (variant), variant);
-			}
-		});
+		OnVariant (variant, [&] (VariantInfo& varInfo) { varInfo.Identities_ = ids; });
 	}
 
 	GeolocationInfo_t EntryBase::GetGeolocationInfo (const QString& variant) const
