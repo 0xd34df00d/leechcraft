@@ -323,7 +323,7 @@ namespace LC::Azoth::Xoox
 		orgInfo.setRole (Ui_.Role_->text ());
 		VCard_.setOrganization (orgInfo);
 
-		if (ShownPixmap_.isNull ())
+		if (!ShownPixmap_.isNull ())
 		{
 			QBuffer buffer;
 			buffer.open (QIODevice::WriteOnly);
@@ -398,7 +398,7 @@ namespace LC::Azoth::Xoox
 			QXmppVCardPhone::Type type = QXmppVCardPhone::None;
 			for (std::size_t i = 0; i < type2pos.size (); ++i)
 				if (item.second.contains (options.at (i)))
-					type &= type2pos [i];
+					type |= type2pos [i];
 			phone.setType (type);
 
 			list << phone;
@@ -453,7 +453,7 @@ namespace LC::Azoth::Xoox
 			QXmppVCardEmail::Type type = QXmppVCardEmail::None;
 			for (std::size_t i = 0; i < type2pos.size (); ++i)
 				if (item.second.contains (options.at (i)))
-					type &= type2pos [i];
+					type |= type2pos [i];
 			email.setType (type);
 
 			list << email;
