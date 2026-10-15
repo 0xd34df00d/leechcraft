@@ -29,7 +29,8 @@ namespace LC::Aggregator
 
 	QString AddFeedDialog::GetURL () const
 	{
-		return FixupFeedScheme (QUrl { Ui_.URL_->text ().simplified () }).toString ();
+		const auto& url = QUrl::fromUserInput (Ui_.URL_->text ().simplified ());
+		return FixupFeedScheme (url).toString ();
 	}
 
 	QStringList AddFeedDialog::GetTags () const
