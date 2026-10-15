@@ -323,24 +323,22 @@ namespace LC::Azoth::Xoox
 		orgInfo.setRole (Ui_.Role_->text ());
 		VCard_.setOrganization (orgInfo);
 
-		if (!ShownPixmap_.isNull ())
+		if (PhotoChanged_)
 		{
-			QBuffer buffer;
-			buffer.open (QIODevice::WriteOnly);
-			ShownPixmap_.save (&buffer, "PNG", 100);
-			buffer.close ();
-			VCard_.setPhoto (buffer.data ());
-			if (PhotoChanged_)
+			if (!ShownPixmap_.isNull ())
 			{
+				QBuffer buffer;
+				buffer.open (QIODevice::WriteOnly);
+				ShownPixmap_.save (&buffer, "PNG", 100);
+				buffer.close ();
+				VCard_.setPhoto (buffer.data ());
+				VCard_.setPhotoType ("image/png");
 				Account_->UpdateOurPhotoHash (QCryptographicHash::hash (buffer.data (), QCryptographicHash::Sha1));
 				Account_->GetClientConnection ()->GetUserAvatarManager ()->PublishAvatar (ShownPixmap_.toImage ());
 			}
-		}
-		else
-		{
-			VCard_.setPhoto (QByteArray ());
-			if (PhotoChanged_)
+			else
 			{
+				VCard_.setPhoto (QByteArray ());
 				Account_->UpdateOurPhotoHash ("");
 				Account_->GetClientConnection ()->GetUserAvatarManager ()->PublishAvatar ({});
 			}
