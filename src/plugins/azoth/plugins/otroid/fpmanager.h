@@ -75,11 +75,10 @@ namespace OTRoid
 
 		FPManager (const OtrlUserState, IProxyObject*, QObject* = 0);
 
-		int RunReload ();
-
 		QAbstractItemModel* GetModel () const;
 	private:
 		void ReloadAll ();
+		int RunReload ();
 	private slots:
 		void removeRequested (const QString&, const QModelIndexList&);
 		void customButtonPressed (const QString&, const QByteArray&, int);

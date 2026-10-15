@@ -11,7 +11,6 @@
 #include <QStandardItemModel>
 #include <QMessageBox>
 #include <QtDebug>
-#include <QTimer>
 
 extern "C"
 {
@@ -23,6 +22,7 @@ extern "C"
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/iclentry.h>
+#include <util/models/lazyrootmixin.h>
 #include <util/azoth/entryidops.h>
 #include "util.h"
 
@@ -36,8 +36,9 @@ namespace OTRoid
 	: QObject { parent }
 	, UserState_ { state }
 	, AzothProxy_ { azothProxy }
-	, Model_ { new QStandardItemModel { this } }
+	, Model_ { new Util::LazyRootMixin<QStandardItemModel> { [this] { ReloadAll (); }, this } }
 	{
+		Model_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Entry ID"), tr ("Keys count") });
 	}
 
 	namespace
