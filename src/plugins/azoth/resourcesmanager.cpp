@@ -67,7 +67,6 @@ namespace Azoth
 
 	void ResourcesManager::HandleRemoved (ICLEntry *entry)
 	{
-		entry->GetCLEntryEmitter ().disconnect (this);
 		InvalidateClientsIconCache (entry);
 	}
 

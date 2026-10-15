@@ -53,7 +53,6 @@ namespace Azoth
 		void RemoveAccount (QObject*);
 
 		void AddCLEntry (QObject*);
-		void RemoveCLEntry (QObject*);
 
 		void CreateChangesStateRule (const ICLEntry&);
 		void CreateBecomesOnlineRule (const ICLEntry&);

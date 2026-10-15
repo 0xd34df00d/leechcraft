@@ -458,17 +458,6 @@ namespace Azoth
 			HandleStatusChanged (&entry, status, entry.Variants ().value (0));
 	}
 
-	void NotificationsManager::RemoveCLEntry (QObject *entryObj)
-	{
-		disconnect (entryObj,
-				0,
-				this,
-				0);
-
-		if (const auto entry = qobject_cast<ICLEntry*> (entryObj))
-			entry->GetCLEntryEmitter ().disconnect (this);
-	}
-
 	namespace
 	{
 		QList<QPair<QString, AN::ValueMatcher>> WithEntryIdent (const ICLEntry& entry,

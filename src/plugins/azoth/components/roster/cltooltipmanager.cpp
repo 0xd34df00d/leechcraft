@@ -144,11 +144,6 @@ namespace Azoth
 
 	void CLTooltipManager::RemoveEntry (ICLEntry *entry)
 	{
-		disconnect (entry->GetQObject (),
-				0,
-				this,
-				0);
-		entry->GetCLEntryEmitter ().disconnect (this);
 		DirtyTooltips_.remove (entry);
 	}
 

@@ -1668,11 +1668,6 @@ namespace LC::Azoth
 								XmlSettingsManager::Instance ().property ("CloseConfOnLeave").toBool ())
 							GetChatTabsManager ()->CloseChat (*entry, false);
 
-						entry->GetQObject ()->disconnect (this);
-						entry->GetCLEntryEmitter ().disconnect (this);
-						if (const auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ()))
-							mucEntry->GetMUCEntryEmitter ().disconnect (this);
-
 						TooltipManager_->RemoveEntry (entry);
 
 						for (auto clItem : Entry2Items_.value (entry))
@@ -1682,7 +1677,6 @@ namespace LC::Azoth
 						ActionsManager_->HandleEntryRemoved (entry);
 						ID2Entry_.remove (entry->GetEntryID ());
 						Entry2SmoothAvatarCache_.remove (entry);
-						NotificationsManager_->RemoveCLEntry (entry->GetQObject ());
 						ResourcesManager::Instance ().HandleRemoved (entry);
 					}
 				});
