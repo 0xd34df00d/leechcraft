@@ -12,7 +12,6 @@
 #include <util/sll/prelude.h>
 #include <util/sll/qobjectrefcast.h>
 #include <util/sll/qtutil.h>
-#include <util/threads/futures.h>
 #include <util/xpc/util.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/xpc/defaulthookproxy.h>
@@ -261,9 +260,7 @@ namespace Azoth
 				e.Additional_ [AN::EF::FullText] = str;
 				e.Additional_ [AN::EF::Count] = 1;
 				e.Additional_ [Fields::Msg] = msg;
-
-				Util::Sequence (entry.GetQObject (), BuildNotification (&avatarsMgr, e, &entry, "Event")) >>
-						[] (const Entity& e) { GetProxyHolder ()->GetEntityManager ()->HandleEntity (e); };
+				BuildAndSendNotification (e, { .Avatars_ = avatarsMgr, .Conversation_ = entry, .EventId_ = "Event"_qs });
 			};
 		}
 
@@ -304,8 +301,7 @@ namespace Azoth
 			nh->AddFunction (NotificationsManager::tr ("View info"), [&entry] { entry.ShowInfo (); });
 			nh->AddDependentObject (entry.GetQObject ());
 
-			Util::Sequence (entry.GetQObject (), BuildNotification (&avatarsMgr, e, &entry, "AuthRequestFrom")) >>
-					[] (const Entity& e) { GetProxyHolder ()->GetEntityManager ()->HandleEntity (e); };
+			BuildAndSendNotification (e, { .Avatars_ = avatarsMgr, .Conversation_ = entry, .EventId_ = "AuthRequestFrom"_qs });
 		}
 
 		void SuggestJoiningMUC (IAccount *acc, QVariantMap ident)
@@ -614,8 +610,7 @@ namespace Azoth
 				[parentCL] { Core::Instance ().GetChatTabsManager ()->OpenChat (*parentCL, true); });
 		nh->AddDependentObject (parentCL->GetQObject ());
 
-		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, conversation, {}, other)) >>
-				[this] (const Entity& e) { EntityMgr_.HandleEntity (e); };
+		BuildAndSendNotification (e, { .Avatars_ = *AvatarsMgr_, .Conversation_ = *conversation, .Actor_ = *other });
 	}
 
 	namespace
@@ -662,8 +657,7 @@ namespace Azoth
 		e.Additional_ [Fields::Msg] = entrySt.StatusString_;
 		e.Additional_ [Fields::NewStatus] = StateToID (entrySt.State_);
 
-		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, "StatusChangeEvent")) >>
-				[this] (const Entity& e) { EntityMgr_.HandleEntity (e); };
+		BuildAndSendNotification (e, { .Avatars_ = *AvatarsMgr_, .Conversation_ = *entry, .EventId_ = "StatusChangeEvent"_qs });
 	}
 
 
@@ -715,8 +709,7 @@ namespace Azoth
 		e.Additional_ [AN::Field::MediaTitle] = info.Title_;
 		e.Additional_ [AN::Field::MediaLength] = info.Length_;
 
-		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, "TuneChangeEvent")) >>
-				[this] (const Entity& e) { EntityMgr_.HandleEntity (e); };
+		BuildAndSendNotification (e, { .Avatars_ = *AvatarsMgr_, .Conversation_ = *entry, .EventId_ = "TuneChangeEvent"_qs });
 	}
 
 	namespace
@@ -759,8 +752,7 @@ namespace Azoth
 		e.Additional_ [AN::Field::IMActivitySpecific] = info.Specific_;
 		e.Additional_ [AN::Field::IMActivityText] = info.Text_;
 
-		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, "ActivityChangeEvent")) >>
-				[this] (const Entity& e) { EntityMgr_.HandleEntity (e); };
+		BuildAndSendNotification (e, { .Avatars_ = *AvatarsMgr_, .Conversation_ = *entry, .EventId_ = "ActivityChangeEvent"_qs });
 	}
 
 	namespace
@@ -795,8 +787,7 @@ namespace Azoth
 		e.Additional_ [AN::Field::IMMoodGeneral] = info.Mood_;
 		e.Additional_ [AN::Field::IMMoodText] = info.Text_;
 
-		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, "MoodChangeEvent")) >>
-				[this] (const Entity& e) { EntityMgr_.HandleEntity (e); };
+		BuildAndSendNotification (e, { .Avatars_ = *AvatarsMgr_, .Conversation_ = *entry, .EventId_ = "MoodChangeEvent"_qs });
 	}
 
 	namespace
@@ -879,8 +870,7 @@ namespace Azoth
 		e.Additional_ [AN::Field::IMLocationLongitude] = info.Lon_;
 		e.Additional_ [AN::Field::IMLocationLatitude] = info.Lat_;
 
-		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, "LocationChangeEvent")) >>
-				[this] (const Entity& e) { EntityMgr_.HandleEntity (e); };
+		BuildAndSendNotification (e, { .Avatars_ = *AvatarsMgr_, .Conversation_ = *entry, .EventId_ = "LocationChangeEvent"_qs });
 	}
 
 	void NotificationsManager::handleAttentionDrawn (const QString& text, const QString&)
@@ -907,8 +897,7 @@ namespace Azoth
 				[&entry] { Core::Instance ().GetChatTabsManager ()->OpenChat (entry, true); });
 		nh->AddDependentObject (entry.GetQObject ());
 
-		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, &entry, "AttentionDrawnBy")) >>
-				[this] (const Entity& e) { EntityMgr_.HandleEntity (e); };
+		BuildAndSendNotification (e, { .Avatars_ = *AvatarsMgr_, .Conversation_ = entry, .EventId_ = "AttentionDrawnBy"_qs });
 	}
 
 	void NotificationsManager::HandleChatPartStateChanged (ICLEntry *entry, ChatPartState state, const QString&)
@@ -939,8 +928,7 @@ namespace Azoth
 				[entry] { Core::Instance ().GetChatTabsManager ()->OpenChat (*entry, true); });
 		nh->AddDependentObject (entry->GetQObject ());
 
-		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, "Typing")) >>
-				[this] (const Entity& e) { EntityMgr_.HandleEntity (e); };
+		BuildAndSendNotification (e, { .Avatars_ = *AvatarsMgr_, .Conversation_ = *entry, .EventId_ = "Typing"_qs });
 	}
 
 	void NotificationsManager::handleEntryMadeCurrent (QObject *entryObj)

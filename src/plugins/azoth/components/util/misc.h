@@ -8,10 +8,8 @@
 
 #pragma once
 
+#include <util/sll/qtutil.h>
 #include <interfaces/azoth/message.h>
-
-template<typename>
-class QFuture;
 
 namespace LC
 {
@@ -30,7 +28,17 @@ namespace LC::Azoth
 
 	bool OfferURLs (TransferJobManager& transfers, ICLEntry *entry, const QList<QUrl>& urls, QWidget *parent = nullptr);
 
-	[[nodiscard]] QFuture<Entity> BuildNotification (AvatarsManager*, Entity, ICLEntry*, const QString& id = {}, ICLEntry* = nullptr);
+	struct NotificationInfo
+	{
+		AvatarsManager& Avatars_;
+		ICLEntry& Conversation_;
+		ICLEntry& Actor_ = Conversation_;
+		QString EventId_ = "IncomingMessageFrom"_qs;
+	};
+	[[nodiscard]]
+	Entity BuildNotification (Entity prefilled, NotificationInfo info);
+
+	void BuildAndSendNotification (Entity prefilled, NotificationInfo info);
 
 	void InitiateAccountAddition (QWidget *parent = nullptr);
 	void RemoveAccount (IAccount*);

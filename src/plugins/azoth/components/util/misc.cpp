@@ -8,13 +8,13 @@
 
 #include "misc.h"
 #include <QFileInfo>
-#include <QFuture>
 #include <QMessageBox>
 #include <QWizard>
 #include <interfaces/entityconstants.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/an/entityfields.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/sll/qobjectrefcast.h>
 #include <util/sll/qtutil.h>
@@ -106,28 +106,23 @@ namespace LC::Azoth
 		}
 	}
 
-	QFuture<Entity> BuildNotification (AvatarsManager *avatarsMgr,
-			Entity e, ICLEntry *conversation, const QString& id, ICLEntry *actor)
+	Entity BuildNotification (Entity e, NotificationInfo info)
 	{
-		if (!actor)
-			actor = conversation;
-
 		e.Additional_ [AN::EF::SenderID] = "org.LeechCraft.Azoth";
 		e.Additional_ [AN::EF::EventCategory] = AN::CatIM;
-		e.Additional_ [AN::EF::EventID] =
-				"org.LC.Plugins.Azoth." + (id.isEmpty () ? "IncomingMessageFrom"_qs : id) + '/' + conversation->GetEntryID ();
+		e.Additional_ [AN::EF::EventID] = "org.LC.Plugins.Azoth." + info.EventId_ + '/' + info.Conversation_.GetEntryID ();
 
-		e.Additional_ [AN::EF::VisualPath] = QStringList (conversation->GetEntryName ());
+		e.Additional_ [AN::EF::VisualPath] = QStringList (info.Conversation_.GetEntryName ());
 
 		int win = 0;
-		const auto tab = Core::Instance ().GetChatTabsManager ()->GetChatTab (conversation->GetEntryID ());
+		const auto tab = Core::Instance ().GetChatTabsManager ()->GetChatTab (info.Conversation_.GetEntryID ());
 
 		const auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 		if (tab)
 			win = rootWM->GetWindowForTab (tab);
 		if (!tab || win == -1)
 		{
-			const auto& tc = conversation->GetEntryType () == ICLEntry::EntryType::MUC ?
+			const auto& tc = info.Conversation_.GetEntryType () == ICLEntry::EntryType::MUC ?
 					ChatTab::GetMUCTabClassInfo () :
 					ChatTab::GetChatTabClassInfo ();
 			win = rootWM->GetPreferredWindowIndex (tc.TabClass_);
@@ -135,12 +130,12 @@ namespace LC::Azoth
 
 		e.Additional_ [AN::EF::WindowIndex] = win;
 
-		e.Additional_.insert (NotificationsManager::SourceFields (*actor));
-		if (const auto room = RoomOf (*actor))
+		e.Additional_.insert (NotificationsManager::SourceFields (info.Actor_));
+		if (const auto room = RoomOf (info.Actor_))
 			e.Additional_.insert (NotificationsManager::RoomFields (*room));
 
-		QPointer<AvatarsManager> mgr { avatarsMgr };
-		QPointer<QObject> src { actor->GetQObject () };
+		QPointer<AvatarsManager> mgr { &info.Avatars_ };
+		QPointer<QObject> src { info.Actor_.GetQObject () };
 		const auto& avatarFutureGetter = [mgr, src] () -> Util::LazyNotificationPixmap_t::result_type
 		{
 			if (mgr && src)
@@ -149,7 +144,12 @@ namespace LC::Azoth
 				return {};
 		};
 		e.Additional_ [EF::NotificationPixmap] = QVariant::fromValue<Util::LazyNotificationPixmap_t> (avatarFutureGetter);
-		return QtFuture::makeReadyValueFuture (e);
+		return e;
+	}
+
+	void BuildAndSendNotification (Entity prefilled, NotificationInfo info)
+	{
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (BuildNotification (std::move (prefilled), info));
 	}
 
 	void InitiateAccountAddition (QWidget *parent)

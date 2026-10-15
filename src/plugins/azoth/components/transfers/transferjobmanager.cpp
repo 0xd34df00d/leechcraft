@@ -314,30 +314,23 @@ namespace Azoth
 
 		Entry2Incoming_ [&*offer.Entry_] << offer;
 
-		const auto e = Util::MakeNotification ("Azoth",
-				tr ("File %1 (%2) offered from %3.")
-					.arg (offer.Name_,
-							Util::MakePrettySize (offer.Size_),
-							FormatNameWithAddress (*offer.Entry_)),
-				Priority::Info);
+		const auto& text = tr ("File %1 (%2) offered from %3.")
+					.arg (offer.Name_, Util::MakePrettySize (offer.Size_), FormatNameWithAddress (*offer.Entry_));
+		auto e = BuildNotification (Util::MakeNotification ("Azoth", text, Priority::Info),
+				{ .Avatars_ = *AvatarsMgr_, .Conversation_ = *offer.Entry_ });
+		e.Additional_ [AN::EF::EventType] = AN::TypeIMIncFile;
+		e.Additional_ [AN::EF::EventID] = GetTransferEventId (offer);
+		e.Additional_ [AN::EF::VisualPath] = QStringList { offer.Entry_->GetEntryName (), offer.Name_ };
+		e.Additional_ [AN::EF::DeltaCount] = 1;
+		e.Additional_ [AN::EF::ExtendedText] = tr ("Incoming file: %1")
+					.arg (offer.Description_.isEmpty () ? offer.Name_ : offer.Description_);
 
-		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, &*offer.Entry_)) >>
-				[this, offer] (Entity e)
-				{
-					e.Additional_ [AN::EF::EventType] = AN::TypeIMIncFile;
-					e.Additional_ [AN::EF::EventID] = GetTransferEventId (offer);
-					e.Additional_ [AN::EF::VisualPath] = QStringList { offer.Entry_->GetEntryName (), offer.Name_ };
-					e.Additional_ [AN::EF::DeltaCount] = 1;
-					e.Additional_ [AN::EF::ExtendedText] = tr ("Incoming file: %1")
-								.arg (offer.Description_.isEmpty () ? offer.Name_ : offer.Description_);
+		auto nh = new Util::NotificationActionHandler { e };
+		nh->AddFunction (tr ("Accept"), [this, offer] { AcceptOffer (offer, {}); });
+		nh->AddFunction (tr ("Deny"), [this, offer] { DeclineOffer (offer); });
+		nh->AddDependentObject (this);
 
-					auto nh = new Util::NotificationActionHandler { e };
-					nh->AddFunction (tr ("Accept"), [this, offer] { AcceptOffer (offer, {}); });
-					nh->AddFunction (tr ("Deny"), [this, offer] { DeclineOffer (offer); });
-					nh->AddDependentObject (this);
-
-					GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
-				};
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 
 		Core::Instance ().IncreaseUnreadCount (&*offer.Entry_, 1);
 		Core::Instance ().CheckFileIcon (*offer.Entry_);
