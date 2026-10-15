@@ -153,8 +153,7 @@ namespace OTRoid
 	void FPManager::ReloadAll ()
 	{
 		Account2User2Fp_.clear ();
-		Model_->clear ();
-		Model_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Entry ID"), tr ("Keys count") });
+		Model_->removeRows (0, Model_->rowCount ());
 
 		const int count = RunReload ();
 		qDebug () << "reloaded" << count << "fps";
@@ -242,9 +241,13 @@ namespace OTRoid
 						<< "not found";
 
 			parent->removeRow (item->row ());
+			if (parent->rowCount ())
+				continue;
 
-			if (!parent->rowCount ())
-				parent->parent ()->removeRow (parent->row ());
+			const auto accItem = parent->parent ();
+			accItem->removeRow (parent->row ());
+			if (!accItem->rowCount ())
+				Model_->removeRow (accItem->row ());
 		}
 
 		emit fingerprintsChanged ();
