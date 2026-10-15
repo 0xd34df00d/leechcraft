@@ -64,7 +64,7 @@
     },
     {
       "node": "http://bombusmod-qd.wen.ru/caps",
-      "id": "bombusmodqd",
+      "id": "bombusqd",
       "name": "BombusMod-QD"
     },
     {
@@ -79,7 +79,7 @@
     },
     {
       "node": "http://emacs-jabber.sourceforge.net",
-      "id": "jabber-el",
+      "id": "jabber.el",
       "name": "jabber.el"
     },
     {
