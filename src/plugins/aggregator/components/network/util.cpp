@@ -27,7 +27,7 @@ namespace LC::Aggregator
 		if (scheme == feedMarker && url.host ().isEmpty ())
 		{
 			// feed:http://… kind of URLs
-			return QUrl { url.toString ().sliced (feedMarker.size () + "://"_ql.size ()) };
+			return QUrl { url.toString ().sliced (feedMarker.size () + 1) };
 		}
 
 		if (scheme == feedMarker || scheme == itpcMarker)
