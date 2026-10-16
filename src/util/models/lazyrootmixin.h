@@ -15,18 +15,19 @@
 
 namespace LC::Util
 {
-	/** @brief Defers populating the model until a view first shows it.
+	/** @brief Defers populating the model until a view first asks for rows.
 	 *
 	 * Derive from this class (or instantiate it directly), parametrizing
-	 * the template by the desired base class like QStandardItemModel, and
-	 * pass the function populating the model. The function is invoked at
-	 * most once, when an attached view first asks the root for more rows,
-	 * which happens on the view's first layout, that is, when it becomes
-	 * visible.
+	 * the template by the desired base class like `QStandardItemModel`, and
+	 * pass the function populating the model. The function is invoked when
+	 * an attached view first asks the root for more rows, and on each
+	 * `Reload()` after that, always on an empty root: the existing rows are
+	 * removed first, so the base model must support `removeRows()` on the
+	 * root.
 	 *
 	 * Only views (and proxies in front of them) drive the loading: code
 	 * reading the model directly sees it empty until then and should call
-	 * EnsureLoaded() first.
+	 * `EnsureLoaded()` first.
 	 *
 	 * @tparam Model The model type to derive from.
 	 *
@@ -41,9 +42,9 @@ namespace LC::Util
 		/** @brief Constructs the model passing the arguments to the base
 		 * constructor.
 		 *
-		 * @param[in] load The function populating the model.
+		 * @param[in] load The function populating the empty model.
 		 * @param[in] args The list of parameters to pass to the
-		 * constructor of the base \em Model.
+		 * constructor of the base `Model`.
 		 */
 		template<typename... Args>
 		explicit LazyRootMixin (std::function<void ()> load, Args&&... args)
@@ -52,30 +53,51 @@ namespace LC::Util
 		{
 		}
 
+		/** @brief Returns whether the model has been populated.
+		 */
+		bool IsLoaded () const
+		{
+			return Loaded_;
+		}
+
 		/** @brief Populates the model if it hasn't been populated yet.
 		 */
 		void EnsureLoaded ()
 		{
-			fetchMore ({});
+			if (!Loaded_)
+				Reload ();
+		}
+
+		/** @brief Drops the rows and populates the model anew.
+		 */
+		void Reload ()
+		{
+			Loaded_ = true;
+			this->removeRows (0, this->rowCount ());
+			Load_ ();
 		}
 
 		bool hasChildren (const QModelIndex& parent) const override
 		{
-			return canFetchMore (parent) || Model::hasChildren (parent);
+			return IsUnloadedRoot (parent) || Model::hasChildren (parent);
 		}
 
 		bool canFetchMore (const QModelIndex& parent) const override
 		{
-			return !parent.isValid () && !Loaded_;
+			return IsUnloadedRoot (parent) || Model::canFetchMore (parent);
 		}
 
 		void fetchMore (const QModelIndex& parent) override
 		{
-			if (!canFetchMore (parent))
-				return;
-
-			Loaded_ = true;
-			Load_ ();
+			if (IsUnloadedRoot (parent))
+				Reload ();
+			else
+				Model::fetchMore (parent);
+		}
+	private:
+		bool IsUnloadedRoot (const QModelIndex& parent) const
+		{
+			return !parent.isValid () && !Loaded_;
 		}
 	};
 }
