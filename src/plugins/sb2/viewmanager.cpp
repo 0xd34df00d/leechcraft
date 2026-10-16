@@ -27,6 +27,11 @@
 #include <interfaces/iquarkcomponentprovider.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
+
+#ifdef WITH_X11
+#include <util/x11/xwrapper.h>
+#endif
+
 #include "sbview.h"
 #include "quarkproxy.h"
 #include "quarkmanager.h"
@@ -61,6 +66,15 @@ namespace LC::SB2
 				setRoleNames (names);
 			}
 		};
+
+		bool CanDockToDesktop ()
+		{
+#ifdef WITH_X11
+			return Util::XWrapper::Instance ().has_value ();
+#else
+			return false;
+#endif
+		}
 	}
 
 	ViewManager::ViewManager (Util::ShortcutManager *shortcutMgr, QMainWindow *window, QObject *parent)
@@ -69,7 +83,7 @@ namespace LC::SB2
 	, View_ (new SBView)
 	, Toolbar_ (new QToolBar (tr ("SB2 panel")))
 	, Window_ (window)
-	, IsDesktopMode_ (qApp->arguments ().contains (QStringLiteral ("--desktop")))
+	, IsDesktopMode_ (qApp->arguments ().contains (QStringLiteral ("--desktop")) && CanDockToDesktop ())
 	, OnloadWindowIndex_ (GetWindowIndex ())
 	, SettingsManager_ (new ViewSettingsManager (this))
 	, GeomManager_ (new ViewGeometryManager (this))
