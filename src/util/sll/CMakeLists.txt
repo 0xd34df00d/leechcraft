@@ -19,6 +19,7 @@ add_util_library (util-sll
 		qobjectrefcast.cpp
 		demangle.cpp
 		logging.cpp
+		exceptions.cpp
 	USES Concurrent Xml
 	)
 
