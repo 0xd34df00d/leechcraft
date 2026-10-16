@@ -63,7 +63,7 @@ namespace Azoth
 
 		TabClasses_t TabClasses_;
 
-		QMenu *StatusChangeMenu_;
+		QMenu *StatusChangeMenu_ = nullptr;
 
 		std::unique_ptr<TransferModelManager> TransferModelManager_;
 	public:
