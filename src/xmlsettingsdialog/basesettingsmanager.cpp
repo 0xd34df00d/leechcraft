@@ -169,7 +169,7 @@ namespace LC::Util
 	bool BaseSettingsManager::event (QEvent *e)
 	{
 		if (e->type () != QEvent::DynamicPropertyChange)
-			return false;
+			return QObject::event (e);
 
 		auto event = static_cast<QDynamicPropertyChangeEvent*> (e);
 
