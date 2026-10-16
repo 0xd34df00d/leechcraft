@@ -196,6 +196,9 @@ namespace Xoox
 		const auto& varInfo = Variants_ [var];
 		auto res = varInfo.ClientInfo_;
 
+		if (varInfo.Priority_)
+			res ["priority"] = varInfo.Priority_;
+
 		if (varInfo.SecsDiff_)
 		{
 			const auto& now = QDateTime::currentDateTime ();
@@ -659,9 +662,9 @@ namespace Xoox
 		auto& varInfo = Variants_ [variant];
 		const bool wasOffline = existed && varInfo.CurrentStatus_.State_ == SOffline;
 
-		if (existed &&
-				status == varInfo.CurrentStatus_ &&
-				presence.priority () == varInfo.ClientInfo_.value ("priority"))
+		const bool statusDiffers = !existed || status != varInfo.CurrentStatus_;
+		const bool priorityDiffers = existed && presence.priority () != varInfo.Priority_;
+		if (!statusDiffers && !priorityDiffers)
 			return;
 
 		CheckTopVariantInvalidation (status, variant, presence.priority ());
@@ -682,19 +685,16 @@ namespace Xoox
 			}
 		}
 
-		if (status.State_ != SOffline)
-		{
-			if (const int p = presence.priority ())
-				varInfo.ClientInfo_ ["priority"] = p;
-		}
-		else
+		if (status.State_ == SOffline)
 			Variants_.remove (variant);
 
-		emit Emitter_.statusChanged (status, variant);
+		if (statusDiffers)
+			emit Emitter_.statusChanged (status, variant);
 
 		if (!existed ||
 				status.State_ == SOffline ||
-				wasOffline)
+				wasOffline ||
+				priorityDiffers)
 			emit Emitter_.availableVariantsChanged (Variants ());
 	}
 

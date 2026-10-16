@@ -250,6 +250,10 @@ namespace LC::Azoth::Xoox
 				this,
 				&VCardDialog::rebuildClientInfo);
 		connect (&emitter,
+				&Emitters::CLEntry::availableVariantsChanged,
+				this,
+				&VCardDialog::rebuildClientInfo);
+		connect (&emitter,
 				&Emitters::CLEntry::entryGenerallyChanged,
 				this,
 				&VCardDialog::rebuildClientInfo);
