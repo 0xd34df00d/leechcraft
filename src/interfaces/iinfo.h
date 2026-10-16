@@ -59,6 +59,13 @@ public:
 	 * plugins etc. That also means that in this function you can't rely
 	 * on other plugins being initialized.
 	 *
+	 * This is also the only place where a plugin may refuse to work:
+	 * if the environment lacks something the plugin requires (an X11
+	 * display, a system service, a readable database), throw an
+	 * exception describing the problem. The plugin is then unloaded
+	 * before any other plugin has seen it, and the reason is reported
+	 * to the user.
+	 *
 	 * @param[in] proxy The pointer to proxy to LeechCraft.
 	 *
 	 * @sa Release
@@ -71,6 +78,13 @@ public:
 	 * This function is called when all the plugins are initialized by
 	 * IInfo::Init() and may now communicate with others with no fear of
 	 * getting init-order bugs.
+	 *
+	 * This function shall not throw. By the time it is called, other
+	 * plugins already hold pointers to this one (via
+	 * IPluginReady::AddPlugin(), the shortcut manager, or their own
+	 * SecondInit()), so the plugin cannot be unloaded any more: an
+	 * exception is only logged and reported, leaving the plugin loaded
+	 * but half-initialized. Check the environment in Init() instead.
 	 *
 	 * @sa Init
 	 */
