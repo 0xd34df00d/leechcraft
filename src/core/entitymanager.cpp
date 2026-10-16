@@ -12,6 +12,7 @@
 #include <QFuture>
 #include <QDesktopServices>
 #include <QUrl>
+#include "util/sll/qtutil.h"
 #include "util/util.h"
 #include "interfaces/structures.h"
 #include "interfaces/idownload.h"
@@ -224,6 +225,48 @@ namespace LC
 		}
 	}
 
+	namespace
+	{
+		QString DescribeCurrentException ()
+		{
+			try
+			{
+				throw;
+			}
+			catch (const std::exception& e)
+			{
+				return QString::fromUtf8 (e.what ());
+			}
+			catch (...)
+			{
+				return "unknown exception"_qs;
+			}
+		}
+
+		bool TryEntityHandler (QObject *obj, const Entity& e, auto verb, auto&& h)
+		{
+			try
+			{
+				h ();
+				return true;
+			}
+			catch (...)
+			{
+				QString entityStr;
+				if (e.Entity_.canConvert<QString> ())
+				{
+					entityStr = e.Entity_.toString ();
+					if (entityStr.size () > 100)
+						entityStr = entityStr.left (100) + "...";
+				}
+				qWarning () << obj << "failed to" << verb
+						<< e.Entity_.typeName () << entityStr << e.Mime_
+						<< DescribeCurrentException ();
+			}
+			return false;
+		}
+	}
+
 	IEntityManager::DelegationResult EntityManager::DelegateEntity (Entity e, QObject *desired)
 	{
 		if (!CheckInitStage (e, desired, DelegateAfterInit_))
@@ -235,9 +278,11 @@ namespace LC
 		if (!foundOk)
 			return {};
 
-		for (auto obj : handlers)
-			if (auto idl = qobject_cast<IDownload*> (obj))
-				return { obj, idl->AddJob (e) };
+		for (const auto obj : handlers)
+			if (const auto idl = qobject_cast<IDownload*> (obj))
+				if (QFuture<IDownload::Result> result;
+					TryEntityHandler (obj, e, "download", [&] { result = idl->AddJob (e); }))
+					return { obj, result };
 
 		return {};
 	}
@@ -276,19 +321,19 @@ namespace LC
 			return true;
 
 		if (!(e.Parameters_ & TaskParameter::OnlyHandle))
-			for (auto obj : handlers)
-				if (auto idl = qobject_cast<IDownload*> (obj))
-				{
-					idl->AddJob (e);
+			for (const auto obj : handlers)
+				if (const auto idl = qobject_cast<IDownload*> (obj);
+					idl && TryEntityHandler (obj, e, "add", [&] { idl->AddJob (e); }))
 					return true;
-				}
 
 		if (!(e.Parameters_ & TaskParameter::OnlyDownload))
 		{
-			for (auto obj : handlers)
-				if (auto ieh = qobject_cast<IEntityHandler*> (obj))
-					ieh->Handle (e);
-			return !handlers.isEmpty ();
+			bool handled = false;
+			for (const auto obj : handlers)
+				if (const auto ieh = qobject_cast<IEntityHandler*> (obj);
+					ieh && TryEntityHandler (obj, e, "handle", [&] { ieh->Handle (e); }))
+					handled = true;
+			return handled;
 		}
 
 		return false;
