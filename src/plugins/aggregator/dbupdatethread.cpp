@@ -168,8 +168,8 @@ namespace LC::Aggregator
 				for (const auto& itemPtr : channel.Items_)
 				{
 					auto& item = *itemPtr;
-					if (const auto& ourItemId = FindOurItem (item, ourChannel.ChannelID_);
-						const auto& ourItem = SB_->GetItem (*ourItemId))
+					if (const auto& ourItem = FindOurItem (item, ourChannel.ChannelID_)
+							.and_then ([this] (IDType_t id) { return SB_->GetItem (id); }))
 					{
 						if (UpdateItem (item, *ourItem))
 							++updatedItems;
