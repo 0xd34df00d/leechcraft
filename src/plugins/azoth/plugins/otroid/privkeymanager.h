@@ -9,14 +9,14 @@
 #pragma once
 
 #include <QObject>
-#include <QAbstractItemModel>
+#include <QStandardItemModel>
 
 extern "C"
 {
 #include <libotr/proto.h>
 }
 
-class QStandardItemModel;
+#include <util/models/lazyrootmixin.h>
 
 namespace LC
 {
@@ -32,7 +32,7 @@ namespace OTRoid
 
 		const OtrlUserState UserState_;
 		IProxyObject * const AzothProxy_;
-		QStandardItemModel * const Model_;
+		Util::LazyRootMixin<QStandardItemModel> * const Model_;
 
 		enum Columns
 		{
@@ -49,10 +49,11 @@ namespace OTRoid
 		PrivKeyManager (const OtrlUserState, IProxyObject*);
 
 		QAbstractItemModel* GetModel () const;
+
+		void HandleKeysChanged ();
 	private:
+		void Populate ();
 		void GenerateRequested (int);
-	public slots:
-		void reloadAll ();
 	private slots:
 		void removeRequested (const QString&, QModelIndexList);
 		void customButtonPressed (const QString&, const QByteArray&, int);

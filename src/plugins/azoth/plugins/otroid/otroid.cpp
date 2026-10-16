@@ -121,9 +121,9 @@ namespace OTRoid
 				OtrHandler_,
 				SLOT (generateKeys (QString, QString)));
 		connect (OtrHandler_,
-				SIGNAL (privKeysChanged ()),
+				&OtrHandler::privKeysChanged,
 				PKManager_,
-				SLOT (reloadAll ()));
+				&PrivKeyManager::HandleKeysChanged);
 		XSD_->SetDataSource ("PrivKeys", PKManager_->GetModel ());
 	}
 

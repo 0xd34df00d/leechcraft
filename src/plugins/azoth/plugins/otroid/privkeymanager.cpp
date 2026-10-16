@@ -30,13 +30,20 @@ namespace OTRoid
 	PrivKeyManager::PrivKeyManager (const OtrlUserState state, IProxyObject *proxy)
 	: UserState_ { state }
 	, AzothProxy_ { proxy }
-	, Model_ { new QStandardItemModel { this } }
+	, Model_ { new Util::LazyRootMixin<QStandardItemModel> { [this] { Populate (); }, this } }
 	{
+		Model_->setHorizontalHeaderLabels ({ tr ("Account"), tr ("Private key") });
 	}
 
 	QAbstractItemModel* PrivKeyManager::GetModel () const
 	{
 		return Model_;
+	}
+
+	void PrivKeyManager::HandleKeysChanged ()
+	{
+		if (Model_->IsLoaded ())
+			Model_->Reload ();
 	}
 
 	void PrivKeyManager::GenerateRequested (int row)
@@ -60,11 +67,8 @@ namespace OTRoid
 		emit keysGenerationRequested (accId, protoId);
 	}
 
-	void PrivKeyManager::reloadAll ()
+	void PrivKeyManager::Populate ()
 	{
-		Model_->clear ();
-		Model_->setHorizontalHeaderLabels ({ tr ("Account"), tr ("Private key") });
-
 		QHash<QString, QString> accId2key;
 		for (auto pkey = UserState_->privkey_root; pkey; pkey = pkey->next)
 		{
@@ -145,16 +149,16 @@ namespace OTRoid
 			}
 
 			otrl_privkey_forget (pkey);
+			Model_->itemFromIndex (index.siblingAtColumn (ColumnKey))->setText ({});
 		}
 
-		reloadAll ();
 		emit keysChanged ();
 	}
 
 	void PrivKeyManager::customButtonPressed (const QString&, const QByteArray& id, int row)
 	{
 		if (id == "refresh")
-			reloadAll ();
+			Model_->Reload ();
 		else if (id == "generate")
 			GenerateRequested (row);
 	}
