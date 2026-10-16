@@ -193,7 +193,7 @@ namespace LC::Azoth::Acetamide
 	void ChannelsManager::GotEndOfNamesCmd (const QString& channel)
 	{
 		if (const auto handler = GetChannelHandler (channel);
-			!handler->IsInitialNamesListReceived ())
+			handler && !handler->IsInitialNamesListReceived ())
 		{
 			handler->SetInitialNamesListReceived ();
 			emit ISH_->GetAccount ()->GetAccountEmitter ().gotCLItems ({ handler->GetCLEntry () });
