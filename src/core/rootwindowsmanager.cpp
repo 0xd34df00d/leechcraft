@@ -296,10 +296,14 @@ namespace LC
 #if defined (Q_OS_UNIX) && defined (HAVE_X11)
 		void SetWMClass (QWidget *w, QByteArray name)
 		{
+			const auto xwrapper = Util::XWrapper::Instance ();
+			if (!xwrapper)
+				return;
+
 			XClassHint hint;
 			hint.res_class = name.data ();
 			hint.res_name = strdup ("leechcraft");
-			XSetClassHint (Util::XWrapper::Instance ().GetDisplay (), w->winId (), &hint);
+			XSetClassHint (xwrapper->GetDisplay (), w->winId (), &hint);
 			free (hint.res_name);
 		}
 #else

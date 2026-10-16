@@ -28,10 +28,10 @@ namespace Mellonetray
 		VisualID GetVisual ()
 		{
 			VisualID result = 0;
-			auto disp = Util::XWrapper::Instance ().GetDisplay ();
+			auto disp = Util::XWrapper::Instance ()->GetDisplay ();
 
 			XVisualInfo init;
-			init.screen = Util::XWrapper::Instance ().GetRootWindow ();
+			init.screen = DefaultScreen (disp);
 			init.depth = 32;
 			init.c_class = TrueColor;
 
@@ -64,12 +64,12 @@ namespace Mellonetray
 		roleNames [Role::ItemID] = "itemID";
 		setRoleNames (roleNames);
 
-		auto& w = Util::XWrapper::Instance ();
-		const auto disp = w.GetDisplay ();
-		const auto rootWin = w.GetRootWindow ();
+		const auto w = Util::XWrapper::Instance ();
+		const auto disp = w->GetDisplay ();
+		const auto rootWin = w->GetRootWindow ();
 
 		const auto& defaultScreenStr = QByteArray::number (DefaultScreen (disp));
-		const auto atom = w.GetAtom (Util::AsStringView ("_NET_SYSTEM_TRAY_S%1" + defaultScreenStr));
+		const auto atom = w->GetAtom (Util::AsStringView ("_NET_SYSTEM_TRAY_S%1" + defaultScreenStr));
 
 		if (XGetSelectionOwner (disp, atom) != None)
 		{
@@ -90,7 +90,7 @@ namespace Mellonetray
 		int orientation = 0;
 		XChangeProperty (disp,
 				TrayWinID_,
-				w.GetAtom ("_NET_SYSTEM_TRAY_ORIENTATION"),
+				w->GetAtom ("_NET_SYSTEM_TRAY_ORIENTATION"),
 				XA_CARDINAL,
 				32,
 				PropModeReplace,
@@ -100,7 +100,7 @@ namespace Mellonetray
 		if (auto visual = GetVisual ())
 			XChangeProperty (disp,
 					TrayWinID_,
-					w.GetAtom ("_NET_SYSTEM_TRAY_VISUAL"),
+					w->GetAtom ("_NET_SYSTEM_TRAY_VISUAL"),
 					XA_VISUALID,
 					32,
 					PropModeReplace,
@@ -110,7 +110,7 @@ namespace Mellonetray
 		XClientMessageEvent ev;
 		ev.type = ClientMessage;
 		ev.window = rootWin;
-		ev.message_type = w.GetAtom ("MANAGER");
+		ev.message_type = w->GetAtom ("MANAGER");
 		ev.format = 32;
 		ev.data.l [0] = CurrentTime;
 		ev.data.l [1] = atom;
@@ -134,7 +134,7 @@ namespace Mellonetray
 	void TrayModel::Release ()
 	{
 		if (TrayWinID_)
-			XDestroyWindow (Util::XWrapper::Instance ().GetDisplay (), TrayWinID_);
+			XDestroyWindow (Util::XWrapper::Instance ()->GetDisplay (), TrayWinID_);
 	}
 
 	bool TrayModel::IsValid () const
@@ -182,7 +182,7 @@ namespace Mellonetray
 	template<>
 	void TrayModel::HandleClientMsg<xcb_client_message_event_t*> (xcb_client_message_event_t *ev)
 	{
-		if (ev->type != Util::XWrapper::Instance ().GetAtom ("_NET_SYSTEM_TRAY_OPCODE"))
+		if (ev->type != Util::XWrapper::Instance ()->GetAtom ("_NET_SYSTEM_TRAY_OPCODE"))
 			return;
 
 		switch (ev->data.data32 [1])

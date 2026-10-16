@@ -8,6 +8,7 @@
 
 #include "xwrapper.h"
 #include <limits>
+#include <memory>
 #include <type_traits>
 #include <bit>
 #include <QString>
@@ -31,19 +32,11 @@ namespace LC::Util
 	const int StateRemove = 0;
 	const int StateAdd = 1;
 
-	XWrapper::XWrapper ()
+	XWrapper::XWrapper (xcb_connection_t *conn, Display *display, PrivateCtor)
+	: Conn_ { conn }
+	, Display_ { display }
+	, AppWin_ { DefaultRootWindow (display) }
 	{
-		const auto x11app = qGuiApp->nativeInterface<QNativeInterface::QX11Application> ();
-		if (!x11app)
-			throw std::runtime_error { "XWrapper used on non-X11" };
-
-		Conn_ = x11app->connection ();
-		Display_ = x11app->display ();
-		AppWin_ = DefaultRootWindow (Display_);
-
-		if (!Display_)
-			throw std::runtime_error { "No X11 display" };
-
 		QAbstractEventDispatcher::instance ()->installNativeEventFilter (this);
 
 		const uint32_t rootEvents [] =
@@ -56,10 +49,19 @@ namespace LC::Util
 				AppWin_, XCB_CW_EVENT_MASK, rootEvents);
 	}
 
-	XWrapper& XWrapper::Instance ()
+	std::optional<XWrapper&> XWrapper::Instance ()
 	{
-		static XWrapper w;
-		return w;
+		static const auto wrapper = [] () -> std::unique_ptr<XWrapper>
+		{
+			const auto x11app = qGuiApp->nativeInterface<QNativeInterface::QX11Application> ();
+			if (!x11app || !x11app->display ())
+				return {};
+
+			return std::make_unique<XWrapper> (x11app->connection (), x11app->display (), PrivateCtor {});
+		} ();
+		if (!wrapper)
+			return {};
+		return *wrapper;
 	}
 
 	xcb_connection_t* XWrapper::GetConnection () const

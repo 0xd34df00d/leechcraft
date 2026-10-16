@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <optional>
 #include <string>
 #include <QList>
 #include <QString>
@@ -37,14 +38,16 @@ namespace LC::Util
 	{
 		Q_OBJECT
 
-		xcb_connection_t *Conn_ = nullptr;
-		Display *Display_ = nullptr;
-		Window AppWin_ {};
+		xcb_connection_t * const Conn_;
+		Display * const Display_;
+		const Window AppWin_;
 
 		QHash<QByteArray, Atom> Atoms_;
 
-		XWrapper ();
+		struct PrivateCtor { explicit PrivateCtor () = default; };
 	public:
+		XWrapper (xcb_connection_t*, Display*, PrivateCtor);
+
 		enum class Layer
 		{
 			Top,
@@ -52,7 +55,7 @@ namespace LC::Util
 			Normal
 		};
 
-		static XWrapper& Instance ();
+		static std::optional<XWrapper&> Instance ();
 
 		xcb_connection_t* GetConnection () const;
 		Display* GetDisplay () const;

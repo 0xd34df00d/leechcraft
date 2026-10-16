@@ -30,10 +30,11 @@ namespace LC::Kinotify
 
 	bool IsCurrentWindowFullScreen ()
 	{
-		auto& xwrapper = Util::XWrapper::Instance ();
-		auto display = xwrapper.GetDisplay ();
-		if (!display)
+		const auto xwrapper = Util::XWrapper::Instance ();
+		if (!xwrapper)
 			return false;
+
+		const auto display = xwrapper->GetDisplay ();
 
 		Window focusWin;
 		int reverToReturn;
@@ -44,7 +45,7 @@ namespace LC::Kinotify
 			if (rootWM->GetMainWindow (i)->effectiveWinId () == focusWin)
 				return false;
 
-		const auto rootSize = GetSize (display, xwrapper.GetRootWindow ());
+		const auto rootSize = GetSize (display, xwrapper->GetRootWindow ());
 		const auto focusSize = GetSize (display, focusWin);
 		return rootSize && focusSize && *rootSize == *focusSize;
 	}

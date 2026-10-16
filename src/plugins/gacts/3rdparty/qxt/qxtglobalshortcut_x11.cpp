@@ -23,6 +23,7 @@
  **
  ****************************************************************************/
 #include "qxtglobalshortcut_p.h"
+#include <optional>
 #include <X11/Xlib.h>
 #include <xcb/xcb.h>
 #include <util/x11/xwrapper.h>
@@ -93,14 +94,18 @@ quint32 QxtGlobalShortcutPrivate::nativeModifiers(Qt::KeyboardModifiers modifier
     return native;
 }
 
-std::pair<Display*, Window> GetX11DW ()
+static std::optional<std::pair<Display*, Window>> GetX11DW ()
 {
-    const auto& inst = LC::Util::XWrapper::Instance ();
-    return { inst.GetDisplay (), inst.GetRootWindow () };
+    return LC::Util::XWrapper::Instance ().transform ([] (const LC::Util::XWrapper& inst)
+            { return std::pair { inst.GetDisplay (), inst.GetRootWindow () }; });
 }
 
 quint32 QxtGlobalShortcutPrivate::nativeKeycode(Qt::Key key)
 {
+    const auto dw = GetX11DW ();
+    if (!dw)
+        return 0;
+
     // (davidsansome) Try the table from QKeyMapper first - this seems to be
     // the only way to get Keysyms for the media keys.
     unsigned int keysym = 0;
@@ -118,12 +123,16 @@ quint32 QxtGlobalShortcutPrivate::nativeKeycode(Qt::Key key)
       keysym = XStringToKeysym(QKeySequence(key).toString().toLatin1().data());
     }
 
-    return XKeysymToKeycode(GetX11DW ().first, keysym);
+    return XKeysymToKeycode(dw->first, keysym);
 }
 
 bool QxtGlobalShortcutPrivate::registerShortcut(quint32 nativeKey, quint32 nativeMods)
 {
-    auto [display, window] = GetX11DW ();
+    const auto dw = GetX11DW ();
+    if (!dw)
+        return false;
+
+    auto [display, window] = *dw;
     Bool owner = True;
     int pointer = GrabModeAsync;
     int keyboard = GrabModeAsync;
@@ -138,7 +147,11 @@ bool QxtGlobalShortcutPrivate::registerShortcut(quint32 nativeKey, quint32 nativ
 
 bool QxtGlobalShortcutPrivate::unregisterShortcut(quint32 nativeKey, quint32 nativeMods)
 {
-    auto [display, window] = GetX11DW ();
+    const auto dw = GetX11DW ();
+    if (!dw)
+        return false;
+
+    auto [display, window] = *dw;
     error = false;
     original_x_errhandler = XSetErrorHandler(qxt_x_errhandler);
     XUngrabKey(display, nativeKey, nativeMods, window);

@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "autoidler.h"
+#include <stdexcept>
 #include <QIcon>
 #include <QTranslator>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
@@ -36,6 +37,9 @@ namespace Autoidler
 				"azothautoidlersettings.xml");
 
 		Idle_.reset (new Idle);
+		if (!Idle_->usingPlatform ())
+			throw std::runtime_error { "the system idle time is unavailable on this platform" };
+
 		connect (Idle_.get (),
 				SIGNAL (secondsIdle (int)),
 				this,

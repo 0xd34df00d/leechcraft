@@ -7,11 +7,13 @@
  **********************************************************************/
 
 #include "kbswitch.h"
+#include <stdexcept>
 #include <QIcon>
 #include <QStringListModel>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <util/x11/xwrapper.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "keyboardlayoutswitcher.h"
 #include "xmlsettingsmanager.h"
@@ -28,6 +30,9 @@ namespace KBSwitch
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		if (!Util::XWrapper::Instance ())
+			throw std::runtime_error { "KBSwitch requires X11" };
+
 		Proxy_ = proxy;
 
 		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();

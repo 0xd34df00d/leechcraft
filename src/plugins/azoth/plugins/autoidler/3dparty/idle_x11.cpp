@@ -64,10 +64,14 @@ bool IdlePlatform::init()
 	if(d->ss_info)
 		return true;
 
+	const auto xwrapper = LC::Util::XWrapper::Instance();
+	if(!xwrapper)
+		return false;
+
 	old_handler = XSetErrorHandler(xerrhandler);
 
 	int event_base, error_base;
-	if(XScreenSaverQueryExtension(LC::Util::XWrapper::Instance().GetDisplay(), &event_base, &error_base)) {
+	if(XScreenSaverQueryExtension(xwrapper->GetDisplay(), &event_base, &error_base)) {
 		d->ss_info = XScreenSaverAllocInfo();
 		return true;
 	}
@@ -78,8 +82,8 @@ int IdlePlatform::secondsIdle()
 {
 	if(!d->ss_info)
 		return 0;
-	auto& instance = LC::Util::XWrapper::Instance();
-	if(!XScreenSaverQueryInfo(instance.GetDisplay(), instance.GetRootWindow(), d->ss_info))
+	const auto xwrapper = LC::Util::XWrapper::Instance();
+	if(!XScreenSaverQueryInfo(xwrapper->GetDisplay(), xwrapper->GetRootWindow(), d->ss_info))
 		return 0;
 	return d->ss_info->idle / 1000;
 }

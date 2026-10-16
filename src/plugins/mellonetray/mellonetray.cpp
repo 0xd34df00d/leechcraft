@@ -7,8 +7,10 @@
  **********************************************************************/
 
 #include "mellonetray.h"
+#include <stdexcept>
 #include <QIcon>
 #include <QtQuick>
+#include <util/x11/xwrapper.h>
 #include "traymodel.h"
 #include "iconhandler.h"
 
@@ -18,6 +20,9 @@ namespace Mellonetray
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		if (!Util::XWrapper::Instance ())
+			throw std::runtime_error { "Mellonetray requires X11" };
+
 		qmlRegisterType<IconHandler> ("Mellonetray", 1, 0, "IconHandler");
 
 		if (TrayModel::Instance ().IsValid ())

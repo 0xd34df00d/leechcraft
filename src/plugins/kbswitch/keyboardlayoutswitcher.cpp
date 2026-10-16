@@ -81,7 +81,7 @@ namespace KBSwitch
 		if (LastCurrentWidget_ == current)
 			return;
 
-		const auto display = Util::XWrapper::Instance ().GetDisplay ();
+		const auto display = Util::XWrapper::Instance ()->GetDisplay ();
 
 		if (const auto prevItw = qobject_cast<ITabWidget*> (prev))
 		{

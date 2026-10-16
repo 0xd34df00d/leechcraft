@@ -25,6 +25,18 @@
 
 namespace LC::SB2
 {
+#ifdef WITH_X11
+	namespace
+	{
+		std::optional<Util::XWrapper&> GetDesktopModeXWrapper (const ViewManager& viewMgr)
+		{
+			if (!viewMgr.IsDesktopMode ())
+				return {};
+			return Util::XWrapper::Instance ();
+		}
+	}
+#endif
+
 	ViewGeometryManager::ViewGeometryManager (ViewManager *parent)
 	: QObject (parent)
 	, ViewMgr_ (parent)
@@ -49,7 +61,8 @@ namespace LC::SB2
 
 		auto toolbar = ViewMgr_->GetToolbar ();
 #ifdef WITH_X11
-		if (!ViewMgr_->IsDesktopMode ())
+		const auto xwrapper = GetDesktopModeXWrapper (*ViewMgr_);
+		if (!xwrapper)
 		{
 #endif
 			toolbar->setFloatable (false);
@@ -70,7 +83,7 @@ namespace LC::SB2
 
 			toolbar->show ();
 
-			Util::XWrapper::Instance ().MoveWindowToDesktop (toolbar->winId (), 0xffffffff);
+			xwrapper->MoveWindowToDesktop (toolbar->winId (), 0xffffffff);
 		}
 #endif
 
@@ -150,7 +163,8 @@ namespace LC::SB2
 		}
 
 #ifdef WITH_X11
-		if (!ViewMgr_->IsDesktopMode ())
+		const auto xwrapper = GetDesktopModeXWrapper (*ViewMgr_);
+		if (!xwrapper)
 		{
 #endif
 			ViewMgr_->GetManagedWindow ()->addToolBar (static_cast<Qt::ToolBarArea> (pos), toolbar);
@@ -162,12 +176,10 @@ namespace LC::SB2
 		}
 		else
 		{
-			auto& xwrapper = Util::XWrapper::Instance ();
+			xwrapper->ClearStrut (toolbar);
+			xwrapper->Sync ();
 
-			xwrapper.ClearStrut (toolbar);
-			xwrapper.Sync ();
-
-			const auto screenGeometry = xwrapper.GetAvailableGeometry (ViewMgr_->GetManagedWindow ());
+			const auto screenGeometry = xwrapper->GetAvailableGeometry (ViewMgr_->GetManagedWindow ());
 
 			QSize diff;
 			const auto& rect = ToGeom (screenGeometry, ViewMgr_->GetView ()->minimumSizeHint (), pos, &diff);
@@ -176,7 +188,7 @@ namespace LC::SB2
 			ViewMgr_->GetView ()->setFixedSize (rect.size () - diff);
 			toolbar->setFixedSize (rect.size ());
 
-			xwrapper.SetStrut (toolbar, pos);
+			xwrapper->SetStrut (toolbar, pos);
 		}
 #endif
 	}

@@ -34,7 +34,7 @@ namespace LC
 namespace KBSwitch
 {
 	KBCtl::KBCtl ()
-	: Display_ { Util::XWrapper::Instance ().GetDisplay () }
+	: Display_ { Util::XWrapper::Instance ()->GetDisplay () }
 	, Rules_ { new RulesStorage { Display_ } }
 	{
 		if (!InitDisplay ())
@@ -42,7 +42,7 @@ namespace KBSwitch
 
 		QAbstractEventDispatcher::instance ()->installNativeEventFilter (this);
 
-		const auto conn = Util::XWrapper::Instance ().GetConnection ();
+		const auto conn = Util::XWrapper::Instance ()->GetConnection ();
 
 		const uint32_t rootEvents [] =
 		{
@@ -100,7 +100,7 @@ namespace KBSwitch
 
 	bool KBCtl::InitDisplay ()
 	{
-		const auto conn = Util::XWrapper::Instance ().GetConnection ();
+		const auto conn = Util::XWrapper::Instance ()->GetConnection ();
 		const auto reply = xcb_get_extension_data (conn, &xcb_xkb_id);
 
 		if (!reply || !reply->present)
@@ -115,7 +115,7 @@ namespace KBSwitch
 		xcb_xkb_use_extension (conn, XCB_XKB_MAJOR_VERSION, XCB_XKB_MINOR_VERSION);
 
 		Window_ = DefaultRootWindow (Display_);
-		NetActiveWinAtom_ = Util::XWrapper::Instance ().GetAtom ("_NET_ACTIVE_WINDOW");
+		NetActiveWinAtom_ = Util::XWrapper::Instance ()->GetAtom ("_NET_ACTIVE_WINDOW");
 
 		Available_ = true;
 		return true;
@@ -244,7 +244,7 @@ namespace KBSwitch
 		case XCB_FOCUS_IN:
 		case XCB_FOCUS_OUT:
 		case XCB_PROPERTY_NOTIFY:
-			SetWindowLayout (Util::XWrapper::Instance ().GetActiveApp ());
+			SetWindowLayout (Util::XWrapper::Instance ()->GetActiveApp ());
 			break;
 		case XCB_CREATE_NOTIFY:
 			AssignWindow (static_cast<xcb_create_notify_event_t*> (msg)->window);
@@ -266,7 +266,7 @@ namespace KBSwitch
 		{
 			const auto stateEv = static_cast<xcb_xkb_state_notify_event_t*> (msg);
 			if (stateEv->group == stateEv->lockedGroup)
-				Win2Group_ [Util::XWrapper::Instance ().GetActiveApp ()] = stateEv->group;
+				Win2Group_ [Util::XWrapper::Instance ()->GetActiveApp ()] = stateEv->group;
 			emit groupChanged (stateEv->group);
 			break;
 		}
