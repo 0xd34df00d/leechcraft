@@ -21,6 +21,7 @@
 #include <QMainWindow>
 #include <util/sll/containerconversions.h>
 #include <util/sll/demangle.h>
+#include <util/sll/exceptions.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/scopeguards.h>
@@ -413,21 +414,12 @@ namespace LC
 				settings.setValue ("Info", ii->GetInfo ());
 				settings.endGroup ();
 			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "while initializing"
-						<< obj
-						<< "got"
-						<< e.what ();
-				return obj;
-			}
 			catch (...)
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "while initializing"
-						<< obj
-						<< "caught unknown exception";
+				const auto& what = Util::DescribeCurrentException ();
+				qWarning () << "failed to initialize" << obj << what;
+				PluginLoadErrors_ << tr ("Plugin %1 failed to initialize and has been unloaded: %2")
+						.arg (ii->GetName (), what);
 				return obj;
 			}
 
@@ -521,14 +513,12 @@ namespace LC
 				qDebug () << "second init" << ii->GetName ();
 				ii->SecondInit ();
 			}
-			catch (const std::exception& e)
+			catch (...)
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "while initializing"
-						<< obj
-						<< "got"
-						<< e.what ();
-				continue;
+				const auto& what = Util::DescribeCurrentException ();
+				qWarning () << "second init failed for" << obj << what;
+				PluginLoadErrors_ << tr ("Plugin %1 failed to finish initialization and may misbehave: %2")
+						.arg (ii->GetName (), what);
 			}
 		}
 
