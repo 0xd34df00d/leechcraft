@@ -12,7 +12,7 @@
 #include <QFuture>
 #include <QDesktopServices>
 #include <QUrl>
-#include "util/sll/qtutil.h"
+#include "util/sll/exceptions.h"
 #include "util/util.h"
 #include "interfaces/structures.h"
 #include "interfaces/idownload.h"
@@ -48,18 +48,9 @@ namespace LC
 					if (r.HandlePriority_ > 0)
 						result [r.HandlePriority_] << plugin;
 				}
-				catch (const std::exception& e)
-				{
-					qWarning () << Q_FUNC_INFO
-						<< "could not query"
-						<< e.what ()
-						<< plugin;
-				}
 				catch (...)
 				{
-					qWarning () << Q_FUNC_INFO
-						<< "could not query"
-						<< plugin;
+					qWarning () << "could not query" << plugin << Util::DescribeCurrentException ();
 				}
 			}
 
@@ -227,22 +218,6 @@ namespace LC
 
 	namespace
 	{
-		QString DescribeCurrentException ()
-		{
-			try
-			{
-				throw;
-			}
-			catch (const std::exception& e)
-			{
-				return QString::fromUtf8 (e.what ());
-			}
-			catch (...)
-			{
-				return "unknown exception"_qs;
-			}
-		}
-
 		bool TryEntityHandler (QObject *obj, const Entity& e, auto verb, auto&& h)
 		{
 			try
@@ -261,7 +236,7 @@ namespace LC
 				}
 				qWarning () << obj << "failed to" << verb
 						<< e.Entity_.typeName () << entityStr << e.Mime_
-						<< DescribeCurrentException ();
+						<< Util::DescribeCurrentException ();
 			}
 			return false;
 		}
