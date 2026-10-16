@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QWidget>
+#include <QPointer>
 #include "ui_dataviewwidget.h"
 
 namespace LC
@@ -20,6 +21,7 @@ namespace LC
 		Ui::DataViewWidget Ui_;
 
 		const bool Autoresize_;
+		QPointer<QAbstractItemModel> Model_;
 	public:
 		enum Option
 		{
@@ -40,6 +42,10 @@ namespace LC
 		QAbstractItemModel* GetModel () const;
 		QModelIndex GetCurrentIndex () const;
 		QModelIndexList GetSelectedRows () const;
+	protected:
+		void showEvent (QShowEvent*) override;
+	private:
+		void AttachModel ();
 	public slots:
 		void resizeColumns ();
 	signals:

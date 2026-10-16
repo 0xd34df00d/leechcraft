@@ -55,27 +55,14 @@ namespace LC
 
 	void DataViewWidget::SetModel (QAbstractItemModel *model)
 	{
-		if (const auto prevModel = Ui_.View_->model ())
-			disconnect (prevModel, nullptr, this, nullptr);
-
-		Ui_.View_->setModel (model);
-		if (Autoresize_)
-		{
-			connect (model,
-					&QAbstractItemModel::rowsInserted,
-					this,
-					&DataViewWidget::resizeColumns);
-			connect (model,
-					&QAbstractItemModel::dataChanged,
-					this,
-					&DataViewWidget::resizeColumns);
-		}
-		resizeColumns ();
+		Model_ = model;
+		if (isVisible ())
+			AttachModel ();
 	}
 
 	QAbstractItemModel* DataViewWidget::GetModel () const
 	{
-		return Ui_.View_->model ();
+		return Model_;
 	}
 
 	QModelIndex DataViewWidget::GetCurrentIndex () const
@@ -93,5 +80,34 @@ namespace LC
 		Ui_.View_->expandAll ();
 		for (auto i = 0; i < GetModel ()->columnCount (); ++i)
 			Ui_.View_->resizeColumnToContents (i);
+	}
+
+	// Item views fetch rows from and lay out their model even while hidden,
+	// so the model is handed to the view only once there is someone to look at it.
+	void DataViewWidget::showEvent (QShowEvent *event)
+	{
+		QWidget::showEvent (event);
+		if (Model_ && Ui_.View_->model () != Model_)
+			AttachModel ();
+	}
+
+	void DataViewWidget::AttachModel ()
+	{
+		if (const auto prevModel = Ui_.View_->model ())
+			disconnect (prevModel, nullptr, this, nullptr);
+
+		Ui_.View_->setModel (Model_);
+		if (Autoresize_)
+		{
+			connect (Model_,
+					&QAbstractItemModel::rowsInserted,
+					this,
+					&DataViewWidget::resizeColumns);
+			connect (Model_,
+					&QAbstractItemModel::dataChanged,
+					this,
+					&DataViewWidget::resizeColumns);
+		}
+		resizeColumns ();
 	}
 }
