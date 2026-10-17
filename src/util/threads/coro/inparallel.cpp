@@ -8,6 +8,7 @@
 
 #include "inparallel.h"
 #include <QtDebug>
+#include <util/sll/exceptions.h>
 #include "context.h"
 
 namespace LC::Util::detail
@@ -22,13 +23,9 @@ namespace LC::Util::detail
 		{
 			// "normal" child coro death, nothing to do here
 		}
-		catch (const std::exception& e)
-		{
-			qWarning () << "dropping a subsequent exception:" << e.what ();
-		}
 		catch (...)
 		{
-			qWarning () << "dropping a subsequent non-std::exception";
+			qWarning () << "dropping a subsequent exception:" << DescribeCurrentException ();
 		}
 	}
 }

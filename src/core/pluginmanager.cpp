@@ -564,17 +564,9 @@ namespace LC
 				qDebug () << "Unloading" << loader->GetFileName ();
 				loader->Unload ();
 			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< obj
-						<< e.what ();
-			}
 			catch (...)
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "unknown release error for"
-						<< obj;
+				qWarning () << "failed to release" << obj << Util::DescribeCurrentException ();
 			}
 		}
 
@@ -677,20 +669,9 @@ namespace LC
 						ipr->AddPlugin (object);
 			}
 		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "failed to init the object with"
-				<< e.what ()
-				<< "for"
-				<< object;
-			throw;
-		}
 		catch (...)
 		{
-			qWarning () << Q_FUNC_INFO
-				<< "failed to init"
-				<< object;
+			qWarning () << "failed to inject" << object << Util::DescribeCurrentException ();
 			throw;
 		}
 
@@ -705,20 +686,9 @@ namespace LC
 					<< qobject_cast<IInfo*> (object)->GetName ();
 			qobject_cast<IInfo*> (object)->Release ();
 		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "failed to release the unloading object with"
-				<< e.what ()
-				<< "for"
-				<< object;
-			throw;
-		}
 		catch (...)
 		{
-			qWarning () << Q_FUNC_INFO
-				<< "failed to release the unloading object"
-				<< object;
+			qWarning () << "failed to release" << object << Util::DescribeCurrentException ();
 		}
 	}
 
@@ -974,27 +944,13 @@ namespace LC
 			{
 				inst = loader->Instance ();
 			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "failed to construct the instance with"
-					<< e.what ()
-					<< "for"
-					<< loader->GetFileName ();
-				throw Fail (PluginManager::tr ("Could not load plugin from %1: "
-								"failed to construct plugin instance with exception %2.")
-							.arg (loader->GetFileName ())
-							.arg (e.what ()),
-						true);
-			}
 			catch (...)
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "failed to construct the instance for"
-						<< loader->GetFileName ();
+				const auto& what = Util::DescribeCurrentException ();
+				qWarning () << "failed to construct the instance for" << loader->GetFileName () << what;
 				throw Fail (PluginManager::tr ("Could not load plugin from %1: "
-								"failed to construct plugin instance.")
-							.arg (loader->GetFileName ()),
+								"failed to construct plugin instance with exception %2.")
+							.arg (loader->GetFileName (), what),
 						true);
 			}
 
@@ -1131,22 +1087,12 @@ namespace LC
 				else
 					id2source [id] = loader->GetFileName ();
 			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "failed to obtain plugin ID for plugin from"
-						<< loader->GetFileName ()
-						<< "with error:"
-						<< e.what ();
-				PluginContainers_.removeAt (i--);
-				continue;
-			}
 			catch (...)
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "failed to obtain plugin ID for plugin from"
-						<< loader->GetFileName ()
-						<< "with unknown error";
+				const auto& what = Util::DescribeCurrentException ();
+				qWarning () << "failed to obtain plugin ID for plugin from" << loader->GetFileName () << what;
+				PluginLoadErrors_ << tr ("Could not load plugin from %1: failed to obtain its ID: %2.")
+						.arg (loader->GetFileName (), what);
 				PluginContainers_.removeAt (i--);
 				continue;
 			}
@@ -1236,19 +1182,9 @@ namespace LC
 						Provides ().contains (feature))
 					result << i;
 			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "failed to get providers with"
-					<< e.what ()
-					<< "for"
-					<< *i;
-			}
 			catch (...)
 			{
-				qWarning () << Q_FUNC_INFO
-					<< "failed to get providers"
-					<< *i;
+				qWarning () << "failed to get provided features of" << *i << Util::DescribeCurrentException ();
 			}
 		}
 		return result;
@@ -1272,19 +1208,9 @@ namespace LC
 						result << i;
 				}
 			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "failed to get class with"
-					<< e.what ()
-					<< "for"
-					<< *i;
-			}
 			catch (...)
 			{
-				qWarning () << Q_FUNC_INFO
-					<< "failed to get class"
-					<< *i;
+				qWarning () << "failed to get plugin classes of" << *i << Util::DescribeCurrentException ();
 			}
 		}
 		return result;

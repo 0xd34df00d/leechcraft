@@ -13,6 +13,7 @@
 #include <QDir>
 #include <QFileDialog>
 #include <util/sll/prelude.h>
+#include <util/sll/exceptions.h>
 #include "interfaces/iinfo.h"
 #include "interfaces/idownload.h"
 #include "interfaces/ientityhandler.h"
@@ -60,20 +61,10 @@ namespace LC
 			tooltip = ii->GetInfo ();
 			icon = ii->GetIcon ();
 		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "could not query"
-				<< e.what ()
-				<< ii;
-			return 0;
-		}
 		catch (...)
 		{
-			qWarning () << Q_FUNC_INFO
-				<< "could not query"
-				<< ii;
-			return 0;
+			qWarning () << "could not query" << ii << Util::DescribeCurrentException ();
+			return nullptr;
 		}
 
 		auto but = new QRadioButton (name, this);

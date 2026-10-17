@@ -7,7 +7,6 @@
  **********************************************************************/
 
 #include "application.h"
-#include <typeinfo>
 #include <iostream>
 #include <cstring>
 #include <cstdlib>
@@ -42,6 +41,7 @@
 #include <interfaces/ihaveshortcuts.h>
 #include <util/util.h>
 #include <util/structuresops.h>
+#include <util/sll/exceptions.h>
 #include <util/sys/paths.h>
 #include <util/qml/tooltipitem.h>
 #include <util/threads/concurrentexception.h>
@@ -266,22 +266,10 @@ namespace LC
 		{
 			return QApplication::notify (obj, event);
 		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< QString::fromUtf8 (e.what ())
-				<< typeid (e).name ()
-				<< "for"
-				<< obj
-				<< event
-				<< event->type ();
-		}
 		catch (...)
 		{
-			qWarning () << Q_FUNC_INFO
-				<< obj
-				<< event
-				<< event->type ();
+			qWarning () << "unhandled exception" << Util::DescribeCurrentException ()
+					<< "for" << obj << event << event->type ();
 		}
 		return false;
 	}

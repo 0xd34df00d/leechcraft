@@ -17,6 +17,7 @@
 #include <util/util.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/exceptions.h>
 #include <util/xpc/util.h>
 #include <xmlsettingsdialog/datasourceroles.h>
 #include <interfaces/core/icoreproxy.h>
@@ -792,19 +793,9 @@ namespace LackMan
 				int id = Storage_->FindRepo (url);
 				components = Storage_->GetRepo (id).Components_;
 			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "while trying to get repo components for"
-						<< url
-						<< e.what ();
-				continue;
-			}
 			catch (...)
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "general error while trying to get repo components for"
-						<< url;
+				qWarning () << "failed to get repo components for" << url << Util::DescribeCurrentException ();
 				continue;
 			}
 

@@ -13,6 +13,7 @@
 #include <QMenu>
 #include <QtDebug>
 #include <interfaces/ihavetabs.h>
+#include <util/sll/exceptions.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "separatetabwidget.h"
@@ -79,20 +80,10 @@ QToolBar* TabManager::GetToolBar (int position) const
 		{
 			return itw->GetToolBar ();
 		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "failed to ITabWidget::GetToolBar"
-				<< e.what ()
-				<< widget;
-			return 0;
-		}
 		catch (...)
 		{
-			qWarning () << Q_FUNC_INFO
-				<< "failed to ITabWidget::GetToolBar"
-				<< widget;
-			return 0;
+			qWarning () << "failed to get the toolbar of" << widget << Util::DescribeCurrentException ();
+			return nullptr;
 		}
 	}
 	else
@@ -227,18 +218,9 @@ void TabManager::remove (int index)
 	{
 		itw->Remove ();
 	}
-	catch (const std::exception& e)
-	{
-		qWarning () << Q_FUNC_INFO
-			<< "failed to ITabWidget::Remove"
-			<< e.what ()
-			<< TabWidget_->Widget (index);
-	}
 	catch (...)
 	{
-		qWarning () << Q_FUNC_INFO
-			<< "failed to ITabWidget::Remove"
-			<< TabWidget_->Widget (index);
+		qWarning () << "failed to remove" << widget << Util::DescribeCurrentException ();
 	}
 }
 

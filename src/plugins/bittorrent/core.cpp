@@ -45,6 +45,7 @@
 #include <util/sll/util.h>
 #include <util/sll/either.h>
 #include <util/sll/macros.h>
+#include <util/sll/exceptions.h>
 #include <util/sys/paths.h>
 #include <util/threads/futures.h>
 #include "xmlsettingsmanager.h"
@@ -1456,13 +1457,9 @@ namespace BitTorrent
 					settings.setValue ("AutoManaged", Handles_.at (i).AutoManaged_);
 				}
 			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO << e.what ();
-			}
 			catch (...)
 			{
-				qWarning () << Q_FUNC_INFO << "unknown exception";
+				qWarning () << "failed to save" << Handles_.at (i).TorrentFileName_ << Util::DescribeCurrentException ();
 			}
 		}
 		settings.endArray ();
