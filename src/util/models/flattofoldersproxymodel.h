@@ -21,6 +21,21 @@ namespace LC::Util
 	struct FlatTreeItem;
 	using FlatTreeItem_ptr = std::shared_ptr<FlatTreeItem>;
 
+	/** Groups the rows of a flat source model into folders by tag.
+	 *
+	 * Tags are read from column 0 of each source row via CustomDataRoles::Tags,
+	 * and the tags manager resolves them to the folder titles. A row appears
+	 * under every tag it has, and rows without tags go into a single untagged
+	 * folder. Leaves expose the columns of their source rows and map back via
+	 * `MapToSource()`.
+	 *
+	 * The source must be flat, and its layout changes must move rows as units,
+	 * as every row sort does. Layout changes of the source are not forwarded,
+	 * and a source rearranging cells independently of each other is not
+	 * supported.
+	 *
+	 * @ingroup ModelUtil
+	 */
 	class UTIL_MODELS_API FlatToFoldersProxyModel : public QAbstractItemModel
 	{
 		QAbstractItemModel *SourceModel_ = nullptr;
@@ -65,17 +80,14 @@ namespace LC::Util
 		}
 	private:
 		const FlatTreeItem& ToFlatOrRoot (const QModelIndex&) const;
-
-		void HandleRowInserted (int);
-		void HandleRowRemoved (int);
-		void AddForTag (const QString&, const QPersistentModelIndex&);
-		void RemoveFromTag (const QString&, const QPersistentModelIndex&);
-		void HandleChanged (const QModelIndex&);
+		QModelIndex IndexOf (const FlatTreeItem&, int column = 0) const;
 
 		FlatTreeItem_ptr FindFolder (const QString&) const;
 		FlatTreeItem_ptr GetFolder (const QString&);
+		void AddForTag (const QString&, const QPersistentModelIndex&);
+		void RemoveLeaf (const FlatTreeItem_ptr&);
 
-		void HandleDataChanged (const QModelIndex&, const QModelIndex&);
+		void HandleDataChanged (const QModelIndex&, const QModelIndex&, const QList<int>&);
 		void HandleModelReset ();
 		void HandleRowsInserted (const QModelIndex&, int, int);
 		void HandleRowsAboutToBeRemoved (const QModelIndex&, int, int);

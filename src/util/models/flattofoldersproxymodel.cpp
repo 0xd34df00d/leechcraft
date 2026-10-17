@@ -7,11 +7,10 @@
  **********************************************************************/
 
 #include "flattofoldersproxymodel.h"
+#include <algorithm>
 #include <QSet>
 #include <QMimeData>
-#include <QItemSelectionRange>
 #include <util/sll/containerconversions.h>
-#include <util/sll/prelude.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/core/itagsmanager.h>
 #include "modelsanitizer.h"
@@ -20,37 +19,66 @@ namespace LC::Util
 {
 	struct FlatTreeItem
 	{
-		QList<FlatTreeItem_ptr> C_;
-		FlatTreeItem_ptr Parent_;
-
-		enum class Type
+		enum class Type : std::uint8_t
 		{
 			Root,
 			Folder,
 			Item
 		};
 
-		Type Type_ = Type::Root;
+		const Type Type_ = Type::Root;
+		FlatTreeItem * const Parent_ = nullptr;
 
+		QList<FlatTreeItem_ptr> C_;
 		QPersistentModelIndex Index_;
 		QString Tag_;
 
+		FlatTreeItem () = default;
+
+		FlatTreeItem (Type type, FlatTreeItem& parent, QString tag)
+		: Type_ { type }
+		, Parent_ { &parent }
+		, Tag_ { std::move (tag) }
+		{
+		}
+
 		int Row () const
 		{
-			if (Parent_)
-			{
-				const auto& c = Parent_->C_;
-				for (int i = 0, size = c.size (); i < size; ++i)
-					if (c.at (i).get () == this)
-						return i;
-			}
-			return 0;
+			if (!Parent_)
+				return 0;
+
+			const auto& siblings = Parent_->C_;
+			const auto pos = std::ranges::find_if (siblings, [this] (const auto& sibling) { return sibling.get () == this; });
+			return pos - siblings.begin ();
+		}
+
+		FlatTreeItem_ptr AddFolder (const QString& tag)
+		{
+			return C_.emplaceBack (std::make_shared<FlatTreeItem> (Type::Folder, *this, tag));
+		}
+
+		FlatTreeItem_ptr AddLeaf (const QPersistentModelIndex& index)
+		{
+			const auto& leaf = C_.emplaceBack (std::make_shared<FlatTreeItem> (Type::Item, *this, Tag_));
+			leaf->Index_ = index;
+			return leaf;
 		}
 	};
 
-	FlatTreeItem* ToFlat (const QModelIndex& idx)
+	namespace
 	{
-		return static_cast<FlatTreeItem*> (idx.internalPointer ());
+		FlatTreeItem* ToFlat (const QModelIndex& idx)
+		{
+			return static_cast<FlatTreeItem*> (idx.internalPointer ());
+		}
+
+		QStringList TagsOf (const QModelIndex& idx)
+		{
+			auto tags = idx.data (+CustomDataRoles::Tags).toStringList ();
+			if (tags.isEmpty ())
+				tags << QString {};
+			return tags;
+		}
 	}
 
 	FlatToFoldersProxyModel::FlatToFoldersProxyModel (const ITagsManager *itm, QObject *parent)
@@ -147,19 +175,16 @@ namespace LC::Util
 		if (!hasIndex (row, column, parent))
 			return {};
 
-		const auto& fti = ToFlatOrRoot (parent);
-		return fti.Type_ == FlatTreeItem::Type::Item ?
-				QModelIndex {} :
-				createIndex (row, column, fti.C_.at (row).get ());
+		return createIndex (row, column, ToFlatOrRoot (parent).C_.at (row).get ());
 	}
 
 	QModelIndex FlatToFoldersProxyModel::parent (const QModelIndex& index) const
 	{
-		const auto& parent = ToFlatOrRoot (index).Parent_;
+		const auto parent = ToFlatOrRoot (index).Parent_;
 		if (!parent || parent->Type_ == FlatTreeItem::Type::Root)
 			return {};
 
-		return createIndex (parent->Row (), 0, parent.get ());
+		return IndexOf (*parent);
 	}
 
 	int FlatToFoldersProxyModel::rowCount (const QModelIndex& index) const
@@ -239,6 +264,8 @@ namespace LC::Util
 		{
 			// We don't support changing columns (yet) so don't connect
 			// to columns* signals.
+			// Source layout changes aren't forwarded either: the class contract
+			// requires rows to move as units, which leaves nothing to show here.
 			connect (model,
 					&QAbstractItemModel::headerDataChanged,
 					this,
@@ -247,14 +274,6 @@ namespace LC::Util
 					&QAbstractItemModel::dataChanged,
 					this,
 					&FlatToFoldersProxyModel::HandleDataChanged);
-			connect (model,
-					&QAbstractItemModel::layoutAboutToBeChanged,
-					this,
-					&QAbstractItemModel::layoutAboutToBeChanged);
-			connect (model,
-					&QAbstractItemModel::layoutChanged,
-					this,
-					&QAbstractItemModel::layoutChanged);
 			connect (model,
 					&QAbstractItemModel::modelReset,
 					this,
@@ -295,35 +314,9 @@ namespace LC::Util
 
 	QList<QModelIndex> FlatToFoldersProxyModel::MapFromSource (const QModelIndex& source) const
 	{
-		auto tags = source.data (+CustomDataRoles::Tags).toStringList ();
-		if (tags.isEmpty ())
-			tags << QString ();
-
 		QList<QModelIndex> result;
-		for (const auto& tag : tags)
-		{
-			const auto& folder = FindFolder (tag);
-			if (!folder)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "could not find folder for tag"
-						<< tag
-						<< GetSourceModel ();
-				continue;
-			}
-
-			const auto& folderIdx = index (folder->Row (), 0, {});
-
-			for (int i = 0; i < folder->C_.size (); ++i)
-			{
-				const auto& child = folder->C_.at (i);
-				if (child->Index_ != source)
-					continue;
-
-				result << index (i, 0, folderIdx);
-				break;
-			}
-		}
+		for (const auto& leaf : Items_.values (QPersistentModelIndex { source }))
+			result << IndexOf (*leaf);
 		return result;
 	}
 
@@ -359,31 +352,21 @@ namespace LC::Util
 
 	FlatTreeItem_ptr FlatToFoldersProxyModel::FindFolder (const QString& tag) const
 	{
-		for (const auto& item : Root_->C_)
-			if (item->Tag_ == tag)
-				return item;
-
-		return {};
+		const auto& folders = Root_->C_;
+		const auto pos = std::ranges::find (folders, tag, &FlatTreeItem::Tag_);
+		return pos == folders.end () ? nullptr : *pos;
 	}
 
 	FlatTreeItem_ptr FlatToFoldersProxyModel::GetFolder (const QString& tag)
 	{
-		auto& c = Root_->C_;
-		for (const auto& item : c)
-			if (item->Tag_ == tag)
-				return item;
+		if (const auto& folder = FindFolder (tag))
+			return folder;
 
-		const auto& item = std::make_shared<FlatTreeItem> ();
-		item->Type_ = FlatTreeItem::Type::Folder;
-		item->Tag_ = tag;
-		item->Parent_ = Root_;
-
-		int size = c.size ();
-		beginInsertRows (QModelIndex (), size, size);
-		c.append (item);
+		const auto row = Root_->C_.size ();
+		beginInsertRows ({}, row, row);
+		const auto& folder = Root_->AddFolder (tag);
 		endInsertRows ();
-
-		return item;
+		return folder;
 	}
 
 	const FlatTreeItem& FlatToFoldersProxyModel::ToFlatOrRoot (const QModelIndex& idx) const
@@ -391,158 +374,89 @@ namespace LC::Util
 		return idx.isValid () ? *ToFlat (idx) : *Root_;
 	}
 
-	void FlatToFoldersProxyModel::HandleRowInserted (int i)
+	QModelIndex FlatToFoldersProxyModel::IndexOf (const FlatTreeItem& item, int column) const
 	{
-		const auto& idx = SourceModel_->index (i, 0);
-
-		auto tags = idx.data (+CustomDataRoles::Tags).toStringList ();
-
-		if (tags.isEmpty ())
-			tags << QString ();
-
-		QPersistentModelIndex pidx (idx);
-
-		for (const auto& tag : std::as_const (tags))
-			AddForTag (tag, pidx);
+		return createIndex (item.Row (), column, &item);
 	}
 
-	void FlatToFoldersProxyModel::HandleRowRemoved (int i)
+	void FlatToFoldersProxyModel::AddForTag (const QString& tag, const QPersistentModelIndex& pidx)
 	{
-		QAbstractItemModel *model = SourceModel_;
-		QModelIndex idx = model->index (i, 0);
-
-		QStringList tags = idx.data (+CustomDataRoles::Tags).toStringList ();
-
-		if (tags.isEmpty ())
-			tags << QString ();
-
-		QPersistentModelIndex pidx (idx);
-
-		for (const auto& tag : tags)
-			RemoveFromTag (tag, pidx);
-	}
-
-	void FlatToFoldersProxyModel::AddForTag (const QString& tag,
-			const QPersistentModelIndex& pidx)
-	{
-		FlatTreeItem_ptr folder = GetFolder (tag);
-
-		const auto& item = std::make_shared<FlatTreeItem> ();
-		item->Type_ = FlatTreeItem::Type::Item;
-		item->Index_ = pidx;
-		item->Parent_ = folder;
-		item->Tag_ = tag;
-
-		int size = folder->C_.size ();
-		QModelIndex iidx = index (Root_->C_.indexOf (folder), 0);
-		beginInsertRows (iidx, size, size);
-		folder->C_.append (item);
-		Items_.insert (pidx, item);
+		const auto& folder = GetFolder (tag);
+		const auto row = folder->C_.size ();
+		beginInsertRows (IndexOf (*folder), row, row);
+		Items_.insert (pidx, folder->AddLeaf (pidx));
 		endInsertRows ();
 	}
 
-	void FlatToFoldersProxyModel::RemoveFromTag (const QString& tag,
-			const QPersistentModelIndex& pidx)
+	void FlatToFoldersProxyModel::RemoveLeaf (const FlatTreeItem_ptr& leaf)
 	{
-		const auto& folder = GetFolder (tag);
-		auto& c = folder->C_;
-		int findex = Root_->C_.indexOf (folder);
-		for (int i = 0, size = c.size ();
-				i < size; ++i)
-		{
-			if (c.at (i)->Index_ != pidx)
-				continue;
+		const auto folder = leaf->Parent_;
+		const auto leafRow = leaf->Row ();
+		beginRemoveRows (IndexOf (*folder), leafRow, leafRow);
+		Items_.remove (leaf->Index_, leaf);
+		folder->C_.removeAt (leafRow);
+		endRemoveRows ();
 
-			beginRemoveRows (index (findex, 0), i, i);
-			Items_.remove (pidx, c.at (i));
-			c.removeAt (i);
-			endRemoveRows ();
-			break;
-		}
+		if (!folder->C_.isEmpty ())
+			return;
 
-		if (c.isEmpty ())
-		{
-			beginRemoveRows (QModelIndex (), findex, findex);
-			Root_->C_.removeAt (findex);
-			endRemoveRows ();
-		}
+		const auto folderRow = folder->Row ();
+		beginRemoveRows ({}, folderRow, folderRow);
+		Root_->C_.removeAt (folderRow);
+		endRemoveRows ();
 	}
 
-	void FlatToFoldersProxyModel::HandleChanged (const QModelIndex& idx)
+	void FlatToFoldersProxyModel::HandleDataChanged (const QModelIndex& topLeft, const QModelIndex& bottomRight, const QList<int>& roles)
 	{
-		auto newTags = Util::AsSet (idx.data (+CustomDataRoles::Tags).toStringList ());
-		if (newTags.isEmpty ())
-			newTags << QString {};
-
-		QPersistentModelIndex pidx (idx);
-
-		const auto& oldTags = Util::MapAs<QSet> (Items_.values (pidx), [] (const auto& item) { return item->Tag_; });
-
-		const auto added = QSet<QString> (newTags).subtract (oldTags);
-		const auto removed = QSet<QString> (oldTags).subtract (newTags);
-		const auto changed = QSet<QString> (newTags).intersect (oldTags);
-
-		for (const auto& ch : changed)
+		for (int row = topLeft.row (); row <= bottomRight.row (); ++row)
 		{
-			FlatTreeItem_ptr folder = GetFolder (ch);
+			const QPersistentModelIndex pidx { topLeft.sibling (row, 0) };
+			auto tags = AsSet (TagsOf (pidx));
+			for (const auto& leaf : Items_.values (pidx))
+				if (tags.remove (leaf->Tag_))
+					emit dataChanged (IndexOf (*leaf), IndexOf (*leaf, columnCount () - 1), roles);
+				else
+					RemoveLeaf (leaf);
 
-			QList<FlatTreeItem_ptr>& c = folder->C_;
-			int findex = Root_->C_.indexOf (folder);
-			QModelIndex fmi = index (findex, 0);
-			for (int i = 0, size = c.size ();
-					i < size; ++i)
-			{
-				if (c.at (i)->Index_ != pidx)
-					continue;
-
-				emit dataChanged (index (i, 0, fmi),
-						index (i, columnCount () - 1, fmi));
-				break;
-			}
+			for (const auto& tag : tags)
+				AddForTag (tag, pidx);
 		}
-
-		for (const auto& rem : removed)
-			RemoveFromTag (rem, pidx);
-
-		for (const auto& add : added)
-			AddForTag (add, pidx);
-	}
-
-	void FlatToFoldersProxyModel::HandleDataChanged (const QModelIndex& topLeft, const QModelIndex& bottomRight)
-	{
-		const QItemSelectionRange range
-		{
-			topLeft.sibling (topLeft.row (), 0),
-			bottomRight.sibling (bottomRight.row (), 0)
-		};
-		for (const auto& index : range.indexes ())
-			HandleChanged (index);
 	}
 
 	void FlatToFoldersProxyModel::HandleModelReset ()
 	{
-		if (const int size = Root_->C_.size ())
-		{
-			beginRemoveRows (QModelIndex (), 0, size - 1);
-			Root_->C_.clear ();
-			Items_.clear ();
-			endRemoveRows ();
-		}
-
+		beginResetModel ();
+		Items_.clear ();
+		Root_->C_.clear ();
 		if (SourceModel_)
 			for (int i = 0, size = SourceModel_->rowCount (); i < size; ++i)
-				HandleRowInserted (i);
+			{
+				const QPersistentModelIndex pidx { SourceModel_->index (i, 0) };
+				for (const auto& tag : TagsOf (pidx))
+				{
+					auto folder = FindFolder (tag);
+					if (!folder)
+						folder = Root_->AddFolder (tag);
+					Items_.insert (pidx, folder->AddLeaf (pidx));
+				}
+			}
+		endResetModel ();
 	}
 
 	void FlatToFoldersProxyModel::HandleRowsInserted (const QModelIndex&, int start, int end)
 	{
 		for (int i = start; i <= end; ++i)
-			HandleRowInserted (i);
+		{
+			const QPersistentModelIndex pidx { SourceModel_->index (i, 0) };
+			for (const auto& tag : TagsOf (pidx))
+				AddForTag (tag, pidx);
+		}
 	}
 
 	void FlatToFoldersProxyModel::HandleRowsAboutToBeRemoved (const QModelIndex&, int start, int end)
 	{
 		for (int i = start; i <= end; ++i)
-			HandleRowRemoved (i);
+			for (const auto& leaf : Items_.values (QPersistentModelIndex { SourceModel_->index (i, 0) }))
+				RemoveLeaf (leaf);
 	}
 }
