@@ -41,12 +41,7 @@ namespace LC::Util
 
 	QModelIndex FlatItemsModelBase::index (int row, int col, const QModelIndex& parent) const
 	{
-		if (parent.isValid () ||
-				row >= GetItemsCount () ||
-				col >= Headers_.size ())
-			return {};
-
-		return createIndex (row, col);
+		return hasIndex (row, col, parent) ? createIndex (row, col) : QModelIndex {};
 	}
 
 	QModelIndex FlatItemsModelBase::parent (const QModelIndex&) const
