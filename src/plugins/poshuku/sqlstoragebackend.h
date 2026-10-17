@@ -48,6 +48,7 @@ namespace Poshuku
 		void AddToFavorites (const FavoritesModel::FavoritesItem&);
 		void RemoveFromFavorites (const FavoritesModel::FavoritesItem&);
 		void UpdateFavorites (const FavoritesModel::FavoritesItem&);
+		void ChangeFavoriteURL (FavoritesModel::FavoritesItem, const QString&);
 		void SetFormsIgnored (const QString&, bool);
 		bool GetFormsIgnored (const QString&) const;
 	signals:

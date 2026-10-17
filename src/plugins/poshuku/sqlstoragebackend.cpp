@@ -267,6 +267,19 @@ namespace Poshuku
 		emit updated (item);
 	}
 
+	void SQLStorageBackend::ChangeFavoriteURL (FavoritesModel::FavoritesItem item, const QString& url)
+	{
+		Util::DBLock lock { DB_ };
+		lock.Init ();
+		if (Favorites_->Update (sph::f<&Favorites::URL_> = url, sph::f<&Favorites::URL_> == item.URL_) != 1)
+			throw std::runtime_error { "Expected exactly one bookmark when changing its URL" };
+		lock.Good ();
+
+		emit removed (item);
+		item.URL_ = url;
+		emit added (item);
+	}
+
 	void SQLStorageBackend::SetFormsIgnored (const QString& url, bool ignore)
 	{
 		if (ignore)

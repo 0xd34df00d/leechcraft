@@ -305,13 +305,37 @@ namespace Poshuku
 	void FavoritesModel::ChangeURL (const QModelIndex& index,
 			const QString& url)
 	{
-		FavoritesItem item = Items_.at (index.row ());
+		if (!index.isValid () || index.row () >= Items_.size ())
+			return;
+
+		const auto item = Items_.at (index.row ());
 		if (item.URL_ == url)
 			return;
 
-		removeItem (index);
-		item.URL_ = url;
-		Core::Instance ().GetStorageBackend ()->AddToFavorites (item);
+		if (url.isEmpty ())
+		{
+			emit error (tr ("The bookmark URL cannot be empty."));
+			return;
+		}
+
+		if (IsUrlExists (url))
+		{
+			emit error (tr ("A bookmark with the URL %1 already exists.").arg (url));
+			return;
+		}
+
+		try
+		{
+			Core::Instance ().GetStorageBackend ()->ChangeFavoriteURL (item, url);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO << e.what ();
+			emit error (tr ("Unable to change the bookmark URL."));
+			return;
+		}
+
+		Core::Instance ().RemoveFromFavorites (item.URL_);
 	}
 
 	const FavoritesModel::items_t& FavoritesModel::GetItems () const
