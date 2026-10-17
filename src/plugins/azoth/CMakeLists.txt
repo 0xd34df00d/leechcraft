@@ -151,7 +151,10 @@ LC_DEFINE_PLUGIN (
 		leechcraft-azoth-util
 		$<$<BOOL:${ENABLE_CRYPT}>:qca-qt${LC_QT_VERSION}>
 	INSTALL_SHARE
+	HAS_TESTS
 	)
+
+AddAzothTest (entryidops util/azoth/tests/entryidopstest)
 
 install (DIRECTORY interfaces DESTINATION include/leechcraft)
 
