@@ -354,7 +354,7 @@ namespace LMP
 			{
 				const auto& stopSource = Player_->GetCurrentStopSource ();
 				const auto& current = Player_->GetSourceObject ()->GetCurrentSource ();
-				stopAfterCurrent->setChecked (stopSource == current);
+				stopAfterCurrent->setChecked (!stopSource.IsEmpty () && stopSource == current);
 			},
 			Player_,
 			{ SIGNAL (currentStopSourceChanged ()), SIGNAL (songChanged (MediaInfo)) },

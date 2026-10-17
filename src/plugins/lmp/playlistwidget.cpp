@@ -540,9 +540,9 @@ namespace LMP
 		ActionStopAfterSelected_ = new QAction (tr ("Stop after this track"), Ui_.Playlist_);
 		ActionStopAfterSelected_->setProperty ("ActionIcon", "media-playback-stop");
 		connect (ActionStopAfterSelected_,
-				SIGNAL (triggered ()),
+				&QAction::triggered,
 				this,
-				SLOT (setStopAfterSelected ()));
+				&PlaylistWidget::toggleStopAfterSelected);
 
 		ActionAddToOneShot_ = new QAction (tr ("Add to instant queue"), Ui_.Playlist_);
 		ActionAddToOneShot_->setProperty ("ActionIcon", "list-add");
@@ -874,13 +874,13 @@ namespace LMP
 		UndoStack_->push (cmd);
 	}
 
-	void PlaylistWidget::setStopAfterSelected ()
+	void PlaylistWidget::toggleStopAfterSelected ()
 	{
 		const auto& index = PlaylistFilter_->mapToSource (Ui_.Playlist_->currentIndex ());
 		if (!index.isValid ())
 			return;
 
-		Player_->SetStopAfter (index);
+		Player_->ToggleStopAfter (index);
 	}
 
 	void PlaylistWidget::addToOneShot ()

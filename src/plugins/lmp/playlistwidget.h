@@ -102,7 +102,7 @@ namespace LMP
 
 		void removeSelectedSongs ();
 
-		void setStopAfterSelected ();
+		void toggleStopAfterSelected ();
 		void addToOneShot ();
 		void removeFromOneShot ();
 		void moveOneShotUp ();

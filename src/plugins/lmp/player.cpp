@@ -363,6 +363,8 @@ namespace LMP
 				continue;
 
 			RemoveFromOneShotQueue (source);
+			if (source == CurrentStopSource_)
+				SetCurrentStopSource ({});
 
 			auto item = Items_.take (source);
 			auto parent = item->parent ();
@@ -402,7 +404,7 @@ namespace LMP
 		return CurrentStopSource_;
 	}
 
-	void Player::SetStopAfter (const QModelIndex& index)
+	void Player::ToggleStopAfter (const QModelIndex& index)
 	{
 		if (!index.isValid ())
 			return;
@@ -413,7 +415,7 @@ namespace LMP
 		else
 			stopSource = index.data (Role::Source).value<AudioSource> ();
 
-		SetStopAfter (stopSource);
+		ToggleStopAfter (stopSource);
 	}
 
 	void Player::RestorePlayState ()
@@ -459,8 +461,7 @@ namespace LMP
 
 		const auto pos = CurrentOneShotQueue_.size () - 1;
 
-		if (auto item = Items_ [source])
-			item->setData (pos, Role::OneShotPos);
+		SetItemData (source, pos, Role::OneShotPos);
 	}
 
 	void Player::RemoveFromOneShotQueue (const QModelIndex& index)
@@ -491,8 +492,8 @@ namespace LMP
 			return;
 
 		std::swap (CurrentOneShotQueue_ [pos], CurrentOneShotQueue_ [pos - 1]);
-		Items_ [CurrentOneShotQueue_.at (pos)]->setData (pos, Role::OneShotPos);
-		Items_ [CurrentOneShotQueue_.at (pos - 1)]->setData (pos - 1, Role::OneShotPos);
+		SetItemData (CurrentOneShotQueue_.at (pos), pos, Role::OneShotPos);
+		SetItemData (CurrentOneShotQueue_.at (pos - 1), pos - 1, Role::OneShotPos);
 	}
 
 	void Player::OneShotMoveDown (const QModelIndex& index)
@@ -506,12 +507,12 @@ namespace LMP
 
 		const auto& source = index.data (Role::Source).value<AudioSource> ();
 		const auto pos = CurrentOneShotQueue_.indexOf (source);
-		if (pos == CurrentOneShotQueue_.size () - 1)
+		if (pos < 0 || pos == CurrentOneShotQueue_.size () - 1)
 			return;
 
 		std::swap (CurrentOneShotQueue_ [pos], CurrentOneShotQueue_ [pos + 1]);
-		Items_ [CurrentOneShotQueue_.at (pos)]->setData (pos, Role::OneShotPos);
-		Items_ [CurrentOneShotQueue_.at (pos + 1)]->setData (pos + 1, Role::OneShotPos);
+		SetItemData (CurrentOneShotQueue_.at (pos), pos, Role::OneShotPos);
+		SetItemData (CurrentOneShotQueue_.at (pos + 1), pos + 1, Role::OneShotPos);
 	}
 
 	int Player::GetOneShotQueueSize () const
@@ -989,20 +990,24 @@ namespace LMP
 				};
 	}
 
-	void Player::SetStopAfter (const AudioSource& stopSource)
+	void Player::SetItemData (const AudioSource& source, const QVariant& value, Role role)
 	{
-		if (!CurrentStopSource_.IsEmpty ())
-			Items_ [CurrentStopSource_]->setData (false, Role::IsStop);
+		if (const auto item = Items_.value (source))
+			item->setData (value, role);
+	}
 
-		if (CurrentStopSource_ == stopSource)
-			CurrentStopSource_ = AudioSource ();
-		else
-		{
-			CurrentStopSource_ = stopSource;
-			Items_ [stopSource]->setData (true, Role::IsStop);
-		}
+	void Player::SetCurrentStopSource (const AudioSource& source)
+	{
+		SetItemData (CurrentStopSource_, false, Role::IsStop);
+		CurrentStopSource_ = source;
+		SetItemData (CurrentStopSource_, true, Role::IsStop);
 
 		emit currentStopSourceChanged ();
+	}
+
+	void Player::ToggleStopAfter (const AudioSource& stopSource)
+	{
+		SetCurrentStopSource (stopSource == CurrentStopSource_ ? AudioSource {} : stopSource);
 	}
 
 	bool Player::HandleCurrentStop (const AudioSource& source)
@@ -1010,9 +1015,7 @@ namespace LMP
 		if (source != CurrentStopSource_)
 			return false;
 
-		CurrentStopSource_ = AudioSource ();
-		Items_ [source]->setData (false, Role::IsStop);
-
+		SetCurrentStopSource ({});
 		return true;
 	}
 
@@ -1024,9 +1027,9 @@ namespace LMP
 
 		CurrentOneShotQueue_.removeAt (pos);
 		for (int i = pos; i < CurrentOneShotQueue_.size (); ++i)
-			Items_ [CurrentOneShotQueue_.at (i)]->setData (i, Role::OneShotPos);
+			SetItemData (CurrentOneShotQueue_.at (i), i, Role::OneShotPos);
 
-		Items_ [source]->setData ({}, Role::OneShotPos);
+		SetItemData (source, {}, Role::OneShotPos);
 	}
 
 	QStandardItem* Player::FindRadioItem () const
@@ -1335,7 +1338,7 @@ namespace LMP
 
 	void Player::stopAfterCurrent ()
 	{
-		SetStopAfter (Source_->GetActualSource ());
+		ToggleStopAfter (Source_->GetActualSource ());
 	}
 
 	void Player::clear ()
@@ -1350,6 +1353,8 @@ namespace LMP
 		CurrentQueue_.clear ();
 		Url2Info_.clear ();
 		CurrentOneShotQueue_.clear ();
+		if (!CurrentStopSource_.IsEmpty ())
+			SetCurrentStopSource ({});
 		Source_->ClearQueue ();
 
 		XmlSettingsManager::Instance ().setProperty ("LastSong", QString ());

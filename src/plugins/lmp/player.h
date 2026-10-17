@@ -142,7 +142,7 @@ namespace LMP
 		void Dequeue (const QList<AudioSource>&);
 
 		AudioSource GetCurrentStopSource () const;
-		void SetStopAfter (const QModelIndex&);
+		void ToggleStopAfter (const QModelIndex&);
 
 		void RestorePlayState ();
 		void SavePlayState (bool ignoreNext);
@@ -167,7 +167,10 @@ namespace LMP
 		MediaInfo GetPhononMediaInfo () const;
 		void AddToPlaylistModel (QList<AudioSource>, bool sort, bool clear);
 
-		void SetStopAfter (const AudioSource&);
+		void SetItemData (const AudioSource&, const QVariant&, Role);
+
+		void SetCurrentStopSource (const AudioSource&);
+		void ToggleStopAfter (const AudioSource&);
 		bool HandleCurrentStop (const AudioSource&);
 
 		void RemoveFromOneShotQueue (const AudioSource&);
