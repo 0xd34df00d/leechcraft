@@ -53,7 +53,7 @@ namespace LC::Util
 
 		QVariant data (const QModelIndex& index, int role) const override
 		{
-			if (role != Config_.IsSelectedRole_)
+			if (role != Config_.IsSelectedRole_ || !index.isValid ())
 				return QIdentityProxyModel::data (index, role);
 
 			const auto id = index.data (Config_.SourceIdRole_).template value<Id> ();

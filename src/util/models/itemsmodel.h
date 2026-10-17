@@ -415,6 +415,9 @@ namespace LC::Util
 
 		bool setData (const QModelIndex& index, const QVariant& value, int role) override
 		{
+			if (!index.isValid ())
+				return false;
+
 			auto& item = this->ItemAt (index.row ());
 			if ((Extensions::SetData (item, index.row (), index.column (), value, role) ||...))
 			{
