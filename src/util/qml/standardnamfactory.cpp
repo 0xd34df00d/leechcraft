@@ -21,8 +21,16 @@ namespace LC::Util
 			QQmlEngine *engine)
 	: Subpath_ (std::move (subpath))
 	, CacheSizeGetter_ (std::move (getter))
-	, Settings_ { settings }
 	{
+		settings.RegisterObject ("TransferTimeout",
+				this,
+				[this] (int seconds)
+				{
+					const auto newTimeout = std::chrono::seconds { seconds };
+					RequestTimeout_ = newTimeout;
+					emit requestTimeoutChanged (newTimeout);
+				});
+
 		if (engine)
 			engine->setNetworkAccessManagerFactory (this);
 	}
@@ -30,13 +38,15 @@ namespace LC::Util
 	QNetworkAccessManager* StandardNAMFactory::create (QObject *parent)
 	{
 		auto nam = new QNetworkAccessManager (parent);
-		Settings_.RegisterObject ("TransferTimeout",
+		connect (this,
+				&StandardNAMFactory::requestTimeoutChanged,
 				nam,
-				[nam] (int seconds) { nam->setTransferTimeout (std::chrono::seconds { seconds }); });
+				qOverload<std::chrono::milliseconds> (&QNetworkAccessManager::setTransferTimeout));
 
 		auto cache = new NetworkDiskCache (Subpath_, nam);
 		cache->setMaximumCacheSize (CacheSizeGetter_ ());
 		nam->setCache (cache);
+		nam->setTransferTimeout (RequestTimeout_.load ());
 
 		return nam;
 	}

@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <atomic>
+#include <chrono>
 #include <functional>
 #include <QtGlobal>
 #include <QQmlNetworkAccessManagerFactory>
@@ -39,8 +41,12 @@ namespace LC::Util
 	 *
 	 * @ingroup QmlUtil
 	 */
-	class UTIL_QML_API StandardNAMFactory : public QQmlNetworkAccessManagerFactory
+	class UTIL_QML_API StandardNAMFactory
+		: public QObject
+		, public QQmlNetworkAccessManagerFactory
 	{
+		Q_OBJECT
+
 		const QString Subpath_;
 	public:
 		/** @brief The type of the function used to query the cache size
@@ -49,7 +55,7 @@ namespace LC::Util
 		using CacheSizeGetter_f = std::function<int ()>;
 	private:
 		CacheSizeGetter_f CacheSizeGetter_;
-		BaseSettingsManager& Settings_;
+		std::atomic<std::chrono::seconds> RequestTimeout_;
 	public:
 		/** @brief Constructs a new StandardNAMFactory.
 		 *
@@ -82,5 +88,7 @@ namespace LC::Util
 		 * @return A new QNetworkAccessManager.
 		 */
 		QNetworkAccessManager* create (QObject *parent) override;
+	signals:
+		void requestTimeoutChanged (std::chrono::milliseconds);
 	};
 }
