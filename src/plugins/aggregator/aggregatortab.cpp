@@ -85,6 +85,10 @@ namespace LC::Aggregator
 				&QAbstractItemModel::rowsInserted,
 				Ui_.Feeds_,
 				&QTreeView::expand);
+		connect (FlatToFolders_.get (),
+				&QAbstractItemModel::modelReset,
+				Ui_.Feeds_,
+				&QTreeView::expandAll);
 
 		ItemsWidget_->ConstructBrowser ();
 
