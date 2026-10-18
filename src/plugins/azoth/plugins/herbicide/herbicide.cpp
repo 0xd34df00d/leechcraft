@@ -211,7 +211,7 @@ namespace Herbicide
 			return true;
 		}
 
-		const auto& id = entry->GetHumanReadableID ();
+		const auto& id = entry->GetHumanReadableAddress ();
 
 		const auto checkRxList = [&id] (const QSet<QRegularExpression>& rxList)
 		{

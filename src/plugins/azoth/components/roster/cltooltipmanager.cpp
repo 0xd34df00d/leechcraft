@@ -299,7 +299,7 @@ namespace Azoth
 		}
 
 		tip += "<strong>" + entry->GetEntryName ().toHtmlEscaped () + "</strong>";
-		tip += "&nbsp;(<em>" + entry->GetHumanReadableID ().toHtmlEscaped () + "</em>)";
+		tip += "&nbsp;(<em>" + entry->GetHumanReadableAddress ().toHtmlEscaped () + "</em>)";
 		tip += Status2Str (entry->GetStatus ());
 		if (entry->GetEntryType () != ICLEntry::EntryType::PrivateChat)
 		{

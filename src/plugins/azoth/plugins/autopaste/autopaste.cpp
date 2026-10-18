@@ -20,6 +20,7 @@
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/iaccount.h>
 #include <util/azoth/hooks.h>
+#include <util/azoth/util.h>
 #include "xmlsettingsmanager.h"
 #include "pastedialog.h"
 #include "actionsstorage.h"
@@ -268,11 +269,7 @@ namespace LC::Azoth::Autopaste
 				entry->GetParentAccount ()->GetAccountID ());
 		if (!tab)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "no tab for"
-					<< entry
-					<< entry->GetEntryID ()
-					<< entry->GetHumanReadableID ();
+			qWarning () << "no tab for" << entry << entry->GetGlobalStrongestID () << entry->GetHumanReadableAddress ();
 			return;
 		}
 
