@@ -409,7 +409,8 @@ namespace LC::Util
 		Qt::ItemFlags flags (const QModelIndex& index) const override
 		{
 			auto flags = FlatItemsModelTypedBase<T>::flags (index);
-			flags |= (Extensions::GetFlags (index.column ()) | ...);
+			if (index.isValid ())
+				flags |= (Extensions::GetFlags (index.column ()) | ...);
 			return flags;
 		}
 
