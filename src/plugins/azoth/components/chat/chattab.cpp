@@ -1204,7 +1204,7 @@ namespace Azoth
 			Ui_.AvatarLabel_->hide ();
 
 			const int height = Util::AvailableGeometry (QCursor::pos ()).height ();
-			MUCEventLog_->setWindowTitle (tr ("MUC log for %1").arg (GetEntry<ICLEntry> ()->GetHumanReadableID ()));
+			MUCEventLog_->setWindowTitle (tr ("MUC log for %1").arg (FormatNameWithAddress (*GetEntry<ICLEntry> ())));
 			MUCEventLog_->setStyleSheet ("background-color: rgb(0, 0, 0);");
 			MUCEventLog_->resize (600, height * 2 / 3);
 
