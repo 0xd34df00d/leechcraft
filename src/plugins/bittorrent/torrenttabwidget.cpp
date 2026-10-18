@@ -255,7 +255,7 @@ namespace LC::BitTorrent
 	template<typename F>
 	void TorrentTabWidget::ForEachSelected (F&& f) const
 	{
-		for (const auto& index : SelectedIndices_)
+		for (const auto& index : auto { SelectedIndices_ })
 			f (index);
 	}
 
