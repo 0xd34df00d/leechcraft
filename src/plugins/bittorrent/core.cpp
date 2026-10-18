@@ -429,15 +429,19 @@ namespace BitTorrent
 
 	bool Core::setData (const QModelIndex& index, const QVariant& data, int role)
 	{
-		auto& ts = Handles_ [index.row ()];
+		const auto row = index.row ();
+		auto& ts = Handles_ [row];
 		switch (role)
 		{
 		case Roles::TorrentTags:
 			ts.Tags_ = Proxy_->GetTagsManager ()->GetIDs (data.toStringList ());
+			emit dataChanged (this->index (row, 0), this->index (row, columnCount () - 1), { Roles::TorrentTags, +CustomDataRoles::Tags });
 			return true;
 		case Roles::IsManaged:
 			ts.AutoManaged_ = data.toBool ();
+			emit dataChanged (this->index (row, 0), this->index (row, columnCount () - 1), { Roles::IsManaged });
 			return true;
+		// These come from the cached status, so UpdateStatus() announces them once libtorrent reports the change.
 		case Roles::IsSequentialDownloading:
 			ToggleFlag (ts.Handle_, libtorrent::torrent_flags::sequential_download, data.toBool ());
 			return true;
