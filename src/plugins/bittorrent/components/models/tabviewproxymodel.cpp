@@ -48,7 +48,7 @@ namespace LC::BitTorrent
 			return true;
 
 		const auto& torrentTags = idx.data (Roles::TorrentTags).toStringList ();
-		return std::ranges::any_of (FilterTags_,
+		return std::ranges::all_of (FilterTags_,
 				[&] (const QString& tag) { return torrentTags.contains (tag); });
 	}
 }
