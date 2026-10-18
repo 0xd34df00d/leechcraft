@@ -152,14 +152,9 @@ namespace LC::Intermutko
 			return;
 
 		const auto r = index.row ();
-
-		beginRemoveRows ({}, r - 1, r - 1);
-		const auto& preRow = Locales_.takeAt (r - 1);
-		endRemoveRows ();
-
-		beginInsertRows ({}, r, r);
-		Locales_.insert (r, preRow);
-		endInsertRows ();
+		beginMoveRows ({}, r, r, {}, r - 1);
+		Locales_.move (r, r - 1);
+		endMoveRows ();
 	}
 
 	void LocalesModel::MoveDown (const QModelIndex& index)
@@ -168,12 +163,8 @@ namespace LC::Intermutko
 			return;
 
 		const auto r = index.row ();
-		beginRemoveRows ({}, r + 1, r + 1);
-		const auto& postRow = Locales_.takeAt (r + 1);
-		endRemoveRows ();
-
-		beginInsertRows ({}, r, r);
-		Locales_.insert (r, postRow);
-		endInsertRows ();
+		beginMoveRows ({}, r, r, {}, r + 2);
+		Locales_.move (r, r + 1);
+		endMoveRows ();
 	}
 }
