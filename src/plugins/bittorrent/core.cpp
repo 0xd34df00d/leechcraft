@@ -709,7 +709,11 @@ namespace BitTorrent
 			return result;
 		}
 		case Roles::TorrentTags:
-			return Proxy_->GetTagsManager ()->GetTags (Handles_.at (row).Tags_);
+		{
+			auto tags = Proxy_->GetTagsManager ()->GetTags (Handles_.at (row).Tags_);
+			tags.removeAll (QString {});
+			return tags;
+		}
 		default:
 			return QVariant ();
 		}
