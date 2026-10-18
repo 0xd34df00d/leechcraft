@@ -348,11 +348,21 @@ namespace LC::BitTorrent
 
 		Ui_.TorrentControlTab_->setEnabled (true);
 
-		Ui_.TorrentDownloadRateController_->setValue (GetDownloadLimit (GetTorrentHandle (Index_)));
-		Ui_.TorrentUploadRateController_->setValue (GetUploadLimit (GetTorrentHandle (Index_)));
-		Ui_.TorrentManaged_->setCheckState (Index_.data (Roles::IsManaged).toBool () ? Qt::Checked : Qt::Unchecked);
-		Ui_.TorrentSequentialDownload_->setCheckState (Index_.data (Roles::IsSequentialDownloading).toBool () ? Qt::Checked : Qt::Unchecked);
-		Ui_.TorrentSuperSeeding_->setCheckState (Index_.data (Roles::IsSuperSeeding).toBool () ? Qt::Checked : Qt::Unchecked);
+		{
+			// Avoid programmatically changing the values for the all selected torrents
+			// (or even the current one if it's out of sync with libtorrent state yet).
+			const QSignalBlocker downloadRateBlocker { Ui_.TorrentDownloadRateController_ };
+			const QSignalBlocker uploadRateBlocker { Ui_.TorrentUploadRateController_ };
+			const QSignalBlocker managedBlocker { Ui_.TorrentManaged_ };
+			const QSignalBlocker sequentialBlocker { Ui_.TorrentSequentialDownload_ };
+			const QSignalBlocker superSeedingBlocker { Ui_.TorrentSuperSeeding_ };
+
+			Ui_.TorrentDownloadRateController_->setValue (GetDownloadLimit (GetTorrentHandle (Index_)));
+			Ui_.TorrentUploadRateController_->setValue (GetUploadLimit (GetTorrentHandle (Index_)));
+			Ui_.TorrentManaged_->setCheckState (Index_.data (Roles::IsManaged).toBool () ? Qt::Checked : Qt::Unchecked);
+			Ui_.TorrentSequentialDownload_->setCheckState (Index_.data (Roles::IsSequentialDownloading).toBool () ? Qt::Checked : Qt::Unchecked);
+			Ui_.TorrentSuperSeeding_->setCheckState (Index_.data (Roles::IsSuperSeeding).toBool () ? Qt::Checked : Qt::Unchecked);
+		}
 
 		const auto info = Index_.data (Roles::TorrentStats).value<TorrentInfo> ();
 
