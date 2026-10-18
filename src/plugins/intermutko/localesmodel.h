@@ -8,13 +8,13 @@
 
 #pragma once
 
-#include <QAbstractItemModel>
+#include <QAbstractTableModel>
 #include <QCoreApplication>
 #include "localeentry.h"
 
 namespace LC::Intermutko
 {
-	class LocalesModel : public QAbstractItemModel
+	class LocalesModel : public QAbstractTableModel
 	{
 		Q_DECLARE_TR_FUNCTIONS (LC::Intermutko::LocalesModel)
 
@@ -45,8 +45,6 @@ namespace LC::Intermutko
 
 		int columnCount (const QModelIndex& = {}) const override;
 		int rowCount (const QModelIndex& = {}) const override;
-		QModelIndex index (int, int, const QModelIndex& = {}) const override;
-		QModelIndex parent (const QModelIndex&) const override;
 		QVariant headerData (int, Qt::Orientation, int) const override;
 		QVariant data (const QModelIndex&, int) const override;
 		Qt::ItemFlags flags (const QModelIndex& index) const override;

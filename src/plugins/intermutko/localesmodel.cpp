@@ -15,7 +15,7 @@
 namespace LC::Intermutko
 {
 	LocalesModel::LocalesModel (QObject *parent)
-	: QAbstractItemModel { parent }
+	: QAbstractTableModel { parent }
 	{
 		Util::InstallModelSanitizer (*this);
 	}
@@ -32,19 +32,6 @@ namespace LC::Intermutko
 		return parent.isValid () ?
 				0 :
 				Locales_.size ();
-	}
-
-	QModelIndex LocalesModel::index (int row, int column, const QModelIndex& parent) const
-	{
-		if (parent.isValid ())
-			return {};
-
-		return createIndex (row, column);
-	}
-
-	QModelIndex LocalesModel::parent (const QModelIndex&) const
-	{
-		return {};
 	}
 
 	QVariant LocalesModel::headerData (int section, Qt::Orientation orientation, int role) const
@@ -83,15 +70,15 @@ namespace LC::Intermutko
 
 	Qt::ItemFlags LocalesModel::flags (const QModelIndex& index) const
 	{
-		Qt::ItemFlags result = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-		if (index.column () != static_cast<int> (Column::Code))
+		auto result = QAbstractTableModel::flags (index);
+		if (index.isValid () && index.column () != static_cast<int> (Column::Code))
 			result |= Qt::ItemIsEditable;
 		return result;
 	}
 
-	bool LocalesModel::setData (const QModelIndex& idx, const QVariant& value, int)
+	bool LocalesModel::setData (const QModelIndex& idx, const QVariant& value, int role)
 	{
-		if (!idx.isValid ())
+		if (!idx.isValid () || role != Qt::EditRole)
 			return false;
 
 		auto& entry = Locales_ [idx.row ()];
