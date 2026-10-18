@@ -10,7 +10,6 @@
 #include <algorithm>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
-#include <interfaces/structures.h>
 #include "types.h"
 
 namespace LC::BitTorrent
@@ -20,6 +19,11 @@ namespace LC::BitTorrent
 		beginFilterChange ();
 		StateFilter_ = static_cast<StateFilterMode> (mode);
 		endFilterChange (Direction::Rows);
+	}
+
+	void TabViewProxyModel::UpdateDerivedFilter (const QString& filter)
+	{
+		FilterTags_ = GetProxyHolder ()->GetTagsManager ()->Split (filter);
 	}
 
 	bool TabViewProxyModel::filterAcceptsRow (int row, const QModelIndex&) const
@@ -43,11 +47,8 @@ namespace LC::BitTorrent
 		if (IsMatch (idx.data ().toString ()))
 			return true;
 
-		auto tm = GetProxyHolder ()->GetTagsManager ();
-		const auto& reqTags = tm->Split (GetFilterString ());
-		const auto& torrentTags = idx.data (+CustomDataRoles::Tags).toStringList ();
-
-		return std::ranges::any_of (torrentTags,
-				[&] (const auto& tagId) { return reqTags.contains (tm->GetTag (tagId)); });
+		const auto& torrentTags = idx.data (Roles::TorrentTags).toStringList ();
+		return std::ranges::any_of (FilterTags_,
+				[&] (const QString& tag) { return torrentTags.contains (tag); });
 	}
 }

@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QStringList>
 #include <util/models/fixedstringfilterproxymodel.h>
 
 namespace LC::BitTorrent
@@ -20,11 +21,14 @@ namespace LC::BitTorrent
 			Downloading,
 			Seeding
 		} StateFilter_ = StateFilterMode::All;
+
+		QStringList FilterTags_;
 	public:
 		using FixedStringFilterProxyModel::FixedStringFilterProxyModel;
 
 		void SetStateFilterMode (int);
 	protected:
+		void UpdateDerivedFilter (const QString&) override;
 		bool filterAcceptsRow (int, const QModelIndex&) const override;
 	};
 }
