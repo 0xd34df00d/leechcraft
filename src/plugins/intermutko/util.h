@@ -14,10 +14,8 @@ class QComboBox;
 
 namespace LC::Intermutko
 {
-	struct LocaleEntry;
-
-	QString GetCountryName (const QLocale&);
-	QString GetDisplayCode (const QLocale&);
+	QString GetCountryName (QLocale::Language, QLocale::Territory);
+	QString GetDisplayCode (QLocale::Language, QLocale::Territory);
 
 	void FillLanguageCombobox (QComboBox *combo);
 	void FillCountryCombobox (QComboBox *combo, QLocale::Language language);

@@ -7,9 +7,7 @@
  **********************************************************************/
 
 #include "localesmodel.h"
-#include <QtDebug>
 #include <util/models/modelsanitizer.h>
-#include <util/sll/util.h>
 #include "util.h"
 
 namespace LC::Intermutko
@@ -57,13 +55,13 @@ namespace LC::Intermutko
 		switch (static_cast<Column> (index.column ()))
 		{
 		case Column::Language:
-			return entry.Locale_.nativeLanguageName ();
+			return QLocale { entry.Language_, entry.Territory_ }.nativeLanguageName ();
 		case Column::Country:
-			return GetCountryName (entry.Locale_);
+			return GetCountryName (entry.Language_, entry.Territory_);
 		case Column::Quality:
 			return entry.Q_;
 		case Column::Code:
-			return GetDisplayCode (entry.Locale_);
+			return GetDisplayCode (entry.Language_, entry.Territory_);
 		}
 		return {};
 	}
@@ -82,19 +80,18 @@ namespace LC::Intermutko
 			return false;
 
 		auto& entry = Locales_ [idx.row ()];
-		auto& locale = entry.Locale_;
 		switch (static_cast<Column> (idx.column ()))
 		{
 		case Column::Language:
-			locale = QLocale { static_cast<QLocale::Language> (value.toInt ()), locale.script (), locale.territory () };
+			entry.Language_ = value.value<QLocale::Language> ();
 			break;
 		case Column::Country:
-			locale = QLocale { locale.language (), locale.script (), static_cast<QLocale::Country> (value.toInt ()) };
+			entry.Territory_ = value.value<QLocale::Territory> ();
 			break;
 		case Column::Quality:
 			entry.Q_ = value.toDouble ();
 			break;
-		default:
+		case Column::Code:
 			return false;
 		}
 

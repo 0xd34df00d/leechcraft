@@ -9,24 +9,22 @@
 #include "util.h"
 #include <QComboBox>
 #include <util/sll/qtutil.h>
-#include <util/util.h>
-#include "localeentry.h"
 
 namespace LC::Intermutko
 {
-	QString GetCountryName (const QLocale& locale)
+	QString GetCountryName (QLocale::Language language, QLocale::Territory territory)
 	{
-		return locale.territory () == QLocale::AnyTerritory ?
+		return territory == QLocale::AnyTerritory ?
 				QObject::tr ("Any country") :
-				"%1 (%2)"_qs.arg (locale.nativeTerritoryName (), QLocale::territoryToString (locale.territory ()));
+				"%1 (%2)"_qs.arg (QLocale { language, territory }.nativeTerritoryName (), QLocale::territoryToString (territory));
 	}
 
-	QString GetDisplayCode (const QLocale& locale)
+	QString GetDisplayCode (QLocale::Language language, QLocale::Territory territory)
 	{
-		const auto& name = Util::GetInternetLocaleName (locale);
-		return locale.territory () != QLocale::AnyTerritory ?
-				name :
-				name.left (2);
+		const auto& code = QLocale::languageToCode (language);
+		return territory == QLocale::AnyTerritory ?
+				code :
+				code + u'-' + QLocale::territoryToCode (territory);
 	}
 
 	void FillLanguageCombobox (QComboBox *combo)
@@ -48,14 +46,14 @@ namespace LC::Intermutko
 
 	void FillCountryCombobox (QComboBox *combo, QLocale::Language language)
 	{
-		combo->addItem (QObject::tr ("Any country"), QLocale::AnyCountry);
+		combo->addItem (QObject::tr ("Any country"), QLocale::AnyTerritory);
 		QSet<QLocale::Territory> territories;
 		for (const auto& locale : QLocale::matchingLocales (language, QLocale::AnyScript, QLocale::AnyTerritory))
 		{
 			if (territories.contains (locale.territory ()))
 				continue;
 
-			combo->addItem (GetCountryName (locale), locale.territory ());
+			combo->addItem (GetCountryName (language, locale.territory ()), locale.territory ());
 			territories.insert (locale.territory ());
 		}
 	}

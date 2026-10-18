@@ -14,8 +14,9 @@ namespace LC::Intermutko
 {
 	struct LocaleEntry
 	{
-		QLocale Locale_;
-		double Q_;
+		QLocale::Language Language_ = QLocale::AnyLanguage;
+		QLocale::Territory Territory_ = QLocale::AnyTerritory;
+		double Q_ = 1;
 	};
 
 	bool operator== (const LocaleEntry&, const LocaleEntry&);

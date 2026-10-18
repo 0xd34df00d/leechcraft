@@ -20,7 +20,7 @@ namespace LC::Intermutko
 		T GetValue (const QComboBox& box)
 		{
 			const int idx = box.currentIndex ();
-			if (idx <= 0)
+			if (idx < 0)
 				return {};
 
 			const int val = box.itemData (idx).toInt ();
@@ -53,16 +53,16 @@ namespace LC::Intermutko
 
 	auto AddEntryDialog::GetEntries () const -> Entries
 	{
-		const auto country = GetValue<QLocale::Country> (*Ui_.Country_);
+		const auto country = GetValue<QLocale::Territory> (*Ui_.Country_);
 		const auto lang = GetValue<QLocale::Language> (*Ui_.Language_);
 		const auto qval = Ui_.Q_->value ();
 
 		Entries entries
 		{
-			.Specific_ = { { lang, country }, qval },
+			.Specific_ = { lang, country, qval },
 		};
-		if (country != QLocale::AnyCountry)
-			entries.AnyCountry_ = LocaleEntry { { lang, QLocale::AnyCountry }, qval };
+		if (country != QLocale::AnyTerritory)
+			entries.AnyCountry_ = LocaleEntry { lang, QLocale::AnyTerritory, qval };
 		return entries;
 	}
 

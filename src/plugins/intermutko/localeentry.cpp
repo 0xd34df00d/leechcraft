@@ -14,13 +14,15 @@ namespace LC::Intermutko
 {
 	bool operator== (const LocaleEntry& l1, const LocaleEntry& l2)
 	{
-		return l1.Locale_ == l2.Locale_;
+		return l1.Language_ == l2.Language_ &&
+				l1.Territory_ == l2.Territory_;
 	}
 
 	QDataStream& operator<< (QDataStream& out, const LocaleEntry& entry)
 	{
-		out << static_cast<quint8> (2)
-			<< entry.Locale_
+		out << static_cast<quint8> (3)
+			<< static_cast<qint32> (entry.Language_)
+			<< static_cast<qint32> (entry.Territory_)
 			<< entry.Q_;
 		return out;
 	}
@@ -32,21 +34,29 @@ namespace LC::Intermutko
 		switch (version)
 		{
 		case 1:
+		case 3:
 		{
-			qint32 lang = 0;
-			qint32 country = 0;
-			in >> lang
-				>> country
+			qint32 language = 0;
+			qint32 territory = 0;
+			in >> language
+				>> territory
 				>> entry.Q_;
-			entry.Locale_ = QLocale { static_cast<QLocale::Language> (lang), static_cast<QLocale::Country> (country) };
+			entry.Language_ = static_cast<QLocale::Language> (language);
+			entry.Territory_ = static_cast<QLocale::Territory> (territory);
 			break;
 		}
 		case 2:
-			in >> entry.Locale_
+		{
+			QLocale locale;
+			in >> locale
 				>> entry.Q_;
+			entry.Language_ = locale.language ();
+			entry.Territory_ = locale.territory ();
 			break;
+		}
 		default:
 			qWarning () << "unknown version" << version;
+			in.setStatus (QDataStream::ReadCorruptData);
 			break;
 		}
 

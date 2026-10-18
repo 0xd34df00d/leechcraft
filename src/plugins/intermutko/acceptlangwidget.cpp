@@ -22,7 +22,7 @@ namespace LC::Intermutko
 	, Model_ { new LocalesModel { this } }
 	{
 		Ui_.setupUi (this);
-		Ui_.LangsTree_->setItemDelegate (new EntriesDelegate);
+		Ui_.LangsTree_->setItemDelegate (new EntriesDelegate { Ui_.LangsTree_ });
 		Ui_.LangsTree_->setModel (Model_);
 
 		LoadSettings ();
@@ -56,7 +56,7 @@ namespace LC::Intermutko
 	{
 		QString GetFullCode (const LocaleEntry& entry)
 		{
-			return GetDisplayCode (entry.Locale_) + ";q=" + QString::number (entry.Q_);
+			return GetDisplayCode (entry.Language_, entry.Territory_) + ";q=" + QString::number (entry.Q_);
 		}
 	}
 
@@ -72,9 +72,9 @@ namespace LC::Intermutko
 			QList<LocaleEntry> result;
 
 			const QLocale defLocale;
-			result.append ({ defLocale, 1 });
+			result.append ({ defLocale.language (), defLocale.territory (), 1 });
 			if (defLocale.territory () != QLocale::AnyTerritory)
-				result.append ({ QLocale { defLocale.language (), QLocale::AnyCountry }, 0.9 });
+				result.append ({ defLocale.language (), QLocale::AnyTerritory, 0.9 });
 
 			return result;
 		}
