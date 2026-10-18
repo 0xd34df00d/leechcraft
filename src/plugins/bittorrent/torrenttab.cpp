@@ -15,6 +15,7 @@
 #include <util/gui/lineeditbuttonmanager.h>
 #include <util/gui/progressdelegate.h>
 #include <util/gui/util.h>
+#include <util/sll/prelude.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include "components/models/tabviewproxymodel.h"
@@ -71,7 +72,8 @@ namespace LC::BitTorrent
 				[this]
 				{
 					const auto& rows = Ui_.TorrentsView_->selectionModel ()->selectedRows ();
-					Ui_.Tabs_->SetSelectedIndices (rows);
+					Ui_.Tabs_->SetSelectedIndices (Util::Map (rows,
+							[this] (const QModelIndex& row) { return ViewFilter_->mapToSource (row); }));
 				});
 		Ui_.TorrentsView_->sortByColumn (Columns::ColumnID, Qt::SortOrder::AscendingOrder);
 
