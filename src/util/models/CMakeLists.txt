@@ -19,3 +19,8 @@ add_util_library (util-models
 	USES Widgets ${MODEL_SANITIZER_QT_COMPONENT}
 	DEFINES $<$<BOOL:${WITH_MODEL_SANITIZER}>:WITH_MODEL_SANITIZER>
 	)
+
+if (ENABLE_UTIL_TESTS)
+	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests ${CMAKE_CURRENT_SOURCE_DIR})
+	AddUtilTest (models_flattofoldersproxymodel tests/flattofoldersproxymodeltest.cpp UtilModelsFlatToFoldersProxyModelTest leechcraft-util-models)
+endif ()
