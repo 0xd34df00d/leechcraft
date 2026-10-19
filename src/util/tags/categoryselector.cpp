@@ -261,7 +261,7 @@ namespace LC::Util
 	void CategorySelector::SetSelectionsFromString (const QString& text)
 	{
 		auto guard = DisableNotifications (false);
-		SetSelections (text.split (Separator_, Qt::SkipEmptyParts));
+		SetSelections (SplitTags (text, Separator_));
 	}
 
 	void CategorySelector::NotifyTagsSelection ()
