@@ -8,11 +8,14 @@
 
 #pragma once
 
+#include <variant>
 #include <QAbstractItemModel>
 #include <QMap>
 #include <QUuid>
 #include <QString>
 #include <QMetaType>
+#include <util/sll/either.h>
+#include <util/sll/void.h>
 #include "interfaces/core/itagsmanager.h"
 #include "tagsstorage.h"
 
@@ -50,7 +53,18 @@ namespace LC
 		QObject* GetQObject () override;
 
 		void RemoveTag (const QModelIndex&);
-		void SetTag (const QModelIndex&, const QString&);
+
+		struct BlankTagName {};
+		struct DelimiterInTagName
+		{
+			QString Delimiter_;
+		};
+		struct TagNameTaken
+		{
+			QString Name_;
+		};
+		using RenameError = std::variant<BlankTagName, DelimiterInTagName, TagNameTaken>;
+		Util::Either<RenameError, Util::Void> RenameTag (const QModelIndex&, const QString&);
 	private:
 		tag_id InsertTag (const QString&);
 		void MigrateToDb ();

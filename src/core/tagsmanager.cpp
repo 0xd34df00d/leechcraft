@@ -7,7 +7,6 @@
  **********************************************************************/
 
 #include "tagsmanager.h"
-#include <stdexcept>
 #include <algorithm>
 #include <QStringList>
 #include <QCoreApplication>
@@ -16,6 +15,7 @@
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <util/tags/tagscompleter.h>
+#include <util/tags/util.h>
 
 using namespace LC;
 
@@ -73,13 +73,20 @@ int TagsManager::rowCount (const QModelIndex& index) const
 
 ITagsManager::tag_id TagsManager::GetID (const QString& tag)
 {
-	const auto& keys = Tags_.keys (tag);
-	if (keys.isEmpty ())
-		return InsertTag (tag);
-	else if (keys.size () > 1)
-		throw std::runtime_error (qPrintable (QString ("More than one key for %1").arg (tag)));
-	else
-		return keys.at (0).toString ();
+	const auto& name = tag.trimmed ();
+	if (name.isEmpty () || name.contains (Util::GetTagsDelimiter (Util::GetDefaultTagsSeparator ())))
+	{
+		qWarning () << "invalid tag name" << tag;
+		return {};
+	}
+
+	const auto& ids = Tags_.keys (name);
+	if (ids.isEmpty ())
+		return InsertTag (name);
+
+	if (ids.size () > 1)
+		qWarning () << ids.size () << "tags named" << name;
+	return ids.front ().toString ();
 }
 
 QString TagsManager::GetTag (ITagsManager::tag_id id) const
@@ -94,8 +101,7 @@ QStringList TagsManager::GetAllTags () const
 
 QStringList TagsManager::Split (const QString& string) const
 {
-	return Util::Map (string.split (";", Qt::SkipEmptyParts),
-			[] (QString& s) { return std::move (s).trimmed (); });
+	return Util::SplitTags (string, Util::GetDefaultTagsSeparator ());
 }
 
 QList<ITagsManager::tag_id> TagsManager::SplitToIDs (const QString& string)
@@ -105,7 +111,7 @@ QList<ITagsManager::tag_id> TagsManager::SplitToIDs (const QString& string)
 
 QString TagsManager::Join (const QStringList& tags) const
 {
-	return tags.join ("; ");
+	return tags.join (Util::GetDefaultTagsSeparator ());
 }
 
 QString TagsManager::JoinIDs (const QStringList& tagIDs) const
@@ -150,19 +156,32 @@ void TagsManager::RemoveTag (const QModelIndex& index)
 	emit tagsUpdated (GetAllTags ());
 }
 
-void TagsManager::SetTag (const QModelIndex& index, const QString& newTag)
+Util::Either<TagsManager::RenameError, Util::Void> TagsManager::RenameTag (const QModelIndex& index, const QString& newName)
 {
 	if (!index.isValid ())
-		return;
+		return Util::Void {};
 
-	auto pos = std::next (Tags_.begin (), index.row ());
-	*pos = newTag;
+	if (const auto& delimiter = Util::GetTagsDelimiter (Util::GetDefaultTagsSeparator ()); newName.contains (delimiter))
+		return Util::Left { DelimiterInTagName { delimiter } };
 
-	Storage_.SetTagName (pos.key (), newTag);
+	const auto& name = newName.trimmed ();
+	if (name.isEmpty ())
+		return Util::Left { BlankTagName {} };
+
+	const auto pos = std::next (Tags_.begin (), index.row ());
+	if (*pos == name)
+		return Util::Void {};
+
+	if (!Tags_.key (name).isNull ())
+		return Util::Left { TagNameTaken { name } };
+
+	*pos = name;
+	Storage_.SetTagName (pos.key (), name);
 
 	emit dataChanged (index, index);
-
 	emit tagsUpdated (GetAllTags ());
+
+	return Util::Void {};
 }
 
 QAbstractItemModel* TagsManager::GetModel ()
@@ -187,7 +206,7 @@ void TagsManager::MigrateToDb ()
 
 		qDebug () << Q_FUNC_INFO << "migrating" << tags.size () << "tags to the DB";
 
-		for (const auto& [id, name] : Util::Stlize (tags))
+		for (const auto& [id, name] : tags.asKeyValueRange ())
 			Storage_.AddTag (id, name);
 		settings.setValue ("Migrated", true);
 	}

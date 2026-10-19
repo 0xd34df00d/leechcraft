@@ -8,6 +8,8 @@
 
 #include "tagsviewer.h"
 #include <QInputDialog>
+#include <QMessageBox>
+#include <util/sll/visitor.h>
 #include "tagsmanager.h"
 
 using namespace LC;
@@ -40,7 +42,14 @@ void LC::TagsViewer::on_Rename__released ()
 	if (!ok)
 		return;
 
-	TagsManager::Instance ().SetTag (index, newTag);
+	const auto& result = TagsManager::Instance ().RenameTag (index, newTag);
+	if (result.IsLeft ())
+		QMessageBox::warning (this,
+				tr ("Rename"),
+				Util::Visit (result.GetLeft (),
+						[] (TagsManager::BlankTagName) { return tr ("The tag name cannot be empty."); },
+						[] (const TagsManager::DelimiterInTagName& delimited) { return tr ("The tag name cannot contain \"%1\".").arg (delimited.Delimiter_); },
+						[] (const TagsManager::TagNameTaken& taken) { return tr ("There is already a tag named %1.").arg (taken.Name_); }));
 }
 
 void TagsViewer::on_Remove__released ()
