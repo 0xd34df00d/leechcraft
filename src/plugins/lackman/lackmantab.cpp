@@ -154,7 +154,7 @@ namespace LackMan
 		const auto& filter = Core::Instance ().GetProxy ()->GetTagsManager ()->Join (tags);
 		FilterString_->SetFilterString (filter);
 
-		Ui_.SearchLine_->setTags (tags);
+		Ui_.SearchLine_->SetTags (tags);
 	}
 
 	void LackManTab::SetFilterString (const QString& string)
