@@ -62,15 +62,6 @@ namespace LackMan
 
 		connect (&Core::Instance (),
 				SIGNAL (tagsUpdated (QStringList)),
-				Ui_.SearchLine_,
-				SLOT (handleTagsUpdated (QStringList)));
-		connect (&Core::Instance (),
-				&Core::tagsUpdated,
-				selector,
-				[selector] (const QStringList& tags) { selector->SetPossibleSelections (tags); });
-
-		connect (&Core::Instance (),
-				SIGNAL (tagsUpdated (QStringList)),
 				this,
 				SLOT (handleTagsUpdated (QStringList)));
 
@@ -118,7 +109,6 @@ namespace LackMan
 
 		const QStringList& tags = Core::Instance ().GetAllTags ();
 		handleTagsUpdated (tags);
-		selector->SetPossibleSelections (tags);
 		handleFetchListUpdated ({});
 
 		BuildActions ();
