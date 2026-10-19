@@ -15,8 +15,8 @@
 #include <QPushButton>
 #include <QToolButton>
 #include <QAbstractItemView>
-#include <util/sll/qtutil.h>
 #include "gui/lineeditbuttonmanager.h"
+#include "tagschange.h"
 #include "tagscompletionmodel.h"
 #include "tagscompleter.h"
 #include "util.h"
@@ -27,6 +27,14 @@ namespace LC::Util
 	: QLineEdit (parent)
 	, Separator_ (GetDefaultTagsSeparator ())
 	{
+		connect (this,
+				&QLineEdit::editingFinished,
+				this,
+				&TagsLineEdit::ReportEdit);
+		connect (this,
+				&TagsLineEdit::tagsChosen,
+				this,
+				&TagsLineEdit::ReportEdit);
 	}
 
 	void TagsLineEdit::AddSelector (LineEditButtonManager *mgr)
@@ -62,12 +70,24 @@ namespace LC::Util
 		CategorySelector_ = selector;
 		CategorySelector_->SetSeparator (Separator_);
 
-		QAbstractItemModel *model = Completer_->model ();
+		const auto model = Completer_->model ();
+		const auto syncPossibleSelections = [this, model]
+		{
+			QStringList tags;
+			tags.reserve (model->rowCount ());
+			for (int i = 0; i < model->rowCount (); ++i)
+				tags << model->data (model->index (i, 0)).toString ();
 
-		QStringList initialTags;
-		for (int i = 0; i < model->rowCount (); ++i)
-			initialTags << model->data (model->index (i, 0)).toString ();
-		CategorySelector_->SetPossibleSelections (initialTags);
+			CategorySelector_->SetPossibleSelections (tags);
+			CategorySelector_->SetSelectionsFromString (text ());
+		};
+		syncPossibleSelections ();
+
+		const auto syncOn = [&] (auto signal) { connect (model, signal, this, syncPossibleSelections); };
+		syncOn (&QAbstractItemModel::rowsInserted);
+		syncOn (&QAbstractItemModel::rowsRemoved);
+		syncOn (&QAbstractItemModel::dataChanged);
+		syncOn (&QAbstractItemModel::modelReset);
 
 		connect (CategorySelector_,
 				&CategorySelector::tagsSelectionChanged,
@@ -91,6 +111,9 @@ namespace LC::Util
 
 	void TagsLineEdit::SetSeparator (const QString& sep)
 	{
+		if (sep.isEmpty ())
+			qFatal ("TagsLineEdit: the tags separator must not be empty");
+
 		Separator_ = sep;
 		if (CategorySelector_)
 			CategorySelector_->SetSeparator (sep);
@@ -98,29 +121,49 @@ namespace LC::Util
 
 	void TagsLineEdit::InsertTag (const QString& completion)
 	{
-		if (Completer_->widget () != this)
-			return;
-
-		QString wtext = text ();
-		if (completion.startsWith (wtext))
-			wtext.clear ();
-		int pos = wtext.lastIndexOf (Separator_);
-		if (pos >= 0)
-			wtext = wtext.left (pos).append (Separator_);
-		else
-			wtext.clear ();
-		wtext.append (completion);
-		wtext = wtext.simplified ();
+		const auto [begin, end] = TokenUnderCursor ();
+		auto wtext = text ();
+		wtext.replace (begin, end - begin, completion);
 		setText (wtext);
+		setCursorPosition (static_cast<int> (begin + completion.size ()));
 
 		emit tagsChosen ();
 	}
 
-	void TagsLineEdit::setTags (const QStringList& tags)
+	void TagsLineEdit::SetTags (const QStringList& tags)
 	{
-		setText (tags.join (Separator_));
+		ShownTags_ = tags;
 		if (CategorySelector_)
 			CategorySelector_->SetSelections (tags);
+		setText (tags.join (Separator_));
+	}
+
+	void TagsLineEdit::UpdateTags (const QStringList& tags)
+	{
+		if (IsEdited () || TagsChange { .Before_ = ShownTags_, .After_ = tags }.IsEmpty ())
+			return;
+
+		SetTags (tags);
+	}
+
+	QStringList TagsLineEdit::GetTags () const
+	{
+		return SplitTags (text (), Separator_);
+	}
+
+	bool TagsLineEdit::IsEdited () const
+	{
+		return !TagsChange { .Before_ = ShownTags_, .After_ = GetTags () }.IsEmpty ();
+	}
+
+	void TagsLineEdit::ReportEdit ()
+	{
+		const TagsChange change { .Before_ = ShownTags_, .After_ = GetTags () };
+		if (change.IsEmpty ())
+			return;
+
+		ShownTags_ = change.After_;
+		emit tagsEdited (change);
 	}
 
 	void TagsLineEdit::keyPressEvent (QKeyEvent *e)
@@ -153,7 +196,7 @@ namespace LC::Util
 				isShortcut)
 			return;
 
-		QString completionPrefix = textUnderCursor ();
+		QString completionPrefix = TextUnderCursor ();
 		Completer_->setCompletionPrefix (completionPrefix);
 		Completer_->popup ()->
 			setCurrentIndex (Completer_->completionModel ()->index (0, 0));
@@ -200,21 +243,34 @@ namespace LC::Util
 				&TagsLineEdit::InsertTag);
 	}
 
-	QString TagsLineEdit::textUnderCursor () const
+	TagsLineEdit::TokenRange TagsLineEdit::TokenUnderCursor () const
 	{
-		auto rxStr = Separator_;
-		rxStr.replace (' ', R"(\s*)"_ql);
+		const auto& wtext = text ();
+		const auto cursor = cursorPosition ();
+		const auto& delimiter = GetTagsDelimiter (Separator_);
 
-		QRegularExpression rx { rxStr };
+		qsizetype begin = 0;
+		auto end = wtext.size ();
+		for (auto pos = wtext.indexOf (delimiter); pos != -1; pos = wtext.indexOf (delimiter, pos + delimiter.size ()))
+		{
+			if (pos >= cursor)
+			{
+				end = pos;
+				break;
+			}
+			begin = pos + delimiter.size ();
+		}
 
-		QString wtext = text ();
-		int pos = cursorPosition () - 1;
-		int last = wtext.indexOf (rx, pos);
-		int first = wtext.lastIndexOf (rx, pos);
-		if (first == -1)
-			first = 0;
-		if (last == -1)
-			last = wtext.size ();
-		return wtext.mid (first, last - first);
+		// The whitespace after a separator belongs to it, the whitespace before the next one to the token.
+		while (begin < end && wtext.at (begin).isSpace ())
+			++begin;
+
+		return { .Begin_ = begin, .End_ = end };
+	}
+
+	QString TagsLineEdit::TextUnderCursor () const
+	{
+		const auto [begin, end] = TokenUnderCursor ();
+		return text ().mid (begin, end - begin);
 	}
 }
