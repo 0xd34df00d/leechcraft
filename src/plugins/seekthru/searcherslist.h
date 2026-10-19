@@ -22,7 +22,6 @@ namespace SeekThru
 	{
 		Q_OBJECT
 
-		const ICoreProxy_ptr Proxy_;
 
 		Ui::SearchersList Ui_;
 	public:
@@ -31,7 +30,6 @@ namespace SeekThru
 		void handleCurrentChanged (const QModelIndex&);
 		void on_ButtonAdd__released ();
 		void on_ButtonRemove__released ();
-		void on_Tags__editingFinished ();
 	};
 }
 }

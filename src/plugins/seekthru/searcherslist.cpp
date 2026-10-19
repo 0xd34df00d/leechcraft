@@ -9,9 +9,9 @@
 #include "searcherslist.h"
 #include <QInputDialog>
 #include <QMenu>
+#include <util/tags/tagschange.h>
 #include <util/tags/tagscompleter.h>
 #include <interfaces/core/icoreproxy.h>
-#include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
 #include "core.h"
@@ -20,11 +20,18 @@ namespace LC::SeekThru
 {
 	SearchersList::SearchersList (const ICoreProxy_ptr& proxy, QWidget* parent)
 	: QWidget { parent }
-	, Proxy_ { proxy }
 	{
 		Ui_.setupUi (this);
 		new Util::TagsCompleter (Ui_.Tags_);
 		Ui_.Tags_->AddSelector ();
+		connect (Ui_.Tags_,
+				&Util::TagsLineEdit::tagsEdited,
+				this,
+				[this] (const Util::TagsChange& change)
+				{
+					const auto& current = Ui_.SearchersView_->selectionModel ()->currentIndex ();
+					Core::Instance ().SetTags (current, change.ApplyTo (current.data (Core::RoleTags).toStringList ()));
+				});
 		Ui_.SearchersView_->setModel (&Core::Instance ());
 		connect (Ui_.SearchersView_->selectionModel (),
 				SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&)),
@@ -61,8 +68,7 @@ namespace LC::SeekThru
 		else
 			Ui_.LongName_->setText (longName);
 
-		QStringList tags = current.data (Core::RoleTags).toStringList ();
-		Ui_.Tags_->setText (Proxy_->GetTagsManager ()->Join (tags));
+		Ui_.Tags_->SetTags (current.data (Core::RoleTags).toStringList ());
 
 		QString contact = current.data (Core::RoleContact).toString ();
 		if (contact.isEmpty ())
@@ -110,11 +116,5 @@ namespace LC::SeekThru
 	void SearchersList::on_ButtonRemove__released ()
 	{
 		Core::Instance ().Remove (Ui_.SearchersView_->selectionModel ()->currentIndex ());
-	}
-
-	void SearchersList::on_Tags__editingFinished ()
-	{
-		Core::Instance ().SetTags (Ui_.SearchersView_->selectionModel ()->currentIndex (),
-				Proxy_->GetTagsManager ()->Split (Ui_.Tags_->text ()));
 	}
 }
