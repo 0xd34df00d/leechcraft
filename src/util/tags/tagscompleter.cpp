@@ -10,6 +10,7 @@
 #include <QtDebug>
 #include <QStringList>
 #include "tagslineedit.h"
+#include "util.h"
 
 namespace LC::Util
 {
@@ -31,10 +32,6 @@ namespace LC::Util
 
 	QStringList TagsCompleter::splitPath (const QString& string) const
 	{
-		const auto& sep = Edit_->GetSeparator ().trimmed ();
-		auto result = string.split (sep, Qt::SkipEmptyParts);
-		for (auto& s : result)
-			s = s.trimmed ();
-		return result;
+		return SplitTags (string, Edit_->GetSeparator ());
 	}
 }

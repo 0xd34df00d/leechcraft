@@ -15,4 +15,16 @@ namespace LC::Util
 	{
 		return QStringLiteral ("; ");
 	}
+
+	QStringList SplitTags (const QString& text, const QString& separator)
+	{
+		const auto& trimmedSeparator = separator.trimmed ();
+		const auto& effectiveSeparator = trimmedSeparator.isEmpty () ? separator : trimmedSeparator;
+
+		QStringList result;
+		for (const auto& part : QStringView { text }.split (effectiveSeparator, Qt::SkipEmptyParts))
+			if (const auto& tag = part.trimmed (); !tag.isEmpty ())
+				result << tag.toString ();
+		return result;
+	}
 }
