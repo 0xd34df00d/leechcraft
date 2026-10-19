@@ -150,7 +150,7 @@ namespace LC::Util
 
 	void CategorySelector::SetPossibleSelections (QStringList tags, bool sort)
 	{
-		auto guard = DisableNotifications ();
+		auto guard = DisableNotifications (false);
 
 		if (sort)
 			tags.sort ();

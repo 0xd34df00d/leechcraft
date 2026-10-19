@@ -136,8 +136,8 @@ namespace LC::Util
 		/** @brief Sets possible selections.
 		 *
 		 * Clears previous selections list, sets new possible selections
-		 * according to selections parameter. By default, no items are
-		 * selected.
+		 * according to selections parameter. No items are selected
+		 * afterwards, and tagsSelectionChanged() is not emitted.
 		 *
 		 * The \em selections list is sorted unless the \em sort
 		 * parameter is set to false. Please note that if you plan to
