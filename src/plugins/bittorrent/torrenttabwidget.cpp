@@ -15,10 +15,10 @@
 #include <libtorrent/session.hpp>
 #include <util/util.h>
 #include <util/sll/qtutil.h>
+#include <util/tags/tagschange.h>
 #include <util/tags/tagscompleter.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
-#include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include "components/models/piecesmodel.h"
 #include "xmlsettingsmanager.h"
@@ -126,8 +126,11 @@ namespace LC::BitTorrent
 				this,
 				[this] (const QModelIndex& from, const QModelIndex& to)
 				{
-					if (from.row () <= Index_.row () && Index_.row () <= to.row ())
-						UpdateTorrentStats ();
+					if (from.row () > Index_.row () || Index_.row () > to.row ())
+						return;
+
+					Ui_.TorrentTags_->UpdateTags (Index_.data (Roles::TorrentTags).toStringList ());
+					UpdateTorrentStats ();
 				});
 
 		connect (Ui_.TorrentDownloadRateController_,
@@ -164,11 +167,14 @@ namespace LC::BitTorrent
 					ForEachSelected ([this, enable] (const QModelIndex& idx) { Model_->setData (idx, enable, Roles::IsSuperSeeding); });
 				});
 		connect (Ui_.TorrentTags_,
-				&QLineEdit::editingFinished,
-				[this]
+				&Util::TagsLineEdit::tagsEdited,
+				[this] (const Util::TagsChange& change)
 				{
-					const auto& tags = GetProxyHolder ()->GetTagsManager ()->Split (Ui_.TorrentTags_->text ());
-					ForEachSelected ([this, &tags] (const QModelIndex& idx) { Model_->setData (idx, tags, Roles::TorrentTags); });
+					ForEachSelected ([this, &change] (const QModelIndex& idx)
+							{
+								const auto& tags = idx.data (Roles::TorrentTags).toStringList ();
+								Model_->setData (idx, change.ApplyTo (tags), Roles::TorrentTags);
+							});
 				});
 
 		const auto timer = new QTimer { this };
@@ -247,8 +253,7 @@ namespace LC::BitTorrent
 
 	void TorrentTabWidget::InvalidateSelection ()
 	{
-		const auto& tags = Index_.data (Roles::TorrentTags).toStringList ();
-		Ui_.TorrentTags_->setText (GetProxyHolder ()->GetTagsManager ()->Join (tags));
+		Ui_.TorrentTags_->SetTags (Index_.data (Roles::TorrentTags).toStringList ());
 		UpdateTorrentStats ();
 	}
 

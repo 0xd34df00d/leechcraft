@@ -8,9 +8,8 @@
 
 #include "tabwidget.h"
 #include <util/util.h>
+#include <util/tags/tagschange.h>
 #include <util/tags/tagscompleter.h>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/core/itagsmanager.h>
 #include "components/models/torrentfilesmodel.h"
 #include "xmlsettingsmanager.h"
 #include "addwebseeddialog.h"
@@ -37,8 +36,11 @@ namespace LC::BitTorrent
 				this,
 				[this] (const QModelIndex& from, const QModelIndex& to)
 				{
-					if (from.row () <= Torrent_.row () && Torrent_.row () <= to.row ())
-						UpdateTorrentStats ();
+					if (from.row () > Torrent_.row () || Torrent_.row () > to.row ())
+						return;
+
+					Ui_.TorrentTags_->UpdateTags (Torrent_.data (Roles::TorrentTags).toStringList ());
+					UpdateTorrentStats ();
 				});
 
 		UpdateDashboard ();
@@ -72,11 +74,14 @@ namespace LC::BitTorrent
 				&SSM_,
 				&SessionSettingsManager::SetMaxUploadingTorrents);
 		connect (Ui_.TorrentTags_,
-				&QLineEdit::editingFinished,
-				[this]
+				&Util::TagsLineEdit::tagsEdited,
+				[this] (const Util::TagsChange& change)
 				{
-					const auto& tags = GetProxyHolder ()->GetTagsManager ()->Split (Ui_.TorrentTags_->text ());
-					Model_.setData (Torrent_, tags, Roles::TorrentTags);
+					if (!Torrent_.isValid ())
+						return;
+
+					const auto& tags = Torrent_.data (Roles::TorrentTags).toStringList ();
+					Model_.setData (Torrent_, change.ApplyTo (tags), Roles::TorrentTags);
 				});
 	}
 
@@ -89,8 +94,7 @@ namespace LC::BitTorrent
 		if (!Torrent_.isValid ())
 			return;
 
-		const auto& tags = Torrent_.data (Roles::TorrentTags).toStringList ();
-		Ui_.TorrentTags_->setText (GetProxyHolder ()->GetTagsManager ()->Join (tags));
+		Ui_.TorrentTags_->SetTags (Torrent_.data (Roles::TorrentTags).toStringList ());
 		UpdateTorrentStats ();
 	}
 
