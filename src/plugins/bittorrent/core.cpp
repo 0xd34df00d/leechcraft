@@ -436,10 +436,12 @@ namespace BitTorrent
 		case Roles::TorrentTags:
 			ts.Tags_ = Proxy_->GetTagsManager ()->GetIDs (data.toStringList ());
 			emit dataChanged (this->index (row, 0), this->index (row, columnCount () - 1), { Roles::TorrentTags, +CustomDataRoles::Tags });
+			ScheduleSave ();
 			return true;
 		case Roles::IsManaged:
 			ts.AutoManaged_ = data.toBool ();
 			emit dataChanged (this->index (row, 0), this->index (row, columnCount () - 1), { Roles::IsManaged });
+			ScheduleSave ();
 			return true;
 		// These come from the cached status, so UpdateStatus() announces them once libtorrent reports the change.
 		case Roles::IsSequentialDownloading:
