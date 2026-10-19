@@ -50,6 +50,7 @@ namespace LC::Util
 		QTest::newRow ("no space after separator") << "a;b"_qs << sep << QStringList { a, b };
 		QTest::newRow ("whitespace around") << "  a ;  b  "_qs << sep << QStringList { a, b };
 		QTest::newRow ("empty parts") << "a;; ;b;"_qs << sep << QStringList { a, b };
+		QTest::newRow ("whitespace inside kept") << "a  b; c\td"_qs << sep << QStringList { "a  b"_qs, "c\td"_qs };
 		QTest::newRow ("whitespace separator") << "a b"_qs << " "_qs << QStringList { a, b };
 		QTest::newRow ("any whitespace for a whitespace separator") << "a \t b"_qs << " "_qs << QStringList { a, b };
 		QTest::newRow ("regex metachar separator") << "left|right"_qs << "|"_qs << QStringList { "left"_qs, "right"_qs };

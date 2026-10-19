@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "util.h"
+#include <utility>
 #include <QString>
 
 namespace LC::Util
@@ -25,9 +26,10 @@ namespace LC::Util
 	QStringList SplitTags (const QString& text, const QString& separator)
 	{
 		QStringList result;
-		for (const auto& part : QStringView { text }.split (GetTagsDelimiter (separator), Qt::SkipEmptyParts))
-			if (const auto& tag = part.trimmed (); !tag.isEmpty ())
-				result << tag.toString ();
+		for (const auto& part : text.split (GetTagsDelimiter (separator), Qt::SkipEmptyParts))
+			if (auto tag = part.trimmed (); !tag.isEmpty ())
+				result << std::move (tag);
 		return result;
 	}
+
 }

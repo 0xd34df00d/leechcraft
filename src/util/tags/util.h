@@ -32,8 +32,8 @@ namespace LC::Util
 	/** @brief Splits a string with tags into the tags.
 	 *
 	 * The tags are separated by the delimiter corresponding to the
-	 * \em separator, see GetTagsDelimiter(). The whitespace around the
-	 * tags is dropped, and so are the empty tags.
+	 * `separator`, see `GetTagsDelimiter()`. The tags are trimmed, and the
+	 * empty ones are dropped.
 	 *
 	 * @param[in] text The string with the tags.
 	 * @param[in] separator The separator of the tags.
