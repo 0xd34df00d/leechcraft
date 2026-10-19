@@ -53,7 +53,8 @@ public:
 	{
 		QList<tag_id> result;
 		for (const auto& tag : tags)
-			result << GetID (tag);
+			if (const auto& id = GetID (tag); !id.isEmpty ())
+				result << id;
 		return result;
 	}
 
