@@ -160,7 +160,7 @@ namespace LC::Azoth::Autopaste
 			QSettings settings (QCoreApplication::organizationName (),
 					QCoreApplication::applicationName () + "_Azoth_Autopaste");
 			settings.beginGroup ("SavedChoices");
-			settings.beginGroup (other->GetEntryID ());
+			settings.beginGroup (other->GetGlobalStrongestID ().ToString ());
 			const auto guard = Util::MakeScopeGuard ([&settings]
 					{
 						settings.endGroup ();
