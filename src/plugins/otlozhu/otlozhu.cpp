@@ -8,7 +8,6 @@
 
 #include "otlozhu.h"
 #include <QIcon>
-#include <util/sll/prelude.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -114,8 +113,7 @@ namespace Otlozhu
 		item->SetComment (e.Additional_ ["TodoBody"].toString ());
 
 		const auto& tags = e.Additional_ ["Tags"].toStringList ();
-		auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
-		item->SetTagIDs (Util::Map (tags, [tm] (const QString& tag) { return tm->GetID (tag); }));
+		item->SetTagIDs (Core::Instance ().GetProxy ()->GetTagsManager ()->GetIDs (tags));
 
 		mgr->GetTodoStorage ()->AddItem (item);
 	}

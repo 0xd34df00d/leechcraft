@@ -14,7 +14,6 @@
 #include <boost/fusion/sequence/intrinsic/at_c.hpp>
 #include <boost/phoenix/fusion.hpp>
 #include <QtDebug>
-#include <util/sll/prelude.h>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
 
@@ -190,8 +189,7 @@ namespace Otlozhu
 			todo->SetPercentage (AsInt (item ["PERCENT-COMPLETE"]));
 
 			const auto& tags = AsQString (item ["CATEGORIES"]).split (',', Qt::SkipEmptyParts);
-			auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
-			todo->SetTagIDs (Util::Map (tags, [tm] (const QString& tag) { return tm->GetID (tag); }));
+			todo->SetTagIDs (Core::Instance ().GetProxy ()->GetTagsManager ()->GetIDs (tags));
 
 			result << todo;
 		}
