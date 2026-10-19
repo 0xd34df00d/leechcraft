@@ -25,6 +25,7 @@ TagsManager::TagsManager ()
 
 	for (const auto& [id, name] : Storage_.GetAllTags ())
 		Tags_ [id] = name;
+	MigrateStoredNames ();
 
 	GetID (tr ("untagged"));
 
@@ -192,6 +193,28 @@ QAbstractItemModel* TagsManager::GetModel ()
 QObject* TagsManager::GetQObject ()
 {
 	return this;
+}
+
+// TODO drop this Jan 2027
+void TagsManager::MigrateStoredNames ()
+{
+	const auto& delimiter = Util::GetTagsDelimiter (Util::GetDefaultTagsSeparator ());
+	for (auto&& [id, name] : Tags_.asKeyValueRange ())
+	{
+		const auto& repaired = auto { name }.replace (delimiter, " "_qs).trimmed ();
+		if (repaired == name)
+			continue;
+
+		if (repaired.isEmpty () || !Tags_.key (repaired).isNull ())
+		{
+			qWarning () << "cannot repair tag" << name << "to" << repaired;
+			continue;
+		}
+
+		qDebug () << "repairing tag" << name << "to" << repaired;
+		name = repaired;
+		Storage_.SetTagName (id, repaired);
+	}
 }
 
 // TODO post 0.6.75 drop this

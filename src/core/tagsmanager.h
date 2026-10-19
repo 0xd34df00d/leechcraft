@@ -66,6 +66,7 @@ namespace LC
 		using RenameError = std::variant<BlankTagName, DelimiterInTagName, TagNameTaken>;
 		Util::Either<RenameError, Util::Void> RenameTag (const QModelIndex&, const QString&);
 	private:
+		void MigrateStoredNames ();
 		tag_id InsertTag (const QString&);
 		void MigrateToDb ();
 	signals:
