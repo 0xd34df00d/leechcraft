@@ -15,6 +15,25 @@ QTEST_APPLESS_MAIN (LC::Util::TagsUtilTest)
 
 namespace LC::Util
 {
+	void TagsUtilTest::testGetTagsDelimiter_data ()
+	{
+		QTest::addColumn<QString> ("separator");
+		QTest::addColumn<QString> ("expected");
+
+		QTest::newRow ("default") << GetDefaultTagsSeparator () << ";"_qs;
+		QTest::newRow ("spaces around") << " / "_qs << "/"_qs;
+		QTest::newRow ("bare") << "|"_qs << "|"_qs;
+		QTest::newRow ("whitespace only") << " "_qs << " "_qs;
+	}
+
+	void TagsUtilTest::testGetTagsDelimiter ()
+	{
+		QFETCH (QString, separator);
+		QFETCH (QString, expected);
+
+		QCOMPARE (GetTagsDelimiter (separator), expected);
+	}
+
 	void TagsUtilTest::testSplitTags_data ()
 	{
 		QTest::addColumn<QString> ("text");
@@ -32,6 +51,8 @@ namespace LC::Util
 		QTest::newRow ("whitespace around") << "  a ;  b  "_qs << sep << QStringList { a, b };
 		QTest::newRow ("empty parts") << "a;; ;b;"_qs << sep << QStringList { a, b };
 		QTest::newRow ("whitespace separator") << "a b"_qs << " "_qs << QStringList { a, b };
+		QTest::newRow ("any whitespace for a whitespace separator") << "a \t b"_qs << " "_qs << QStringList { a, b };
+		QTest::newRow ("regex metachar separator") << "left|right"_qs << "|"_qs << QStringList { "left"_qs, "right"_qs };
 	}
 
 	void TagsUtilTest::testSplitTags ()

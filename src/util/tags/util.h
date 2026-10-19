@@ -15,16 +15,29 @@ namespace LC::Util
 {
 	UTIL_TAGS_API QString GetDefaultTagsSeparator ();
 
+	/** @brief Returns the delimiter the tags are split by for the given
+	 * separator they are joined with.
+	 *
+	 * The delimiter is the separator without the whitespace around it, or
+	 * the separator itself if there is nothing else to it.
+	 *
+	 * @param[in] separator The separator of the tags.
+	 * @return The delimiter of the tags.
+	 *
+	 * @sa GetDefaultTagsSeparator()
+	 * @sa SplitTags()
+	 */
+	UTIL_TAGS_API QString GetTagsDelimiter (const QString& separator);
+
 	/** @brief Splits a string with tags into the tags.
 	 *
-	 * The whitespace around the separator and around the tags is dropped,
-	 * and so are the empty tags.
+	 * The tags are separated by the delimiter corresponding to the
+	 * \em separator, see GetTagsDelimiter(). The whitespace around the
+	 * tags is dropped, and so are the empty tags.
 	 *
 	 * @param[in] text The string with the tags.
 	 * @param[in] separator The separator of the tags.
 	 * @return The tags.
-	 *
-	 * @sa GetDefaultTagsSeparator()
 	 */
 	UTIL_TAGS_API QStringList SplitTags (const QString& text, const QString& separator);
 }

@@ -16,6 +16,8 @@ namespace LC::Util
 	{
 		Q_OBJECT
 	private slots:
+		void testGetTagsDelimiter_data ();
+		void testGetTagsDelimiter ();
 		void testSplitTags_data ();
 		void testSplitTags ();
 	};

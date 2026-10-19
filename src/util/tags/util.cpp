@@ -16,13 +16,16 @@ namespace LC::Util
 		return QStringLiteral ("; ");
 	}
 
+	QString GetTagsDelimiter (const QString& separator)
+	{
+		const auto& trimmed = separator.trimmed ();
+		return trimmed.isEmpty () ? separator : trimmed;
+	}
+
 	QStringList SplitTags (const QString& text, const QString& separator)
 	{
-		const auto& trimmedSeparator = separator.trimmed ();
-		const auto& effectiveSeparator = trimmedSeparator.isEmpty () ? separator : trimmedSeparator;
-
 		QStringList result;
-		for (const auto& part : QStringView { text }.split (effectiveSeparator, Qt::SkipEmptyParts))
+		for (const auto& part : QStringView { text }.split (GetTagsDelimiter (separator), Qt::SkipEmptyParts))
 			if (const auto& tag = part.trimmed (); !tag.isEmpty ())
 				result << tag.toString ();
 		return result;
