@@ -12,7 +12,6 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>
 #include <interfaces/ijobholder.h>
-#include <interfaces/itaggablejobs.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/ihavetabs.h>
@@ -31,7 +30,6 @@ namespace LC::BitTorrent
 						, public IInfo
 						, public IDownload
 						, public IJobHolder
-						, public ITaggableJobs
 						, public IHaveSettings
 						, public IHaveShortcuts
 						, public IHaveTabs
@@ -44,7 +42,6 @@ namespace LC::BitTorrent
 		Q_INTERFACES (IInfo
 				IDownload
 				IJobHolder
-				ITaggableJobs
 				IHaveSettings
 				IHaveShortcuts
 				IHaveTabs
@@ -79,9 +76,6 @@ namespace LC::BitTorrent
 
 		// IJobHolder
 		std::vector<IJobHolderRepresentationHandler_ptr> CreateRepresentationHandlers (const ViewCallbacks&) override;
-
-		// ITaggableJobs
-		void SetTags (int, const QStringList&) override;
 
 		// IHaveSettings
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;

@@ -302,12 +302,6 @@ namespace LC::BitTorrent
 		return MakeHandlers (std::move (handler));
 	}
 
-	void TorrentPlugin::SetTags (int torrent, const QStringList& tags)
-	{
-		auto& model = *Core::Instance ();
-		model.setData (model.index (torrent, 0), tags, Roles::TorrentTags);
-	}
-
 	XmlSettingsDialog_ptr TorrentPlugin::GetSettingsDialog () const
 	{
 		return XmlSettingsDialog_;
