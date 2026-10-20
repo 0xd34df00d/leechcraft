@@ -16,8 +16,12 @@ class QAbstractItemModel;
  *
  * This interface is for communication with the tags manager.
  *
- * Object returned by the GetQObject() function emits these signals:
- * - tagsUpdated(const QStringList& tags) when the tags are updated.
+ * Tag names are trimmed and non-blank,
+ * and they don't contain the delimiter (per `Util::GetTagsDelimiter()`)
+ * the tags are split by.
+ *
+ * Object returned by the `GetQObject()` function emits these signals:
+ * - `tagsUpdated(const QStringList& tags)` when the tags are updated.
  */
 class Q_DECL_EXPORT ITagsManager
 {
@@ -26,23 +30,27 @@ public:
 
 	virtual ~ITagsManager () {}
 
-	/** @brief Returns the ID of the given \em tag.
+	/** @brief Returns the ID of the given `tag`.
 	 *
 	 * If there is no such tag, it's added to the tag collection and the
 	 * id of the new tag is returned.
 	 *
+	 * If the tag is invalid, a null ID is returned.
+	 *
 	 * @param[in] tag The tag that should be identified.
-	 * @return The ID of the tag.
+	 * @return The ID of the tag, or a null ID if `tag` is blank or
+	 * contains the delimiter.
 	 *
 	 * @sa GetTag()
 	 * @sa GetIDs()
 	 */
 	virtual tag_id GetID (const QString& tag) = 0;
 
-	/** @brief Returns the IDs of the given \em tags.
+	/** @brief Returns the IDs of the given `tags`.
 	 *
-	 * This convenience function invokes GetID() for each tag in \em tags
-	 * and returns the list of the corresponding tag IDs.
+	 * This convenience function invokes `GetID()` for each tag in `tags`
+	 * and returns the list of the corresponding tag IDs. The tags
+	 * rejected by `GetID()` are skipped.
 	 *
 	 * @param[in] tags The tags that should be identified.
 	 * @return The IDs of the tags.
@@ -58,7 +66,7 @@ public:
 		return result;
 	}
 
-	/** @brief Returns the tag with the given \em id.
+	/** @brief Returns the tag with the given `id`.
 	 *
 	 * If there is no such tag, a null QString is returned. A sensible
 	 * plugin would delete the given id from the list of assigned tags
@@ -72,13 +80,13 @@ public:
 	 */
 	virtual QString GetTag (tag_id id) const = 0;
 
-	/** @brief Returns the tags with the given \em ids.
+	/** @brief Returns the tags with the given `ids`.
 	 *
-	 * This convenience function invokes GetTag() for each tag ID in
-	 * \em ids and returns the list of the corresponding tags.
+	 * This convenience function invokes `GetTag()` for each tag ID in
+	 * `ids` and returns the list of the corresponding tags.
 	 *
 	 * @param[in] ids The ids of the tags.
-	 * @return The tags corresponding to the \em ids.
+	 * @return The tags corresponding to the `ids`.
 	 *
 	 * @sa GetTag()
 	 */
@@ -105,7 +113,7 @@ public:
 
 	/** @brief Splits the given string with tags and returns tags IDs.
 	 *
-	 * This function is essentially a combination of Split() and GetID().
+	 * This function is essentially a combination of `Split()` and `GetID()`.
 	 * First, the given string is split into human-readable tags, and
 	 * then for each tag its ID is obtained.
 	 *
@@ -124,9 +132,9 @@ public:
 
 	/** @brief Joins the given tag IDs into one human-readable string.
 	 *
-	 * This function is essentially a combination of GetTag() and Join().
-	 * First, it converts all given tagIDs into tag names using GetTag()
-	 * and then joins them using Join(). This function is provided for
+	 * This function is essentially a combination of `GetTag()` and `Join()`.
+	 * First, it converts all given `tagIDs` into tag names using `GetTag()`
+	 * and then joins them using `Join()`. This function is provided for
 	 * convenience.
 	 *
 	 * @param[in] tagIDs List of tag IDs.
