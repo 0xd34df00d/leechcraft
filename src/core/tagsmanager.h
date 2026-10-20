@@ -69,10 +69,7 @@ namespace LC
 	private:
 		void MigrateStoredNames ();
 		tag_id InsertTag (const QString&);
-		void MigrateToDb ();
 	signals:
 		void tagsUpdated (const QStringList&);
 	};
 }
-
-Q_DECLARE_METATYPE (LC::TagsManager::TagsDictionary_t)

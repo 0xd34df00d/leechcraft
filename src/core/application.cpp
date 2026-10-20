@@ -139,7 +139,6 @@ namespace LC
 
 		qRegisterMetaType<QModelIndex> ("QModelIndex");
 		qRegisterMetaType<QModelIndex*> ("QModelIndexStar");
-		qRegisterMetaType<TagsManager::TagsDictionary_t> ("LC::TagsManager::TagsDictionary_t");
 		qRegisterMetaType<Util::QtException_ptr> ("LC::Util::QtException_ptr");
 		qRegisterMetaType<Entity> ("LC::Entity");
 		qRegisterMetaType<Entity> ("Entity");

@@ -9,8 +9,6 @@
 #include "tagsmanager.h"
 #include <algorithm>
 #include <QStringList>
-#include <QCoreApplication>
-#include <QSettings>
 #include <QtDebug>
 #include <util/sll/qtutil.h>
 #include <util/tags/tagscompleter.h>
@@ -20,8 +18,6 @@ using namespace LC;
 
 TagsManager::TagsManager ()
 {
-	MigrateToDb ();
-
 	for (const auto& [id, name] : Storage_.GetAllTags ())
 		Tags_ [id] = name;
 	MigrateStoredNames ();
@@ -215,23 +211,4 @@ void TagsManager::MigrateStoredNames ()
 		name = repaired;
 		Storage_.SetTagName (id, repaired);
 	}
-}
-
-// TODO post 0.6.75 drop this
-void TagsManager::MigrateToDb ()
-{
-	QSettings settings (QCoreApplication::organizationName (),
-			QCoreApplication::applicationName ());
-	settings.beginGroup ("Tags");
-	if (!settings.value ("Migrated").toBool ())
-	{
-		const auto& tags = settings.value ("Dict").value<TagsDictionary_t> ();
-
-		qDebug () << Q_FUNC_INFO << "migrating" << tags.size () << "tags to the DB";
-
-		for (const auto& [id, name] : tags.asKeyValueRange ())
-			Storage_.AddTag (id, name);
-		settings.setValue ("Migrated", true);
-	}
-	settings.endGroup ();
 }
