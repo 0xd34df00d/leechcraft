@@ -8,6 +8,7 @@
 
 #ifndef INTERFACES_CORE_ITAGSMANAGER_H
 #define INTERFACES_CORE_ITAGSMANAGER_H
+#include <optional>
 #include <QStringList>
 
 class QAbstractItemModel;
@@ -35,16 +36,16 @@ public:
 	 * If there is no such tag, it's added to the tag collection and the
 	 * id of the new tag is returned.
 	 *
-	 * If the tag is invalid, a null ID is returned.
+	 * If the tag is invalid, `std::nullopt` is returned.
 	 *
 	 * @param[in] tag The tag that should be identified.
-	 * @return The ID of the tag, or a null ID if `tag` is blank or
+	 * @return The ID of the tag, or `std::nullopt` if `tag` is blank or
 	 * contains the delimiter.
 	 *
 	 * @sa GetTag()
 	 * @sa GetIDs()
 	 */
-	virtual tag_id GetID (const QString& tag) = 0;
+	virtual std::optional<tag_id> GetID (const QString& tag) = 0;
 
 	/** @brief Returns the IDs of the given `tags`.
 	 *
@@ -61,29 +62,31 @@ public:
 	{
 		QList<tag_id> result;
 		for (const auto& tag : tags)
-			if (const auto& id = GetID (tag); !id.isEmpty ())
-				result << id;
+			if (const auto& id = GetID (tag))
+				result << *id;
 		return result;
 	}
 
 	/** @brief Returns the tag with the given `id`.
 	 *
-	 * If there is no such tag, a null QString is returned. A sensible
+	 * If there is no such tag, `std::nullopt` is returned. A sensible
 	 * plugin would delete the given id from the list of assigned tags
 	 * for all the items with this id.
 	 *
 	 * @param[in] id The id of the tag.
-	 * @return The tag.
+	 * @return The tag, or `std::nullopt` if there is no tag with the
+	 * given `id`.
 	 *
 	 * @sa GetID()
 	 * @sa GetTags()
 	 */
-	virtual QString GetTag (tag_id id) const = 0;
+	virtual std::optional<QString> GetTag (tag_id id) const = 0;
 
 	/** @brief Returns the tags with the given `ids`.
 	 *
 	 * This convenience function invokes `GetTag()` for each tag ID in
-	 * `ids` and returns the list of the corresponding tags.
+	 * `ids` and returns the list of the corresponding tags. The IDs
+	 * without a tag are skipped.
 	 *
 	 * @param[in] ids The ids of the tags.
 	 * @return The tags corresponding to the `ids`.
@@ -94,7 +97,8 @@ public:
 	{
 		QStringList result;
 		for (const auto& id : ids)
-			result << GetTag (id);
+			if (const auto& tag = GetTag (id))
+				result << *tag;
 		return result;
 	}
 

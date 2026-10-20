@@ -33,8 +33,8 @@ namespace LC::Util
 
 		struct TagsStub final : ITagsManager
 		{
-			tag_id GetID (const QString& tag) override { return tag; }
-			QString GetTag (tag_id id) const override { return id; }
+			std::optional<tag_id> GetID (const QString& tag) override { return tag; }
+			std::optional<QString> GetTag (tag_id id) const override { return id; }
 			QStringList GetAllTags () const override { return {}; }
 			QStringList Split (const QString& string) const override { return string.split (';', Qt::SkipEmptyParts); }
 			QList<tag_id> SplitToIDs (const QString& string) override { return Split (string); }

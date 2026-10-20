@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <optional>
 #include <variant>
 #include <QAbstractItemModel>
 #include <QMap>
@@ -42,8 +43,8 @@ namespace LC
 		QModelIndex parent (const QModelIndex&) const override;
 		int rowCount (const QModelIndex&) const override;
 
-		tag_id GetID (const QString&) override;
-		QString GetTag (tag_id) const override;
+		std::optional<tag_id> GetID (const QString&) override;
+		std::optional<QString> GetTag (tag_id) const override;
 		QStringList GetAllTags () const override;
 		QStringList Split (const QString&) const override;
 		QList<tag_id> SplitToIDs (const QString&) override;

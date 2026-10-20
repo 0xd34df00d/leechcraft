@@ -16,6 +16,7 @@
 #include <QCoreApplication>
 #include <QUrl>
 #include <QSqlQueryModel>
+#include <QtDebug>
 #include <util/structuresops.h>
 #include <util/sys/paths.h>
 #include <util/db/dblock.h>
@@ -201,8 +202,15 @@ namespace HistoryHolder
 				continue;
 			}
 
+			const auto& text = TM_->GetTag (tag);
+			if (!text)
+			{
+				qWarning () << "unknown tag" << tag;
+				continue;
+			}
+
 			InsertTags_.bindValue (":lcid", tag);
-			InsertTags_.bindValue (":text", TM_->GetTag (tag));
+			InsertTags_.bindValue (":text", *text);
 			Util::DBLock::Execute (InsertTags_);
 
 			const auto id = Util::GetLastId (InsertTags_);

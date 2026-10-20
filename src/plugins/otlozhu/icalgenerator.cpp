@@ -45,8 +45,7 @@ namespace Otlozhu
 				lines << ("COMMENT:" + item->GetComment ().toUtf8 ().trimmed ());
 			lines << ("PERCENT-COMPLETE:" + QByteArray::number (item->GetPercentage ()));
 
-			auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
-			const auto& cats = Util::Map (item->GetTagIDs (), [tm] (const QString& id) { return tm->GetTag (id); });
+			const auto& cats = Core::Instance ().GetProxy ()->GetTagsManager ()->GetTags (item->GetTagIDs ());
 			if (!cats.isEmpty ())
 				lines << ("CATEGORIES:" + cats.join (",").toUtf8 ());
 

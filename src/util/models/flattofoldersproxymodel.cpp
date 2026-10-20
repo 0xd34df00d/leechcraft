@@ -118,8 +118,9 @@ namespace LC::Util
 				if (fti->Tag_.isEmpty ())
 					return tr ("untagged");
 
-				const auto& ut = TM_->GetTag (fti->Tag_);
-				return ut.isEmpty () ? tr ("<unknown tag>") : ut;
+				if (const auto& tag = TM_->GetTag (fti->Tag_))
+					return *tag;
+				return tr ("<unknown tag>");
 			}
 			case +CustomDataRoles::Tags:
 				return fti->Tag_;

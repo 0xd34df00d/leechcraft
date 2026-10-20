@@ -12,7 +12,6 @@
 #include <QCoreApplication>
 #include <QSettings>
 #include <QtDebug>
-#include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <util/tags/tagscompleter.h>
 #include <util/tags/util.h>
@@ -72,7 +71,7 @@ int TagsManager::rowCount (const QModelIndex& index) const
 	return index.isValid () ? 0 : Tags_.size ();
 }
 
-ITagsManager::tag_id TagsManager::GetID (const QString& tag)
+std::optional<ITagsManager::tag_id> TagsManager::GetID (const QString& tag)
 {
 	const auto& name = tag.trimmed ();
 	if (name.isEmpty () || name.contains (Util::GetTagsDelimiter (Util::GetDefaultTagsSeparator ())))
@@ -90,9 +89,12 @@ ITagsManager::tag_id TagsManager::GetID (const QString& tag)
 	return ids.front ().toString ();
 }
 
-QString TagsManager::GetTag (ITagsManager::tag_id id) const
+std::optional<QString> TagsManager::GetTag (ITagsManager::tag_id id) const
 {
-	return Tags_ [QUuid { id }];
+	const auto pos = Tags_.find (QUuid { id });
+	if (pos == Tags_.end ())
+		return {};
+	return *pos;
 }
 
 QStringList TagsManager::GetAllTags () const
@@ -117,9 +119,7 @@ QString TagsManager::Join (const QStringList& tags) const
 
 QString TagsManager::JoinIDs (const QStringList& tagIDs) const
 {
-	const auto& hr = Util::Map (tagIDs,
-			[this] (const QString& id) { return GetTag (id); });
-	return Join (hr);
+	return Join (GetTags (tagIDs));
 }
 
 ITagsManager::tag_id TagsManager::InsertTag (const QString& tag)
