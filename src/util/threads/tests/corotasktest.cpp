@@ -501,7 +501,7 @@ namespace LC::Util
 
 	void CoroTaskTest::testWaitManyFirstFailureInOrderWins ()
 	{
-		QTest::ignoreMessage (QtWarningMsg, "dropping a subsequent exception: first in time");
+		QTest::ignoreMessage (QtWarningMsg, "dropping a subsequent exception: \"first in time\"");
 
 		const auto message = ThrownMessage ([] { GetTaskResult (InParallel ({ SlowFailure (40ms, "first in order"), SlowFailure (10ms, "first in time") })); });
 		QCOMPARE (message, "first in order"_qs);
