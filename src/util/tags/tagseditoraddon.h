@@ -15,8 +15,10 @@
 
 class ITagsManager;
 class QAbstractItemModel;
+class QAction;
 class QCompleter;
 class QLineEdit;
+class QPoint;
 
 namespace LC::Util
 {
@@ -41,6 +43,7 @@ namespace LC::Util
 		QString CompletionPrefix_;
 		QStringList ShownTags_;
 		QPointer<CategorySelector> Selector_;
+		QPointer<QAction> SelectorAction_;
 	public:
 		enum class Flag : std::uint8_t
 		{
@@ -73,6 +76,8 @@ namespace LC::Util
 		/** @brief Adds a button, to `manager` or to a new one, opening a popup
 		 * `CategorySelectorWindow` bound as via `BindSelector()`.
 		 *
+		 * The popup also opens from the `Select tags...` entry added at the top
+		 * of the edit's context menu and by Alt+Down while the edit has focus.
 		 * The popup counts as the bound selector. The constructor does this
 		 * unless given `Flag::NoSelectorButton`; call it directly to use a
 		 * shared `manager`.
@@ -119,6 +124,7 @@ namespace LC::Util
 		void Complete ();
 		void InsertTag (const QString& completion);
 		void ApplyChoice (const QStringList& chosen);
+		void ShowContextMenu (const QPoint& pos);
 
 		bool IsEdited () const;
 		void ReportEdit ();

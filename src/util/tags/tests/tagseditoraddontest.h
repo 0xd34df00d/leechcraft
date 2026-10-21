@@ -35,5 +35,8 @@ namespace LC::Util
 		void testSelectorFollowsTheTagsModel ();
 		void testSelectorButtonBindsAPopup ();
 		void testOneLiveSelectorAtATime ();
+		void testContextMenuOffersTheSelector ();
+		void testContextMenuIsStandardWithoutAPopup ();
+		void testAltDownOpensTheSelector ();
 	};
 }

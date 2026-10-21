@@ -7,11 +7,15 @@
  **********************************************************************/
 
 #include "tagseditoraddontest.h"
+#include <algorithm>
 #include <stdexcept>
 #include <utility>
 #include <QAbstractItemView>
+#include <QAction>
 #include <QCompleter>
+#include <QContextMenuEvent>
 #include <QLineEdit>
+#include <QMenu>
 #include <QSignalSpy>
 #include <QStandardItemModel>
 #include <QToolButton>
@@ -392,5 +396,59 @@ namespace LC::Util
 		addon.BindSelector (other);
 		QVERIFY (Fixture::SetChecked (other, A, Qt::Checked));
 		QCOMPARE (edit.text (), A);
+	}
+
+	void TagsEditorAddonTest::testContextMenuOffersTheSelector ()
+	{
+		Fixture f;
+		QLineEdit edit;
+		new TagsEditorAddon { edit, f.TagsModel_ };
+		edit.show ();
+
+		QContextMenuEvent event { QContextMenuEvent::Mouse, { 1, 1 }, edit.mapToGlobal (QPoint { 1, 1 }) };
+		QApplication::sendEvent (&edit, &event);
+
+		const auto menu = edit.findChild<QMenu*> (Qt::FindDirectChildrenOnly);
+		QVERIFY (menu);
+		QVERIFY (menu->isVisible ());
+		const auto& actions = menu->actions ();
+		QCOMPARE (actions.at (0)->text (), "Select tags..."_qs);
+		QVERIFY (actions.at (1)->isSeparator ());
+		QVERIFY (std::ranges::any_of (actions, [] (const QAction *action) { return action->text ().startsWith ("Select All"_qs); }));
+
+		const auto popup = edit.findChild<CategorySelectorWindow*> ();
+		QVERIFY (!popup->isVisible ());
+		actions.at (0)->trigger ();
+		QVERIFY (popup->isVisible ());
+		menu->close ();
+	}
+
+	void TagsEditorAddonTest::testContextMenuIsStandardWithoutAPopup ()
+	{
+		Fixture f;
+		f.Edit_.show ();
+
+		QContextMenuEvent event { QContextMenuEvent::Mouse, { 1, 1 }, f.Edit_.mapToGlobal (QPoint { 1, 1 }) };
+		QApplication::sendEvent (&f.Edit_, &event);
+
+		const auto menu = f.Edit_.findChild<QMenu*> (Qt::FindDirectChildrenOnly);
+		QVERIFY (menu);
+		QVERIFY (std::ranges::none_of (menu->actions (), [] (const QAction *action) { return action->text () == "Select tags..."_qs; }));
+		menu->close ();
+	}
+
+	void TagsEditorAddonTest::testAltDownOpensTheSelector ()
+	{
+		Fixture f;
+		QLineEdit edit;
+		new TagsEditorAddon { edit, f.TagsModel_ };
+		edit.show ();
+		QVERIFY (QTest::qWaitForWindowActive (&edit));
+		edit.setFocus ();
+
+		const auto popup = edit.findChild<CategorySelectorWindow*> ();
+		QVERIFY (!popup->isVisible ());
+		QTest::keyClick (&edit, Qt::Key_Down, Qt::AltModifier);
+		QVERIFY (popup->isVisible ());
 	}
 }

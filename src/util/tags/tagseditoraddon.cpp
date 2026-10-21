@@ -9,11 +9,14 @@
 #include "tagseditoraddon.h"
 #include <stdexcept>
 #include <QAbstractItemView>
+#include <QAction>
 #include <QCompleter>
+#include <QContextMenuEvent>
 #include <QCursor>
 #include <QIcon>
 #include <QKeyEvent>
 #include <QLineEdit>
+#include <QMenu>
 #include <QSet>
 #include <QToolButton>
 #include <interfaces/core/itagsmanager.h>
@@ -95,24 +98,30 @@ namespace LC::Util
 		const auto popup = new CategorySelectorWindow { CategorySelectorWindow::Buttons::Close, &Edit_ };
 		BindSelector (popup->Selector ());
 
-		if (!manager)
-			manager = new LineEditButtonManager { &Edit_ };
-
-		const auto button = new QToolButton { &Edit_ };
-		button->setIconSize ({ 16, 16 });
-		button->setIcon (QIcon::fromTheme (QStringLiteral ("mail-tagged")));
-		button->setCursor (Qt::ArrowCursor);
-		button->setStyleSheet (QStringLiteral ("QToolButton { border: none; padding: 0px; }"));
-		manager->Add (button);
-
-		connect (button,
-				&QToolButton::clicked,
+		const auto action = new QAction { QIcon::fromTheme (QStringLiteral ("mail-tagged")), tr ("Select tags..."), popup };
+		action->setShortcut (Qt::ALT | Qt::Key_Down);
+		action->setShortcutContext (Qt::WidgetShortcut);
+		connect (action,
+				&QAction::triggered,
 				popup,
 				[popup]
 				{
 					popup->move (QCursor::pos ());
 					popup->show ();
 				});
+		Edit_.addAction (action);
+		Edit_.installEventFilter (this);
+		SelectorAction_ = action;
+
+		if (!manager)
+			manager = new LineEditButtonManager { &Edit_ };
+
+		const auto button = new QToolButton { &Edit_ };
+		button->setDefaultAction (action);
+		button->setIconSize ({ 16, 16 });
+		button->setCursor (Qt::ArrowCursor);
+		button->setStyleSheet (QStringLiteral ("QToolButton { border: none; padding: 0px; }"));
+		manager->Add (button);
 	}
 
 	void TagsEditorAddon::BindSelector (CategorySelector& selector)
@@ -153,6 +162,15 @@ namespace LC::Util
 
 	bool TagsEditorAddon::eventFilter (QObject *obj, QEvent *event)
 	{
+		if (obj == &Edit_)
+		{
+			if (event->type () != QEvent::ContextMenu || !SelectorAction_)
+				return false;
+
+			ShowContextMenu (static_cast<QContextMenuEvent*> (event)->globalPos ());
+			return true;
+		}
+
 		if (event->type () != QEvent::KeyPress || obj != Completer_.popup ())
 			return false;
 
@@ -175,6 +193,17 @@ namespace LC::Util
 		default:
 			return false;
 		}
+	}
+
+	void TagsEditorAddon::ShowContextMenu (const QPoint& pos)
+	{
+		const auto menu = Edit_.createStandardContextMenu ();
+		menu->setAttribute (Qt::WA_DeleteOnClose);
+
+		const auto first = menu->actions ().value (0);
+		menu->insertAction (first, SelectorAction_);
+		menu->insertSeparator (first);
+		menu->popup (pos);
 	}
 
 	TagsEditorAddon::TokenRange TagsEditorAddon::TokenUnderCursor () const
