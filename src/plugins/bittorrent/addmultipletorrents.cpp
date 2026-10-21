@@ -9,7 +9,7 @@
 #include <QFileDialog>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
-#include <util/tags/tagscompleter.h>
+#include <util/tags/tagseditoraddon.h>
 #include "addmultipletorrents.h"
 #include "xmlsettingsmanager.h"
 
@@ -23,8 +23,7 @@ namespace LC::BitTorrent
 		Ui_.OpenDirectory_->setText (xsm.property ("LastTorrentDirectory").toString ());
 		Ui_.SaveDirectory_->setText (xsm.property ("LastSaveDirectory").toString ());
 
-		new Util::TagsCompleter (Ui_.TagsEdit_);
-		Ui_.TagsEdit_->AddSelector ();
+		new Util::TagsEditorAddon { *Ui_.TagsEdit_, *GetProxyHolder ()->GetTagsManager () };
 
 		const auto chooser = [this, &xsm] (const QString& header, QLineEdit *edit, const char *propName)
 		{

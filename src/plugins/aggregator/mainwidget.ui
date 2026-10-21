@@ -43,7 +43,7 @@
           </widget>
          </item>
          <item>
-          <widget class="LC::Util::TagsLineEdit" name="TagsLine_"/>
+          <widget class="QLineEdit" name="TagsLine_"/>
          </item>
         </layout>
        </item>
@@ -75,13 +75,6 @@
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>LC::Util::TagsLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header location="global">util/tags/tagslineedit.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

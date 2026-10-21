@@ -8,9 +8,9 @@
 
 #include "tagseditdelegate.h"
 #include <QApplication>
+#include <QLineEdit>
 #include <interfaces/core/itagsmanager.h>
-#include "tagscompleter.h"
-#include "tagslineedit.h"
+#include "tagseditoraddon.h"
 
 namespace LC::Util
 {
@@ -22,9 +22,8 @@ namespace LC::Util
 
 	QWidget* TagsEditDelegate::createEditor (QWidget *parent, const QStyleOptionViewItem&, const QModelIndex& index) const
 	{
-		const auto edit = new TagsLineEdit { parent };
-		new TagsCompleter { edit };
-		edit->AddSelector ();
+		const auto edit = new QLineEdit { parent };
+		new TagsEditorAddon { *edit, ITM_ };
 		edit->setFrame (false);
 		setEditorData (edit, index);
 		return edit;
@@ -43,12 +42,12 @@ namespace LC::Util
 	void TagsEditDelegate::setEditorData (QWidget *editor, const QModelIndex& index) const
 	{
 		const auto& tags = index.data (Qt::EditRole).toStringList ();
-		dynamic_cast<TagsLineEdit*> (editor)->setText (ITM_.Join (tags));
+		qobject_cast<QLineEdit*> (editor)->setText (ITM_.Join (tags));
 	}
 
 	void TagsEditDelegate::setModelData (QWidget *editor, QAbstractItemModel *model, const QModelIndex& index) const
 	{
-		const auto& tags = ITM_.Split (dynamic_cast<TagsLineEdit*> (editor)->text ());
+		const auto& tags = ITM_.Split (qobject_cast<QLineEdit*> (editor)->text ());
 		model->setData (index, tags, Qt::EditRole);
 	}
 }

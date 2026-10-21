@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QStringListModel>
 #include "ui_itemsexportdialog.h"
 #include "common.h"
 
@@ -30,6 +31,7 @@ namespace LC::Aggregator
 
 		std::unique_ptr<Util::CheckableProxyModel<IDType_t>> ChannelsModel_;
 
+		QStringListModel Categories_;
 		QStringList CurrentCategories_;
 
 		bool TitleBeenModified_ = false;

@@ -14,6 +14,7 @@
 #include <QUrlQuery>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
+#include <util/tags/tagseditoraddon.h>
 #include "xmlsettingsmanager.h"
 
 namespace LC::BitTorrent
@@ -46,6 +47,8 @@ namespace LC::BitTorrent
 	: QDialog { parent }
 	{
 		Ui_.setupUi (this);
+
+		new Util::TagsEditorAddon { *Ui_.Tags_, *GetProxyHolder ()->GetTagsManager () };
 
 		auto magnet = CheckClipboard (QClipboard::Clipboard);
 		if (!magnet)

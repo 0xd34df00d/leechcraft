@@ -8,8 +8,9 @@
 
 #include "addtododialog.h"
 #include <algorithm>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
-#include <util/tags/tagscompleter.h>
+#include <util/tags/tagseditoraddon.h>
 #include "core.h"
 
 namespace LC
@@ -21,8 +22,7 @@ namespace Otlozhu
 	{
 		Ui_.setupUi (this);
 
-		new Util::TagsCompleter (Ui_.Tags_);
-		Ui_.Tags_->AddSelector ();
+		new Util::TagsEditorAddon { *Ui_.Tags_, *GetProxyHolder ()->GetTagsManager () };
 	}
 
 	TodoItem_ptr AddTodoDialog::GetItem () const

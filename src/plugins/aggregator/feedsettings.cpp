@@ -11,7 +11,7 @@
 #include <util/gui/actionresultreporter.h>
 #include <util/sll/qtutil.h>
 #include <util/threads/coro.h>
-#include <util/tags/tagscompleter.h>
+#include <util/tags/tagseditoraddon.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -50,11 +50,9 @@ namespace LC::Aggregator
 		Ui_.setupUi (this);
 		setWindowIcon (GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ());
 
-		new Util::TagsCompleter { Ui_.ChannelTags_ };
-		new Util::TagsCompleter { Ui_.FeedTags_ };
-
-		Ui_.ChannelTags_->AddSelector ();
-		Ui_.FeedTags_->AddSelector ();
+		const auto itm = GetProxyHolder ()->GetTagsManager ();
+		new Util::TagsEditorAddon { *Ui_.ChannelTags_, *itm };
+		new Util::TagsEditorAddon { *Ui_.FeedTags_, *itm };
 
 		connect (Ui_.ChannelLink_,
 				&QLabel::linkActivated,
@@ -81,8 +79,6 @@ namespace LC::Aggregator
 					const auto result = co_await UpdateFavicon (ChannelId_, link);
 					co_await WithHandler (result, reporter);
 				});
-
-		const auto itm = GetProxyHolder ()->GetTagsManager ();
 
 		Ui_.ChannelTags_->setText (itm->JoinIDs (channel.Tags_));
 

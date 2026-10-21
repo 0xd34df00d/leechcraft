@@ -10,6 +10,7 @@
 
 #include <QWidget>
 #include <interfaces/core/icoreproxyfwd.h>
+#include <util/tags/tagseditoraddon.h>
 #include "ui_searcherslist.h"
 
 namespace LC
@@ -24,6 +25,7 @@ namespace SeekThru
 
 
 		Ui::SearchersList Ui_;
+		Util::TagsEditorAddon *SearcherTags_ = nullptr;
 	public:
 		explicit SearchersList (const ICoreProxy_ptr&, QWidget* = nullptr);
 	private slots:

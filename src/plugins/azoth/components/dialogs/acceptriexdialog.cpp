@@ -8,8 +8,7 @@
 
 #include "acceptriexdialog.h"
 #include <QStandardItemModel>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/core/itagsmanager.h>
+#include <util/tags/util.h>
 #include "interfaces/azoth/iclentry.h"
 #include "util/azoth/util.h"
 #include "core.h"
@@ -78,7 +77,6 @@ namespace Azoth
 	{
 		QList<RIEXItem> result;
 
-		const auto itp = Core::Instance ().GetProxy ()->GetTagsManager ();
 		for (int i = 0, size = Model_->rowCount (); i < size; ++i)
 		{
 			QStandardItem *item = Model_->item (i);
@@ -86,7 +84,7 @@ namespace Azoth
 				continue;
 
 			auto riex = item->data ().value<RIEXItem> ();
-			riex.Groups_ = itp->Split (Model_->item (i, Column::Groups)->text ());
+			riex.Groups_ = Util::SplitTags (Model_->item (i, Column::Groups)->text (), Util::GetDefaultTagsSeparator ());
 			result << riex;
 		}
 

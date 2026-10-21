@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "editbookmarkdialog.h"
-#include <util/tags/tagscompleter.h>
+#include <util/tags/tagseditoraddon.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "favoritesmodel.h"
@@ -22,8 +22,7 @@ namespace Poshuku
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
-		new Util::TagsCompleter (Ui_.Tags_);
-		Ui_.Tags_->AddSelector ();
+		new Util::TagsEditorAddon { *Ui_.Tags_, *Core::Instance ().GetProxy ()->GetTagsManager () };
 
 		auto getRoleValue = [&index] (FavoritesModel::Columns column)
 		{

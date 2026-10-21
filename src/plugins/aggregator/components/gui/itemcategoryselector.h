@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QCoreApplication>
+#include <QStringListModel>
 #include <util/tags/categoryselector.h>
 
 namespace LC::Aggregator
@@ -17,11 +18,12 @@ namespace LC::Aggregator
 	{
 		Q_DECLARE_TR_FUNCTIONS (LC::Aggregator::ItemCategorySelector)
 
+		QStringListModel Categories_;
 		bool CanBeVisible_ = true;
 	public:
 		explicit ItemCategorySelector (QWidget* = nullptr);
 
-		void SetPossibleSelections (QStringList selections, bool sort = true) override;
+		void SetCategories (const QStringList&);
 	private:
 		void UpdateVisibility ();
 	};

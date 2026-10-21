@@ -16,10 +16,10 @@
 #include <util/util.h>
 #include <util/sll/qtutil.h>
 #include <util/tags/tagschange.h>
-#include <util/tags/tagscompleter.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/itagsmanager.h>
 #include "components/models/piecesmodel.h"
 #include "xmlsettingsmanager.h"
 #include "addwebseeddialog.h"
@@ -35,14 +35,12 @@ namespace LC::BitTorrent
 	{
 		Ui_.setupUi (this);
 
-		new Util::TagsCompleter (Ui_.TorrentTags_);
+		TorrentTags_ = new Util::TagsEditorAddon { *Ui_.TorrentTags_, *GetProxyHolder ()->GetTagsManager () };
 		auto header = Ui_.PerTrackerStats_->header ();
 		const auto& fm = fontMetrics ();
 		header->resizeSection (0, fm.horizontalAdvance (QStringLiteral ("www.domain.name.org")));
 		header->resizeSection (1, fm.horizontalAdvance (QStringLiteral ("1234.5678 bytes/s")));
 		header->resizeSection (2, fm.horizontalAdvance (QStringLiteral ("1234.5678 bytes/s")));
-
-		Ui_.TorrentTags_->AddSelector ();
 
 		header = Ui_.WebSeedsView_->header ();
 		header->resizeSection (0, fm.horizontalAdvance (QStringLiteral ("average.domain.name.of.a.tracker")));
@@ -129,7 +127,7 @@ namespace LC::BitTorrent
 					if (from.row () > Index_.row () || Index_.row () > to.row ())
 						return;
 
-					Ui_.TorrentTags_->UpdateTags (Index_.data (Roles::TorrentTags).toStringList ());
+					TorrentTags_->UpdateTags (Index_.data (Roles::TorrentTags).toStringList ());
 					UpdateTorrentStats ();
 				});
 
@@ -166,8 +164,8 @@ namespace LC::BitTorrent
 					const auto enable = state == Qt::Checked;
 					ForEachSelected ([this, enable] (const QModelIndex& idx) { Model_->setData (idx, enable, Roles::IsSuperSeeding); });
 				});
-		connect (Ui_.TorrentTags_,
-				&Util::TagsLineEdit::tagsEdited,
+		connect (TorrentTags_,
+				&Util::TagsEditorAddon::tagsCommitted,
 				[this] (const Util::TagsChange& change)
 				{
 					ForEachSelected ([this, &change] (const QModelIndex& idx)
@@ -253,7 +251,7 @@ namespace LC::BitTorrent
 
 	void TorrentTabWidget::InvalidateSelection ()
 	{
-		Ui_.TorrentTags_->SetTags (Index_.data (Roles::TorrentTags).toStringList ());
+		TorrentTags_->SetTags (Index_.data (Roles::TorrentTags).toStringList ());
 		UpdateTorrentStats ();
 	}
 

@@ -11,7 +11,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/itagsmanager.h>
-#include <util/tags/tagscompleter.h>
+#include <util/tags/tagseditoraddon.h>
 #include "components/network/util.h"
 
 namespace LC::Aggregator
@@ -21,8 +21,7 @@ namespace LC::Aggregator
 	{
 		Ui_.setupUi (this);
 		setWindowIcon (GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ());
-		new Util::TagsCompleter (Ui_.Tags_);
-		Ui_.Tags_->AddSelector ();
+		new Util::TagsEditorAddon { *Ui_.Tags_, *GetProxyHolder ()->GetTagsManager () };
 
 		Ui_.URL_->setText (url);
 	}

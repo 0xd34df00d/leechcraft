@@ -8,186 +8,74 @@
 
 #pragma once
 
-#include <memory>
-#include <QDialog>
+#include <QAbstractItemModel>
 #include <QStringList>
-#include <util/sll/util.h>
+#include <QWidget>
 #include "tagsconfig.h"
 
-class QStringListModel;
-
-namespace Ui
-{
-	class CategorySelector;
-}
+class QTreeView;
 
 namespace LC::Util
 {
-	/** @brief The CategorySelector widget provides a way to select amongst
-	 * a group of items.
+	/** @brief A checklist over a model of names.
 	 *
-	 * The CategorySelector is a QWidget having Qt::Tool window hint. That
-	 * results in representing this widget as a tool window - usually a small
-	 * window with smaller than usual title bar and decoration.
-	 * CategorySelector represents the possible selections as a list of
-	 * check boxes.
-	 *
-	 * Programmer can set the list of possible choice variants using
-	 * SetPossibleSelections and get selected items with GetSelections.
-	 *
-	 * CategorySelector emits selectionChanged() signal when user changes
-	 * his selection. CategorySelector's primary purpose is to help user to
-	 * select tags using a line edit, so there's a convenience function
-	 * SetSelectionsFromString() which can be used to notify CategorySelector
-	 * about changes of possible categories. There are also convenience
-	 * slots selectAll() and selectNone() which could be used to mark all
-	 * and no elements in the list respectively.
+	 * The names are the `Qt::DisplayRole` of the first column of the model set
+	 * via `SetModel()`, listed sorted. The selection is a set of names: the model
+	 * decides which of them are shown and reported, so a name selected while
+	 * absent from the model is checked as soon as the model lists it.
 	 */
-	class UTIL_TAGS_API CategorySelector : public QDialog
+	class UTIL_TAGS_API CategorySelector : public QWidget
 	{
 		Q_OBJECT
 
-		class SelectorTagsModel;
-
-		std::shared_ptr<Ui::CategorySelector> Ui_;
-		SelectorTagsModel& Model_;
-
-		QString Separator_;
-		bool NotificationsEnabled_ = true;
+		class CheckableModel;
+		CheckableModel& Model_;
+		QTreeView& View_;
 	public:
-		enum class ButtonsMode
-		{
-			NoButtons,
-			Close,
-			AcceptReject
-		};
-
-		/** @brief Constructor.
-		 *
-		 * Sets the default window title and window flags
-		 * (Qt::Tool | Qt::WindowStaysOnTopHint), calculates the
-		 * default geometry.
-		 *
-		 * @param[in] parent Pointer to parent widget.
-		 */
 		explicit CategorySelector (QWidget *parent = nullptr);
 
-		/** @brief Sets the caption of this selector.
-		 *
-		 * By default, the selector has no caption.
-		 *
-		 * @param[in] caption The new caption of this selector.
+		/** @brief Lists the names of `model`, which is not owned.
+		 */
+		void SetModel (QAbstractItemModel& model);
+
+		/** @brief Sets the header above the list; there is none by default.
 		 */
 		void SetCaption (const QString& caption);
 
-		/** @brief Gets selected items.
+		/** @brief Returns the selected names present in the model.
 		 *
-		 * Returns the selected items - a subset of selection variants
-		 * passed via SetPossibleSelections.
-		 *
-		 * @return Selected items.
-		 *
-		 * @sa SetPossibleSelections()
-		 * @sa GetSelectedIndexes()
+		 * The names are returned in the model rows order.
 		 */
 		QStringList GetSelections () const;
 
-		/** @brief Gets the indexes of the selected items.
+		/** @brief Returns the model's indexes of the selected names.
 		 *
-		 * Returns the indexes of the selected items in the array
-		 * passed to setPossibleSelections(). Please note that
-		 * sorting should be disabled in setPossibleSelections()
-		 * for this function to be useful.
-		 *
-		 * @sa GetSelections()
+		 * The names are returned in the model rows order.
 		 */
-		QList<int> GetSelectedIndexes () const;
+		QModelIndexList GetSelectedIndexes () const;
 
-		/** @brief Selects some of the items.
+		/** @brief Replaces the selection.
 		 *
-		 * Selects some of the items presented by elements of the
-		 * subset list.
-		 *
-		 * This function won't emit selectionChanged() signal.
-		 *
-		 * @param[in] subset The list of items to select.
+		 * `selectionEdited()` is not emitted.
 		 */
-		void SetSelections (const QStringList& subset);
+		void SetSelections (const QStringList& names);
 
-		/** @brief Returns the separator for the tags.
+		/** @brief Selects exactly the names in the model.
 		 *
-		 * @sa SetSeparator()
-		 * @sa GetDefaultTagsSeparator()
-		 */
-		QString GetSeparator () const;
-
-		/** @brief Sets the separator for the tags.
-		 *
-		 * This function doesn't update the text in the line edit.
-		 *
-		 * @sa GetSeparator()
-		 */
-		void SetSeparator (const QString&);
-
-		/** @brief Sets the buttons mode.
-		 */
-		void SetButtonsMode (ButtonsMode);
-
-		/** @brief Sets possible selections.
-		 *
-		 * Clears previous selections list, sets new possible selections
-		 * according to selections parameter. No items are selected
-		 * afterwards, and tagsSelectionChanged() is not emitted.
-		 *
-		 * The \em selections list is sorted unless the \em sort
-		 * parameter is set to false. Please note that if you plan to
-		 * call GetSelectedIndexes() you should set \em sort to
-		 * false.
-		 *
-		 * @param[in] selections Possible selections.
-		 * @param[in] sort Whether the selections should be sorted
-		 * (default is true).
-		 *
-		 * @sa GetSelections()
-		 * @sa GetSelectedIndexes()
-		 */
-		virtual void SetPossibleSelections (QStringList selections, bool sort = true);
-
-		QStringList GetPossibleSelections () const;
-
-		/** @brief Selects all variants.
+		 * `selectionEdited()` is not emitted.
 		 */
 		void SelectAll ();
 
-		/** @brief Deselects all variants.
+		/** @brief Clears the selection.
+		 *
+		 * `selectionEdited()` is not emitted.
 		 */
 		void SelectNone ();
-
-		/** @brief Notifies CategorySelector about logical selection changes.
-		 *
-		 * This slot is usually used to notify CategorySelector about
-		 * selection changes done via a related widget - for example, a line
-		 * edit with tags.
-		 *
-		 * @param[in] newText The text of the line edit.
-		 */
-		void SetSelectionsFromString (const QString& newText);
-	protected:
-		/** @brief Checks whether after the move event the selector
-		 * won't be beoynd the screen. if it would, moves back.
-		 */
-		void moveEvent (QMoveEvent*) override;
-	private:
-		/** @brief Emits selectionChanged() to notify about selection changes.
-		 */
-		void NotifyTagsSelection ();
-
-		[[nodiscard]] Util::DefaultScopeGuard DisableNotifications (bool reemit = true);
 	signals:
-		/** @brief Indicates that selections have changed.
+		/** @brief Emitted after the user has changed the selection, with `GetSelections()`.
 		 *
-		 * @param[out] newSelections Selected items.
+		 * This signal is not emitted on programmatic selection changes.
 		 */
-		void tagsSelectionChanged (const QStringList& newSelections);
+		void selectionEdited (const QStringList& selected);
 	};
 }

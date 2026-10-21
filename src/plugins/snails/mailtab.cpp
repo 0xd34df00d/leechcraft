@@ -23,6 +23,7 @@
 #include <util/util.h>
 #include <util/models/util.h>
 #include <util/tags/categoryselector.h>
+#include <util/tags/categoryselectorwindow.h>
 #include <util/sys/extensionsdata.h>
 #include <util/sll/urloperator.h>
 #include <util/sll/qtutil.h>
@@ -819,27 +820,26 @@ namespace Snails
 	{
 		QList<QStringList> RunSelectFolders (const QList<Folder>& folders, const QString& title)
 		{
-			Util::CategorySelector sel;
-			sel.setWindowTitle (title);
-			sel.SetCaption (MailTab::tr ("Folders"));
+			constexpr auto pathRole = Qt::UserRole;
 
-			QStringList folderNames;
-			QList<QStringList> folderPaths;
+			QStandardItemModel model;
 			for (const auto& folder : folders)
 			{
-				folderNames << folder.Path_.join ("/");
-				folderPaths << folder.Path_;
+				const auto item = new QStandardItem { folder.Path_.join ("/") };
+				item->setData (folder.Path_, pathRole);
+				model.appendRow (item);
 			}
 
-			sel.SetPossibleSelections (folderNames, false);
-			sel.SetButtonsMode (Util::CategorySelector::ButtonsMode::AcceptReject);
-
-			if (sel.exec () != QDialog::Accepted)
+			Util::CategorySelectorWindow dia { Util::CategorySelectorWindow::Buttons::AcceptReject };
+			dia.setWindowTitle (title);
+			dia.Selector ().SetCaption (MailTab::tr ("Folders"));
+			dia.Selector ().SetModel (model);
+			if (dia.exec () != QDialog::Accepted)
 				return {};
 
 			QList<QStringList> selectedPaths;
-			for (const auto index : sel.GetSelectedIndexes ())
-				selectedPaths << folderPaths [index];
+			for (const auto& index : dia.Selector ().GetSelectedIndexes ())
+				selectedPaths << index.data (pathRole).toStringList ();
 			return selectedPaths;
 		}
 	}

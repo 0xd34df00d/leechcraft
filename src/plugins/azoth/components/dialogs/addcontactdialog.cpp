@@ -8,7 +8,7 @@
 
 #include "addcontactdialog.h"
 #include <QStringListModel>
-#include <util/tags/tagscompleter.h>
+#include <util/tags/tagseditoraddon.h>
 #include "interfaces/azoth/iprotocol.h"
 #include "interfaces/azoth/iaccount.h"
 #include "core.h"
@@ -22,9 +22,7 @@ namespace Azoth
 	{
 		Ui_.setupUi (this);
 
-		const auto tc = new Util::TagsCompleter (Ui_.Groups_);
-		tc->OverrideModel (new QStringListModel (Core::Instance ().GetChatGroups (), this));
-		Ui_.Groups_->AddSelector ();
+		new Util::TagsEditorAddon { *Ui_.Groups_, *new QStringListModel { Core::Instance ().GetChatGroups (), this } };
 
 		for (const auto proto : Core::Instance ().GetProtocols ())
 			Ui_.Protocol_->addItem (proto->GetProtocolName (), QVariant::fromValue<IProtocol*> (proto));

@@ -9,6 +9,7 @@
 #ifndef PLUGINS_AZOTH_GROUPEDITORDIALOG_H
 #define PLUGINS_AZOTH_GROUPEDITORDIALOG_H
 #include <QDialog>
+#include <util/tags/tagseditoraddon.h>
 #include "ui_groupeditordialog.h"
 
 namespace LC
@@ -18,6 +19,7 @@ namespace Azoth
 	class GroupEditorDialog : public QDialog
 	{
 		Ui::GroupEditorDialog Ui_;
+		Util::TagsEditorAddon *Groups_ = nullptr;
 	public:
 		GroupEditorDialog (const QStringList& initial,
 				const QStringList& all, QWidget* = 0);

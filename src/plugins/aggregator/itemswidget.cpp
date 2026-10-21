@@ -118,13 +118,17 @@ namespace LC::Aggregator
 		Util::SetupStateSaver (*Impl_->Ui_.CategoriesSplitter_,
 				{ .XSM_ = XmlSettingsManager::Instance (), .Id_ = "CategoriesSplitter", .Initial_ = Util::Factors { 4, 1 } });
 		connect (Impl_->ItemCategorySelector_.get (),
-				&Util::CategorySelector::tagsSelectionChanged,
+				&Util::CategorySelector::selectionEdited,
 				Impl_->ItemsFilterModel_.get (),
 				&ItemsFilterModel::InvalidateCategorySelection);
 		connect (&Impl_->CategoriesTracker_,
 				&ItemsCategoriesTracker::categoriesChanged,
 				this,
-				[this] (const QStringList& selections) { Impl_->ItemCategorySelector_->SetPossibleSelections (selections); });
+				[this] (const QStringList& categories)
+				{
+					Impl_->ItemCategorySelector_->SetCategories (categories);
+					Impl_->ItemsFilterModel_->InvalidateCategorySelection (Impl_->ItemCategorySelector_->GetSelections ());
+				});
 
 		XmlSettingsManager::Instance ().RegisterObject ("ShowNavBarInItemsView", this,
 				[this] (bool visible) { Impl_->Ui_.ItemView_->SetNavBarVisible (visible); });

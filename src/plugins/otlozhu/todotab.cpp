@@ -14,8 +14,10 @@
 #include <QFileDialog>
 #include <util/util.h>
 #include <util/xpc/util.h>
-#include <util/tags/tagscompleter.h>
+#include <util/tags/tagseditoraddon.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/itagsmanager.h>
 #include "core.h"
 #include "todomanager.h"
 #include "addtododialog.h"
@@ -43,8 +45,7 @@ namespace Otlozhu
 	{
 		Ui_.setupUi (this);
 
-		new Util::TagsCompleter (Ui_.FilterLine_);
-		Ui_.FilterLine_->AddSelector ();
+		const auto filterTags = new Util::TagsEditorAddon { *Ui_.FilterLine_, *GetProxyHolder ()->GetTagsManager () };
 
 		Ui_.TodoTree_->setItemDelegate (new TodoListDelegate (Ui_.TodoTree_));
 
@@ -58,8 +59,8 @@ namespace Otlozhu
 				&QLineEdit::textChanged,
 				ProxyModel_,
 				[this] { ProxyModel_->SetTagsMode (false); });
-		connect (Ui_.FilterLine_,
-				&Util::TagsLineEdit::tagsChosen,
+		connect (filterTags,
+				&Util::TagsEditorAddon::tagPicked,
 				ProxyModel_,
 				[this] { ProxyModel_->SetTagsMode (true); });
 		Ui_.TodoTree_->setModel (ProxyModel_);

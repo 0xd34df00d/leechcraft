@@ -10,8 +10,10 @@
 #include <QAbstractItemView>
 #include <QStyle>
 #include <QDateTimeEdit>
-#include <util/tags/tagslineedit.h>
-#include <util/tags/tagscompleter.h>
+#include <QLineEdit>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/itagsmanager.h>
+#include <util/tags/tagseditoraddon.h>
 #include "storagemodel.h"
 #include "xmlsettingsmanager.h"
 
@@ -32,9 +34,8 @@ namespace Otlozhu
 		{
 		case StorageModel::Columns::Tags:
 		{
-			auto edit = new Util::TagsLineEdit (parent);
-			new Util::TagsCompleter (edit);
-			edit->AddSelector ();
+			auto edit = new QLineEdit (parent);
+			new Util::TagsEditorAddon { *edit, *GetProxyHolder ()->GetTagsManager () };
 			edit->setText (index.data (Qt::EditRole).toString ());
 			edit->setFrame (false);
 			return edit;

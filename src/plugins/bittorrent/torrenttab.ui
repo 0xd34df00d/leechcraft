@@ -20,7 +20,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="LC::Util::TagsLineEdit" name="SearchLine_">
+      <widget class="QLineEdit" name="SearchLine_">
        <property name="placeholderText">
         <string>Search...</string>
        </property>
@@ -85,11 +85,6 @@
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>LC::Util::TagsLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header location="global">util/tags/tagslineedit.h</header>
-  </customwidget>
   <customwidget>
    <class>LC::BitTorrent::TorrentTabWidget</class>
    <extends>QWidget</extends>

@@ -40,8 +40,7 @@ namespace LC::Aggregator
 					*this
 				});
 
-		Ui_.CategoriesSelector_->setMinimumHeight (0);
-		Ui_.CategoriesSelector_->setWindowFlags (Qt::Widget);
+		Ui_.CategoriesSelector_->SetModel (Categories_);
 
 		Ui_.ChannelsTree_->setModel (&*ChannelsModel_);
 		Ui_.ChannelsTree_->header ()->resizeSections (QHeaderView::ResizeToContents);
@@ -199,7 +198,7 @@ namespace LC::Aggregator
 	{
 		const auto unreadOnly = Ui_.UnreadOnly_->checkState () == Qt::Checked;
 		const auto& checked = ChannelsModel_->GetChecked ();
-		Ui_.CategoriesSelector_->SetPossibleSelections (CatsFromIndexes (checked, unreadOnly));
+		Categories_.setStringList (CatsFromIndexes (checked, unreadOnly));
 		Ui_.CategoriesSelector_->SelectAll ();
 
 		if (!TitleBeenModified_ && checked.size () == 1)

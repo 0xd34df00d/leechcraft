@@ -7,7 +7,10 @@
  **********************************************************************/
 
 #include "tagsasker.h"
-#include <util/tags/tagscompleter.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/itagsmanager.h>
+#include <util/tags/tagseditoraddon.h>
+#include "core.h"
 
 namespace LC::SeekThru
 {
@@ -15,8 +18,7 @@ namespace LC::SeekThru
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
-		new Util::TagsCompleter (Ui_.Tags_);
-		Ui_.Tags_->AddSelector ();
+		new Util::TagsEditorAddon { *Ui_.Tags_, *Core::Instance ().GetProxy ()->GetTagsManager () };
 		Ui_.Tags_->setText (text);
 	}
 

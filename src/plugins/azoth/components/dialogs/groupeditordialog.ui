@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="LC::Util::TagsLineEdit" name="CategoriesLineEdit_"/>
+    <widget class="QLineEdit" name="CategoriesEdit_"/>
    </item>
    <item>
     <widget class="LC::Util::CategorySelector" name="GroupsSelector_" native="true"/>
@@ -46,11 +46,6 @@
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>LC::Util::TagsLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header location="global">util/tags/tagslineedit.h</header>
-  </customwidget>
   <customwidget>
    <class>LC::Util::CategorySelector</class>
    <extends>QWidget</extends>

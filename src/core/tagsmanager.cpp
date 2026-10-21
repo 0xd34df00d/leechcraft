@@ -11,7 +11,6 @@
 #include <QStringList>
 #include <QtDebug>
 #include <util/sll/qtutil.h>
-#include <util/tags/tagscompleter.h>
 #include <util/tags/util.h>
 
 using namespace LC;
@@ -23,8 +22,6 @@ TagsManager::TagsManager ()
 	MigrateStoredNames ();
 
 	GetID (tr ("untagged"));
-
-	Util::TagsCompleter::SetModel (GetModel ());
 }
 
 TagsManager& TagsManager::Instance ()

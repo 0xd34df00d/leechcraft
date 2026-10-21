@@ -8,9 +8,6 @@
 
 #include "groupeditordialog.h"
 #include <QStringListModel>
-#include <util/tags/tagscompleter.h>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/core/itagsmanager.h>
 
 namespace LC
 {
@@ -23,20 +20,15 @@ namespace Azoth
 	{
 		Ui_.setupUi (this);
 
-		Ui_.GroupsSelector_->setWindowFlags (Qt::Widget);
-		Ui_.GroupsSelector_->SetPossibleSelections (allGroups);
-		Ui_.GroupsSelector_->SetSelections (initial);
-
-		const auto tc = new Util::TagsCompleter (Ui_.CategoriesLineEdit_);
-		tc->OverrideModel (new QStringListModel (allGroups, this));
-
-		Ui_.CategoriesLineEdit_->AddSelector (Ui_.GroupsSelector_);
+		const auto model = new QStringListModel { allGroups, this };
+		Groups_ = new Util::TagsEditorAddon { *Ui_.CategoriesEdit_, *model, Util::TagsEditorAddon::Flag::NoSelectorButton };
+		Groups_->BindSelector (*Ui_.GroupsSelector_);
+		Groups_->SetTags (initial);
 	}
 
 	QStringList GroupEditorDialog::GetGroups () const
 	{
-		const auto& text = Ui_.CategoriesLineEdit_->text ();
-		return GetProxyHolder ()->GetTagsManager ()->Split (text);
+		return Groups_->GetTags ();
 	}
 }
 }

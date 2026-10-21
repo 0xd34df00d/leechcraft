@@ -7,31 +7,26 @@
  **********************************************************************/
 
 #include "categoryselector.h"
-#include <algorithm>
-#include <QStringList>
-#include <QCheckBox>
-#include <QVariant>
-#include <QVBoxLayout>
-#include <QMoveEvent>
-#include <QStringListModel>
 #include <QAction>
-#include <QtDebug>
-#include "ui_categoryselector.h"
-#include "util.h"
+#include <QSet>
+#include <QSortFilterProxyModel>
+#include <QTreeView>
+#include <QVBoxLayout>
 
 namespace LC::Util
 {
-	class CategorySelector::SelectorTagsModel : public QStringListModel
+	class CategorySelector::CheckableModel final : public QSortFilterProxyModel
 	{
 		CategorySelector& Selector_;
-		QSet<int> SelectedRows_;
-
-		QString Header_;
+		QSet<QString> Selected_;
+		QString Caption_;
 	public:
-		explicit SelectorTagsModel (CategorySelector& selector)
-		: QStringListModel { &selector }
+		explicit CheckableModel (CategorySelector& selector)
+		: QSortFilterProxyModel { &selector }
 		, Selector_ { selector }
 		{
+			setSortCaseSensitivity (Qt::CaseInsensitive);
+			sort (0);
 		}
 
 		QVariant headerData (int section, Qt::Orientation orientation, int role) const override
@@ -39,213 +34,168 @@ namespace LC::Util
 			if (role != Qt::DisplayRole || orientation != Qt::Horizontal || section)
 				return {};
 
-			return Header_;
+			return Caption_;
 		}
 
 		Qt::ItemFlags flags (const QModelIndex& index) const override
 		{
-			return (QStringListModel::flags (index) & ~Qt::ItemIsEditable) | Qt::ItemIsUserCheckable;
+			const auto flags = QSortFilterProxyModel::flags (index);
+			if (!index.isValid () || index.column ())
+				return flags;
+
+			return (flags & ~Qt::ItemIsEditable) | Qt::ItemIsUserCheckable;
 		}
 
 		QVariant data (const QModelIndex& index, int role) const override
 		{
-			if (role == Qt::CheckStateRole)
-				return SelectedRows_.contains (index.row ()) ? Qt::Checked : Qt::Unchecked;
+			if (role != Qt::CheckStateRole)
+				return QSortFilterProxyModel::data (index, role);
 
-			return QStringListModel::data (index, role);
+			if (!index.isValid () || index.column ())
+				return {};
+
+			return Selected_.contains (Name (index)) ? Qt::Checked : Qt::Unchecked;
 		}
 
 		bool setData (const QModelIndex& index, const QVariant& value, int role) override
 		{
-			if (role != Qt::CheckStateRole)
+			if (role != Qt::CheckStateRole || !index.isValid () || index.column ())
 				return false;
 
+			const auto& name = Name (index);
 			if (value.value<Qt::CheckState> () == Qt::Checked)
-				SelectedRows_ << index.row ();
+				Selected_ << name;
 			else
-				SelectedRows_.remove (index.row ());
+				Selected_.remove (name);
 			emit dataChanged (index, index, { Qt::CheckStateRole });
-			Selector_.NotifyTagsSelection ();
+
+			emit Selector_.selectionEdited (Selector_.GetSelections ());
 			return true;
+		}
+
+		QStringList Selections () const
+		{
+			QStringList result;
+			for (int row = 0; row < rowCount (); ++row)
+				if (const auto& name = Name (index (row, 0)); Selected_.contains (name))
+					result << name;
+			return result;
+		}
+
+		QModelIndexList SelectedIndexes () const
+		{
+			QModelIndexList result;
+			for (int row = 0; row < rowCount (); ++row)
+				if (const auto& idx = index (row, 0); Selected_.contains (Name (idx)))
+					result << mapToSource (idx);
+			return result;
+		}
+
+		void SetSelected (const QStringList& names)
+		{
+			Selected_ = { names.begin (), names.end () };
+			NotifyAll ();
 		}
 
 		void SelectAll ()
 		{
-			const int size = stringList ().size ();
-			if (!size)
-				return;
-
-			SelectedRows_.reserve (size);
-			for (int i = 0; i < size; ++i)
-				SelectedRows_ << i;
-
-			emit dataChanged (index (0), index (size - 1), { Qt::CheckStateRole });
-
-			Selector_.NotifyTagsSelection ();
+			Selected_.clear ();
+			for (int row = 0; row < rowCount (); ++row)
+				Selected_ << Name (index (row, 0));
+			NotifyAll ();
 		}
 
 		void SelectNone ()
 		{
-			const int size = stringList ().size ();
-			if (!size)
-				return;
-
-			SelectedRows_.clear ();
-			emit dataChanged (index (0), index (size - 1), { Qt::CheckStateRole });
-
-			Selector_.NotifyTagsSelection ();
+			Selected_.clear ();
+			NotifyAll ();
 		}
 
-		void SetHeader (QString header)
+		void SetCaption (const QString& caption)
 		{
-			if (header == Header_)
+			if (caption == Caption_)
 				return;
 
-			Header_ = std::move (header);
+			Caption_ = caption;
 			emit headerDataChanged (Qt::Horizontal, 0, 0);
+		}
+	private:
+		QString Name (const QModelIndex& index) const
+		{
+			return index.siblingAtColumn (0).data ().toString ();
+		}
+
+		void NotifyAll ()
+		{
+			if (const auto rows = rowCount ())
+				emit dataChanged (index (0, 0), index (rows - 1, 0), { Qt::CheckStateRole });
 		}
 	};
 
 	CategorySelector::CategorySelector (QWidget *parent)
-	: QDialog (parent)
-	, Ui_ { new Ui::CategorySelector }
-	, Model_ { *new SelectorTagsModel { *this } }
-	, Separator_ { GetDefaultTagsSeparator () }
+	: QWidget { parent }
+	, Model_ { *new CheckableModel { *this } }
+	, View_ { *new QTreeView { this } }
 	{
-		setWindowTitle (tr ("Tags selector"));
-		setWindowFlags (Qt::Dialog | Qt::WindowStaysOnTopHint);
+		View_.setModel (&Model_);
+		View_.setUniformRowHeights (true);
+		View_.setRootIsDecorated (false);
+		View_.setHeaderHidden (true);
+		View_.setContextMenuPolicy (Qt::ActionsContextMenu);
 
-		Ui_->setupUi (this);
-		Ui_->Tree_->setModel (&Model_);
-
-		const auto& avail = screen ()->availableGeometry ();
-		setMinimumHeight (avail.height () / 3 * 2);
-
-		const auto all = new QAction (tr ("Select all"), this);
+		const auto all = new QAction { tr ("Select all"), this };
 		all->setProperty ("ActionIcon", "edit-select-all");
 		connect (all,
 				&QAction::triggered,
 				this,
-				&CategorySelector::SelectAll);
+				[this]
+				{
+					Model_.SelectAll ();
+					emit selectionEdited (GetSelections ());
+				});
 
-		const auto none = new QAction (tr ("Select none"), this);
+		const auto none = new QAction { tr ("Select none"), this };
 		none->setProperty ("ActionIcon", "edit-select-none");
 		connect (none,
 				&QAction::triggered,
 				this,
-				&CategorySelector::SelectNone);
+				[this]
+				{
+					Model_.SelectNone ();
+					emit selectionEdited ({});
+				});
 
-		Ui_->Tree_->addAction (all);
-		Ui_->Tree_->addAction (none);
+		View_.addActions ({ all, none });
 
-		Ui_->Tree_->setContextMenuPolicy (Qt::ActionsContextMenu);
+		const auto layout = new QVBoxLayout { this };
+		layout->setContentsMargins (0, 0, 0, 0);
+		layout->addWidget (&View_);
+	}
 
-		SetButtonsMode (parent ? ButtonsMode::NoButtons : ButtonsMode::Close);
+	void CategorySelector::SetModel (QAbstractItemModel& model)
+	{
+		Model_.setSourceModel (&model);
 	}
 
 	void CategorySelector::SetCaption (const QString& caption)
 	{
-		Model_.SetHeader (caption);
-	}
-
-	void CategorySelector::SetPossibleSelections (QStringList tags, bool sort)
-	{
-		auto guard = DisableNotifications (false);
-
-		if (sort)
-			tags.sort ();
-		Model_.setStringList (tags);
-		Model_.SelectNone ();
-	}
-
-	QStringList CategorySelector::GetPossibleSelections () const
-	{
-		return Model_.stringList ();
+		Model_.SetCaption (caption);
+		View_.setHeaderHidden (caption.isEmpty ());
 	}
 
 	QStringList CategorySelector::GetSelections () const
 	{
-		const auto& allTags = Model_.stringList ();
-		const auto& selectedIdxes = GetSelectedIndexes ();
-		QStringList selected;
-		selected.reserve (selectedIdxes.size ());
-		for (const auto idx : selectedIdxes)
-			selected << allTags [idx];
-		return selected;
+		return Model_.Selections ();
 	}
 
-	QList<int> CategorySelector::GetSelectedIndexes () const
+	QModelIndexList CategorySelector::GetSelectedIndexes () const
 	{
-		QList<int> result;
-
-		const auto& rowCount = Model_.stringList ().size ();
-		for (int i = 0; i < rowCount; ++i)
-		{
-			const auto state = Model_.index (i).data (Qt::CheckStateRole).value<Qt::CheckState> ();
-			if (state == Qt::Checked)
-				result << i;
-		}
-
-		return result;
+		return Model_.SelectedIndexes ();
 	}
 
-	void CategorySelector::SetSelections (const QStringList& tags)
+	void CategorySelector::SetSelections (const QStringList& names)
 	{
-		auto guard = DisableNotifications (false);
-
-		const auto& allTags = Model_.stringList ();
-		const auto rowCount = allTags.size ();
-		for (int i = 0; i < rowCount; ++i)
-		{
-			const auto state = tags.contains (allTags [i]) ?
-					Qt::Checked :
-					Qt::Unchecked;
-			Model_.setData (Model_.index (i), state, Qt::CheckStateRole);
-		}
-	}
-
-	QString CategorySelector::GetSeparator () const
-	{
-		return Separator_;
-	}
-
-	void CategorySelector::SetSeparator (const QString& sep)
-	{
-		Separator_ = sep;
-	}
-
-	void CategorySelector::SetButtonsMode (ButtonsMode mode)
-	{
-		switch (mode)
-		{
-		case ButtonsMode::NoButtons:
-			Ui_->ButtonsBox_->setVisible (false);
-			break;
-		case ButtonsMode::Close:
-			Ui_->ButtonsBox_->setStandardButtons (QDialogButtonBox::Close);
-			Ui_->ButtonsBox_->setVisible (true);
-			break;
-		case ButtonsMode::AcceptReject:
-			Ui_->ButtonsBox_->setStandardButtons (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-			Ui_->ButtonsBox_->setVisible (true);
-			break;
-		}
-	}
-
-	void CategorySelector::moveEvent (QMoveEvent *e)
-	{
-		QWidget::moveEvent (e);
-		QPoint pos = e->pos ();
-		QRect avail = screen ()->availableGeometry ();
-		int dx = 0, dy = 0;
-		if (pos.x () + width () > avail.width ())
-			dx = width () + pos.x () - avail.width ();
-		if (pos.y () + height () > avail.height () &&
-				height () < avail.height ())
-			dy = height () + pos.y () - avail.height ();
-
-		if (dx || dy)
-			move (pos - QPoint (dx, dy));
+		Model_.SetSelected (names);
 	}
 
 	void CategorySelector::SelectAll ()
@@ -256,29 +206,5 @@ namespace LC::Util
 	void CategorySelector::SelectNone ()
 	{
 		Model_.SelectNone ();
-	}
-
-	void CategorySelector::SetSelectionsFromString (const QString& text)
-	{
-		auto guard = DisableNotifications (false);
-		SetSelections (SplitTags (text, Separator_));
-	}
-
-	void CategorySelector::NotifyTagsSelection ()
-	{
-		if (NotificationsEnabled_)
-			emit tagsSelectionChanged (GetSelections ());
-	}
-
-	DefaultScopeGuard CategorySelector::DisableNotifications (bool reemit)
-	{
-		auto prevValue = NotificationsEnabled_;
-		NotificationsEnabled_ = false;
-		return MakeScopeGuard ([this, prevValue, reemit]
-				{
-					NotificationsEnabled_ = prevValue;
-					if (reemit)
-						NotifyTagsSelection ();
-				});
 	}
 }

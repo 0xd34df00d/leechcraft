@@ -20,7 +20,6 @@
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
-#include <util/tags/tagscompleter.h>
 #include <util/util.h>
 #include <util/sll/qtutil.h>
 #include <util/shortcuts/shortcutmanager.h>

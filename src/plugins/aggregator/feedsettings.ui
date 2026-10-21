@@ -146,7 +146,7 @@
              </widget>
             </item>
             <item row="0" column="1">
-             <widget class="LC::Util::TagsLineEdit" name="ChannelTags_"/>
+             <widget class="QLineEdit" name="ChannelTags_"/>
             </item>
            </layout>
           </item>
@@ -256,7 +256,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="LC::Util::TagsLineEdit" name="FeedTags_"/>
+           <widget class="QLineEdit" name="FeedTags_"/>
           </item>
          </layout>
         </widget>
@@ -290,13 +290,6 @@
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>LC::Util::TagsLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header location="global">util/tags/tagslineedit.h</header>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>tabWidget</tabstop>
   <tabstop>ChannelTags_</tabstop>

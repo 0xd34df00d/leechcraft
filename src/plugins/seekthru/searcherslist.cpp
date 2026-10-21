@@ -10,8 +10,9 @@
 #include <QInputDialog>
 #include <QMenu>
 #include <util/tags/tagschange.h>
-#include <util/tags/tagscompleter.h>
+#include <util/tags/tagseditoraddon.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
 #include "core.h"
@@ -22,10 +23,9 @@ namespace LC::SeekThru
 	: QWidget { parent }
 	{
 		Ui_.setupUi (this);
-		new Util::TagsCompleter (Ui_.Tags_);
-		Ui_.Tags_->AddSelector ();
-		connect (Ui_.Tags_,
-				&Util::TagsLineEdit::tagsEdited,
+		SearcherTags_ = new Util::TagsEditorAddon { *Ui_.Tags_, *proxy->GetTagsManager () };
+		connect (SearcherTags_,
+				&Util::TagsEditorAddon::tagsCommitted,
 				this,
 				[this] (const Util::TagsChange& change)
 				{
@@ -68,7 +68,7 @@ namespace LC::SeekThru
 		else
 			Ui_.LongName_->setText (longName);
 
-		Ui_.Tags_->SetTags (current.data (Core::RoleTags).toStringList ());
+		SearcherTags_->SetTags (current.data (Core::RoleTags).toStringList ());
 
 		QString contact = current.data (Core::RoleContact).toString ();
 		if (contact.isEmpty ())

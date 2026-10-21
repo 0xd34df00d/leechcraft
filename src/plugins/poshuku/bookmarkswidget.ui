@@ -20,7 +20,7 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
-      <widget class="LC::Util::TagsLineEdit" name="FavoritesFilterLine_"/>
+      <widget class="QLineEdit" name="FavoritesFilterLine_"/>
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -91,11 +91,6 @@
   </action>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>LC::Util::TagsLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header location="global">util/tags/tagslineedit.h</header>
-  </customwidget>
   <customwidget>
    <class>LC::Poshuku::FavoritesTreeView</class>
    <extends>QTreeView</extends>

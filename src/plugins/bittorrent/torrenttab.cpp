@@ -10,7 +10,7 @@
 #include <cmath>
 #include <QToolBar>
 #include <QMenu>
-#include <util/tags/tagscompleter.h>
+#include <util/tags/tagseditoraddon.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/gui/lineeditbuttonmanager.h>
 #include <util/gui/progressdelegate.h>
@@ -18,6 +18,7 @@
 #include <util/sll/prelude.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/itagsmanager.h>
 #include "components/models/tabviewproxymodel.h"
 #include "movetorrentfiles.h"
 #include "xmlsettingsmanager.h"
@@ -85,8 +86,13 @@ namespace LC::BitTorrent
 				fm.horizontalAdvance (QStringLiteral ("boardwalk.empire.s03e02.hdtv.720p.ac3.rus.eng.novafilm.tv.mkv")) * 1.3);
 
 		auto buttonMgr = new Util::LineEditButtonManager (Ui_.SearchLine_);
-		new Util::TagsCompleter (Ui_.SearchLine_);
-		Ui_.SearchLine_->AddSelector (buttonMgr);
+		const auto searchTags = new Util::TagsEditorAddon
+		{
+			*Ui_.SearchLine_,
+			*GetProxyHolder ()->GetTagsManager (),
+			Util::TagsEditorAddon::Flag::NoSelectorButton
+		};
+		searchTags->AddSelectorButton (buttonMgr);
 		new Util::ClearLineEditAddon (GetProxyHolder (), Ui_.SearchLine_, buttonMgr);
 		connect (Ui_.SearchLine_,
 				&QLineEdit::textChanged,

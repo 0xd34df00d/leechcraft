@@ -7,7 +7,8 @@
  **********************************************************************/
 
 #include "favoritesdelegate.h"
-#include <util/tags/tagslineedit.h>
+#include <QLineEdit>
+#include <util/tags/tagseditoraddon.h>
 #include <util/tags/tagscompletionmodel.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
@@ -19,9 +20,6 @@ namespace LC
 {
 namespace Poshuku
 {
-	using LC::Util::TagsCompleter;
-	using LC::Util::TagsLineEdit;
-
 	FavoritesDelegate::FavoritesDelegate (QObject *parent)
 	: QItemDelegate (parent)
 	{
@@ -33,10 +31,9 @@ namespace Poshuku
 		if (index.column () != FavoritesModel::ColumnTags)
 			return QItemDelegate::createEditor (parent, opt, index);
 
-		TagsLineEdit *tle = new TagsLineEdit (parent);
-		TagsCompleter_.reset (new TagsCompleter (tle));
-		tle->AddSelector ();
-		return tle;
+		const auto edit = new QLineEdit (parent);
+		new Util::TagsEditorAddon { *edit, *Core::Instance ().GetProxy ()->GetTagsManager () };
+		return edit;
 	}
 
 	void FavoritesDelegate::setEditorData (QWidget *editor,
@@ -50,7 +47,7 @@ namespace Poshuku
 
 		auto itm = Core::Instance ().GetProxy ()->GetTagsManager ();
 		const auto& tags = index.data (+CustomDataRoles::Tags).toStringList ();
-		static_cast<TagsLineEdit*> (editor)->setText (itm->Join (itm->GetTags (tags)));
+		static_cast<QLineEdit*> (editor)->setText (itm->Join (itm->GetTags (tags)));
 	}
 
 	void FavoritesDelegate::setModelData (QWidget *editor,
@@ -62,7 +59,7 @@ namespace Poshuku
 			return;
 		}
 
-		auto tags = Core::Instance ().GetProxy ()->GetTagsManager ()->Split (static_cast<TagsLineEdit*> (editor)->text ());
+		auto tags = Core::Instance ().GetProxy ()->GetTagsManager ()->Split (static_cast<QLineEdit*> (editor)->text ());
 		model->setData (index, tags);
 	}
 

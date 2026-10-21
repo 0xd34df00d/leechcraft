@@ -11,6 +11,7 @@
 #include <memory>
 #include <QTabWidget>
 #include <QModelIndex>
+#include <util/tags/tagseditoraddon.h>
 #include "ui_torrenttabwidget.h"
 
 class QAbstractItemModel;
@@ -30,6 +31,7 @@ namespace LC::BitTorrent
 		Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::TorrentTabWidget)
 
 		Ui::TorrentTabWidget Ui_;
+		Util::TagsEditorAddon *TorrentTags_ = nullptr;
 		QAction *RemoveWebSeedAction_;
 
 		QModelIndex Index_;

@@ -12,7 +12,8 @@
 #include <QToolBar>
 #include <QMenu>
 #include <util/shortcuts/shortcutmanager.h>
-#include <util/tags/tagscompleter.h>
+#include <util/tags/categoryselector.h>
+#include <util/tags/tagseditoraddon.h>
 #include <util/util.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/gui/lineeditbuttonmanager.h>
@@ -45,17 +46,14 @@ namespace LackMan
 
 		auto searchLineButtonMgr = new Util::LineEditButtonManager { Ui_.SearchLine_ };
 
-		auto tc = new Util::TagsCompleter (Ui_.SearchLine_);
-		tc->OverrideModel (TagsModel_);
+		SearchTags_ = new Util::TagsEditorAddon { *Ui_.SearchLine_, *TagsModel_, Util::TagsEditorAddon::Flag::NoSelectorButton };
 
 		new Util::ClearLineEditAddon { Core::Instance ().GetProxy (), Ui_.SearchLine_, searchLineButtonMgr };
 
 		auto selector = new Util::CategorySelector ();
-		selector->setWindowFlags ({});
-		selector->setMinimumHeight (0);
 		selector->SetCaption (tr ("Package tags"));
 		selector->setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Expanding);
-		Ui_.SearchLine_->AddSelector (selector);
+		SearchTags_->BindSelector (*selector);
 		Ui_.SearchLayout_->addWidget (selector);
 		Ui_.SearchSplitter_->setStretchFactor (0, 2);
 		Ui_.SearchSplitter_->setStretchFactor (1, 9);
@@ -154,7 +152,7 @@ namespace LackMan
 		const auto& filter = Core::Instance ().GetProxy ()->GetTagsManager ()->Join (tags);
 		FilterString_->SetFilterString (filter);
 
-		Ui_.SearchLine_->SetTags (tags);
+		SearchTags_->SetTags (tags);
 	}
 
 	void LackManTab::SetFilterString (const QString& string)

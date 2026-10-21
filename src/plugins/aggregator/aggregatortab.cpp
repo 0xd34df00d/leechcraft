@@ -11,11 +11,12 @@
 #include <QKeyEvent>
 #include <QMenu>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/itagsmanager.h>
 #include <util/gui/statesaver.h>
 #include <util/gui/util.h>
 #include <util/models/flattofoldersproxymodel.h>
 #include <util/sll/qtutil.h>
-#include <util/tags/tagscompleter.h>
+#include <util/tags/tagseditoraddon.h>
 #include <util/util.h>
 #include <util/sll/prelude.h>
 #include "components/actions/appwideactions.h"
@@ -75,8 +76,7 @@ namespace LC::Aggregator
 				ChannelsFilterModel_,
 				&ChannelsFilterModel::SetFilterString);
 
-		new Util::TagsCompleter (Ui_.TagsLine_);
-		Ui_.TagsLine_->AddSelector ();
+		new Util::TagsEditorAddon { *Ui_.TagsLine_, *GetProxyHolder ()->GetTagsManager () };
 
 		Ui_.MainSplitter_->setStretchFactor (0, 5);
 		Ui_.MainSplitter_->setStretchFactor (1, 9);

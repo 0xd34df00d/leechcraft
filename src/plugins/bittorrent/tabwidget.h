@@ -12,6 +12,7 @@
 #include <QAction>
 #include <QCoreApplication>
 #include <QModelIndex>
+#include <util/tags/tagseditoraddon.h>
 #include "ui_tabwidget.h"
 
 namespace libtorrent
@@ -35,6 +36,8 @@ namespace LC::BitTorrent
 		QAbstractItemModel& Model_;
 
 		QModelIndex Torrent_;
+
+		Util::TagsEditorAddon *TorrentTags_ = nullptr;
 	public:
 		explicit TabWidget (QAbstractItemModel&, libtorrent::session&, SessionSettingsManager&, QWidget* = nullptr);
 

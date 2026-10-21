@@ -11,6 +11,7 @@
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaverecoverabletabs.h>
+#include <util/tags/tagseditoraddon.h>
 #include "ui_lackmantab.h"
 
 class QStringListModel;
@@ -41,6 +42,7 @@ namespace LackMan
 		Util::ShortcutManager * const ShortcutMgr_;
 
 		QStringListModel * const TagsModel_;
+		Util::TagsEditorAddon *SearchTags_ = nullptr;
 
 		StringFilterModel * const FilterString_;
 		TypeFilterProxyModel * const TypeFilter_;

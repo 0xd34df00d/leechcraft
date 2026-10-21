@@ -17,7 +17,7 @@
 #include <util/util.h>
 #include <util/gui/util.h>
 #include <util/sll/prelude.h>
-#include <util/tags/tagscompleter.h>
+#include <util/tags/tagseditoraddon.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "components/models/addtorrentfilesmodel.h"
@@ -32,8 +32,7 @@ namespace LC::BitTorrent
 	{
 		Ui_.setupUi (this);
 
-		new Util::TagsCompleter { Ui_.TagsEdit_ };
-		Ui_.TagsEdit_->AddSelector ();
+		new Util::TagsEditorAddon { *Ui_.TagsEdit_, *GetProxyHolder ()->GetTagsManager () };
 
 		ProxyModel_->setSourceModel (FilesModel_);
 		ProxyModel_->setSortRole (AddTorrentFilesModel::RoleSort);

@@ -8,9 +8,7 @@
 
 #ifndef PLUGINS_POSHUKU_FAVORITESDELEGATE_H
 #define PLUGINS_POSHUKU_FAVORITESDELEGATE_H
-#include <memory>
 #include <QItemDelegate>
-#include <util/tags/tagscompleter.h>
 
 namespace LC
 {
@@ -19,8 +17,6 @@ namespace Poshuku
 	class FavoritesDelegate : public QItemDelegate
 	{
 		Q_OBJECT
-
-		mutable std::unique_ptr<Util::TagsCompleter> TagsCompleter_;
 	public:
 		FavoritesDelegate (QObject* = 0);
 

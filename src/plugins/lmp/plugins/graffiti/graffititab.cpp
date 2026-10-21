@@ -19,7 +19,7 @@
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
 #include <util/tags/tagscompletionmodel.h>
-#include <util/tags/tagscompleter.h>
+#include <util/tags/tagseditoraddon.h>
 #include <util/xpc/util.h>
 #include <util/sll/either.h>
 #include <util/sll/prelude.h>
@@ -165,14 +165,10 @@ namespace LC::LMP::Graffiti
 
 	void GraffitiTab::SetupEdits ()
 	{
-		Ui_.Genre_->SetSeparator (QStringLiteral (" / "));
-
 		auto model = new Util::TagsCompletionModel (this);
 		model->UpdateTags (Util::Map (Lits::Genres, [] (const QByteArray& ba) { return QString::fromUtf8 (ba); }));
-		auto completer = new Util::TagsCompleter (Ui_.Genre_);
-		completer->OverrideModel (model);
-
-		Ui_.Genre_->AddSelector ();
+		const auto genres = new Util::TagsEditorAddon { *Ui_.Genre_, *model };
+		genres->SetSeparator (QStringLiteral (" / "));
 
 		auto initField = [this]<typename T> (T *edit, QAbstractButton *button, auto handler)
 		{

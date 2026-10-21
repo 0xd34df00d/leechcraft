@@ -12,12 +12,15 @@
 
 namespace LC::Util
 {
-	class TagsLineEditTest : public QObject
+	class TagsEditorAddonTest : public QObject
 	{
 		Q_OBJECT
+	public:
+		static void initMain ();
 	private slots:
 		void testSelectorChoiceIsReported ();
 		void testSelectorFollowsNonCanonicalText ();
+		void testSelectorChoiceKeepsUnknownTokens ();
 		void testSetTagsSyncsTheSelectorWithBlockedSignals ();
 		void testNestedSetTagsWins ();
 		void testUnchangedTagsAreNotReported ();
@@ -26,6 +29,11 @@ namespace LC::Util
 		void testUpdateTagsKeepsAnEditInProgress ();
 		void testCompletionReplacesTheTokenUnderCursor_data ();
 		void testCompletionReplacesTheTokenUnderCursor ();
-		void testSelectorFollowsCompletionModel ();
+		void testEnterAcceptsTheCompletion ();
+		void testCursorMoveRefreshesCompletion ();
+		void testInnerWhitespaceIsKept ();
+		void testSelectorFollowsTheTagsModel ();
+		void testSelectorButtonBindsAPopup ();
+		void testOneLiveSelectorAtATime ();
 	};
 }

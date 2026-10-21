@@ -9,7 +9,8 @@
 #include "tabwidget.h"
 #include <util/util.h>
 #include <util/tags/tagschange.h>
-#include <util/tags/tagscompleter.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/itagsmanager.h>
 #include "components/models/torrentfilesmodel.h"
 #include "xmlsettingsmanager.h"
 #include "addwebseeddialog.h"
@@ -28,8 +29,7 @@ namespace LC::BitTorrent
 	{
 		Ui_.setupUi (this);
 
-		new Util::TagsCompleter { Ui_.TorrentTags_ };
-		Ui_.TorrentTags_->AddSelector ();
+		TorrentTags_ = new Util::TagsEditorAddon { *Ui_.TorrentTags_, *GetProxyHolder ()->GetTagsManager () };
 
 		connect (&model,
 				&QAbstractItemModel::dataChanged,
@@ -39,7 +39,7 @@ namespace LC::BitTorrent
 					if (from.row () > Torrent_.row () || Torrent_.row () > to.row ())
 						return;
 
-					Ui_.TorrentTags_->UpdateTags (Torrent_.data (Roles::TorrentTags).toStringList ());
+					TorrentTags_->UpdateTags (Torrent_.data (Roles::TorrentTags).toStringList ());
 					UpdateTorrentStats ();
 				});
 
@@ -73,8 +73,8 @@ namespace LC::BitTorrent
 				&QSpinBox::valueChanged,
 				&SSM_,
 				&SessionSettingsManager::SetMaxUploadingTorrents);
-		connect (Ui_.TorrentTags_,
-				&Util::TagsLineEdit::tagsEdited,
+		connect (TorrentTags_,
+				&Util::TagsEditorAddon::tagsCommitted,
 				[this] (const Util::TagsChange& change)
 				{
 					if (!Torrent_.isValid ())
@@ -94,7 +94,7 @@ namespace LC::BitTorrent
 		if (!Torrent_.isValid ())
 			return;
 
-		Ui_.TorrentTags_->SetTags (Torrent_.data (Roles::TorrentTags).toStringList ());
+		TorrentTags_->SetTags (Torrent_.data (Roles::TorrentTags).toStringList ());
 		UpdateTorrentStats ();
 	}
 
