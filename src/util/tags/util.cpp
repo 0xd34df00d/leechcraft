@@ -7,7 +7,6 @@
  **********************************************************************/
 
 #include "util.h"
-#include <utility>
 #include <QString>
 
 namespace LC::Util
@@ -23,12 +22,12 @@ namespace LC::Util
 		return trimmed.isEmpty () ? separator : trimmed;
 	}
 
-	QStringList SplitTags (const QString& text, const QString& separator)
+	QStringList SplitTags (QStringView text, const QString& separator)
 	{
 		QStringList result;
 		for (const auto& part : text.split (GetTagsDelimiter (separator), Qt::SkipEmptyParts))
 			if (auto tag = part.trimmed (); !tag.isEmpty ())
-				result << std::move (tag);
+				result << tag.toString ();
 		return result;
 	}
 

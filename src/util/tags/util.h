@@ -39,5 +39,5 @@ namespace LC::Util
 	 * @param[in] separator The separator of the tags.
 	 * @return The tags.
 	 */
-	UTIL_TAGS_API QStringList SplitTags (const QString& text, const QString& separator);
+	UTIL_TAGS_API QStringList SplitTags (QStringView text, const QString& separator);
 }
