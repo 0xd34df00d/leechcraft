@@ -14,5 +14,23 @@ class QAbstractItemModel;
 
 namespace LC::Util
 {
-	UTIL_MODELS_API void InstallModelSanitizer (QAbstractItemModel&);
+	/** @brief Attaches a `QAbstractItemModelTester` to `model` for the rest
+	 * of its lifetime.
+	 *
+	 * The tester checks the model against the `QAbstractItemModel`
+	 * invariants at the time of the call and after each of the model's
+	 * change signals from then on.
+	 *
+	 * Since the model tester checks invariants on installation time as well
+	 * and calls the model's methods, call this only after the class
+	 * has set up everything its `QAbstractItemModel` overrides read,
+	 * (typically as the last statement of its constructor).
+	 * If a class is designed to be derived from and its model-related methods
+	 * overridden, never do this from a base class constructor.
+	 *
+	 * @param[in] model The model to check.
+	 *
+	 * @ingroup ModelUtil
+	 */
+	UTIL_MODELS_API void InstallModelSanitizer (QAbstractItemModel& model);
 }
