@@ -84,6 +84,9 @@ namespace LC::Intermutko
 		{
 		case Column::Language:
 			entry.Language_ = value.value<QLocale::Language> ();
+			if (entry.Territory_ != QLocale::AnyTerritory &&
+					QLocale::matchingLocales (entry.Language_, QLocale::AnyScript, entry.Territory_).isEmpty ())
+				entry.Territory_ = QLocale::AnyTerritory;
 			break;
 		case Column::Country:
 			entry.Territory_ = value.value<QLocale::Territory> ();
