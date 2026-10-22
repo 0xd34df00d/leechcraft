@@ -121,7 +121,7 @@ namespace Otlozhu
 		case Roles::ItemTitle:
 			return item->GetTitle ();
 		case Roles::ItemTags:
-			return item->GetTagIDs ();
+			return QVariant::fromValue (item->GetTagIDs ());
 		case Roles::ItemProgress:
 			return item->GetPercentage ();
 		case Roles::ItemComment:

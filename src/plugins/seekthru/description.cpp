@@ -120,7 +120,7 @@ namespace LC::SeekThru
 			<< d.Description_
 			<< d.URLs_
 			<< d.Contact_
-			<< d.Tags_
+			<< TagId::ToStrings (d.Tags_)
 			<< d.Queries_
 			<< d.Developer_
 			<< d.Attribution_
@@ -138,14 +138,16 @@ namespace LC::SeekThru
 		in >> version;
 		if (version != 1)
 			throw std::runtime_error ("Unknown version for Description");
+		QStringList tags;
 		in >> d.ShortName_
 			>> d.Description_
 			>> d.URLs_
 			>> d.Contact_
-			>> d.Tags_
+			>> tags
 			>> d.Queries_
 			>> d.Developer_
 			>> d.Attribution_;
+		d.Tags_ = TagId::FromStrings (tags);
 		quint8 sr;
 		in >> sr;
 		d.Right_ = static_cast<Description::SyndicationRight> (sr);

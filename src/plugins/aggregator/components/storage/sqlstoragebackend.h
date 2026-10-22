@@ -93,8 +93,8 @@ namespace LC::Aggregator
 		std::optional<IDType_t> FindFeed (const QString&) const;
 		std::optional<Feed::FeedSettings> GetFeedSettings (IDType_t) const;
 		void SetFeedSettings (const Feed::FeedSettings&);
-		std::optional<QStringList> GetFeedTags (IDType_t) const;
-		void SetFeedTags (IDType_t, const QStringList&);
+		std::optional<QList<TagId>> GetFeedTags (IDType_t) const;
+		void SetFeedTags (IDType_t, const QList<TagId>&);
 		void SetFeedURL (IDType_t, const QString&);
 
 		channels_shorts_t GetChannels (IDType_t) const;
@@ -104,7 +104,7 @@ namespace LC::Aggregator
 		std::optional<QImage> GetChannelPixmap (IDType_t) const;
 		void SetChannelPixmap (IDType_t, const std::optional<QImage>&);
 		void SetChannelFavicon (IDType_t, const std::optional<QImage>&);
-		void SetChannelTags (IDType_t, const QStringList&);
+		void SetChannelTags (IDType_t, const QList<TagId>&);
 		void SetChannelDisplayTitle (IDType_t, const QString&);
 		void SetChannelTitle (IDType_t, const QString&);
 		void SetChannelLink (IDType_t, const QString&);
@@ -137,9 +137,9 @@ namespace LC::Aggregator
 		void RemoveFeed (IDType_t);
 		void ToggleChannelUnread (IDType_t, bool);
 
-		QList<ITagsManager::tag_id> GetItemTags (IDType_t);
-		void SetItemTags (IDType_t, const QList<ITagsManager::tag_id>&);
-		QList<IDType_t> GetItemsForTag (const ITagsManager::tag_id&);
+		QList<TagId> GetItemTags (IDType_t);
+		void SetItemTags (IDType_t, const QList<TagId>&);
+		QList<IDType_t> GetItemsForTag (const TagId&);
 
 		IDType_t GetHighestID (const PoolType&) const;
 	private:

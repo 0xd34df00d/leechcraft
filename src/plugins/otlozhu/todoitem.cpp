@@ -146,14 +146,16 @@ namespace Otlozhu
 		}
 
 		TodoItem_ptr item (new TodoItem);
+		QStringList tagIds;
 		str >> item->ID_
 			>> item->Title_
 			>> item->Comment_
-			>> item->TagIDs_
+			>> tagIds
 			>> item->Created_
 			>> item->Due_
 			>> item->Percentage_
 			>> item->Deps_;
+		item->TagIDs_ = TagId::FromStrings (tagIds);
 		return item;
 	}
 
@@ -166,7 +168,7 @@ namespace Otlozhu
 			<< ID_
 			<< Title_
 			<< Comment_
-			<< TagIDs_
+			<< TagId::ToStrings (TagIDs_)
 			<< Created_
 			<< Due_
 			<< Percentage_
@@ -200,12 +202,12 @@ namespace Otlozhu
 		Comment_ = comment;
 	}
 
-	QStringList TodoItem::GetTagIDs () const
+	QList<TagId> TodoItem::GetTagIDs () const
 	{
 		return TagIDs_;
 	}
 
-	void TodoItem::SetTagIDs (const QStringList& tagIds)
+	void TodoItem::SetTagIDs (const QList<TagId>& tagIds)
 	{
 		TagIDs_ = tagIds;
 	}

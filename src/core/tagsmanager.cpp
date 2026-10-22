@@ -22,6 +22,7 @@ TagsManager::TagsManager ()
 	MigrateStoredNames ();
 
 	GetID (tr ("untagged"));
+	qRegisterMetaType<QList<TagId>> ();
 }
 
 TagsManager& TagsManager::Instance ()
@@ -64,7 +65,7 @@ int TagsManager::rowCount (const QModelIndex& index) const
 	return index.isValid () ? 0 : Tags_.size ();
 }
 
-std::optional<ITagsManager::tag_id> TagsManager::GetID (const QString& tag)
+std::optional<TagId> TagsManager::GetID (const QString& tag)
 {
 	const auto& name = tag.trimmed ();
 	if (name.isEmpty () || name.contains (Util::GetTagsDelimiter (Util::GetDefaultTagsSeparator ())))
@@ -79,12 +80,12 @@ std::optional<ITagsManager::tag_id> TagsManager::GetID (const QString& tag)
 
 	if (ids.size () > 1)
 		qWarning () << ids.size () << "tags named" << name;
-	return ids.front ().toString ();
+	return TagId { ids.front ().toString () };
 }
 
-std::optional<QString> TagsManager::GetTag (ITagsManager::tag_id id) const
+std::optional<QString> TagsManager::GetTag (const TagId& id) const
 {
-	const auto pos = Tags_.find (QUuid { id });
+	const auto pos = Tags_.find (QUuid { id.Id_ });
 	if (pos == Tags_.end ())
 		return {};
 	return *pos;
@@ -100,7 +101,7 @@ QStringList TagsManager::Split (const QString& string) const
 	return Util::SplitTags (string, Util::GetDefaultTagsSeparator ());
 }
 
-QList<ITagsManager::tag_id> TagsManager::SplitToIDs (const QString& string)
+QList<TagId> TagsManager::SplitToIDs (const QString& string)
 {
 	return GetIDs (Split (string));
 }
@@ -110,12 +111,12 @@ QString TagsManager::Join (const QStringList& tags) const
 	return tags.join (Util::GetDefaultTagsSeparator ());
 }
 
-QString TagsManager::JoinIDs (const QStringList& tagIDs) const
+QString TagsManager::JoinIDs (const QList<TagId>& tagIDs) const
 {
 	return Join (GetTags (tagIDs));
 }
 
-ITagsManager::tag_id TagsManager::InsertTag (const QString& tag)
+TagId TagsManager::InsertTag (const QString& tag)
 {
 	const auto& uuid = QUuid::createUuid ();
 
@@ -131,7 +132,7 @@ ITagsManager::tag_id TagsManager::InsertTag (const QString& tag)
 
 	emit tagsUpdated (GetAllTags ());
 
-	return uuid.toString ();
+	return TagId { uuid.toString () };
 }
 
 void TagsManager::RemoveTag (const QModelIndex& index)

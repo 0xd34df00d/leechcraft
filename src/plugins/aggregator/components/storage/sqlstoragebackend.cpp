@@ -80,16 +80,16 @@ namespace LC::Aggregator
 
 	struct Tags
 	{
-		QStringList TagsList_;
+		QList<TagId> TagsList_;
 
 		Tags () = default;
 
-		Tags (QStringList tags)
+		Tags (QList<TagId> tags)
 		: TagsList_ { std::move (tags) }
 		{
 		}
 
-		operator QStringList () const
+		operator QList<TagId> () const
 		{
 			return TagsList_;
 		}
@@ -103,7 +103,7 @@ namespace LC::Aggregator
 				return EmptyMarker_;
 
 			static const auto itm = GetProxyHolder ()->GetTagsManager ();
-			return itm->Join (TagsList_);
+			return itm->Join (TagId::ToStrings (TagsList_));
 		}
 
 		static Tags FromString (const QString& var)
@@ -112,7 +112,7 @@ namespace LC::Aggregator
 				return {};
 
 			static const auto itm = GetProxyHolder ()->GetTagsManager ();
-			return { itm->Split (var) };
+			return { TagId::FromStrings (itm->Split (var)) };
 		}
 	};
 
@@ -502,12 +502,12 @@ namespace LC::Aggregator
 				();
 	}
 
-	QList<ITagsManager::tag_id> SQLStorageBackend::GetItemTags (IDType_t id)
+	QList<TagId> SQLStorageBackend::GetItemTags (IDType_t id)
 	{
-		return Items2Tags_->Select (sph::fields<&Item2TagsR::Tag_>, sph::f<&Item2TagsR::ItemID_> == id);
+		return TagId::FromStrings (Items2Tags_->Select (sph::fields<&Item2TagsR::Tag_>, sph::f<&Item2TagsR::ItemID_> == id));
 	}
 
-	void SQLStorageBackend::SetItemTags (IDType_t id, const QList<ITagsManager::tag_id>& tags)
+	void SQLStorageBackend::SetItemTags (IDType_t id, const QList<TagId>& tags)
 	{
 		Util::DBLock lock (DB_);
 		lock.Init ();
@@ -515,7 +515,7 @@ namespace LC::Aggregator
 		Items2Tags_->DeleteBy (sph::f<&Item2TagsR::ItemID_> == id);
 
 		for (const auto& tag : tags)
-			Items2Tags_->Insert ({ id, tag });
+			Items2Tags_->Insert ({ id, tag.Id_ });
 
 		lock.Good ();
 
@@ -523,9 +523,9 @@ namespace LC::Aggregator
 			emit itemDataUpdated (*item);
 	}
 
-	QList<IDType_t> SQLStorageBackend::GetItemsForTag (const ITagsManager::tag_id& tag)
+	QList<IDType_t> SQLStorageBackend::GetItemsForTag (const TagId& tag)
 	{
-		return Items2Tags_->Select (sph::fields<&Item2TagsR::ItemID_>, sph::f<&Item2TagsR::Tag_> == tag);
+		return Items2Tags_->Select (sph::fields<&Item2TagsR::ItemID_>, sph::f<&Item2TagsR::Tag_> == tag.Id_);
 	}
 
 	IDType_t SQLStorageBackend::GetHighestID (const PoolType& type) const
@@ -601,13 +601,13 @@ namespace LC::Aggregator
 		FeedsSettings_->Insert (FeedSettingsR::FromOrig (settings), oral::InsertAction::Replace::Whole);
 	}
 
-	std::optional<QStringList> SQLStorageBackend::GetFeedTags (IDType_t feedId) const
+	std::optional<QList<TagId>> SQLStorageBackend::GetFeedTags (IDType_t feedId) const
 	{
 		return Feeds2Tags_->SelectOne (sph::f<&Feed2TagsR::FeedID_> == feedId) *
-				[] (const auto& feed2tags) { return static_cast<QStringList> (*feed2tags.Tags_); };
+				[] (const auto& feed2tags) { return static_cast<QList<TagId>> (*feed2tags.Tags_); };
 	}
 
-	void SQLStorageBackend::SetFeedTags (IDType_t feedId, const QStringList& tags)
+	void SQLStorageBackend::SetFeedTags (IDType_t feedId, const QList<TagId>& tags)
 	{
 		Feeds2Tags_->Insert (Feed2TagsR { feedId, tags }, oral::InsertAction::Replace::Whole);
 	}
@@ -747,7 +747,7 @@ namespace LC::Aggregator
 		emit channelDataUpdated (GetChannel (id));
 	}
 
-	void SQLStorageBackend::SetChannelTags (IDType_t id, const QStringList& tagIds)
+	void SQLStorageBackend::SetChannelTags (IDType_t id, const QList<TagId>& tagIds)
 	{
 		Channels_->Update (sph::f<&ChannelR::Tags_> = tagIds, sph::f<&ChannelR::ChannelID_> == id);
 		emit channelDataUpdated (GetChannel (id));

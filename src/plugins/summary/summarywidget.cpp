@@ -152,7 +152,7 @@ namespace LC::Summary
 				MergeModel_.AddModel (&model);
 				SrcModel2Handler_ [&model] = std::move (reprHandler);
 			}
-		TagsFilterModel_.SetTagsRole (+CustomDataRoles::Tags);
+		TagsFilterModel_.SetTagsRole (+CustomDataRoles::Tags, *GetProxyHolder ()->GetTagsManager ());
 		TagsFilterModel_.setSourceModel (&MergeModel_);
 		PresentationModel_.setSourceModel (&TagsFilterModel_);
 		Ui_.PluginsTasksTree_->setModel (&PresentationModel_);

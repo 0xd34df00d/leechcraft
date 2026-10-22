@@ -10,6 +10,8 @@
 #include <QByteArray>
 #include <QDomDocument>
 #include <util/sll/buildtagstree.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/itagsmanager.h>
 #include "core.h"
 
 namespace LC
@@ -23,11 +25,12 @@ namespace Poshuku
 		root.setAttribute ("version", "1.0");
 		document.appendChild (root);
 
+		const auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
 		auto items = Core::Instance ().GetFavoritesModel ()->GetItems ();
 		for (auto i = items.begin (), end = items.end ();
 				i != end; ++i)
 		{
-			QDomElement inserter = Util::BuildTagsTree (i->Tags_,
+			QDomElement inserter = Util::BuildTagsTree (tm->GetTags (i->Tags_),
 					root, document, "folder",
 					[] (const QDomElement& elem)
 					{

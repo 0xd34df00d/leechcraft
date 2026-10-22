@@ -10,6 +10,7 @@
 
 #include <QDialog>
 #include <QVector>
+#include <interfaces/core/itagsmanager.h>
 #include "ui_addtorrent.h"
 #include "types.h"
 
@@ -37,8 +38,8 @@ namespace LC::BitTorrent
 		bool GetTryLive () const;
 		QVector<bool> GetSelectedFiles () const;
 		AddState GetAddType () const;
-		void SetTags (const QStringList& tags);
-		QStringList GetTags () const;
+		void SetTags (const QList<TagId>& tags);
+		QList<TagId> GetTags () const;
 	private:
 		void UpdateSpaceDisplay ();
 		void BrowseForTorrent ();

@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <interfaces/core/itagsmanager.h>
 #include "ui_addmultipletorrents.h"
 
 namespace LC::BitTorrent
@@ -22,7 +23,7 @@ namespace LC::BitTorrent
 
 		QString GetOpenDirectory () const;
 		QString GetSaveDirectory () const;
-		QStringList GetTags () const;
+		QList<TagId> GetTags () const;
 		bool ShouldAddAsStarted () const;
 		bool OnlyIfExists () const;
 	};

@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QDialog>
+#include <interfaces/core/itagsmanager.h>
 #include "ui_addmagnetdialog.h"
 
 namespace LC::BitTorrent
@@ -23,6 +24,6 @@ namespace LC::BitTorrent
 
 		QString GetLink () const;
 		QString GetPath () const;
-		QStringList GetTags () const;
+		QList<TagId> GetTags () const;
 	};
 }

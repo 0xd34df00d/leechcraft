@@ -13,6 +13,7 @@
 #include <QVariantMap>
 #include <QUrl>
 #include <QMetaType>
+#include <interfaces/core/itagsmanager.h>
 
 namespace LC::SeekThru
 {
@@ -70,7 +71,7 @@ namespace LC::SeekThru
 		QString Description_;
 		QList<UrlDescription> URLs_;
 		QString Contact_;
-		QStringList Tags_;
+		QList<TagId> Tags_;
 		QString LongName_;
 		QList<QueryDescription> Queries_;
 		QString Developer_;

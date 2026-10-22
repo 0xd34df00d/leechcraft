@@ -38,7 +38,7 @@ namespace Otlozhu
 		return Ui_.Title_->text ();
 	}
 
-	QStringList AddTodoDialog::GetTags () const
+	QList<TagId> AddTodoDialog::GetTags () const
 	{
 		return Core::Instance ().GetProxy ()->
 				GetTagsManager ()->SplitToIDs (Ui_.Tags_->text ());

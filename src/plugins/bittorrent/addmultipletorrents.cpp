@@ -58,7 +58,7 @@ namespace LC::BitTorrent
 		return Ui_.SaveDirectory_->text ();
 	}
 
-	QStringList AddMultipleTorrents::GetTags () const
+	QList<TagId> AddMultipleTorrents::GetTags () const
 	{
 		return GetProxyHolder ()->GetTagsManager ()->SplitToIDs (Ui_.TagsEdit_->text ());
 	}

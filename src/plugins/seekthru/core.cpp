@@ -273,6 +273,11 @@ namespace LC::SeekThru
 
 	void Core::SetTags (int pos, const QStringList& tags)
 	{
+		SetTagIDs (pos, Proxy_->GetTagsManager ()->GetIDs (tags));
+	}
+
+	void Core::SetTagIDs (int pos, const QList<TagId>& ids)
+	{
 		if (pos >= Descriptions_.size () || pos < 0)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -282,7 +287,7 @@ namespace LC::SeekThru
 
 		const auto oldCats = ComputeUniqueCategories ();
 
-		Descriptions_ [pos].Tags_ = Proxy_->GetTagsManager ()->GetIDs (tags);
+		Descriptions_ [pos].Tags_ = ids;
 
 		WriteSettings ();
 
@@ -359,7 +364,7 @@ namespace LC::SeekThru
 
 	QStringList Core::ComputeUniqueCategories () const
 	{
-		QSet<QString> ids;
+		QSet<TagId> ids;
 		for (const auto& d : Descriptions_)
 			for (const auto& id : d.Tags_)
 				ids << id;
@@ -375,7 +380,7 @@ namespace LC::SeekThru
 		for (const auto& d : Descriptions_)
 		{
 			const auto matchingItem = std::find_if (d.Tags_.begin (), d.Tags_.end (),
-					[&catStr, tm] (const QString& id) { return catStr == tm->GetTag (id); });
+					[&catStr, tm] (const TagId& id) { return catStr == tm->GetTag (id); });
 			if (matchingItem != d.Tags_.end ())
 				result << d;
 		}
@@ -430,27 +435,28 @@ namespace LC::SeekThru
 		if (!contactTag.isNull ())
 			descr.Contact_ = contactTag.text ();
 
+		QStringList tagNames;
 		if (useTags.isEmpty ())
 		{
 			QDomElement tagsTag = root.firstChildElement ("Tags");
 			if (!tagsTag.isNull ())
-				descr.Tags_ = Proxy_->GetTagsManager ()->Split (tagsTag.text ());
+				tagNames = Proxy_->GetTagsManager ()->Split (tagsTag.text ());
 			else
-				descr.Tags_ = QStringList ("default");
+				tagNames = QStringList ("default");
 
-			TagsAsker ta (Proxy_->GetTagsManager ()->Join (descr.Tags_));
+			TagsAsker ta (Proxy_->GetTagsManager ()->Join (tagNames));
 			QString userTags;
 			qDebug () << Q_FUNC_INFO;
 			if (ta.exec () == QDialog::Accepted)
 				userTags = ta.GetTags ();
 
 			if (!userTags.isEmpty ())
-				descr.Tags_ = Proxy_->GetTagsManager ()->Split (userTags);
+				tagNames = Proxy_->GetTagsManager ()->Split (userTags);
 		}
 		else
-			descr.Tags_ = Proxy_->GetTagsManager ()->Split (useTags);
+			tagNames = Proxy_->GetTagsManager ()->Split (useTags);
 
-		descr.Tags_ = Proxy_->GetTagsManager ()->GetIDs (descr.Tags_);
+		descr.Tags_ = Proxy_->GetTagsManager ()->GetIDs (tagNames);
 
 		auto longNameTag = root.firstChildElement ("LongName");
 		if (!longNameTag.isNull ())
@@ -609,12 +615,12 @@ namespace LC::SeekThru
 		if (pos == Descriptions_.end ())
 		{
 			Descriptions_ << descr;
-			SetTags (Descriptions_.size () - 1, descr.Tags_);
+			SetTagIDs (Descriptions_.size () - 1, descr.Tags_);
 		}
 		else
 		{
 			*pos = descr;
-			SetTags (pos - Descriptions_.begin (), descr.Tags_);
+			SetTagIDs (pos - Descriptions_.begin (), descr.Tags_);
 		}
 		return true;
 	}

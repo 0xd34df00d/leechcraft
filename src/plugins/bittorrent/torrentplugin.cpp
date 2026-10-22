@@ -204,9 +204,9 @@ namespace LC::BitTorrent
 
 		const auto tagsMgr = GetProxyHolder ()->GetTagsManager ();
 
-		const auto& suggestedTags = e.Additional_ [" Tags"_qs].toStringList ();
+		const auto& suggestedTags = e.Additional_ [" Tags"_qs].value<QList<TagId>> ();
 		const auto& autoTags = XmlSettingsManager::Instance ().property ("AutomaticTags").toString ();
-		auto tagsIds = tagsMgr->SplitToIDs (autoTags) + tagsMgr->GetIDs (suggestedTags);
+		auto tagsIds = tagsMgr->SplitToIDs (autoTags) + suggestedTags;
 
 		if (e.Entity_.canConvert<QUrl> ())
 		{

@@ -31,11 +31,11 @@ namespace LC::Util
 
 		QList<FlatTreeItem_ptr> C_;
 		QPersistentModelIndex Index_;
-		QString Tag_;
+		TagId Tag_;
 
 		FlatTreeItem () = default;
 
-		FlatTreeItem (Type type, FlatTreeItem& parent, QString tag)
+		FlatTreeItem (Type type, FlatTreeItem& parent, TagId tag)
 		: Type_ { type }
 		, Parent_ { &parent }
 		, Tag_ { std::move (tag) }
@@ -52,7 +52,7 @@ namespace LC::Util
 			return pos - siblings.begin ();
 		}
 
-		FlatTreeItem_ptr AddFolder (const QString& tag)
+		FlatTreeItem_ptr AddFolder (const TagId& tag)
 		{
 			return C_.emplaceBack (std::make_shared<FlatTreeItem> (Type::Folder, *this, tag));
 		}
@@ -72,11 +72,11 @@ namespace LC::Util
 			return static_cast<FlatTreeItem*> (idx.internalPointer ());
 		}
 
-		QStringList TagsOf (const QModelIndex& idx)
+		QList<TagId> TagsOf (const QModelIndex& idx)
 		{
-			auto tags = idx.data (+CustomDataRoles::Tags).toStringList ();
+			auto tags = idx.data (+CustomDataRoles::Tags).value<QList<TagId>> ();
 			if (tags.isEmpty ())
-				tags << QString {};
+				tags << TagId {};
 			return tags;
 		}
 	}
@@ -115,7 +115,7 @@ namespace LC::Util
 			{
 			case Qt::DisplayRole:
 			{
-				if (fti->Tag_.isEmpty ())
+				if (fti->Tag_.Id_.isEmpty ())
 					return tr ("untagged");
 
 				if (const auto& tag = TM_->GetTag (fti->Tag_))
@@ -123,7 +123,7 @@ namespace LC::Util
 				return tr ("<unknown tag>");
 			}
 			case +CustomDataRoles::Tags:
-				return fti->Tag_;
+				return QVariant::fromValue (fti->Tag_.Id_.isEmpty () ? QList<TagId> {} : QList { fti->Tag_ });
 			default:
 				return {};
 			}
@@ -246,7 +246,7 @@ namespace LC::Util
 			modified.setData (format, data->data (format));
 
 		if (parent.isValid ())
-			modified.setData (QStringLiteral ("x-leechcraft/tag"), ToFlat (parent)->Tag_.toLatin1 ());
+			modified.setData (QStringLiteral ("x-leechcraft/tag"), ToFlat (parent)->Tag_.Id_.toLatin1 ());
 
 		return SourceModel_->dropMimeData (&modified, action, -1, -1, QModelIndex ());
 	}
@@ -351,14 +351,14 @@ namespace LC::Util
 		return result;
 	}
 
-	FlatTreeItem_ptr FlatToFoldersProxyModel::FindFolder (const QString& tag) const
+	FlatTreeItem_ptr FlatToFoldersProxyModel::FindFolder (const TagId& tag) const
 	{
 		const auto& folders = Root_->C_;
 		const auto pos = std::ranges::find (folders, tag, &FlatTreeItem::Tag_);
 		return pos == folders.end () ? nullptr : *pos;
 	}
 
-	FlatTreeItem_ptr FlatToFoldersProxyModel::GetFolder (const QString& tag)
+	FlatTreeItem_ptr FlatToFoldersProxyModel::GetFolder (const TagId& tag)
 	{
 		if (const auto& folder = FindFolder (tag))
 			return folder;
@@ -380,7 +380,7 @@ namespace LC::Util
 		return createIndex (item.Row (), column, &item);
 	}
 
-	void FlatToFoldersProxyModel::AddForTag (const QString& tag, const QPersistentModelIndex& pidx)
+	void FlatToFoldersProxyModel::AddForTag (const TagId& tag, const QPersistentModelIndex& pidx)
 	{
 		const auto& folder = GetFolder (tag);
 		const auto row = folder->C_.size ();

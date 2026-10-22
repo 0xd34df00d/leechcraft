@@ -275,7 +275,7 @@ namespace LC::Aggregator
 			if (index.column ())
 				return {};
 
-			if (GetSB ()->GetItemTags (item.ItemID_).contains ("_important"))
+			if (GetSB ()->GetItemTags (item.ItemID_).contains (TagId { "_important"_qs }))
 				return StarredIcon_;
 
 			return item.Unread_ ? UnreadIcon_ : ReadIcon_;
@@ -289,7 +289,7 @@ namespace LC::Aggregator
 		case ItemRole::ItemCategories:
 			return item.Categories_;
 		case ItemRole::ItemImportant:
-			return GetSB ()->GetItemTags (item.ItemID_).contains ("_important");
+			return GetSB ()->GetItemTags (item.ItemID_).contains (TagId { "_important"_qs });
 		case ItemRole::ItemChannelId:
 			return item.ChannelID_;
 		case ItemRole::FullItem:

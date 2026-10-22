@@ -51,7 +51,7 @@ namespace LC::Aggregator
 		endFilterChange (Direction::Rows);
 	}
 
-	void ItemsFilterModel::SetItemTags (QList<ITagsManager::tag_id> tags)
+	void ItemsFilterModel::SetItemTags (QList<TagId> tags)
 	{
 		beginFilterChange ();
 

@@ -167,7 +167,7 @@ namespace LC::Aggregator
 		case Qt::ToolTipRole:
 			return GetTooltip (TagsManager_, *FeedsErrorManager_, channel);
 		case +CustomDataRoles::Tags:
-			return channel.Tags_;
+			return QVariant::fromValue (channel.Tags_);
 		case ChannelRoles::UnreadCount:
 			return channel.Unread_;
 		case ChannelRoles::ErrorCount:
@@ -177,7 +177,7 @@ namespace LC::Aggregator
 		case ChannelRoles::FeedID:
 			return channel.FeedID_;
 		case ChannelRoles::RawTags:
-			return channel.Tags_;
+			return QVariant::fromValue (channel.Tags_);
 		case ChannelRoles::HumanReadableTags:
 			return TagsManager_->GetTags (channel.Tags_);
 		case ChannelRoles::ChannelTitle:

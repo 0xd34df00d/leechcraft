@@ -13,11 +13,12 @@ namespace LC
 {
 namespace HistoryHolder
 {
-	FindProxy::FindProxy (const QAbstractItemModel_ptr& model, const Request& r)
+	FindProxy::FindProxy (const QAbstractItemModel_ptr& model, const Request& r, const ITagsManager& tm)
 	: Src_ { model }
 	, R_ (r)
 	{
 		setSourceModel (model.get ());
+		SetTagsRole (+CustomDataRoles::Tags, tm);
 
 		const auto cs = r.CaseSensitive_ ? Qt::CaseSensitive : Qt::CaseInsensitive;
 
@@ -55,11 +56,6 @@ namespace HistoryHolder
 	QStringList FindProxy::GetCategories () const
 	{
 		return { R_.Category_ };
-	}
-
-	QStringList FindProxy::GetTagsForIndex (int row) const
-	{
-		return sourceModel ()->index (row, 0).data (+CustomDataRoles::Tags).toStringList ();
 	}
 }
 }

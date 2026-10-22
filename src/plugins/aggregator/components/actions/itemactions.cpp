@@ -232,12 +232,12 @@ namespace LC::Aggregator
 	{
 		const auto& sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
 
-		const ITagsManager::tag_id impId = "_important"_qs;
+		const TagId impId { "_important"_qs };
 		for (const auto itemId : GetSelectedIds ())
 		{
 			auto tags = sb->GetItemTags (itemId);
 			if (important && !tags.contains (impId))
-				sb->SetItemTags (itemId, tags + QStringList { impId });
+				sb->SetItemTags (itemId, tags + QList { impId });
 			else if (!important && tags.removeAll (impId))
 				sb->SetItemTags (itemId, tags);
 		}

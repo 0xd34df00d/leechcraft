@@ -46,7 +46,7 @@ namespace Poshuku
 		}
 
 		auto itm = Core::Instance ().GetProxy ()->GetTagsManager ();
-		const auto& tags = index.data (+CustomDataRoles::Tags).toStringList ();
+		const auto& tags = index.data (+CustomDataRoles::Tags).value<QList<TagId>> ();
 		static_cast<QLineEdit*> (editor)->setText (itm->Join (itm->GetTags (tags)));
 	}
 

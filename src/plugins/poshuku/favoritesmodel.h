@@ -14,6 +14,7 @@
 #include <QList>
 #include <interfaces/iinfo.h>
 #include <interfaces/core/ihookproxy.h>
+#include <interfaces/core/itagsmanager.h>
 
 namespace LC
 {
@@ -29,8 +30,7 @@ namespace Poshuku
 		{
 			QString Title_;
 			QString URL_;
-			/// Contains ids of the real tags.
-			QStringList Tags_;
+			QList<TagId> Tags_;
 		};
 		typedef QList<FavoritesItem> items_t;
 	private:

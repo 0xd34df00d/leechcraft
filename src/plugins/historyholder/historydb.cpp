@@ -179,7 +179,7 @@ namespace HistoryHolder
 
 		const auto& historyId = Util::GetLastId (InsertHistory_);
 
-		auto tags = entity.Additional_ [" Tags"].toStringList ();
+		auto tags = entity.Additional_ [" Tags"].value<QList<TagId>> ();
 		if (tags.isEmpty ())
 			tags.push_back ({});
 		AssociateTags (historyId, AddTags (tags));
@@ -190,31 +190,31 @@ namespace HistoryHolder
 		lock.Good ();
 	}
 
-	QList<int> HistoryDB::AddTags (const QStringList& tags)
+	QList<int> HistoryDB::AddTags (const QList<TagId>& tags)
 	{
 		QList<int> result;
 
 		for (const auto& tag : tags)
 		{
-			if (Tags_.contains (tag))
+			if (Tags_.contains (tag.Id_))
 			{
-				result << Tags_.value (tag);
+				result << Tags_.value (tag.Id_);
 				continue;
 			}
 
 			const auto& text = TM_->GetTag (tag);
 			if (!text)
 			{
-				qWarning () << "unknown tag" << tag;
+				qWarning () << "unknown tag" << tag.Id_;
 				continue;
 			}
 
-			InsertTags_.bindValue (":lcid", tag);
+			InsertTags_.bindValue (":lcid", tag.Id_);
 			InsertTags_.bindValue (":text", *text);
 			Util::DBLock::Execute (InsertTags_);
 
 			const auto id = Util::GetLastId (InsertTags_);
-			Tags_ [tag] = id;
+			Tags_ [tag.Id_] = id;
 			result << id;
 		}
 

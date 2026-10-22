@@ -43,13 +43,13 @@ namespace LC
 		QModelIndex parent (const QModelIndex&) const override;
 		int rowCount (const QModelIndex&) const override;
 
-		std::optional<tag_id> GetID (const QString&) override;
-		std::optional<QString> GetTag (tag_id) const override;
+		std::optional<TagId> GetID (const QString&) override;
+		std::optional<QString> GetTag (const TagId&) const override;
 		QStringList GetAllTags () const override;
 		QStringList Split (const QString&) const override;
-		QList<tag_id> SplitToIDs (const QString&) override;
+		QList<TagId> SplitToIDs (const QString&) override;
 		QString Join (const QStringList&) const override;
-		QString JoinIDs (const QStringList&) const override;
+		QString JoinIDs (const QList<TagId>&) const override;
 		QAbstractItemModel* GetModel () override;
 		QObject* GetQObject () override;
 
@@ -68,7 +68,7 @@ namespace LC
 		Util::Either<RenameError, Util::Void> RenameTag (const QModelIndex&, const QString&);
 	private:
 		void MigrateStoredNames ();
-		tag_id InsertTag (const QString&);
+		TagId InsertTag (const QString&);
 	signals:
 		void tagsUpdated (const QStringList&);
 	};

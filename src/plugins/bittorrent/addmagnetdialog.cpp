@@ -99,7 +99,7 @@ namespace LC::BitTorrent
 		return Ui_.SavePath_->text ();
 	}
 
-	QStringList AddMagnetDialog::GetTags () const
+	QList<TagId> AddMagnetDialog::GetTags () const
 	{
 		return GetProxyHolder ()->GetTagsManager ()->SplitToIDs (Ui_.Tags_->text ());
 	}

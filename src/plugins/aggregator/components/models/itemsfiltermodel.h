@@ -41,7 +41,7 @@ namespace LC::Aggregator
 		~ItemsFilterModel () override;
 
 		void SetHideRead (bool);
-		void SetItemTags (QList<ITagsManager::tag_id>);
+		void SetItemTags (QList<TagId>);
 
 		void InvalidateCategorySelection (const QStringList&);
 		void InvalidateItemsSelection (const QSet<IDType_t>&);

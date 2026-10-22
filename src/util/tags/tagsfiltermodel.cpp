@@ -20,10 +20,11 @@ namespace LC::Util
 	{
 	}
 
-	void TagsFilterModel::SetTagsRole (int role)
+	void TagsFilterModel::SetTagsRole (int role, const ITagsManager& tm)
 	{
 		beginFilterChange ();
 		TagsRole_ = role;
+		TagsManager_ = &tm;
 		endFilterChange (Direction::Rows);
 	}
 
@@ -72,7 +73,7 @@ namespace LC::Util
 		if (!model)
 			return {};
 
-		return model->index (row, 0).data (TagsRole_).toStringList ();
+		return TagsManager_->GetTags (model->index (row, 0).data (TagsRole_).value<QList<TagId>> ());
 	}
 
 	bool TagsFilterModel::FilterTagsMode (int sourceRow, const QModelIndex&) const

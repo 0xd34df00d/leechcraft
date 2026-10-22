@@ -468,7 +468,7 @@ namespace BitTorrent
 		switch (static_cast<CustomDataRoles> (role))
 		{
 		case CustomDataRoles::Tags:
-			return Handles_.at (row).Tags_;
+			return QVariant::fromValue (Handles_.at (row).Tags_);
 		}
 
 		switch (static_cast<JobHolderRole> (role))
@@ -789,7 +789,7 @@ namespace BitTorrent
 
 	QFuture<IDownload::Result> Core::AddMagnet (const QString& magnet,
 			const QString& path,
-			const QStringList& tags,
+			const QList<TagId>& tags,
 			TaskParameters params)
 	{
 		libtorrent::torrent_handle handle;
@@ -839,7 +839,7 @@ namespace BitTorrent
 
 	QFuture<IDownload::Result> Core::AddFile (const QString& filename,
 			const QString& path,
-			const QStringList& tags,
+			const QList<TagId>& tags,
 			bool tryLive,
 			const QVector<bool>& files,
 			TaskParameters params)
@@ -1274,7 +1274,7 @@ namespace BitTorrent
 					handle,
 					data,
 					filename,
-					settings.value ("Tags").toStringList (),
+					TagId::FromStrings (settings.value ("Tags").toStringList ()),
 					automanaged,
 					taskParameters,
 					TorrentStruct::NoFuture {}
@@ -1384,7 +1384,7 @@ namespace BitTorrent
 		Entity e;
 		e.Parameters_ = IsDownloaded;
 		e.Location_ = torrent.TorrentFileName_;
-		e.Additional_ [" Tags"] = torrent.Tags_;
+		e.Additional_ [" Tags"] = QVariant::fromValue (torrent.Tags_);
 		e.Additional_ [IgnoreSelf] = true;
 
 		for (int i = 0, numFiles = info.num_files (); i < numFiles; ++i)
@@ -1462,7 +1462,7 @@ namespace BitTorrent
 								libtorrent::torrent_handle::query_save_path).save_path;
 					settings.setValue ("SavePath", QString::fromUtf8 (savePath.c_str ()));
 					settings.setValue ("Filename", Handles_.at (i).TorrentFileName_);
-					settings.setValue ("Tags", Handles_.at (i).Tags_);
+					settings.setValue ("Tags", TagId::ToStrings (Handles_.at (i).Tags_));
 					settings.setValue ("Parameters", static_cast<int> (Handles_.at (i).Parameters_));
 					settings.setValue ("AutoManaged", Handles_.at (i).AutoManaged_);
 				}

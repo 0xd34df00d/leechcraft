@@ -79,6 +79,7 @@ namespace LC::SeekThru
 		void HandleEntity (const QString&, const QString& = QString ());
 	private:
 		void SetTags (int, const QStringList&);
+		void SetTagIDs (int, const QList<TagId>&);
 		QStringList ComputeUniqueCategories () const;
 		QList<Description> FindMatchingHRTag (const QString&) const;
 		Description ParseData (const QString&, const QString&);

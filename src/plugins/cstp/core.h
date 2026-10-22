@@ -18,6 +18,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
 #include <interfaces/idownload.h>
+#include <interfaces/core/itagsmanager.h>
 
 class QFile;
 class QToolBar;
@@ -43,7 +44,7 @@ namespace CSTP
 			QString Comment_;
 			bool ErrorFlag_;
 			LC::TaskParameters Parameters_;
-			QStringList Tags_;
+			QList<TagId> Tags_;
 		};
 		typedef std::vector<TaskDescr> tasks_t;
 		tasks_t ActiveTasks_;
@@ -102,7 +103,7 @@ namespace CSTP
 				const QString&,
 				const QString&,
 				const QString&,
-				const QStringList&,
+				const QList<TagId>&,
 				const QVariantMap&,
 				LC::TaskParameters = LC::NoParameters);
 		QFuture<IDownload::Result> AddTask (TaskDescr&);

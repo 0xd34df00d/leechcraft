@@ -72,7 +72,7 @@ namespace Poshuku
 		case Qt::ToolTipRole:
 			return CheckResults_ [Items_ [index.row ()].URL_];
 		case +CustomDataRoles::Tags:
-			return Items_ [index.row ()].Tags_;
+			return QVariant::fromValue (Items_ [index.row ()].Tags_);
 		default:
 			return {};
 		}
@@ -242,7 +242,7 @@ namespace Poshuku
 		if (data->hasFormat ("x-leechcraft/tag"))
 		{
 			auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
-			if (const auto& visible = tm->GetTag (data->data ("x-leechcraft/tag")))
+			if (const auto& visible = tm->GetTag (TagId { QString::fromLatin1 (data->data ("x-leechcraft/tag")) }))
 				visibleTags << *visible;
 		}
 
@@ -440,7 +440,7 @@ namespace Poshuku
 		beginInsertRows (QModelIndex (), first, first + items.size () - 1);
 		for (items_t::iterator i = items.begin (), end = items.end (); i != end; ++i)
 		{
-			i->Tags_.removeIf ([tm] (const QString& tag) { return !tm->GetTag (tag); });
+			i->Tags_.removeIf ([tm] (const TagId& tag) { return !tm->GetTag (tag); });
 			Items_.push_back (*i);
 		}
 		endInsertRows ();

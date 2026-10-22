@@ -21,7 +21,7 @@ namespace Otlozhu
 			return QStringList ();
 
 		const auto& ids = sourceModel ()->index (row, 0)
-				.data (StorageModel::Roles::ItemTags).toStringList ();
+				.data (StorageModel::Roles::ItemTags).value<QList<TagId>> ();
 		return Core::Instance ().GetProxy ()->GetTagsManager ()->GetTags (ids);
 	}
 

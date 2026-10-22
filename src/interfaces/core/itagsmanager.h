@@ -9,9 +9,71 @@
 #ifndef INTERFACES_CORE_ITAGSMANAGER_H
 #define INTERFACES_CORE_ITAGSMANAGER_H
 #include <optional>
+#include <QDataStream>
+#include <QHash>
+#include <QMetaType>
 #include <QStringList>
 
 class QAbstractItemModel;
+
+namespace LC
+{
+	/** @brief An identifier of a tag in `ITagsManager`.
+	 *
+	 * The identifier of a tag survives renaming the tag. `Id_` is the form
+	 * to persist, and `FromStrings()` restores identifiers equal to the
+	 * persisted ones.
+	 */
+	struct TagId
+	{
+		QString Id_;
+
+		bool operator== (const TagId&) const = default;
+
+		/** @brief Wraps the persisted forms `ids` into identifiers.
+		 *
+		 * @sa ToStrings()
+		 */
+		static QList<TagId> FromStrings (const QStringList& ids)
+		{
+			QList<TagId> result;
+			result.reserve (ids.size ());
+			for (const auto& id : ids)
+				result << TagId { id };
+			return result;
+		}
+
+		/** @brief Returns the persisted forms of `ids`.
+		 *
+		 * @sa FromStrings()
+		 */
+		static QStringList ToStrings (const QList<TagId>& ids)
+		{
+			QStringList result;
+			result.reserve (ids.size ());
+			for (const auto& id : ids)
+				result << id.Id_;
+			return result;
+		}
+	};
+
+	inline size_t qHash (const TagId& id, size_t seed = 0) noexcept
+	{
+		return qHash (id.Id_, seed);
+	}
+
+	inline QDataStream& operator<< (QDataStream& out, const TagId& id)
+	{
+		return out << id.Id_;
+	}
+
+	inline QDataStream& operator>> (QDataStream& in, TagId& id)
+	{
+		return in >> id.Id_;
+	}
+}
+
+Q_DECLARE_METATYPE (LC::TagId)
 
 /** @brief Tags manager's interface.
  *
@@ -19,7 +81,7 @@ class QAbstractItemModel;
  *
  * Tag names are trimmed and non-blank,
  * and they don't contain the delimiter (per `Util::GetTagsDelimiter()`)
- * the tags are split by.
+ * the tags are split by. Tags are referred to by their `LC::TagId`s.
  *
  * Object returned by the `GetQObject()` function emits these signals:
  * - `tagsUpdated(const QStringList& tags)` when the tags are updated.
@@ -27,8 +89,6 @@ class QAbstractItemModel;
 class Q_DECL_EXPORT ITagsManager
 {
 public:
-	typedef QString tag_id;
-
 	virtual ~ITagsManager () {}
 
 	/** @brief Returns the ID of the given `tag`.
@@ -45,7 +105,7 @@ public:
 	 * @sa GetTag()
 	 * @sa GetIDs()
 	 */
-	virtual std::optional<tag_id> GetID (const QString& tag) = 0;
+	virtual std::optional<LC::TagId> GetID (const QString& tag) = 0;
 
 	/** @brief Returns the IDs of the given `tags`.
 	 *
@@ -58,9 +118,9 @@ public:
 	 *
 	 * @sa GetID()
 	 */
-	QList<tag_id> GetIDs (const QStringList& tags)
+	QList<LC::TagId> GetIDs (const QStringList& tags)
 	{
-		QList<tag_id> result;
+		QList<LC::TagId> result;
 		for (const auto& tag : tags)
 			if (const auto& id = GetID (tag))
 				result << *id;
@@ -80,7 +140,7 @@ public:
 	 * @sa GetID()
 	 * @sa GetTags()
 	 */
-	virtual std::optional<QString> GetTag (tag_id id) const = 0;
+	virtual std::optional<QString> GetTag (const LC::TagId& id) const = 0;
 
 	/** @brief Returns the tags with the given `ids`.
 	 *
@@ -93,7 +153,7 @@ public:
 	 *
 	 * @sa GetTag()
 	 */
-	QStringList GetTags (const QList<tag_id>& ids) const
+	QStringList GetTags (const QList<LC::TagId>& ids) const
 	{
 		QStringList result;
 		for (const auto& id : ids)
@@ -124,7 +184,7 @@ public:
 	 * @param[in] string String with tags.
 	 * @return The list of the tags IDs.
 	 */
-	virtual QList<tag_id> SplitToIDs (const QString& string) = 0;
+	virtual QList<LC::TagId> SplitToIDs (const QString& string) = 0;
 
 	/** @brief Joins the given tags into one string that's suitable to
 	 * display to the user.
@@ -144,7 +204,7 @@ public:
 	 * @param[in] tagIDs List of tag IDs.
 	 * @return The joined string with tags.
 	 */
-	virtual QString JoinIDs (const QStringList& tagIDs) const = 0;
+	virtual QString JoinIDs (const QList<LC::TagId>& tagIDs) const = 0;
 
 	/** @brief Returns the completion model for this tags manager.
 	 *

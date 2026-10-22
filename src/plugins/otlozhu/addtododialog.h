@@ -25,7 +25,7 @@ namespace Otlozhu
 		TodoItem_ptr GetItem () const;
 	private:
 		QString GetTitle () const;
-		QStringList GetTags () const;
+		QList<TagId> GetTags () const;
 	};
 }
 }

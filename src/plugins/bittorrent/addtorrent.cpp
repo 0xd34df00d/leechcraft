@@ -174,12 +174,12 @@ namespace LC::BitTorrent
 		}
 	}
 
-	void AddTorrent::SetTags (const QStringList& ids)
+	void AddTorrent::SetTags (const QList<TagId>& ids)
 	{
 		Ui_.TagsEdit_->setText (GetProxyHolder ()->GetTagsManager ()->JoinIDs (ids));
 	}
 
-	QStringList AddTorrent::GetTags () const
+	QList<TagId> AddTorrent::GetTags () const
 	{
 		return GetProxyHolder ()->GetTagsManager ()->SplitToIDs (Ui_.TagsEdit_->text ());
 	}

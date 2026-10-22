@@ -24,12 +24,12 @@ namespace Qrosp
 
 	QString TagsManagerWrapper::GetID (const QString& tag)
 	{
-		return Manager_->GetID (tag).value_or (QString {});
+		return Manager_->GetID (tag).transform ([] (const TagId& id) { return id.Id_; }).value_or (QString {});
 	}
 
 	QString TagsManagerWrapper::GetTag (const QString& id) const
 	{
-		return Manager_->GetTag (id).value_or (QString {});
+		return Manager_->GetTag (TagId { id }).value_or (QString {});
 	}
 
 	QStringList TagsManagerWrapper::GetAllTags () const

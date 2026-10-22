@@ -127,7 +127,7 @@ namespace CSTP
 	{
 		auto url = e.Entity_.toUrl ();
 		const auto& urlList = e.Entity_.value<QList<QUrl>> ();
-		const auto& tags = e.Additional_ [" Tags"].toStringList ();
+		const auto& tags = e.Additional_ [" Tags"].value<QList<TagId>> ();
 
 		const QFileInfo fi (e.Location_);
 		const auto& dir = fi.isDir () ? e.Location_ : fi.dir ().path ();
@@ -186,7 +186,7 @@ namespace CSTP
 			const QString& path,
 			const QString& filename,
 			const QString& comment,
-			const QStringList& tags,
+			const QList<TagId>& tags,
 			const QVariantMap& params,
 			LC::TaskParameters tp)
 	{
@@ -537,7 +537,7 @@ namespace CSTP
 		if (url.size () > 50)
 			url = url.left (50) + "...";
 		QString errorStr = taskdscr->Task_->GetErrorString ();
-		QStringList tags = taskdscr->Tags_;
+		const auto tags = taskdscr->Tags_;
 
 		taskdscr->File_->close ();
 
@@ -600,7 +600,7 @@ namespace CSTP
 				auto e = Util::MakeEntity (QUrl::fromLocalFile (filename),
 						{},
 						tp);
-				e.Additional_ [" Tags"] = tags;
+				e.Additional_ [" Tags"] = QVariant::fromValue (tags);
 				GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 			}
 		}
@@ -647,7 +647,7 @@ namespace CSTP
 			settings.setValue ("Filename", i->File_->fileName ());
 			settings.setValue ("Comment", i->Comment_);
 			settings.setValue ("ErrorFlag", i->ErrorFlag_);
-			settings.setValue ("Tags", i->Tags_);
+			settings.setValue ("Tags", TagId::ToStrings (i->Tags_));
 		}
 		SaveScheduled_ = false;
 		settings.endArray ();
@@ -689,7 +689,7 @@ namespace CSTP
 
 			td.Comment_ = settings.value ("Comment").toString ();
 			td.ErrorFlag_ = settings.value ("ErrorFlag").toBool ();
-			td.Tags_ = settings.value ("Tags").toStringList ();
+			td.Tags_ = TagId::FromStrings (settings.value ("Tags").toStringList ());
 
 			ActiveTasks_.push_back (td);
 		}

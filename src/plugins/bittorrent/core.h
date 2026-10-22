@@ -20,6 +20,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
 #include <interfaces/idownload.h>
+#include <interfaces/core/itagsmanager.h>
 #include <util/sll/either.h>
 #include "fileinfo.h"
 #include "types.h"
@@ -65,9 +66,7 @@ namespace BitTorrent
 			QByteArray TorrentFileContents_ = {};
 			QString TorrentFileName_ = {};
 			TorrentState State_ = TSIdle;
-			/** Holds the IDs of tags of the torrent.
-			 */
-			QStringList Tags_;
+			QList<TagId> Tags_;
 			bool AutoManaged_ = true;
 
 			TaskParameters Parameters_;
@@ -77,7 +76,7 @@ namespace BitTorrent
 			bool PauseAfterCheck_ = false;
 
 			TorrentStruct (libtorrent::torrent_handle handle,
-					QStringList tags,
+					QList<TagId> tags,
 					TaskParameters params)
 			: Handle_ { std::move (handle) }
 			, Tags_ { std::move (tags) }
@@ -92,7 +91,7 @@ namespace BitTorrent
 			TorrentStruct (libtorrent::torrent_handle handle,
 					QByteArray torrentFile,
 					QString filename,
-					QStringList tags,
+					QList<TagId> tags,
 					bool autoManaged,
 					TaskParameters params,
 					NoFuture)
@@ -108,7 +107,7 @@ namespace BitTorrent
 			TorrentStruct (libtorrent::torrent_handle handle,
 					QByteArray torrentFile,
 					QString filename,
-					QStringList tags,
+					QList<TagId> tags,
 					bool autoManaged,
 					TaskParameters params)
 			: TorrentStruct
@@ -185,7 +184,7 @@ namespace BitTorrent
 			*/
 		QFuture<IDownload::Result> AddMagnet (const QString& magnet,
 				const QString& path,
-				const QStringList& tags,
+				const QList<TagId>& tags,
 				LC::TaskParameters params = LC::NoParameters);
 		/** @brief Adds the given torrent file from the filename to the
 			* queue.
@@ -204,7 +203,7 @@ namespace BitTorrent
 			*/
 		QFuture<IDownload::Result> AddFile (const QString& filename,
 				const QString& path,
-				const QStringList& tags,
+				const QList<TagId>& tags,
 				bool tryLive,
 				const QVector<bool>& files = QVector<bool> (),
 				LC::TaskParameters params = LC::NoParameters);

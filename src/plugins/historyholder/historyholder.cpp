@@ -65,7 +65,7 @@ namespace HistoryHolder
 
 	QList<IFindProxy_ptr> Plugin::GetProxy (const Request& r)
 	{
-		return { std::make_shared<FindProxy> (DB_->CreateModel (), r) };
+		return { std::make_shared<FindProxy> (DB_->CreateModel (), r, *GetProxyHolder ()->GetTagsManager ()) };
 	}
 
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const

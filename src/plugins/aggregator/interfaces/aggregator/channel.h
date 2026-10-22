@@ -15,6 +15,7 @@
 #include <QDateTime>
 #include <QStringList>
 #include <QImage>
+#include <interfaces/core/itagsmanager.h>
 #include "item.h"
 #include "common.h"
 
@@ -30,7 +31,7 @@ namespace Aggregator
 		QString Title_;
 		QString DisplayTitle_;
 		QString Link_;
-		QStringList Tags_;
+		QList<TagId> Tags_;
 		QDateTime LastBuild_;
 		QImage Favicon_;
 		int Unread_ = 0;
@@ -47,7 +48,7 @@ namespace Aggregator
 		QString Link_;
 		QString Description_;
 		QDateTime LastBuild_;
-		QStringList Tags_;
+		QList<TagId> Tags_;
 		QString Language_;
 		QString Author_;
 		QString PixmapURL_;

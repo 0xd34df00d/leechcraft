@@ -28,13 +28,11 @@ namespace HistoryHolder
 		const QAbstractItemModel_ptr Src_;
 		const Request R_;
 	public:
-		FindProxy (const QAbstractItemModel_ptr&, const Request&);
+		FindProxy (const QAbstractItemModel_ptr&, const Request&, const ITagsManager&);
 
 		QAbstractItemModel* GetModel ();
 		QByteArray GetUniqueSearchID () const;
 		QStringList GetCategories () const;
-	protected:
-		QStringList GetTagsForIndex (int) const;
 	};
 }
 }

@@ -9,6 +9,7 @@
 #pragma once
 
 #include <util/models/fixedstringfilterproxymodel.h>
+#include <interfaces/core/itagsmanager.h>
 #include "tagsconfig.h"
 
 namespace LC::Util
@@ -31,6 +32,7 @@ namespace LC::Util
 		QString Separator_;
 		QList<QString> FilterTags_;
 		int TagsRole_ = -1;
+		const ITagsManager *TagsManager_ = nullptr;
 		bool NormalMode_ = true;
 	public:
 		/** @brief Describes the modes of matching two sets of tags.
@@ -62,7 +64,16 @@ namespace LC::Util
 		 */
 		explicit TagsFilterModel (QObject *parent = nullptr);
 
-		void SetTagsRole (int role);
+		/** @brief Makes the default `GetTagsForIndex()` read the tags from `role`.
+		 *
+		 * The role is expected to hold the `QList<TagId>` of the row, and
+		 * `tm` resolves the IDs to the names the filter matches. `tm` must
+		 * outlive this model.
+		 *
+		 * @param[in] role The role holding the tag IDs of a row.
+		 * @param[in] tm The tags manager resolving the IDs.
+		 */
+		void SetTagsRole (int role, const ITagsManager& tm);
 
 		/** @brief Sets the separator for the tags.
 		 *

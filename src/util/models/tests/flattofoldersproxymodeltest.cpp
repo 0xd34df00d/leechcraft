@@ -33,16 +33,21 @@ namespace LC::Util
 
 		struct TagsStub final : ITagsManager
 		{
-			std::optional<tag_id> GetID (const QString& tag) override { return tag; }
-			std::optional<QString> GetTag (tag_id id) const override { return id; }
+			std::optional<TagId> GetID (const QString& tag) override { return TagId { tag }; }
+			std::optional<QString> GetTag (const TagId& id) const override { return id.Id_; }
 			QStringList GetAllTags () const override { return {}; }
 			QStringList Split (const QString& string) const override { return string.split (';', Qt::SkipEmptyParts); }
-			QList<tag_id> SplitToIDs (const QString& string) override { return Split (string); }
+			QList<TagId> SplitToIDs (const QString& string) override { return TagId::FromStrings (Split (string)); }
 			QString Join (const QStringList& tags) const override { return tags.join ("; "); }
-			QString JoinIDs (const QStringList& ids) const override { return Join (ids); }
+			QString JoinIDs (const QList<TagId>& ids) const override { return Join (TagId::ToStrings (ids)); }
 			QAbstractItemModel* GetModel () override { return nullptr; }
 			QObject* GetQObject () override { return nullptr; }
 		};
+
+		QVariant TagsVariant (const QStringList& tags)
+		{
+			return QVariant::fromValue (TagId::FromStrings (tags));
+		}
 
 		struct Source : QStandardItemModel
 		{
@@ -55,8 +60,13 @@ namespace LC::Util
 			{
 				const auto first = new QStandardItem { text };
 				first->setData (id, IdRole);
-				first->setData (tags, TagsRole);
+				first->setData (TagsVariant (tags), TagsRole);
 				appendRow ({ first, new QStandardItem { QString::number (id * 10) } });
+			}
+
+			void SetTags (int row, const QStringList& tags)
+			{
+				item (row)->setData (TagsVariant (tags), TagsRole);
 			}
 
 			QMimeData* mimeData (const QModelIndexList& indexes) const override
@@ -140,10 +150,15 @@ namespace LC::Util
 
 		QStringList TagsOf (const QModelIndex& index)
 		{
-			auto tags = index.data (TagsRole).toStringList ();
+			auto tags = TagId::ToStrings (index.data (TagsRole).value<QList<TagId>> ());
 			if (tags.isEmpty ())
 				tags << QString {};
 			return tags;
+		}
+
+		QString FolderTag (const QModelIndex& folder)
+		{
+			return folder.data (TagsRole).value<QList<TagId>> ().value (0).Id_;
 		}
 
 		using Picture = QMap<QString, QSet<int>>;
@@ -184,7 +199,7 @@ namespace LC::Util
 				QStringList ids;
 				for (int l = 0; l < proxy.rowCount (folder); ++l)
 					ids << QString::number (proxy.index (l, 0, folder).data (IdRole).toInt ());
-				result << folder.data (TagsRole).toString () + ": " + ids.join (' ');
+				result << FolderTag (folder) + ": " + ids.join (' ');
 			}
 			return result;
 		}
@@ -203,7 +218,7 @@ namespace LC::Util
 				if (upstream.columnCount () > 1)
 					QCOMPARE (proxy.rowCount (folderIdx.siblingAtColumn (1)), 0);
 
-				const auto& tag = folderIdx.data (TagsRole).toString ();
+				const auto& tag = FolderTag (folderIdx);
 				QVERIFY2 (!actual.contains (tag), qPrintable ("duplicate folder for tag " + tag));
 				QVERIFY2 (proxy.rowCount (folderIdx) > 0, qPrintable ("empty folder for tag " + tag));
 
@@ -297,13 +312,13 @@ namespace LC::Util
 		f.Attach ();
 		Spies spies { f.Proxy_ };
 
-		f.Source_.item (1)->setData (QStringList { "t2", "t3" }, TagsRole);
+		f.Source_.SetTags (1, { "t2", "t3" });
 
 		QCOMPARE (spies.Data_.size (), 1);
 		const auto& args = spies.Data_.first ();
 		const auto& topLeft = args.at (0).value<QModelIndex> ();
 		QCOMPARE (topLeft.data (IdRole).toInt (), 2);
-		QCOMPARE (topLeft.parent ().data (TagsRole).toString (), QString { "t2" });
+		QCOMPARE (FolderTag (topLeft.parent ()), QString { "t2" });
 		QCOMPARE (args.at (1).value<QModelIndex> ().column (), f.Upstream_.columnCount () - 1);
 		QCOMPARE (args.at (2).value<QList<int>> (), (QList<int> { TagsRole }));
 
@@ -337,7 +352,7 @@ namespace LC::Util
 		f.Attach ();
 
 		f.Source_.blockSignals (true);
-		f.Source_.item (2)->setData (QStringList { "zz" }, TagsRole);
+		f.Source_.SetTags (2, { "zz" });
 		f.Source_.blockSignals (false);
 		f.Source_.removeRow (2);
 
@@ -487,7 +502,7 @@ namespace LC::Util
 				f.Source_.removeRow (gen.bounded (rows));
 				break;
 			case 2:
-				f.Source_.item (gen.bounded (rows))->setData (randomTags (), TagsRole);
+				f.Source_.SetTags (gen.bounded (rows), randomTags ());
 				break;
 			case 3:
 				f.Source_.item (gen.bounded (rows))->setText (randomText ());

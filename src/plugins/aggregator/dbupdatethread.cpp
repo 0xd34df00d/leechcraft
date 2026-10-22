@@ -146,10 +146,9 @@ namespace LC::Aggregator
 			void AddChannel (Channel& channel) const
 			{
 				if (const auto tags = SB_->GetFeedTags (channel.FeedID_))
-				{
-					channel.Tags_ += *tags;
-					channel.Tags_.removeDuplicates ();
-				}
+					for (const auto& tag : *tags)
+						if (!channel.Tags_.contains (tag))
+							channel.Tags_ << tag;
 
 				SB_->AddChannel (channel);
 
@@ -208,14 +207,14 @@ namespace LC::Aggregator
 					DownloadEnclosures (item.Enclosures_, channel.Tags_);
 			}
 
-			void DownloadEnclosures (const QList<Enclosure>& enclosures, const QStringList& tags) const
+			void DownloadEnclosures (const QList<Enclosure>& enclosures, const QList<TagId>& tags) const
 			{
 				const auto iem = GetProxyHolder ()->GetEntityManager ();
 				const auto& targetPath = XmlSettingsManager::Instance ().property ("EnclosuresDownloadPath").toString ();
 				for (const auto& enc : enclosures)
 				{
 					auto de = Util::MakeEntity (QUrl { enc.URL_ }, targetPath, {}, enc.Type_);
-					de.Additional_ [" Tags"] = tags;
+					de.Additional_ [" Tags"] = QVariant::fromValue (tags);
 					iem->HandleEntity (de);
 				}
 			}

@@ -160,7 +160,7 @@ namespace LC
 		 *   to the user. For example, if the entity is binary, this could
 		 *   be used to describe the entity.
 		 * - " Tags"
-		 *   QStringList with IDs of tags of the entity.
+		 *   `QList<LC::TagId>` with the IDs of the tags of the entity.
 		 */
 		QMap<QString, QVariant> Additional_;
 	};
@@ -173,8 +173,7 @@ namespace LC
 	 */
 	enum class CustomDataRoles
 	{
-		/** The role for the string list with tags. So, QStringList is
-		 * expected to be returned.
+		/** The role for the IDs of the tags of the row, a `QList<LC::TagId>`.
 		 */
 		Tags = Qt::UserRole + 100,
 	};

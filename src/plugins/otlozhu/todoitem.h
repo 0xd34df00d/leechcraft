@@ -12,6 +12,7 @@
 #include <QStringList>
 #include <QDateTime>
 #include <QVariantMap>
+#include <interfaces/core/itagsmanager.h>
 
 namespace LC
 {
@@ -26,7 +27,7 @@ namespace Otlozhu
 
 		QString Title_;
 		QString Comment_;
-		QStringList TagIDs_;
+		QList<TagId> TagIDs_;
 		QDateTime Created_ = QDateTime::currentDateTime ();
 		QDateTime Due_;
 
@@ -56,8 +57,8 @@ namespace Otlozhu
 		QString GetComment () const;
 		void SetComment (const QString&);
 
-		QStringList GetTagIDs () const;
-		void SetTagIDs (const QStringList&);
+		QList<TagId> GetTagIDs () const;
+		void SetTagIDs (const QList<TagId>&);
 
 		QDateTime GetCreatedDate () const;
 		void SetCreatedDate (const QDateTime&);

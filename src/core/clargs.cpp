@@ -114,6 +114,12 @@ namespace LC::CL
 					continue;
 				}
 
+				if (name == " Tags")
+				{
+					qWarning () << "ignoring" << name << "since tag IDs can't be given on the command line";
+					continue;
+				}
+
 				addMap [name] = value;
 			}
 			return addMap;

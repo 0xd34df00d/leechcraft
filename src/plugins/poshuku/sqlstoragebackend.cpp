@@ -69,7 +69,7 @@ namespace Poshuku
 			{
 				Title_,
 				URL_,
-				Tags_.split (" ", Qt::SkipEmptyParts)
+				TagId::FromStrings (Tags_.split (" ", Qt::SkipEmptyParts))
 			};
 		}
 
@@ -79,7 +79,7 @@ namespace Poshuku
 			{
 				item.URL_,
 				item.Title_,
-				item.Tags_.join (" ")
+				TagId::ToStrings (item.Tags_).join (" ")
 			};
 		}
 	};

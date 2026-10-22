@@ -13,11 +13,10 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QMap>
+#include <interfaces/core/itagsmanager.h>
 
 class QDateTime;
 class QAbstractItemModel;
-
-class ITagsManager;
 
 namespace LC
 {
@@ -49,7 +48,7 @@ namespace HistoryHolder
 		void LoadTags ();
 
 		void Add (const Entity&, const QDateTime&);
-		QList<int> AddTags (const QStringList&);
+		QList<int> AddTags (const QList<TagId>&);
 		void AssociateTags (int, const QList<int>&);
 	};
 }
