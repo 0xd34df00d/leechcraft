@@ -8,8 +8,6 @@
 
 #pragma once
 
-#include <optional>
-#include <QObject>
 #include <QUuid>
 #include <QString>
 #include <QList>
@@ -18,7 +16,7 @@
 
 namespace LC
 {
-	class TagsStorage : public QObject
+	class TagsStorage
 	{
 	public:
 		struct Record;
@@ -27,7 +25,7 @@ namespace LC
 
 		Util::oral::ObjectInfo_ptr<Record> Record_;
 	public:
-		explicit TagsStorage (QObject* = nullptr);
+		explicit TagsStorage (const QString& dbPath);
 		~TagsStorage ();
 
 		using Id = QUuid;

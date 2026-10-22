@@ -7,13 +7,11 @@
  **********************************************************************/
 
 #include "tagsstorage.h"
-#include <QDir>
 #include <QSqlError>
 #include <util/db/oral/oral.h>
 #include <util/db/dblock.h>
 #include <util/db/util.h>
 #include <util/sll/prelude.h>
-#include <util/sys/paths.h>
 
 namespace LC
 {
@@ -34,13 +32,11 @@ namespace LC
 {
 	namespace sph = Util::oral::sph;
 
-	TagsStorage::TagsStorage (QObject *parent)
-	: QObject { parent }
-	, DB_ { QSqlDatabase::addDatabase ("QSQLITE",
+	TagsStorage::TagsStorage (const QString& dbPath)
+	: DB_ { QSqlDatabase::addDatabase ("QSQLITE",
 			Util::GenConnectionName ("org.LeechCraft.Core.TagsStorage")) }
 	{
-		const auto& coreDir = Util::GetUserDir (Util::UserDir::LC, "core");
-		DB_.setDatabaseName (coreDir.filePath ("core.db"));
+		DB_.setDatabaseName (dbPath);
 
 		if (!DB_.open ())
 		{

@@ -8,16 +8,19 @@
 
 #include "tagsmanager.h"
 #include <algorithm>
+#include <QDir>
 #include <QStringList>
 #include <QtDebug>
 #include <util/sll/qtutil.h>
+#include <util/sys/paths.h>
 #include <util/tags/util.h>
 
 using namespace LC;
 
-TagsManager::TagsManager ()
+TagsManager::TagsManager (std::unique_ptr<TagsStorage> storage)
+: Storage_ { std::move (storage) }
 {
-	for (const auto& [id, name] : Storage_.GetAllTags ())
+	for (const auto& [id, name] : Storage_->GetAllTags ())
 		Tags_ [id] = name;
 	MigrateStoredNames ();
 
@@ -27,7 +30,7 @@ TagsManager::TagsManager ()
 
 TagsManager& TagsManager::Instance ()
 {
-	static TagsManager tm;
+	static TagsManager tm { std::make_unique<TagsStorage> (Util::GetUserDir (Util::UserDir::LC, "core").filePath ("core.db")) };
 	return tm;
 }
 
@@ -120,7 +123,7 @@ TagId TagsManager::InsertTag (const QString& tag)
 {
 	const auto& uuid = QUuid::createUuid ();
 
-	Storage_.AddTag (uuid, tag);
+	Storage_->AddTag (uuid, tag);
 
 	auto updated = Tags_;
 	auto pos = updated.insert (uuid, tag);
@@ -142,7 +145,7 @@ void TagsManager::RemoveTag (const QModelIndex& index)
 
 	const auto pos = std::next (Tags_.begin (), index.row ());
 
-	Storage_.DeleteTag (pos.key ());
+	Storage_->DeleteTag (pos.key ());
 
 	beginRemoveRows (QModelIndex (), index.row (), index.row ());
 	Tags_.erase (pos);
@@ -171,7 +174,7 @@ Util::Either<TagsManager::RenameError, Util::Void> TagsManager::RenameTag (const
 		return Util::Left { TagNameTaken { name } };
 
 	*pos = name;
-	Storage_.SetTagName (pos.key (), name);
+	Storage_->SetTagName (pos.key (), name);
 
 	emit dataChanged (index, index);
 	emit tagsUpdated (GetAllTags ());
@@ -207,6 +210,6 @@ void TagsManager::MigrateStoredNames ()
 
 		qDebug () << "repairing tag" << name << "to" << repaired;
 		name = repaired;
-		Storage_.SetTagName (id, repaired);
+		Storage_->SetTagName (id, repaired);
 	}
 }

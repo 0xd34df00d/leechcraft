@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <memory>
 #include <optional>
 #include <variant>
 #include <QAbstractItemModel>
@@ -27,14 +28,14 @@ namespace LC
 	{
 		Q_OBJECT
 		Q_INTERFACES (ITagsManager)
-
-		TagsManager ();
 	public:
 		typedef QMap<QUuid, QString> TagsDictionary_t;
 	private:
 		TagsDictionary_t Tags_;
-		TagsStorage Storage_;
+		std::unique_ptr<TagsStorage> Storage_;
 	public:
+		explicit TagsManager (std::unique_ptr<TagsStorage>);
+
 		static TagsManager& Instance ();
 
 		int columnCount (const QModelIndex&) const override;
