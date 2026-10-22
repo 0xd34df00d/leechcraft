@@ -120,6 +120,7 @@ set (CMAKE_MODULE_PATH
 	"${CMAKE_MODULE_PATH}"
 	)
 
+option (ENABLE_ALL_TESTS "Enable all tests by default" OFF)
 enable_testing ()
 
 add_subdirectory (util)

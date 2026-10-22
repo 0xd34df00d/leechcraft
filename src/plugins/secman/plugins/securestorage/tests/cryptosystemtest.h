@@ -10,17 +10,8 @@
 #define PLUGINS_SECMAN_SECURESTORAGE_CRYPTOSYSTEM_TEST_H
 #include <QObject>
 
-namespace LC
+namespace LC::SecMan::SecureStorage
 {
-namespace Plugins
-{
-namespace SecMan
-{
-namespace StoragePlugins
-{
-namespace SecureStorage
-{
-
 	class CryptoSystemTest : public QObject
 	{
 		Q_OBJECT
@@ -46,9 +37,5 @@ namespace SecureStorage
 		 */
 		void testDecryptShortCipherText ();
 	};
-}
-}
-}
-}
 }
 #endif

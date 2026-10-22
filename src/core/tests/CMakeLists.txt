@@ -1,4 +1,4 @@
-AddCoreTest (tagsmanager CoreTagsManagerTest
+AddCoreTest (tagsmanager
 	SRCS
 		tagsmanagertest.cpp
 		../tagsmanager.cpp

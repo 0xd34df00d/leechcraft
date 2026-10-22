@@ -27,20 +27,7 @@ LC_DEFINE_PLUGIN (
 	SETTINGS lackmansettings.xml
 	QT_COMPONENTS Network Sql Widgets Xml
 	INSTALL_SHARE
+	HAS_TESTS
 	)
 
-option (TESTS_LACKMAN "Enable LackMan tests" OFF)
-if (TESTS_LACKMAN)
-	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests)
-	add_executable (lc_lackman_versioncomparatortest WIN32
-		tests/versioncomparatortest.cpp
-		versioncomparator.cpp
-	)
-	target_link_libraries (lc_lackman_versioncomparatortest
-		${LEECHCRAFT_LIBRARIES}
-	)
-
-	FindQtLibs (lc_lackman_versioncomparatortest Test)
-
-	add_test (VersionComparator lc_lackman_versioncomparatortest)
-endif ()
+AddLackmanTest (versioncomparator SRCS tests/versioncomparatortest.cpp versioncomparator.cpp)

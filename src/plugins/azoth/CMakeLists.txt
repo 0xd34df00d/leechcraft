@@ -154,7 +154,7 @@ LC_DEFINE_PLUGIN (
 	HAS_TESTS
 	)
 
-AddAzothTest (entryidops util/azoth/tests/entryidopstest)
+AddAzothTest (entryidops SRCS util/azoth/tests/entryidopstest.cpp)
 
 install (DIRECTORY interfaces DESTINATION include/leechcraft)
 

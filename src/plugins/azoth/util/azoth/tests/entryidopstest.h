@@ -25,5 +25,3 @@ namespace LC::Azoth
 		void testMalformedBytes ();
 	};
 }
-
-using TheTestObject = LC::Azoth::EntryIdOpsTest;

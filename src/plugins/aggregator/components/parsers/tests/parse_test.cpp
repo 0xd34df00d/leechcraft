@@ -13,6 +13,8 @@
 #include <components/parsers/parse.h>
 #include "item.h"
 
+QTEST_GUILESS_MAIN (LC::Aggregator::Parsers::ParseTest)
+
 namespace LC::Aggregator::Parsers
 {
 	namespace

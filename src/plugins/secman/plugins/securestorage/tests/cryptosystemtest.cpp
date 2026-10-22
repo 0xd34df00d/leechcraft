@@ -15,9 +15,9 @@
 #include "../cryptosystem.h"
 #include "../ciphertextformat.h"
 
-using namespace LC::Plugins::SecMan::StoragePlugins::SecureStorage;
+using namespace LC::SecMan::SecureStorage;
 
-QTEST_MAIN (CryptoSystemTest)
+QTEST_GUILESS_MAIN (CryptoSystemTest)
 
 namespace
 {

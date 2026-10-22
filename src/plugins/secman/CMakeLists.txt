@@ -17,6 +17,5 @@ LC_DEFINE_PLUGIN (
 	INSTALL_SHARE
 	)
 
-option (TESTS_SECMAN "Enable SecMan tests")
 SUBPLUGIN (SECURESTORAGE "Enable SecMan SecureStorage, the advanced encrypted private data storage" OFF)
 SUBPLUGIN (SIMPLESTORAGE "Enable SecMan SimpleStorage, the basic unencrypted private data storage" ON)

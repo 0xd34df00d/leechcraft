@@ -13,4 +13,4 @@ LC_DEFINE_PLUGIN (
 	HAS_TESTS
 	)
 
-AddImgasteTest (upload tests/uploadtest)
+AddImgasteTest (upload SRCS tests/uploadtest.cpp)

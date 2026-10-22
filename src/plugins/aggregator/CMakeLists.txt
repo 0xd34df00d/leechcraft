@@ -68,5 +68,5 @@ LC_DEFINE_PLUGIN (
 SUBPLUGIN (BODYFETCH "Enable BodyFetch for fetching full bodies of news items" OFF)
 SUBPLUGIN (WEBACCESS "Enable WebAccess for providing HTTP access to Aggregator" OFF)
 
-AddAggregatorTest (parsers_utils components/parsers/tests/utils_test)
-AddAggregatorTest (parsers_parse components/parsers/tests/parse_test)
+AddAggregatorTest (parsers_utils SRCS components/parsers/tests/utils_test.cpp)
+AddAggregatorTest (parsers_parse SRCS components/parsers/tests/parse_test.cpp)

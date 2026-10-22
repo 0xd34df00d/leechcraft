@@ -21,5 +21,3 @@ namespace LC::Aggregator::Parsers
 		void testParseContentEscaped ();
 	};
 }
-
-using TheTestObject = LC::Aggregator::Parsers::UtilsTest;

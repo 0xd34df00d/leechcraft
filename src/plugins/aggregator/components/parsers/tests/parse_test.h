@@ -21,5 +21,3 @@ namespace LC::Aggregator::Parsers
 		void testRelativeUrls ();
 	};
 }
-
-using TheTestObject = LC::Aggregator::Parsers::ParseTest;

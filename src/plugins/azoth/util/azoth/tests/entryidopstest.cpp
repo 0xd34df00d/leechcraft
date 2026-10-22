@@ -13,6 +13,8 @@
 #include <util/azoth/entryidops.h>
 #include <util/azoth/util.h>
 
+QTEST_GUILESS_MAIN (LC::Azoth::EntryIdOpsTest)
+
 namespace LC::Azoth
 {
 	namespace

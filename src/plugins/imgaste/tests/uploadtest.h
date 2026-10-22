@@ -19,5 +19,3 @@ namespace LC::Imgaste
 		void testUpload ();
 	};
 }
-
-using TheTestObject = LC::Imgaste::UploadTest;

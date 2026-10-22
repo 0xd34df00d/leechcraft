@@ -11,9 +11,13 @@
 #include <QImage>
 #include <QNetworkAccessManager>
 #include <QtDebug>
+#include <QtTest>
 #include <util/sll/either.h>
 #include <util/threads/coro.h>
+#include <util/threads/coro/getresult.h>
 #include "hostingservice.h"
+
+QTEST_GUILESS_MAIN (LC::Imgaste::UploadTest)
 
 namespace LC::Imgaste
 {
@@ -57,6 +61,6 @@ namespace LC::Imgaste
 			}
 		} ();
 
-		GetTaskResult (task);
+		Util::GetTaskResult (std::move (task));
 	}
 }

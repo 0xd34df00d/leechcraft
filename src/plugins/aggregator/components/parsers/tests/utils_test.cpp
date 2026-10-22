@@ -11,6 +11,8 @@
 #include <QtTest>
 #include <components/parsers/utils.h>
 
+QTEST_GUILESS_MAIN (LC::Aggregator::Parsers::UtilsTest)
+
 namespace LC::Aggregator::Parsers
 {
 	namespace
