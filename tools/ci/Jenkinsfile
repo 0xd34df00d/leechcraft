@@ -8,13 +8,16 @@
 // A cell builds the checkout with tools/docker/runci.sh inside the distro's image, scans the compiler output
 // with Warnings NG and publishes the result. The full profile also publishes one result aggregated over all cells.
 // Every build, in every job, takes the same lock around its compile, so only one build runs at a time and
-// build times stay comparable. A cell that fails to configure or to build fails the run; the message names which,
-// since on a rolling distro a configure failure almost always means a dependency moved.
+// build times stay comparable. The full profile compiles through ccache, one cache for all cells on a partition
+// of the agent dedicated to it, since its build times are not the measurement; the quick profile does not, so
+// that its build time stays comparable from build to build. A cell that fails to configure or to build fails the run; the message
+// names which, since on a rolling distro a configure failure almost always means a dependency moved.
 
 import groovy.transform.Field
 
 @Field final String AGENT = 'real'
 @Field final String BUILD_LOCK = 'lc-build'
+@Field final String CCACHE_HOST_DIR = '/var/cache/ci-ccache'
 @Field final List<String> COMPILERS = ['gcc', 'clang']
 @Field final Map<String, Integer> MINIMUM = [gcc: 16, clang: 23]
 @Field final Map PRIMARY = [distro: 'opensuse_factory', compiler: 'clang']
@@ -61,17 +64,19 @@ Map planCells(List<String> excluded) {
 // matrix job it replaced, so that the trend and that comparison continue across the migration. Source paths are rewritten to the workspace's
 // absolute path for the same reason, and because Warnings NG otherwise anchors relative paths to the build
 // directory it spots in CMake's output, which does not exist outside the container.
-Map runCell(Map cell, boolean continuesHistoricalResult) {
+Map runCell(Map cell, boolean continuesHistoricalResult, boolean cached) {
     String name = cellName(cell)
     String log = "${name}.log"
     int rc = 0
     lock(BUILD_LOCK) {
-        rc = sh(returnStatus: true, label: "build ${name}", script: """#!/bin/bash
+        withEnv(cached ? ["CCACHE_HOST_DIR=${CCACHE_HOST_DIR}"] : []) {
+            rc = sh(returnStatus: true, label: "build ${name}", script: """#!/bin/bash
 set -o pipefail
 tools/docker/runci.sh ${cell.distro} ${cell.compiler} ${cell.tidy ? 'tidy' : 'build'} 2>&1 \\
     | sed -e 's|/work/build/[^ :]*/\\.\\./leechcraft/|/work/leechcraft/|g' \\
           -e 's|/work/leechcraft/|${env.WORKSPACE}/|g' | tee ${log}
 """)
+        }
     }
     def tool
     if (cell.tidy)
@@ -119,7 +124,7 @@ timeout(time: 6, unit: 'HOURS') {
                 node(AGENT) {
                     checkout scm
                     discoverReferenceBuild(requiredResult: 'UNSTABLE')
-                    grade(runCell(PRIMARY, true))
+                    grade(runCell(PRIMARY, true, false))
                 }
             }
             if (params.DOWNSTREAM && currentBuild.currentResult in ['SUCCESS', 'UNSTABLE']) {
@@ -147,7 +152,7 @@ timeout(time: 6, unit: 'HOURS') {
                     String name = cellName(cell)
                     stage(name) {
                         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                            Map outcome = runCell(cell, false)
+                            Map outcome = runCell(cell, false, true)
                             reports[name] = outcome.report
                             grade(outcome)
                         }

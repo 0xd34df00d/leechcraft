@@ -14,9 +14,13 @@ A cell runs `tools/docker/runci.sh <distro> <gcc|clang> [build|tidy]` in the dis
 image: a from-scratch build without network, in a tmpfs, on every core, needing only `sh`, `cmake`, `ninja` and
 the compilers inside the image. Every build in every job takes the `lc-build` lock around its compile, so only
 one compile runs on the machine at a time and build times stay comparable; a quick build waits for at most one
-cell of a running full build. A cell that fails to configure or to build fails the run; the message says which,
-because on a rolling distro a configure failure almost always means a dependency moved. The quick job mails
-`NOTIFY` on every failure and on every status change, the full job on status changes only.
+cell of a running full build. The full profile compiles through ccache, with one cache for all cells at
+`/var/cache/ci-ccache` on the agent, a partition dedicated to it that the cache may fill to nine tenths, and each
+cell's log ending with that build's cache statistics; the quick profile does not, so that its build time stays a
+measurement. An image without ccache builds without it and says so. A cell that fails to configure or to build
+fails the run; the message says which, because on a
+rolling distro a configure failure almost always means a dependency moved. The quick job mails `NOTIFY` on every
+failure and on every status change, the full job on status changes only.
 
 ## Changing things
 
@@ -43,6 +47,8 @@ because on a rolling distro a configure failure almost always means a dependency
   warnings trend continues. For the same reason source paths are rewritten to the workspace's absolute path:
   Warnings NG would otherwise anchor relative paths to the build directory it spots in CMake's output, which
   only exists inside the container.
+- The compiler cache is written by the build containers as root, so wiping it is `rm -rf /var/cache/ci-ccache/*`
+  as root while no build runs; the next full build refills it.
 
 ## qxmpp in the Debian and Fedora images
 
