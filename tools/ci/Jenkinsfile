@@ -8,7 +8,8 @@
 // A cell builds the checkout with tools/docker/runci.sh inside the distro's image, scans the compiler output
 // with Warnings NG and publishes the result. The full profile also publishes one result aggregated over all cells.
 // Every build, in every job, takes the same lock around its compile, so only one build runs at a time and
-// build times stay comparable.
+// build times stay comparable. A cell that fails to configure or to build fails the run; the message names which,
+// since on a rolling distro a configure failure almost always means a dependency moved.
 
 import groovy.transform.Field
 
@@ -86,20 +87,22 @@ tools/docker/runci.sh ${cell.distro} ${cell.compiler} ${cell.tidy ? 'tidy' : 'bu
     [name: name, rc: rc, report: report]
 }
 
-void grade(Map outcome, boolean dependencyFailureIsUnstable) {
+void grade(Map outcome) {
     if (outcome.rc == 0)
         return
-    String what = outcome.rc == 2 ? 'configure failed, most likely a missing dependency' : "build failed with status ${outcome.rc}"
-    if (outcome.rc == 2 && dependencyFailureIsUnstable)
-        unstable("${outcome.name}: ${what}")
-    else
-        error("${outcome.name}: ${what}")
+    String what = outcome.rc == 2 ? 'configure failed, most likely a missing dependency'
+                : outcome.rc == 1 ? 'build failed'
+                : "runner failed with status ${outcome.rc}, probably a tool missing from the image"
+    error("${outcome.name}: ${what}")
 }
 
-void notifyIfNeeded() {
+// The quick job mails on every failure, since each one is a push that broke the build; the full job mails only
+// when its status changes, since a distro that stays broken for a week is one piece of news, not seven.
+void notifyIfNeeded(boolean everyFailure) {
     String now = currentBuild.currentResult
     String previous = currentBuild.previousCompletedBuild?.result ?: 'SUCCESS'
-    if (!params.NOTIFY || now == 'ABORTED' || (now != 'FAILURE' && now == previous))
+    boolean newsworthy = now != previous || (everyFailure && now == 'FAILURE')
+    if (!params.NOTIFY || now == 'ABORTED' || !newsworthy)
         return
     emailext(to: params.NOTIFY, recipientProviders: [culprits(), requestor()],
              subject: '$PROJECT_NAME - Build #$BUILD_NUMBER - $BUILD_STATUS',
@@ -116,7 +119,7 @@ timeout(time: 6, unit: 'HOURS') {
                 node(AGENT) {
                     checkout scm
                     discoverReferenceBuild(requiredResult: 'UNSTABLE')
-                    grade(runCell(PRIMARY, true), false)
+                    grade(runCell(PRIMARY, true))
                 }
             }
             if (params.DOWNSTREAM && currentBuild.currentResult in ['SUCCESS', 'UNSTABLE']) {
@@ -146,7 +149,7 @@ timeout(time: 6, unit: 'HOURS') {
                         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                             Map outcome = runCell(cell, false)
                             reports[name] = outcome.report
-                            grade(outcome, true)
+                            grade(outcome)
                         }
                     }
                 }
@@ -164,6 +167,6 @@ timeout(time: 6, unit: 'HOURS') {
         currentBuild.result = 'FAILURE'
         throw e
     } finally {
-        notifyIfNeeded()
+        notifyIfNeeded(profile == 'quick')
     }
 }

@@ -3,8 +3,8 @@
 #
 # build and tidy build the checkout in the current directory inside the leechcraft/ci_<distro> image: from
 # scratch, in a tmpfs, without network access, on every core. Exit status: 0 on success, 1 when the build
-# fails, 2 when configure fails (on a rolling distro that almost always means a dependency moved), 126 or 127
-# when a tool is missing from the image, 64 on bad arguments. version prints the major version of that compiler
+# fails, 2 when configure fails (on a rolling distro that almost always means a dependency moved), 64 on bad
+# arguments; 126 and 127 from a tool missing inside the image are passed through. version prints the major version of that compiler
 # in the image, or `missing`.
 set -eu
 
