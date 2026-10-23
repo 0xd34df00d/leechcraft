@@ -1,0 +1,6 @@
+usr/include/QXmppQt6/
+usr/lib/*/cmake/QXmppOmemoQt6/
+usr/lib/*/cmake/QXmppQt6/
+usr/lib/*/libQXmppOmemoQt6.so
+usr/lib/*/libQXmppQt6.so
+usr/lib/*/pkgconfig/QXmppQt6.pc

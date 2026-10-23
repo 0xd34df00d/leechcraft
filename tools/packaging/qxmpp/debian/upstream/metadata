@@ -1,0 +1,7 @@
+Name: QXmpp
+Contact: Linus Jahn <lnj@kaidan.im>
+Security-Contact: Linus Jahn <lnj@kaidan.im>
+Repository: https://github.com/qxmpp-project/qxmpp.git
+Repository-Browse: https://github.com/qxmpp-project/qxmpp
+Bug-Submit: https://github.com/qxmpp-project/qxmpp/issues
+Changelog: https://github.com/qxmpp-project/qxmpp/blob/master/CHANGELOG.md

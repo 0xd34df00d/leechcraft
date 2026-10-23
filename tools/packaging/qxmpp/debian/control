@@ -1,0 +1,58 @@
+Source: qxmpp
+Section: libs
+Maintainer: LeechCraft CI <0xd34df00d@gmail.com>
+XSBC-Original-Maintainer: Debian XMPP Maintainers <pkg-xmpp-devel@lists.alioth.debian.org>
+Build-Depends: debhelper-compat (= 13),
+               dpkg-dev (>= 1.22.5),
+               cmake (>= 3.16~),
+               libglib2.0-dev,
+               libgstreamer1.0-dev (>= 1.20),
+               libomemo-c-dev,
+               libprotobuf-c-dev,
+               libssl-dev (>= 3.0),
+               pkgconf,
+               qt6-base-dev,
+Standards-Version: 4.7.3
+Homepage: https://invent.kde.org/libraries/qxmpp
+
+Package: libqxmppqt6-11
+Architecture: any
+Depends: gstreamer1.0-plugins-base,
+         gstreamer1.0-plugins-good,
+         gstreamer1.0-plugins-ugly,
+         ${misc:Depends},
+         ${shlibs:Depends},
+Multi-Arch: same
+Description: QXmpp library for XMPP client and server applications
+ QXmpp is a cross-platform C++ XMPP library built upon Qt. It strives to be
+ as easy to use as possible.
+ .
+ This package contains the shared library.
+
+Package: libqxmppomemoqt6-11
+Architecture: any
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+Multi-Arch: same
+Description: QXmppOmemo library for XMPP client and server applications
+ QXmpp is a cross-platform C++ XMPP library built upon Qt. It strives to be
+ as easy to use as possible.
+ .
+ This package contains the OMEMO shared library.
+
+Package: libqxmppqt6-dev
+Section: libdevel
+Architecture: any
+Depends: libgstreamer1.0-dev,
+         libqxmppomemoqt6-11 (= ${binary:Version}),
+         libqxmppqt6-11 (= ${binary:Version}),
+         qt6-base-dev,
+         ${misc:Depends},
+Breaks: libqxmpp-dev (<< 1.5.5-0.1~exp1~),
+Replaces: libqxmpp-dev (<< 1.5.5-0.1~exp1~),
+Multi-Arch: same
+Description: Development files for the QXmpp library
+ QXmpp is a cross-platform C++ XMPP library built upon Qt. It strives to be
+ as easy to use as possible.
+ .
+ This package contains the development headers and libraries.

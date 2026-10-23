@@ -43,6 +43,36 @@ because on a rolling distro a configure failure almost always means a dependency
   warnings trend continues. For the same reason source paths are rewritten to the workspace's absolute path:
   Warnings NG would otherwise anchor relative paths to the build directory it spots in CMake's output, which
   only exists inside the container.
+
+## qxmpp in the Debian and Fedora images
+
+Debian unstable and Fedora rawhide ship a qxmpp older than Xoox needs, so their images build their own from
+`tools/packaging/qxmpp`: Debian's and Fedora's own packaging of qxmpp, bumped. The first stage of each of those
+Dockerfiles runs `build.sh`, which produces .deb or .rpm files; the final stage installs them in place of the
+distro's development package. The package manager thus knows about the library, and a LeechCraft package built
+in such an image depends on exactly these packages, which a repository of ours can ship next to it one day.
+
+`build.sh` fails on purpose once the distro's own qxmpp satisfies the floor it holds: the image build goes red and
+mails, and the fix is to delete the qxmpp stage from that Dockerfile and reinstate the distro's development
+package. Until then the previously built image keeps serving the builds.
+
+Bumping qxmpp: a new `debian/changelog` entry (version `X.Y.Z-0lcN`; the revision sorts below any Debian upload
+of the same version), `Version`, `Release` and `%changelog` in `qxmpp.spec`, and, since qxmpp bumps its soname on
+every minor release, `%global sover` and the `N` in the names of the `libqxmppqt6-N` and `libqxmppomemoqt6-N`
+packages across `debian/control` and the install and lintian-overrides files. The floor in `build.sh` mirrors the
+Xoox CMakeLists.
+
+The Dockerfiles copy the packaging from the build context, so `CI-base-images` builds with `tools` as the context
+and `tools/.dockerignore` limits what gets sent to `docker` and `packaging`. Its shell step:
+
+    cd tools
+    docker build --pull --no-cache --network=host -f docker/base/${distro}/Dockerfile -t leechcraft/ci_${distro}:latest .
+    echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin
+    docker push leechcraft/ci_${distro}:latest
+    docker image prune -f
+
+`--pull` refreshes the base image, `prune` drops what the previous build left untagged.
+
 ## Bootstrapping the seed
 
 The one job that is not created by `jobs.groovy` is the seed itself. Create it once, either by placing

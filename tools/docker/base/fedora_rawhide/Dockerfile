@@ -1,4 +1,10 @@
+FROM fedora:rawhide AS qxmpp
+COPY packaging/qxmpp /build/packaging/qxmpp
+RUN /build/packaging/qxmpp/build.sh /out
+
 FROM fedora:rawhide
+
+COPY --from=qxmpp /out /tmp/qxmpp
 
 RUN dnf install -y \
         cmake ninja-build clang git pkgconfig \
@@ -20,7 +26,7 @@ RUN dnf install -y \
         libXScrnSaver-devel \
         rb_libtorrent-devel \
         libmaxminddb-devel \
-        qxmpp-qt6-devel \
+        /tmp/qxmpp/*.rpm \
         qca-qt6-devel \
         libotr-devel \
         libpurple-devel \
@@ -44,4 +50,5 @@ RUN dnf install -y \
         qscintilla-qt6-devel \
         qtermwidget-devel \
         qwt-qt6-devel \
+    && rm -rf /tmp/qxmpp \
     && dnf clean all

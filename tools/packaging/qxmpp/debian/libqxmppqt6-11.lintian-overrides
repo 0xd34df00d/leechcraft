@@ -1,0 +1,2 @@
+# There is no stable ABI in this library, only stable API is available.
+libqxmppqt6-11: no-symbols-control-file

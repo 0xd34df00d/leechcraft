@@ -1,0 +1,4 @@
+# This lintian note will not be fixed by upstream developers: there are no
+# classical tarballs with "releases" now, only automatically generated
+# tarballs from git tags exist.
+qxmpp source: debian-watch-does-not-check-gpg-signature

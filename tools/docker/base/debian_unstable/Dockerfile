@@ -1,4 +1,10 @@
+FROM debian:unstable AS qxmpp
+COPY packaging/qxmpp /build/packaging/qxmpp
+RUN /build/packaging/qxmpp/build.sh /out
+
 FROM debian:unstable
+
+COPY --from=qxmpp /out /tmp/qxmpp
 
 RUN apt-get update && \
     apt-get install -q -y eatmydata && \
@@ -28,7 +34,7 @@ RUN apt-get update && \
         libxss-dev \
         libtorrent-rasterbar-dev \
         libmaxminddb-dev \
-        libqxmppqt6-dev \
+        /tmp/qxmpp/*.deb \
         libqca-qt6-dev \
         libotr5-dev \
         libpurple-dev \
@@ -55,4 +61,5 @@ RUN apt-get update && \
         libqscintilla2-qt6-dev \
     && update-alternatives --install /usr/bin/clang clang /usr/bin/clang-23 100 \
     && update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-23 100 \
+    && rm -rf /tmp/qxmpp \
     && apt-get clean
