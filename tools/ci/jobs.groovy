@@ -8,7 +8,7 @@ import groovy.transform.Field
 @Field final String NOTIFY = '0xd34df00d@gmail.com'
 // Job DSL cannot change a job's type, so the quick job stays out of its hands until the `leechcraft`
 // directory has been converted from the matrix job to a pipeline job.
-@Field final boolean QUICK_JOB_IS_PIPELINE = false
+@Field final boolean QUICK_JOB_IS_PIPELINE = true
 
 def ciJob(Map opts = [:], String name, String profile, String desc) {
     pipelineJob(name) {
