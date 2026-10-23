@@ -18,7 +18,6 @@ namespace Blasq
 	class EnumsProxy : public QObject
 	{
 		Q_OBJECT
-		Q_ENUMS (ItemTypeProxy)
 	public:
 		enum ItemTypeProxy
 		{
@@ -26,6 +25,7 @@ namespace Blasq
 			AllPhotosItem = ItemType::AllPhotos,
 			ImageItem = ItemType::Image
 		};
+		Q_ENUM (ItemTypeProxy)
 	};
 }
 }

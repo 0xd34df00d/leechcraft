@@ -65,7 +65,6 @@ namespace LC::Azoth
 	class Core : public QObject
 	{
 		Q_OBJECT
-		Q_ENUMS (CLRoles CLEntryType CLEntryActionArea)
 
 		ICoreProxy_ptr Proxy_;
 

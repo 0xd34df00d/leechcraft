@@ -32,7 +32,6 @@ namespace LC
 			NoRemove   = 0b1000,
 		};
 		Q_DECLARE_FLAGS (Options, Option)
-		Q_FLAGS (Options)
 
 		explicit DataViewWidget (Options opts, QWidget* = nullptr);
 
