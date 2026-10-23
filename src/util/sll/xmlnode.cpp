@@ -104,7 +104,7 @@ namespace LC::Util
 
 	namespace Tags
 	{
-		UTIL_SLL_API const Tag Br { .Name_ = "br"_qba };
+		const Tag Br { .Name_ = "br"_qba };
 
 		Tag Html (Nodes&& children)
 		{

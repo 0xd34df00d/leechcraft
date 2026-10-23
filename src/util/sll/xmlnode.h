@@ -68,7 +68,7 @@ namespace LC::Util
 
 	namespace Tags
 	{
-		extern const Tag Br;
+		extern UTIL_SLL_API const Tag Br;
 
 		UTIL_SLL_API Tag Html (Nodes&& children);
 		UTIL_SLL_API Tag Charset (const QString& charset);
