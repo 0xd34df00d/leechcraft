@@ -120,7 +120,7 @@ namespace LC::BitTorrent
 		if (pieces [0] &&
 				pieces [NumPieces_ - 1])
 		{
-			std::vector<libtorrent::download_priority_t> prios { NumPieces_, libtorrent::low_priority };
+			std::vector<libtorrent::download_priority_t> prios (NumPieces_, libtorrent::low_priority);
 			Handle_.prioritize_pieces (prios);
 
 			IsReady_ = true;
