@@ -23,27 +23,6 @@
       }
     },
     {
-      "name": "opensuse_factory_clang",
-      "inherits": "opensuse_factory",
-      "description": "openSUSE Factory build with clang",
-      "cacheVariables": {
-        "CMAKE_C_COMPILER": "/usr/bin/clang",
-        "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
-      }
-    },
-    {
-      "name": "opensuse_leap_16_0_clang",
-      "inherits": "opensuse_factory_clang",
-      "description": "openSUSE Leap 16.0 build with clang",
-      "environment": {
-        "CXXFLAGS": "$penv{CXXFLAGS} -Wno-deprecated-declarations",
-        "CFLAGS": "$penv{CFLAGS} -Wno-deprecated-declarations"
-      },
-      "cacheVariables": {
-        "ENABLE_AGGREGATOR_WEBACCESS": "False"
-      }
-    },
-    {
       "name": "debian_unstable",
       "inherits": "common_plugins",
       "description": "Debian Unstable (sid) plugins",
@@ -57,18 +36,9 @@
       }
     },
     {
-      "name": "debian_unstable_clang",
+      "name": "debian_experimental",
       "inherits": "debian_unstable",
-      "description": "Debian Unstable build with clang",
-      "cacheVariables": {
-        "CMAKE_C_COMPILER": "/usr/bin/clang",
-        "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
-      }
-    },
-    {
-      "name": "debian_experimental_clang",
-      "inherits": "debian_unstable_clang",
-      "description": "Debian Experimental build with clang"
+      "description": "Debian Experimental plugins"
     },
     {
       "name": "fedora_rawhide",
@@ -78,15 +48,6 @@
         "LIB_SUFFIX": "64",
         "STRICT_LICENSING": "True",
         "WITH_LHTR_HTML": "False"
-      }
-    },
-    {
-      "name": "fedora_rawhide_clang",
-      "inherits": "fedora_rawhide",
-      "description": "Fedora Rawhide build with clang",
-      "cacheVariables": {
-        "CMAKE_C_COMPILER": "/usr/bin/clang",
-        "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
       }
     },
     {
@@ -103,15 +64,6 @@
       }
     },
     {
-      "name": "alpine_edge_clang",
-      "inherits": "alpine_edge",
-      "description": "Alpine edge build with clang",
-      "cacheVariables": {
-        "CMAKE_C_COMPILER": "/usr/bin/clang",
-        "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
-      }
-    },
-    {
       "name": "arch_linux",
       "inherits": "common_plugins",
       "description": "Arch Linux settings",
@@ -122,15 +74,6 @@
         "ENABLE_LEMON": "False",
         "ENABLE_LIZNOO": "False",
         "ENABLE_LMP_FRADJ": "False"
-      }
-    },
-    {
-      "name": "arch_linux_clang",
-      "inherits": "arch_linux",
-      "description": "Arch Linux build with clang",
-      "cacheVariables": {
-        "CMAKE_C_COMPILER": "/usr/bin/clang",
-        "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
       }
     },
     {

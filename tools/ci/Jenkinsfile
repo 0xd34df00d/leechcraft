@@ -1,0 +1,161 @@
+// Build logic for every LeechCraft CI job.
+//
+// Job-level configuration (triggers, parameters, retention) lives in jobs.groovy so that several jobs can
+// share this file; the PROFILE parameter picks the cells to build:
+//   quick   the primary distro with the primary compiler; triggers the DOWNSTREAM job when green
+//   full    every distro under tools/docker/base with every compiler in COMPILERS that the distro's image
+//           ships in at least the MINIMUM version, one cell at a time
+// A cell builds the checkout with tools/docker/runci.sh inside the distro's image, scans the compiler output
+// with Warnings NG and publishes the result. The full profile also publishes one result aggregated over all cells.
+// Every build, in every job, takes the same lock around its compile, so only one build runs at a time and
+// build times stay comparable.
+
+import groovy.transform.Field
+
+@Field final String AGENT = 'real'
+@Field final String BUILD_LOCK = 'lc-build'
+@Field final List<String> COMPILERS = ['gcc', 'clang']
+@Field final Map<String, Integer> MINIMUM = [gcc: 16, clang: 23]
+@Field final Map PRIMARY = [distro: 'opensuse_factory', compiler: 'clang']
+
+String cellName(Map cell) {
+    cell.tidy ? "tidy-${cell.distro}" : "${cell.distro}-${cell.compiler}"
+}
+
+// Major version of the cell's compiler inside the distro's image, 0 when the image has none. A failure of
+// the probe itself fails the build: no image or no docker is a broken setup, not a missing compiler.
+int compilerMajor(Map cell) {
+    String out = sh(returnStdout: true, label: "probe ${cellName(cell)}",
+                    script: "tools/docker/runci.sh ${cell.distro} ${cell.compiler} version").trim()
+    out.isInteger() ? Integer.parseInt(out) : 0
+}
+
+Map planCells(List<String> excluded) {
+    List<Map> cells = []
+    List<String> skipped = []
+    for (String distro in sh(returnStdout: true, script: 'ls tools/docker/base').trim().tokenize('\n')) {
+        for (String compiler in COMPILERS) {
+            Map cell = [distro: distro, compiler: compiler]
+            String name = cellName(cell)
+            if (excluded.contains(name)) {
+                skipped << "${name} by SKIP_CELLS"
+                continue
+            }
+            int have = compilerMajor(cell)
+            if (have == 0)
+                skipped << "${name}: no ${compiler} in the image"
+            else if (have < MINIMUM[compiler])
+                skipped << "${name}: ${compiler} ${have} is older than ${MINIMUM[compiler]}"
+            else
+                cells << cell
+        }
+    }
+    [cells: cells, skipped: skipped]
+}
+
+// The quick profile keeps the id `gcc` and the gcc parser of the matrix job it replaced, so that the trend
+// and the new/fixed comparison continue across the migration.
+Map runCell(Map cell, boolean continuesHistoricalResult) {
+    String name = cellName(cell)
+    String log = "${name}.log"
+    int rc = 0
+    lock(BUILD_LOCK) {
+        rc = sh(returnStatus: true, label: "build ${name}", script: """#!/bin/bash
+set -o pipefail
+tools/docker/runci.sh ${cell.distro} ${cell.compiler} ${cell.tidy ? 'tidy' : 'build'} 2>&1 \\
+    | sed 's|/work/leechcraft/||g' | tee ${log}
+""")
+    }
+    def tool
+    if (cell.tidy)
+        tool = clangTidy(pattern: log, id: name, name: name)
+    else if (continuesHistoricalResult)
+        tool = gcc(pattern: log)
+    else if (cell.compiler == 'clang')
+        tool = clang(pattern: log, id: name, name: name)
+    else
+        tool = gcc(pattern: log, id: name, name: name)
+    def report = scanForIssues(tool: tool)
+    publishIssues(issues: [report], sourceCodeRetention: 'LAST_BUILD')
+    [name: name, rc: rc, report: report]
+}
+
+void grade(Map outcome, boolean dependencyFailureIsUnstable) {
+    if (outcome.rc == 0)
+        return
+    String what = outcome.rc == 2 ? 'configure failed, most likely a missing dependency' : "build failed with status ${outcome.rc}"
+    if (outcome.rc == 2 && dependencyFailureIsUnstable)
+        unstable("${outcome.name}: ${what}")
+    else
+        error("${outcome.name}: ${what}")
+}
+
+void notifyIfNeeded() {
+    String now = currentBuild.currentResult
+    String previous = currentBuild.previousCompletedBuild?.result ?: 'SUCCESS'
+    if (!params.NOTIFY || now == 'ABORTED' || (now != 'FAILURE' && now == previous))
+        return
+    emailext(to: params.NOTIFY, recipientProviders: [culprits(), requestor()],
+             subject: '$PROJECT_NAME - Build #$BUILD_NUMBER - $BUILD_STATUS',
+             body: '$PROJECT_NAME - Build #$BUILD_NUMBER - $BUILD_STATUS\n\n$BUILD_URL\n\nChanges:\n$CHANGES')
+}
+
+String profile = params.PROFILE ?: 'quick'
+List<String> excluded = (params.SKIP_CELLS ?: '').tokenize(', ')
+
+timeout(time: 6, unit: 'HOURS') {
+    try {
+        if (profile == 'quick') {
+            stage(cellName(PRIMARY)) {
+                node(AGENT) {
+                    checkout scm
+                    grade(runCell(PRIMARY, true), false)
+                }
+            }
+            if (params.DOWNSTREAM && currentBuild.currentResult in ['SUCCESS', 'UNSTABLE']) {
+                stage("Trigger ${params.DOWNSTREAM}") {
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                        build job: params.DOWNSTREAM, wait: false
+                    }
+                }
+            }
+        } else {
+            node(AGENT) {
+                checkout scm
+                Map plan
+                stage('Plan') {
+                    plan = planCells(excluded)
+                    String summary = "cells: ${plan.cells.collect { cellName(it) }.join(', ')}"
+                    if (plan.skipped)
+                        summary += "; skipped: ${plan.skipped.join('; ')}"
+                    echo summary
+                    currentBuild.description = summary
+                }
+                Map reports = [:]
+                plan.cells.each { Map cell ->
+                    String name = cellName(cell)
+                    stage(name) {
+                        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                            Map outcome = runCell(cell, false)
+                            reports[name] = outcome.report
+                            grade(outcome, true)
+                        }
+                    }
+                }
+                if (reports) {
+                    stage('Aggregate') {
+                        publishIssues(issues: reports.values().toList(), id: 'all', name: 'All cells', sourceCodeRetention: 'NEVER')
+                    }
+                }
+            }
+        }
+    } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
+        currentBuild.result = 'ABORTED'
+        throw e
+    } catch (e) {
+        currentBuild.result = 'FAILURE'
+        throw e
+    } finally {
+        notifyIfNeeded()
+    }
+}
