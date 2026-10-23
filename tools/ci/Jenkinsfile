@@ -53,8 +53,11 @@ Map planCells(List<String> excluded) {
     [cells: cells, skipped: skipped]
 }
 
-// The quick profile keeps the id `gcc` and the gcc parser of the matrix job it replaced, so that the trend
-// and the new/fixed comparison continue across the migration. Source paths are rewritten to the workspace's
+// Warnings NG only computes new and fixed issues against a reference build chosen by the Forensics step above:
+// without it every issue counts as outstanding. The first sed folds the path through which moc-generated
+// sources include a header (build dir, autogen dir, then ../.. back into the checkout) onto the header itself,
+// so such a warning is one issue with a source file rather than two, one of them unresolvable. The quick profile keeps the id `gcc` and the gcc parser of the
+// matrix job it replaced, so that the trend and that comparison continue across the migration. Source paths are rewritten to the workspace's
 // absolute path for the same reason, and because Warnings NG otherwise anchors relative paths to the build
 // directory it spots in CMake's output, which does not exist outside the container.
 Map runCell(Map cell, boolean continuesHistoricalResult) {
@@ -65,7 +68,8 @@ Map runCell(Map cell, boolean continuesHistoricalResult) {
         rc = sh(returnStatus: true, label: "build ${name}", script: """#!/bin/bash
 set -o pipefail
 tools/docker/runci.sh ${cell.distro} ${cell.compiler} ${cell.tidy ? 'tidy' : 'build'} 2>&1 \\
-    | sed 's|/work/leechcraft/|${env.WORKSPACE}/|g' | tee ${log}
+    | sed -e 's|/work/build/[^ :]*/\\.\\./leechcraft/|/work/leechcraft/|g' \\
+          -e 's|/work/leechcraft/|${env.WORKSPACE}/|g' | tee ${log}
 """)
     }
     def tool
@@ -77,7 +81,7 @@ tools/docker/runci.sh ${cell.distro} ${cell.compiler} ${cell.tidy ? 'tidy' : 'bu
         tool = clang(pattern: log, id: name, name: name)
     else
         tool = gcc(pattern: log, id: name, name: name)
-    def report = scanForIssues(tool: tool, sourceCodeRetention: 'LAST_BUILD')
+    def report = scanForIssues(tool: tool, sourceCodeRetention: 'EVERY_BUILD')
     publishIssues(issues: [report])
     [name: name, rc: rc, report: report]
 }
@@ -111,6 +115,7 @@ timeout(time: 6, unit: 'HOURS') {
             stage(cellName(PRIMARY)) {
                 node(AGENT) {
                     checkout scm
+                    discoverReferenceBuild(requiredResult: 'UNSTABLE')
                     grade(runCell(PRIMARY, true), false)
                 }
             }
@@ -124,6 +129,7 @@ timeout(time: 6, unit: 'HOURS') {
         } else {
             node(AGENT) {
                 checkout scm
+                discoverReferenceBuild(requiredResult: 'UNSTABLE')
                 Map plan
                 stage('Plan') {
                     plan = planCells(excluded)
