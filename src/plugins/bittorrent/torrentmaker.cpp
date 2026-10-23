@@ -67,8 +67,8 @@ namespace LC::BitTorrent
 					.arg (GetProxyHolder ()->GetVersion ())));
 		if (!params.Comment_.isEmpty ())
 			ct.set_comment (params.Comment_.toUtf8 ());
-		for (int i = 0; i < params.URLSeeds_.size (); ++i)
-			ct.add_url_seed (params.URLSeeds_.at (0).toStdString ());
+		for (const auto& seed : params.URLSeeds_)
+			ct.add_url_seed (seed.toStdString ());
 		ct.set_priv (!params.DHTEnabled_);
 
 		if (params.DHTEnabled_)
