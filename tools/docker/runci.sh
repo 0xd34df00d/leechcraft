@@ -3,8 +3,9 @@
 #
 # build and tidy build the checkout in the current directory inside the leechcraft/ci_<distro> image: from
 # scratch, in a tmpfs, without network access, on every core. Exit status: 0 on success, 1 when the build
-# fails, 2 when configure fails (on a rolling distro that almost always means a dependency moved), 64 on bad
-# arguments. version prints the major version of that compiler in the image, or `missing`.
+# fails, 2 when configure fails (on a rolling distro that almost always means a dependency moved), 126 or 127
+# when a tool is missing from the image, 64 on bad arguments. version prints the major version of that compiler
+# in the image, or `missing`.
 set -eu
 
 distro=${1:?usage: runci.sh <distro> <gcc|clang> [build|tidy|version]}
@@ -34,9 +35,9 @@ exec docker run \
 	--mount type=bind,src="$PWD",dst=/work/leechcraft \
 	--mount type=tmpfs,dst=/work/build \
 	"$image" \
-	bash -lc "
+	sh -lc "
 		cd /work/build &&
-		{ eatmydata cmake /work/leechcraft/src --preset $distro -G Ninja \
-			-DCMAKE_C_COMPILER=$cc -DCMAKE_CXX_COMPILER=$cxx $cmake_extra || exit 2; } &&
-		{ eatmydata cmake --build . -j$(nproc) -- -k0 || exit 1; }
+		{ cmake /work/leechcraft/src --preset $distro -G Ninja -DCMAKE_C_COMPILER=$cc -DCMAKE_CXX_COMPILER=$cxx $cmake_extra \
+			|| { s=\$?; [ \$s -ge 126 ] && exit \$s; exit 2; }; } &&
+		{ cmake --build . -j$(nproc) -- -k0 || exit 1; }
 	"

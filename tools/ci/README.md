@@ -11,12 +11,13 @@ Two files drive every Jenkins job of the project:
   retention. The `ci-seed` job applies it on every push.
 
 A cell runs `tools/docker/runci.sh <distro> <gcc|clang> [build|tidy]` in the distro's `leechcraft/ci_<distro>`
-image: a from-scratch build without network, in a tmpfs, on every core. Every build in every job takes the
-`lc-build` lock around its compile, so only one compile runs on the machine at a time and build times stay
-comparable; a quick build waits for at most one cell of a running full build. The script exits with 2 when
-configure fails, which the full profile reports as UNSTABLE because on a rolling distro that almost always
-means a dependency moved. A failed build exits with 1 and fails the job. Mail goes to `NOTIFY` on every
-failure and whenever the status changes.
+image: a from-scratch build without network, in a tmpfs, on every core, needing only `sh`, `cmake`, `ninja` and
+the compilers inside the image. Every build in every job takes the `lc-build` lock around its compile, so only
+one compile runs on the machine at a time and build times stay comparable; a quick build waits for at most one
+cell of a running full build. The script exits with 2 when configure fails, which the full profile reports as
+UNSTABLE because on a rolling distro that almost always means a dependency moved; 126 or 127 means a tool is
+missing from the image. A failed build exits with 1 and fails the job. Mail goes to `NOTIFY` on every failure
+and whenever the status changes.
 
 ## Changing things
 

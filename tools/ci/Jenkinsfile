@@ -54,7 +54,9 @@ Map planCells(List<String> excluded) {
 }
 
 // The quick profile keeps the id `gcc` and the gcc parser of the matrix job it replaced, so that the trend
-// and the new/fixed comparison continue across the migration.
+// and the new/fixed comparison continue across the migration. Source paths are rewritten to the workspace's
+// absolute path for the same reason, and because Warnings NG otherwise anchors relative paths to the build
+// directory it spots in CMake's output, which does not exist outside the container.
 Map runCell(Map cell, boolean continuesHistoricalResult) {
     String name = cellName(cell)
     String log = "${name}.log"
@@ -63,7 +65,7 @@ Map runCell(Map cell, boolean continuesHistoricalResult) {
         rc = sh(returnStatus: true, label: "build ${name}", script: """#!/bin/bash
 set -o pipefail
 tools/docker/runci.sh ${cell.distro} ${cell.compiler} ${cell.tidy ? 'tidy' : 'build'} 2>&1 \\
-    | sed 's|/work/leechcraft/||g' | tee ${log}
+    | sed 's|/work/leechcraft/|${env.WORKSPACE}/|g' | tee ${log}
 """)
     }
     def tool
