@@ -77,8 +77,8 @@ tools/docker/runci.sh ${cell.distro} ${cell.compiler} ${cell.tidy ? 'tidy' : 'bu
         tool = clang(pattern: log, id: name, name: name)
     else
         tool = gcc(pattern: log, id: name, name: name)
-    def report = scanForIssues(tool: tool)
-    publishIssues(issues: [report], sourceCodeRetention: 'LAST_BUILD')
+    def report = scanForIssues(tool: tool, sourceCodeRetention: 'LAST_BUILD')
+    publishIssues(issues: [report])
     [name: name, rc: rc, report: report]
 }
 
@@ -146,7 +146,7 @@ timeout(time: 6, unit: 'HOURS') {
                 }
                 if (reports) {
                     stage('Aggregate') {
-                        publishIssues(issues: reports.values().toList(), id: 'all', name: 'All cells', sourceCodeRetention: 'NEVER')
+                        publishIssues(issues: reports.values().toList(), id: 'all', name: 'All cells')
                     }
                 }
             }
