@@ -5,14 +5,16 @@ Two files drive every Jenkins job of the project:
 - `Jenkinsfile`: the build logic. `PROFILE=quick` builds the primary distro with the primary compiler and, when
   green, triggers the job named by `DOWNSTREAM`. `PROFILE=full` builds every distro under `tools/docker/base`
   with every compiler in `COMPILERS` that the distro's image ships in at least the `MINIMUM` version, one cell
-  at a time, and also publishes one warnings result aggregated over all cells. `SKIP_CELLS` leaves cells out;
-  the build description lists what was skipped and why.
+  at a time, and also publishes, per compiler, one warnings result over all its cells with repeats dropped, and one
+  badge per cell.
+  `SKIP_CELLS` leaves cells out; the build description lists what was skipped and why.
 - `jobs.groovy`: the job shells. Which jobs exist, which profile each runs, its triggers, parameters and
   retention. The `ci-seed` job applies it on every push.
 
 A cell runs `tools/docker/runci.sh <distro> <gcc|clang> [build|tidy]` in the distro's `leechcraft/ci_<distro>`
 image: a from-scratch build without network, in a tmpfs, on every core, needing only `sh`, `cmake`, `ninja` and
-the compilers inside the image. Every build in every job takes the `lc-build` lock around its compile, so only
+the compilers inside the image. Autogen steps run moc one file at a time (`CMAKE_AUTOGEN_PARALLEL=1`), since ninja
+already fills every core with the other steps. Every build in every job takes the `lc-build` lock around its compile, so only
 one compile runs on the machine at a time and build times stay comparable; a quick build waits for at most one
 cell of a running full build. The full profile compiles through ccache, with one cache for all cells at
 `/var/cache/ci-ccache` on the agent, a partition dedicated to it that the cache may fill to nine tenths, and each
@@ -49,6 +51,14 @@ failure and on every status change, the full job on status changes only.
   warnings trend continues. For the same reason source paths are rewritten to the workspace's absolute path:
   Warnings NG would otherwise anchor relative paths to the build directory it spots in CMake's output, which
   only exists inside the container.
+- The aggregated results concatenate the cells' logs per compiler and parse them once: Warnings NG drops an issue it
+  already has only when the tool id matches too, so merging the per-cell results would count every repeat. The
+  aggregate therefore has one result for gcc and one for clang, each with every distinct warning once.
+- Badges: the full profile registers one badge configuration per cell, planned or skipped, under the cell's name,
+  so `https://jenkins.leechcraft.org/job/leechcraft-full/badge/icon?build=lastCompleted&config=<cell>` shows that one
+  cell: passing or failing, the reason for a skipped cell, pending for a cell the run never got to. `build=lastCompleted`
+  matters, since the job's plain badge URL reads the running build, whose cells are still pending. The project README
+  embeds them in a table; a new distro or compiler gets its row or column there by hand.
 - The compiler cache is written by the build containers as root, so wiping it is `rm -rf /var/cache/ci-ccache/*`
   as root while no build runs; the next full build refills it.
 - `debian_experimental` installs from experimental wherever that suite has a package: `-t experimental` on the

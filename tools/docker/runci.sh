@@ -44,6 +44,10 @@ case ${3:-build} in
 	*) echo "unknown mode: $3" >&2; exit 64 ;;
 esac
 
+# CMAKE_AUTOGEN_PARALLEL=1: an autogen step would otherwise run moc on as many threads as the host has cores, on top of
+# everything else ninja runs at the same time; ninja alone fills the machine, and a full build measured the same either way.
+# A plain `sh -c`, not a login shell: Fedora's profile puts ccache's masquerade directory first in PATH, which would make
+# CMake pick /usr/lib64/ccache/g++ and route every compiler call, scans and links included, through ccache a second time.
 exec docker run \
 	--rm \
 	--network=none \
@@ -52,7 +56,7 @@ exec docker run \
 	--mount type=tmpfs,dst=/work/build \
 	$ccache_opts \
 	"$image" \
-	sh -lc "
+	sh -c "
 		cd /work/build &&
 		launcher= &&
 		if [ -n \"\${CCACHE_DIR:-}\" ]; then
@@ -62,7 +66,7 @@ exec docker run \
 				echo 'ccache requested, but the image has none: building without it'
 			fi
 		fi &&
-		{ cmake /work/leechcraft/src --preset $distro -G Ninja -DCMAKE_C_COMPILER=$cc -DCMAKE_CXX_COMPILER=$cxx $cmake_extra \$launcher \
+		{ cmake /work/leechcraft/src --preset $distro -G Ninja -DCMAKE_C_COMPILER=$cc -DCMAKE_CXX_COMPILER=$cxx -DCMAKE_AUTOGEN_PARALLEL=1 $cmake_extra \$launcher \
 			|| { s=\$?; [ \$s -ge 126 ] && exit \$s; exit 2; }; } &&
 		{ cmake --build . -j$(nproc) -- -k0 && s=0 || s=1; [ -z \"\$launcher\" ] || ccache -s; exit \$s; }
 	"

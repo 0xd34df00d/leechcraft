@@ -7,7 +7,9 @@
 //           ships in at least the MINIMUM version, using a libstdc++ at least as new as the gcc floor, one
 //           cell at a time
 // A cell builds the checkout with tools/docker/runci.sh inside the distro's image, scans the compiler output
-// with Warnings NG and publishes the result. The full profile also publishes one result aggregated over all cells.
+// with Warnings NG and publishes the result. The full profile also publishes, per compiler, one result over all its cells
+// with the repeats dropped, and a badge per cell for the README, under the cell's name, which says passing, failing, or why
+// the cell was skipped.
 // Every build, in every job, takes the same lock around its compile, so only one build runs at a time and
 // build times stay comparable. The full profile compiles through ccache, one cache for all cells on a partition
 // of the agent dedicated to it, since its build times are not the measurement; the quick profile does not, so
@@ -38,35 +40,51 @@ int probe(Map cell, String what) {
 
 Map planCells(List<String> excluded) {
     List<Map> cells = []
-    List<String> skipped = []
+    Map<String, String> skipped = [:]
     for (String distro in sh(returnStdout: true, script: 'ls tools/docker/base').trim().tokenize('\n')) {
         for (String compiler in COMPILERS) {
             Map cell = [distro: distro, compiler: compiler]
             String name = cellName(cell)
             if (excluded.contains(name)) {
-                skipped << "${name} by SKIP_CELLS"
+                skipped[name] = 'excluded by SKIP_CELLS'
                 continue
             }
             int have = probe(cell, 'version')
             if (have == 0) {
-                skipped << "${name}: no ${compiler} in the image"
+                skipped[name] = "no ${compiler} in the image"
                 continue
             }
             if (have < MINIMUM[compiler]) {
-                skipped << "${name}: ${compiler} ${have} is older than ${MINIMUM[compiler]}"
+                skipped[name] = "${compiler} ${have} is older than ${MINIMUM[compiler]}"
                 continue
             }
             // clang uses the system's libstdc++, whose C++26 coverage is what the gcc floor really states
             int lib = compiler == 'gcc' ? have : probe(cell, 'stdlib')
             if (lib == 0)
-                skipped << "${name}: no libstdc++ behind ${compiler}"
+                skipped[name] = "no libstdc++ behind ${compiler}"
             else if (lib < MINIMUM.gcc)
-                skipped << "${name}: libstdc++ ${lib} is older than ${MINIMUM.gcc}"
+                skipped[name] = "libstdc++ ${lib} is older than ${MINIMUM.gcc}"
             else
                 cells << cell
         }
     }
     [cells: cells, skipped: skipped]
+}
+
+// One badge per cell, selected by `config=<cell name>` on the job's badge URL. A skipped cell gets its reason as the
+// status, so that it reads as skipped rather than as failing or as missing. The colour is set with every status, here
+// and when a cell finishes: a colour set once sticks, and a badge without one takes the colour of the whole build,
+// which is red as soon as any cell fails.
+Map registerBadges(Map plan) {
+    Map badges = [:]
+    for (Map cell in plan.cells) {
+        String name = cellName(cell)
+        badges[name] = addEmbeddableBadgeConfiguration(id: name, subject: name, status: 'pending', color: 'lightgrey')
+    }
+    plan.skipped.each { String name, String why ->
+        addEmbeddableBadgeConfiguration(id: name, subject: name, status: why, color: 'lightgrey')
+    }
+    badges
 }
 
 // Warnings NG only computes new and fixed issues against a reference build chosen by the Forensics step above:
@@ -151,13 +169,15 @@ timeout(time: 6, unit: 'HOURS') {
                 checkout scm
                 discoverReferenceBuild(requiredResult: 'UNSTABLE')
                 Map plan
+                Map badges
                 stage('Plan') {
                     plan = planCells(excluded)
                     String summary = "cells: ${plan.cells.collect { cellName(it) }.join(', ')}"
                     if (plan.skipped)
-                        summary += "; skipped: ${plan.skipped.join('; ')}"
+                        summary += '; skipped: ' + plan.skipped.collect { name, why -> "${name}: ${why}" }.join('; ')
                     echo summary
                     currentBuild.description = summary
+                    badges = registerBadges(plan)
                 }
                 Map reports = [:]
                 plan.cells.each { Map cell ->
@@ -166,13 +186,29 @@ timeout(time: 6, unit: 'HOURS') {
                         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                             Map outcome = runCell(cell, false, true)
                             reports[name] = outcome.report
+                            badges[name].setStatus(outcome.rc == 0 ? 'passing' : 'failing')
+                            badges[name].setColor(outcome.rc == 0 ? 'brightgreen' : 'red')
                             grade(outcome)
                         }
                     }
                 }
+                // The per-cell results cannot be merged without counting every repeat: an issue's identity includes the
+                // tool that reported it, so one line flagged by ten cells is ten issues. Parsing the cells' logs again as one
+                // log per compiler makes the repeats identical, and the parser drops them. gcc and clang stay apart, since
+                // they put the same warning at different columns and word it differently.
                 if (reports) {
                     stage('Aggregate') {
-                        publishIssues(issues: reports.values().toList(), id: 'all', name: 'All cells')
+                        for (String compiler in COMPILERS) {
+                            List<String> logs = reports.keySet().findAll { it.endsWith("-${compiler}") }.collect { "${it}.log" }
+                            if (!logs)
+                                continue
+                            String log = "aggregate.${compiler}.log"
+                            sh(label: "concatenate ${compiler} logs", script: "cat ${logs.join(' ')} > ${log}")
+                            String id = "all-${compiler}"
+                            String name = "All ${compiler} cells"
+                            def tool = compiler == 'clang' ? clang(pattern: log, id: id, name: name) : gcc(pattern: log, id: id, name: name)
+                            publishIssues(issues: [scanForIssues(tool: tool)])
+                        }
                     }
                 }
             }
