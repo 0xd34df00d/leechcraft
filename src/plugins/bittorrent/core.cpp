@@ -26,7 +26,6 @@
 #include <libtorrent/magnet_uri.hpp>
 #include <libtorrent/version.hpp>
 #include <libtorrent/session.hpp>
-#include <libtorrent/read_resume_data.hpp>
 #include <libtorrent/write_resume_data.hpp>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
@@ -52,6 +51,7 @@
 #include "torrentmaker.h"
 #include "sessionsettingsmanager.h"
 #include "cachedstatuskeeper.h"
+#include "loadedtorrent.h"
 #include "ltutils.h"
 #include "newtorrentparams.h"
 #include "torrentinfo.h"
@@ -222,24 +222,6 @@ namespace BitTorrent
 	AlertDispatcher& Core::GetAlertDispatcher ()
 	{
 		return Dispatcher_;
-	}
-
-	namespace
-	{
-		bool DecodeEntry (const QByteArray& data, libtorrent::bdecode_node& e)
-		{
-			libtorrent::error_code ec;
-			e = libtorrent::bdecode (libtorrent::span { data.constData (), data.size () }, ec);
-			if (ec)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "bad bencoding in saved torrent data"
-						<< ec.message ().c_str ();
-				return false;
-			}
-
-			return true;
-		}
 	}
 
 	void Core::DoDelayedInit ()
@@ -862,24 +844,11 @@ namespace BitTorrent
 		libtorrent::torrent_handle handle;
 		bool autoManaged = !(params & NoAutostart);
 
-		libtorrent::add_torrent_params atp;
+		LoadedTorrent loaded;
 		try
 		{
-			if (const auto& resumeData = TryReadResumed (filename);
-					!resumeData.isEmpty ())
-				atp = libtorrent::read_resume_data (libtorrent::span { resumeData.constData (), resumeData.size () });
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to reuse torrent resume data for"
-					<< filename
-					<< "although it's been found; ignoring";
-		}
-
-		try
-		{
-			atp.ti = std::make_shared<libtorrent::torrent_info> (contents.constData (), contents.size ());
+			loaded = LoadedTorrent::Load (contents, TryReadResumed (filename));
+			auto& atp = loaded.Params_;
 			atp.storage_mode = GetCurrentStorageMode ();
 			atp.save_path = std::string (path.toUtf8 ().constData ());
 			if (!autoManaged)
@@ -896,7 +865,7 @@ namespace BitTorrent
 			return MakeErrorResult ("Torrent error");
 		}
 
-		std::vector<libtorrent::download_priority_t > priorities (atp.ti->num_files (), libtorrent::default_priority);
+		std::vector<libtorrent::download_priority_t > priorities (loaded.Params_.ti->num_files (), libtorrent::default_priority);
 		if (!files.isEmpty ())
 		{
 			for (int i = 0; i < files.size (); ++i)
@@ -1262,10 +1231,18 @@ namespace BitTorrent
 			TaskParameters taskParameters = static_cast<TaskParameters> (settings
 						.value ("Parameters").toInt ());
 
-			auto handle = RestoreSingleTorrent (data,
-					TryReadResumed (filename),
-					automanaged,
-					taskParameters & NoAutostart);
+			LoadedTorrent loaded;
+			try
+			{
+				loaded = LoadedTorrent::Load (data, TryReadResumed (filename));
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << "unable to parse saved torrent" << filename << e.what ();
+				continue;
+			}
+
+			const auto handle = RestoreSingleTorrent (std::move (loaded.Params_), automanaged, taskParameters & NoAutostart);
 			if (!handle.is_valid ())
 			{
 				qWarning () << Q_FUNC_INFO
@@ -1293,22 +1270,12 @@ namespace BitTorrent
 		RestoreFilter (*Session_);
 	}
 
-	libtorrent::torrent_handle Core::RestoreSingleTorrent (const QByteArray& data,
-			const QByteArray& resumeData,
-			bool automanaged,
-			bool pause)
+	libtorrent::torrent_handle Core::RestoreSingleTorrent (libtorrent::add_torrent_params atp, bool automanaged, bool pause)
 	{
 		libtorrent::torrent_handle handle;
 
-		libtorrent::bdecode_node e;
-		if (!DecodeEntry (data, e))
-			return handle;
-
 		try
 		{
-			auto atp = libtorrent::read_resume_data (libtorrent::span { resumeData.constData (), resumeData.size () });
-			atp.ti = std::make_shared<libtorrent::torrent_info> (e);
-
 			if (!automanaged)
 				atp.flags &= ~ATP_FLAG (auto_managed);
 			if (pause)

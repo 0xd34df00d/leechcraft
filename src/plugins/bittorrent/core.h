@@ -235,10 +235,7 @@ namespace BitTorrent
 		void MoveToTop (int);
 		void MoveToBottom (int);
 		void RestoreTorrents ();
-		libtorrent::torrent_handle RestoreSingleTorrent (const QByteArray&,
-				const QByteArray&,
-				bool,
-				bool);
+		libtorrent::torrent_handle RestoreSingleTorrent (libtorrent::add_torrent_params, bool automanaged, bool pause);
 
 		void HandleSingleFinished (int);
 

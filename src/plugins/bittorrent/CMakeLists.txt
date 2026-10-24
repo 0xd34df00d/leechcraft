@@ -39,6 +39,7 @@ LC_DEFINE_PLUGIN (
 		sessionsettingsmanager.cpp
 		peerswidget.cpp
 		ltutils.cpp
+		loadedtorrent.cpp
 		listactions.cpp
 		alertdispatcher.cpp
 		representationhandler.cpp
