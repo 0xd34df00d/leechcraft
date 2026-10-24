@@ -12,9 +12,11 @@
 #include <QSettings>
 #include <QCoreApplication>
 #include <QUrl>
+#include <libtorrent/add_torrent_params.hpp>
 #include <libtorrent/address.hpp>
 #include <libtorrent/ip_filter.hpp>
 #include <libtorrent/load_torrent.hpp>
+#include <libtorrent/magnet_uri.hpp>
 #include <libtorrent/torrent_handle.hpp>
 #include <libtorrent/torrent_info.hpp>
 #include <libtorrent/session.hpp>
@@ -215,6 +217,27 @@ namespace LC::BitTorrent
 #else
 		return info.files ();
 #endif
+	}
+
+	/* TODO libtorrent 2.1:
+	 * 0. register a temporary async alert handler
+	 * 1. call handle.save_resume_data ()
+	 * 2. take the add_torrent_params from the resulting save_resume_data_alert
+	 *    and pass it to make_magnet_uri (), after clearing peers and dht_nodes
+	 */
+	std::string MakeMagnetUri (const libtorrent::torrent_handle& handle)
+	{
+		if (!handle.is_valid ())
+			return {};
+
+		libtorrent::add_torrent_params atp;
+		atp.info_hashes = handle.info_hashes ();
+		atp.name = handle.status (libtorrent::torrent_handle::query_name).name;
+		for (const auto& tracker : handle.trackers ())
+			atp.trackers.push_back (tracker.url);
+		for (const auto& seed : handle.url_seeds ())
+			atp.url_seeds.push_back (seed);
+		return libtorrent::make_magnet_uri (atp);
 	}
 
 	SessionStats GetSessionStats (const libtorrent::session& session)

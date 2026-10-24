@@ -9,6 +9,7 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
 #include <QPair>
 #include <libtorrent/fwd.hpp>
 
@@ -50,6 +51,8 @@ namespace LC::BitTorrent
 	int GetFilesCount (const libtorrent::torrent_handle&);
 
 	const libtorrent::file_storage& GetOriginalFileLayout (const libtorrent::torrent_info&);
+
+	std::string MakeMagnetUri (const libtorrent::torrent_handle&);
 
 	struct SessionStats;
 	SessionStats GetSessionStats (const libtorrent::session&);

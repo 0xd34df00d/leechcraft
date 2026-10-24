@@ -17,7 +17,6 @@
 #include <QMessageBox>
 #include <QToolBar>
 #include <libtorrent/load_torrent.hpp>
-#include <libtorrent/magnet_uri.hpp>
 #include <util/sll/prelude.h>
 #include "addmagnetdialog.h"
 #include "addmultipletorrents.h"
@@ -339,7 +338,7 @@ namespace LC::BitTorrent
 				[this]
 				{
 					const auto& handle = GetTorrentHandle (CurIdx_);
-					const auto magnet = QString::fromStdString (libtorrent::make_magnet_uri (handle));
+					const auto magnet = QString::fromStdString (MakeMagnetUri (handle));
 					if (magnet.isEmpty ())
 						return;
 
