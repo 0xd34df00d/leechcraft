@@ -1361,9 +1361,9 @@ namespace BitTorrent
 		const auto iem = Proxy_->GetEntityManager ();
 
 		auto nah = new Util::NotificationActionHandler (notifyE);
-		if (info.files ().num_files () == 1)
+		if (info.num_files () == 1)
 		{
-			const QByteArray path { (savePath + '/' + info.files ().file_path (0)).c_str () };
+			const QByteArray path { (savePath + '/' + GetCurrentFilePath (torrent.Handle_, info, libtorrent::file_index_t { 0 })).c_str () };
 			nah->AddFunction (tr ("Open..."),
 					[iem, path]
 					{
@@ -1386,9 +1386,9 @@ namespace BitTorrent
 		e.Additional_ [" Tags"] = QVariant::fromValue (torrent.Tags_);
 		e.Additional_ [IgnoreSelf] = true;
 
-		for (int i = 0, numFiles = info.num_files (); i < numFiles; ++i)
+		for (const auto& file : GetTorrentFiles (torrent.Handle_))
 		{
-			e.Entity_ = QUrl::fromLocalFile (QString::fromStdString (savePath + '/' + info.files ().file_path (i)));
+			e.Entity_ = QUrl::fromLocalFile (QString::fromStdString (savePath + '/' + file.Path_.string ()));
 			iem->HandleEntity (e);
 		}
 

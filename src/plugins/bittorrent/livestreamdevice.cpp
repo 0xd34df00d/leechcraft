@@ -13,6 +13,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
 #include "cachedstatuskeeper.h"
+#include "ltutils.h"
 
 namespace LC::BitTorrent
 {
@@ -35,7 +36,7 @@ namespace LC::BitTorrent
 	}
 	{
 		const auto& tpath = keeper.GetStatus (h, th::query_save_path).save_path;
-		const auto& fpath = TI_.files ().file_path (0);
+		const auto& fpath = GetCurrentFilePath (h, TI_, libtorrent::file_index_t { 0 });
 		File_.setFileName (QString::fromStdString (tpath + '/' + fpath));
 
 		if (!QIODevice::open (QIODevice::ReadOnly | QIODevice::Unbuffered))

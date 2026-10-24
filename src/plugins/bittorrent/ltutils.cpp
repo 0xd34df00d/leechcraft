@@ -219,6 +219,16 @@ namespace LC::BitTorrent
 #endif
 	}
 
+	std::string GetCurrentFilePath (const libtorrent::torrent_handle& handle, const libtorrent::torrent_info& info, libtorrent::file_index_t index)
+	{
+#if LIBTORRENT_VERSION_NUM >= 20100
+		return handle.get_renamed_files ().file_path (info.layout (), index);
+#else
+		Q_UNUSED (handle)
+		return info.files ().file_path (index);
+#endif
+	}
+
 	/* TODO libtorrent 2.1:
 	 * 0. register a temporary async alert handler
 	 * 1. call handle.save_resume_data ()
@@ -283,7 +293,12 @@ namespace LC::BitTorrent
 
 		const auto& priorities = handle.get_file_priorities ();
 
+#if LIBTORRENT_VERSION_NUM >= 20100
+		const auto& renames = handle.get_renamed_files ();
+		const libtorrent::filenames files { info.layout (), renames };
+#else
 		const auto& files = info.files ();
+#endif
 
 		QList<FileInfo> result;
 		for (const auto i : files.file_range ())

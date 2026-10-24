@@ -12,6 +12,7 @@
 #include <string>
 #include <QPair>
 #include <libtorrent/fwd.hpp>
+#include <libtorrent/units.hpp>
 
 class QByteArray;
 class QModelIndex;
@@ -51,6 +52,8 @@ namespace LC::BitTorrent
 	int GetFilesCount (const libtorrent::torrent_handle&);
 
 	const libtorrent::file_storage& GetOriginalFileLayout (const libtorrent::torrent_info&);
+
+	std::string GetCurrentFilePath (const libtorrent::torrent_handle&, const libtorrent::torrent_info&, libtorrent::file_index_t);
 
 	std::string MakeMagnetUri (const libtorrent::torrent_handle&);
 
