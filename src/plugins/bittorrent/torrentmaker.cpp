@@ -16,6 +16,7 @@
 #include <QtDebug>
 #include <QMainWindow>
 #include <libtorrent/create_torrent.hpp>
+#include <libtorrent/version.hpp>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -58,10 +59,14 @@ namespace LC::BitTorrent
 			return {};
 		}
 
-		libtorrent::file_storage fs;
 		const auto& fullPath = params.Path_.toStdString ();
+#if LIBTORRENT_VERSION_NUM >= 20100
+		libtorrent::create_torrent ct { libtorrent::list_files (fullPath, FileFilter), params.PieceSize_ };
+#else
+		libtorrent::file_storage fs;
 		libtorrent::add_files (fs, fullPath, FileFilter);
 		libtorrent::create_torrent ct (fs, params.PieceSize_);
+#endif
 
 		ct.set_creator (qPrintable (QString ("LeechCraft BitTorrent %1")
 					.arg (GetProxyHolder ()->GetVersion ())));
