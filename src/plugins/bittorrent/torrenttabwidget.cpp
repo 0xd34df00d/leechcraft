@@ -359,33 +359,31 @@ namespace LC::BitTorrent
 
 		const auto info = Index_.data (Roles::TorrentStats).value<TorrentInfo> ();
 
+		Ui_.LabelCreator_->setText (info.CreationInfo_.Creator_);
+		Ui_.LabelDHTNodesCount_->setText (QString::number (info.CreationInfo_.DHTNodes_));
+
+		const auto& commentString = info.CreationInfo_.Comment_;
+		if (QUrl::fromEncoded (commentString.toUtf8 ()).isValid ())
+			Ui_.LabelComment_->setText (QStringLiteral ("<a href='%1'>%1</a>")
+					.arg (commentString));
+		else
+			Ui_.LabelComment_->setText (commentString);
+
 		if (info.Info_)
 		{
 			Ui_.LabelTotalSize_->setText (Util::MakePrettySize (info.Info_->total_size ()));
-			Ui_.LabelCreator_->setText (QString::fromStdString (info.Info_->creator ()));
 			Ui_.LabelPrivate_->setText (info.Info_->priv () ?
 					tr ("Yes") :
 					tr ("No"));
-			Ui_.LabelDHTNodesCount_->setText (QString::number (info.Info_->nodes ().size ()));
 			Ui_.LabelTotalPieces_->setText (QString::number (info.Info_->num_pieces ()));
 			Ui_.LabelPieceSize_->setText (Util::MakePrettySize (info.Info_->piece_length ()));
-
-			const auto& commentString = QString::fromStdString (info.Info_->comment ());
-			if (QUrl::fromEncoded (commentString.toUtf8 ()).isValid ())
-				Ui_.LabelComment_->setText (QStringLiteral ("<a href='%1'>%1</a>")
-						.arg (commentString));
-			else
-				Ui_.LabelComment_->setText (commentString);
 		}
 		else
 		{
 			Ui_.LabelTotalSize_->clear ();
-			Ui_.LabelCreator_->clear ();
 			Ui_.LabelPrivate_->clear ();
-			Ui_.LabelDHTNodesCount_->clear ();
 			Ui_.LabelTotalPieces_->clear ();
 			Ui_.LabelPieceSize_->clear ();
-			Ui_.LabelComment_->clear ();
 		}
 
 		Ui_.TorrentControlTab_->setEnabled (true);

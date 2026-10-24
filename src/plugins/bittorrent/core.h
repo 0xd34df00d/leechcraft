@@ -23,6 +23,7 @@
 #include <interfaces/core/itagsmanager.h>
 #include <util/sll/either.h>
 #include "fileinfo.h"
+#include "torrentcreationinfo.h"
 #include "types.h"
 #include "alertdispatcher.h"
 #include "sessionstatskeeper.h"
@@ -64,6 +65,7 @@ namespace BitTorrent
 		{
 			libtorrent::torrent_handle Handle_;
 			QByteArray TorrentFileContents_ = {};
+			TorrentCreationInfo CreationInfo_ = {};
 			QString TorrentFileName_ = {};
 			TorrentState State_ = TSIdle;
 			QList<TagId> Tags_;
@@ -90,6 +92,7 @@ namespace BitTorrent
 
 			TorrentStruct (libtorrent::torrent_handle handle,
 					QByteArray torrentFile,
+					TorrentCreationInfo creationInfo,
 					QString filename,
 					QList<TagId> tags,
 					bool autoManaged,
@@ -97,6 +100,7 @@ namespace BitTorrent
 					NoFuture)
 			: Handle_ { std::move (handle) }
 			, TorrentFileContents_ { std::move (torrentFile) }
+			, CreationInfo_ { std::move (creationInfo) }
 			, TorrentFileName_ { std::move (filename) }
 			, Tags_ { std::move (tags) }
 			, AutoManaged_ { autoManaged }
@@ -106,6 +110,7 @@ namespace BitTorrent
 
 			TorrentStruct (libtorrent::torrent_handle handle,
 					QByteArray torrentFile,
+					TorrentCreationInfo creationInfo,
 					QString filename,
 					QList<TagId> tags,
 					bool autoManaged,
@@ -113,6 +118,7 @@ namespace BitTorrent
 			: TorrentStruct
 				{ std::move (handle)
 				, std::move (torrentFile)
+				, std::move (creationInfo)
 				, std::move (filename)
 				, std::move (tags)
 				, autoManaged

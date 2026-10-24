@@ -392,7 +392,9 @@ namespace BitTorrent
 				return stateStr;
 		}
 
-		TorrentInfo GetTorrentStats (const libtorrent::torrent_handle& handle, CachedStatusKeeper& keeper)
+		TorrentInfo GetTorrentStats (const libtorrent::torrent_handle& handle,
+				const TorrentCreationInfo& creationInfo,
+				CachedStatusKeeper& keeper)
 		{
 			auto status = keeper.GetStatus (handle, CachedStatusKeeper::AllFlags);
 			TorrentInfo info
@@ -401,6 +403,7 @@ namespace BitTorrent
 				.State_ = GetStringForStatus (status),
 				.Status_ = status,
 				.Info_ = handle.torrent_file () ? *handle.torrent_file () : std::optional<libtorrent::torrent_info> {},
+				.CreationInfo_ = creationInfo,
 			};
 			if (status.errc)
 				info.State_ += " (" + QString::fromStdString (status.errc.message ()) + ")";
@@ -501,7 +504,7 @@ namespace BitTorrent
 		case Roles::IsSuperSeeding:
 			return static_cast<bool> (status.flags & libtorrent::torrent_flags::super_seeding);
 		case Roles::TorrentStats:
-			return QVariant::fromValue (GetTorrentStats (h, *StatusKeeper_));
+			return QVariant::fromValue (GetTorrentStats (h, Handles_ [row].CreationInfo_, *StatusKeeper_));
 		case Roles::TorrentProgress:
 			return status.progress;
 		case Roles::IsSeeding:
@@ -885,6 +888,7 @@ namespace BitTorrent
 		Handles_.append ({
 				handle,
 				contents,
+				loaded.CreationInfo_,
 				torrentFileName,
 				tags,
 				autoManaged,
@@ -1255,6 +1259,7 @@ namespace BitTorrent
 			Handles_.append ({
 					handle,
 					data,
+					loaded.CreationInfo_,
 					filename,
 					TagId::FromStrings (settings.value ("Tags").toStringList ()),
 					automanaged,

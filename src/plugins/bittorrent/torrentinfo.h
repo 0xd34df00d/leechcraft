@@ -11,6 +11,7 @@
 #include <optional>
 #include <libtorrent/torrent_info.hpp>
 #include <libtorrent/torrent_status.hpp>
+#include "torrentcreationinfo.h"
 
 namespace LC::BitTorrent
 {
@@ -20,6 +21,7 @@ namespace LC::BitTorrent
 		QString State_;
 		libtorrent::torrent_status Status_;
 		std::optional<libtorrent::torrent_info> Info_;
+		TorrentCreationInfo CreationInfo_;
 	};
 }
 
