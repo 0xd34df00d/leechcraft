@@ -47,6 +47,9 @@ namespace LC::BitTorrent
 
 	bool IsValidTorrent (const QByteArray&);
 
+	struct TorrentCreationInfo;
+	TorrentCreationInfo GetTorrentCreationInfo (const libtorrent::add_torrent_params&);
+
 	libtorrent::torrent_handle GetTorrentHandle (const QModelIndex&);
 
 	int GetFilesCount (const libtorrent::torrent_handle&);

@@ -16,7 +16,6 @@
 #include <libtorrent/add_torrent_params.hpp>
 #include <libtorrent/load_torrent.hpp>
 #include <libtorrent/torrent_info.hpp>
-#include <libtorrent/version.hpp>
 #include <util/util.h>
 #include <util/gui/util.h>
 #include <util/sll/prelude.h>
@@ -25,6 +24,7 @@
 #include <interfaces/core/itagsmanager.h>
 #include "components/models/addtorrentfilesmodel.h"
 #include "ltutils.h"
+#include "torrentcreationinfo.h"
 #include "xmlsettingsmanager.h"
 
 namespace LC::BitTorrent
@@ -320,26 +320,15 @@ namespace LC::BitTorrent
 			edit->setVisible (!text.isEmpty ());
 		};
 
-#if LIBTORRENT_VERSION_NUM >= 20100
-		const auto& creator = params.created_by;
-		const auto& comment = params.comment;
-		const auto creationDate = params.creation_date;
-#else
-		const auto& creator = info.creator ();
-		const auto& comment = info.comment ();
-		const auto creationDate = info.creation_date ();
-#endif
+		const auto& creationInfo = GetTorrentCreationInfo (params);
 
 		setText (Ui_.TrackerURL_,
 				params.trackers.empty () ?
 					QString {} :
 					QString::fromStdString (params.trackers.front ()));
-		setText (Ui_.Creator_, QString::fromStdString (creator));
-		setText (Ui_.Comment_, QString::fromStdString (comment));
-		setText (Ui_.Date_,
-				creationDate ?
-					QDateTime::fromSecsSinceEpoch (creationDate).toString () :
-					QString {});
+		setText (Ui_.Creator_, creationInfo.Creator_);
+		setText (Ui_.Comment_, creationInfo.Comment_);
+		setText (Ui_.Date_, creationInfo.CreationDate_.toString ());
 
 		QList<AddTorrentFilesModel::FileEntry> fileEntries;
 		const auto& torrentFiles = GetOriginalFileLayout (info);
