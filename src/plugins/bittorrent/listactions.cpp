@@ -16,6 +16,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QToolBar>
+#include <libtorrent/load_torrent.hpp>
 #include <libtorrent/magnet_uri.hpp>
 #include <util/sll/prelude.h>
 #include "addmagnetdialog.h"
@@ -49,9 +50,8 @@ namespace LC::BitTorrent
 			const auto& torrentData = torrentFile.readAll ();
 			try
 			{
-
-				libtorrent::torrent_info torrent { torrentData.constData (), static_cast<int> (torrentData.size ()) };
-				const auto& files = GetOriginalFileLayout (torrent);
+				const auto& params = libtorrent::load_torrent_buffer (libtorrent::span { torrentData.constData (), torrentData.size () });
+				const auto& files = GetOriginalFileLayout (*params.ti);
 				switch (files.num_files ())
 				{
 				case 0:

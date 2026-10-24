@@ -14,6 +14,7 @@
 #include <QUrl>
 #include <libtorrent/address.hpp>
 #include <libtorrent/ip_filter.hpp>
+#include <libtorrent/load_torrent.hpp>
 #include <libtorrent/torrent_handle.hpp>
 #include <libtorrent/torrent_info.hpp>
 #include <libtorrent/session.hpp>
@@ -184,9 +185,15 @@ namespace LC::BitTorrent
 
 	bool IsValidTorrent (const QByteArray& data)
 	{
-		libtorrent::error_code ec;
-		libtorrent::torrent_info result { data.constData (), static_cast<int> (data.size ()), ec };
-		return !ec;
+		try
+		{
+			libtorrent::load_torrent_buffer (libtorrent::span { data.constData (), data.size () });
+			return true;
+		}
+		catch (const std::exception&)
+		{
+			return false;
+		}
 	}
 
 	libtorrent::torrent_handle GetTorrentHandle (const QModelIndex& index)

@@ -13,7 +13,10 @@
 #include <QMessageBox>
 #include <QSortFilterProxyModel>
 #include <QMenu>
+#include <libtorrent/add_torrent_params.hpp>
+#include <libtorrent/load_torrent.hpp>
 #include <libtorrent/torrent_info.hpp>
+#include <libtorrent/version.hpp>
 #include <util/util.h>
 #include <util/gui/util.h>
 #include <util/sll/prelude.h>
@@ -289,11 +292,11 @@ namespace LC::BitTorrent
 			return;
 		}
 
-		std::optional<libtorrent::torrent_info> maybeInfo;
+		libtorrent::add_torrent_params params;
 		try
 		{
 			const auto& contents = file.readAll ();
-			maybeInfo.emplace (contents.constData (), contents.size ());
+			params = libtorrent::load_torrent_buffer (libtorrent::span { contents.constData (), contents.size () });
 		}
 		catch (const std::exception& e)
 		{
@@ -305,7 +308,7 @@ namespace LC::BitTorrent
 			return;
 		}
 
-		const auto& info = *maybeInfo;
+		const auto& info = *params.ti;
 
 		Ui_.Size_->setText (Util::MakePrettySize (info.total_size ()));
 
@@ -317,15 +320,25 @@ namespace LC::BitTorrent
 			edit->setVisible (!text.isEmpty ());
 		};
 
+#if LIBTORRENT_VERSION_NUM >= 20100
+		const auto& creator = params.created_by;
+		const auto& comment = params.comment;
+		const auto creationDate = params.creation_date;
+#else
+		const auto& creator = info.creator ();
+		const auto& comment = info.comment ();
+		const auto creationDate = info.creation_date ();
+#endif
+
 		setText (Ui_.TrackerURL_,
-				info.trackers ().empty () ?
+				params.trackers.empty () ?
 					QString {} :
-					QString::fromStdString (info.trackers ().at (0).url));
-		setText (Ui_.Creator_, QString::fromStdString (info.creator ()));
-		setText (Ui_.Comment_, QString::fromStdString (info.comment ()));
+					QString::fromStdString (params.trackers.front ()));
+		setText (Ui_.Creator_, QString::fromStdString (creator));
+		setText (Ui_.Comment_, QString::fromStdString (comment));
 		setText (Ui_.Date_,
-				info.creation_date () ?
-					QDateTime::fromSecsSinceEpoch (info.creation_date ()).toString () :
+				creationDate ?
+					QDateTime::fromSecsSinceEpoch (creationDate).toString () :
 					QString {});
 
 		QList<AddTorrentFilesModel::FileEntry> fileEntries;
