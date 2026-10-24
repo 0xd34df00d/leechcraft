@@ -57,6 +57,8 @@ namespace LC::BitTorrent
 
 	std::string MakeMagnetUri (const libtorrent::torrent_handle&);
 
+	QString GetTorrentName (const libtorrent::torrent_alert&);
+
 	struct SessionStats;
 	SessionStats GetSessionStats (const libtorrent::session&);
 

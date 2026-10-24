@@ -147,21 +147,21 @@ namespace BitTorrent
 		Dispatcher_.RegisterHandler ([iem] (const save_resume_data_failed_alert& a)
 				{
 					const auto& text = tr ("Saving resume data failed for torrent:<br />%1<br />%2")
-							.arg (a.torrent_name (),
+							.arg (GetTorrentName (a),
 								  a.error.message ().c_str ());
 					iem->HandleEntity (Util::MakeNotification ("BitTorrent", text, Priority::Warning));
 				});
 		Dispatcher_.RegisterHandler ([iem] (const storage_moved_alert& a)
 				{
 					const auto& text = tr ("Storage for torrent:<br />%1<br />moved successfully to:<br />%2")
-							.arg (a.torrent_name (),
+							.arg (GetTorrentName (a),
 								  a.storage_path ());
 					iem->HandleEntity (Util::MakeNotification ("BitTorrent", text, Priority::Info));
 				});
 		Dispatcher_.RegisterHandler ([iem] (const storage_moved_failed_alert& a)
 				{
 					const auto& text = tr ("Storage move failure:<br />%2<br />for torrent:<br />%1")
-							.arg (a.torrent_name (),
+							.arg (GetTorrentName (a),
 								  a.error.message ().c_str ());
 					iem->HandleEntity (Util::MakeNotification ("BitTorrent", text, Priority::Critical));
 				});
@@ -169,7 +169,7 @@ namespace BitTorrent
 		Dispatcher_.RegisterHandler ([iem] (const file_rename_failed_alert& a)
 				{
 					const auto& text = tr ("File rename failed for torrent:<br />%1<br />file %2, error:<br />%3")
-							.arg (a.torrent_name (),
+							.arg (GetTorrentName (a),
 								  QString::number (static_cast<int> (a.index)),
 								  a.error.message ().c_str ());
 					iem->HandleEntity (Util::MakeNotification ("BitTorrent", text, Priority::Critical));
@@ -177,14 +177,14 @@ namespace BitTorrent
 		Dispatcher_.RegisterHandler ([iem] (const torrent_delete_failed_alert& a)
 				{
 					const auto& text = tr ("Failed to delete torrent:<br />%1<br />error:<br />%2")
-							.arg (a.torrent_name (),
+							.arg (GetTorrentName (a),
 								  a.error.message ().c_str ());
 					iem->HandleEntity (Util::MakeNotification ("BitTorrent", text, Priority::Critical));
 				});
 		Dispatcher_.RegisterHandler ([iem] (const file_error_alert& a)
 				{
 					const auto& text = tr ("File error for torrent:<br />%1<br />file:<br />%2<br />error:<br />%3")
-							.arg (a.torrent_name (),
+							.arg (GetTorrentName (a),
 								  a.filename (),
 								  a.error.message ().c_str ());
 					iem->HandleEntity (Util::MakeNotification ("BitTorrent", text, Priority::Critical));

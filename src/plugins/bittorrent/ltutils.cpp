@@ -14,6 +14,7 @@
 #include <QUrl>
 #include <libtorrent/add_torrent_params.hpp>
 #include <libtorrent/address.hpp>
+#include <libtorrent/alert_types.hpp>
 #include <libtorrent/ip_filter.hpp>
 #include <libtorrent/load_torrent.hpp>
 #include <libtorrent/magnet_uri.hpp>
@@ -22,6 +23,7 @@
 #include <libtorrent/session.hpp>
 #include <libtorrent/session_status.hpp>
 #include <libtorrent/version.hpp>
+#include <util/sll/macros.h>
 #include "fileinfo.h"
 #include "ipfilterdialog.h"
 #include "sessionstats.h"
@@ -248,6 +250,15 @@ namespace LC::BitTorrent
 		for (const auto& seed : handle.url_seeds ())
 			atp.url_seeds.push_back (seed);
 		return libtorrent::make_magnet_uri (atp);
+	}
+
+	QString GetTorrentName (const libtorrent::torrent_alert& alert)
+	{
+		// TODO port to libtorrent 2.1's flow, using either `torrent_info::name()`
+		// or `torrent_status::name` (for magnet torrents, say)
+		LC_SUPPRESS_DEPRECATED_BEGIN
+		return QString::fromUtf8 (alert.torrent_name ());
+		LC_SUPPRESS_DEPRECATED_END
 	}
 
 	SessionStats GetSessionStats (const libtorrent::session& session)
