@@ -35,7 +35,7 @@ namespace LC::BitTorrent
 		RegGuard_ = dispatcher.RegisterTemporaryHandler ([this] (const libtorrent::file_renamed_alert& a)
 				{
 					if (a.handle == *Handle_)
-						HandleFileRenamed (a.index, QString::fromUtf8 (a.new_name ()));
+						HandleFileRenamed (static_cast<int> (a.index), QString::fromUtf8 (a.new_name ()));
 				}).EraseType ();
 	}
 
@@ -138,7 +138,8 @@ namespace LC::BitTorrent
 			else
 			{
 				const auto newPriority = value.toInt ();
-				Handle_->file_priority (node->FileIndex_, std::clamp (newPriority, 0, 7));
+				Handle_->file_priority (libtorrent::file_index_t { node->FileIndex_ },
+						libtorrent::download_priority_t { static_cast<std::uint8_t> (std::clamp (newPriority, 0, 7)) });
 				node->Priority_ = newPriority;
 				emit dataChanged (index.sibling (index.row (), ColumnPath), index);
 
@@ -167,7 +168,7 @@ namespace LC::BitTorrent
 						{
 							auto specificPath = node->GetFullPathStr ();
 							specificPath.replace (0, curPathSize, newPath);
-							handle.rename_file (node->FileIndex_, specificPath.toStdString ());
+							handle.rename_file (libtorrent::file_index_t { node->FileIndex_ }, specificPath.toStdString ());
 						}
 						else
 							for (const auto& subnode : *node)
@@ -175,7 +176,7 @@ namespace LC::BitTorrent
 					} (node);
 				}
 				else
-					Handle_->rename_file (node->FileIndex_, newPath.toStdString ());
+					Handle_->rename_file (libtorrent::file_index_t { node->FileIndex_ }, newPath.toStdString ());
 				return true;
 			}
 			case Qt::CheckStateRole:

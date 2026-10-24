@@ -17,6 +17,7 @@
 namespace LC::BitTorrent
 {
 	using th = libtorrent::torrent_handle;
+	using PieceIdx_t = libtorrent::piece_index_t;
 
 	LiveStreamDevice::LiveStreamDevice (const libtorrent::torrent_handle& h, CachedStatusKeeper& keeper, QObject *parent)
 	: QIODevice (parent)
@@ -53,8 +54,8 @@ namespace LC::BitTorrent
 		qint64 result = 0;
 		const auto& pieces = StatusKeeper_.GetStatus (Handle_, th::query_pieces).pieces;
 		const auto piecesCount = std::min (NumPieces_, static_cast<int> (pieces.size ()));
-		for (int i = ReadPos_; i < piecesCount && pieces [i]; ++i)
-			result += TI_.piece_size (i);
+		for (int i = ReadPos_; i < piecesCount && pieces [PieceIdx_t { i }]; ++i)
+			result += TI_.piece_size (PieceIdx_t { i });
 		result -= Offset_;
 		if (result < 0)
 			result = 0;
@@ -75,7 +76,7 @@ namespace LC::BitTorrent
 	{
 		qint64 result = 0;
 		for (int i = 0; i < ReadPos_; ++i)
-			result += TI_.piece_size (i);
+			result += TI_.piece_size (PieceIdx_t { i });
 		result += Offset_;
 		return result;
 	}
@@ -86,8 +87,8 @@ namespace LC::BitTorrent
 			return false;
 
 		int i = 0;
-		while (i < NumPieces_ && pos >= TI_.piece_size (i))
-			pos -= TI_.piece_size (i++);
+		while (i < NumPieces_ && pos >= TI_.piece_size (PieceIdx_t { i }))
+			pos -= TI_.piece_size (PieceIdx_t { i++ });
 		ReadPos_ = i;
 		Offset_ = pos;
 
@@ -117,8 +118,8 @@ namespace LC::BitTorrent
 		if (pieces.size () < NumPieces_)
 			return;
 
-		if (pieces [0] &&
-				pieces [NumPieces_ - 1])
+		if (pieces [PieceIdx_t { 0 }] &&
+				pieces [PieceIdx_t { NumPieces_ - 1 }])
 		{
 			std::vector<libtorrent::download_priority_t> prios (NumPieces_, libtorrent::low_priority);
 			Handle_.prioritize_pieces (prios);
@@ -153,8 +154,8 @@ namespace LC::BitTorrent
 			return result;
 
 		qint64 offset = Offset_ + result;
-		while (ReadPos_ < NumPieces_ && offset >= TI_.piece_size (ReadPos_))
-			offset -= TI_.piece_size (ReadPos_++);
+		while (ReadPos_ < NumPieces_ && offset >= TI_.piece_size (PieceIdx_t { ReadPos_ }))
+			offset -= TI_.piece_size (PieceIdx_t { ReadPos_++ });
 		Offset_ = static_cast<int> (offset);
 
 		return result;
@@ -171,7 +172,7 @@ namespace LC::BitTorrent
 		const auto& pieces = StatusKeeper_.GetStatus (Handle_, th::query_pieces).pieces;
 		const auto piecesCount = std::min (NumPieces_, static_cast<int> (pieces.size ()));
 		for (int i = ReadPos_ + 1;
-				i < piecesCount && pieces [i];
+				i < piecesCount && pieces [PieceIdx_t { i }];
 				++i, hasMoreData = true);
 
 		if (hasMoreData)
@@ -208,8 +209,8 @@ namespace LC::BitTorrent
 
 		int thisDeadline = 0;
 		for (int i = ReadPos_; i < NumPieces_; ++i)
-			if (!pieces [i])
-				Handle_.set_piece_deadline (i,
+			if (!pieces [PieceIdx_t { i }])
+				Handle_.set_piece_deadline (PieceIdx_t { i },
 						IsReady_ ?
 							(thisDeadline += time) :
 							1000000,
@@ -220,14 +221,14 @@ namespace LC::BitTorrent
 			if (pieces.size () > 1)
 				prios [1] = libtorrent::default_priority;
 
-			if (!pieces [0])
+			if (!pieces [PieceIdx_t { 0 }])
 			{
-				Handle_.set_piece_deadline (0, 500, alertFlag);
+				Handle_.set_piece_deadline (PieceIdx_t { 0 }, 500, alertFlag);
 				prios [0] = libtorrent::top_priority;
 			}
-			if (!pieces [NumPieces_ - 1])
+			if (!pieces [PieceIdx_t { NumPieces_ - 1 }])
 			{
-				Handle_.set_piece_deadline (NumPieces_ - 1, 500, alertFlag);
+				Handle_.set_piece_deadline (PieceIdx_t { NumPieces_ - 1 }, 500, alertFlag);
 				prios [NumPieces_ - 1] = libtorrent::top_priority;
 			}
 			Handle_.prioritize_pieces (prios);

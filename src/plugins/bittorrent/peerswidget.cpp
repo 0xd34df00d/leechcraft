@@ -173,7 +173,7 @@ namespace LC::BitTorrent
 				.arg (Util::MakePrettySize (p.PI_->total_download),
 					  Util::MakePrettySize (p.PI_->total_upload)));
 
-		if (p.PI_->downloading_piece_index >= 0)
+		if (static_cast<int> (p.PI_->downloading_piece_index) >= 0)
 			Ui_.PeerProgress_->setText (tr ("%1 (piece %2, block %3, %4/%5)")
 					.arg (p.PI_->progress)
 					.arg (static_cast<libtorrent::piece_index_t::underlying_type> (p.PI_->downloading_piece_index))

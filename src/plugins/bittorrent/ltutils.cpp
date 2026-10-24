@@ -228,7 +228,6 @@ namespace LC::BitTorrent
 
 	QList<FileInfo> GetTorrentFiles (const libtorrent::torrent_handle& handle)
 	{
-		QList<FileInfo> result;
 		const auto& infoPtr = handle.torrent_file ();
 		if (!infoPtr)
 			return {};
@@ -244,14 +243,18 @@ namespace LC::BitTorrent
 
 		const auto& priorities = handle.get_file_priorities ();
 
-		for (int i = 0, numFiles = info.num_files (); i < numFiles; ++i)
+		const auto& files = info.files ();
+
+		QList<FileInfo> result;
+		for (const auto i : files.file_range ())
 		{
+			const auto idx = static_cast<int> (i);
 			FileInfo fi;
-			fi.Path_ = info.files ().file_path (i);
-			fi.Size_ = info.files ().file_size (i);
-			fi.Priority_ = priorities [i];
+			fi.Path_ = files.file_path (i);
+			fi.Size_ = files.file_size (i);
+			fi.Priority_ = static_cast<std::uint8_t> (priorities [idx]);
 			fi.Progress_ = fi.Size_ ?
-					prbytes.at (i) / static_cast<float> (fi.Size_) :
+					prbytes.at (idx) / static_cast<float> (fi.Size_) :
 					1;
 			result << fi;
 		}

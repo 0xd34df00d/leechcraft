@@ -170,7 +170,7 @@ namespace BitTorrent
 				{
 					const auto& text = tr ("File rename failed for torrent:<br />%1<br />file %2, error:<br />%3")
 							.arg (a.torrent_name (),
-								  QString::number (a.index),
+								  QString::number (static_cast<int> (a.index)),
 								  a.error.message ().c_str ());
 					iem->HandleEntity (Util::MakeNotification ("BitTorrent", text, Priority::Critical));
 				});
@@ -364,12 +364,12 @@ namespace BitTorrent
 
 		bool IsPaused (const libtorrent::torrent_status& status)
 		{
-			return status.flags & libtorrent::torrent_flags::paused;
+			return static_cast<bool> (status.flags & libtorrent::torrent_flags::paused);
 		}
 
 		bool IsAutoManaged (const libtorrent::torrent_status& status)
 		{
-			return status.flags & libtorrent::torrent_flags::auto_managed;
+			return static_cast<bool> (status.flags & libtorrent::torrent_flags::auto_managed);
 		}
 
 		QString GetStringForStatus (const libtorrent::torrent_status& status)

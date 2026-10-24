@@ -329,7 +329,7 @@ namespace LC::BitTorrent
 
 		QList<AddTorrentFilesModel::FileEntry> fileEntries;
 		const auto& torrentFiles = info.files ();
-		for (int i = 0; i < torrentFiles.num_files (); ++i)
+		for (const auto i : torrentFiles.file_range ())
 			fileEntries.push_back ({ torrentFiles.file_path (i), torrentFiles.file_size (i) });
 		FilesModel_->ResetFiles (fileEntries);
 

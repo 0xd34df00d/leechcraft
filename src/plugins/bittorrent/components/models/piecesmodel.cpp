@@ -109,7 +109,7 @@ namespace LC::BitTorrent
 			bool found = false;
 
 			for (int j = 0; j < initSize; ++j)
-				if (Pieces_.at (j).Index_ == ppi.piece_index)
+				if (Pieces_.at (j).Index_ == static_cast<int> (ppi.piece_index))
 				{
 					index2position.remove (Pieces_.at (j).Index_);
 					Pieces_ [j].FinishedBlocks_ = ppi.finished;
@@ -121,7 +121,7 @@ namespace LC::BitTorrent
 				continue;
 
 			Info info;
-			info.Index_ = ppi.piece_index;
+			info.Index_ = static_cast<int> (ppi.piece_index);
 			info.TotalBlocks_ = ppi.blocks_in_piece;
 			info.FinishedBlocks_ = ppi.finished;
 			pieces2Insert << info;

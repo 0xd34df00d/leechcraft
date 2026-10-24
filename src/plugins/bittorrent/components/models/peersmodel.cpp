@@ -154,8 +154,8 @@ namespace LC::BitTorrent
 
 		const auto& localPieces = handle.status (libtorrent::torrent_handle::query_pieces).pieces;
 
-		QList<int> ourMissing;
-		for (int i = 0, size = localPieces.size (); i < size; ++i)
+		QList<libtorrent::piece_index_t> ourMissing;
+		for (const auto i : localPieces.range ())
 			if (!localPieces [i])
 				ourMissing << i;
 
@@ -166,7 +166,7 @@ namespace LC::BitTorrent
 		for (const auto& pi : peerInfos)
 		{
 			const int interesting = std::ranges::count_if (ourMissing,
-					[&pi] (int idx) { return idx < pi.pieces.size () && pi.pieces [idx]; });
+					[&pi] (libtorrent::piece_index_t idx) { return idx < pi.pieces.end_index () && pi.pieces [idx]; });
 
 			peers.push_back ({
 					QString::fromStdString (pi.ip.address ().to_string ()),

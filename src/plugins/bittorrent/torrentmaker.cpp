@@ -88,7 +88,7 @@ namespace LC::BitTorrent
 		libtorrent::error_code hashesError;
 		libtorrent::set_piece_hashes (ct,
 				fullPath,
-				[&pd] (int i) { pd.setValue (i); },
+				[&pd] (libtorrent::piece_index_t i) { pd.setValue (static_cast<int> (i)); },
 				hashesError);
 		if (hashesError)
 		{

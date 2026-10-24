@@ -57,7 +57,10 @@ namespace LC::BitTorrent
 				case 0:
 					return false;
 				case 1:
-					return saveDir.exists (QString::fromStdString (files.file_name (0).to_string ()));
+				{
+					const auto& name = files.file_name (libtorrent::file_index_t { 0 });
+					return saveDir.exists (QString::fromUtf8 (name.data (), name.size ()));
+				}
 				default:
 				{
 					const auto& dirName = QString::fromStdString (files.name ());
