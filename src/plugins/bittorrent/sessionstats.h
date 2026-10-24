@@ -33,7 +33,6 @@ namespace LC::BitTorrent
 		Symmetric<int64_t> PayloadTotal_;
 
 		int NumPeers_;
-		int64_t DHTGlobalNodes_;
 		int DHTNodes_;
 		int DHTTorrents_;
 

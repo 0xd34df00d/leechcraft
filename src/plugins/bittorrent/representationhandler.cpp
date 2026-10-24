@@ -96,7 +96,7 @@ namespace LC::BitTorrent
 		if (!TabWidget_)
 		{
 			const auto core = Core::Instance ();
-			TabWidget_ = std::make_unique<TabWidget> (*core, core->GetSession (), *core->GetSessionSettingsManager ());
+			TabWidget_ = std::make_unique<TabWidget> (*core, core->GetSessionStatsKeeper (), *core->GetSessionSettingsManager ());
 			TabWidget_->SetCurrentTorrent (CurrentRow_);
 
 			UpdateTimer_.callOnTimeout (&*TabWidget_, &TabWidget::UpdateTorrentStats);

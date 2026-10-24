@@ -25,6 +25,7 @@
 #include "fileinfo.h"
 #include "types.h"
 #include "alertdispatcher.h"
+#include "sessionstatskeeper.h"
 
 class QTimer;
 class QDomElement;
@@ -51,7 +52,6 @@ namespace BitTorrent
 	class LiveStreamManager;
 	class SessionSettingsManager;
 	class CachedStatusKeeper;
-	struct SessionStats;
 	struct NewTorrentParams;
 
 	using BanRange_t = QPair<QString, QString>;
@@ -139,6 +139,7 @@ namespace BitTorrent
 		Util::ShortcutManager *ShortcutMgr_ = nullptr;
 
 		AlertDispatcher Dispatcher_;
+		SessionStatsKeeper SessionStatsKeeper_;
 
 		Core ();
 	public:
@@ -157,6 +158,8 @@ namespace BitTorrent
 		SessionSettingsManager* GetSessionSettingsManager () const;
 
 		CachedStatusKeeper* GetStatusKeeper () const;
+
+		const SessionStatsKeeper& GetSessionStatsKeeper () const;
 
 		virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
 		virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;

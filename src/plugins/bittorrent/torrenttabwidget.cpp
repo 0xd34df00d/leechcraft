@@ -24,7 +24,7 @@
 #include "xmlsettingsmanager.h"
 #include "addwebseeddialog.h"
 #include "sessionsettingsmanager.h"
-#include "sessionstats.h"
+#include "sessionstatskeeper.h"
 #include "ltutils.h"
 #include "torrentinfo.h"
 #include "types.h"
@@ -96,6 +96,7 @@ namespace LC::BitTorrent
 	void TorrentTabWidget::SetDependencies (const Dependencies& deps)
 	{
 		Session_ = &deps.Session_;
+		StatsKeeper_ = &deps.StatsKeeper_;
 
 		Ui_.FilesWidget_->SetAlertDispatcher (deps.AlertDispatcher_);
 
@@ -258,7 +259,7 @@ namespace LC::BitTorrent
 	{
 		UpdateDashboard ();
 
-		const auto& stats = GetSessionStats (*Session_);
+		const auto& stats = StatsKeeper_->GetStats ();
 
 		Ui_.LabelTotalDownloadRate_->setText (Util::MakePrettySize (stats.Rate_.Down_) + tr ("/s"));
 		Ui_.LabelTotalUploadRate_->setText (Util::MakePrettySize (stats.Rate_.Up_) + tr ("/s"));
@@ -296,10 +297,7 @@ namespace LC::BitTorrent
 		rel (simple, stats.TrackerTotal_, stats.Total_, Ui_.LabelTrackerDownloaded_, Ui_.LabelTrackerUploaded_);
 
 		Ui_.LabelTotalPeers_->setText (QString::number (stats.NumPeers_));
-		Ui_.LabelTotalDHTNodes_->setText ("(" +
-				QString::number (stats.DHTGlobalNodes_) +
-				") " +
-				QString::number (stats.DHTNodes_));
+		Ui_.LabelTotalDHTNodes_->setText (QString::number (stats.DHTNodes_));
 		Ui_.LabelDHTTorrents_->setText (QString::number (stats.DHTTorrents_));
 		Ui_.LabelListenPort_->setText (QString::number (Session_->listen_port ()));
 		if (stats.PayloadTotal_.Down_)

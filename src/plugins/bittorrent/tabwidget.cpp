@@ -15,16 +15,16 @@
 #include "xmlsettingsmanager.h"
 #include "addwebseeddialog.h"
 #include "sessionsettingsmanager.h"
-#include "sessionstats.h"
+#include "sessionstatskeeper.h"
 #include "ltutils.h"
 #include "torrentinfo.h"
 #include "types.h"
 
 namespace LC::BitTorrent
 {
-	TabWidget::TabWidget (QAbstractItemModel& model, libtorrent::session& session, SessionSettingsManager& ssm, QWidget *parent)
+	TabWidget::TabWidget (QAbstractItemModel& model, const SessionStatsKeeper& statsKeeper, SessionSettingsManager& ssm, QWidget *parent)
 	: QWidget { parent }
-	, Session_ { session }
+	, StatsKeeper_ { statsKeeper }
 	, SSM_ { ssm }
 	, Model_ { model }
 	{
@@ -111,7 +111,7 @@ namespace LC::BitTorrent
 
 	void TabWidget::UpdateOverallStats ()
 	{
-		const auto& stats = GetSessionStats (Session_);
+		const auto& stats = StatsKeeper_.GetStats ();
 		Ui_.LabelTotalDownloadRate_->setText (Util::MakePrettySize (stats.Rate_.Down_) + tr ("/s"));
 		Ui_.LabelTotalUploadRate_->setText (Util::MakePrettySize (stats.Rate_.Up_) + tr ("/s"));
 	}

@@ -73,6 +73,7 @@ namespace LC::BitTorrent
 				.Dispatcher_ = Core::Instance ()->GetAlertDispatcher (),
 				.SSM_ = *Core::Instance ()->GetSessionSettingsManager (),
 				.StatusKeeper_ = *Core::Instance ()->GetStatusKeeper (),
+				.StatsKeeper_ = Core::Instance ()->GetSessionStatsKeeper (),
 			},
 			TabTC_,
 			this
@@ -118,12 +119,12 @@ namespace LC::BitTorrent
 
 	qint64 TorrentPlugin::GetDownloadSpeed () const
 	{
-		return GetSessionStats (Core::Instance ()->GetSession ()).Rate_.Down_;
+		return Core::Instance ()->GetSessionStatsKeeper ().GetStats ().Rate_.Down_;
 	}
 
 	qint64 TorrentPlugin::GetUploadSpeed () const
 	{
-		return GetSessionStats (Core::Instance ()->GetSession ()).Rate_.Up_;
+		return Core::Instance ()->GetSessionStatsKeeper ().GetStats ().Rate_.Up_;
 	}
 
 	namespace

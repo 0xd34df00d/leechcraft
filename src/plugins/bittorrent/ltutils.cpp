@@ -21,12 +21,10 @@
 #include <libtorrent/torrent_handle.hpp>
 #include <libtorrent/torrent_info.hpp>
 #include <libtorrent/session.hpp>
-#include <libtorrent/session_status.hpp>
 #include <libtorrent/version.hpp>
 #include <util/sll/macros.h>
 #include "fileinfo.h"
 #include "ipfilterdialog.h"
-#include "sessionstats.h"
 #include "types.h"
 #include "xmlsettingsmanager.h"
 
@@ -259,32 +257,6 @@ namespace LC::BitTorrent
 		LC_SUPPRESS_DEPRECATED_BEGIN
 		return QString::fromUtf8 (alert.torrent_name ());
 		LC_SUPPRESS_DEPRECATED_END
-	}
-
-	SessionStats GetSessionStats (const libtorrent::session& session)
-	{
-		const auto& status = session.status ();
-		return
-		{
-			{ status.download_rate, status.upload_rate },
-			{ status.ip_overhead_download_rate, status.ip_overhead_upload_rate },
-			{ status.dht_download_rate, status.dht_upload_rate },
-			{ status.tracker_download_rate, status.tracker_upload_rate },
-
-			{ status.total_download, status.total_upload },
-			{ status.total_ip_overhead_download, status.total_ip_overhead_upload },
-			{ status.total_dht_download, status.total_dht_upload },
-			{ status.total_tracker_download, status.total_tracker_upload },
-			{ status.total_payload_download, status.total_payload_upload },
-
-			status.num_peers,
-			status.dht_global_nodes,
-			status.dht_nodes,
-			status.dht_torrents,
-
-			status.total_failed_bytes,
-			status.total_redundant_bytes,
-		};
 	}
 
 	QList<FileInfo> GetTorrentFiles (const libtorrent::torrent_handle& handle)

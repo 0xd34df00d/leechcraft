@@ -48,6 +48,7 @@ LC_DEFINE_PLUGIN (
 		fastspeedcontrolwidget.cpp
 		singletrackerchanger.cpp
 		cachedstatuskeeper.cpp
+		sessionstatskeeper.cpp
 		geoip.cpp
 		movetorrentfiles.cpp
 		trackerschanger.cpp

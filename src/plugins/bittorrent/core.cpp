@@ -138,6 +138,7 @@ namespace BitTorrent
 	, FinishedTimer_ { new QTimer }
 	, WarningWatchdog_ { new QTimer }
 	, Dispatcher_ { *Session_ }
+	, SessionStatsKeeper_ { Dispatcher_ }
 	{
 		setObjectName ("BitTorrent Core");
 
@@ -322,6 +323,11 @@ namespace BitTorrent
 	CachedStatusKeeper* Core::GetStatusKeeper () const
 	{
 		return StatusKeeper_;
+	}
+
+	const SessionStatsKeeper& Core::GetSessionStatsKeeper () const
+	{
+		return SessionStatsKeeper_;
 	}
 
 	int Core::columnCount (const QModelIndex&) const
@@ -1529,6 +1535,7 @@ namespace BitTorrent
 	void Core::queryLibtorrent ()
 	{
 		Session_->post_torrent_updates ();
+		Session_->post_session_stats ();
 		Dispatcher_.PollAlerts ();
 	}
 

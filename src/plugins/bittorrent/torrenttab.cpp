@@ -41,6 +41,7 @@ namespace LC::BitTorrent
 				deps.Model_,
 				deps.SSM_,
 				deps.Session_,
+				deps.StatsKeeper_,
 			});
 
 		ViewFilter_->setDynamicSortFilter (true);

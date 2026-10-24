@@ -24,6 +24,7 @@ namespace libtorrent
 namespace LC::BitTorrent
 {
 	class SessionSettingsManager;
+	class SessionStatsKeeper;
 	class PiecesModel;
 
 	class TorrentTabWidget : public QTabWidget
@@ -40,6 +41,7 @@ namespace LC::BitTorrent
 		QAbstractItemModel *Model_ = nullptr;
 		SessionSettingsManager *SSM_ = nullptr;
 		libtorrent::session *Session_ = nullptr;
+		const SessionStatsKeeper *StatsKeeper_ = nullptr;
 
 		std::unique_ptr<PiecesModel> PiecesModel_;
 		std::unique_ptr<QAbstractItemModel> WebSeedsModel_;
@@ -53,6 +55,7 @@ namespace LC::BitTorrent
 			QAbstractItemModel& Model_;
 			SessionSettingsManager& SSM_;
 			libtorrent::session& Session_;
+			const SessionStatsKeeper& StatsKeeper_;
 		};
 
 		void SetDependencies (const Dependencies&);

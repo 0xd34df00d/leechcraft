@@ -23,6 +23,7 @@ namespace LC::BitTorrent
 {
 	class CachedStatusKeeper;
 	class ListActions;
+	class SessionStatsKeeper;
 	class TabViewProxyModel;
 
 	class TorrentTab : public QWidget
@@ -40,6 +41,7 @@ namespace LC::BitTorrent
 			AlertDispatcher& Dispatcher_;
 			SessionSettingsManager& SSM_;
 			CachedStatusKeeper& StatusKeeper_;
+			const SessionStatsKeeper& StatsKeeper_;
 		};
 	private:
 		Dependencies D_;

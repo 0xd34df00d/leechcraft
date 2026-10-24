@@ -59,9 +59,6 @@ namespace LC::BitTorrent
 
 	QString GetTorrentName (const libtorrent::torrent_alert&);
 
-	struct SessionStats;
-	SessionStats GetSessionStats (const libtorrent::session&);
-
 	struct FileInfo;
 	QList<FileInfo> GetTorrentFiles (const libtorrent::torrent_handle&);
 

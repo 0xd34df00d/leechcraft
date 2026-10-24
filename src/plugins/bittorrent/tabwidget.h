@@ -15,20 +15,16 @@
 #include <util/tags/tagseditoraddon.h>
 #include "ui_tabwidget.h"
 
-namespace libtorrent
-{
-	class session;
-}
-
 namespace LC::BitTorrent
 {
 	class SessionSettingsManager;
+	class SessionStatsKeeper;
 
 	class TabWidget : public QWidget
 	{
 		Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::TabWidget)
 
-		libtorrent::session& Session_;
+		const SessionStatsKeeper& StatsKeeper_;
 		SessionSettingsManager& SSM_;
 
 		Ui::TabWidget Ui_;
@@ -39,7 +35,7 @@ namespace LC::BitTorrent
 
 		Util::TagsEditorAddon *TorrentTags_ = nullptr;
 	public:
-		explicit TabWidget (QAbstractItemModel&, libtorrent::session&, SessionSettingsManager&, QWidget* = nullptr);
+		explicit TabWidget (QAbstractItemModel&, const SessionStatsKeeper&, SessionSettingsManager&, QWidget* = nullptr);
 
 		void SetCurrentTorrent (const QModelIndex&);
 		void UpdateTorrentStats ();
