@@ -10,7 +10,7 @@
 
 #include <optional>
 #include <libtorrent/torrent_info.hpp>
-#include <libtorrent/session_status.hpp>
+#include <libtorrent/torrent_status.hpp>
 
 namespace LC::BitTorrent
 {

@@ -23,7 +23,6 @@
 #include <QDesktopServices>
 #include <libtorrent/bencode.hpp>
 #include <libtorrent/entry.hpp>
-#include <libtorrent/file.hpp>
 #include <libtorrent/magnet_uri.hpp>
 #include <libtorrent/version.hpp>
 #include <libtorrent/session.hpp>

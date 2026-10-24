@@ -10,12 +10,8 @@
 
 #include <QDialog>
 #include <QCoreApplication>
+#include <libtorrent/announce_entry.hpp>
 #include "ui_trackerschanger.h"
-
-namespace libtorrent
-{
-	class announce_entry;
-}
 
 namespace LC::BitTorrent
 {

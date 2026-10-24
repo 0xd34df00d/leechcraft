@@ -10,6 +10,7 @@
 
 #include <cstdint>
 #include <QPair>
+#include <libtorrent/fwd.hpp>
 
 class QByteArray;
 class QModelIndex;
@@ -20,12 +21,6 @@ class QMap;
 
 template<typename>
 class QList;
-
-namespace libtorrent
-{
-	struct torrent_handle;
-	class session;
-}
 
 namespace LC::BitTorrent
 {
