@@ -8,6 +8,9 @@ set (CMAKE_CXX_STANDARD 26)
 set (CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set (CMAKE_CXX_EXTENSIONS OFF)
 
+# We don't use modules yet, but the modules stuff takes time for an extra compiler pass and also breaks current ccache.
+set (CMAKE_CXX_SCAN_FOR_MODULES OFF)
+
 set (CMAKE_LINK_DEPENDS_NO_SHARED ON)
 
 set (LC_SOVERSION 0.6.75)
