@@ -21,6 +21,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "components/models/addtorrentfilesmodel.h"
+#include "ltutils.h"
 #include "xmlsettingsmanager.h"
 
 namespace LC::BitTorrent
@@ -328,7 +329,7 @@ namespace LC::BitTorrent
 					QString {});
 
 		QList<AddTorrentFilesModel::FileEntry> fileEntries;
-		const auto& torrentFiles = info.files ();
+		const auto& torrentFiles = GetOriginalFileLayout (info);
 		for (const auto i : torrentFiles.file_range ())
 			fileEntries.push_back ({ torrentFiles.file_path (i), torrentFiles.file_size (i) });
 		FilesModel_->ResetFiles (fileEntries);

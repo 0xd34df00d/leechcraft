@@ -18,6 +18,7 @@
 #include <libtorrent/torrent_info.hpp>
 #include <libtorrent/session.hpp>
 #include <libtorrent/session_status.hpp>
+#include <libtorrent/version.hpp>
 #include "fileinfo.h"
 #include "ipfilterdialog.h"
 #include "sessionstats.h"
@@ -198,6 +199,15 @@ namespace LC::BitTorrent
 	int GetFilesCount (const libtorrent::torrent_handle& handle)
 	{
 		return handle.torrent_file () ? handle.torrent_file ()->num_files () : 0;
+	}
+
+	const libtorrent::file_storage& GetOriginalFileLayout (const libtorrent::torrent_info& info)
+	{
+#if LIBTORRENT_VERSION_NUM >= 20100
+		return info.layout ();
+#else
+		return info.files ();
+#endif
 	}
 
 	SessionStats GetSessionStats (const libtorrent::session& session)

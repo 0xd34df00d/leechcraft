@@ -51,7 +51,7 @@ namespace LC::BitTorrent
 			{
 
 				libtorrent::torrent_info torrent { torrentData.constData (), static_cast<int> (torrentData.size ()) };
-				const auto& files = torrent.files ();
+				const auto& files = GetOriginalFileLayout (torrent);
 				switch (files.num_files ())
 				{
 				case 0:

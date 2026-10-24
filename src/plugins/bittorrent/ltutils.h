@@ -49,6 +49,8 @@ namespace LC::BitTorrent
 
 	int GetFilesCount (const libtorrent::torrent_handle&);
 
+	const libtorrent::file_storage& GetOriginalFileLayout (const libtorrent::torrent_info&);
+
 	struct SessionStats;
 	SessionStats GetSessionStats (const libtorrent::session&);
 
