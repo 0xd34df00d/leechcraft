@@ -23,7 +23,6 @@ RUN apk add --no-cache \
         qxmpp-dev \
         qca-qt6-dev \
         libotr-dev \
-        pidgin-dev \
         toxcore-dev \
         hunspell-dev \
         taglib-dev \
@@ -31,7 +30,7 @@ RUN apk add --no-cache \
         chromaprint-dev \
         ffmpeg-dev \
         libmtp-dev \
-        poppler-qt5-dev \
+        poppler-qt6-dev \
         djvulibre-dev \
         quazip-dev \
         tidyhtml-dev \
@@ -40,7 +39,6 @@ RUN apk add --no-cache \
         lm-sensors-dev \
         eudev-dev \
         libnl3-dev \
-        utf8proc-dev \
         qscintilla-dev \
         qtermwidget-dev \
     && rm -rf /var/cache/apk/*

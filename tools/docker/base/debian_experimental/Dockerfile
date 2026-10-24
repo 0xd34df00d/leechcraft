@@ -1,16 +1,18 @@
 FROM debian:experimental AS qxmpp
 COPY packaging/qxmpp /build/packaging/qxmpp
-RUN /build/packaging/qxmpp/build.sh /out
+RUN APT_TARGET_RELEASE=experimental /build/packaging/qxmpp/build.sh /out
+
+FROM scratch AS packages
+COPY --from=qxmpp /out /
 
 FROM debian:experimental
 
-COPY --from=qxmpp /out /tmp/qxmpp
-
-RUN apt-get update && \
+RUN --mount=type=bind,from=qxmpp,source=/out,target=/tmp/qxmpp \
+    apt-get update && \
     apt-get install -q -y eatmydata && \
     eatmydata apt-get dist-upgrade -q -y && \
-    eatmydata apt-get install -q -y \
-        cmake ninja-build ccache clang-23 git pkg-config \
+    eatmydata apt-get -t experimental install -q -y \
+        cmake ninja-build ccache g++ clang-24 git pkg-config \
         qt6-base-dev qt6-base-private-dev \
         qt6-tools-dev qt6-tools-dev-tools \
         qt6-svg-dev \
@@ -37,7 +39,6 @@ RUN apt-get update && \
         /tmp/qxmpp/*.deb \
         libqca-qt6-dev \
         libotr5-dev \
-        libpurple-dev \
         libtoxcore-dev \
         libhunspell-dev \
         libtag-dev \
@@ -57,9 +58,9 @@ RUN apt-get update && \
         libudev-dev \
         liblastfm6-dev \
         libqtermwidget-dev \
+        # qtermwidget6's CMake target links libutf8proc.so by path, and libqtermwidget-dev forgets to depend on it
         libutf8proc-dev \
         libqscintilla2-qt6-dev \
-    && update-alternatives --install /usr/bin/clang clang /usr/bin/clang-23 100 \
-    && update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-23 100 \
-    && rm -rf /tmp/qxmpp \
+    && update-alternatives --install /usr/bin/clang clang /usr/bin/clang-24 100 \
+    && update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-24 100 \
     && apt-get clean

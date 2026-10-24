@@ -2,11 +2,13 @@ FROM fedora:rawhide AS qxmpp
 COPY packaging/qxmpp /build/packaging/qxmpp
 RUN /build/packaging/qxmpp/build.sh /out
 
+FROM scratch AS packages
+COPY --from=qxmpp /out /
+
 FROM fedora:rawhide
 
-COPY --from=qxmpp /out /tmp/qxmpp
-
-RUN dnf install -y \
+RUN --mount=type=bind,from=qxmpp,source=/out,target=/tmp/qxmpp \
+    dnf install -y \
         cmake ninja-build ccache clang git pkgconfig \
         qt6-qtbase-devel qt6-qtbase-private-devel \
         qt6-qttools-devel \
@@ -29,7 +31,6 @@ RUN dnf install -y \
         /tmp/qxmpp/*.rpm \
         qca-qt6-devel \
         libotr-devel \
-        libpurple-devel \
         toxcore-devel \
         hunspell-devel \
         taglib-devel \
@@ -46,9 +47,7 @@ RUN dnf install -y \
         systemd-devel \
         libnl3-devel \
         liblastfm-qt6-devel \
-        utf8proc-devel \
         qscintilla-qt6-devel \
         qtermwidget-devel \
         qwt-qt6-devel \
-    && rm -rf /tmp/qxmpp \
     && dnf clean all

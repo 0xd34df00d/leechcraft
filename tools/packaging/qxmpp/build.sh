@@ -5,6 +5,11 @@
 #
 # Usage: build.sh <output directory for the packages>
 #
+# The packages to install land in the output directory itself, the debug symbol packages in its debug/
+# subdirectory: an image has no use for them, a repository shipping these packages has.
+# APT_TARGET_RELEASE=<suite> in the environment makes the Debian branch take its packages from that suite, as
+# apt -t does, so that the library gets built against the same stack the image installs.
+#
 # Fails on purpose once the distro itself ships a qxmpp satisfying LeechCraft: at that point the stage
 # calling this script has to go, so the image goes back to testing the distro as it is.
 set -eu
@@ -33,21 +38,27 @@ distro_caught_up()
 case $ID in
 debian)
 	version=$(sed -n '1s/^qxmpp (\([0-9.]*\)-[^)]*).*/\1/p' "$here/debian/changelog")
+	target=${APT_TARGET_RELEASE:+-t $APT_TARGET_RELEASE}
 	apt-get update
-	candidate=$(apt-cache policy libqxmppqt6-dev | sed -n 's/^ *Candidate: //p')
+	candidate=$(apt-cache $target policy libqxmppqt6-dev | sed -n 's/^ *Candidate: //p')
 	case $candidate in
 		''|'(none)') ;;
 		*) dpkg --compare-versions "$candidate" lt "$floor" || distro_caught_up "$candidate" ;;
 	esac
-	apt-get install -y --no-install-recommends build-essential ca-certificates curl
+	apt-get $target install -y --no-install-recommends build-essential ca-certificates curl
 	mkdir -p /build && cd /build
 	curl -fsSL "$(tarball_url "$version")" -o "qxmpp_$version.orig.tar.gz"
 	tar xzf "qxmpp_$version.orig.tar.gz"
 	cd "qxmpp-v$version"
 	cp -r "$here/debian" .
-	apt-get build-dep -y --no-install-recommends ./
-	dpkg-buildpackage -b -us -uc
-	mkdir -p "$out"
+	apt-get $target build-dep -y --no-install-recommends ./
+	dpkg-buildpackage -b -us -uc -jauto
+	mkdir -p "$out/debug"
+	for f in ../*-dbgsym_*.deb; do
+		if [ -e "$f" ]; then
+			mv "$f" "$out/debug"
+		fi
+	done
 	mv ../*.deb "$out"
 	;;
 fedora)
@@ -63,8 +74,13 @@ fedora)
 	curl -fsSL "$(tarball_url "$version")" -o ~/rpmbuild/SOURCES/"qxmpp-v$version.tar.gz"
 	dnf builddep -y "$here/qxmpp.spec"
 	rpmbuild -bb "$here/qxmpp.spec"
-	mkdir -p "$out"
-	find ~/rpmbuild/RPMS -name '*.rpm' ! -name '*-debug*' -exec mv {} "$out" \;
+	mkdir -p "$out/debug"
+	find ~/rpmbuild/RPMS -name '*.rpm' | while read -r f; do
+		case $f in
+			*-debuginfo-*|*-debugsource-*) mv "$f" "$out/debug" ;;
+			*) mv "$f" "$out" ;;
+		esac
+	done
 	;;
 *)
 	echo "no qxmpp packaging for $ID here" >&2

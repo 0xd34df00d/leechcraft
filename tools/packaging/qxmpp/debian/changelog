@@ -1,0 +1,490 @@
+qxmpp (1.17.0-0lc1) unstable; urgency=medium
+
+  * LeechCraft CI build of upstream 1.17.0 on top of Debian's 1.14.1-1
+    packaging, for the CI images while Debian ships an older qxmpp than
+    LeechCraft needs. Bump library sonames to libqxmppqt6-11 and
+    libqxmppomemoqt6-11.
+  * Follow the build options upstream renamed in 1.15: BUILD_TESTING, and
+    WITH_ENCRYPTION (OpenSSL) instead of WITH_QCA; build-depend on libssl-dev
+    instead of libqca-qt6-dev and drop qt6-5compat-dev, no longer used.
+  * Do not build the API documentation; drop libqxmpp-doc.
+
+ -- LeechCraft CI <0xd34df00d@gmail.com>  Fri, 23 Oct 2026 14:26:41 -0500
+
+qxmpp (1.14.1-1) UNRELEASED; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * New upstream release (1.14.1).
+  * Drop Priority: optional, not needed anymore since dpkg 1.22.13.
+  * Bump library sonames to libqxmppqt6-8 and libqxmppomemoqt6-8.
+  * Refresh copyright information.
+
+ -- Debian Qt/KDE Maintainers <debian-qt-kde@lists.debian.org>  Tue, 10 Feb 2026 17:46:06 +0100
+
+qxmpp (1.13.0-1) unstable; urgency=medium
+
+  * Team upload.
+
+  [ Aurélien COUDERC ]
+  * New upstream release (1.13.0).
+  * Update build-deps and deps with the info from cmake.
+  * Drop Rules-Requires-Root: no, not needed anymore since trixie.
+  * Bump Standards-Version to 4.7.3, no change required.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Sun, 11 Jan 2026 16:19:47 +0100
+
+qxmpp (1.12.0-1) unstable; urgency=medium
+
+  * Team upload.
+
+  [ Aurélien COUDERC ]
+  * New upstream release (1.12.0).
+  * Update build-deps and deps with the info from cmake.
+  * Bump library sonames to libqxmppqt6-7 and libqxmppomemoqt6-7.
+  * Review copyright information.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Sat, 06 Dec 2025 00:11:32 +0100
+
+qxmpp (1.10.3-1) unstable; urgency=medium
+
+  * Team upload.
+
+  [ Aurélien COUDERC ]
+  * New upstream release (1.10.3).
+  * Update project homepage.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Sun, 23 Mar 2025 18:48:21 +0100
+
+qxmpp (1.10.1-1) unstable; urgency=medium
+
+  * Team upload.
+
+  [ Aurélien COUDERC ]
+  * New upstream release (1.10.1).
+  * Bump Standards-Version to 4.7.2, no change required.
+  * Remove library file name for no-symbols-control-file lintian
+    override for libqxmppomemoqt6-5 so we don’t need to update it with
+    every new release.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Fri, 14 Mar 2025 22:33:26 +0100
+
+qxmpp (1.9.4-2) unstable; urgency=medium
+
+  * Team upload.
+
+  [ Aurélien COUDERC ]
+  * Reupload source-only.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Fri, 28 Feb 2025 10:42:45 +0100
+
+qxmpp (1.9.4-1) unstable; urgency=medium
+
+  * Team upload.
+
+  [ Aurélien COUDERC ]
+  * New upstream release (1.9.4).
+  * Build against Qt6, update build-deps and deps with the info from cmake.
+  * Adapt packaging to new Qt6 library sonames: libQXmppQt6 and
+    libQXmppOmemoQt6.
+  * Drop libqxmpp-dev transitional dummy package.
+  * Drop obsolete Breaks/Replaces.
+  * Bump Standards-Version to 4.7.0, no change required.
+  * Review copyright information.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Mon, 24 Feb 2025 17:35:01 +0100
+
+qxmpp (1.5.5-0.4) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Rename libraries for 64-bit time_t transition.  Closes: #1062768
+
+ -- Benjamin Drung <bdrung@debian.org>  Thu, 29 Feb 2024 22:41:32 +0000
+
+qxmpp (1.5.5-0.3) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Upload to unstable.
+
+ -- Pino Toscano <pino@debian.org>  Fri, 17 Nov 2023 09:36:15 +0100
+
+qxmpp (1.5.5-0.2~exp1) experimental; urgency=medium
+
+  * Non-maintainer upload.
+  * Pass -DBUILD_EXAMPLES=OFF to cmake to disable the build of the examples,
+    as they are not used.
+  * Enable the OMEMO support, needed by Kaidan:
+    - pass -DBUILD_OMEMO=ON, and -DWITH_QCA=ON to cmake
+    - add the libomemo-c-dev, and libqca-qt5-2-dev build dependencies
+    - add a new library package libqxmppomemoqt5-4
+    - install the new files in libqxmppqt5-dev
+  * Make the .install files for library packages more precise, to avoid
+    unexpected SONAME bumps.
+  * Explicitly add the pkg-config build dependency.
+  * Add libqxmpp-dev back as transitional package for libqxmppqt5-dev.
+  * Add proper breaks/replaces in libqxmppqt5-dev for the renaming from
+    libqxmpp-dev.
+
+ -- Pino Toscano <pino@debian.org>  Sun, 12 Nov 2023 09:14:07 +0100
+
+qxmpp (1.5.5-0.1~exp1) experimental; urgency=medium
+
+  * Non-maintainer upload.
+  * New upstream release 1.5.5. (See #1039055)
+    + Bump SONAME from 3 to 4.
+  * debian/*: Rename library package:
+    + libqxmpp-dev => libqxmppqt5-dev
+    + libqxmpp3 => libqxmppqt5-4
+  * debian/copyright: update license information.
+
+ -- Boyuan Yang <byang@debian.org>  Sat, 28 Oct 2023 09:03:57 -0400
+
+qxmpp (1.4.0-2) unstable; urgency=medium
+
+  * Move to unstable: no changes required.
+  * Update debian/watch.
+
+ -- Boris Pek <tehnick@debian.org>  Thu, 26 Aug 2021 08:01:28 +0300
+
+qxmpp (1.4.0-1) experimental; urgency=medium
+
+  * New upstream release.
+  * Update years in debian/copyright.
+
+ -- Boris Pek <tehnick@debian.org>  Mon, 15 Mar 2021 21:56:17 +0300
+
+qxmpp (1.3.2-2) unstable; urgency=medium
+
+  * Add dependency from libgstreamer1.0-dev to libqxmpp-dev package.
+
+ -- Boris Pek <tehnick@debian.org>  Sun, 10 Jan 2021 01:24:09 +0300
+
+qxmpp (1.3.2-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Only bug fixes, no changes in ABI.
+
+ -- Boris Pek <tehnick@debian.org>  Sun, 10 Jan 2021 00:28:28 +0300
+
+qxmpp (1.3.1-2) unstable; urgency=medium
+
+  * Move to unstable: no changes required.
+
+ -- Boris Pek <tehnick@debian.org>  Wed, 30 Dec 2020 02:09:19 +0300
+
+qxmpp (1.3.1-1) experimental; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * Add salsa-ci.yml pipeline for GitLab CI/CD on Salsa.
+
+  [ Boris Pek ]
+  * New upstream release.
+  * Update debian/control:
+    - bump Standards-Version to 4.5.1 (was 4.5.0): no changes required
+    - bump debhelper-compat version to 13 (was 12)
+    - remove build dependencies from libopus-dev, libspeex-dev, libtheora-dev
+      and libvpx-dev
+    - add build dependency from libgstreamer1.0-dev
+    - add extra dependencies from gstreamer1.0-plugins-base,
+      gstreamer1.0-plugins-good and gstreamer1.0-plugins-ugly to binary package
+      libqxmpp3
+  * Update debian/rules:
+    - update configuration options after switching library to gstreamer usage
+    - remove DEB_LDFLAGS_MAINT_APPEND variable with -Wl,--as-needed flag
+  * Bump debian/watch version to 4: no changes required.
+  * Update debian/copyright.
+
+ -- Boris Pek <tehnick@debian.org>  Sat, 12 Dec 2020 03:57:50 +0300
+
+qxmpp (1.2.0-1) experimental; urgency=medium
+
+  * New upstream release.
+  * Rename libqxmpp2 to libqxmpp3 after bumping of SOVERSION.
+  * Update debian/control:
+    - bump Standards-Version to 4.5.0 (was 4.4.1): no changes required
+    - package libqxmpp3 replaces old libqxmpp2 package
+  * Update debian/copyright.
+
+ -- Boris Pek <tehnick@debian.org>  Mon, 24 Feb 2020 20:45:25 +0300
+
+qxmpp (1.1.0-1) experimental; urgency=medium
+
+  * New upstream release.
+  * Delete all patches: already in upstream.
+  * Bump Standards-Version to 4.4.1 (was 4.3.0): no changes required.
+  * Rename libqxmpp1 to libqxmpp2 after bumping of SOVERSION.
+  * Package libqxmpp2 now replaces libqxmpp0 and libqxmpp1 packages.
+  * Update debian/copyright and debian/upstream/metadata.
+  * Update debian/control:
+    - add "Rules-Requires-Root: no"
+    - replace build dependency from debhelper (>= 12~) to
+      debhelper-compat (= 12)
+  * Delete debian/compat.
+
+ -- Boris Pek <tehnick@debian.org>  Thu, 21 Nov 2019 00:55:29 +0300
+
+qxmpp (1.0.0-5) unstable; urgency=medium
+
+  * Add patch fix-segfault-on-connection-error:
+    fixes potential SEGFAULT on connection error.
+
+ -- Boris Pek <tehnick@debian.org>  Thu, 21 Nov 2019 00:18:31 +0300
+
+qxmpp (1.0.0-4) unstable; urgency=medium
+
+  * Update debian/control:
+    - package libqxmpp1 now Breaks and Replaces package libqxmpp0
+      (Closes: #919788)
+    - remove Pre-Depends field from package libqxmpp1
+
+ -- Boris Pek <tehnick@debian.org>  Sat, 19 Jan 2019 21:56:20 +0300
+
+qxmpp (1.0.0-3) unstable; urgency=medium
+
+  * Move to unstable: no changes required.
+  * Add debian/libqxmpp1.lintian-overrides: notice that there is no stable ABI
+    in this library, only stable API is available.
+
+ -- Boris Pek <tehnick@debian.org>  Sat, 19 Jan 2019 00:12:57 +0300
+
+qxmpp (1.0.0-2) experimental; urgency=medium
+
+  * Add patch bump-SONAME. (Closes: #919487)
+  * Rename package libqxmpp0 to libqxmpp1.
+  * Update debian/libqxmpp-dev.install: add cmake files.
+
+ -- Boris Pek <tehnick@debian.org>  Fri, 18 Jan 2019 01:11:28 +0300
+
+qxmpp (1.0.0-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Delete all patches.
+  * Bump debhelper version to 12~ (was 9); update debian/compat.
+  * Update debian/control:
+    - set Debian XMPP Maintainers as Maintainer
+    - move Jeremy Lainé to Uploaders
+    - add build dependency from cmake
+    - bump Standards-Version to 4.3.0 (was 3.9.6): see changes below
+    - update Vcs-* fields: moved from Alioth to Salsa
+    - delete package libqxmpp0-dbg: see AutomaticDebugPackages initiative
+      (after updating of debian/compat)
+  * Rewrite debian/rules:
+    - switch to cmake build system
+      (after changes in upstream)
+    - enable all hardening flags
+    - delete get-orig-source section
+      (after bumping of Standards-Version)
+    - delete override_dh_strip section
+      (after deleting of libqxmpp0-dbg package)
+    - delete --parallel and --list-missing options from dh
+      (after updating of debian/compat)
+  * Add debian/source/lintian-overrides.
+  * Add debian/libqxmpp-doc.examples.
+  * Add debian/upstream/metadata.
+  * Cosmetic changes in debian/watch.
+  * Update debian/libqxmpp-doc.lintian-overrides.
+  * Update debian/copyright.
+
+ -- Boris Pek <tehnick@debian.org>  Tue, 08 Jan 2019 20:56:22 +0300
+
+qxmpp (0.9.3-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Jeremy Lainé <jeremy.laine@m4x.org>  Thu, 03 Dec 2015 17:05:47 +0100
+
+qxmpp (0.9.2-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Only invoke dh_doxygen for arch-independent builds.
+
+ -- Jeremy Lainé <jeremy.laine@m4x.org>  Wed, 02 Sep 2015 16:52:05 +0200
+
+qxmpp (0.9.1-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Build against Qt5.
+  * Enable vp8 support.
+  * Disable tests which require a network connection.
+  * Bump Standards-Version to 3.9.6 (no changes required).
+  * Invoke dh_doxygen to clean up unneccessary doxygen files.
+
+ -- Jeremy Lainé <jeremy.laine@m4x.org>  Sun, 30 Aug 2015 14:37:58 +0200
+
+qxmpp (0.8.2-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Enable Opus audio codec.
+  * Put doxygen and graphviz in Build-Depends.
+
+ -- Jeremy Lainé <jeremy.laine@m4x.org>  Wed, 07 Jan 2015 15:53:41 +0100
+
+qxmpp (0.8.0-1) unstable; urgency=medium
+
+  [ Jeremy Lainé ]
+  * New upstream release.
+  * Bump Standards-Version to 3.9.5 (was 3.9.3): no changes required.
+
+  [ Boris Pek ]
+  * Update debian/watch: tarballs are stored at another location now.
+  * Update debian/control:
+    - update using wrap-and-sort tool
+    - update Homepage field
+    - add doxygen to Build-Depends-Indep
+  * Update debian/rules:
+    - update get-orig-source section
+    - set option --list-missing for dh
+    - add option -Wl,--as-needed to LDFLAGS
+    - generate documentation during build (Doxygen is used)
+  * Update years in debian/copyright.
+  * Add debian/libqxmpp-doc.lintian-overrides.
+  * Delete debian/libqxmpp-doc.links.
+  * Delete dependency on libjs-jquery from libqxmpp-doc package.
+  * Fix lintian note vcs-field-not-canonical.
+
+ -- Boris Pek <tehnick@debian.org>  Fri, 28 Mar 2014 17:25:02 +0400
+
+qxmpp (0.7.6-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Jeremy Lainé <jeremy.laine@m4x.org>  Tue, 12 Mar 2013 09:36:43 +0100
+
+qxmpp (0.7.5-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Boris Pek <tehnick-8@mail.ru>  Sun, 27 Jan 2013 19:44:14 +0200
+
+qxmpp (0.7.4-1) unstable; urgency=low
+
+  * New upstream release.
+  * Remove obsolete DM-Upload-Allowed flag.
+
+ -- Jeremy Lainé <jeremy.laine@m4x.org>  Mon, 01 Oct 2012 15:24:00 +0200
+
+qxmpp (0.7.3-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Jeremy Lainé <jeremy.laine@m4x.org>  Fri, 07 Sep 2012 12:00:46 +0200
+
+qxmpp (0.7.2-1) unstable; urgency=low
+
+  [ Jeremy Lainé ]
+  * New upstream release.
+  * Set DM-Upload-Allowed: yes to allow Boris Pek to perform uploads.
+
+  [ Boris Pek ]
+  * debian/control: update short description of package libqxmpp0.
+  * debian/rules: override_dh_install is not necessary.
+  * debian/libqxmpp-doc.links: fix lintian notes about duplicate files.
+
+ -- Jeremy Lainé <jeremy.laine@m4x.org>  Thu, 06 Sep 2012 12:11:42 +0200
+
+qxmpp (0.7.1-2) unstable; urgency=low
+
+  [ Boris Pek ]
+  * Update Vcs-* fields: repository was moved from Svn to Git.
+  * Fix get-orig-source section in according with Debian Policy §4.9.
+
+ -- Jeremy Lainé <jeremy.laine@m4x.org>  Mon, 03 Sep 2012 20:28:14 +0200
+
+qxmpp (0.7.1-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Jeremy Lainé <jeremy.laine@m4x.org>  Mon, 03 Sep 2012 16:59:22 +0200
+
+qxmpp (0.6.3-2) unstable; urgency=low
+
+  [ Jeremy Lainé ]
+  * Provide debugging symbols in libqxmpp0-dbg.
+  * Add Boris Pek to uploaders.
+
+  [ Boris Pek ]
+  * Add debian/libqxmpp-doc.doc-base.
+  * Add debian/watch.
+  * Remove unnecessary "Section: libs" from package libqxmpp0.
+  * Update debian/rules:
+    - enable parallel building
+    - add get-orig-source target
+  * Rewrite debian/copyright according to copyright format 1.0.
+
+ -- Jeremy Lainé <jeremy.laine@m4x.org>  Fri, 24 Aug 2012 15:26:17 +0200
+
+qxmpp (0.6.3-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Jeremy Lainé <jeremy.laine@m4x.org>  Tue, 24 Jul 2012 19:18:28 +0200
+
+qxmpp (0.6.2-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Jeremy Lainé <jeremy.laine@m4x.org>  Sun, 22 Jul 2012 00:25:39 +0200
+
+qxmpp (0.5.0-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Jeremy Lainé <jeremy.laine@m4x.org>  Wed, 18 Jul 2012 07:57:07 +0200
+
+qxmpp (0.4.92-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Jeremy Lainé <jeremy.laine@m4x.org>  Thu, 07 Jun 2012 10:12:38 +0200
+
+qxmpp (0.4.91-2) unstable; urgency=low
+
+  * Add support for multi-arch.
+
+ -- Jeremy Lainé <jeremy.laine@m4x.org>  Thu, 31 May 2012 22:28:59 +0200
+
+qxmpp (0.4.91-1) experimental; urgency=low
+
+  * New upstream release.
+  * Build as a shared library.
+  * Enable speex and theora support.
+  * Set debian/compat to 9.
+
+ -- Jeremy Lainé <jeremy.laine@m4x.org>  Thu, 31 May 2012 09:40:44 +0200
+
+qxmpp (0.4.0-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Jeremy Lainé <jeremy.laine@m4x.org>  Thu, 12 Apr 2012 09:32:41 +0200
+
+qxmpp (0.3.92-1) experimental; urgency=low
+
+  * New upstream release.
+  * Switch from cdbs to debhelper 7.
+
+ -- Jeremy Lainé <jeremy.laine@m4x.org>  Thu, 23 Feb 2012 21:58:36 +0100
+
+qxmpp (0.3.0-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Jeremy Lainé <jeremy.laine@m4x.org>  Mon, 07 Mar 2011 08:28:35 +0100
+
+qxmpp (0.2.0-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Jeremy Lainé <jeremy.laine@m4x.org>  Sun, 22 Aug 2010 15:39:14 +0200
+
+qxmpp (0.1.93-1) unstable; urgency=low
+
+  * New upstream release.
+  * Initial upload to unstable.
+
+ -- Jeremy Lainé <jeremy.laine@m4x.org>  Tue, 17 Aug 2010 16:04:43 +0200
+
+qxmpp (0.1.91-1) experimental; urgency=low
+
+  * Initial upload to Debian (Closes: #592413).
+
+ -- Jeremy Lainé <jeremy.laine@m4x.org>  Wed, 11 Aug 2010 10:55:24 +0200

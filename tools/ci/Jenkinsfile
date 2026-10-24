@@ -4,7 +4,8 @@
 // share this file; the PROFILE parameter picks the cells to build:
 //   quick   the primary distro with the primary compiler; triggers the DOWNSTREAM job when green
 //   full    every distro under tools/docker/base with every compiler in COMPILERS that the distro's image
-//           ships in at least the MINIMUM version, one cell at a time
+//           ships in at least the MINIMUM version, using a libstdc++ at least as new as the gcc floor, one
+//           cell at a time
 // A cell builds the checkout with tools/docker/runci.sh inside the distro's image, scans the compiler output
 // with Warnings NG and publishes the result. The full profile also publishes one result aggregated over all cells.
 // Every build, in every job, takes the same lock around its compile, so only one build runs at a time and
@@ -26,11 +27,12 @@ String cellName(Map cell) {
     cell.tidy ? "tidy-${cell.distro}" : "${cell.distro}-${cell.compiler}"
 }
 
-// Major version of the cell's compiler inside the distro's image, 0 when the image has none. A failure of
-// the probe itself fails the build: no image or no docker is a broken setup, not a missing compiler.
-int compilerMajor(Map cell) {
-    String out = sh(returnStdout: true, label: "probe ${cellName(cell)}",
-                    script: "tools/docker/runci.sh ${cell.distro} ${cell.compiler} version").trim()
+// Major version of the cell's compiler inside the distro's image (`version`), or the release of the libstdc++ it
+// uses (`stdlib`); 0 when the image has none. A failure of the probe itself fails the build: no image or no docker
+// is a broken setup, not a missing compiler.
+int probe(Map cell, String what) {
+    String out = sh(returnStdout: true, label: "probe ${cellName(cell)} ${what}",
+                    script: "tools/docker/runci.sh ${cell.distro} ${cell.compiler} ${what}").trim()
     out.isInteger() ? Integer.parseInt(out) : 0
 }
 
@@ -45,11 +47,21 @@ Map planCells(List<String> excluded) {
                 skipped << "${name} by SKIP_CELLS"
                 continue
             }
-            int have = compilerMajor(cell)
-            if (have == 0)
+            int have = probe(cell, 'version')
+            if (have == 0) {
                 skipped << "${name}: no ${compiler} in the image"
-            else if (have < MINIMUM[compiler])
+                continue
+            }
+            if (have < MINIMUM[compiler]) {
                 skipped << "${name}: ${compiler} ${have} is older than ${MINIMUM[compiler]}"
+                continue
+            }
+            // clang uses the system's libstdc++, whose C++26 coverage is what the gcc floor really states
+            int lib = compiler == 'gcc' ? have : probe(cell, 'stdlib')
+            if (lib == 0)
+                skipped << "${name}: no libstdc++ behind ${compiler}"
+            else if (lib < MINIMUM.gcc)
+                skipped << "${name}: libstdc++ ${lib} is older than ${MINIMUM.gcc}"
             else
                 cells << cell
         }

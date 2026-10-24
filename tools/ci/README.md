@@ -30,7 +30,9 @@ failure and on every status change, the full job on status changes only.
 - A compiler: add it to `COMPILERS` in the Jenkinsfile, with its floor in `MINIMUM`. Cells appear by themselves
   on the distros whose image ships a new enough version, which `runci.sh <distro> <compiler> version` reports.
 - The floors: `MINIMUM` says which compiler versions build the project. They change when the code starts using
-  a language feature that older compilers lack, and nowhere else.
+  a language feature that older compilers lack, and nowhere else. The gcc floor doubles as the floor for the
+  libstdc++ a clang cell uses, which `runci.sh <distro> clang stdlib` reports: clang brings no standard library
+  of its own, so a distro whose gcc is too old loses its clang cell as well.
 - clang-tidy: add a cell with `tidy: true` to the full profile. The images need `clang-tidy`; the rules come
   from the `.clang-tidy` file in the repository.
 - Leaving a cell out: for one run, set `SKIP_CELLS` in Build with Parameters; for good, set the `skip` default
@@ -49,14 +51,22 @@ failure and on every status change, the full job on status changes only.
   only exists inside the container.
 - The compiler cache is written by the build containers as root, so wiping it is `rm -rf /var/cache/ci-ccache/*`
   as root while no build runs; the next full build refills it.
+- `debian_experimental` installs from experimental wherever that suite has a package: `-t experimental` on the
+  install step, `clang-24`, and `APT_TARGET_RELEASE=experimental` for the qxmpp stage so that the library is built
+  against the same stack. Without `-t`, apt never picks experimental, since the suite is pinned below everything.
+  The dist-upgrade stays plain so that apt chooses the experimental versions with the whole package set in view;
+  a package that cannot follow makes the image build fail, which is the cue for a `package/unstable` exception.
 
 ## qxmpp in the Debian and Fedora images
 
 Debian unstable and Fedora rawhide ship a qxmpp older than Xoox needs, so their images build their own from
 `tools/packaging/qxmpp`: Debian's and Fedora's own packaging of qxmpp, bumped. The first stage of each of those
 Dockerfiles runs `build.sh`, which produces .deb or .rpm files; the final stage installs them in place of the
-distro's development package. The package manager thus knows about the library, and a LeechCraft package built
-in such an image depends on exactly these packages, which a repository of ours can ship next to it one day.
+distro's development package, from a mount of the first stage's output, so nothing of the packaging lands in
+the image. The package manager thus knows about the library, and a LeechCraft package built in such an image
+depends on exactly these packages, which a repository of ours can ship next to it one day. The debug symbol
+packages are built as well and kept in a `debug/` subdirectory, for that repository rather than for the image;
+`docker build --target packages --output type=local,dest=<dir>` exports everything the stage produced.
 
 `build.sh` fails on purpose once the distro's own qxmpp satisfies the floor it holds: the image build goes red and
 mails, and the fix is to delete the qxmpp stage from that Dockerfile and reinstate the distro's development
@@ -76,8 +86,10 @@ and `tools/.dockerignore` limits what gets sent to `docker` and `packaging`. Its
     echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin
     docker push leechcraft/ci_${distro}:latest
     docker image prune -f
+    docker builder prune -f
 
-`--pull` refreshes the base image, `prune` drops what the previous build left untagged.
+`--pull` refreshes the base image; the two `prune`s drop what the previous build left untagged and the build
+cache that even a `--no-cache` build writes.
 
 ## Bootstrapping the seed
 

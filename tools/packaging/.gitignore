@@ -1,0 +1,2 @@
+# Debian changelogs are sources here, whatever the root .gitignore says
+!changelog

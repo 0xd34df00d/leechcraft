@@ -40,7 +40,6 @@ RUN pacman -Syu --noconfirm && \
         lm_sensors \
         systemd \
         libnl \
-        libutf8proc \
         qscintilla-qt6 \
         qtermwidget \
     && pacman -Scc --noconfirm
