@@ -27,6 +27,7 @@
 #include "sessionstats.h"
 #include "ltutils.h"
 #include "torrentinfo.h"
+#include "types.h"
 
 namespace LC::BitTorrent
 {
@@ -199,22 +200,13 @@ namespace LC::BitTorrent
 		{
 			auto model = std::make_unique<QStandardItemModel> ();
 
-			model->setHorizontalHeaderLabels ({ QObject::tr ("URL"),  QObject::tr ("Standard") });
+			model->setHorizontalHeaderLabels ({ QObject::tr ("URL") });
 
 			if (!handle.is_valid ())
 				return model;
 
 			for (const auto& url : handle.url_seeds ())
-				model->appendRow ({
-						new QStandardItem (QString::fromStdString (url)),
-						new QStandardItem ("BEP 19")
-				});
-
-			for (const auto& url : handle.http_seeds ())
-				model->appendRow ({
-						new QStandardItem (QString::fromStdString (url)),
-						new QStandardItem ("BEP 17")
-				});
+				model->appendRow (new QStandardItem (QString::fromStdString (url)));
 
 			return model;
 		}
@@ -464,36 +456,13 @@ namespace LC::BitTorrent
 		if (url.isEmpty () || !QUrl { ws.GetURL () }.isValid ())
 			return;
 
-		const auto& handle = GetTorrentHandle (Index_);
-		switch (ws.GetType ())
-		{
-		case WebSeedType::Bep17:
-			handle.add_http_seed (url.toStdString ());
-			break;
-		case WebSeedType::Bep19:
-			handle.add_url_seed (url.toStdString ());
-			break;
-		}
+		GetTorrentHandle (Index_).add_url_seed (url.toStdString ());
 	}
 
 	void TorrentTabWidget::RemoveWebSeed ()
 	{
-		auto index = Ui_.WebSeedsView_->currentIndex ();
-		auto url = index.siblingAtColumn (0).data ().toString ().toStdString ();
-		auto type = index.siblingAtColumn (1).data ().toString () == "BEP 19"_ql ?
-				WebSeedType::Bep19 :
-				WebSeedType::Bep17;
-
-		const auto& handle = GetTorrentHandle (Index_);
-		switch (type)
-		{
-		case WebSeedType::Bep17:
-			handle.remove_http_seed (url);
-			break;
-		case WebSeedType::Bep19:
-			handle.remove_url_seed (url);
-			break;
-		}
+		const auto& url = Ui_.WebSeedsView_->currentIndex ().data ().toString ();
+		GetTorrentHandle (Index_).remove_url_seed (url.toStdString ());
 	}
 
 	void TorrentTabWidget::SetTabWidgetSettings ()

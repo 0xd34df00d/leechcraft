@@ -18,12 +18,6 @@ namespace LC::BitTorrent
 		Paused
 	};
 
-	enum class WebSeedType
-	{
-		Bep17,
-		Bep19
-	};
-
 	enum TorrentState
 	{
 		TSIdle,

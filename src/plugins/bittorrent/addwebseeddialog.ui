@@ -29,23 +29,6 @@
     </layout>
    </item>
    <item>
-    <widget class="QRadioButton" name="BEP17_">
-     <property name="text">
-      <string>The server is smart (BEP 17)</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QRadioButton" name="BEP19_">
-     <property name="text">
-      <string>The client is smart (BEP 19)</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>

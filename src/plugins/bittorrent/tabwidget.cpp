@@ -18,6 +18,7 @@
 #include "sessionstats.h"
 #include "ltutils.h"
 #include "torrentinfo.h"
+#include "types.h"
 
 namespace LC::BitTorrent
 {

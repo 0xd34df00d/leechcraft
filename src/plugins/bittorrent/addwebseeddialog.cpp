@@ -20,9 +20,4 @@ namespace LC::BitTorrent
 	{
 		return Ui_.URL_->text ();
 	}
-
-	WebSeedType AddWebSeedDialog::GetType () const
-	{
-		return Ui_.BEP19_->isChecked () ? WebSeedType::Bep19 : WebSeedType::Bep17;
-	}
 }
