@@ -12,6 +12,7 @@
 #include <libtorrent/peer_info.hpp>
 #include <libtorrent/torrent_handle.hpp>
 #include <libtorrent/torrent_status.hpp>
+#include <libtorrent/version.hpp>
 #include <util/models/modelsanitizer.h>
 #include <util/util.h>
 #include <util/sys/paths.h>
@@ -143,6 +144,18 @@ namespace LC::BitTorrent
 		return Peers_.size ();
 	}
 
+	namespace
+	{
+		libtorrent::tcp::endpoint GetEndpoint (const libtorrent::peer_info& pi)
+		{
+#if LIBTORRENT_VERSION_NUM >= 20100
+			return pi.remote_endpoint ();
+#else
+			return pi.ip;
+#endif
+		}
+	}
+
 	void PeersModel::Update ()
 	{
 		std::vector<libtorrent::peer_info> peerInfos;
@@ -168,11 +181,12 @@ namespace LC::BitTorrent
 			const int interesting = std::ranges::count_if (ourMissing,
 					[&pi] (libtorrent::piece_index_t idx) { return idx < pi.pieces.end_index () && pi.pieces [idx]; });
 
+			const auto& address = GetEndpoint (pi).address ();
 			peers.push_back ({
-					QString::fromStdString (pi.ip.address ().to_string ()),
+					QString::fromStdString (address.to_string ()),
 					QString::fromUtf8 (pi.client.c_str ()),
 					interesting,
-					geoIP.GetCountry (pi.ip.address ()).value_or (QString {}),
+					geoIP.GetCountry (address).value_or (QString {}),
 					std::make_shared<libtorrent::peer_info> (pi)
 				});
 		}
