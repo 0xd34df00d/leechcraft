@@ -8,7 +8,7 @@
 
 #include "packagesmodel.h"
 #include <QIcon>
-#include <QApplication>
+#include <QtDebug>
 #include <util/models/modelsanitizer.h>
 #include <util/util.h>
 #include "core.h"
@@ -20,23 +20,20 @@ namespace LC
 namespace LackMan
 {
 	PackagesModel::PackagesModel (QObject *parent)
-	: QAbstractItemModel (parent)
+	: QAbstractTableModel { parent }
 	{
 		Util::InstallModelSanitizer (*this);
 	}
 
-	int PackagesModel::columnCount (const QModelIndex&) const
+	int PackagesModel::columnCount (const QModelIndex& parent) const
 	{
-		return Columns::MaxColumn;
+		return parent.isValid () ? 0 : Columns::MaxColumn;
 	}
 
 	QVariant PackagesModel::headerData (int section, Qt::Orientation orientation, int role) const
 	{
-		if (orientation == Qt::Vertical)
-			return QVariant ();
-
-		if (role != Qt::DisplayRole)
-			return QVariant ();
+		if (orientation == Qt::Vertical || role != Qt::DisplayRole)
+			return {};
 
 		switch (section)
 		{
@@ -53,12 +50,15 @@ namespace LackMan
 		case Columns::Size:
 			return tr ("Size");
 		default:
-			return "unknown";
+			return {};
 		}
 	}
 
 	QVariant PackagesModel::data (const QModelIndex& index, int role) const
 	{
+		if (!index.isValid ())
+			return {};
+
 		const auto& lpi = Packages_.at (index.row ());
 
 		const int col = index.column ();
@@ -144,38 +144,35 @@ namespace LackMan
 
 	bool PackagesModel::setData (const QModelIndex& index, const QVariant& value, int role)
 	{
-		if (role != Qt::CheckStateRole)
+		if (!index.isValid () || role != Qt::CheckStateRole)
 			return false;
 
 		const auto& lpi = Packages_.at (index.row ());
-
-		const Qt::CheckState state = static_cast<Qt::CheckState> (value.toInt ());
+		const bool checked = value.value<Qt::CheckState> () == Qt::Checked;
 		switch (index.column ())
 		{
 		case Columns::Inst:
-		{
-			const bool isNewState = (state == Qt::Checked && !lpi.IsInstalled_) ||
-					(state == Qt::Unchecked && lpi.IsInstalled_);
-			Core::Instance ().GetPendingManager ()->
-					ToggleInstallRemove (lpi.PackageID_, isNewState, lpi.IsInstalled_);
-			emit dataChanged (index, index);
-			return true;
-		}
+			Core::Instance ().GetPendingManager ()->ToggleInstallRemove (lpi.PackageID_, checked != lpi.IsInstalled_, lpi.IsInstalled_);
+			break;
 		case Columns::Upd:
-			Core::Instance ().GetPendingManager ()->ToggleUpdate (lpi.PackageID_, state == Qt::Checked);
-			emit dataChanged (index, index);
-			return true;
+			if (!lpi.HasNewVersion_)
+				return false;
+			Core::Instance ().GetPendingManager ()->ToggleUpdate (lpi.PackageID_, checked);
+			break;
 		default:
 			return false;
 		}
+
+		emit dataChanged (index, index, { Qt::CheckStateRole });
+		return true;
 	}
 
 	Qt::ItemFlags PackagesModel::flags (const QModelIndex& index) const
 	{
+		auto flags = QAbstractTableModel::flags (index);
 		if (!index.isValid ())
-			return {};
+			return flags;
 
-		auto flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 		const auto& lpi = Packages_.at (index.row ());
 		switch (index.column ())
 		{
@@ -188,19 +185,6 @@ namespace LackMan
 			break;
 		}
 		return flags;
-	}
-
-	QModelIndex PackagesModel::index (int row, int column, const QModelIndex& parent) const
-	{
-		if (!hasIndex (row, column, parent))
-			return QModelIndex ();
-
-		return createIndex (row, column);
-	}
-
-	QModelIndex PackagesModel::parent (const QModelIndex&) const
-	{
-		return QModelIndex ();
 	}
 
 	int PackagesModel::rowCount (const QModelIndex& parent) const

@@ -8,14 +8,14 @@
 
 #pragma once
 
-#include <QAbstractItemModel>
+#include <QAbstractTableModel>
 #include "repoinfo.h"
 
 namespace LC
 {
 namespace LackMan
 {
-	class PackagesModel : public QAbstractItemModel
+	class PackagesModel : public QAbstractTableModel
 	{
 		Q_OBJECT
 
@@ -46,16 +46,15 @@ namespace LackMan
 			Size,
 			MaxColumn
 		};
-		PackagesModel (QObject* = 0);
 
-		int columnCount (const QModelIndex& = QModelIndex ()) const;
-		QVariant headerData (int, Qt::Orientation, int) const;
-		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
-		bool setData (const QModelIndex&, const QVariant&, int);
-		Qt::ItemFlags flags (const QModelIndex&) const;
-		QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
-		QModelIndex parent (const QModelIndex&) const;
-		int rowCount (const QModelIndex& = QModelIndex ()) const;
+		explicit PackagesModel (QObject* = nullptr);
+
+		int columnCount (const QModelIndex& = {}) const override;
+		QVariant headerData (int, Qt::Orientation, int) const override;
+		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;
+		bool setData (const QModelIndex&, const QVariant&, int) override;
+		Qt::ItemFlags flags (const QModelIndex&) const override;
+		int rowCount (const QModelIndex& = {}) const override;
 
 		void AddRow (const ListPackageInfo&);
 		void UpdateRow (const ListPackageInfo&);
