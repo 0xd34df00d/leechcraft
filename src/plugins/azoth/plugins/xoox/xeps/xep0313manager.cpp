@@ -172,7 +172,7 @@ namespace Xoox
 		const auto& ourNick = Conn_.GetAccount ()->GetSettings ()->GetNick ();
 		const auto jidEntry = Conn_.GetCLEntry (jid);
 		const auto& otherNick = jidEntry ?
-				qobject_cast<ICLEntry*> (jidEntry)->GetHumanReadableID () :
+				qobject_cast<ICLEntry*> (jidEntry)->GetEntryName () :
 				jid;
 		for (auto& message : messages)
 			message.Nick_ = message.Dir_ == IMessage::Direction::In ?
