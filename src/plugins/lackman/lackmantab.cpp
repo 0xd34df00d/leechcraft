@@ -372,20 +372,10 @@ namespace LackMan
 				Qt::CheckStateRole);
 	}
 
-	void LackManTab::selectAllForInstall ()
+	void LackManTab::MarkVisibleForInstall (LackManUtil::MarkAction action)
 	{
-		const auto model = Ui_.PackagesTree_->model ();
-		for (auto i = 0, rc = model->rowCount (); i < rc; ++i)
-			model->setData (model->index (i, PackagesModel::Columns::Inst),
-					Qt::Checked, Qt::CheckStateRole);
-	}
-
-	void LackManTab::selectNoneForInstall ()
-	{
-		const auto model = Ui_.PackagesTree_->model ();
-		for (auto i = 0, rc = model->rowCount (); i < rc; ++i)
-			model->setData (model->index (i, PackagesModel::Columns::Inst),
-					Qt::Unchecked, Qt::CheckStateRole);
+		LackManUtil::ReportMarkingErrors (LackManUtil::MarkAllForInstall (*Ui_.PackagesTree_->model (),
+				*Core::Instance ().GetPendingManager (), action));
 	}
 
 	void LackManTab::on_PackagesTree__customContextMenuRequested (const QPoint& point)
@@ -422,8 +412,8 @@ namespace LackMan
 			menu.addSeparator ();
 		}
 
-		menu.addAction (tr ("Mark all for installation"), this, SLOT (selectAllForInstall ()));
-		menu.addAction (tr ("Unmark all for installation"), this, SLOT (selectNoneForInstall ()));
+		menu.addAction (tr ("Mark all for installation"), this, [this] { MarkVisibleForInstall (LackManUtil::MarkAction::Mark); });
+		menu.addAction (tr ("Unmark all for installation"), this, [this] { MarkVisibleForInstall (LackManUtil::MarkAction::Unmark); });
 
 		menu.exec (Ui_.PackagesTree_->viewport ()->mapToGlobal (point));
 	}

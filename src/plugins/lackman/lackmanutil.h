@@ -27,7 +27,14 @@ namespace LackManUtil
 
 	InstalledDependencyInfoList GetSystemInstalledPackages (const QString& defVersion);
 
+	enum class MarkAction
+	{
+		Unmark,
+		Mark
+	};
+
 	QList<MarkingError_t> MarkAllForUpgrade (const QAbstractItemModel& packages, PendingManager&);
+	QList<MarkingError_t> MarkAllForInstall (const QAbstractItemModel& packages, PendingManager&, MarkAction);
 	void ReportMarkingErrors (const QList<MarkingError_t>&);
 }
 }

@@ -152,6 +152,20 @@ namespace LackManUtil
 				});
 	}
 
+	QList<MarkingError_t> MarkAllForInstall (const QAbstractItemModel& packages, PendingManager& pm, MarkAction action)
+	{
+		const bool mark = action == MarkAction::Mark;
+		const auto& pending = pm.GetPendingInstall ();
+		return CollectMarkingErrors (packages,
+				[&] (const QModelIndex& idx) -> std::optional<MarkingError_t>
+				{
+					const auto id = idx.data (PackagesModel::PMRPackageID).toInt ();
+					if (idx.data (PackagesModel::PMRInstalled).toBool () || pending.contains (id) == mark)
+						return {};
+					return pm.ToggleInstallRemove (id, mark, false).MaybeLeft ();
+				});
+	}
+
 	void ReportMarkingErrors (const QList<MarkingError_t>& errors)
 	{
 		if (errors.isEmpty ())

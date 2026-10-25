@@ -27,6 +27,11 @@ namespace LackMan
 	class TypeFilterProxyModel;
 	class StringFilterModel;
 
+	namespace LackManUtil
+	{
+		enum class MarkAction;
+	}
+
 	class LackManTab : public QWidget
 					 , public ITabWidget
 					 , public IRecoverableTab
@@ -67,6 +72,8 @@ namespace LackMan
 	private:
 		void BuildPackageTreeShortcuts ();
 		void BuildActions ();
+
+		void MarkVisibleForInstall (LackManUtil::MarkAction);
 	private slots:
 		void navigateUp ();
 		void navigateDown ();
@@ -78,9 +85,6 @@ namespace LackMan
 
 		void toggleInstall ();
 		void toggleUpgrade ();
-		void selectAllForInstall ();
-		void selectNoneForInstall ();
-
 		void on_PackagesTree__customContextMenuRequested (const QPoint&);
 		void on_PackageStatus__currentIndexChanged (int);
 	signals:
