@@ -28,8 +28,9 @@ def lcPipeline(Map opts = [:], String name, String script, String desc, Closure 
                     triggers {
                         if (opts.onPush)
                             githubPush()
+                        // in this generated DSL a trigger with arguments takes a block, unlike githubPush()
                         if (opts.cron)
-                            cron opts.cron
+                            cron { spec opts.cron }
                     }
                 }
             }
