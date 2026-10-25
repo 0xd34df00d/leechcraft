@@ -78,9 +78,11 @@ namespace BitTorrent
 			bool PauseAfterCheck_ = false;
 
 			TorrentStruct (libtorrent::torrent_handle handle,
+					QString filename,
 					QList<TagId> tags,
 					TaskParameters params)
 			: Handle_ { std::move (handle) }
+			, TorrentFileName_ { std::move (filename) }
 			, Tags_ { std::move (tags) }
 			, Parameters_ { params }
 			, Promise_ { QFutureInterface<IDownload::Result> {} }

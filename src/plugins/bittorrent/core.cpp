@@ -23,6 +23,7 @@
 #include <QDesktopServices>
 #include <libtorrent/bencode.hpp>
 #include <libtorrent/entry.hpp>
+#include <libtorrent/info_hash.hpp>
 #include <libtorrent/magnet_uri.hpp>
 #include <libtorrent/version.hpp>
 #include <libtorrent/session.hpp>
@@ -777,12 +778,33 @@ namespace BitTorrent
 
 #define ATP_FLAG(name) libtorrent::torrent_flags::name;
 
+	namespace
+	{
+		QString StoredTorrentFileName (const libtorrent::info_hash_t& hashes)
+		{
+			const auto& hash = hashes.get_best ();
+			return QString::fromLatin1 (QByteArray { hash.data (), hash.size () }.toHex ()) + ".torrent";
+		}
+
+		QByteArray TryReadResumed (const QString& filename)
+		{
+			const auto& torrentsDir = Util::CreateIfNotExists ("bittorrent");
+
+			QFile resumeDataFile (torrentsDir.filePath (filename + ".resume"));
+			if (resumeDataFile.open (QIODevice::ReadOnly))
+				return resumeDataFile.readAll ();
+			else
+				return {};
+		}
+	}
+
 	QFuture<IDownload::Result> Core::AddMagnet (const QString& magnet,
 			const QString& path,
 			const QList<TagId>& tags,
 			TaskParameters params)
 	{
 		libtorrent::torrent_handle handle;
+		QString torrentFileName;
 		try
 		{
 			libtorrent::add_torrent_params atp;
@@ -793,6 +815,7 @@ namespace BitTorrent
 				ShowError (tr ("libtorrent error: %1").arg (QString::fromStdString (ec.message ())));
 				return MakeErrorResult ("Torrent error");
 			}
+			torrentFileName = StoredTorrentFileName (atp.info_hashes);
 			atp.storage_mode = GetCurrentStorageMode ();
 			atp.save_path = std::string (path.toUtf8 ().constData ());
 			if (params & NoAutostart)
@@ -807,24 +830,10 @@ namespace BitTorrent
 		}
 
 		beginInsertRows ({}, Handles_.size (), Handles_.size ());
-		Handles_.append ({ handle, tags, params });
+		Handles_.append ({ handle, torrentFileName, tags, params });
 		endInsertRows ();
 
 		return Handles_.back ().Promise_->future ();
-	}
-
-	namespace
-	{
-		QByteArray TryReadResumed (const QString& filename)
-		{
-			const auto& torrentsDir = Util::CreateIfNotExists ("bittorrent");
-
-			QFile resumeDataFile (torrentsDir.filePath (filename + ".resume"));
-			if (resumeDataFile.open (QIODevice::ReadOnly))
-				return resumeDataFile.readAll ();
-			else
-				return {};
-		}
 	}
 
 	QFuture<IDownload::Result> Core::AddFile (const QString& filename,
@@ -850,7 +859,7 @@ namespace BitTorrent
 		LoadedTorrent loaded;
 		try
 		{
-			loaded = LoadedTorrent::Load (contents, TryReadResumed (filename));
+			loaded = LoadedTorrent::Load (contents);
 			auto& atp = loaded.Params_;
 			atp.storage_mode = GetCurrentStorageMode ();
 			atp.save_path = std::string (path.toUtf8 ().constData ());
@@ -881,22 +890,11 @@ namespace BitTorrent
 		ToggleFlag (handle, libtorrent::torrent_flags::auto_managed, autoManaged);
 
 		beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
-		QString torrentFileName;
-		if (loaded.Params_.ti)
-			torrentFileName = QString::fromStdString (handle.status (libtorrent::torrent_handle::query_name).name);
-		else
-		{
-			const auto& hash = loaded.Params_.info_hashes.get_best ();
-			torrentFileName = QString::fromLatin1 (QByteArray { hash.data (), hash.size () }.toHex ());
-		}
-		if (!torrentFileName.endsWith (".torrent"))
-			torrentFileName.append (".torrent");
-
 		Handles_.append ({
 				handle,
 				contents,
 				loaded.CreationInfo_,
-				torrentFileName,
+				StoredTorrentFileName (loaded.Params_.info_hashes),
 				tags,
 				autoManaged,
 				params
@@ -1039,9 +1037,6 @@ namespace BitTorrent
 		}
 
 		const auto& info = *file;
-		if (torrent->TorrentFileName_.isEmpty ())
-			torrent->TorrentFileName_ = QString::fromUtf8 (info.name ().c_str ()) + ".torrent";
-
 		libtorrent::error_code ec;
 		libtorrent::entry infoE = libtorrent::bdecode (info.info_section (), ec);
 		if (ec)
@@ -1370,7 +1365,7 @@ namespace BitTorrent
 
 		Entity e;
 		e.Parameters_ = IsDownloaded;
-		e.Location_ = torrent.TorrentFileName_;
+		e.Location_ = name + ".torrent";
 		e.Additional_ [" Tags"] = QVariant::fromValue (torrent.Tags_);
 		e.Additional_ [IgnoreSelf] = true;
 
@@ -1422,11 +1417,9 @@ namespace BitTorrent
 					<< i;
 				continue;
 			}
-			if (Handles_.at (i).TorrentFileName_.isEmpty ())
+			if (Handles_.at (i).TorrentFileContents_.isEmpty ())
 			{
-				qWarning () << Q_FUNC_INFO
-					<< "empty file name"
-					<< i;
+				qWarning () << "not persisting torrent" << i << "since it has no metadata yet";
 				continue;
 			}
 			try
