@@ -48,9 +48,12 @@ esac
 # everything else ninja runs at the same time; ninja alone fills the machine, and a full build measured the same either way.
 # A plain `sh -c`, not a login shell: Fedora's profile puts ccache's masquerade directory first in PATH, which would make
 # CMake pick /usr/lib64/ccache/g++ and route every compiler call, scans and links included, through ccache a second time.
+# LC_ALL=C: gcc quotes with ‘’ under a UTF-8 locale and with '' otherwise; Arch's image sets LANG=C.UTF-8, the others nothing,
+# and the aggregated warnings treat the two spellings as two issues.
 exec docker run \
 	--rm \
 	--network=none \
+	--env LC_ALL=C \
 	--workdir /work \
 	--mount type=bind,src="$PWD",dst=/work/leechcraft \
 	--mount type=tmpfs,dst=/work/build \
