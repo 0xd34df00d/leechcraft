@@ -10,13 +10,9 @@
 
 #include <QVector>
 #include <QFile>
+#include <libtorrent/fwd.hpp>
 #include <libtorrent/torrent_handle.hpp>
 #include <libtorrent/torrent_info.hpp>
-
-namespace libtorrent
-{
-	class read_piece_alert;
-}
 
 namespace LC::BitTorrent
 {

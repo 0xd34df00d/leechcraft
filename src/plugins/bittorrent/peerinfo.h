@@ -11,11 +11,7 @@
 #include <memory>
 #include <QString>
 #include <QMetaType>
-
-namespace libtorrent
-{
-    struct peer_info;
-}
+#include <libtorrent/fwd.hpp>
 
 namespace LC::BitTorrent
 {
