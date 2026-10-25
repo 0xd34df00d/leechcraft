@@ -18,7 +18,6 @@
 #include <interfaces/core/ientitymanager.h>
 #include <util/sll/qobjectrefcast.h>
 #include <util/sll/visitor.h>
-#include <util/threads/futures.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/xpc/progressmanager.h>
 #include <util/xpc/util.h>
