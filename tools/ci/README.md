@@ -1,6 +1,6 @@
 # CI
 
-Two files drive every Jenkins job of the project:
+Three files drive every Jenkins job of the project:
 
 - `Jenkinsfile`: the build logic. `PROFILE=quick` builds the primary distro with the primary compiler and, when
   green, triggers the job named by `DOWNSTREAM`. `PROFILE=full` builds every distro under `tools/docker/base`
@@ -8,15 +8,18 @@ Two files drive every Jenkins job of the project:
   at a time, and also publishes, per compiler, one warnings result over all its cells with repeats dropped, and one
   badge per cell.
   `SKIP_CELLS` leaves cells out; the build description lists what was skipped and why.
-- `jobs.groovy`: the job shells. Which jobs exist, which profile each runs, its triggers, parameters and
-  retention. The `ci-seed` job applies it on every push.
+- `images.Jenkinsfile`: the image rebuilds. Every distro under `tools/docker/base`, or those in `DISTROS`, through
+  `tools/docker/buildimage.sh`; an image whose packages changed is pushed to the registry and, when any changed,
+  `DOWNSTREAM` runs against the new set.
+- `jobs.groovy`: the job shells. Which jobs exist, which script and profile each runs, its triggers, parameters
+  and retention. The `ci-seed` job applies it on every push.
 
 A cell runs `tools/docker/runci.sh <distro> <gcc|clang> [build|tidy]` in the distro's `leechcraft/ci_<distro>`
 image: a from-scratch build without network, in a tmpfs, on every core, needing only `sh`, `cmake`, `ninja` and
 the compilers inside the image. Autogen steps run moc one file at a time (`CMAKE_AUTOGEN_PARALLEL=1`), since ninja
 already fills every core with the other steps. Every build in every job takes the `lc-build` lock around its compile, so only
 one compile runs on the machine at a time and build times stay comparable; a quick build waits for at most one
-cell of a running full build. The full profile compiles through ccache, with one cache for all cells at
+cell of a running full build, or for one round of image rebuilds. The full profile compiles through ccache, with one cache for all cells at
 `/var/cache/ci-ccache` on the agent, a partition dedicated to it that the cache may fill to nine tenths, and each
 cell's log ending with that build's cache statistics; the quick profile does not, so that its build time stays a
 measurement. An image without ccache builds without it and says so. A cell that fails to configure or to build
@@ -27,8 +30,10 @@ failure and on every status change, the full job on status changes only.
 ## Changing things
 
 - A distro: add `tools/docker/base/<distro>/Dockerfile` and the `<distro>` preset in `src/CMakePresets.json`.
-  Presets describe a distro only; the runner picks the compiler. The full build picks the distro up once
-  `CI-base-images` has built the image.
+  Presets describe a distro only; the runner picks the compiler. The push triggers the image job for the new
+  directory; the full build picks the distro up once it has built the image. A package manager other than dpkg,
+  rpm, pacman, apk or Portage needs a branch in `buildimage.sh`; until then the image job stays unstable and
+  treats the image as changed.
 - A compiler: add it to `COMPILERS` in the Jenkinsfile, with its floor in `MINIMUM`. Cells appear by themselves
   on the distros whose image ships a new enough version, which `runci.sh <distro> <compiler> version` reports.
 - The floors: `MINIMUM` says which compiler versions build the project. They change when the code starts using
@@ -97,18 +102,31 @@ every minor release, `%global sover` and the `N` in the names of the `libqxmppqt
 packages across `debian/control` and the install and lintian-overrides files. The floor in `build.sh` mirrors the
 Xoox CMakeLists.
 
-The Dockerfiles copy the packaging from the build context, so `CI-base-images` builds with `tools` as the context
-and `tools/.dockerignore` limits what gets sent to `docker` and `packaging`. Its shell step:
+The Dockerfiles copy the packaging from the build context, so the images are built with `tools` as the context,
+and `tools/.dockerignore` limits what gets sent to `docker` and `packaging`.
 
-    cd tools
-    docker build --pull --no-cache --network=host -f docker/base/${distro}/Dockerfile -t leechcraft/ci_${distro}:latest .
-    echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin
-    docker push leechcraft/ci_${distro}:latest
-    docker image prune -f
-    docker builder prune -f
+## The image job
 
-`--pull` refreshes the base image; the two `prune`s drop what the previous build left untagged and the build
-cache that even a `--no-cache` build writes.
+`leechcraft-images` runs `tools/docker/buildimage.sh <distro> <state dir>` for every distro under `tools/docker/base`
+(or those in `DISTROS`), daily at 4 am US Central time and whenever the quick job sees a push touch `tools/docker/base/<distro>`,
+`tools/packaging`, `tools/.dockerignore` or the script itself; such a push rebuilds the touched distros only and
+triggers the full build afterwards in any case (`ALWAYS_TRIGGER`). The script rebuilds the image from scratch
+(`--pull --no-cache`), lists the packages of the previous image before and of the new one after, and writes the list,
+the diff, the compiler versions and a verdict, `changed` or `unchanged`, into the state directory, which the job archives;
+the Debian and Fedora images also get their `packages` stage exported there, of which everything but the debug symbol
+packages is archived. The diff is the first thing to read when
+a cell breaks after a rebuild. The distros build concurrently under one `lc-build` lock, so no compile shares the
+machine with an image build, yet the lock is held for the longest image build rather than for all of them in turn;
+a distro whose build fails keeps its previous image and fails the run without stopping the others. The packages are listed through dpkg, rpm, pacman, apk or the Portage database; an image with
+none of them gets the verdict `unknown`, which counts as changed for the push and the trigger and keeps the run
+unstable until `buildimage.sh` has learnt the package manager, so a new distro never hides behind `unchanged`.
+Images whose packages changed are pushed to the registry (`PUSH`, with the credentials named by
+`REGISTRY_CREDENTIALS`); when any changed, or `ALWAYS_TRIGGER` is set, `DOWNSTREAM` runs. The run ends by pruning
+what the rebuilds left untagged and the build cache that even a `--no-cache` build writes, and its description lists
+every distro's verdict and compilers. Mail goes to `NOTIFY` on a change of status only.
+
+The matrix job `CI-base-images` did the same with a shell step edited in the UI; once the pipeline has had a green
+run, disable or delete it, or both will rebuild every day.
 
 ## Bootstrapping the seed
 

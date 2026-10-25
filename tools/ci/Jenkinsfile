@@ -3,7 +3,8 @@
 // Job-level configuration (triggers, parameters, retention) lives in jobs.groovy so that several jobs can
 // share this file; the PROFILE parameter picks the cells to build:
 //   quick   the primary distro with the primary compiler; a warning its reference build did not have makes it
-//           unstable; triggers the DOWNSTREAM job unless it failed
+//           unstable; unless it failed, triggers the DOWNSTREAM job, or the IMAGES job when the push touched the
+//           images, which rebuilds them and triggers DOWNSTREAM itself
 //   full    every distro under tools/docker/base with every compiler in COMPILERS that the distro's image
 //           ships in at least the MINIMUM version, using a libstdc++ at least as new as the gcc floor, one
 //           cell at a time
@@ -144,6 +145,24 @@ void grade(Map outcome) {
     error("${outcome.name}: ${what}")
 }
 
+// The paths the build's changes touched: empty for a first build and for one started by hand.
+List<String> changedPaths() {
+    List<String> paths = []
+    for (def changes in currentBuild.changeSets)
+        for (def entry in changes.items)
+            paths.addAll(entry.affectedPaths)
+    paths
+}
+
+// The distros whose images the changes made stale: null when they did not touch the images, empty for all of them
+// (the packaging or the image build itself changed), else the distros whose Dockerfile directory changed.
+List<String> staleDistros(List<String> paths) {
+    if (paths.any { it.startsWith('tools/packaging/') || it in ['tools/.dockerignore', 'tools/docker/buildimage.sh'] })
+        return []
+    List<String> distros = paths.findAll { it.startsWith('tools/docker/base/') }.collect { it.tokenize('/')[3] }.unique()
+    distros ?: null
+}
+
 // The quick job mails on every failure and every unstable build, since each one is a push that broke the build or added
 // a warning; the full job mails only when its status changes, since a distro that stays broken for a week is one piece of
 // news, not seven.
@@ -171,10 +190,23 @@ timeout(time: 6, unit: 'HOURS') {
                     grade(runCell(PRIMARY, historical: true, gated: true))
                 }
             }
-            if (params.DOWNSTREAM && currentBuild.currentResult in ['SUCCESS', 'UNSTABLE']) {
-                stage("Trigger ${params.DOWNSTREAM}") {
-                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                        build job: params.DOWNSTREAM, wait: false
+            if (currentBuild.currentResult in ['SUCCESS', 'UNSTABLE']) {
+                // A push that touches the images gets them rebuilt first; the image job then triggers DOWNSTREAM itself,
+                // against the new images, where this build could only have run it against the stale ones.
+                List<String> stale = params.IMAGES ? staleDistros(changedPaths()) : null
+                if (stale != null) {
+                    stage("Trigger ${params.IMAGES}") {
+                        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                            build job: params.IMAGES, wait: false,
+                                  parameters: [string(name: 'DISTROS', value: stale.join(',')),
+                                               booleanParam(name: 'ALWAYS_TRIGGER', value: true)]
+                        }
+                    }
+                } else if (params.DOWNSTREAM) {
+                    stage("Trigger ${params.DOWNSTREAM}") {
+                        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                            build job: params.DOWNSTREAM, wait: false
+                        }
                     }
                 }
             }
