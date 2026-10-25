@@ -47,6 +47,12 @@ failure and on every status change, the full job on status changes only.
 
 - Every run first picks its reference build with `discoverReferenceBuild`, the last build that was at least
   unstable; Warnings NG computes new and fixed issues only against such a reference.
+- The quick job carries a quality gate: a warning its reference build did not have makes the build unstable, which
+  still triggers the full job and mails once. The gate compares with that reference, the last build that was at least
+  unstable, not with the last build that passed the gate (`ignoreQualityGate`), so a flagged warning is part of the
+  baseline on the next build: one unstable build per push that adds warnings, and no weeks of yellow while a
+  deprecation wave is worked through. Drop `ignoreQualityGate` for the sticky variant, or set the gate's
+  `criticality` to `FAILURE` for red. The full job's results carry no gate.
 - The quick job publishes under the id `gcc` with the gcc parser, as the matrix job it replaced did, so its
   warnings trend continues. For the same reason source paths are rewritten to the workspace's absolute path:
   Warnings NG would otherwise anchor relative paths to the build directory it spots in CMake's output, which
@@ -54,6 +60,9 @@ failure and on every status change, the full job on status changes only.
 - The aggregated results concatenate the cells' logs per compiler and parse them once: Warnings NG drops an issue it
   already has only when the tool id matches too, so merging the per-cell results would count every repeat. The
   aggregate therefore has one result for gcc and one for clang, each with every distinct warning once.
+- Every result is published under its cell's name (`all-gcc` and `all-clang` for the aggregates), both as the id
+  in its URL and as the display name: Warnings NG would otherwise label each one after its parser, so the sidebar
+  and the job's aggregated trend could not tell the cells apart.
 - Badges: the full profile registers one badge configuration per cell, planned or skipped, under the cell's name,
   so `https://jenkins.leechcraft.org/job/leechcraft-full/badge/icon?build=lastCompleted&config=<cell>` shows that one
   cell: passing or failing, the reason for a skipped cell, pending for a cell the run never got to. `build=lastCompleted`

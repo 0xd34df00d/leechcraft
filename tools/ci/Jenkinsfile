@@ -2,7 +2,8 @@
 //
 // Job-level configuration (triggers, parameters, retention) lives in jobs.groovy so that several jobs can
 // share this file; the PROFILE parameter picks the cells to build:
-//   quick   the primary distro with the primary compiler; triggers the DOWNSTREAM job when green
+//   quick   the primary distro with the primary compiler; a warning its reference build did not have makes it
+//           unstable; triggers the DOWNSTREAM job unless it failed
 //   full    every distro under tools/docker/base with every compiler in COMPILERS that the distro's image
 //           ships in at least the MINIMUM version, using a libstdc++ at least as new as the gcc floor, one
 //           cell at a time
@@ -24,6 +25,7 @@ import groovy.transform.Field
 @Field final List<String> COMPILERS = ['gcc', 'clang']
 @Field final Map<String, Integer> MINIMUM = [gcc: 16, clang: 23]
 @Field final Map PRIMARY = [distro: 'opensuse_factory', compiler: 'clang']
+@Field final Map NEW_WARNINGS_GATE = [threshold: 1, type: 'NEW', criticality: 'UNSTABLE']
 
 String cellName(Map cell) {
     cell.tidy ? "tidy-${cell.distro}" : "${cell.distro}-${cell.compiler}"
@@ -94,12 +96,14 @@ Map registerBadges(Map plan) {
 // matrix job it replaced, so that the trend and that comparison continue across the migration. Source paths are rewritten to the workspace's
 // absolute path for the same reason, and because Warnings NG otherwise anchors relative paths to the build
 // directory it spots in CMake's output, which does not exist outside the container.
-Map runCell(Map cell, boolean continuesHistoricalResult, boolean cached) {
+// opts: `historical` keeps the id and parser of the matrix job the quick job replaced, `cached` compiles through ccache,
+// `gated` applies NEW_WARNINGS_GATE.
+Map runCell(Map opts, Map cell) {
     String name = cellName(cell)
     String log = "${name}.log"
     int rc = 0
     lock(BUILD_LOCK) {
-        withEnv(cached ? ["CCACHE_HOST_DIR=${CCACHE_HOST_DIR}"] : []) {
+        withEnv(opts.cached ? ["CCACHE_HOST_DIR=${CCACHE_HOST_DIR}"] : []) {
             rc = sh(returnStatus: true, label: "build ${name}", script: """#!/bin/bash
 set -o pipefail
 tools/docker/runci.sh ${cell.distro} ${cell.compiler} ${cell.tidy ? 'tidy' : 'build'} 2>&1 \\
@@ -111,14 +115,23 @@ tools/docker/runci.sh ${cell.distro} ${cell.compiler} ${cell.tidy ? 'tidy' : 'bu
     def tool
     if (cell.tidy)
         tool = clangTidy(pattern: log, id: name, name: name)
-    else if (continuesHistoricalResult)
+    else if (opts.historical)
         tool = gcc(pattern: log)
     else if (cell.compiler == 'clang')
         tool = clang(pattern: log, id: name, name: name)
     else
         tool = gcc(pattern: log, id: name, name: name)
     def report = scanForIssues(tool: tool, sourceCodeRetention: 'EVERY_BUILD')
-    publishIssues(issues: [report])
+    // Warnings NG labels a result after its parser unless the publish step names it, so every cell would read
+    // "GNU C Compiler (GCC)" in the sidebar and "Static Analysis" in the job's aggregated trend.
+    Map publish = [issues: [report], name: name]
+    // The gate compares with the reference build discoverReferenceBuild picked, the last build that was at least unstable,
+    // not with the last build that passed the gate (ignoreQualityGate). A warning flagged once is thus part of the baseline
+    // the next time: a push that adds warnings gets one unstable build and one mail, and a deliberate wave, such as
+    // deprecating a function and so flagging every caller, does not keep the job unstable until the last caller is gone.
+    if (opts.gated)
+        publish += [qualityGates: [NEW_WARNINGS_GATE], ignoreQualityGate: true]
+    publishIssues(publish)
     [name: name, rc: rc, report: report]
 }
 
@@ -131,12 +144,13 @@ void grade(Map outcome) {
     error("${outcome.name}: ${what}")
 }
 
-// The quick job mails on every failure, since each one is a push that broke the build; the full job mails only
-// when its status changes, since a distro that stays broken for a week is one piece of news, not seven.
-void notifyIfNeeded(boolean everyFailure) {
+// The quick job mails on every failure and every unstable build, since each one is a push that broke the build or added
+// a warning; the full job mails only when its status changes, since a distro that stays broken for a week is one piece of
+// news, not seven.
+void notifyIfNeeded(boolean everyProblem) {
     String now = currentBuild.currentResult
     String previous = currentBuild.previousCompletedBuild?.result ?: 'SUCCESS'
-    boolean newsworthy = now != previous || (everyFailure && now == 'FAILURE')
+    boolean newsworthy = now != previous || (everyProblem && now in ['FAILURE', 'UNSTABLE'])
     if (!params.NOTIFY || now == 'ABORTED' || !newsworthy)
         return
     emailext(to: params.NOTIFY, recipientProviders: [culprits(), requestor()],
@@ -154,7 +168,7 @@ timeout(time: 6, unit: 'HOURS') {
                 node(AGENT) {
                     checkout scm
                     discoverReferenceBuild(requiredResult: 'UNSTABLE')
-                    grade(runCell(PRIMARY, true, false))
+                    grade(runCell(PRIMARY, historical: true, gated: true))
                 }
             }
             if (params.DOWNSTREAM && currentBuild.currentResult in ['SUCCESS', 'UNSTABLE']) {
@@ -184,7 +198,7 @@ timeout(time: 6, unit: 'HOURS') {
                     String name = cellName(cell)
                     stage(name) {
                         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                            Map outcome = runCell(cell, false, true)
+                            Map outcome = runCell(cell, cached: true)
                             reports[name] = outcome.report
                             badges[name].setStatus(outcome.rc == 0 ? 'passing' : 'failing')
                             badges[name].setColor(outcome.rc == 0 ? 'brightgreen' : 'red')
@@ -205,9 +219,8 @@ timeout(time: 6, unit: 'HOURS') {
                             String log = "aggregate.${compiler}.log"
                             sh(label: "concatenate ${compiler} logs", script: "cat ${logs.join(' ')} > ${log}")
                             String id = "all-${compiler}"
-                            String name = "All ${compiler} cells"
-                            def tool = compiler == 'clang' ? clang(pattern: log, id: id, name: name) : gcc(pattern: log, id: id, name: name)
-                            publishIssues(issues: [scanForIssues(tool: tool)])
+                            def tool = compiler == 'clang' ? clang(pattern: log, id: id, name: id) : gcc(pattern: log, id: id, name: id)
+                            publishIssues(issues: [scanForIssues(tool: tool)], name: id)
                         }
                     }
                 }
