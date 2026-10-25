@@ -868,9 +868,10 @@ namespace BitTorrent
 			return MakeErrorResult ("Torrent error");
 		}
 
-		std::vector<libtorrent::download_priority_t > priorities (loaded.Params_.ti->num_files (), libtorrent::default_priority);
-		if (!files.isEmpty ())
+		if (const auto& ti = loaded.Params_.ti;
+				ti && !files.isEmpty ())
 		{
+			std::vector<libtorrent::download_priority_t> priorities (ti->num_files (), libtorrent::default_priority);
 			for (int i = 0; i < files.size (); ++i)
 				priorities [i] = files [i] ? libtorrent::default_priority : libtorrent::dont_download;
 
@@ -880,8 +881,14 @@ namespace BitTorrent
 		ToggleFlag (handle, libtorrent::torrent_flags::auto_managed, autoManaged);
 
 		beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
-		auto torrentFileName = QString::fromStdString (handle
-					.status (libtorrent::torrent_handle::query_name).name);
+		QString torrentFileName;
+		if (loaded.Params_.ti)
+			torrentFileName = QString::fromStdString (handle.status (libtorrent::torrent_handle::query_name).name);
+		else
+		{
+			const auto& hash = loaded.Params_.info_hashes.get_best ();
+			torrentFileName = QString::fromLatin1 (QByteArray { hash.data (), hash.size () }.toHex ());
+		}
 		if (!torrentFileName.endsWith (".torrent"))
 			torrentFileName.append (".torrent");
 
@@ -1032,7 +1039,8 @@ namespace BitTorrent
 		}
 
 		const auto& info = *file;
-		torrent->TorrentFileName_ = QString::fromUtf8 (info.name ().c_str ()) + ".torrent";
+		if (torrent->TorrentFileName_.isEmpty ())
+			torrent->TorrentFileName_ = QString::fromUtf8 (info.name ().c_str ()) + ".torrent";
 
 		libtorrent::error_code ec;
 		libtorrent::entry infoE = libtorrent::bdecode (info.info_section (), ec);
@@ -1045,7 +1053,9 @@ namespace BitTorrent
 		}
 		libtorrent::entry e;
 		e ["info"] = infoE;
-		libtorrent::bencode (std::back_inserter (torrent->TorrentFileContents_), e);
+		QByteArray contents;
+		libtorrent::bencode (std::back_inserter (contents), e);
+		torrent->TorrentFileContents_ = contents;
 
 		qDebug () << "HandleMetadata"
 			<< std::distance (Handles_.begin (), torrent)

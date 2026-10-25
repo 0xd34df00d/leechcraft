@@ -16,13 +16,13 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QToolBar>
-#include <libtorrent/load_torrent.hpp>
 #include <util/sll/prelude.h>
 #include "addmagnetdialog.h"
 #include "addmultipletorrents.h"
 #include "addtorrent.h"
 #include "cachedstatuskeeper.h"
 #include "core.h"
+#include "loadedtorrent.h"
 #include "ltutils.h"
 #include "movetorrentfiles.h"
 #include "newtorrentparams.h"
@@ -49,8 +49,11 @@ namespace LC::BitTorrent
 			const auto& torrentData = torrentFile.readAll ();
 			try
 			{
-				const auto& params = libtorrent::load_torrent_buffer (libtorrent::span { torrentData.constData (), torrentData.size () });
-				const auto& files = GetOriginalFileLayout (*params.ti);
+				const auto& loaded = LoadedTorrent::Load (torrentData);
+				if (!loaded.Params_.ti)
+					return false;
+
+				const auto& files = GetOriginalFileLayout (*loaded.Params_.ti);
 				switch (files.num_files ())
 				{
 				case 0:

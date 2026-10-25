@@ -16,7 +16,6 @@
 #include <libtorrent/address.hpp>
 #include <libtorrent/alert_types.hpp>
 #include <libtorrent/ip_filter.hpp>
-#include <libtorrent/load_torrent.hpp>
 #include <libtorrent/magnet_uri.hpp>
 #include <libtorrent/torrent_handle.hpp>
 #include <libtorrent/torrent_info.hpp>
@@ -25,7 +24,7 @@
 #include <util/sll/macros.h>
 #include "fileinfo.h"
 #include "ipfilterdialog.h"
-#include "torrentcreationinfo.h"
+#include "loadedtorrent.h"
 #include "types.h"
 #include "xmlsettingsmanager.h"
 
@@ -186,32 +185,11 @@ namespace LC::BitTorrent
 		return val >= 0 ? val / 1024 : val;
 	}
 
-	TorrentCreationInfo GetTorrentCreationInfo (const libtorrent::add_torrent_params& params)
-	{
-#if LIBTORRENT_VERSION_NUM >= 20100
-		const auto& creator = params.created_by;
-		const auto& comment = params.comment;
-		const auto creationDate = params.creation_date;
-#else
-		const auto& info = *params.ti;
-		const auto& creator = info.creator ();
-		const auto& comment = info.comment ();
-		const auto creationDate = info.creation_date ();
-#endif
-		return
-		{
-			.Creator_ = QString::fromStdString (creator),
-			.Comment_ = QString::fromStdString (comment),
-			.CreationDate_ = creationDate ? QDateTime::fromSecsSinceEpoch (creationDate) : QDateTime {},
-			.DHTNodes_ = static_cast<int> (params.dht_nodes.size ()),
-		};
-	}
-
 	bool IsValidTorrent (const QByteArray& data)
 	{
 		try
 		{
-			libtorrent::load_torrent_buffer (libtorrent::span { data.constData (), data.size () });
+			LoadedTorrent::Load (data);
 			return true;
 		}
 		catch (const std::exception&)

@@ -14,7 +14,6 @@
 #include <QSortFilterProxyModel>
 #include <QMenu>
 #include <libtorrent/add_torrent_params.hpp>
-#include <libtorrent/load_torrent.hpp>
 #include <libtorrent/torrent_info.hpp>
 #include <util/util.h>
 #include <util/gui/util.h>
@@ -23,8 +22,8 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "components/models/addtorrentfilesmodel.h"
+#include "loadedtorrent.h"
 #include "ltutils.h"
-#include "torrentcreationinfo.h"
 #include "xmlsettingsmanager.h"
 
 namespace LC::BitTorrent
@@ -35,6 +34,7 @@ namespace LC::BitTorrent
 	, ProxyModel_ { new QSortFilterProxyModel { this } }
 	{
 		Ui_.setupUi (this);
+		Ui_.FilesHint_->hide ();
 
 		new Util::TagsEditorAddon { *Ui_.TagsEdit_, *GetProxyHolder ()->GetTagsManager () };
 
@@ -292,11 +292,11 @@ namespace LC::BitTorrent
 			return;
 		}
 
-		libtorrent::add_torrent_params params;
+		LoadedTorrent loaded;
 		try
 		{
 			const auto& contents = file.readAll ();
-			params = libtorrent::load_torrent_buffer (libtorrent::span { contents.constData (), contents.size () });
+			loaded = LoadedTorrent::Load (contents);
 		}
 		catch (const std::exception& e)
 		{
@@ -308,9 +308,8 @@ namespace LC::BitTorrent
 			return;
 		}
 
-		const auto& info = *params.ti;
-
-		Ui_.Size_->setText (Util::MakePrettySize (info.total_size ()));
+		const auto& params = loaded.Params_;
+		const auto& ti = params.ti;
 
 		const auto setText = [this] (QLabel *edit, const QString& text)
 		{
@@ -320,21 +319,26 @@ namespace LC::BitTorrent
 			edit->setVisible (!text.isEmpty ());
 		};
 
-		const auto& creationInfo = GetTorrentCreationInfo (params);
+		const auto& creationInfo = loaded.CreationInfo_;
 
 		setText (Ui_.TrackerURL_,
 				params.trackers.empty () ?
 					QString {} :
 					QString::fromStdString (params.trackers.front ()));
+		setText (Ui_.Size_, ti ? Util::MakePrettySize (ti->total_size ()) : QString {});
 		setText (Ui_.Creator_, creationInfo.Creator_);
 		setText (Ui_.Comment_, creationInfo.Comment_);
 		setText (Ui_.Date_, creationInfo.CreationDate_.toString ());
 
 		QList<AddTorrentFilesModel::FileEntry> fileEntries;
-		const auto& torrentFiles = GetOriginalFileLayout (info);
-		for (const auto i : torrentFiles.file_range ())
-			fileEntries.push_back ({ torrentFiles.file_path (i), torrentFiles.file_size (i) });
+		if (ti)
+		{
+			const auto& torrentFiles = GetOriginalFileLayout (*ti);
+			for (const auto i : torrentFiles.file_range ())
+				fileEntries.push_back ({ torrentFiles.file_path (i), torrentFiles.file_size (i) });
+		}
 		FilesModel_->ResetFiles (fileEntries);
+		Ui_.FilesHint_->setVisible (!ti);
 
 		Ui_.FilesView_->expandAll ();
 	}

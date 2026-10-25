@@ -20,6 +20,6 @@ namespace LC::BitTorrent
 		libtorrent::add_torrent_params Params_;
 		TorrentCreationInfo CreationInfo_;
 
-		static LoadedTorrent Load (const QByteArray& torrent, const QByteArray& resumeData);
+		static LoadedTorrent Load (const QByteArray& torrent, const QByteArray& resumeData = {});
 	};
 }
