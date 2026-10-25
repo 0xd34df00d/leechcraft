@@ -8,7 +8,9 @@
 
 #pragma once
 
+#include <string>
 #include <libtorrent/add_torrent_params.hpp>
+#include <libtorrent/units.hpp>
 #include "torrentcreationinfo.h"
 
 class QByteArray;
@@ -21,5 +23,7 @@ namespace LC::BitTorrent
 		TorrentCreationInfo CreationInfo_;
 
 		static LoadedTorrent Load (const QByteArray& torrent, const QByteArray& resumeData = {});
+
+		std::string FilePath (libtorrent::file_index_t) const;
 	};
 }

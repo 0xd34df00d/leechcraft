@@ -14,6 +14,7 @@
 #include <libtorrent/read_resume_data.hpp>
 #include <libtorrent/torrent_info.hpp>
 #include <libtorrent/version.hpp>
+#include "ltutils.h"
 
 namespace LC::BitTorrent
 {
@@ -75,5 +76,13 @@ namespace LC::BitTorrent
 
 		auto creationInfo = loaded.ti ? GetTorrentCreationInfo (loaded) : TorrentCreationInfo {};
 		return { MergeResumeData (std::move (loaded), resumeData), std::move (creationInfo) };
+	}
+
+	std::string LoadedTorrent::FilePath (libtorrent::file_index_t index) const
+	{
+		const auto renamed = Params_.renamed_files.find (index);
+		return renamed != Params_.renamed_files.end () ?
+				renamed->second :
+				GetOriginalFileLayout (*Params_.ti).file_path (index);
 	}
 }

@@ -335,7 +335,7 @@ namespace LC::BitTorrent
 		{
 			const auto& torrentFiles = GetOriginalFileLayout (*ti);
 			for (const auto i : torrentFiles.file_range ())
-				fileEntries.push_back ({ torrentFiles.file_path (i), torrentFiles.file_size (i) });
+				fileEntries.push_back ({ loaded.FilePath (i), torrentFiles.file_size (i) });
 		}
 		FilesModel_->ResetFiles (fileEntries);
 		Ui_.FilesHint_->setVisible (!ti);
