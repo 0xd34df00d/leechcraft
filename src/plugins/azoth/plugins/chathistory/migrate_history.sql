@@ -49,7 +49,7 @@ BEGIN TRANSACTION;
 --   XMPP:  Xoox.Gloox.XMPP_our@jid.me_their@jid.org
 --   IRC:   Acetamide.IRC.1327008969_irc.freenode.net:6667_#chan@srv
 --
--- The new schema wants GetHumanReadableID() — just the part after the prefix.
+-- The new schema wants GetConventionalID() — just the part after the prefix.
 -- Entries that don't match the <AccountID>_ pattern (e.g. UUID accounts) are
 -- dropped — we can't recover the correct HumanReadableId for them.
 --

@@ -14,8 +14,8 @@
 #include <util/db/dblock.h>
 #include <util/db/util.h>
 #include <util/db/oral/oral.h>
-#include <util/db/oral/utilitytypes.h>
 #include <util/sys/paths.h>
+#include <util/azoth/entryidoral.h>
 
 namespace LC::Azoth::Xoox
 {
@@ -34,18 +34,6 @@ namespace LC::Azoth::Xoox
 
 		constexpr static auto ClassName = "PhotoHashes"_ct;
 	};
-}
-
-namespace LC::Util::oral
-{
-	template<>
-	struct ConvertT<Azoth::EntryConventionalId>
-		: ConvertVia<
-				Azoth::EntryConventionalId,
-				QString,
-				&Azoth::EntryConventionalId::ToString,
-				&Azoth::EntryConventionalId::FromString
-			> {};
 }
 
 ORAL_ADAPT_STRUCT (LC::Azoth::Xoox::VCardStorage::VCardRecord,

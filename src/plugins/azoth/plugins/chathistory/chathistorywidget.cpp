@@ -33,7 +33,7 @@ namespace LC::Azoth::ChatHistory
 	, AccountsModel_ { { { Qt::DisplayRole, Util::FromField<&AccountInfo::AccountName_> } } }
 	, SortFilter_ (new QSortFilterProxyModel (this))
 	, Toolbar_ (new QToolBar (tr ("Chat history")))
-	, FocusEntry_ { entry ? std::optional<FocusEntry> { { .AccId_ = entry->GetParentAccount ()->GetAccountID (), .EntryId_ = entry->GetHumanReadableID () } } : std::nullopt }
+	, FocusEntry_ { entry ? std::optional<FocusEntry> { { .AccId_ = entry->GetParentAccount ()->GetAccountID (), .ConventionalId_ = entry->GetConventionalID () } } : std::nullopt }
 	, SearchHandler_ { std::make_unique<SearchHandler> (params.StorageThread_) }
 	{
 		Ui_.setupUi (this);
@@ -215,7 +215,7 @@ namespace LC::Azoth::ChatHistory
 		if (Ui_.AccountBox_->currentIndex () != idx)
 			co_return;
 
-		const auto& focusId = FocusEntry_.transform ([] (const FocusEntry& fe) { return fe.EntryId_; }).value_or ({});
+		const auto& focusId = FocusEntry_.transform ([] (const FocusEntry& fe) { return fe.ConventionalId_; }).value_or ({});
 		std::optional<int> focusIndex;
 
 		QList<DisplayEntry> displayEntries;
@@ -235,7 +235,7 @@ namespace LC::Azoth::ChatHistory
 				.Base_ = entry,
 			};
 
-			if (!focusIndex && focusId == entry.HumanReadableId_)
+			if (!focusIndex && focusId == entry.ConventionalId_)
 				focusIndex = displayEntries.size () - 1;
 		}
 		EntriesModel_.SetItems (std::move (displayEntries));
@@ -461,8 +461,7 @@ namespace LC::Azoth::ChatHistory
 		const auto& entries = Util::Map (selected, [&allEntries] (int row) { return allEntries [row]; });
 
 		const auto& msg = entries.size () == 1 ?
-				tr ("Are you sure you wish to delete chat history with %1?")
-					.arg (entries.front ().Base_.HumanReadableId_) :
+				tr ("Are you sure you wish to delete chat history with %1?").arg (*entries.front ().Name_) :
 				tr ("Are you sure you wish to delete chat history with %n entry(ies)?", nullptr, entries.size ());
 		if (QMessageBox::question (nullptr, "LeechCraft", msg, QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;

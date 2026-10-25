@@ -13,6 +13,7 @@
 #include <util/db/oral/utilitytypes.h>
 #include <util/sll/visitor.h>
 #include <util/sys/paths.h>
+#include <util/azoth/entryidoral.h>
 
 namespace LC::Util::oral
 {
@@ -59,7 +60,8 @@ namespace LC::Azoth::ChatHistory
 
 		o::References<&AccountRecord::Id_> Account_;
 
-		o::NotNull<QString> HumanReadableId_;
+		// TODO rename to ConventionalId_ on the next migration
+		o::NotNull<EntryConventionalId> HumanReadableId_;
 		o::NotNull<History::EntryKind> Kind_;
 
 		// Roster entries ↦ contact name
@@ -237,7 +239,7 @@ namespace LC::Azoth::ChatHistory
 			result << Entry
 			{
 				.Id_ = record.Id_,
-				.HumanReadableId_ = record.HumanReadableId_,
+				.ConventionalId_ = record.HumanReadableId_,
 				.EntryInfo_ = MakeSpecificInfo (record, mucNamesDict),
 			};
 		return result;
@@ -326,17 +328,17 @@ namespace LC::Azoth::ChatHistory
 	}
 
 	QList<Storage2::HistoryMessage> Storage2::GetLastMessages (const QByteArray& accountId,
-			const QString& entryHumanReadableId, size_t count) const
+			const EntryConventionalId& entryId, size_t count) const
 	{
-		const auto entryId = Entries_->SelectOne (sph::fields<&EntryRecord::Id_>,
+		const auto rowId = Entries_->SelectOne (sph::fields<&EntryRecord::Id_>,
 				sph::f<&EntryRecord::Account_> == sph::f<&AccountRecord::Id_> &&
 				sph::f<&AccountRecord::AccountId_> == accountId &&
-				sph::f<&EntryRecord::HumanReadableId_> == entryHumanReadableId);
-		if (!entryId)
+				sph::f<&EntryRecord::HumanReadableId_> == entryId);
+		if (!rowId)
 			return {};
 
 		auto messages = Messages_->Select.Build ()
-				.Where (sph::f<&MessageRecord::Entry_> == entryId)
+				.Where (sph::f<&MessageRecord::Entry_> == rowId)
 				.Order (o::OrderBy<sph::desc<&MessageRecord::TS_, &MessageRecord::Id_>>)
 				.Limit (count)
 				();
@@ -455,7 +457,7 @@ namespace LC::Azoth::ChatHistory
 							o::InsertAction::Replace::Fields<&AccountRecord::AccountName_>);
 					const auto entryId = Entries_->Insert ({
 								.Account_ = accountId,
-								.HumanReadableId_ = entry.EntryHumanReadableId_,
+								.HumanReadableId_ = entry.ConventionalId_,
 								.Kind_ = Kind,
 								.DisplayName_ = GetDisplayName (entry.Description_),
 							},

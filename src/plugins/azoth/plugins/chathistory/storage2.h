@@ -12,6 +12,7 @@
 #include <QSqlDatabase>
 #include <util/db/oral/oralfwd.h>
 #include <util/threads/coro/workerthread.h>
+#include <interfaces/azoth/azothcommon.h>
 #include <interfaces/azoth/ihistoryplugin.h>
 
 namespace LC::Azoth::ChatHistory
@@ -27,7 +28,7 @@ namespace LC::Azoth::ChatHistory
 	{
 		qint64 Id_;
 
-		QString HumanReadableId_;
+		EntryConventionalId ConventionalId_;
 		History::SomeEntryDescr EntryInfo_;
 	};
 
@@ -89,7 +90,7 @@ namespace LC::Azoth::ChatHistory
 		};
 		QList<HistoryMessage> GetMessages (const Entry& entry, const Pagination& pagination) const;
 		QList<HistoryMessage> GetMessagesDated (const Entry& entry, const QDate& date) const;
-		QList<HistoryMessage> GetLastMessages (const QByteArray& accountId, const QString& entryHumanReadableId, size_t count) const;
+		QList<HistoryMessage> GetLastMessages (const QByteArray& accountId, const EntryConventionalId& entryId, size_t count) const;
 
 		QList<int> GetDaysWithHistory (const Entry& entry, int year, int month) const;
 

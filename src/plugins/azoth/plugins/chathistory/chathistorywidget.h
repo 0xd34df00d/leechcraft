@@ -80,7 +80,7 @@ namespace LC::Azoth::ChatHistory
 		struct FocusEntry
 		{
 			QByteArray AccId_;
-			QString EntryId_;
+			EntryConventionalId ConventionalId_;
 		};
 		std::optional<FocusEntry> FocusEntry_;
 

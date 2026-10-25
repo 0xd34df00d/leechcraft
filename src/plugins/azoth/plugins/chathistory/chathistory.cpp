@@ -147,11 +147,11 @@ namespace LC::Azoth::ChatHistory
 	{
 		const auto account = entry.GetParentAccount ();
 		const auto accId = account->GetAccountID ();
-		const auto entryHRId = entry.GetHumanReadableID ();
+		const auto entryId = entry.GetConventionalID ();
 
 		co_await Util::AddContext { CoroContext_ };
 		co_await Util::AddContext { Util::CoroContext::Of (*entry.GetQObject ()) };
-		const auto messages = co_await StorageThread_->Run (&Storage2::GetLastMessages, accId, entryHRId, count);
+		const auto messages = co_await StorageThread_->Run (&Storage2::GetLastMessages, accId, entryId, count);
 
 		const auto mucEntry = qobject_cast<IMUCEntry*> (entry.GetQObject ());
 		const auto& nick2part = BuildNick2Participant (mucEntry ? mucEntry->GetParticipants () : QList<ICLEntry*> {});
@@ -377,7 +377,7 @@ namespace LC::Azoth::ChatHistory
 							{
 								.AccountId_ = acc->GetAccountID (),
 								.AccountName_ = acc->GetAccountName (),
-								.EntryHumanReadableId_ = entry.GetHumanReadableID (),
+								.ConventionalId_ = entry.GetConventionalID (),
 								.Description_ = descrWithEndpoint.Description_,
 							},
 							{

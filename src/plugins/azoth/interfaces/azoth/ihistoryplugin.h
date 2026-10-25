@@ -10,6 +10,7 @@
 
 #include <QList>
 #include <util/threads/coro/taskfwd.h>
+#include "azothcommon.h"
 #include "imessage.h"
 
 class QDateTime;
@@ -49,7 +50,7 @@ namespace LC::Azoth::History
 	{
 		QByteArray AccountId_;
 		QString AccountName_;
-		QString EntryHumanReadableId_;
+		EntryConventionalId ConventionalId_;
 
 		EntryDescr<K> Description_;
 	};
