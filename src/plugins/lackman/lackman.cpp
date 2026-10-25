@@ -18,6 +18,8 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "lackmantab.h"
+#include "packagesmodel.h"
+#include "lackmanutil.h"
 
 namespace LC
 {
@@ -39,6 +41,11 @@ namespace LackMan
 
 		Core::Instance ().SetProxy (proxy);
 		Core::Instance ().FinishInitialization ();
+
+		connect (Core::Instance ().GetPluginsModel (),
+				&PackagesModel::markingFailed,
+				this,
+				[] (const MarkingError_t& error) { LackManUtil::ReportMarkingErrors ({ error }); });
 
 		SettingsDialog_->SetDataSource ("RepositoryList",
 				Core::Instance ().GetRepositoryModel ());

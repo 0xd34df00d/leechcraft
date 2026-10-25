@@ -8,9 +8,10 @@
 
 #pragma once
 
-template<typename>
-class QList;
+#include <QList>
+#include "pendingmanager.h"
 
+class QAbstractItemModel;
 class QString;
 
 namespace LC
@@ -25,6 +26,9 @@ namespace LackManUtil
 	QString NormalizePackageName (const QString&);
 
 	InstalledDependencyInfoList GetSystemInstalledPackages (const QString& defVersion);
+
+	QList<MarkingError_t> MarkAllForUpgrade (const QAbstractItemModel& packages, PendingManager&);
+	void ReportMarkingErrors (const QList<MarkingError_t>&);
 }
 }
 }

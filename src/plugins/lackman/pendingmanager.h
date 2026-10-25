@@ -8,9 +8,13 @@
 
 #pragma once
 
+#include <variant>
 #include <QObject>
 #include <QSet>
 #include <QMap>
+#include <QStringList>
+#include <util/sll/either.h>
+#include <util/sll/void.h>
 
 class QStandardItemModel;
 class QStandardItem;
@@ -20,6 +24,21 @@ namespace LC
 {
 namespace LackMan
 {
+	struct UnsatisfiedDependencies
+	{
+		QString Package_;
+		QStringList Dependencies_;
+	};
+
+	struct PackageLookupFailed
+	{
+		int PackageId_;
+		QString What_;
+	};
+
+	using MarkingError_t = std::variant<UnsatisfiedDependencies, PackageLookupFailed>;
+	using MarkingResult_t = Util::Either<MarkingError_t, Util::Void>;
+
 	class PendingManager : public QObject
 	{
 		Q_OBJECT
@@ -45,8 +64,8 @@ namespace LackMan
 
 		QAbstractItemModel* GetPendingModel () const;
 		void Reset ();
-		void ToggleInstallRemove (int id, bool enable, bool installed);
-		void ToggleUpdate (int id, bool enable);
+		[[nodiscard]] MarkingResult_t ToggleInstallRemove (int id, bool enable, bool installed);
+		[[nodiscard]] MarkingResult_t ToggleUpdate (int id, bool enable);
 
 		QSet<int> GetPendingInstall () const;
 		QSet<int> GetPendingRemove () const;
@@ -56,7 +75,8 @@ namespace LackMan
 		void SuccessfullyRemoved (int);
 		void SuccessfullyUpdated (int);
 	private:
-		void EnablePackageInto (int, Action);
+		MarkingResult_t Toggle (int, bool enable, Action);
+		MarkingResult_t EnablePackageInto (int, Action);
 		void DisablePackageFrom (int, Action);
 		void ReinitRootItems ();
 

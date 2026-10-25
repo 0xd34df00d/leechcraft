@@ -158,7 +158,7 @@ namespace LackMan
 		return Proxy_;
 	}
 
-	QAbstractItemModel* Core::GetPluginsModel () const
+	PackagesModel* Core::GetPluginsModel () const
 	{
 		return PackagesModel_;
 	}
@@ -823,20 +823,6 @@ namespace LackMan
 					SLOT (timeredUpdateAllRequested ()));
 		else
 			UpdatesEnabled_ = false;
-	}
-
-	void Core::upgradeAllRequested ()
-	{
-		for (int i = 0, rows = PackagesModel_->rowCount ();
-				i < rows; ++i)
-		{
-			const auto& index = PackagesModel_->index (i, 0);
-			int packageId = PackagesModel_->data (index, PackagesModel::PMRPackageID).toInt ();
-			bool isUpgr = PackagesModel_->data (index, PackagesModel::PMRUpgradable).toBool ();
-
-			if (isUpgr)
-				PendingManager_->ToggleUpdate (packageId, true);
-		}
 	}
 
 	void Core::removeRequested (const QString&, const QModelIndexList& list)

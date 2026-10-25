@@ -7,12 +7,21 @@
  **********************************************************************/
 
 #include "lackmanutil.h"
+#include <optional>
 #include <QString>
 #include <QFileInfo>
 #include <QDir>
 #include <QCoreApplication>
+#include <QAbstractItemModel>
+#include <QMainWindow>
+#include <QMessageBox>
 #include <QtDebug>
+#include <util/sll/prelude.h>
+#include <util/sll/visitor.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include "repoinfo.h"
+#include "packagesmodel.h"
 
 namespace LC
 {
@@ -100,6 +109,57 @@ namespace LackManUtil
 		}
 
 		return result;
+	}
+
+	namespace
+	{
+		template<typename F>
+		QList<MarkingError_t> CollectMarkingErrors (const QAbstractItemModel& packages, F&& mark)
+		{
+			QList<MarkingError_t> errors;
+			for (int i = 0, rc = packages.rowCount (); i < rc; ++i)
+				if (const auto error = mark (packages.index (i, 0)))
+					errors << *error;
+			return errors;
+		}
+
+		QString DescribeMarkingError (const MarkingError_t& error)
+		{
+			return Util::Visit (error,
+					[] (const UnsatisfiedDependencies& e)
+					{
+						return QObject::tr ("Dependencies of %1 cannot be satisfied: %2.")
+								.arg (e.Package_, e.Dependencies_.join (", "));
+					},
+					[] (const PackageLookupFailed& e)
+					{
+						return QObject::tr ("Package %1 could not be looked up: %2.")
+								.arg (QString::number (e.PackageId_), e.What_);
+					});
+		}
+	}
+
+	QList<MarkingError_t> MarkAllForUpgrade (const QAbstractItemModel& packages, PendingManager& pm)
+	{
+		const auto& pending = pm.GetPendingUpdate ();
+		return CollectMarkingErrors (packages,
+				[&] (const QModelIndex& idx) -> std::optional<MarkingError_t>
+				{
+					const auto id = idx.data (PackagesModel::PMRPackageID).toInt ();
+					if (!idx.data (PackagesModel::PMRUpgradable).toBool () || pending.contains (id))
+						return {};
+					return pm.ToggleUpdate (id, true).MaybeLeft ();
+				});
+	}
+
+	void ReportMarkingErrors (const QList<MarkingError_t>& errors)
+	{
+		if (errors.isEmpty ())
+			return;
+
+		QMessageBox::warning (GetProxyHolder ()->GetRootWindowsManager ()->GetPreferredWindow (),
+				QObject::tr ("Unable to mark %n package(s)", nullptr, errors.size ()),
+				Util::Map (errors, &DescribeMarkingError).join ("\n"));
 	}
 }
 }

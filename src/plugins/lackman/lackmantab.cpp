@@ -27,6 +27,7 @@
 #include "pendingmanager.h"
 #include "storage.h"
 #include "updatesnotificationmanager.h"
+#include "lackmanutil.h"
 
 Q_DECLARE_METATYPE (QModelIndex)
 
@@ -183,9 +184,13 @@ namespace LackMan
 		UpgradeAll_->setProperty ("ActionIcon", "system-software-update");
 		UpgradeAll_->setShortcut (QString ("Ctrl+Shift+U"));
 		connect (UpgradeAll_,
-				SIGNAL (triggered ()),
-				&Core::Instance (),
-				SLOT (upgradeAllRequested ()));
+				&QAction::triggered,
+				this,
+				[]
+				{
+					auto& core = Core::Instance ();
+					LackManUtil::ReportMarkingErrors (LackManUtil::MarkAllForUpgrade (*core.GetPluginsModel (), *core.GetPendingManager ()));
+				});
 		ShortcutMgr_->RegisterAction ("upgradeall", UpgradeAll_);
 
 		Apply_ = new QAction (tr ("Apply"), this);

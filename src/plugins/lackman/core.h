@@ -59,7 +59,7 @@ namespace LackMan
 
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
-		QAbstractItemModel* GetPluginsModel () const;
+		PackagesModel* GetPluginsModel () const;
 		PendingManager* GetPendingManager () const;
 		ExternalResourceManager* GetExtResourceManager () const;
 		Storage* GetStorage () const;
@@ -96,7 +96,6 @@ namespace LackMan
 		void updateAllRequested ();
 		void handleUpdatesIntervalChanged ();
 		void timeredUpdateAllRequested ();
-		void upgradeAllRequested ();
 		void cancelPending ();
 		void acceptPending ();
 		void removeRequested (const QString&, const QModelIndexList&);

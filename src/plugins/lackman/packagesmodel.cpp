@@ -147,21 +147,28 @@ namespace LackMan
 		if (!index.isValid () || role != Qt::CheckStateRole)
 			return false;
 
+		const auto report = [this] (const MarkingResult_t& result)
+		{
+			if (const auto error = result.MaybeLeft ())
+				emit markingFailed (*error);
+			return result.IsRight ();
+		};
+
 		const auto& lpi = Packages_.at (index.row ());
 		const bool checked = value.value<Qt::CheckState> () == Qt::Checked;
+		const auto pm = Core::Instance ().GetPendingManager ();
+		bool toggled = false;
 		switch (index.column ())
 		{
 		case Columns::Inst:
-			Core::Instance ().GetPendingManager ()->ToggleInstallRemove (lpi.PackageID_, checked != lpi.IsInstalled_, lpi.IsInstalled_);
+			toggled = report (pm->ToggleInstallRemove (lpi.PackageID_, checked != lpi.IsInstalled_, lpi.IsInstalled_));
 			break;
 		case Columns::Upd:
-			if (!lpi.HasNewVersion_)
-				return false;
-			Core::Instance ().GetPendingManager ()->ToggleUpdate (lpi.PackageID_, checked);
+			toggled = lpi.HasNewVersion_ && report (pm->ToggleUpdate (lpi.PackageID_, checked));
 			break;
-		default:
-			return false;
 		}
+		if (!toggled)
+			return false;
 
 		emit dataChanged (index, index, { Qt::CheckStateRole });
 		return true;

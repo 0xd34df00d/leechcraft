@@ -10,6 +10,7 @@
 
 #include <QAbstractTableModel>
 #include "repoinfo.h"
+#include "pendingmanager.h"
 
 namespace LC
 {
@@ -65,6 +66,8 @@ namespace LackMan
 	public slots:
 		void handlePackageInstallRemoveToggled (int);
 		void handlePackageUpdateToggled (int);
+	signals:
+		void markingFailed (const MarkingError_t&);
 	};
 }
 }

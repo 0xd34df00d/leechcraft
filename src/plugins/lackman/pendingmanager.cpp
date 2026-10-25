@@ -7,6 +7,8 @@
  **********************************************************************/
 
 #include "pendingmanager.h"
+#include <exception>
+#include <memory>
 #include <QStandardItemModel>
 #include <QtDebug>
 #include <QTimer>
@@ -19,6 +21,14 @@ namespace LC
 {
 namespace LackMan
 {
+	namespace
+	{
+		std::unique_ptr<QStandardItem> MakeItem (const ListPackageInfo& info)
+		{
+			return std::make_unique<QStandardItem> (QString ("%1 (%2)").arg (info.Name_, info.ShortDescription_));
+		}
+	}
+
 	PendingManager::PendingManager (QObject *parent)
 	: QObject (parent)
 	, PendingModel_ (new QStandardItemModel)
@@ -53,24 +63,20 @@ namespace LackMan
 		hasPendingActionsChanged (false);
 	}
 
-	void PendingManager::ToggleInstallRemove (int id, bool enable, bool installed)
+	MarkingResult_t PendingManager::ToggleInstallRemove (int id, bool enable, bool installed)
 	{
-		if (enable)
-			EnablePackageInto (id, installed ? Action::Remove : Action::Install);
-		else
-			DisablePackageFrom (id, installed ? Action::Remove : Action::Install);
-
-		emit packageInstallRemoveToggled (id, enable);
+		const auto result = Toggle (id, enable, installed ? Action::Remove : Action::Install);
+		if (result.IsRight ())
+			emit packageInstallRemoveToggled (id, enable);
+		return result;
 	}
 
-	void PendingManager::ToggleUpdate (int id, bool enable)
+	MarkingResult_t PendingManager::ToggleUpdate (int id, bool enable)
 	{
-		if (enable)
-			EnablePackageInto (id, Action::Update);
-		else
-			DisablePackageFrom (id, Action::Update);
-
-		emit packageUpdateToggled (id, enable);
+		const auto result = Toggle (id, enable, Action::Update);
+		if (result.IsRight ())
+			emit packageUpdateToggled (id, enable);
+		return result;
 	}
 
 	QSet<int> PendingManager::GetPendingInstall () const
@@ -103,48 +109,46 @@ namespace LackMan
 		DisablePackageFrom (packageId, Action::Update);
 	}
 
-	void PendingManager::EnablePackageInto (int id, PendingManager::Action action)
+	MarkingResult_t PendingManager::Toggle (int id, bool enable, Action action)
 	{
-		DepTreeBuilder builder (id);
-		if (!builder.IsFulfilled ())
+		if (enable)
+			return EnablePackageInto (id, action);
+
+		DisablePackageFrom (id, action);
+		return Util::Void {};
+	}
+
+	MarkingResult_t PendingManager::EnablePackageInto (int id, Action action)
+	{
+		std::unique_ptr<QStandardItem> packageItem;
+		QList<int> deps;
+		try
 		{
-			QStringList unful = builder.GetUnfulfilled ();
-			qWarning () << Q_FUNC_INFO
-					<< id
-					<< "isn't fulfilled, aborting:"
-					<< unful;
-			QString list = QString ("<ul><li>%1</li></ul>")
-					.arg (unful.join ("</li><li>"));
-			throw std::runtime_error (tr ("Package dependencies "
-					"could not be fulfilled: %1").arg (list)
-					.toUtf8 ().constData ());
+			const DepTreeBuilder builder { id };
+			const auto& info = Core::Instance ().GetListPackageInfo (id);
+			if (!builder.IsFulfilled ())
+				return Util::Left { UnsatisfiedDependencies { info.Name_, builder.GetUnfulfilled () } };
+
+			deps = builder.GetPackagesToInstall ();
+			packageItem = MakeItem (info);
+			packageItem->setIcon (Core::Instance ().GetIconForLPI (info));
+			for (const auto dep : deps)
+				packageItem->appendRow (MakeItem (Core::Instance ().GetListPackageInfo (dep)).release ());
+		}
+		catch (const std::exception& e)
+		{
+			return Util::Left { PackageLookupFailed { id, QString::fromUtf8 (e.what ()) } };
 		}
 
-		const auto& deps = builder.GetPackagesToInstall ();
 		Deps_ [id] = deps;
-
 		ScheduledForAction_ [action] << id;
-
-		ListPackageInfo info = Core::Instance ().GetListPackageInfo (id);
-		QStandardItem *packageItem = new QStandardItem (QString ("%1 (%2)")
-				.arg (info.Name_)
-				.arg (info.ShortDescription_));
-		packageItem->setIcon (Core::Instance ().GetIconForLPI (info));
-		for (int dep : deps)
-		{
-			info = Core::Instance ().GetListPackageInfo (dep);
-			QStandardItem *item = new QStandardItem (QString ("%1 (%2)")
-					.arg (info.Name_)
-					.arg (info.ShortDescription_));
-			packageItem->appendRow (item);
-		}
-
-		ID2ModelRow_ [id] = packageItem;
-		RootItemForAction_ [action]->appendRow (packageItem);
+		ID2ModelRow_ [id] = packageItem.get ();
+		RootItemForAction_ [action]->appendRow (packageItem.release ());
 
 		NotifyHasPendingActionsChanged ();
 		if (action != Action::Remove)
 			ScheduleNotifyFetchListUpdate ();
+		return Util::Void {};
 	}
 
 	void PendingManager::DisablePackageFrom (int id, PendingManager::Action action)
