@@ -60,56 +60,50 @@ namespace LC::BitTorrent
 		}
 
 		const auto& fullPath = params.Path_.toStdString ();
+		QByteArray outbuf;
+		try
+		{
 #if LIBTORRENT_VERSION_NUM >= 20100
-		libtorrent::create_torrent ct { libtorrent::list_files (fullPath, FileFilter), params.PieceSize_ };
+			libtorrent::create_torrent ct { libtorrent::list_files (fullPath, FileFilter), params.PieceSize_ };
 #else
-		libtorrent::file_storage fs;
-		libtorrent::add_files (fs, fullPath, FileFilter);
-		libtorrent::create_torrent ct (fs, params.PieceSize_);
+			libtorrent::file_storage fs;
+			libtorrent::add_files (fs, fullPath, FileFilter);
+			libtorrent::create_torrent ct (fs, params.PieceSize_);
 #endif
 
-		ct.set_creator (qPrintable (QString ("LeechCraft BitTorrent %1")
-					.arg (GetProxyHolder ()->GetVersion ())));
-		if (!params.Comment_.isEmpty ())
-			ct.set_comment (params.Comment_.toUtf8 ());
-		for (const auto& seed : params.URLSeeds_)
-			ct.add_url_seed (seed.toStdString ());
-		ct.set_priv (!params.DHTEnabled_);
+			ct.set_creator (qPrintable (QString ("LeechCraft BitTorrent %1")
+						.arg (GetProxyHolder ()->GetVersion ())));
+			if (!params.Comment_.isEmpty ())
+				ct.set_comment (params.Comment_.toUtf8 ());
+			for (const auto& seed : params.URLSeeds_)
+				ct.add_url_seed (seed.toStdString ());
+			ct.set_priv (!params.DHTEnabled_);
 
-		if (params.DHTEnabled_)
-			for (int i = 0; i < params.DHTNodes_.size (); ++i)
-			{
-				QStringList splitted = params.DHTNodes_.at (i).split (":");
-				ct.add_node (std::pair<std::string, int> (splitted [0].trimmed ().toStdString (),
-							splitted [1].trimmed ().toInt ()));
-			}
+			if (params.DHTEnabled_)
+				for (int i = 0; i < params.DHTNodes_.size (); ++i)
+				{
+					QStringList splitted = params.DHTNodes_.at (i).split (":");
+					ct.add_node (std::pair<std::string, int> (splitted [0].trimmed ().toStdString (),
+								splitted [1].trimmed ().toInt ()));
+				}
 
-		ct.add_tracker (params.AnnounceURL_.toStdString ());
+			ct.add_tracker (params.AnnounceURL_.toStdString ());
 
-		QProgressDialog pd;
-		pd.setWindowTitle (Tr::tr ("Hashing torrent..."));
-		pd.setMaximum (ct.num_pieces ());
+			QProgressDialog pd;
+			pd.setWindowTitle (Tr::tr ("Hashing torrent..."));
+			pd.setMaximum (ct.num_pieces ());
+			libtorrent::set_piece_hashes (ct,
+					fullPath,
+					[&pd] (libtorrent::piece_index_t i) { pd.setValue (static_cast<int> (i)); });
 
-		libtorrent::error_code hashesError;
-		libtorrent::set_piece_hashes (ct,
-				fullPath,
-				[&pd] (libtorrent::piece_index_t i) { pd.setValue (static_cast<int> (i)); },
-				hashesError);
-		if (hashesError)
+			libtorrent::bencode (std::back_inserter (outbuf), ct.generate ());
+		}
+		catch (const libtorrent::system_error& e)
 		{
-			QString message = QString::fromUtf8 (hashesError.message ().c_str ());
-			qWarning () << Q_FUNC_INFO
-					<< "while in libtorrent::set_piece_hashes():"
-					<< message
-					<< hashesError.category ().name ();
-			ReportError (Tr::tr ("Torrent creation failed: %1")
-					.arg (message));
+			qWarning () << "torrent creation failed:" << e.what () << e.code ().category ().name ();
+			ReportError (Tr::tr ("Torrent creation failed: %1").arg (QString::fromUtf8 (e.what ())));
 			return {};
 		}
-
-		libtorrent::entry e = ct.generate ();
-		QByteArray outbuf;
-		libtorrent::bencode (std::back_inserter (outbuf), e);
 		file.write (outbuf);
 		file.close ();
 
