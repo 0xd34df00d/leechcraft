@@ -138,7 +138,7 @@ namespace BitTorrent
 	, FinishedTimer_ { new QTimer }
 	, WarningWatchdog_ { new QTimer }
 	, Dispatcher_ { *Session_ }
-	, SessionStatsKeeper_ { Dispatcher_ }
+	, SessionStatsKeeper_ { *Session_, Dispatcher_ }
 	{
 		setObjectName ("BitTorrent Core");
 

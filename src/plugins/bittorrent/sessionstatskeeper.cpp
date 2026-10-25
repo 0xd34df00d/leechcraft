@@ -9,6 +9,7 @@
 #include "sessionstatskeeper.h"
 #include <chrono>
 #include <libtorrent/alert_types.hpp>
+#include <libtorrent/session.hpp>
 #include <libtorrent/session_stats.hpp>
 #include "alertdispatcher.h"
 
@@ -63,7 +64,8 @@ namespace LC::BitTorrent
 		}
 	}
 
-	SessionStatsKeeper::SessionStatsKeeper (AlertDispatcher& dispatcher)
+	SessionStatsKeeper::SessionStatsKeeper (const libtorrent::session& session, AlertDispatcher& dispatcher)
+	: Session_ { session }
 	{
 		dispatcher.RegisterHandler ([this] (const libtorrent::session_stats_alert& a)
 				{
@@ -102,6 +104,7 @@ namespace LC::BitTorrent
 					SessionStats::Symmetric<int> {};
 		};
 
+		const auto dhtRunning = Session_.is_dht_running ();
 		Stats_ =
 		{
 			.Rate_ = rate (&Sample::Total_),
@@ -116,8 +119,8 @@ namespace LC::BitTorrent
 			.PayloadTotal_ = { get (idx.RecvPayloadBytes_), get (idx.SentPayloadBytes_) },
 
 			.NumPeers_ = static_cast<int> (get (idx.NumPeers_)),
-			.DHTNodes_ = static_cast<int> (get (idx.DHTNodes_)),
-			.DHTTorrents_ = static_cast<int> (get (idx.DHTTorrents_)),
+			.DHTNodes_ = dhtRunning ? static_cast<int> (get (idx.DHTNodes_)) : 0,
+			.DHTTorrents_ = dhtRunning ? static_cast<int> (get (idx.DHTTorrents_)) : 0,
 
 			.TotalFailedBytes_ = get (idx.RecvFailedBytes_),
 			.TotalRedundantBytes_ = get (idx.RecvRedundantBytes_),

@@ -28,11 +28,12 @@ namespace LC::BitTorrent
 			SessionStats::Symmetric<int64_t> DHTTotal_;
 			SessionStats::Symmetric<int64_t> TrackerTotal_;
 		};
+		const libtorrent::session& Session_;
 		std::optional<Sample> Prev_;
 
 		SessionStats Stats_ {};
 	public:
-		explicit SessionStatsKeeper (AlertDispatcher&);
+		explicit SessionStatsKeeper (const libtorrent::session&, AlertDispatcher&);
 
 		const SessionStats& GetStats () const;
 	private:
