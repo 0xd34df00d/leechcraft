@@ -12,14 +12,12 @@ LC_DEFINE_PLUGIN (
 		storage.cpp
 		deptreebuilder.cpp
 		packagesmodel.cpp
-		packagesdelegate.cpp
 		xmlparsers.cpp
 		externalresourcemanager.cpp
 		pendingmanager.cpp
 		packageprocessor.cpp
 		versioncomparator.cpp
 		typefilterproxymodel.cpp
-		delegatebuttongroup.cpp
 		stringfiltermodel.cpp
 		updatesnotificationmanager.cpp
 		lackmanutil.cpp

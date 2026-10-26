@@ -654,8 +654,6 @@ namespace LackMan
 		UpdateRowFor (packageId);
 
 		PendingManager_->SuccessfullyRemoved (packageId);
-
-		emit packageRowActionFinished (GetPackageRow (packageId));
 	}
 
 	void Core::UpdateRowFor (int packageId)
@@ -726,11 +724,6 @@ namespace LackMan
 		}
 
 		return true;
-	}
-
-	int Core::GetPackageRow (int packageId) const
-	{
-		return PackagesModel_->GetRow (packageId);
 	}
 
 	void Core::ReadSettings ()
@@ -1134,8 +1127,6 @@ namespace LackMan
 					tr ("Package %1 installed successfully.")
 						.arg ("<em>" + packageName + "</em>"),
 					Priority::Info));
-
-		emit packageRowActionFinished (GetPackageRow (packageId));
 	}
 
 	void Core::handlePackageUpdated (int fromId, int packageId)
@@ -1165,8 +1156,6 @@ namespace LackMan
 					tr ("Package %1 updated successfully.")
 						.arg ("<em>" + packageName + "</em>"),
 					Priority::Info));
-
-		emit packageRowActionFinished (GetPackageRow (packageId));
 	}
 
 	void Core::handlePackageRemoved (int packageId)

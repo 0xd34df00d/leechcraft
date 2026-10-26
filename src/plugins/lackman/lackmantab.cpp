@@ -23,7 +23,6 @@
 #include "typefilterproxymodel.h"
 #include "stringfiltermodel.h"
 #include "packagesmodel.h"
-#include "packagesdelegate.h"
 #include "pendingmanager.h"
 #include "storage.h"
 #include "updatesnotificationmanager.h"
@@ -83,7 +82,6 @@ namespace LackMan
 		FilterString_->sort (PackagesModel::Columns::Name);
 
 		Ui_.PackagesTree_->setModel (FilterString_);
-		Ui_.PackagesTree_->setItemDelegate (new PackagesDelegate (Ui_.PackagesTree_));
 
 		BuildPackageTreeShortcuts ();
 

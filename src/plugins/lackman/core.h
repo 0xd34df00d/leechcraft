@@ -89,7 +89,6 @@ namespace LackMan
 		void UpdateRowFor (int);
 		bool RecordInstalled (int);
 		bool RecordUninstalled (int);
-		int GetPackageRow (int packageId) const;
 		void ReadSettings ();
 		void WriteSettings ();
 	public slots:
@@ -111,7 +110,6 @@ namespace LackMan
 		void handlePackageRemoved (int);
 	signals:
 		void tagsUpdated (const QStringList&);
-		void packageRowActionFinished (int row);
 
 		void openLackmanRequested ();
 	};
