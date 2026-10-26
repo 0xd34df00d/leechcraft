@@ -37,8 +37,8 @@ namespace LackMan
 		RepoInfoFetcher *RepoInfoFetcher_ = nullptr;
 		ExternalResourceManager *ExternalResourceManager_;
 		Storage *Storage_;
-		PackagesModel *PackagesModel_;
 		PendingManager *PendingManager_;
+		PackagesModel *PackagesModel_;
 		PackageProcessor *PackageProcessor_;
 		QStandardItemModel *ReposModel_;
 		UpdatesNotificationManager *UpdatesNotificationManager_ = nullptr;

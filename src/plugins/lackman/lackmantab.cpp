@@ -186,11 +186,7 @@ namespace LackMan
 		connect (UpgradeAll_,
 				&QAction::triggered,
 				this,
-				[]
-				{
-					auto& core = Core::Instance ();
-					LackManUtil::ReportMarkingErrors (LackManUtil::MarkAllForUpgrade (*core.GetPluginsModel (), *core.GetPendingManager ()));
-				});
+				[] { LackManUtil::ReportMarkingErrors (LackManUtil::MarkAllForUpgrade (*Core::Instance ().GetPluginsModel ())); });
 		ShortcutMgr_->RegisterAction ("upgradeall", UpgradeAll_);
 
 		Apply_ = new QAction (tr ("Apply"), this);
@@ -374,8 +370,8 @@ namespace LackMan
 
 	void LackManTab::MarkVisibleForInstall (LackManUtil::MarkAction action)
 	{
-		LackManUtil::ReportMarkingErrors (LackManUtil::MarkAllForInstall (*Ui_.PackagesTree_->model (),
-				*Core::Instance ().GetPendingManager (), action));
+		LackManUtil::ReportMarkingErrors (LackManUtil::MarkForInstall (*Core::Instance ().GetPluginsModel (),
+				LackManUtil::PackageIds (*Ui_.PackagesTree_->model ()), action));
 	}
 
 	void LackManTab::on_PackagesTree__customContextMenuRequested (const QPoint& point)

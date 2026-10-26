@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <optional>
+#include <variant>
 #include <QAbstractTableModel>
 #include "repoinfo.h"
 #include "pendingmanager.h"
@@ -16,10 +18,24 @@ namespace LC
 {
 namespace LackMan
 {
+	struct UnknownPackage
+	{
+		int PackageId_;
+	};
+
+	struct NotUpgradable
+	{
+		QString Package_;
+	};
+
+	using MarkingError_t = std::variant<UnknownPackage, NotUpgradable, UnsatisfiedDependencies, ResolutionFailed>;
+	using MarkingResult_t = Util::Either<MarkingError_t, Util::Void>;
+
 	class PackagesModel : public QAbstractTableModel
 	{
 		Q_OBJECT
 
+		PendingManager& PendingManager_;
 		QList<ListPackageInfo> Packages_;
 	public:
 		enum PackageModelRole
@@ -48,7 +64,7 @@ namespace LackMan
 			MaxColumn
 		};
 
-		explicit PackagesModel (QObject* = nullptr);
+		explicit PackagesModel (PendingManager&, QObject* = nullptr);
 
 		int columnCount (const QModelIndex& = {}) const override;
 		QVariant headerData (int, Qt::Orientation, int) const override;
@@ -61,11 +77,19 @@ namespace LackMan
 		void UpdateRow (const ListPackageInfo&);
 		void RemovePackage (int);
 		ListPackageInfo FindPackage (const QString&) const;
+		std::optional<ListPackageInfo> FindPackage (int packageId) const;
 		int GetRow (int packageId) const;
 		void Clear ();
-	public slots:
-		void handlePackageInstallRemoveToggled (int);
-		void handlePackageUpdateToggled (int);
+
+		/** For an installed package, unchecking marks it for removal.
+		 */
+		[[nodiscard]] MarkingResult_t SetInstallChecked (int packageId, bool checked);
+		[[nodiscard]] MarkingResult_t SetUpdateChecked (int packageId, bool checked);
+		void ResetPending ();
+	private:
+		bool IsInstallChecked (const ListPackageInfo&) const;
+		bool IsUpdateChecked (const ListPackageInfo&) const;
+		MarkingResult_t NotifyIfApplied (const QModelIndex& cell, const ToggleResult_t&);
 	signals:
 		void markingFailed (const MarkingError_t&);
 	};

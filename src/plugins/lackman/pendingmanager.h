@@ -30,14 +30,14 @@ namespace LackMan
 		QStringList Dependencies_;
 	};
 
-	struct PackageLookupFailed
+	struct ResolutionFailed
 	{
 		int PackageId_;
 		QString What_;
 	};
 
-	using MarkingError_t = std::variant<UnsatisfiedDependencies, PackageLookupFailed>;
-	using MarkingResult_t = Util::Either<MarkingError_t, Util::Void>;
+	using ToggleError_t = std::variant<UnsatisfiedDependencies, ResolutionFailed>;
+	using ToggleResult_t = Util::Either<ToggleError_t, Util::Void>;
 
 	class PendingManager : public QObject
 	{
@@ -64,8 +64,8 @@ namespace LackMan
 
 		QAbstractItemModel* GetPendingModel () const;
 		void Reset ();
-		[[nodiscard]] MarkingResult_t ToggleInstallRemove (int id, bool enable, bool installed);
-		[[nodiscard]] MarkingResult_t ToggleUpdate (int id, bool enable);
+		[[nodiscard]] ToggleResult_t ToggleInstallRemove (int id, bool enable, bool installed);
+		[[nodiscard]] ToggleResult_t ToggleUpdate (int id, bool enable);
 
 		QSet<int> GetPendingInstall () const;
 		QSet<int> GetPendingRemove () const;
@@ -75,8 +75,8 @@ namespace LackMan
 		void SuccessfullyRemoved (int);
 		void SuccessfullyUpdated (int);
 	private:
-		MarkingResult_t Toggle (int, bool enable, Action);
-		MarkingResult_t EnablePackageInto (int, Action);
+		ToggleResult_t Toggle (int, bool enable, Action);
+		ToggleResult_t EnablePackageInto (int, Action);
 		void DisablePackageFrom (int, Action);
 		void ReinitRootItems ();
 
@@ -85,8 +85,6 @@ namespace LackMan
 	private slots:
 		void notifyFetchListUpdate ();
 	signals:
-		void packageInstallRemoveToggled (int, bool);
-		void packageUpdateToggled (int, bool);
 		void fetchListUpdated (const QList<int>&);
 		void hasPendingActionsChanged (bool);
 	};

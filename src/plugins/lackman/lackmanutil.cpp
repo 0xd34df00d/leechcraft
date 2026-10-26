@@ -16,6 +16,7 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QtDebug>
+#include <util/models/modeliterator.h>
 #include <util/sll/prelude.h>
 #include <util/sll/visitor.h>
 #include <interfaces/core/icoreproxy.h>
@@ -113,12 +114,12 @@ namespace LackManUtil
 
 	namespace
 	{
-		template<typename F>
-		QList<MarkingError_t> CollectMarkingErrors (const QAbstractItemModel& packages, F&& mark)
+		template<typename Range, typename F>
+		QList<MarkingError_t> CollectMarkingErrors (const Range& range, F&& mark)
 		{
 			QList<MarkingError_t> errors;
-			for (int i = 0, rc = packages.rowCount (); i < rc; ++i)
-				if (const auto error = mark (packages.index (i, 0)))
+			for (const auto& item : range)
+				if (const auto error = mark (item))
 					errors << *error;
 			return errors;
 		}
@@ -126,43 +127,53 @@ namespace LackManUtil
 		QString DescribeMarkingError (const MarkingError_t& error)
 		{
 			return Util::Visit (error,
+					[] (const UnknownPackage& e)
+					{
+						return QObject::tr ("Package %1 is not in the package list.").arg (e.PackageId_);
+					},
+					[] (const NotUpgradable& e)
+					{
+						return QObject::tr ("Package %1 has no newer version.").arg (e.Package_);
+					},
 					[] (const UnsatisfiedDependencies& e)
 					{
 						return QObject::tr ("Dependencies of %1 cannot be satisfied: %2.")
 								.arg (e.Package_, e.Dependencies_.join (", "));
 					},
-					[] (const PackageLookupFailed& e)
+					[] (const ResolutionFailed& e)
 					{
-						return QObject::tr ("Package %1 could not be looked up: %2.")
+						return QObject::tr ("Package %1 could not be resolved: %2.")
 								.arg (QString::number (e.PackageId_), e.What_);
 					});
 		}
 	}
 
-	QList<MarkingError_t> MarkAllForUpgrade (const QAbstractItemModel& packages, PendingManager& pm)
+	QList<int> PackageIds (const QAbstractItemModel& rows)
 	{
-		const auto& pending = pm.GetPendingUpdate ();
-		return CollectMarkingErrors (packages,
+		return Util::Map (Util::AllModelRows (rows),
+				[] (const QModelIndex& idx) { return idx.data (PackagesModel::PMRPackageID).toInt (); });
+	}
+
+	QList<MarkingError_t> MarkAllForUpgrade (PackagesModel& packages)
+	{
+		return CollectMarkingErrors (Util::AllModelRows (packages),
 				[&] (const QModelIndex& idx) -> std::optional<MarkingError_t>
 				{
-					const auto id = idx.data (PackagesModel::PMRPackageID).toInt ();
-					if (!idx.data (PackagesModel::PMRUpgradable).toBool () || pending.contains (id))
+					if (!idx.data (PackagesModel::PMRUpgradable).toBool ())
 						return {};
-					return pm.ToggleUpdate (id, true).MaybeLeft ();
+					return packages.SetUpdateChecked (idx.data (PackagesModel::PMRPackageID).toInt (), true).MaybeLeft ();
 				});
 	}
 
-	QList<MarkingError_t> MarkAllForInstall (const QAbstractItemModel& packages, PendingManager& pm, MarkAction action)
+	QList<MarkingError_t> MarkForInstall (PackagesModel& packages, const QList<int>& packageIds, MarkAction action)
 	{
-		const bool mark = action == MarkAction::Mark;
-		const auto& pending = pm.GetPendingInstall ();
-		return CollectMarkingErrors (packages,
-				[&] (const QModelIndex& idx) -> std::optional<MarkingError_t>
+		return CollectMarkingErrors (packageIds,
+				[&] (int id) -> std::optional<MarkingError_t>
 				{
-					const auto id = idx.data (PackagesModel::PMRPackageID).toInt ();
-					if (idx.data (PackagesModel::PMRInstalled).toBool () || pending.contains (id) == mark)
+					const auto info = packages.FindPackage (id);
+					if (info && info->IsInstalled_)
 						return {};
-					return pm.ToggleInstallRemove (id, mark, false).MaybeLeft ();
+					return packages.SetInstallChecked (id, action == MarkAction::Mark).MaybeLeft ();
 				});
 	}
 

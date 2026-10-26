@@ -51,8 +51,8 @@ namespace LackMan
 	Core::Core ()
 	: ExternalResourceManager_ (new ExternalResourceManager (this))
 	, Storage_ (new Storage (this))
-	, PackagesModel_ (new PackagesModel (this))
 	, PendingManager_ (new PendingManager (this))
+	, PackagesModel_ (new PackagesModel (*PendingManager_, this))
 	, PackageProcessor_ (new PackageProcessor (this))
 	, ReposModel_ (new QStandardItemModel (this))
 	, UpdatesEnabled_ (true)
@@ -62,15 +62,6 @@ namespace LackMan
 		Relation2comparator [Dependency::GE] = [] (QString l, QString r) { return !Relation2comparator [Dependency::L] (l, r); };
 		Relation2comparator [Dependency::E] = [] (QString l, QString r) { return r == l; };
 		Relation2comparator [Dependency::LE] = [] (QString l, QString r) { return !Relation2comparator [Dependency::G] (l, r); };
-
-		connect (PendingManager_,
-				SIGNAL (packageUpdateToggled (int, bool)),
-				PackagesModel_,
-				SLOT (handlePackageUpdateToggled (int)));
-		connect (PendingManager_,
-				SIGNAL (packageInstallRemoveToggled (int, bool)),
-				PackagesModel_,
-				SLOT (handlePackageInstallRemoveToggled (int)));
 
 		connect (Storage_,
 				SIGNAL (packageRemoved (int)),
@@ -445,7 +436,7 @@ namespace LackMan
 
 	void Core::cancelPending ()
 	{
-		PendingManager_->Reset ();
+		PackagesModel_->ResetPending ();
 	}
 
 	void Core::acceptPending ()

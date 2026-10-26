@@ -8,8 +8,8 @@
 
 #include "packagesmodel.h"
 #include <QIcon>
-#include <QtDebug>
 #include <util/models/modelsanitizer.h>
+#include <util/sll/visitor.h>
 #include <util/util.h>
 #include "core.h"
 #include "storage.h"
@@ -19,8 +19,9 @@ namespace LC
 {
 namespace LackMan
 {
-	PackagesModel::PackagesModel (QObject *parent)
+	PackagesModel::PackagesModel (PendingManager& pm, QObject *parent)
 	: QAbstractTableModel { parent }
+	, PendingManager_ { pm }
 	{
 		Util::InstallModelSanitizer (*this);
 	}
@@ -87,29 +88,17 @@ namespace LackMan
 					QVariant () :
 					Core::Instance ().GetIconForLPI (lpi);
 		case Qt::CheckStateRole:
-		{
-			auto pm = Core::Instance ().GetPendingManager ();
 			switch (col)
 			{
 			case Columns::Inst:
-				if (lpi.IsInstalled_)
-					return pm->GetPendingRemove ().contains (lpi.PackageID_) ?
-							Qt::Unchecked :
-							Qt::Checked;
-				else
-					return pm->GetPendingInstall ().contains (lpi.PackageID_) ?
-							Qt::Checked :
-							Qt::Unchecked;
+				return IsInstallChecked (lpi) ? Qt::Checked : Qt::Unchecked;
 			case Columns::Upd:
 				if (!lpi.HasNewVersion_)
 					return {};
-				return pm->GetPendingUpdate ().contains (lpi.PackageID_) ?
-						Qt::Checked :
-						Qt::Unchecked;
+				return IsUpdateChecked (lpi) ? Qt::Checked : Qt::Unchecked;
 			default:
 				return {};
 			}
-		}
 		case PMRPackageID:
 			return lpi.PackageID_;
 		case PMRName:
@@ -144,34 +133,17 @@ namespace LackMan
 
 	bool PackagesModel::setData (const QModelIndex& index, const QVariant& value, int role)
 	{
-		if (!index.isValid () || role != Qt::CheckStateRole)
+		if (role != Qt::CheckStateRole || !(flags (index) & Qt::ItemIsUserCheckable))
 			return false;
 
-		const auto report = [this] (const MarkingResult_t& result)
-		{
-			if (const auto error = result.MaybeLeft ())
-				emit markingFailed (*error);
-			return result.IsRight ();
-		};
-
-		const auto& lpi = Packages_.at (index.row ());
+		const auto id = Packages_.at (index.row ()).PackageID_;
 		const bool checked = value.value<Qt::CheckState> () == Qt::Checked;
-		const auto pm = Core::Instance ().GetPendingManager ();
-		bool toggled = false;
-		switch (index.column ())
-		{
-		case Columns::Inst:
-			toggled = report (pm->ToggleInstallRemove (lpi.PackageID_, checked != lpi.IsInstalled_, lpi.IsInstalled_));
-			break;
-		case Columns::Upd:
-			toggled = lpi.HasNewVersion_ && report (pm->ToggleUpdate (lpi.PackageID_, checked));
-			break;
-		}
-		if (!toggled)
-			return false;
-
-		emit dataChanged (index, index, { Qt::CheckStateRole });
-		return true;
+		const auto result = index.column () == Columns::Inst ?
+				SetInstallChecked (id, checked) :
+				SetUpdateChecked (id, checked);
+		if (const auto error = result.MaybeLeft ())
+			emit markingFailed (*error);
+		return result.IsRight ();
 	}
 
 	Qt::ItemFlags PackagesModel::flags (const QModelIndex& index) const
@@ -242,6 +214,14 @@ namespace LackMan
 				ListPackageInfo {};
 	}
 
+	std::optional<ListPackageInfo> PackagesModel::FindPackage (int packageId) const
+	{
+		const auto row = GetRow (packageId);
+		if (row == -1)
+			return {};
+		return Packages_.at (row);
+	}
+
 	int PackagesModel::GetRow (int packageId) const
 	{
 		for (int i = 0, size = Packages_.size (); i < size; ++i)
@@ -258,34 +238,61 @@ namespace LackMan
 		endResetModel ();
 	}
 
-	void PackagesModel::handlePackageInstallRemoveToggled (int id)
+	MarkingResult_t PackagesModel::SetInstallChecked (int packageId, bool checked)
 	{
-		const auto row = GetRow (id);
+		const auto row = GetRow (packageId);
 		if (row == -1)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown package ID"
-					<< id;
-			return;
-		}
+			return Util::Left { UnknownPackage { packageId } };
 
-		const auto& idx = index (row, Columns::Inst);
-		emit dataChanged (idx, idx);
+		const auto& lpi = Packages_.at (row);
+		if (IsInstallChecked (lpi) == checked)
+			return Util::Void {};
+
+		return NotifyIfApplied (index (row, Columns::Inst),
+				PendingManager_.ToggleInstallRemove (packageId, checked != lpi.IsInstalled_, lpi.IsInstalled_));
 	}
 
-	void PackagesModel::handlePackageUpdateToggled (int id)
+	MarkingResult_t PackagesModel::SetUpdateChecked (int packageId, bool checked)
 	{
-		const auto row = GetRow (id);
+		const auto row = GetRow (packageId);
 		if (row == -1)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown package ID"
-					<< id;
-			return;
-		}
+			return Util::Left { UnknownPackage { packageId } };
 
-		const auto& idx = index (row, Columns::Upd);
-		emit dataChanged (idx, idx);
+		const auto& lpi = Packages_.at (row);
+		if (!lpi.HasNewVersion_)
+			return Util::Left { NotUpgradable { lpi.Name_ } };
+		if (IsUpdateChecked (lpi) == checked)
+			return Util::Void {};
+
+		return NotifyIfApplied (index (row, Columns::Upd), PendingManager_.ToggleUpdate (packageId, checked));
+	}
+
+	void PackagesModel::ResetPending ()
+	{
+		PendingManager_.Reset ();
+		if (!Packages_.isEmpty ())
+			emit dataChanged (index (0, Columns::Inst), index (Packages_.size () - 1, Columns::Upd), { Qt::CheckStateRole });
+	}
+
+	bool PackagesModel::IsInstallChecked (const ListPackageInfo& lpi) const
+	{
+		return lpi.IsInstalled_ ?
+				!PendingManager_.GetPendingRemove ().contains (lpi.PackageID_) :
+				PendingManager_.GetPendingInstall ().contains (lpi.PackageID_);
+	}
+
+	bool PackagesModel::IsUpdateChecked (const ListPackageInfo& lpi) const
+	{
+		return PendingManager_.GetPendingUpdate ().contains (lpi.PackageID_);
+	}
+
+	MarkingResult_t PackagesModel::NotifyIfApplied (const QModelIndex& cell, const ToggleResult_t& result)
+	{
+		if (const auto error = result.MaybeLeft ())
+			return Util::Left { Util::Visit (*error, [] (const auto& e) -> MarkingError_t { return e; }) };
+
+		emit dataChanged (cell, cell, { Qt::CheckStateRole });
+		return Util::Void {};
 	}
 }
 }

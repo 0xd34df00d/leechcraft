@@ -9,9 +9,8 @@
 #pragma once
 
 #include <QList>
-#include "pendingmanager.h"
+#include "packagesmodel.h"
 
-class QAbstractItemModel;
 class QString;
 
 namespace LC
@@ -33,8 +32,10 @@ namespace LackManUtil
 		Mark
 	};
 
-	QList<MarkingError_t> MarkAllForUpgrade (const QAbstractItemModel& packages, PendingManager&);
-	QList<MarkingError_t> MarkAllForInstall (const QAbstractItemModel& packages, PendingManager&, MarkAction);
+	QList<int> PackageIds (const QAbstractItemModel& rows);
+
+	QList<MarkingError_t> MarkAllForUpgrade (PackagesModel&);
+	QList<MarkingError_t> MarkForInstall (PackagesModel&, const QList<int>& packageIds, MarkAction);
 	void ReportMarkingErrors (const QList<MarkingError_t>&);
 }
 }

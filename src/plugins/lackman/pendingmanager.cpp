@@ -45,14 +45,6 @@ namespace LackMan
 	{
 		ReinitRootItems ();
 
-		for (const auto id : ScheduledForAction_.value (Action::Update))
-			packageUpdateToggled (id, false);
-
-		for (const auto id : ScheduledForAction_.value (Action::Install))
-			packageInstallRemoveToggled (id, false);
-		for (const auto id : ScheduledForAction_.value (Action::Remove))
-			packageInstallRemoveToggled (id, false);
-
 		for (int i = Action::Install; i < Action::MAX; ++i)
 			ScheduledForAction_ [static_cast<Action> (i)].clear ();
 
@@ -63,20 +55,14 @@ namespace LackMan
 		hasPendingActionsChanged (false);
 	}
 
-	MarkingResult_t PendingManager::ToggleInstallRemove (int id, bool enable, bool installed)
+	ToggleResult_t PendingManager::ToggleInstallRemove (int id, bool enable, bool installed)
 	{
-		const auto result = Toggle (id, enable, installed ? Action::Remove : Action::Install);
-		if (result.IsRight ())
-			emit packageInstallRemoveToggled (id, enable);
-		return result;
+		return Toggle (id, enable, installed ? Action::Remove : Action::Install);
 	}
 
-	MarkingResult_t PendingManager::ToggleUpdate (int id, bool enable)
+	ToggleResult_t PendingManager::ToggleUpdate (int id, bool enable)
 	{
-		const auto result = Toggle (id, enable, Action::Update);
-		if (result.IsRight ())
-			emit packageUpdateToggled (id, enable);
-		return result;
+		return Toggle (id, enable, Action::Update);
 	}
 
 	QSet<int> PendingManager::GetPendingInstall () const
@@ -109,7 +95,7 @@ namespace LackMan
 		DisablePackageFrom (packageId, Action::Update);
 	}
 
-	MarkingResult_t PendingManager::Toggle (int id, bool enable, Action action)
+	ToggleResult_t PendingManager::Toggle (int id, bool enable, Action action)
 	{
 		if (enable)
 			return EnablePackageInto (id, action);
@@ -118,7 +104,7 @@ namespace LackMan
 		return Util::Void {};
 	}
 
-	MarkingResult_t PendingManager::EnablePackageInto (int id, Action action)
+	ToggleResult_t PendingManager::EnablePackageInto (int id, Action action)
 	{
 		std::unique_ptr<QStandardItem> packageItem;
 		QList<int> deps;
@@ -137,7 +123,7 @@ namespace LackMan
 		}
 		catch (const std::exception& e)
 		{
-			return Util::Left { PackageLookupFailed { id, QString::fromUtf8 (e.what ()) } };
+			return Util::Left { ResolutionFailed { id, QString::fromUtf8 (e.what ()) } };
 		}
 
 		Deps_ [id] = deps;
