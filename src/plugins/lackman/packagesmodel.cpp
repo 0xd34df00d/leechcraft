@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "packagesmodel.h"
+#include <algorithm>
 #include <QIcon>
 #include <util/models/modelsanitizer.h>
 #include <util/sll/visitor.h>
@@ -205,13 +206,13 @@ namespace LackMan
 			}
 	}
 
-	ListPackageInfo PackagesModel::FindPackage (const QString& name) const
+	std::optional<ListPackageInfo> PackagesModel::FindPackage (const QString& name) const
 	{
 		const auto pos = std::find_if (Packages_.begin (), Packages_.end (),
 				[&name] (const auto& lpi) { return lpi.Name_ == name; });
-		return pos != Packages_.end () ?
-				*pos :
-				ListPackageInfo {};
+		if (pos == Packages_.end ())
+			return {};
+		return *pos;
 	}
 
 	std::optional<ListPackageInfo> PackagesModel::FindPackage (int packageId) const
@@ -229,13 +230,6 @@ namespace LackMan
 				return i;
 
 		return -1;
-	}
-
-	void PackagesModel::Clear ()
-	{
-		beginResetModel ();
-		Packages_.clear ();
-		endResetModel ();
 	}
 
 	MarkingResult_t PackagesModel::SetInstallChecked (int packageId, bool checked)

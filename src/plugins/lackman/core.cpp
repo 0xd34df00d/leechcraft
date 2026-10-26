@@ -1030,10 +1030,10 @@ namespace LackMan
 
 				if (version == greatest)
 				{
-					const auto& existing = PackagesModel_->FindPackage (pInfo.Name_).Version_;
-					if (existing.isEmpty ())
+					const auto& existing = PackagesModel_->FindPackage (pInfo.Name_);
+					if (!existing)
 						PackagesModel_->AddRow (Storage_->GetSingleListPackageInfo (packageId));
-					else if (IsVersionLess (existing, greatest))
+					else if (IsVersionLess (existing->Version_, greatest))
 					{
 						auto info = Storage_->GetSingleListPackageInfo (packageId);
 						info.HasNewVersion_ = info.IsInstalled_;
