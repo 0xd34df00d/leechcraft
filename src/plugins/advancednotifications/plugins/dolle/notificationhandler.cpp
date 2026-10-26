@@ -31,10 +31,9 @@ namespace Dolle
 		const QString& type = e.Additional_ ["org.LC.AdvNotifications.EventType"].toString ();
 		const QString& eventId = e.Additional_ ["org.LC.AdvNotifications.EventID"].toString ();
 
-		auto& data = Counts_ [type];
-
 		if (cat != "org.LC.AdvNotifications.Cancel")
 		{
+			auto& data = Counts_ [type];
 			if (const int delta = e.Additional_.value ("org.LC.AdvNotifications.DeltaCount", 0).toInt ())
 				data.Counts_ [eventId] += delta;
 			else
@@ -49,7 +48,7 @@ namespace Dolle
 			for (auto& nd : Counts_)
 				if (nd.Counts_.remove (eventId))
 				{
-					nd.Total_ = std::accumulate (data.Counts_.constBegin (), data.Counts_.constEnd (), 0);
+					nd.Total_ = std::accumulate (nd.Counts_.constBegin (), nd.Counts_.constEnd (), 0);
 					removed = true;
 					break;
 				}
