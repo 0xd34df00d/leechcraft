@@ -15,7 +15,6 @@
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/an/constants.h>
 #include "packagesmodel.h"
-#include "core.h"
 
 namespace LC
 {
@@ -29,11 +28,19 @@ namespace LackMan
 	, NotifyScheduled_ (false)
 	{
 		connect (PM_,
-				SIGNAL (dataChanged (QModelIndex, QModelIndex)),
+				&QAbstractItemModel::dataChanged,
 				this,
-				SLOT (handleDataChanged (QModelIndex, QModelIndex)));
+				[this] (const QModelIndex& from, const QModelIndex& to) { HandleRowsChanged (from.row (), to.row ()); });
+		connect (PM_,
+				&QAbstractItemModel::rowsInserted,
+				this,
+				[this] (const QModelIndex&, int first, int last) { HandleRowsChanged (first, last); });
+		connect (PM_,
+				&QAbstractItemModel::rowsAboutToBeRemoved,
+				this,
+				[this] (const QModelIndex&, int first, int last) { HandleRowsRemoving (first, last); });
 		if (const auto rc = PM_->rowCount ())
-			handleDataChanged (PM_->index (0, 0), PM_->index (rc - 1, 0));
+			HandleRowsChanged (0, rc - 1);
 	}
 
 	bool UpdatesNotificationManager::HasUpgradable () const
@@ -52,10 +59,10 @@ namespace LackMan
 				SLOT (notify ()));
 	}
 
-	void UpdatesNotificationManager::handleDataChanged (const QModelIndex& from, const QModelIndex& to)
+	void UpdatesNotificationManager::HandleRowsChanged (int first, int last)
 	{
 		bool changed = false;
-		for (int i = from.row (); i <= to.row (); ++i)
+		for (int i = first; i <= last; ++i)
 		{
 			const auto& idx = PM_->index (i, 0);
 			const auto id = idx.data (PackagesModel::PMRPackageID).toInt ();
@@ -72,6 +79,16 @@ namespace LackMan
 				changed = true;
 			}
 		}
+
+		if (changed)
+			ScheduleNotify ();
+	}
+
+	void UpdatesNotificationManager::HandleRowsRemoving (int first, int last)
+	{
+		bool changed = false;
+		for (int i = first; i <= last; ++i)
+			changed |= UpgradablePackages_.remove (PM_->index (i, 0).data (PackagesModel::PMRPackageID).toInt ());
 
 		if (changed)
 			ScheduleNotify ();
@@ -99,8 +116,8 @@ namespace LackMan
 		else if (upgradableCount <= 3)
 		{
 			QStringList names;
-			for (auto id : UpgradablePackages_)
-				names << Core::Instance ().GetListPackageInfo (id).Name_;
+			for (const auto id : UpgradablePackages_)
+				names << PM_->index (PM_->GetRow (id), 0).data (PackagesModel::PMRName).toString ();
 			names.sort ();
 
 			if (upgradableCount == 1)

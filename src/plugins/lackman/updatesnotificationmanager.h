@@ -12,8 +12,6 @@
 #include <QSet>
 #include <interfaces/core/icoreproxy.h>
 
-class QModelIndex;
-
 namespace LC
 {
 namespace LackMan
@@ -36,8 +34,9 @@ namespace LackMan
 		bool HasUpgradable () const;
 	private:
 		void ScheduleNotify ();
+		void HandleRowsChanged (int first, int last);
+		void HandleRowsRemoving (int first, int last);
 	private slots:
-		void handleDataChanged (const QModelIndex&, const QModelIndex&);
 		void notify ();
 	signals:
 		void openLackmanRequested ();
