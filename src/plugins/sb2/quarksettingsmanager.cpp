@@ -64,7 +64,7 @@ namespace LC::SB2
 	void QuarkSettingsManager::PropertyChanged (const QString& name, const QVariant& srcVal)
 	{
 		QVariant val = srcVal;
-		if (val.type () == QVariant::String)
+		if (val.typeId () == QMetaType::QString)
 		{
 			if (val == "true" || val == "false")
 				val = val.toBool ();
