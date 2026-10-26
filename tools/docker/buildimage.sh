@@ -2,9 +2,9 @@
 # Usage: [IMAGE_PREFIX=leechcraft/ci_] buildimage.sh <distro> <state directory>
 #
 # Rebuilds the CI image of a distro from scratch (no layer cache, base image pulled afresh) from
-# tools/docker/base/<distro>/Dockerfile, with tools/ as the build context, and tags it <IMAGE_PREFIX><distro>:latest.
-# Before the build it lists the packages of the image that holds the tag so far, after the build those of the new
-# one, and writes into the state directory:
+# tools/docker/base/<distro>/Dockerfile, with the distro's directory as the build context, and tags it
+# <IMAGE_PREFIX><distro>:latest. Before the build it lists the packages of the image that holds the tag so far, after
+# the build those of the new one, and writes into the state directory:
 #   <distro>.manifest   the new image's packages, one "name version" per line
 #   <distro>.diff       what changed against the previous image (empty for none, whole list for a first image)
 #   <distro>.toolchain  the versions of gcc, clang, Qt and Boost in the image, or "missing"; "name old → new" for one
@@ -25,6 +25,15 @@ state=$(cd "$state" && pwd)
 cd "$(dirname "$0")/.."
 dockerfile=docker/base/$distro/Dockerfile
 [ -f "$dockerfile" ] || { echo "no such distro: $distro ($dockerfile missing)" >&2; exit 64; }
+# The Debian and Fedora Dockerfiles fetch the qxmpp packaging from its own repository at this commit; see the CI README.
+packaging_ref=$(cat packaging.ref)
+printf '%s' "$packaging_ref" | grep -Eq '^[0-9a-f]{40}$' \
+	|| { echo "packaging.ref must hold the full hash of a leechcraft-packaging commit, not '$packaging_ref'" >&2; exit 64; }
+# passed only to the Dockerfiles that declare it, so the other builds do not warn about an unused build argument
+build_args=
+if grep -q '^ARG PACKAGING_REF$' "$dockerfile"; then
+	build_args="--build-arg PACKAGING_REF=$packaging_ref"
+fi
 image=${IMAGE_PREFIX:-leechcraft/ci_}$distro:latest
 
 # One "name version" line per installed package, whichever package manager the image has. The listing is captured
@@ -90,7 +99,7 @@ if [ -n "$previous" ]; then
 	toolchain "$previous" > "$state/$distro.toolchain.previous" || : > "$state/$distro.toolchain.previous"
 fi
 
-docker build --pull --no-cache --network=host -f "$dockerfile" -t "$image" . || exit 1
+docker build --pull --no-cache --network=host $build_args -f "$dockerfile" -t "$image" "docker/base/$distro" || exit 1
 
 status=0
 manifest "$image" > "$state/$distro.manifest" || comparable=false
@@ -128,7 +137,7 @@ fi
 # record. The stage was built a moment ago, so this is a cache hit, not a second build.
 if grep -q '^FROM .* AS packages$' "$dockerfile"; then
 	rm -rf "$state/packages/$distro"
-	docker build --network=host -f "$dockerfile" --target packages --output "type=local,dest=$state/packages/$distro" . \
+	docker build --network=host $build_args -f "$dockerfile" --target packages --output "type=local,dest=$state/packages/$distro" "docker/base/$distro" \
 		|| { echo "=== $distro: exporting the packages stage failed" >&2; status=3; }
 fi
 exit $status

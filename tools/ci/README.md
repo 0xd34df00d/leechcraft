@@ -89,34 +89,34 @@ failure and on every status change, the full job on status changes only.
 
 ## qxmpp in the Debian and Fedora images
 
-Debian unstable and Fedora rawhide ship a qxmpp older than Xoox needs, so their images build their own from
-`tools/packaging/qxmpp`: Debian's and Fedora's own packaging of qxmpp, bumped. The first stage of each of those
-Dockerfiles runs `build.sh`, which produces .deb or .rpm files; the final stage installs them in place of the
-distro's development package, from a mount of the first stage's output, so nothing of the packaging lands in
-the image. The package manager thus knows about the library, and a LeechCraft package built in such an image
-depends on exactly these packages, which a repository of ours can ship next to it one day. The debug symbol
-packages are built as well and kept in a `debug/` subdirectory, for that repository rather than for the image;
-`docker build --target packages --output type=local,dest=<dir>` exports everything the stage produced.
+Debian unstable and Fedora rawhide ship a qxmpp older than Xoox needs, so their images build their own. The
+packaging lives in its own repository, [leechcraft-packaging](https://github.com/0xd34df00d/leechcraft-packaging):
+Debian's and Fedora's own packaging of qxmpp, bumped, and a `build.sh` that builds a package of that repository
+in the running distro's format. The first stage of each of those Dockerfiles fetches the repository at the commit
+`tools/packaging.ref` names and runs `build.sh qxmpp`, which produces .deb or .rpm files; the final stage installs
+them in place of the distro's development package, from a mount of the first stage's output, so nothing of the
+packaging lands in the image. The package manager thus knows about the library, and a LeechCraft package built in
+such an image depends on exactly these packages, which a repository of ours can ship next to it one day. The
+debug symbol packages are built as well and kept in a `debug/` subdirectory, for that repository rather than for
+the image; `docker build --target packages --output type=local,dest=<dir>` exports everything the stage produced.
 
-`build.sh` fails on purpose once the distro's own qxmpp satisfies the floor it holds: the image build goes red and
-mails, and the fix is to delete the qxmpp stage from that Dockerfile and reinstate the distro's development
-package. Until then the previously built image keeps serving the builds.
+`build.sh` fails on purpose once the distro's own qxmpp satisfies the floor the packaging holds: the image build
+goes red and mails, and the fix is to delete the qxmpp stage from that Dockerfile and reinstate the distro's
+development package. Until then the previously built image keeps serving the builds.
 
-Bumping qxmpp: a new `debian/changelog` entry (version `X.Y.Z-0lcN`; the revision sorts below any Debian upload
-of the same version), `Version`, `Release` and `%changelog` in `qxmpp.spec`, and, since qxmpp bumps its soname on
-every minor release, `%global sover` and the `N` in the names of the `libqxmppqt6-N` and `libqxmppomemoqt6-N`
-packages across `debian/control` and the install and lintian-overrides files. The floor in `build.sh` mirrors the
-Xoox CMakeLists.
-
-The Dockerfiles copy the packaging from the build context, so the images are built with `tools` as the context,
-and `tools/.dockerignore` limits what gets sent to `docker` and `packaging`.
+Bumping qxmpp happens in the packaging repository, as its README describes; then `tools/packaging.ref` moves to
+the new commit, which rebuilds every image. The pin is a commit hash rather than a branch, so a daily rebuild
+changes with the distro's packages only, never with the packaging; `buildimage.sh` refuses anything but a full
+hash. The images are built with the distro's directory as the context, so a Dockerfile sees nothing of the
+repository besides itself, and the only thing it fetches on its own is that commit.
 
 ## The image job
 
 `leechcraft-images` runs `tools/docker/buildimage.sh <distro> <state dir>` for every distro under `tools/docker/base`
-(or those in `DISTROS`), daily at 4 am US Central time and whenever the quick job sees a push touch `tools/docker/base/<distro>`,
-`tools/packaging`, `tools/.dockerignore` or the script itself; such a push rebuilds the touched distros only and
-triggers the full build afterwards in any case (`ALWAYS_TRIGGER`). The script rebuilds the image from scratch
+(or those in `DISTROS`), daily at 4 am US Central time and whenever the quick job sees a push touch
+`tools/docker/base/<distro>`, `tools/packaging.ref` or the script itself; such a push rebuilds the touched distros
+only, or every image when the pin or the script moved, and triggers the full build afterwards in any case
+(`ALWAYS_TRIGGER`). The script rebuilds the image from scratch
 (`--pull --no-cache`), lists the packages of the previous image before and of the new one after, and writes the list,
 the diff, the versions of gcc, clang, Qt and Boost, as `old → new` for one the rebuild moved, and a verdict, `changed` or `unchanged`, into the state directory, which the job archives;
 the Debian and Fedora images also get their `packages` stage exported there, of which everything but the debug symbol

@@ -163,7 +163,7 @@ List<String> changedPaths() {
 // The distros whose images the changes made stale: null when they did not touch the images, empty for all of them
 // (the packaging or the image build itself changed), else the distros whose Dockerfile directory changed.
 List<String> staleDistros(List<String> paths) {
-    if (paths.any { it.startsWith('tools/packaging/') || it in ['tools/.dockerignore', 'tools/docker/buildimage.sh'] })
+    if (paths.any { it in ['tools/packaging.ref', 'tools/docker/buildimage.sh'] })
         return []
     List<String> distros = paths.findAll { it.startsWith('tools/docker/base/') }.collect { it.tokenize('/')[3] }.unique()
     distros ?: null

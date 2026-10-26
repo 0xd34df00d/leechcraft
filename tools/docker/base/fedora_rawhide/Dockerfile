@@ -1,6 +1,10 @@
 FROM fedora:rawhide AS qxmpp
-COPY packaging/qxmpp /build/packaging/qxmpp
-RUN /build/packaging/qxmpp/build.sh /out
+# the packaging has its own repository; buildimage.sh passes the commit tools/packaging.ref pins, and an empty
+# ref would silently fetch the default branch instead
+ARG PACKAGING_REF
+RUN test -n "$PACKAGING_REF" || { echo 'PACKAGING_REF is empty: build this image through tools/docker/buildimage.sh' >&2; exit 1; }
+ADD https://github.com/0xd34df00d/leechcraft-packaging.git#${PACKAGING_REF} /build/packaging
+RUN /build/packaging/build.sh qxmpp /out
 
 FROM scratch AS packages
 COPY --from=qxmpp /out /
