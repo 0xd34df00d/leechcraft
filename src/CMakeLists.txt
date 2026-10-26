@@ -28,6 +28,15 @@ option (USE_UBSAN "Use UB sanitizer" OFF)
 set (LC_QT_VERSION 6)
 set (LC_LIBSUFFIX "-qt${LC_QT_VERSION}")
 
+add_compile_definitions (
+	QT_NO_CAST_TO_ASCII
+	QT_NO_FOREACH
+	QT_NO_JAVA_STYLE_ITERATORS
+	QT_NO_QASCONST
+	QT_NO_QEXCHANGE
+	QT_NO_QSNPRINTF
+	)
+
 if (UNIX OR (WIN32 AND MINGW))
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -Wall -Wextra")
 

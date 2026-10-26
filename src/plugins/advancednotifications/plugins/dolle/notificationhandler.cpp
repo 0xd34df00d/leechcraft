@@ -45,17 +45,14 @@ namespace Dolle
 		}
 		else
 		{
-			QMutableMapIterator<QString, NotificationData> it { Counts_ };
 			bool removed = false;
-			while (it.hasNext () && !removed)
-			{
-				NotificationData& nd = it.next ().value ();
+			for (auto& nd : Counts_)
 				if (nd.Counts_.remove (eventId))
 				{
 					nd.Total_ = std::accumulate (data.Counts_.constBegin (), data.Counts_.constEnd (), 0);
 					removed = true;
+					break;
 				}
-			}
 			if (!removed)
 				return;
 		}
