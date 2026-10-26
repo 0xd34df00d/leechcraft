@@ -12,7 +12,7 @@ RUN --mount=type=bind,from=qxmpp,source=/out,target=/tmp/qxmpp \
     apt-get install -q -y eatmydata && \
     eatmydata apt-get dist-upgrade -q -y && \
     eatmydata apt-get install -q -y \
-        cmake ninja-build ccache g++ clang-23 git pkg-config \
+        cmake ninja-build ccache mold g++ clang-23 git pkg-config \
         qt6-base-dev qt6-base-private-dev \
         qt6-tools-dev qt6-tools-dev-tools \
         qt6-svg-dev \

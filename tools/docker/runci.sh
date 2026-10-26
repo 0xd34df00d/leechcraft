@@ -4,7 +4,8 @@
 # build and tidy build the checkout in the current directory inside the leechcraft/ci_<distro> image: from
 # scratch, in a tmpfs, without network access, on every core. With CCACHE_HOST_DIR set, the compilers run through
 # ccache with that directory as the cache, which may grow to nine tenths of the filesystem holding it, and the
-# output ends with the cache statistics of the build; an image without ccache builds without it and says so.
+# output ends with the cache statistics of the build; an image without ccache builds without it and says so. Links go
+# through mold when the image has it; an image without it links with its default linker and says so.
 # With NINJA_LOG set, the build directory's .ninja_log, ninja's record of when every step started and ended, is
 # copied to that path once the build has ended, failed or not; tools/ci/ninjalog.py reads it.
 # Exit status: 0 on success, 1 when the build fails, 2 when
@@ -23,9 +24,11 @@ image=leechcraft/ci_$distro:latest
 
 # the filesystem holding the cache is meant for it; the tenth left over is headroom for ccache's temporary files
 ccache_opts=
+autogen_jobs=1
 if [ -n "${CCACHE_HOST_DIR:-}" ]; then
 	cap_mb=$(( $(df -Pk "$CCACHE_HOST_DIR" | awk 'NR == 2 { print $2 }') / 1024 * 9 / 10 ))
 	ccache_opts="--mount type=bind,src=$CCACHE_HOST_DIR,dst=/work/ccache --env CCACHE_DIR=/work/ccache --env CCACHE_MAXSIZE=${cap_mb}M"
+	autogen_jobs=4
 fi
 
 # the directory of the log is mounted and the container writes the file, as root like the cache
@@ -53,8 +56,12 @@ case ${3:-build} in
 	*) echo "unknown mode: $3" >&2; exit 64 ;;
 esac
 
-# CMAKE_AUTOGEN_PARALLEL=1: an autogen step would otherwise run moc on as many threads as the host has cores, on top of
-# everything else ninja runs at the same time; ninja alone fills the machine, and a full build measured the same either way.
+# CMAKE_AUTOGEN_PARALLEL: in an uncached build an autogen step runs moc one file at a time, since ninja alone fills the
+# machine with the other steps and a full build measured the same either way. In a cached build the compiles are cache
+# hits, and the autogen steps of the largest targets, eighty moc and uic runs one after another, are the longest thing
+# left (full build 18: Xoox 53 s of a 54 s cell), so there moc runs four at a time per target.
+# CMAKE_LINKER_TYPE=MOLD where the image has mold: with the distros' default linkers, links were a quarter to a third of
+# a cached cell's step time, twice as slow on Fedora and openSUSE as on Arch and Debian.
 # A plain `sh -c`, not a login shell: Fedora's profile puts ccache's masquerade directory first in PATH, which would make
 # CMake pick /usr/lib64/ccache/g++ and route every compiler call, scans and links included, through ccache a second time.
 # LC_ALL=C: gcc quotes with ‘’ under a UTF-8 locale and with '' otherwise; Arch's image sets LANG=C.UTF-8, the others nothing,
@@ -79,7 +86,10 @@ exec docker run \
 				echo 'ccache requested, but the image has none: building without it'
 			fi
 		fi &&
-		{ cmake /work/leechcraft/src --preset $distro -G Ninja -DCMAKE_C_COMPILER=$cc -DCMAKE_CXX_COMPILER=$cxx -DCMAKE_AUTOGEN_PARALLEL=1 $cmake_extra \$launcher \
+		linker= &&
+		if command -v mold >/dev/null; then linker=-DCMAKE_LINKER_TYPE=MOLD;
+		else echo 'no mold in the image: linking with its default linker'; fi &&
+		{ cmake /work/leechcraft/src --preset $distro -G Ninja -DCMAKE_C_COMPILER=$cc -DCMAKE_CXX_COMPILER=$cxx -DCMAKE_AUTOGEN_PARALLEL=$autogen_jobs $cmake_extra \$launcher \$linker \
 			|| { s=\$?; [ \$s -ge 126 ] && exit \$s; exit 2; }; } &&
 		{ cmake --build . -j$(nproc) -- -k0 && s=0 || s=1;
 		  [ -z \"\${NINJA_LOG_NAME:-}\" ] || cp .ninja_log \"/work/out/\$NINJA_LOG_NAME\";

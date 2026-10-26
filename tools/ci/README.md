@@ -16,8 +16,10 @@ Three files drive every Jenkins job of the project:
 
 A cell runs `tools/docker/runci.sh <distro> <gcc|clang> [build|tidy]` in the distro's `leechcraft/ci_<distro>`
 image: a from-scratch build without network, in a tmpfs, on every core, needing only `sh`, `cmake`, `ninja` and
-the compilers inside the image. Autogen steps run moc one file at a time (`CMAKE_AUTOGEN_PARALLEL=1`), since ninja
-already fills every core with the other steps. Every build in every job takes the `lc-build` lock around its compile, so only
+the compilers inside the image; with `mold` in the image the cell links through it, without it through the distro's
+default linker, and says so. An uncached build runs moc one file at a time per target (`CMAKE_AUTOGEN_PARALLEL=1`),
+since ninja already fills every core with the other steps; a cached build, whose compiles are cache hits, runs four at
+a time, since the autogen steps of the largest targets are otherwise the longest thing in it. Every build in every job takes the `lc-build` lock around its compile, so only
 one compile runs on the machine at a time and build times stay comparable; a quick build waits for at most one
 cell of a running full build, or for one round of image rebuilds. The full profile compiles through ccache, with one cache for all cells at
 `/var/cache/ci-ccache` on the agent, a partition dedicated to it that the cache may fill to nine tenths, and each

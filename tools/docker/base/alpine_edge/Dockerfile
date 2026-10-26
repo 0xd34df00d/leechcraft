@@ -1,7 +1,7 @@
 FROM alpine:edge
 
 RUN apk add --no-cache \
-        cmake ninja ccache clang gcc binutils git pkgconfig \
+        cmake ninja ccache mold clang gcc binutils git pkgconfig \
         qt6-qtbase-dev \
         qt6-qttools-dev \
         qt6-qtsvg-dev \

@@ -9,7 +9,7 @@ FROM fedora:rawhide
 
 RUN --mount=type=bind,from=qxmpp,source=/out,target=/tmp/qxmpp \
     dnf install -y \
-        cmake ninja-build ccache clang git pkgconfig \
+        cmake ninja-build ccache mold clang git pkgconfig \
         qt6-qtbase-devel qt6-qtbase-private-devel \
         qt6-qttools-devel \
         qt6-qtsvg-devel \

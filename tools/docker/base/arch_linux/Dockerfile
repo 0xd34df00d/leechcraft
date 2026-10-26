@@ -2,7 +2,7 @@ FROM archlinux:latest
 
 RUN pacman -Syu --noconfirm && \
     pacman -S --noconfirm \
-        cmake ninja ccache clang git pkgconf \
+        cmake ninja ccache mold clang git pkgconf \
         qt6-base \
         qt6-tools \
         qt6-svg \
