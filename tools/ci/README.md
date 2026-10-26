@@ -126,8 +126,11 @@ machine with an image build, yet the lock is held for the longest image build ra
 a distro whose build fails keeps its previous image and fails the run without stopping the others. The packages are listed through dpkg, rpm, pacman, apk or the Portage database; an image with
 none of them gets the verdict `unknown`, which counts as changed for the push and the trigger and keeps the run
 unstable until `buildimage.sh` has learnt the package manager, so a new distro never hides behind `unchanged`.
-Images whose packages changed are pushed to the registry (`PUSH`, with the credentials named by
-`REGISTRY_CREDENTIALS`); when any changed, or `ALWAYS_TRIGGER` is set, `DOWNSTREAM` runs. The run ends by pruning
+An image whose packages changed is pushed to the registry (`PUSH`, with the credentials named by
+`REGISTRY_CREDENTIALS`) as soon as it is built, while the others still build: a push is a minute of single-core
+compression per image, so pushing them in a row after the last build cost as much again as the builds. The login of the
+run lives in a docker config directory of the workspace and goes away with the run. When any image changed, or
+`ALWAYS_TRIGGER` is set, `DOWNSTREAM` runs as soon as the last image is done. The run ends by pruning
 what the rebuilds left untagged and the build cache that even a `--no-cache` build writes, and its description lists
 every distro's verdict and toolchain versions. Mail goes to `NOTIFY` on a change of status only.
 
