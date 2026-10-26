@@ -4,6 +4,9 @@ find_package (Qt${LC_QT_VERSION}LinguistTools REQUIRED)
 
 set (CMAKE_AUTOMOC TRUE)
 set (CMAKE_AUTOUIC TRUE)
+# By default a target's moc/uic step waits for the libraries the target links, in case moc needs a header one of them
+# generates; nothing here generates headers at build time, and the wait serialises the build along the link chain.
+set (CMAKE_AUTOGEN_ORIGIN_DEPENDS OFF)
 set (CMAKE_CXX_STANDARD 26)
 set (CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set (CMAKE_CXX_EXTENSIONS OFF)
