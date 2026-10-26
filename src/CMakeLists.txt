@@ -30,8 +30,6 @@ set (LC_LIBSUFFIX "-qt${LC_QT_VERSION}")
 
 if (UNIX OR (WIN32 AND MINGW))
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -Wall -Wextra")
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DQT_DEPRECATED_WARNINGS")
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-enum-enum-conversion")
 
 	if (USE_ASAN)
 		add_compile_options (-fsanitize=address)
