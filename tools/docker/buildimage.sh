@@ -7,7 +7,8 @@
 # one, and writes into the state directory:
 #   <distro>.manifest   the new image's packages, one "name version" per line
 #   <distro>.diff       what changed against the previous image (empty for none, whole list for a first image)
-#   <distro>.compilers  the gcc and clang versions in the image, or "missing"
+#   <distro>.toolchain  the versions of gcc, clang, Qt and Boost in the image, or "missing"; "name old → new" for one
+#                       the previous image had in another version
 #   <distro>.status     changed | unchanged | unknown: whether the package list differs from the previous image's;
 #                       unknown when a list could not be taken, which counts as changed downstream
 #   packages/<distro>/  what the Dockerfile's `packages` stage produces, for Dockerfiles that have one
@@ -43,7 +44,10 @@ manifest()
 	printf '%s\n' "$listing" | sort
 }
 
-compilers()
+# The versions that decide what a build sees, one "name version" per line. Asked from the tools and headers rather than
+# from the package manager: the package names differ per distro, and a package revision shipping the same version is no
+# change here.
+toolchain()
 {
 	docker run --rm --network=none "$1" sh -c '
 		for c in gcc:g++ clang:clang++; do
@@ -51,7 +55,28 @@ compilers()
 			if command -v $bin >/dev/null; then echo "$name $($bin -dumpfullversion -dumpversion 2>/dev/null || $bin -dumpversion)"
 			else echo "$name missing"
 			fi
-		done'
+		done
+		qt=$(pkg-config --modversion Qt6Core 2>/dev/null || qmake6 -query QT_VERSION 2>/dev/null)
+		echo "Qt ${qt:-missing}"
+		boost=$(sed -n "s/^#define BOOST_VERSION //p" /usr/include/boost/version.hpp 2>/dev/null)
+		if [ -n "$boost" ]; then echo "Boost $((boost / 100000)).$((boost / 100 % 1000)).$((boost % 100))"
+		else echo "Boost missing"
+		fi'
+}
+
+# Rewrites "name version" lines from stdin as "name old → new" where the file given, the previous image's versions,
+# has the name with another version.
+mark_changed()
+{
+	while read -r name version; do
+		[ -n "$name" ] || continue
+		old=$(sed -n "s/^$name //p" "$1")
+		if [ -n "$old" ] && [ "$old" != "$version" ]; then
+			echo "$name $old → $version"
+		else
+			echo "$name $version"
+		fi
+	done
 }
 
 previous=$(docker image inspect --format '{{.Id}}' "$image" 2>/dev/null || true)
@@ -59,15 +84,18 @@ previous=$(docker image inspect --format '{{.Id}}' "$image" 2>/dev/null || true)
 # unstable, so that a package manager this script does not know gets noticed rather than hidden behind "unchanged".
 comparable=true
 : > "$state/$distro.previous"
+: > "$state/$distro.toolchain.previous"
 if [ -n "$previous" ]; then
 	manifest "$previous" > "$state/$distro.previous" || comparable=false
+	toolchain "$previous" > "$state/$distro.toolchain.previous" || : > "$state/$distro.toolchain.previous"
 fi
 
 docker build --pull --no-cache --network=host -f "$dockerfile" -t "$image" . || exit 1
 
 status=0
 manifest "$image" > "$state/$distro.manifest" || comparable=false
-compilers "$image" > "$state/$distro.compilers" || status=3
+current=$(toolchain "$image") || status=3
+printf '%s\n' "$current" | mark_changed "$state/$distro.toolchain.previous" > "$state/$distro.toolchain"
 if $comparable; then
 	if cmp -s "$state/$distro.previous" "$state/$distro.manifest"; then
 		verdict=unchanged
@@ -81,13 +109,13 @@ else
 	: > "$state/$distro.diff"
 fi
 echo $verdict > "$state/$distro.status"
-rm -f "$state/$distro.previous"
+rm -f "$state/$distro.previous" "$state/$distro.toolchain.previous"
 
-compilers_summary=$(tr '\n' ',' < "$state/$distro.compilers" | sed 's/,$//; s/,/, /g')
+toolchain_summary=$(tr '\n' ',' < "$state/$distro.toolchain" | sed 's/,$//; s/,/, /g')
 if [ $verdict = unknown ]; then
-	echo "=== $distro: the packages could not be listed, so the image counts as changed; $compilers_summary"
+	echo "=== $distro: the packages could not be listed, so the image counts as changed; $toolchain_summary"
 else
-	echo "=== $distro: $(wc -l < "$state/$distro.manifest") packages, $verdict since the previous image; $compilers_summary"
+	echo "=== $distro: $(wc -l < "$state/$distro.manifest") packages, $verdict since the previous image; $toolchain_summary"
 fi
 if [ -z "$previous" ]; then
 	echo "=== $distro: no previous image to compare with"

@@ -15,7 +15,7 @@ import groovy.transform.Field
 @Field final String STATE = 'images-state'
 // per distro: changed | unchanged | unknown | failed, and the compiler versions, as buildimage.sh reports them
 @Field final Map<String, String> status = [:]
-@Field final Map<String, String> compilers = [:]
+@Field final Map<String, String> toolchain = [:]
 
 List<String> pickDistros() {
     List<String> all = sh(returnStdout: true, script: 'ls tools/docker/base').trim().tokenize('\n')
@@ -50,12 +50,12 @@ void buildImage(String distro) {
         if (!fileExists(statusFile))
             error("${distro}: buildimage.sh exited with ${rc} but left no ${statusFile}")
         status[distro] = readFile(statusFile).trim()
-        compilers[distro] = readFile("${STATE}/${distro}.compilers").trim().replace('\n', ', ')
+        toolchain[distro] = readFile("${STATE}/${distro}.toolchain").trim().replace('\n', ', ')
         if (status[distro] == 'unknown')
             unstable("${distro}: the image was built, but its packages could not be listed, so it counts as changed; " +
                      'a package manager buildimage.sh does not know?')
         else if (rc == 3)
-            unstable("${distro}: the image was built, but listing its compilers or exporting its packages failed")
+            unstable("${distro}: the image was built, but listing its toolchain versions or exporting its packages failed")
     }
 }
 
@@ -93,7 +93,7 @@ timeout(time: 4, unit: 'HOURS') {
             archiveArtifacts(artifacts: "${STATE}/**", excludes: "${STATE}/packages/*/debug/**", allowEmptyArchive: true)
             // after the exports: the pruning drops what the rebuilds left untagged and the cache even a --no-cache build writes
             sh(label: 'prune', script: 'docker image prune -f && docker builder prune -f')
-            currentBuild.description = distros.collect { "${it}: ${status[it]}" + (compilers[it] ? " (${compilers[it]})" : '') }.join('; ')
+            currentBuild.description = distros.collect { "${it}: ${status[it]}" + (toolchain[it] ? " (${toolchain[it]})" : '') }.join('; ')
             if (params.DOWNSTREAM && (moved || params.ALWAYS_TRIGGER)) {
                 stage("Trigger ${params.DOWNSTREAM}") {
                     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {

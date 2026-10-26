@@ -1,10 +1,12 @@
 #!/usr/bin/env sh
-# Usage: [CCACHE_HOST_DIR=<absolute path>] runci.sh <distro> <gcc|clang> [build|tidy|version|stdlib]
+# Usage: [CCACHE_HOST_DIR=<absolute path>] [NINJA_LOG=<absolute path>] runci.sh <distro> <gcc|clang> [build|tidy|version|stdlib]
 #
 # build and tidy build the checkout in the current directory inside the leechcraft/ci_<distro> image: from
 # scratch, in a tmpfs, without network access, on every core. With CCACHE_HOST_DIR set, the compilers run through
 # ccache with that directory as the cache, which may grow to nine tenths of the filesystem holding it, and the
 # output ends with the cache statistics of the build; an image without ccache builds without it and says so.
+# With NINJA_LOG set, the build directory's .ninja_log, ninja's record of when every step started and ended, is
+# copied to that path once the build has ended, failed or not; tools/ci/ninjalog.py reads it.
 # Exit status: 0 on success, 1 when the build fails, 2 when
 # configure fails (on a rolling distro that almost always means a dependency moved), 64 on bad arguments; 126
 # and 127 from a tool missing inside the image are passed through. version prints the major version of that
@@ -24,6 +26,13 @@ ccache_opts=
 if [ -n "${CCACHE_HOST_DIR:-}" ]; then
 	cap_mb=$(( $(df -Pk "$CCACHE_HOST_DIR" | awk 'NR == 2 { print $2 }') / 1024 * 9 / 10 ))
 	ccache_opts="--mount type=bind,src=$CCACHE_HOST_DIR,dst=/work/ccache --env CCACHE_DIR=/work/ccache --env CCACHE_MAXSIZE=${cap_mb}M"
+fi
+
+# the directory of the log is mounted and the container writes the file, as root like the cache
+log_opts=
+if [ -n "${NINJA_LOG:-}" ]; then
+	mkdir -p "$(dirname "$NINJA_LOG")"
+	log_opts="--mount type=bind,src=$(cd "$(dirname "$NINJA_LOG")" && pwd),dst=/work/out --env NINJA_LOG_NAME=$(basename "$NINJA_LOG")"
 fi
 
 case ${3:-build} in
@@ -58,6 +67,7 @@ exec docker run \
 	--mount type=bind,src="$PWD",dst=/work/leechcraft \
 	--mount type=tmpfs,dst=/work/build \
 	$ccache_opts \
+	$log_opts \
 	"$image" \
 	sh -c "
 		cd /work/build &&
@@ -71,5 +81,7 @@ exec docker run \
 		fi &&
 		{ cmake /work/leechcraft/src --preset $distro -G Ninja -DCMAKE_C_COMPILER=$cc -DCMAKE_CXX_COMPILER=$cxx -DCMAKE_AUTOGEN_PARALLEL=1 $cmake_extra \$launcher \
 			|| { s=\$?; [ \$s -ge 126 ] && exit \$s; exit 2; }; } &&
-		{ cmake --build . -j$(nproc) -- -k0 && s=0 || s=1; [ -z \"\$launcher\" ] || ccache -s; exit \$s; }
+		{ cmake --build . -j$(nproc) -- -k0 && s=0 || s=1;
+		  [ -z \"\${NINJA_LOG_NAME:-}\" ] || cp .ninja_log \"/work/out/\$NINJA_LOG_NAME\";
+		  [ -z \"\$launcher\" ] || ccache -s; exit \$s; }
 	"

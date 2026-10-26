@@ -75,6 +75,10 @@ failure and on every status change, the full job on status changes only.
   embeds them in a table; a new distro or compiler gets its row or column there by hand.
 - The compiler cache is written by the build containers as root, so wiping it is `rm -rf /var/cache/ci-ccache/*`
   as root while no build runs; the next full build refills it.
+- Every cell archives ninja's log of its build as `ninja-logs/<cell>.ninja_log`: when every step started and ended.
+  `tools/ci/ninjalog.py <log>` reports the longest steps, the time by kind of step, how many steps ran at a time over
+  the build and what was still running at the end; `--trace` writes a Chrome trace for ui.perfetto.dev. Read it before
+  touching the build's parallelism: a cell that ends on one long step was waiting for that step, not working.
 - `debian_experimental` installs from experimental wherever that suite has a package: `-t experimental` on the
   install step, `clang-24`, and `APT_TARGET_RELEASE=experimental` for the qxmpp stage so that the library is built
   against the same stack. Without `-t`, apt never picks experimental, since the suite is pinned below everything.
@@ -112,7 +116,7 @@ and `tools/.dockerignore` limits what gets sent to `docker` and `packaging`.
 `tools/packaging`, `tools/.dockerignore` or the script itself; such a push rebuilds the touched distros only and
 triggers the full build afterwards in any case (`ALWAYS_TRIGGER`). The script rebuilds the image from scratch
 (`--pull --no-cache`), lists the packages of the previous image before and of the new one after, and writes the list,
-the diff, the compiler versions and a verdict, `changed` or `unchanged`, into the state directory, which the job archives;
+the diff, the versions of gcc, clang, Qt and Boost, as `old → new` for one the rebuild moved, and a verdict, `changed` or `unchanged`, into the state directory, which the job archives;
 the Debian and Fedora images also get their `packages` stage exported there, of which everything but the debug symbol
 packages is archived. The diff is the first thing to read when
 a cell breaks after a rebuild. The distros build concurrently under one `lc-build` lock, so no compile shares the
@@ -123,7 +127,7 @@ unstable until `buildimage.sh` has learnt the package manager, so a new distro n
 Images whose packages changed are pushed to the registry (`PUSH`, with the credentials named by
 `REGISTRY_CREDENTIALS`); when any changed, or `ALWAYS_TRIGGER` is set, `DOWNSTREAM` runs. The run ends by pruning
 what the rebuilds left untagged and the build cache that even a `--no-cache` build writes, and its description lists
-every distro's verdict and compilers. Mail goes to `NOTIFY` on a change of status only.
+every distro's verdict and toolchain versions. Mail goes to `NOTIFY` on a change of status only.
 
 The matrix job `CI-base-images` did the same with a shell step edited in the UI; once the pipeline has had a green
 run, disable or delete it, or both will rebuild every day.

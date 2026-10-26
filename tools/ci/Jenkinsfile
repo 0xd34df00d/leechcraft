@@ -9,7 +9,8 @@
 //           ships in at least the MINIMUM version, using a libstdc++ at least as new as the gcc floor, one
 //           cell at a time
 // A cell builds the checkout with tools/docker/runci.sh inside the distro's image, scans the compiler output
-// with Warnings NG and publishes the result. The full profile also publishes, per compiler, one result over all its cells
+// with Warnings NG and publishes the result, and archives ninja's log of the build, ninja-logs/<cell>.ninja_log, the start
+// and end of every step, which tools/ci/ninjalog.py reads. The full profile also publishes, per compiler, one result over all its cells
 // with the repeats dropped, and a badge per cell for the README, under the cell's name, which says passing, failing, or why
 // the cell was skipped.
 // Every build, in every job, takes the same lock around its compile, so only one build runs at a time and
@@ -23,6 +24,7 @@ import groovy.transform.Field
 @Field final String AGENT = 'real'
 @Field final String BUILD_LOCK = 'lc-build'
 @Field final String CCACHE_HOST_DIR = '/var/cache/ci-ccache'
+@Field final String NINJA_LOGS = 'ninja-logs'
 @Field final List<String> COMPILERS = ['gcc', 'clang']
 @Field final Map<String, Integer> MINIMUM = [gcc: 16, clang: 23]
 @Field final Map PRIMARY = [distro: 'opensuse_factory', compiler: 'clang']
@@ -103,8 +105,11 @@ Map runCell(Map opts, Map cell) {
     String name = cellName(cell)
     String log = "${name}.log"
     int rc = 0
+    List<String> environment = ["NINJA_LOG=${env.WORKSPACE}/${NINJA_LOGS}/${name}.ninja_log"]
+    if (opts.cached)
+        environment << "CCACHE_HOST_DIR=${CCACHE_HOST_DIR}"
     lock(BUILD_LOCK) {
-        withEnv(opts.cached ? ["CCACHE_HOST_DIR=${CCACHE_HOST_DIR}"] : []) {
+        withEnv(environment) {
             rc = sh(returnStatus: true, label: "build ${name}", script: """#!/bin/bash
 set -o pipefail
 tools/docker/runci.sh ${cell.distro} ${cell.compiler} ${cell.tidy ? 'tidy' : 'build'} 2>&1 \\
@@ -113,6 +118,7 @@ tools/docker/runci.sh ${cell.distro} ${cell.compiler} ${cell.tidy ? 'tidy' : 'bu
 """)
         }
     }
+    archiveArtifacts(artifacts: "${NINJA_LOGS}/${name}.ninja_log", allowEmptyArchive: true)
     def tool
     if (cell.tidy)
         tool = clangTidy(pattern: log, id: name, name: name)
