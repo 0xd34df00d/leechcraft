@@ -113,6 +113,8 @@ namespace Aggregator
 
 		void RecoverTabs (const QList<TabRecoverInfo>& infos) override;
 		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const override;
+	private:
+		void OpenTab (const DynPropertiesList_t& = {});
 	signals:
 		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace) override;
 	};

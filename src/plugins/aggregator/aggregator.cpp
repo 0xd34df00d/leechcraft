@@ -15,6 +15,7 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/shortcuts/shortcutmanager.h>
+#include <util/xpc/sessionprops.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "components/actions/appwideactions.h"
 #include "components/actions/channelactions.h"
@@ -155,6 +156,11 @@ namespace Aggregator
 		if (tabClass != TabInfo_.TabClass_)
 			qWarning () << "unknown tab class" << tabClass;
 
+		OpenTab ();
+	}
+
+	void Aggregator::OpenTab (const DynPropertiesList_t& props)
+	{
 		if (!AggregatorTab_)
 			AggregatorTab_ = std::make_unique<AggregatorTab> (AggregatorTab::InitParams {
 						.TabClass_ = TabInfo_,
@@ -166,6 +172,7 @@ namespace Aggregator
 					},
 					this);
 
+		Util::SetSessionProps (*AggregatorTab_, props);
 		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (AggregatorTab_->GetTabClassInfo ().VisibleName_,
 				AggregatorTab_.get ());
 	}
@@ -277,12 +284,7 @@ namespace Aggregator
 		for (const auto& recInfo : infos)
 		{
 			if (recInfo.Data_ == "aggregatortab")
-			{
-				for (const auto& pair : recInfo.DynProperties_)
-					setProperty (pair.first, pair.second);
-
-				TabOpenRequested (TabInfo_.TabClass_);
-			}
+				OpenTab (recInfo.DynProperties_);
 			else
 				qWarning () << Q_FUNC_INFO
 						<< "unknown context"
