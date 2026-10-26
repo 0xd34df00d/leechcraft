@@ -22,6 +22,7 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/icoretabwidget.h>
 #include <util/sll/qtutil.h>
+#include <util/xpc/sessionprops.h>
 #include "recinfo.h"
 #include "restoresessiondialog.h"
 #include "util.h"
@@ -142,7 +143,7 @@ namespace LC::TabSessManager
 			return false;
 
 		auto propEvent = static_cast<QDynamicPropertyChangeEvent*> (e);
-		if (propEvent->propertyName ().startsWith ("SessionData/"))
+		if (Util::IsSessionProp (propEvent->propertyName ()))
 			handleTabRecoverDataChanged ();
 
 		return false;
@@ -161,7 +162,7 @@ namespace LC::TabSessManager
 					<< info->Data_
 					<< info->Name_
 					<< GetTabIcon (tab, *info)
-					<< GetSessionProps (tabObj)
+					<< Util::GetSessionProps (*tabObj)
 					<< windowIndex;
 		}
 
@@ -172,7 +173,7 @@ namespace LC::TabSessManager
 					<< tc.TabClass_
 					<< tc.VisibleName_
 					<< tc.Icon_
-					<< GetSessionProps (tab)
+					<< Util::GetSessionProps (*tab)
 					<< windowIndex;
 		}
 	}

@@ -13,6 +13,7 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/entitytesthandleresult.h>
+#include <util/xpc/sessionprops.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "editorpage.h"
 #include "xmlsettingsmanager.h"
@@ -113,8 +114,7 @@ namespace Popishu
 		for (const auto& info : infos)
 		{
 			const auto page = MakeEditorPage ();
-			for (const auto& prop : info.DynProperties_)
-				page->setProperty (prop.first, prop.second);
+			Util::SetSessionProps (*page, info.DynProperties_);
 
 			QDataStream istr { info.Data_ };
 			QByteArray tabId;

@@ -8,13 +8,7 @@
 
 #pragma once
 
-#include <QList>
-#include <QPair>
-
-class QByteArray;
 class QIcon;
-class QObject;
-class QVariant;
 
 struct TabClassInfo;
 
@@ -27,8 +21,6 @@ namespace LC
 
 namespace LC::TabSessManager
 {
-	QList<QPair<QByteArray, QVariant>> GetSessionProps (QObject*);
-
 	bool IsGoodSingleTC (const TabClassInfo&);
 
 	QIcon GetTabIcon (ITabWidget& tab, const TabSaveInfo& info);

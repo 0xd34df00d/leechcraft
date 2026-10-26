@@ -14,6 +14,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/icoretabwidget.h>
+#include <util/xpc/sessionprops.h>
 #include "tabspropsmanager.h"
 #include "util.h"
 
@@ -58,7 +59,7 @@ namespace LC::TabSessManager
 		TabRecoverInfo info
 		{
 			params.RecoverData_,
-			GetSessionProps (params.Widget_)
+			Util::GetSessionProps (*params.Widget_)
 		};
 
 		const auto tab = qobject_cast<ITabWidget*> (params.Widget_);

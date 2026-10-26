@@ -18,6 +18,7 @@
 #include <util/sll/qtutil.h>
 #include <util/sll/udls.h>
 #include <util/sys/paths.h>
+#include <util/xpc/sessionprops.h>
 #include "bioviewmanager.h"
 #include "literals.h"
 #include "similarviewmanager.h"
@@ -47,8 +48,7 @@ namespace LC::LMP
 				&QLineEdit::returnPressed,
 				[this] { DoQueries (Ui_.ArtistNameEdit_->text ().trimmed ()); });
 
-		for (const auto& pair : props)
-			setProperty (pair.first, pair.second);
+		Util::SetSessionProps (*this, props);
 
 		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (GetStaticTabClass ().VisibleName_, this);
 

@@ -12,6 +12,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/sll/qobjectrefcast.h>
+#include <util/xpc/sessionprops.h>
 #include "interfaces/azoth/iclentry.h"
 #include "core.h"
 #include "roles.h"
@@ -62,8 +63,7 @@ namespace LC::Azoth
 		tab->installEventFilter (this);
 		Entry2Tab_ [id] = tab;
 
-		for (const auto& prop : props)
-			tab->setProperty (prop.first, prop.second);
+		Util::SetSessionProps (*tab, props);
 
 		connect (tab,
 				&ChatTab::needToClose,

@@ -27,6 +27,7 @@
 #include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/xpc/introspectable.h>
+#include <util/xpc/sessionprops.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -281,8 +282,7 @@ namespace Poshuku
 		emit browserWidgetCreated (widget);
 		Widgets_.push_back (widget);
 
-		for (const auto& pair : props)
-			widget->setProperty (pair.first, pair.second);
+		Util::SetSessionProps (*widget, props);
 
 		QString tabTitle = "Poshuku";
 		if (url.host ().size ())

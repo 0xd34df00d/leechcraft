@@ -14,6 +14,7 @@ add_util_library (util-xpc
 		downloadhelpers.cpp
 		downloaderrorstrings.cpp
 		progressmanager.cpp
+		sessionprops.cpp
 	DEPENDS
 		leechcraft-util-models
 		leechcraft-util-sll

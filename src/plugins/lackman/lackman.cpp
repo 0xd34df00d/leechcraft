@@ -11,6 +11,7 @@
 #include <QIcon>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/sll/slotclosure.h>
+#include <util/xpc/sessionprops.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -110,8 +111,7 @@ namespace LackMan
 			}
 
 			LackManTab_ = new LackManTab (ShortcutMgr_, TabClass_, this);
-			for (const auto& pair : props)
-				LackManTab_->setProperty (pair.first, pair.second);
+			Util::SetSessionProps (*LackManTab_, props);
 			GetProxyHolder ()->GetRootWindowsManager ()->AddTab (GetName (), LackManTab_);
 		}
 		else

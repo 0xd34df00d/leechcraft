@@ -8,6 +8,7 @@
 
 #include "tabspropsmanager.h"
 #include <QWidget>
+#include <util/xpc/sessionprops.h>
 
 namespace LC::TabSessManager
 {
@@ -53,7 +54,6 @@ namespace LC::TabSessManager
 		if (TabsPropsQueue_.empty ())
 			return;
 
-		for (const auto& pair : TabsPropsQueue_.takeFirst ())
-			widget->setProperty (pair.first, pair.second);
+		Util::SetSessionProps (*widget, TabsPropsQueue_.takeFirst ());
 	}
 }

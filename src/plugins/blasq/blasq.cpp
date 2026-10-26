@@ -11,6 +11,7 @@
 #include <QtQuick>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/sys/mimedetector.h>
+#include <util/xpc/sessionprops.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -220,8 +221,7 @@ namespace Blasq
 		if (tcId == PhotosTabTC_.TabClass_)
 		{
 			auto tab = new PhotosTab (AccountsMgr_, PhotosTabTC_, this, Proxy_);
-			for (const auto& prop : list)
-				tab->setProperty (prop.first, prop.second);
+			Util::SetSessionProps (*tab, list);
 			GetProxyHolder ()->GetRootWindowsManager ()->AddTab (PhotosTabTC_.VisibleName_, tab);
 
 			if (recover)

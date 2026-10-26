@@ -14,6 +14,7 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/sll/qtutil.h>
+#include <util/xpc/sessionprops.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "interfaces/monocle/ibackendplugin.h"
 #include "interfaces/monocle/iredirectorplugin.h"
@@ -169,8 +170,7 @@ namespace LC::Monocle
 		for (const auto& info : infos)
 		{
 			auto tab = CreateTab ();
-			for (const auto& pair : info.DynProperties_)
-				tab->setProperty (pair.first, pair.second);
+			Util::SetSessionProps (*tab, info.DynProperties_);
 			AddTab (tab);
 			tab->RecoverState (info.Data_);
 		}

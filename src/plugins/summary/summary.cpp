@@ -11,6 +11,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <util/xpc/sessionprops.h>
 #include "summarywidget.h"
 
 namespace LC::Summary
@@ -76,8 +77,7 @@ namespace LC::Summary
 		const auto& info = infos.first ();
 
 		Current_ = new SummaryWidget { *this };
-		for (const auto& [name, value] : info.DynProperties_)
-			Current_->setProperty (name, value);
+		Util::SetSessionProps (*Current_, info.DynProperties_);
 
 		GetProxyHolder ()->GetRootWindowsManager ()->AddTab (tr ("Summary"), Current_);
 	}

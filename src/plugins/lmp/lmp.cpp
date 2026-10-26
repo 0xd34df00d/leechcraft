@@ -20,6 +20,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/xpc/progressmanager.h>
+#include <util/xpc/sessionprops.h>
 #include <util/xpc/util.h>
 #include <util/sll/prelude.h>
 #include <util/sll/slotclosure.h>
@@ -359,8 +360,7 @@ namespace LMP
 
 			if (recInfo.Data_ == "playertab")
 			{
-				for (const auto& pair : recInfo.DynProperties_)
-					PlayerTab_->setProperty (pair.first, pair.second);
+				Util::SetSessionProps (*PlayerTab_, recInfo.DynProperties_);
 
 				TabOpenRequested (PlayerTC_.TabClass_);
 			}

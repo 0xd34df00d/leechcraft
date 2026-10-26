@@ -23,6 +23,7 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaverecoverabletabs.h>
 #include "util/xpc/defaulthookproxy.h"
+#include "util/xpc/sessionprops.h"
 #include "util/sll/prelude.h"
 #include "util/sll/qobjectrefcast.h"
 #include "coreproxy.h"
@@ -354,13 +355,8 @@ namespace LC
 							if (!widget)
 								return;
 
-							QList<QPair<QByteArray, QVariant>> props;
-							for (const auto& name : widget->dynamicPropertyNames ())
-								if (name.startsWith ("SessionData/"))
-									props.append ({ name, widget->property (name) });
-
 							auto& ihrt = qobject_ref_cast<IHaveRecoverableTabs> (itw->ParentMultiTabs ());
-							ihrt.RecoverTabs ({ { info->Data_, props } });
+							ihrt.RecoverTabs ({ { info->Data_, Util::GetSessionProps (*widget) } });
 						});
 				cloneAct->setProperty ("ActionIcon", "tab-duplicate");
 			}
