@@ -16,7 +16,7 @@
 #include "iconthemeengine.h"
 #include "tagsmanager.h"
 #include "entitymanager.h"
-#include "lcconfig.h"
+#include "version.h"
 #include "colorthemeengine.h"
 #include "rootwindowsmanager.h"
 
@@ -130,7 +130,7 @@ namespace LC
 
 	QString CoreProxy::GetVersion () const
 	{
-		return LEECHCRAFT_VERSION;
+		return Version;
 	}
 
 	void CoreProxy::RegisterSkinnable (QAction *act)

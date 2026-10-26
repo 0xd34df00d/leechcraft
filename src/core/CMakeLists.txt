@@ -90,6 +90,7 @@ set (SRCS
 	splashscreen.cpp
 	tagsstorage.cpp
 	clargs.cpp
+	version.cpp
 	loaders/ipluginloader.cpp
 	loaders/sopluginloader.cpp
 	$<$<BOOL:${WITH_DBUS_LOADERS}>:

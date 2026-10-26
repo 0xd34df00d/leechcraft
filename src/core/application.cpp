@@ -59,7 +59,7 @@
 #include "coreinstanceobject.h"
 #include "rootwindowsmanager.h"
 #include "splashscreen.h"
-#include "lcconfig.h"
+#include "version.h"
 #include "entitymanager.h"
 
 #ifdef Q_OS_WIN32
@@ -83,7 +83,7 @@ namespace LC
 
 		if (CLArgs_->HelpRequested_)
 		{
-			std::cout << "LeechCraft " << LEECHCRAFT_VERSION << " (https://leechcraft.org)" << std::endl;
+			std::cout << "LeechCraft " << Version << " (https://leechcraft.org)" << std::endl;
 			std::cout << std::endl;
 			std::cout << CL::GetHelp () << std::endl;
 			std::exit (EHelpRequested);
@@ -91,7 +91,7 @@ namespace LC
 
 		if (CLArgs_->VersionRequested_)
 		{
-			std::cout << "LeechCraft " << LEECHCRAFT_VERSION << " (https://leechcraft.org)" << std::endl;
+			std::cout << "LeechCraft " << Version << " (https://leechcraft.org)" << std::endl;
 #ifdef Q_OS_WIN32
 			std::cout << " <this version does not have UNLIMITED CAT POWER :(>" << std::endl;
 #else
@@ -132,7 +132,7 @@ namespace LC
 
 		// Things are sane, prepare
 		QCoreApplication::setApplicationName ("Leechcraft");
-		QCoreApplication::setApplicationVersion (LEECHCRAFT_VERSION);
+		QCoreApplication::setApplicationVersion (Version);
 		QCoreApplication::setOrganizationName ("Deviant");
 
 		Util::InstallTranslator ("");
