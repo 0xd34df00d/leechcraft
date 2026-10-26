@@ -500,7 +500,7 @@ namespace Xoox
 
 	QObject* GlooxAccount::RequestLastActivity (QObject *entry, const QString& variant)
 	{
-		auto jid = qobject_cast<ICLEntry*> (entry)->GetHumanReadableID ();
+		auto jid = qobject_cast<ICLEntry*> (entry)->GetHumanReadableAddress ();
 		if (!variant.isEmpty ())
 			jid += '/' + variant;
 		return RequestLastActivity (jid);
@@ -629,7 +629,7 @@ namespace Xoox
 		if (!ok)
 			return;
 
-		QStringList allJids { Util::Map (entries, [] (ICLEntry *entry) { return entry->GetHumanReadableID (); }) };
+		QStringList allJids { Util::Map (entries, [] (ICLEntry *entry) { return entry->GetHumanReadableAddress (); }) };
 		if (variants.indexOf (selected) == 1)
 			allJids = Util::Map (allJids,
 					[] (const QString& jid) { return ClientConnection::Split (jid).Bare_.section ('@', 1); });

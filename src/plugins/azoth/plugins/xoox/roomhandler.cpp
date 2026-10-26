@@ -189,7 +189,7 @@ namespace Xoox
 
 	QString RoomHandler::GetPassKey () const
 	{
-		return "org.LeechCraft.Azoth.Xoox.MUCpass_" + CLEntry_->GetHumanReadableID ();
+		return "org.LeechCraft.Azoth.Xoox.MUCpass_" + CLEntry_->GetHumanReadableAddress ();
 	}
 
 	void RoomHandler::HandleErrorPresence (const QXmppPresence& pres, const QString& nick)

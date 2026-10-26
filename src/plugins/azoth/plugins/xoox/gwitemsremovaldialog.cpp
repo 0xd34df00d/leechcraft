@@ -28,7 +28,7 @@ namespace Xoox
 			QList<QStandardItem*> row
 			{
 				new QStandardItem (item->GetEntryName ()),
-				new QStandardItem (item->GetHumanReadableID ())
+				new QStandardItem (item->GetHumanReadableAddress ())
 			};
 			for (auto r : row)
 				r->setEditable (false);

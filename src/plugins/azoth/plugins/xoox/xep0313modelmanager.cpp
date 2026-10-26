@@ -47,7 +47,7 @@ namespace Xoox
 					PerformWithEntries (entries,
 							[this] (ICLEntry *entry)
 							{
-								if (const auto item = Jid2Item_.take (entry->GetHumanReadableID ()))
+								if (const auto item = Jid2Item_.take (entry->GetHumanReadableAddress ()))
 									Model_->removeRow (item->row ());
 							});
 				});
@@ -80,7 +80,7 @@ namespace Xoox
 		PerformWithEntries (entries,
 				[this] (ICLEntry *entry)
 				{
-					const auto& jid = entry->GetHumanReadableID ();
+					const auto& jid = entry->GetHumanReadableAddress ();
 					if (Jid2Item_.contains (jid))
 						return;
 

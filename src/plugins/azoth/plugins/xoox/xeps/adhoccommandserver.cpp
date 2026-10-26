@@ -314,7 +314,7 @@ namespace Xoox
 		for (const auto entry : Conn_->GetRoomCLEntries ())
 			options << QPair
 			{
-				entry->GetHumanReadableID () + "/" + entry->GetNick (),
+				entry->GetHumanReadableAddress () + "/" + entry->GetNick (),
 				entry->GetEntryID ()
 			};
 
@@ -370,8 +370,8 @@ namespace Xoox
 
 				const auto& var = msgObj->GetOtherVariant ();
 				const auto& from = var.isEmpty () ?
-						base->GetHumanReadableID () :
-						base->GetHumanReadableID () + '/' + var;
+						base->GetHumanReadableAddress () :
+						base->GetHumanReadableAddress () + '/' + var;
 
 				QXmppExtendedAddress address;
 				address.setType ("ofrom");

@@ -142,7 +142,7 @@ namespace Xoox
 		else
 		{
 			QXmppMessage msg;
-			msg.setTo (to->GetHumanReadableID ());
+			msg.setTo (to->GetHumanReadableAddress ());
 			msg.setBody (message);
 			msg.setExtensions (QXmppElementList () << x);
 			client ()->sendPacket (msg);
