@@ -46,7 +46,10 @@ void buildImage(String distro) {
             error("${distro}: the image build failed; the previous image stays")
         if (rc != 0 && rc != 3)
             error("${distro}: buildimage.sh failed with status ${rc}")
-        status[distro] = readFile("${STATE}/${distro}.status").trim()
+        String statusFile = "${STATE}/${distro}.status"
+        if (!fileExists(statusFile))
+            error("${distro}: buildimage.sh exited with ${rc} but left no ${statusFile}")
+        status[distro] = readFile(statusFile).trim()
         compilers[distro] = readFile("${STATE}/${distro}.compilers").trim().replace('\n', ', ')
         if (status[distro] == 'unknown')
             unstable("${distro}: the image was built, but its packages could not be listed, so it counts as changed; " +

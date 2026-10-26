@@ -18,11 +18,12 @@ set -eu
 
 distro=${1:?usage: buildimage.sh <distro> <state directory>}
 state=${2:?usage: buildimage.sh <distro> <state directory>}
+# the state directory is relative to the caller, so it is resolved before the script moves to tools/
+mkdir -p "$state"
+state=$(cd "$state" && pwd)
 cd "$(dirname "$0")/.."
 dockerfile=docker/base/$distro/Dockerfile
 [ -f "$dockerfile" ] || { echo "no such distro: $distro ($dockerfile missing)" >&2; exit 64; }
-mkdir -p "$state"
-state=$(cd "$state" && pwd)
 image=${IMAGE_PREFIX:-leechcraft/ci_}$distro:latest
 
 # One "name version" line per installed package, whichever package manager the image has. The listing is captured
