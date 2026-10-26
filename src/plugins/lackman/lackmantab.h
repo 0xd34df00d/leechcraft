@@ -83,8 +83,6 @@ namespace LackMan
 		void handleFetchListUpdated (const QList<int>&);
 		void handleTagsUpdated (const QStringList&);
 
-		void toggleInstall ();
-		void toggleUpgrade ();
 		void on_PackagesTree__customContextMenuRequested (const QPoint&);
 		void on_PackageStatus__currentIndexChanged (int);
 	signals:

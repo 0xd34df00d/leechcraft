@@ -29,12 +29,22 @@
 #include "updatesnotificationmanager.h"
 #include "lackmanutil.h"
 
-Q_DECLARE_METATYPE (QModelIndex)
-
 namespace LC
 {
 namespace LackMan
 {
+	namespace
+	{
+		void ToggleCheck (QAbstractItemModel& model, const QModelIndex& index)
+		{
+			if (!index.isValid ())
+				return;
+
+			const auto checked = index.data (Qt::CheckStateRole).value<Qt::CheckState> () == Qt::Checked;
+			model.setData (index, checked ? Qt::Unchecked : Qt::Checked, Qt::CheckStateRole);
+		}
+	}
+
 	LackManTab::LackManTab (Util::ShortcutManager *sm, const TabClassInfo& tabclass, QObject *parentPlugin)
 	: TC_ (tabclass)
 	, ParentPlugin_ (parentPlugin)
@@ -263,10 +273,7 @@ namespace LackMan
 		if (!(idx.flags () & Qt::ItemIsUserCheckable))
 			idx = idx.sibling (idx.row (), PackagesModel::Columns::Inst);
 
-		const auto state = idx.data (Qt::CheckStateRole).toInt ();
-		Ui_.PackagesTree_->model ()->setData (idx,
-				state == Qt::Checked ? Qt::Unchecked : Qt::Checked,
-				Qt::CheckStateRole);
+		ToggleCheck (*Ui_.PackagesTree_->model (), idx);
 	}
 
 	void LackManTab::handlePackageSelected (const QModelIndex& index)
@@ -344,30 +351,6 @@ namespace LackMan
 		TagsModel_->setStringList (tags);
 	}
 
-	void LackManTab::toggleInstall ()
-	{
-		auto idx = sender ()->property ("Index").value<QModelIndex> ();
-		idx = idx.sibling (idx.row (), PackagesModel::Inst);
-
-		Ui_.PackagesTree_->model ()->setData (idx,
-				idx.data (Qt::CheckStateRole).toInt () == Qt::Checked ?
-						Qt::Unchecked :
-						Qt::Checked,
-				Qt::CheckStateRole);
-	}
-
-	void LackManTab::toggleUpgrade ()
-	{
-		auto idx = sender ()->property ("Index").value<QModelIndex> ();
-		idx = idx.sibling (idx.row (), PackagesModel::Upd);
-
-		Ui_.PackagesTree_->model ()->setData (idx,
-				idx.data (Qt::CheckStateRole).toInt () == Qt::Checked ?
-						Qt::Unchecked :
-						Qt::Checked,
-				Qt::CheckStateRole);
-	}
-
 	void LackManTab::MarkVisibleForInstall (LackManUtil::MarkAction action)
 	{
 		LackManUtil::ReportMarkingErrors (LackManUtil::MarkForInstall (*Core::Instance ().GetPluginsModel (),
@@ -382,28 +365,25 @@ namespace LackMan
 
 		if (idx.isValid ())
 		{
-			auto checked = [&idx] (PackagesModel::Columns col) -> bool
+			auto checked = [&idx] (PackagesModel::Columns col)
 			{
 				return idx.sibling (idx.row (), col).data (Qt::CheckStateRole).toInt () == Qt::Checked;
 			};
 
-			const auto installed = idx.data (PackagesModel::PMRInstalled).toBool ();
-			auto installAction = menu.addAction (installed ? tr ("Uninstall") : tr ("Install"),
-					this,
-					SLOT (toggleInstall ()));
-			installAction->setCheckable (true);
-			installAction->setChecked (installed ^ checked (PackagesModel::Inst));
-			installAction->setProperty ("Index", QVariant::fromValue (idx));
-
-			if (idx.data (PackagesModel::PMRUpgradable).toBool ())
+			auto addToggle = [&] (const QString& text, PackagesModel::Columns column, bool isChecked)
 			{
-				auto upgradeAction = menu.addAction (tr ("Upgrade"),
-						this,
-						SLOT (toggleUpgrade ()));
-				upgradeAction->setCheckable (true);
-				upgradeAction->setChecked (checked (PackagesModel::Upd));
-				upgradeAction->setProperty ("Index", QVariant::fromValue (idx));
-			}
+				const QPersistentModelIndex cell { idx.sibling (idx.row (), column) };
+				const auto action = menu.addAction (text, this,
+						[this, cell] { ToggleCheck (*Ui_.PackagesTree_->model (), cell); });
+				action->setCheckable (true);
+				action->setChecked (isChecked);
+			};
+
+			const auto installed = idx.data (PackagesModel::PMRInstalled).toBool ();
+			addToggle (installed ? tr ("Uninstall") : tr ("Install"),
+					PackagesModel::Inst, installed ^ checked (PackagesModel::Inst));
+			if (idx.data (PackagesModel::PMRUpgradable).toBool ())
+				addToggle (tr ("Upgrade"), PackagesModel::Upd, checked (PackagesModel::Upd));
 
 			menu.addSeparator ();
 		}
