@@ -368,6 +368,8 @@ namespace LC::TabSessManager
 
 	void SessionsManager::handleNewTab (int, QWidget *widget)
 	{
+		const auto restoredPos = TabsPropsMgr_->TakeRestoredPosition (widget);
+
 		if (HasTab (widget))
 			return;
 
@@ -404,15 +406,12 @@ namespace LC::TabSessManager
 		if (!irt || irt->GetTabSaveInfo ())
 			handleTabRecoverDataChanged ();
 
-		const auto& posProp = widget->property ("TabSessManager/Position");
-		if (posProp.isValid ())
+		if (restoredPos)
 		{
-			const auto prevPos = posProp.toInt ();
-
 			const auto tabWidget = rootWM->GetTabWidget (windowIndex);
 			const auto currentIdx = tabWidget->IndexOf (widget);
-			if (prevPos < tabWidget->WidgetCount () && currentIdx != prevPos)
-				tabWidget->MoveTab (currentIdx, prevPos);
+			if (*restoredPos < tabWidget->WidgetCount () && currentIdx != *restoredPos)
+				tabWidget->MoveTab (currentIdx, *restoredPos);
 		}
 	}
 

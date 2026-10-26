@@ -40,6 +40,13 @@ namespace LC::TabSessManager
 		return guard;
 	}
 
+	Util::DefaultScopeGuard TabsPropsManager::AppendPosition (int position)
+	{
+		auto guard = MakePropsGuard (PositionsQueue_);
+		PositionsQueue_ << position;
+		return guard;
+	}
+
 	void TabsPropsManager::HandlePreferredWindowIndex (const IHookProxy_ptr& proxy, const QWidget*)
 	{
 		if (PreferredWindowsQueue_.empty ())
@@ -51,9 +58,23 @@ namespace LC::TabSessManager
 
 	void TabsPropsManager::HandleTabAdding (QWidget *widget)
 	{
-		if (TabsPropsQueue_.empty ())
-			return;
+		if (!TabsPropsQueue_.empty ())
+			Util::SetSessionProps (*widget, TabsPropsQueue_.takeFirst ());
+		if (!PositionsQueue_.empty ())
+		{
+			RestoredPositions_ [widget] = PositionsQueue_.takeFirst ();
+			connect (widget, &QObject::destroyed, this, [this, widget] { RestoredPositions_.remove (widget); });
+		}
+	}
 
-		Util::SetSessionProps (*widget, TabsPropsQueue_.takeFirst ());
+	std::optional<int> TabsPropsManager::TakeRestoredPosition (QWidget *widget)
+	{
+		const auto pos = RestoredPositions_.find (widget);
+		if (pos == RestoredPositions_.end ())
+			return {};
+
+		const auto position = *pos;
+		RestoredPositions_.erase (pos);
+		return position;
 	}
 }

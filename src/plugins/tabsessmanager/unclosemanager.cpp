@@ -67,7 +67,6 @@ namespace LC::TabSessManager
 		const auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 		const auto winIdx = rootWM->GetWindowForTab (tab);
 		const auto tabIdx = rootWM->GetTabWidget (winIdx)->IndexOf (params.Widget_);
-		info.DynProperties_.append ({ "TabSessManager/Position", tabIdx });
 
 		for (const auto& action : UncloseMenu_->actions ())
 			if (action->property ("RecData") == params.RecoverData_)
@@ -86,7 +85,7 @@ namespace LC::TabSessManager
 		connect (action,
 				&QAction::triggered,
 				this,
-				[uncloser = params.Uncloser_, info, plugin, action, winIdx, this]
+				[uncloser = params.Uncloser_, info, plugin, action, winIdx, tabIdx, this]
 				{
 					action->deleteLater ();
 
@@ -100,6 +99,7 @@ namespace LC::TabSessManager
 
 					const auto propsGuard = TabsPropsMgr_->AppendProps (info.DynProperties_);
 					const auto winGuard = TabsPropsMgr_->AppendWindow (winIdx);
+					const auto posGuard = TabsPropsMgr_->AppendPosition (tabIdx);
 					uncloser (plugin, info);
 				});
 
