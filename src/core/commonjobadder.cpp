@@ -60,11 +60,10 @@ namespace LC
 		Entity e;
 		if (QFile::exists (what))
 			e.Entity_ = QUrl::fromLocalFile (what);
+		else if (const QUrl url { what }; url.isValid ())
+			e.Entity_ = url;
 		else
-		{
-			const QUrl url { what };
-			e.Entity_ = url.isValid () ? url : what;
-		}
+			e.Entity_ = what;
 		e.Parameters_ = FromUserInitiated;
 
 		if (!EntityManager { nullptr, nullptr }.HandleEntity (e))
