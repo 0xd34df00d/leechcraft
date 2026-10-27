@@ -292,7 +292,7 @@ namespace FatApe
 				}
 				resource.write (reply->readAll ());
 
-				XmlSettingsManager::Instance ().setProperty (propName.toLatin1 (),
+				XmlSettingsManager::Instance ().setProperty (propName.toUtf8 ().constData (),
 						reply->header (QNetworkRequest::ContentTypeHeader));
 			},
 			reply,
