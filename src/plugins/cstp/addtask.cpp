@@ -32,7 +32,7 @@ namespace CSTP
 
 		virtual State validate (QString& input, int&) const
 		{
-			if (QUrl (input).isValid () || input.isEmpty ())
+			if (input.isEmpty () || QUrl::fromUserInput (input).isValid ())
 				return Acceptable;
 			else
 				return Intermediate;
@@ -81,7 +81,7 @@ namespace CSTP
 
 	AddTask::Task AddTask::GetTask () const
 	{
-		return Task (QUrl { Ui_.URL_->text () },
+		return Task (QUrl::fromUserInput (Ui_.URL_->text ()),
 				Ui_.LocalPath_->text (),
 				Ui_.Filename_->text (),
 				Ui_.Comment_->toPlainText ());
@@ -125,7 +125,7 @@ namespace CSTP
 		if (UserModifiedFilename_)
 			return;
 
-		Ui_.Filename_->setText (QFileInfo (QUrl (str).path ()).fileName ());
+		Ui_.Filename_->setText (QFileInfo (QUrl::fromUserInput (str).path ()).fileName ());
 	}
 
 	void AddTask::on_LocalPath__textChanged ()
@@ -153,7 +153,7 @@ namespace CSTP
 
 	void AddTask::CheckOK ()
 	{
-		bool valid = QUrl (Ui_.URL_->text ()).isValid () &&
+		bool valid = QUrl::fromUserInput (Ui_.URL_->text ()).isValid () &&
 				!Ui_.LocalPath_->text ().isEmpty () &&
 				!Ui_.Filename_->text ().isEmpty ();
 		Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (valid);

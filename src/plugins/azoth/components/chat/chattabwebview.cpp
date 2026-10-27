@@ -88,12 +88,7 @@ namespace LC::Azoth
 						this,
 						[text]
 						{
-							QUrl url { text.trimmed () };
-							if (url.scheme ().isEmpty () &&
-									url.host ().isEmpty ())
-								url = QUrl { "http://" + url.toString () };
-
-							const auto& e = Util::MakeEntity (url,
+							const auto& e = Util::MakeEntity (QUrl::fromUserInput (text.trimmed ()),
 									{},
 									OnlyHandle | FromUserInitiated);
 							GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
