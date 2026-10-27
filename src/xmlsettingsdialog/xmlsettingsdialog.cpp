@@ -40,7 +40,10 @@ namespace LC::Util
 		Widget_->setLayout (mainLay);
 	}
 
-	XmlSettingsDialog::~XmlSettingsDialog () = default;
+	XmlSettingsDialog::~XmlSettingsDialog ()
+	{
+		delete Widget_.data ();
+	}
 
 	void XmlSettingsDialog::RegisterObject (BaseSettingsManager *obj, const QString& basename)
 	{

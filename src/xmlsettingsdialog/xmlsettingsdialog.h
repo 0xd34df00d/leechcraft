@@ -10,6 +10,7 @@
 
 #include <memory>
 #include <QObject>
+#include <QPointer>
 #include <QStringList>
 #include <QVariant>
 #include "xsdconfig.h"
@@ -33,7 +34,7 @@ namespace Util
 	{
 		Q_OBJECT
 
-		QWidget * const Widget_;
+		const QPointer<QWidget> Widget_;
 
 		QStackedWidget * const Pages_;
 

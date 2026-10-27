@@ -37,7 +37,8 @@ namespace LC
 	}
 
 	ItemHandlerFactory::ItemHandlerFactory (Util::XmlSettingsDialog *xsd)
-	: XSD_ { *xsd }
+	: QObject { xsd }
+	, XSD_ { *xsd }
 	, Handlers_
 		{
 			{ "checkbox", &HandleCheckbox },
