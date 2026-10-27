@@ -79,7 +79,7 @@ namespace CleanWeb
 			return;
 		}
 
-		if (Model_->HasFilter (title, [] (const Filter& f) { return f.SD_.URL_; }))
+		if (Model_->HasFilter (locationUrl, [] (const Filter& f) { return f.SD_.URL_; }))
 		{
 			QMessageBox::warning (this,
 					tr ("Error adding subscription"),
