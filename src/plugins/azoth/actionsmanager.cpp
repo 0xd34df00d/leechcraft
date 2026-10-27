@@ -392,13 +392,13 @@ namespace Azoth
 			}
 
 			SimpleDialog *dia = new SimpleDialog ();
+			dia->setAttribute (Qt::WA_DeleteOnClose);
 			dia->setWindowTitle (ActionsManager::tr ("Room configuration"));
 			dia->SetWidget (w);
-			QObject::connect (dia,
-					SIGNAL (accepted ()),
+			QObject::connect (entryObj,
+					&QObject::destroyed,
 					dia,
-					SLOT (deleteLater ()),
-					Qt::QueuedConnection);
+					&QWidget::close);
 			dia->show ();
 		}
 
