@@ -69,13 +69,12 @@ namespace LC::Monocle::Boop
 		{
 			for (auto link : Util::DomDescendants (root, "a"_qs))
 			{
-				auto href = link.attribute ("href"_qs);
-				if (href.isEmpty () || !QUrl::fromEncoded (href.toUtf8 ()).isRelative ())
+				const auto& href = link.attribute ("href"_qs);
+				const auto& hrefUrl = QUrl::fromEncoded (href.toUtf8 ());
+				if (href.isEmpty () || !hrefUrl.isRelative ())
 					continue;
 
-				const auto& resolvedHref = href.startsWith ('#') ?
-						baseUrl.resolved (QUrl::fromEncoded (href.toUtf8 ())) :
-						QUrl { href };
+				const auto& resolvedHref = href.startsWith ('#') ? baseUrl.resolved (hrefUrl) : hrefUrl;
 				link.setAttribute ("href"_qs, '#' + InternalizeLinkTarget (resolvedHref));
 			}
 		}
