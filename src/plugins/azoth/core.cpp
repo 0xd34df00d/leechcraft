@@ -753,7 +753,7 @@ namespace LC::Azoth
 
 		const auto& pair = CustomChatStyleManager_->GetForEntry (qobject_cast<ICLEntry*> (entry));
 		if (!pair.first.isEmpty ())
-			return pair.first;
+			return src->GetBaseURL (pair.first);
 
 		const QString& opt = XmlSettingsManager::Instance ()
 				.property (GetStyleOptName (entry)).toString ();
