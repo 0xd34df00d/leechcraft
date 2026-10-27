@@ -71,6 +71,7 @@ namespace LC::Util
 		Settables_ << settable;
 		connect (settable->GetQObject (),
 				&QObject::destroyed,
+				this,
 				[this, settable] { Settables_.removeOne (settable); });
 
 		for (const auto& pair : Util::Stlize (Family2Chooser_))
