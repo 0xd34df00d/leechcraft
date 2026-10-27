@@ -90,6 +90,7 @@ namespace LC::BitTorrent
 				dia->show ();
 				QObject::connect (dia,
 						&QDialog::accepted,
+						dia,
 						[dia, f] { f (dia); });
 			};
 		}
@@ -102,7 +103,7 @@ namespace LC::BitTorrent
 	{
 		OpenTorrent_ = Toolbar_->addAction (tr ("Open torrent..."), this,
 				RunDialog<AddTorrent> (D_.GetPreferredParent_,
-						[this] (AddTorrent *dia)
+						[] (AddTorrent *dia)
 						{
 							TaskParameters tp = FromUserInitiated;
 							if (dia->GetAddType () != AddState::Started)
@@ -113,26 +114,23 @@ namespace LC::BitTorrent
 									dia->GetTryLive (),
 									dia->GetSelectedFiles (),
 									tp);
-
-							SetActionsEnabled ();
 						}));
 		OpenTorrent_->setShortcut (Qt::Key_Insert);
 		OpenTorrent_->setProperty ("ActionIcon", "document-open");
 
 		AddMagnet_ = Toolbar_->addAction (tr ("Add magnet link..."), this,
 				RunDialog<AddMagnetDialog> (D_.GetPreferredParent_,
-						[this] (AddMagnetDialog *dia)
+						[] (AddMagnetDialog *dia)
 						{
 							Core::Instance ()->AddMagnet (dia->GetLink (),
 									dia->GetPath (),
 									dia->GetTags ());
-							SetActionsEnabled ();
 						}));
 		AddMagnet_->setProperty ("ActionIcon", "document-open-remote");
 
 		OpenMultipleTorrents_ = Toolbar_->addAction (tr ("Open multiple torrents..."), this,
 				RunDialog<AddMultipleTorrents> (D_.GetPreferredParent_,
-						[this] (AddMultipleTorrents *dia)
+						[] (AddMultipleTorrents *dia)
 						{
 							TaskParameters tp = FromUserInitiated;
 							if (!dia->ShouldAddAsStarted ())
@@ -159,8 +157,6 @@ namespace LC::BitTorrent
 
 								Core::Instance ()->AddFile (torrentPath, savePath, tags, false);
 							}
-
-							SetActionsEnabled ();
 						}));
 		OpenMultipleTorrents_->setProperty ("ActionIcon", "document-open-folder");
 
