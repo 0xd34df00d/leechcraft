@@ -44,6 +44,7 @@ namespace LC::Azoth::Acetamide
 
 		connect (ctcpMenu,
 				&QMenu::triggered,
+				this,
 				[this] (QAction *act)
 				{
 					ICH_->handleCTCPRequest ({ Nick_, act->text ().toLower () });
