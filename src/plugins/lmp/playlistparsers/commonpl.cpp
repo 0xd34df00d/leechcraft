@@ -28,10 +28,7 @@ namespace LMP
 			QUrl url (src);
 			if (!url.scheme ().isEmpty ())
 			{
-				result.Append ({
-						url.scheme () == "file" ? url.toLocalFile () : url,
-						raw.Additional_
-					});
+				result.Append ({ url, raw.Additional_ });
 				continue;
 			}
 
