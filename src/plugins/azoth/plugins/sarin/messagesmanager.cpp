@@ -72,7 +72,7 @@ namespace LC::Azoth::Sarin
 			qWarning () << "the message for ID" << msgId << "is dead";
 	}
 
-	Util::ContextTask<void> MessagesManager::HandleInMessage (qint32 friendId, QString body)
+	Util::ContextTask<void> MessagesManager::HandleInMessage (uint32_t friendId, QString body)
 	{
 		co_await Util::AddContext { CoroContext_ };
 

@@ -32,7 +32,7 @@ namespace LC::Azoth::Sarin
 		Util::ContextTask<void> SendMessage (Pubkey pkey, QPointer<ChatMessage>);
 	private:
 		void HandleReadReceipt (quint32);
-		Util::ContextTask<void> HandleInMessage (qint32, QString);
+		Util::ContextTask<void> HandleInMessage (uint32_t, QString);
 
 		void SetThread (const std::shared_ptr<ToxRunner>&);
 
