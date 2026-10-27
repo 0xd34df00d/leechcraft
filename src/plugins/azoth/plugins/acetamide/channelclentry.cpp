@@ -97,6 +97,11 @@ namespace LC::Azoth::Acetamide
 		}
 	}
 
+	ChannelCLEntry::~ChannelCLEntry ()
+	{
+		qDeleteAll (AllMessages_);
+	}
+
 	ChannelHandler* ChannelCLEntry::GetChannelHandler () const
 	{
 		return ICH_;

@@ -40,6 +40,7 @@ namespace LC::Azoth::Acetamide
 		MUCPerms_t Perms_;
 	public:
 		explicit ChannelCLEntry (ChannelHandler*);
+		~ChannelCLEntry () override;
 
 		ChannelHandler* GetChannelHandler () const;
 
