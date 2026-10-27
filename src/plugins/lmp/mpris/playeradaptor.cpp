@@ -28,9 +28,11 @@ namespace LC::LMP::MPRIS
 
 		connect (Player_,
 				&Player::songChanged,
+				this,
 				[this] { Notify ("Metadata"); });
 		connect (Player_,
 				&Player::playModeChanged,
+				this,
 				[this]
 				{
 					Notify ("LoopStatus");
@@ -38,9 +40,11 @@ namespace LC::LMP::MPRIS
 				});
 		connect (Player_->GetSourceObject (),
 				&SourceObject::stateChanged,
+				this,
 				[this] { Notify ("PlaybackStatus"); });
 		connect (Player_->GetAudioOutput (),
 				&Output::volumeChanged,
+				this,
 				[this] { Notify ("Volume"); });
 		connect (Player_->GetSourceObject (),
 				&SourceObject::seeked,

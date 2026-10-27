@@ -43,6 +43,7 @@ namespace LC
 				const auto pluginObj = index.data (PluginManager::Roles::PluginObject).value<QObject*> ();
 				connect (button,
 						&QPushButton::released,
+						button,
 						[pluginObj]
 						{
 							Core::Instance ().GetCoreInstanceObject ()->GetSettingsTab ()->showSettingsFor (pluginObj);

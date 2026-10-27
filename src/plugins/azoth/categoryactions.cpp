@@ -51,10 +51,12 @@ namespace LC::Azoth::Actions
 
 		menu->addAction (itm->GetIcon ("edit-rename"),
 				CategoryActions::tr ("Rename group..."),
+				menu,
 				[=] { RenameCategory (cat); });
 
 		menu->addAction (itm->GetIcon ("mail-send"),
 				CategoryActions::tr ("Send message..."),
+				menu,
 				[entries = cat.Entries_]
 				{
 					auto dlg = new GroupSendDialog { entries, GetDialogParent () };
@@ -65,6 +67,7 @@ namespace LC::Azoth::Actions
 		if (cat.UnreadCount_)
 			menu->addAction (itm->GetIcon ("mail-mark-read"),
 					CategoryActions::tr ("Mark all messages as read"),
+					menu,
 					[entries = cat.Entries_]
 					{
 						for (const auto entry : entries)
@@ -79,6 +82,7 @@ namespace LC::Azoth::Actions
 		if (!removableEntries.isEmpty ())
 			menu->addAction (itm->GetIcon ("list-remove"),
 					CategoryActions::tr ("Remove group's participants..."),
+					menu,
 					[removableEntries]
 					{
 						auto dlg = new GroupRemoveDialog { removableEntries, GetDialogParent () };

@@ -23,6 +23,7 @@ namespace LC::LHTR
 				&QWidget::setEnabled);
 		connect (Ui_.Browse_,
 				&QPushButton::released,
+				this,
 				[this]
 				{
 					const auto& path = QFileDialog::getOpenFileName (this,

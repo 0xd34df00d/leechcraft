@@ -243,6 +243,7 @@ namespace LC::LMP
 		addToPlaylist->setProperty ("ActionIcon", "list-add");
 
 		menu.addAction (tr ("Replace playlist"),
+				this,
 				[this]
 				{
 					Player_->clear ();

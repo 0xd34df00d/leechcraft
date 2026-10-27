@@ -249,6 +249,7 @@ namespace LC::BitTorrent
 
 			connect (PieceSize_,
 					&QComboBox::currentIndexChanged,
+					this,
 					[this]
 					{
 						const auto pieceSize = GetPieceSize (PieceSize_->currentIndex ());

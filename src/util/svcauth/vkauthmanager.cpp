@@ -126,6 +126,7 @@ namespace LC::Util::SvcAuth
 		{
 			connect (this,
 					&VkAuthManager::gotAuthKey,
+					this,
 					[this, iface] () mutable { ReportFutureResult (iface, Token_); });
 			GetAuthKey ();
 		}

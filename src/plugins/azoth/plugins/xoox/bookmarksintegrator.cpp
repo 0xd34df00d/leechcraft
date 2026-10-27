@@ -26,6 +26,7 @@ namespace LC::Azoth::Xoox
 	{
 		connect (&conn,
 				&ClientConnection::connected,
+				this,
 				[this]
 				{
 					connect (&Mgr_,

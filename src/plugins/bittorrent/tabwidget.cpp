@@ -56,15 +56,19 @@ namespace LC::BitTorrent
 				&SessionSettingsManager::SetOverallUploadRate);
 		connect (Ui_.TorrentDownloadRateController_,
 				&QSpinBox::valueChanged,
+				this,
 				[this] (int val) { SetDownloadLimit (GetTorrentHandle (Torrent_), val); });
 		connect (Ui_.TorrentUploadRateController_,
 				&QSpinBox::valueChanged,
+				this,
 				[this] (int val) { SetUploadLimit (GetTorrentHandle (Torrent_), val); });
 		connect (Ui_.TorrentManaged_,
 				&QCheckBox::clicked,
+				this,
 				[this] (bool managed) { Model_.setData (Torrent_, managed, Roles::IsManaged); });
 		connect (Ui_.TorrentSequentialDownload_,
 				&QCheckBox::clicked,
+				this,
 				[this] (bool sequential) { Model_.setData (Torrent_, sequential, Roles::IsSequentialDownloading); });
 		connect (Ui_.DownloadingTorrents_,
 				&QSpinBox::valueChanged,
@@ -76,6 +80,7 @@ namespace LC::BitTorrent
 				&SessionSettingsManager::SetMaxUploadingTorrents);
 		connect (TorrentTags_,
 				&Util::TagsEditorAddon::tagsCommitted,
+				this,
 				[this] (const Util::TagsChange& change)
 				{
 					if (!Torrent_.isValid ())

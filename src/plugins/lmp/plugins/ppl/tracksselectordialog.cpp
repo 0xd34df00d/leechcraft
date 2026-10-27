@@ -399,18 +399,23 @@ namespace LC::LMP::PPL
 
 		connect (Ui_.MarkAll_,
 				&QPushButton::clicked,
+				this,
 				[this] { Model_->MarkAll (); });
 		connect (Ui_.UnmarkAll_,
 				&QPushButton::clicked,
+				this,
 				[this] { Model_->UnmarkAll (); });
 		connect (Ui_.UnmarkRepeats_,
 				&QPushButton::clicked,
+				this,
 				[this] { Model_->UnmarkRepeats (); });
 		connect (Ui_.MarkSelected_,
 				&QPushButton::clicked,
+				this,
 				withSelected (true));
 		connect (Ui_.UnmarkSelected_,
 				&QPushButton::clicked,
+				this,
 				withSelected (false));
 	}
 

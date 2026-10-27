@@ -101,6 +101,7 @@ namespace Xoox
 
 		connect (SelfVCardAction_,
 				&QAction::triggered,
+				this,
 				[this]
 				{
 					const auto& jid = SettingsHolder_->GetJID ();
@@ -109,9 +110,11 @@ namespace Xoox
 				});
 		connect (PrivacyDialogAction_,
 				&QAction::triggered,
+				this,
 				[this] { (new PrivacyListsConfigDialog (ClientConnection_->GetPrivacyListsManager ()))->show (); });
 		connect (CarbonsAction_,
 				&QAction::toggled,
+				this,
 				[this] (bool enabled) { SettingsHolder_->SetMessageCarbonsEnabled (enabled); });
 
 		connect (SettingsHolder_,
@@ -167,6 +170,7 @@ namespace Xoox
 
 		connect (ClientConnection_.get (),
 				&ClientConnection::serverAuthFailed,
+				this,
 				[this]
 				{
 					const auto& pwd = GetPassword (true);
@@ -178,6 +182,7 @@ namespace Xoox
 				});
 		connect (ClientConnection_.get (),
 				&ClientConnection::needPassword,
+				this,
 				[this] { ClientConnection_->SetPassword (GetPassword ()); });
 
 		connect (ClientConnection_.get (),

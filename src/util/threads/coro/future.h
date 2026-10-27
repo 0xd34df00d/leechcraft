@@ -34,6 +34,7 @@ namespace LC::Util::detail
 		{
 			QObject::connect (&Watcher_,
 					&QFutureWatcher<R>::finished,
+					&Watcher_,
 					handle);
 		}
 

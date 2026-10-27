@@ -55,6 +55,7 @@ namespace LC::Azoth::Acetamide
 
 		connect (bufferTimer,
 				&QTimer::timeout,
+				this,
 				[this, model]
 				{
 					for (const auto& row : Buffer_)

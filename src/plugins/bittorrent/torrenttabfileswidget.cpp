@@ -84,6 +84,7 @@ namespace LC::BitTorrent
 
 		connect (Ui_.SearchLine_,
 				&QLineEdit::textChanged,
+				this,
 				[this] (const QString& text)
 				{
 					ProxyModel_->setFilterFixedString (text);
@@ -92,6 +93,7 @@ namespace LC::BitTorrent
 
 		connect (Ui_.FilePriorityRegulator_,
 				&QSpinBox::valueChanged,
+				this,
 				[this] (int prio)
 				{
 					for (auto idx : GetSelectedIndexes ())

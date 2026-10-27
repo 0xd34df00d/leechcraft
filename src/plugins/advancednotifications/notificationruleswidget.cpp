@@ -67,6 +67,7 @@ namespace LC::AdvancedNotifications
 
 		connect (Ui_.AddRule_,
 				&QPushButton::released,
+				this,
 				[this] { RM_->PrependRule (); });
 		connect (Ui_.AddFromMissed_,
 				&QPushButton::released,
@@ -87,12 +88,14 @@ namespace LC::AdvancedNotifications
 			};
 			connect (view->selectionModel (),
 					&QItemSelectionModel::currentRowChanged,
+					view,
 					enabler);
 			enabler (view->currentIndex ());
 		};
 
 		connect (Ui_.UpdateRule_,
 				&QPushButton::released,
+				this,
 				withCurrentRule ([this] (const auto& index)
 						{
 							RM_->UpdateRule (index, GetRuleFromUI (index));
@@ -100,12 +103,15 @@ namespace LC::AdvancedNotifications
 						}));
 		connect (Ui_.MoveRuleUp_,
 				&QPushButton::released,
+				this,
 				withCurrentRule ([this] (const auto& index) { RM_->moveUp (index); }));
 		connect (Ui_.MoveRuleDown_,
 				&QPushButton::released,
+				this,
 				withCurrentRule ([this] (const auto& index) { RM_->moveDown (index); }));
 		connect (Ui_.RemoveRule_,
 				&QPushButton::released,
+				this,
 				withCurrentRule ([this] (const auto& index) { RM_->removeRule (index); }));
 		dependButtons (Ui_.RulesTree_, { Ui_.UpdateRule_, Ui_.MoveRuleUp_, Ui_.MoveRuleDown_, Ui_.RemoveRule_ });
 
@@ -158,9 +164,11 @@ namespace LC::AdvancedNotifications
 
 		connect (Ui_.NotifyAudio_,
 				&QCheckBox::checkStateChanged,
+				this,
 				[this] (Qt::CheckState state) { Ui_.PageAudio_->setEnabled (state == Qt::Checked); });
 		connect (Ui_.NotifyCmd_,
 				&QCheckBox::checkStateChanged,
+				this,
 				[this] (Qt::CheckState state) { Ui_.PageCommand_->setEnabled (state == Qt::Checked); });
 
 		connect (rm,

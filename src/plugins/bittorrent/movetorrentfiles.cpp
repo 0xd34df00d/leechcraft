@@ -35,6 +35,7 @@ namespace LC::BitTorrent
 
 		connect (Ui_.Browse_,
 				&QPushButton::released,
+				this,
 				[this]
 				{
 					const auto& dir = QFileDialog::getExistingDirectory (this,

@@ -93,6 +93,7 @@ namespace LC::Util
 
 		QObject::connect (dialog,
 				&QDialog::finished,
+				dialog,
 				[dialog, cont] (int r)
 				{
 					const auto& value = dialog->textValue ();

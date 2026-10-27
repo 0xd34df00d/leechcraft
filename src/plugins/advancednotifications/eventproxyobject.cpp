@@ -28,6 +28,7 @@ namespace LC::AdvancedNotifications
 			auto proxy = new ActionsProxyObject (action, this);
 			connect (proxy,
 					&ActionsProxyObject::actionSelected,
+					this,
 					[this, idx = i++]
 					{
 						emit actionTriggered ({ E_.SenderId_, E_.EventId_ }, idx);

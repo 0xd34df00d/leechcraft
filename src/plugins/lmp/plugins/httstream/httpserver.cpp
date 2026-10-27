@@ -82,6 +82,7 @@ namespace HttStream
 		{
 			connect (socket,
 					&QTcpSocket::bytesWritten,
+					socket,
 					&QTcpSocket::deleteLater);
 		};
 

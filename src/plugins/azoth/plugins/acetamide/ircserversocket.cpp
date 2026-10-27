@@ -28,7 +28,7 @@ namespace LC::Azoth::Acetamide
 	, RetryTimer_ { new QTimer { this } }
 	{
 		RetryTimer_->setSingleShot (true);
-		RetryTimer_->callOnTimeout ([this]
+		RetryTimer_->callOnTimeout (this, [this]
 				{
 					qDebug () << "LC::Azoth::Acetamide::IrcServerSocket: retrying...";
 					ConnectToHost (Host_, Port_);

@@ -91,6 +91,7 @@ namespace LC::Aggregator
 		dialog->show ();
 		QObject::connect (dialog,
 				&QDialog::accepted,
+				dialog,
 				[=] { ExportItems (*dialog, parent); });
 	}
 
@@ -148,6 +149,7 @@ namespace LC::Aggregator
 
 		QObject::connect (&params.Parent_,
 				&QDialog::accepted,
+				&params.Parent_,
 				[=] { XmlSettingsManager::Instance ().setProperty (name, edit.GetPath_ ()); });
 	}
 }

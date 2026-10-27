@@ -18,6 +18,7 @@ namespace LC::AnHero::CrashProcess
 	{
 		connect (Proc_,
 				&QProcess::started,
+				this,
 				[this]
 				{
 					Proc_->write ("thread\n");
@@ -26,6 +27,7 @@ namespace LC::AnHero::CrashProcess
 				});
 		connect (Proc_,
 				&QProcess::errorOccurred,
+				this,
 				[this]
 				{
 					qDebug () << Q_FUNC_INFO

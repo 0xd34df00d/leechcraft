@@ -61,6 +61,7 @@ namespace LC::AnHero::CrashProcess
 
 		connect (Ui_.Copy_,
 				&QPushButton::released,
+				this,
 				[this]
 				{
 					const auto& text = Ui_.TraceDisplay_->toPlainText ();
@@ -69,6 +70,7 @@ namespace LC::AnHero::CrashProcess
 
 		connect (Ui_.Save_,
 				&QPushButton::released,
+				this,
 				[this]
 				{
 					const auto& filename = QFileDialog::getSaveFileName (this,
@@ -82,6 +84,7 @@ namespace LC::AnHero::CrashProcess
 
 		connect (this,
 				&QDialog::finished,
+				this,
 				[this] (int result)
 				{
 					if (result == QDialog::Accepted)
@@ -180,6 +183,7 @@ namespace LC::AnHero::CrashProcess
 				&CrashDialog::HandleGdbFinished);
 		connect (GdbLauncher_.get (),
 				&GDBLauncher::error,
+				this,
 				[this] (QProcess::ExitStatus, int code, QProcess::ProcessError error, const QString& errorStr)
 				{
 					Ui_.TraceDisplay_->append (QStringLiteral ("\n\nGDB crashed :("));

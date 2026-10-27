@@ -140,6 +140,7 @@ namespace LC
 				.XSD_ = XSD_,
 				.Prop_ = prop,
 				.Default_ = GetDefault (element),
+				.MarkChangedContext_ = this,
 				.MarkChanged_ = [this, prop] { MarkChanged (prop); },
 			});
 

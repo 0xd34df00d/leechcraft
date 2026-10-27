@@ -121,6 +121,7 @@ namespace LC::Monocle
 		void FillMenuForText (QMenu& menu, const QString& text)
 		{
 			auto copyAsText = menu.addAction (AreaSelectionInteraction::tr ("Copy as text"),
+					&menu,
 					[text] { QGuiApplication::clipboard ()->setText (text); });
 			copyAsText->setProperty ("ActionIcon", "edit-copy");
 

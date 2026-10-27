@@ -40,6 +40,7 @@ namespace LC::Util::detail
 			Watcher_ = std::make_unique<QDBusPendingCallWatcher> (Reply_);
 			QObject::connect (Watcher_.get (),
 					&QDBusPendingCallWatcher::finished,
+					Watcher_.get (),
 					handle);
 		}
 

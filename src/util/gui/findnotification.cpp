@@ -47,9 +47,11 @@ namespace LC::Util
 
 		connect (Ui_->Pattern_,
 				&QLineEdit::textChanged,
+				this,
 				[this] (const auto& str) { Ui_->FindButton_->setEnabled (!str.isEmpty ()); });
 		connect (Ui_->FindButton_,
 				&QPushButton::released,
+				this,
 				[this]
 				{
 					auto flags = GetDirectionlessFlags ();

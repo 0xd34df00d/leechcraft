@@ -24,7 +24,7 @@ namespace LC::Util::detail
 
 	void TimerAwaiter::await_suspend (std::coroutine_handle<> handle) noexcept
 	{
-		Timer_.callOnTimeout (handle);
+		Timer_.callOnTimeout (&Timer_, handle);
 		Timer_.start ();
 	}
 

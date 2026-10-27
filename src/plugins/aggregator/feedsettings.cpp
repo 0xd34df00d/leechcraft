@@ -56,6 +56,7 @@ namespace LC::Aggregator
 
 		connect (Ui_.ChannelLink_,
 				&QLabel::linkActivated,
+				Ui_.ChannelLink_,
 				[] (const QString& url)
 				{
 					if (XmlSettingsManager::Instance ().property ("AlwaysUseExternalBrowser").toBool ())

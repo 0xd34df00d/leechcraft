@@ -59,7 +59,7 @@ namespace LC::Lemon
 	, Backend_ { std::move (backend) }
 	{
 		auto timer = new QTimer (this);
-		timer->callOnTimeout ([this]
+		timer->callOnTimeout (this, [this]
 			{
 				UpdateInterfaces ();
 				UpdateCounters ();

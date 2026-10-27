@@ -43,6 +43,7 @@ namespace LC::Util
 		for (const auto& [family, chooser] : Family2Chooser_.asKeyValueRange ())
 			connect (chooser,
 					&FontChooserWidget::fontChanged,
+					this,
 					[this, family, chooser] { PendingFontChanges_ [family] = chooser->GetFont (); });
 
 		Size2Spinbox_ [IWkFontsSettable::FontSize::DefaultFontSize] = Ui_->SizeDefault_;
@@ -58,6 +59,7 @@ namespace LC::Util
 		for (const auto& [size, spinbox] : Size2Spinbox_.asKeyValueRange ())
 			connect (spinbox,
 					&QSpinBox::valueChanged,
+					this,
 					[this, size, spinbox] { PendingSizeChanges_ [size] = spinbox->value (); });
 
 		connect (Ui_->ChangeAll_,
@@ -135,6 +137,7 @@ namespace LC::Util
 		dialog->show ();
 		connect (dialog,
 				&QDialog::finished,
+				this,
 				[dialog, this] (int result)
 				{
 					if (result == QDialog::Rejected)

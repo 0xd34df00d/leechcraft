@@ -18,7 +18,7 @@ namespace LC::Util
 
 		Timer_.setTimerType (type);
 		Timer_.setSingleShot (true);
-		Timer_.callOnTimeout ([this]
+		Timer_.callOnTimeout (&Timer_, [this]
 				{
 					LastInvocation_.restart ();
 

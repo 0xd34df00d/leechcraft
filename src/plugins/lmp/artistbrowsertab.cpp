@@ -46,6 +46,7 @@ namespace LC::LMP
 
 		connect (Ui_.ArtistNameEdit_,
 				&QLineEdit::returnPressed,
+				this,
 				[this] { DoQueries (Ui_.ArtistNameEdit_->text ().trimmed ()); });
 
 		Util::SetSessionProps (*this, props);

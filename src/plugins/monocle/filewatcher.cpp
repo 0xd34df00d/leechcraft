@@ -77,7 +77,7 @@ namespace LC::Monocle
 
 		ReloadTimer_.setSingleShot (true);
 		ReloadTimer_.setInterval (ReloadTimerInterval);
-		ReloadTimer_.callOnTimeout ([this]
+		ReloadTimer_.callOnTimeout (this, [this]
 				{
 					emit reloadNeeded (CurrentFile_);
 					LastIdentity_ = MakeIdentity (CurrentFile_);

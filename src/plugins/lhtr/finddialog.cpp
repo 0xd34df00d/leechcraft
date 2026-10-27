@@ -133,9 +133,11 @@ namespace LC::LHTR
 
 		connect (Ui_.ReplaceText_,
 				&QLineEdit::textChanged,
+				this,
 				replaceChangeHandler);
 		connect (Ui_.FindText_,
 				&QLineEdit::textChanged,
+				this,
 				[this, replaceChangeHandler] (const QString& text)
 				{
 					const bool empty = text.isEmpty ();
@@ -146,15 +148,19 @@ namespace LC::LHTR
 				});
 		connect (Ui_.Next_,
 				&QPushButton::released,
+				this,
 				[this] { Proxy_.Next (Ui_.FindText_->text (), IsCaseSensitive ()); });
 		connect (Ui_.Previous_,
 				&QPushButton::released,
+				this,
 				[this] { Proxy_.Previous (Ui_.FindText_->text (), IsCaseSensitive ()); });
 		connect (Ui_.Replace_,
 				&QPushButton::released,
+				this,
 				[this] { Proxy_.Replace (Ui_.FindText_->text (), Ui_.ReplaceText_->text (), IsCaseSensitive (), false); });
 		connect (Ui_.ReplaceAll_,
 				&QPushButton::released,
+				this,
 				[this] { Proxy_.Replace (Ui_.FindText_->text (), Ui_.ReplaceText_->text (), IsCaseSensitive (), true); });
 	}
 

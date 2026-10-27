@@ -40,6 +40,7 @@ namespace LC::Azoth::Acetamide
 
 		connect (Ui_.ConfigTabs_,
 				&QTabWidget::currentChanged,
+				this,
 				[this] (int idx)
 				{
 					if (idx > 0)
@@ -141,12 +142,15 @@ namespace LC::Azoth::Acetamide
 
 			connect (addButton,
 					&QPushButton::clicked,
+					this,
 					addHandler);
 			connect (removeButton,
 					&QPushButton::clicked,
+					this,
 					removeHandler);
 			connect (updateButton,
 					&QPushButton::clicked,
+					this,
 					[=]
 					{
 						if (!textEdit->text ().isEmpty ())

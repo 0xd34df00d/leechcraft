@@ -22,6 +22,7 @@ namespace LC::Azoth::Acetamide
 
 		connect (closePrivate,
 				&QAction::triggered,
+				this,
 				[this]
 				{
 					IsPrivateChat_ = false;

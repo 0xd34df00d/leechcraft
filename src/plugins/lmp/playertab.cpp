@@ -441,12 +441,13 @@ namespace LMP
 		EffectsMenu_->clear ();
 
 		for (int i = 0; i < effectsList.size (); ++i)
-			EffectsMenu_->addAction (effectsList.at (i), [this, i] { emit effectsConfigRequested (i); });
+			EffectsMenu_->addAction (effectsList.at (i), this, [this, i] { emit effectsConfigRequested (i); });
 
 		if (!effectsList.isEmpty ())
 			EffectsMenu_->addSeparator ();
 
 		EffectsMenu_->addAction (tr ("Open effects configuration page..."),
+				EffectsMenu_,
 				[] { XmlSettingsManager::Instance ().ShowSettingsPage ("EffectsView"); });
 	}
 

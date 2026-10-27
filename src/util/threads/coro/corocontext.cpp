@@ -65,13 +65,16 @@ namespace LC::Util
 		if (!ctx)
 		{
 			ctx = std::make_unique<CoroContext> (obj);
+			// Direct: deleting `obj` from another thread is exactly what the handler reports, and a queued call would never run
 			QObject::connect (&obj,
 					&QObject::destroyed,
+					&obj,
 					[&obj]
 					{
 						if (!contexts.erase (&obj))
 							qCritical () << "could not find" << &obj << "in the contexts map — threading messed up?";
-					});
+					},
+					Qt::DirectConnection);
 		}
 		return *ctx;
 	}

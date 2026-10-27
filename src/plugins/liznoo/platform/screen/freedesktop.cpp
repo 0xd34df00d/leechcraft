@@ -32,7 +32,7 @@ namespace LC::Liznoo::Screen
 	: Platform (parent)
 	, ActivityTimer_ (new QTimer (this))
 	{
-		ActivityTimer_->callOnTimeout (&SimulateUserActivity);
+		ActivityTimer_->callOnTimeout (ActivityTimer_, &SimulateUserActivity);
 		ActivityTimer_->setInterval (30000);
 	}
 

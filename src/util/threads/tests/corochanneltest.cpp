@@ -168,7 +168,7 @@ namespace LC::Util
 		int expected = 0;
 
 		QTimer timer;
-		timer.callOnTimeout ([&, i = 0] mutable
+		timer.callOnTimeout (&timer, [&, i = 0] mutable
 				{
 					expected += i;
 					ch.Send (i);
@@ -208,7 +208,7 @@ namespace LC::Util
 		int expected = 0;
 
 		QTimer timer;
-		timer.callOnTimeout ([&, i = 0] mutable
+		timer.callOnTimeout (&timer, [&, i = 0] mutable
 				{
 					for (int j = 0; j < numChannels; ++j)
 					{

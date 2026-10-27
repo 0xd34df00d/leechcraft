@@ -20,6 +20,7 @@ namespace LC
 		const auto button = new QPushButton { ctx.Label_ };
 		QObject::connect (button,
 				&QPushButton::released,
+				&xsd,
 				[prop = ctx.Prop_, &xsd] { emit xsd.pushButtonClicked (prop); });
 		return
 		{

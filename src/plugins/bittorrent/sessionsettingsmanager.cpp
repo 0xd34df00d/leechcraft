@@ -201,6 +201,7 @@ namespace LC::BitTorrent
 
 			QObject::connect (box,
 					&QMessageBox::accepted,
+					box,
 					[] { XmlSettingsManager::Instance ().setProperty ("NotificationStorage", true); });
 		}
 

@@ -91,6 +91,7 @@ namespace LC::Imgaste
 			const auto reply = Post (service, ctx.Data_, ctx.Fmt_, *GetProxyHolder ()->GetNetworkAccessManager ());
 			QObject::connect (reply,
 					&QNetworkReply::uploadProgress,
+					reply,
 					[row = std::move (row)] (qint64 done, qint64 total)
 					{
 						row->SetDone (done);

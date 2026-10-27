@@ -24,6 +24,7 @@ namespace LC::Util
 				const auto act = menu->addAction (var.Icon_, var.Name_);
 				QObject::connect (act,
 						&QAction::triggered,
+						act,
 						[var, actor] () mutable { actor (var); });
 		}
 	}

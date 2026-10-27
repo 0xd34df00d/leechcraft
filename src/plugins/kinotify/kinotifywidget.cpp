@@ -44,6 +44,7 @@ namespace LC::Kinotify
 
 		connect (Ui_.Body_,
 				&QLabel::linkActivated,
+				Ui_.Body_,
 				[] (const QString& link)
 				{
 					const auto& e = Util::MakeEntity (QUrl { link },
@@ -174,6 +175,7 @@ namespace LC::Kinotify
 			Ui_.ButtonsLayout_->addWidget (button);
 			connect (button,
 					&QPushButton::released,
+					this,
 					[this, i]
 					{
 						emit initiateCloseNotification ();

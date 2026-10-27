@@ -59,8 +59,8 @@ namespace LC::Util::detail
 			QObject::disconnect (std::move (ErrorConn_).Release ());
 			QMetaObject::invokeMethod (&CoroResumeGuard_, handle, Qt::QueuedConnection);
 		};
-		FinishedConn_ = QObject::connect (&Process_, &QProcess::finished, resumeLater);
-		ErrorConn_ = QObject::connect (&Process_, &QProcess::errorOccurred, resumeLater);
+		FinishedConn_ = QObject::connect (&Process_, &QProcess::finished, &Process_, resumeLater);
+		ErrorConn_ = QObject::connect (&Process_, &QProcess::errorOccurred, &Process_, resumeLater);
 	}
 
 	ProcessOutcome ProcessAwaiter::await_resume () const

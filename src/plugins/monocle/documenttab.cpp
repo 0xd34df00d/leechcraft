@@ -382,9 +382,11 @@ namespace Monocle
 		PageNumLabel_ = new PageNumLabel;
 		connect (PageNumLabel_,
 				qOverload<int> (&QSpinBox::valueChanged),
+				this,
 				[this] (int value) { SetCurrentPage (value - 1); });
 		connect (&C_->LayoutManager_,
 				&PagesLayoutManager::layoutModeChanged,
+				this,
 				[this] { PageNumLabel_->setSingleStep (C_->LayoutManager_.GetLayoutModeCount ()); });
 		Toolbar_->addWidget (PageNumLabel_);
 

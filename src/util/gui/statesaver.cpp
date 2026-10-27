@@ -107,6 +107,7 @@ namespace LC::Util
 		using namespace std::chrono_literals;
 		QObject::connect (&splitter,
 				&QSplitter::splitterMoved,
+				&splitter,
 				Throttled (1s, &splitter,
 					[&xsm = params.XSM_, id = params.Id_, &splitter]
 					{
@@ -136,9 +137,11 @@ namespace LC::Util
 				[&xsm = params.XSM_, id = params.Id_, &header] { xsm.setProperty (id.c_str (), header.saveState ()); });
 		QObject::connect (&header,
 				&QHeaderView::sectionMoved,
+				&header,
 				saver);
 		QObject::connect (&header,
 				&QHeaderView::sectionResized,
+				&header,
 				saver);
 	}
 }

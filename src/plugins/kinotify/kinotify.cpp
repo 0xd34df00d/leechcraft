@@ -32,6 +32,7 @@ namespace LC::Kinotify
 
 		connect (SettingsDialog_.get (),
 				&Util::XmlSettingsDialog::pushButtonClicked,
+				this,
 				[this] (const QString& name)
 				{
 					if (name == "TestNotification"_ql)

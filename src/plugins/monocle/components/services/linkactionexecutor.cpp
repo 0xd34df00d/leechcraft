@@ -75,26 +75,31 @@ namespace LC::Monocle
 				[&] (const NavigationAction& nav)
 				{
 					auto navigate = menu.addAction (LinkActionMenu::GetPrimaryActionLabel (nav),
+							&menu,
 							[&ec, nav] { ec.Navigate (nav); });
 					navigate->setProperty ("ActionIcon", "quickopen");
 				},
 				[&] (const ExternalNavigationAction& extNav)
 				{
 					auto navigate = menu.addAction (LinkActionMenu::GetPrimaryActionLabel (extNav),
+							&menu,
 							[&ec, extNav] { ec.Navigate (extNav); });
 					navigate->setProperty ("ActionIcon", "quickopen-file");
 
 					auto copy = menu.addAction (LinkActionMenu::tr ("Copy the linked document name to the clipboard"),
+							&menu,
 							[extNav] { QGuiApplication::clipboard ()->setText (extNav.TargetDocument_); });
 					copy->setProperty ("ActionIcon", "edit-copy");
 				},
 				[&] (const UrlAction& url)
 				{
 					auto open = menu.addAction (LinkActionMenu::GetPrimaryActionLabel (url),
+							&menu,
 							[url] { OpenUrl (url.Url_); });
 					open->setProperty ("ActionIcon", "document-open-remote");
 
 					auto download = menu.addAction (LinkActionMenu::tr ("Download %1").arg (url.Url_.toString ()),
+							&menu,
 							[url]
 							{
 								auto e = Util::MakeEntity (url.Url_, {}, FromUserInitiated | OnlyDownload);
@@ -103,12 +108,14 @@ namespace LC::Monocle
 					download->setProperty ("ActionIcon", "download");
 
 					auto copy = menu.addAction (LinkActionMenu::tr ("Copy URL to the clipboard"),
+							&menu,
 							[url] { QGuiApplication::clipboard ()->setText (url.Url_.toString ()); });
 					copy->setProperty ("ActionIcon", "edit-copy");
 				},
 				[&] (const CustomAction& custom)
 				{
 					auto exec = menu.addAction (LinkActionMenu::GetPrimaryActionLabel (custom),
+							&menu,
 							custom);
 					exec->setProperty ("ActionIcon", "document-open-remote");
 				});

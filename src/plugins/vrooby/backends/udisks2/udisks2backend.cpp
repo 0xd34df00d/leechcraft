@@ -64,7 +64,7 @@ namespace LC::Vrooby::UDisks2
 		using namespace std::chrono_literals;
 
 		const auto timer = new QTimer { this };
-		timer->callOnTimeout ([this] { UpdateDeviceSpaces (); });
+		timer->callOnTimeout (this, [this] { UpdateDeviceSpaces (); });
 		timer->start (10s);
 	}
 

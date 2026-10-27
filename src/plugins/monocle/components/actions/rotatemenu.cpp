@@ -32,10 +32,12 @@ namespace LC::Monocle
 		constexpr auto SingleRotation = 90;
 
 		auto ccwAction = menu->addAction (Tr::tr ("Rotate 90 degrees counter-clockwise"),
+				menu.get (),
 				[angleSetter] { angleSetter (-SingleRotation, RotationChange::Add); });
 		ccwAction->setProperty ("ActionIcon", "object-rotate-left");
 
 		auto cwAction = menu->addAction (Tr::tr ("Rotate 90 degrees clockwise"),
+				menu.get (),
 				[angleSetter] { angleSetter (+SingleRotation, RotationChange::Add); });
 		cwAction->setProperty ("ActionIcon", "object-rotate-right");
 
@@ -48,6 +50,7 @@ namespace LC::Monocle
 		auto arbWidget = new ArbitraryRotationWidget;
 		QObject::connect (arbWidget,
 				&ArbitraryRotationWidget::valueChanged,
+				arbWidget,
 				[angleSetter] (double value) { angleSetter (value, RotationChange::Set); });
 		Util::Visit (angleGetter,
 				[arbWidget] (InitAngle angle) { arbWidget->setValue (angle.Value_); },

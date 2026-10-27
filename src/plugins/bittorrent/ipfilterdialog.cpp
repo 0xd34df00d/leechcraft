@@ -20,6 +20,7 @@ namespace LC::BitTorrent
 
 		connect (Ui_.Tree_,
 				&QTreeWidget::currentItemChanged,
+				this,
 				[this] (QTreeWidgetItem *item)
 				{
 					Ui_.Modify_->setEnabled (item);
@@ -27,6 +28,7 @@ namespace LC::BitTorrent
 				});
 		connect (Ui_.Tree_,
 				&QTreeWidget::itemClicked,
+				Ui_.Tree_,
 				[] (QTreeWidgetItem *item, int column)
 				{
 					if (column != 2)
@@ -49,6 +51,7 @@ namespace LC::BitTorrent
 				&IPFilterDialog::Modify);
 		connect (Ui_.Remove_,
 				&QPushButton::released,
+				this,
 				[this] { delete Ui_.Tree_->currentItem (); });
 
 		for (const auto& [range, block] : banList)

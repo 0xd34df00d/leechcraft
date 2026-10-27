@@ -200,6 +200,7 @@ namespace LackMan
 
 			QObject::connect (unarch,
 					&QProcess::errorOccurred,
+					unarch,
 					[=] { HandleUnarchError (unarch, iem, url, location); });
 
 #ifdef Q_OS_WIN32

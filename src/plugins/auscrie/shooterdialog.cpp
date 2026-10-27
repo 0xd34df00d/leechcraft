@@ -50,6 +50,7 @@ namespace LC::Auscrie
 		updateSettingsLabel (Ui_.Format_->currentText ());
 		connect (Ui_.Format_,
 				&QComboBox::currentTextChanged,
+				this,
 				updateSettingsLabel);
 
 		auto button = new QPushButton (tr ("Make screenshot"));

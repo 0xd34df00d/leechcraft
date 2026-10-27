@@ -69,6 +69,7 @@ namespace LC::Monocle
 		QMenu menu;
 		menu.addAction (itm->GetIcon ("edit-copy"_qs),
 				tr ("Copy annotation text"),
+				&menu,
 				[&idx]
 				{
 					const auto& ann = idx.data (AnnManager::Role::Annotation).value<IAnnotation_ptr> ();

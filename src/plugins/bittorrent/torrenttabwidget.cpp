@@ -70,6 +70,7 @@ namespace LC::BitTorrent
 
 		connect (Ui_.LabelComment_,
 				&QLabel::linkActivated,
+				Ui_.LabelComment_,
 				[] (const QString& link)
 				{
 					const auto& e = Util::MakeEntity (QUrl::fromEncoded (link.toUtf8 ()),
@@ -135,18 +136,21 @@ namespace LC::BitTorrent
 
 		connect (Ui_.TorrentDownloadRateController_,
 				&QSpinBox::valueChanged,
+				this,
 				[this] (int val)
 				{
 					ForEachSelected ([val] (const QModelIndex& idx) { SetDownloadLimit (GetTorrentHandle (idx), val); });
 				});
 		connect (Ui_.TorrentUploadRateController_,
 				&QSpinBox::valueChanged,
+				this,
 				[this] (int val)
 				{
 					ForEachSelected ([val] (const QModelIndex& idx) { SetUploadLimit (GetTorrentHandle (idx), val); });
 				});
 		connect (Ui_.TorrentManaged_,
 				&QCheckBox::checkStateChanged,
+				this,
 				[this] (Qt::CheckState state)
 				{
 					const auto enable = state == Qt::Checked;
@@ -154,6 +158,7 @@ namespace LC::BitTorrent
 				});
 		connect (Ui_.TorrentSequentialDownload_,
 				&QCheckBox::checkStateChanged,
+				this,
 				[this] (Qt::CheckState state)
 				{
 					const auto enable = state == Qt::Checked;
@@ -161,6 +166,7 @@ namespace LC::BitTorrent
 				});
 		connect (Ui_.TorrentSuperSeeding_,
 				&QCheckBox::checkStateChanged,
+				this,
 				[this] (Qt::CheckState state)
 				{
 					const auto enable = state == Qt::Checked;
@@ -168,6 +174,7 @@ namespace LC::BitTorrent
 				});
 		connect (TorrentTags_,
 				&Util::TagsEditorAddon::tagsCommitted,
+				this,
 				[this] (const Util::TagsChange& change)
 				{
 					ForEachSelected ([this, &change] (const QModelIndex& idx)
@@ -179,7 +186,7 @@ namespace LC::BitTorrent
 
 		const auto timer = new QTimer { this };
 		timer->setTimerType (Qt::VeryCoarseTimer);
-		timer->callOnTimeout ([this]
+		timer->callOnTimeout (this, [this]
 				{
 					UpdateOverallStats ();
 
@@ -233,6 +240,7 @@ namespace LC::BitTorrent
 		Ui_.WebSeedsView_->setModel (newWebSeedsModel.get ());
 		connect (Ui_.WebSeedsView_->selectionModel (),
 				&QItemSelectionModel::currentChanged,
+				this,
 				[this] (const QModelIndex& idx) { RemoveWebSeedAction_->setEnabled (idx.isValid ()); });
 		WebSeedsModel_ = std::move (newWebSeedsModel);
 	}

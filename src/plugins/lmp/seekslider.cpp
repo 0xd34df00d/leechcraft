@@ -40,9 +40,11 @@ namespace LMP
 
 		connect (Ui_.Slider_,
 				&QSlider::sliderPressed,
+				this,
 				[this] { IsPressed_ = true; });
 		connect (Ui_.Slider_,
 				&QSlider::sliderReleased,
+				this,
 				[this] { IsPressed_ = false; });
 	}
 

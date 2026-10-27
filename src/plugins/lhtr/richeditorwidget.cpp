@@ -171,11 +171,13 @@ const findParent = (item, name) => {
 		FindAction_->setShortcut (QKeySequence::Find);
 		connect (FindAction_,
 				&QAction::triggered,
+				this,
 				[this] { OpenFindReplace (true); });
 		ReplaceAction_->setProperty ("ActionIcon", "edit-find-replace");
 		ReplaceAction_->setShortcut (QKeySequence::Replace);
 		connect (ReplaceAction_,
 				&QAction::triggered,
+				this,
 				[this] { OpenFindReplace (false); });
 
 		const auto pageKey = QByteArray::number (QRandomGenerator::global ()->generate ());
@@ -206,6 +208,7 @@ const findParent = (item, name) => {
 
 		connect (Ui_.View_->page (),
 				&QWebEnginePage::selectionChanged,
+				this,
 				[this]
 				{
 					for (const auto& [cmd, act] : HtmlActions_)

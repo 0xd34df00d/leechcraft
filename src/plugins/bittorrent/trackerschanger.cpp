@@ -62,6 +62,7 @@ namespace LC::BitTorrent
 		};
 		connect (Ui_.Trackers_,
 				&QTreeWidget::currentItemChanged,
+				this,
 				enableButtons);
 		enableButtons (nullptr);
 

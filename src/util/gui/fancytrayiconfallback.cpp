@@ -18,6 +18,7 @@ namespace LC::Util
 		Icon_.setVisible (true);
 		connect (&Icon_,
 				&QSystemTrayIcon::activated,
+				&icon,
 				[&icon] (QSystemTrayIcon::ActivationReason reason)
 				{
 					switch (reason)

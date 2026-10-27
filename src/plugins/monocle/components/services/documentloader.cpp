@@ -111,6 +111,7 @@ namespace LC::Monocle
 
 			QObject::connect (doc->GetQObject (),
 					&QObject::destroyed,
+					doc->GetQObject (),
 					cleanupConverted);
 			co_return doc;
 		}

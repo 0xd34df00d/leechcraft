@@ -30,6 +30,7 @@ namespace LC::Azoth::Acetamide
 
 		QObject::connect (ConfigWidget_.get (),
 				&NickServIdentifyWidget::saveSettings,
+				ConfigWidget_.get (),
 				[this] { WriteSettings(); });
 
 		QObject::connect (ConfigWidget_.get (),

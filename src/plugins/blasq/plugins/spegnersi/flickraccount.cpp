@@ -203,6 +203,7 @@ namespace Spegnersi
 		{
 			StatusConn_ = QObject::connect (&AuthMgr_,
 					&QOAuth1::statusChanged,
+					&AuthMgr_,
 					[this, handle]
 					{
 						switch (AuthMgr_.status ())

@@ -68,13 +68,16 @@ namespace LC::BitTorrent
 		checkComplete ();
 		connect (Ui_.SavePath_,
 				&QLineEdit::textChanged,
+				this,
 				checkComplete);
 		connect (Ui_.Magnet_,
 				&QLineEdit::textChanged,
+				this,
 				checkComplete);
 
 		connect (Ui_.BrowseButton_,
 				&QPushButton::released,
+				this,
 				[this]
 				{
 					const auto& dir = QFileDialog::getExistingDirectory (this,

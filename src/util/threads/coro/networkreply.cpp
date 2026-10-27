@@ -26,9 +26,11 @@ namespace LC::Util::detail
 	{
 		FinishedConn_ = QObject::connect (&Reply_,
 				&QNetworkReply::finished,
+				&Reply_,
 				handle);
 		ErrorConn_ = QObject::connect (&Reply_,
 				&QNetworkReply::errorOccurred,
+				&Reply_,
 				[this, handle]
 				{
 					QObject::disconnect (std::move (FinishedConn_).Release ());

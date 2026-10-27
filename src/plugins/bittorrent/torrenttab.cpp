@@ -68,9 +68,11 @@ namespace LC::BitTorrent
 		Ui_.TorrentsView_->setModel (ViewFilter_);
 		connect (Ui_.TorrentsView_->selectionModel (),
 				&QItemSelectionModel::currentRowChanged,
+				this,
 				[this] (const QModelIndex& index) { Ui_.Tabs_->SetCurrentIndex (ViewFilter_->mapToSource (index)); });
 		connect (Ui_.TorrentsView_->selectionModel (),
 				&QItemSelectionModel::selectionChanged,
+				this,
 				[this]
 				{
 					const auto& rows = Ui_.TorrentsView_->selectionModel ()->selectedRows ();
@@ -117,6 +119,7 @@ namespace LC::BitTorrent
 
 		connect (Ui_.TorrentsView_,
 				&QTreeView::customContextMenuRequested,
+				this,
 				[this] (QPoint at)
 				{
 					const auto& globalAt = Ui_.TorrentsView_->viewport ()->mapToGlobal (at);

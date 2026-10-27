@@ -35,6 +35,7 @@ namespace LC::Util
 	{
 		QObject::connect (&view,
 				&QQuickWidget::statusChanged,
+				&view,
 				[&view]
 				{
 					if (view.status () == QQuickWidget::Error)

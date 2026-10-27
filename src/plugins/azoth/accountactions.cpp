@@ -104,6 +104,7 @@ namespace LC::Azoth::Actions
 					name = hrName;
 
 				const auto act = bmsMenu->addAction (name,
+						account->GetQObject (),
 						[account, mucProto, bmData]
 						{
 							const auto jWidget = mucProto->GetMUCJoinWidget ();
@@ -123,6 +124,7 @@ namespace LC::Azoth::Actions
 
 			menu->addAction (itm->GetIcon ("irc-join-channel"),
 					AccountActions::tr ("Join conference..."),
+					account->GetQObject (),
 					[account]
 					{
 						auto dia = new JoinConferenceDialog ({ account }, GetDialogParent ());
@@ -134,6 +136,7 @@ namespace LC::Azoth::Actions
 
 			menu->addAction (itm->GetIcon ("bookmarks-organize"),
 					AccountActions::tr ("Manage bookmarks..."),
+					account->GetQObject (),
 					[account]
 					{
 						auto dia = new BookmarksManagerDialog (GetDialogParent ());
@@ -183,11 +186,16 @@ namespace LC::Azoth::Actions
 			Core::Instance ().GetChatTabsManager ()->OpenChat (*entry, true);
 		}
 
-		void AddServerHistoryActions (QMenu *menu, IHaveServerHistory *ihsh)
+		void AddServerHistoryActions (QMenu *menu, QObject *accObj)
 		{
+			const auto ihsh = qobject_cast<IHaveServerHistory*> (accObj);
+			if (!ihsh)
+				return;
+
 			if (ihsh->HasFeature (ServerHistoryFeature::AccountSupportsHistory))
 				menu->addAction (GetProxyHolder ()->GetIconThemeManager ()->GetIcon ("network-server-database"),
 						AccountActions::tr ("Open server history..."),
+						accObj,
 						[ihsh]
 						{
 							GetProxyHolder ()->GetRootWindowsManager ()->AddTab (new ServerHistoryWidget { ihsh });
@@ -195,6 +203,7 @@ namespace LC::Azoth::Actions
 
 			if (ihsh->HasFeature (ServerHistoryFeature::Configurable))
 				menu->addAction (AccountActions::tr ("Configure server history..."),
+						accObj,
 						[ihsh] { ihsh->OpenServerHistoryConfiguration (); });
 
 			menu->addSeparator ();
@@ -216,6 +225,7 @@ namespace LC::Azoth::Actions
 			if (const auto isa = qobject_cast<ISupportActivity*> (accObj))
 				menu->addAction (itm->GetIcon ("view-calendar"),
 						AccountActions::tr ("Set activity..."),
+						accObj,
 						[=]
 						{
 							ActivityDialog dia { GetDialogParent () };
@@ -228,6 +238,7 @@ namespace LC::Azoth::Actions
 			if (const auto ism = qobject_cast<ISupportMood*> (accObj))
 				menu->addAction (itm->GetIcon ("face-smile"),
 						AccountActions::tr ("Set mood..."),
+						accObj,
 						[=]
 						{
 							MoodDialog dia { GetDialogParent () };
@@ -239,6 +250,7 @@ namespace LC::Azoth::Actions
 
 			if (const auto isg = qobject_cast<ISupportGeolocation*> (accObj))
 				menu->addAction (AccountActions::tr ("Set location..."),
+						accObj,
 						[isg]
 						{
 							LocationDialog dia { GetDialogParent () };
@@ -259,6 +271,7 @@ namespace LC::Azoth::Actions
 				cw = new ConsoleWidget (account->GetQObject ());
 				QObject::connect (cw,
 						&ConsoleWidget::removeTab,
+						cw,
 						[account] { account2cw.remove (account); });
 			}
 
@@ -297,7 +310,7 @@ namespace LC::Azoth::Actions
 
 		const auto itm = GetProxyHolder ()->GetIconThemeManager ();
 
-		const auto statusMenu = StatusChange::CreateMenu (menu, std::bind_front (ChangeStatus, acc));
+		const auto statusMenu = StatusChange::CreateMenu (accObj, std::bind_front (ChangeStatus, acc));
 		statusMenu->setIcon (itm->GetIcon ("im-status-message-edit"));
 		menu->addMenu (statusMenu);
 
@@ -312,19 +325,21 @@ namespace LC::Azoth::Actions
 
 		menu->addAction (itm->GetIcon ("list-add-user"),
 					AccountActions::tr ("Add contact..."),
+					accObj,
 					[acc] { AddAccountContact (acc); });
 
 		if (const auto isnr = qobject_cast<ISupportNonRoster*> (accObj))
 			menu->addAction (AccountActions::tr ("Chat with non-CL contact"),
+					accObj,
 					[isnr] { OpenNonRosterChat (isnr); });
 		menu->addSeparator ();
 
-		if (const auto ihsh = qobject_cast<IHaveServerHistory*> (accObj))
-			AddServerHistoryActions (menu, ihsh);
+		AddServerHistoryActions (menu, accObj);
 
 		if (qobject_cast<IHaveMicroblogs*> (accObj))
 		{
 			menu->addAction (AccountActions::tr ("View microblogs..."),
+					accObj,
 					[acc] { GetProxyHolder ()->GetRootWindowsManager ()->AddTab (new MicroblogsTab { acc }); });
 			menu->addSeparator ();
 		}
@@ -343,6 +358,7 @@ namespace LC::Azoth::Actions
 		if (qobject_cast<IHaveServiceDiscovery*> (accObj))
 			menu->addAction (itm->GetIcon ("services"),
 					AccountActions::tr ("Service discovery..."),
+					accObj,
 					[accObj]
 					{
 						auto w = new ServiceDiscoveryWidget ();
@@ -352,6 +368,7 @@ namespace LC::Azoth::Actions
 		if (qobject_cast<IHaveConsole*> (accObj))
 			menu->addAction (itm->GetIcon ("utilities-terminal"),
 					AccountActions::tr ("Console..."),
+					accObj,
 					[acc] { OpenConsole (acc); });
 
 		menu->addSeparator ();
@@ -373,17 +390,21 @@ namespace LC::Azoth::Actions
 			irma && irma->SupportsFeature (IRegManagedAccount::Feature::UpdatePass))
 			menu->addAction (itm->GetIcon ("preferences-desktop-user-password"),
 					AccountActions::tr ("Update server password..."),
+					accObj,
 					[=] { UpdatePassword (acc, irma); })->setToolTip (AccountActions::tr ("Updates the account password on the server"));
 
 		if (acc->GetAccountFeatures () & IAccount::FRenamable)
 			menu->addAction (itm->GetIcon ("edit-rename"),
 					AccountActions::tr ("Rename..."),
+					accObj,
 					[=] { RenameAccount (acc); });
 		menu->addAction (itm->GetIcon ("configure"),
 				AccountActions::tr ("Modify..."),
+				accObj,
 				[acc] { acc->OpenConfigurationDialog (); });
 		menu->addAction (itm->GetIcon ("list-remove"),
 				AccountActions::tr ("Remove"),
+				accObj,
 				[acc] { RemoveAccount (acc); });
 	}
 }

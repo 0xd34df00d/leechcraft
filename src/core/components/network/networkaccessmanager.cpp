@@ -42,6 +42,7 @@ namespace LC
 
 		connect (this,
 				&QNetworkAccessManager::sslErrors,
+				this,
 				[] (QNetworkReply *reply, const QList<QSslError>& errors) { new SslErrorsHandler { reply, errors }; });
 
 		XmlSettingsManager::Instance ()->RegisterObject ("FilterTrackingCookies",

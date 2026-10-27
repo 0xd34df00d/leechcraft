@@ -51,6 +51,7 @@ namespace LC::Monocle
 	{
 		connect (this,
 				&QDockWidget::dockLocationChanged,
+				this,
 				[] (Qt::DockWidgetArea area)
 				{
 					if (area != Qt::AllDockWidgetAreas && area != Qt::NoDockWidgetArea)
@@ -58,6 +59,7 @@ namespace LC::Monocle
 				});
 		connect (this,
 				&QDockWidget::visibilityChanged,
+				this,
 				[] (bool visible) { XmlSettingsManager::Instance ().setProperty ("DockWidgetVisible", visible); });
 
 		setFeatures (QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable);
@@ -117,6 +119,7 @@ namespace LC::Monocle
 				&TOCWidget::SetCurrentPage);
 		connect (&Toc_,
 				&TOCWidget::navigationRequested,
+				&Toc_,
 				[&linkCtx] (const NavigationAction& act) { linkCtx.Navigate (act); });
 	}
 
@@ -132,6 +135,7 @@ namespace LC::Monocle
 				&ThumbsWidget::UpdatePagesVisibility);
 		connect (&Thumbnails_,
 				&ThumbsWidget::pageClicked,
+				&Thumbnails_,
 				[&linkCtx] (int page) { linkCtx.Navigate (NavigationAction { page }); });
 	}
 

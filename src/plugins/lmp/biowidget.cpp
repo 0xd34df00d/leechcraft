@@ -62,6 +62,7 @@ namespace LC::LMP
 
 		connect (Ui_.Provider_,
 				qOverload<int> (&QComboBox::currentIndexChanged),
+				this,
 				[this]
 				{
 					RequestBiography ();

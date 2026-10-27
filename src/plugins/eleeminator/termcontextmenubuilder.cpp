@@ -125,6 +125,7 @@ namespace LC::Eleeminator
 		term.setContextMenuPolicy (Qt::CustomContextMenu);
 		QObject::connect (&term,
 				&QTermWidget::customContextMenuRequested,
+				&term,
 				[&term] (const QPoint& point) { ContextMenuRunner { term, point } (); });
 	}
 }

@@ -19,9 +19,11 @@ namespace LC::TabSessManager
 
 		connect (Ui_.SelectAll_,
 				&QPushButton::released,
+				this,
 				[this] { CheckAll (Qt::Checked); });
 		connect (Ui_.SelectNone_,
 				&QPushButton::released,
+				this,
 				[this] { CheckAll (Qt::Unchecked); });
 	}
 

@@ -432,6 +432,7 @@ namespace Xoox
 		cancelTimer->start (120 * 1000);
 		connect (cancelTimer,
 				&QTimer::timeout,
+				cancelTimer,
 				[iface, cancelTimer] () mutable
 				{
 					if (!iface.isFinished ())

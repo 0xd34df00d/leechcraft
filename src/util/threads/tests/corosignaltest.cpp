@@ -225,7 +225,7 @@ namespace LC::Util
 		SignalEmitter emitter;
 		int counter = 0;
 		QTimer ticker;
-		ticker.callOnTimeout ([&] { emit emitter.OneArg (++counter); });
+		ticker.callOnTimeout (&emitter, [&] { emit emitter.OneArg (++counter); });
 		ticker.start (0);
 
 		auto task = [] (SignalEmitter& emitter) -> Task<QList<int>>
@@ -384,7 +384,7 @@ namespace LC::Util
 	{
 		SignalEmitter emitter;
 		QTimer ticker;
-		ticker.callOnTimeout ([&] { emit emitter.OneArg (10); });
+		ticker.callOnTimeout (&emitter, [&] { emit emitter.OneArg (10); });
 		ticker.start (0);
 
 		auto task = [] (SignalEmitter& emitter) -> Task<QList<int>>

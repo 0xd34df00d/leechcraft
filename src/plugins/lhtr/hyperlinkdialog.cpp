@@ -24,9 +24,11 @@ namespace LC::LHTR
 		};
 		connect (Ui_.Link_,
 				&QLineEdit::textChanged,
+				this,
 				checkCanAccept);
 		connect (Ui_.Text_,
 				&QLineEdit::textChanged,
+				this,
 				checkCanAccept);
 		checkCanAccept ();
 	}

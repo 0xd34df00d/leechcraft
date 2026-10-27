@@ -54,9 +54,11 @@ namespace LC::BitTorrent
 		};
 		connect (Ui_.TorrentFile_,
 				&QLineEdit::textChanged,
+				this,
 				setOkEnabled);
 		connect (Ui_.Destination_,
 				&QLineEdit::textChanged,
+				this,
 				setOkEnabled);
 		connect (Ui_.Destination_,
 				&QLineEdit::textChanged,
@@ -110,9 +112,11 @@ namespace LC::BitTorrent
 				&AddTorrentFilesModel::UnmarkAll);
 		connect (Ui_.MarkExisting_,
 				&QAction::triggered,
+				this,
 				[this] { MarkExisting (Qt::Checked, Qt::Unchecked); });
 		connect (Ui_.MarkMissing_,
 				&QAction::triggered,
+				this,
 				[this] { MarkExisting (Qt::Unchecked, Qt::Checked); });
 
 		const auto selectedAsFilesModel = [this]
@@ -122,9 +126,11 @@ namespace LC::BitTorrent
 		};
 		connect (Ui_.MarkSelected_,
 				&QAction::triggered,
+				this,
 				[=, this] { FilesModel_->MarkIndexes (selectedAsFilesModel ()); });
 		connect (Ui_.UnmarkSelected_,
 				&QAction::triggered,
+				this,
 				[=, this] { FilesModel_->UnmarkIndexes (selectedAsFilesModel ()); });
 	}
 

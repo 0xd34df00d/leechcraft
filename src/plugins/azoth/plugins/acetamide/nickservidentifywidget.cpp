@@ -23,6 +23,7 @@ namespace LC::Azoth::Acetamide
 
 		connect (Ui_.Add_,
 				&QPushButton::clicked,
+				this,
 				[this]
 				{
 					auto nns = new NewNickServIdentifyDialog { this };
@@ -39,6 +40,7 @@ namespace LC::Azoth::Acetamide
 				});
 		connect (Ui_.Delete_,
 				&QPushButton::clicked,
+				this,
 				[this]
 				{
 					const auto& index = Ui_.NickServIdentifyView_->currentIndex ();
@@ -54,6 +56,7 @@ namespace LC::Azoth::Acetamide
 				});
 		connect (Ui_.Edit_,
 				&QPushButton::clicked,
+				this,
 				[this]
 				{
 					const auto& index = Ui_.NickServIdentifyView_->currentIndex ();

@@ -65,7 +65,7 @@ namespace LC::Monocle
 			if (!fi.exists ())
 				continue;
 
-			auto act = menu->addAction (fi.fileName (), [handler, path] { handler (path); });
+			auto act = menu->addAction (fi.fileName (), menu, [handler, path] { handler (path); });
 			act->setIcon (QIcon::fromTheme (mimeDb.mimeTypeForName (path).iconName ()));
 			act->setToolTip (path);
 		}

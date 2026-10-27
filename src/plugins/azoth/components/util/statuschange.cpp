@@ -25,7 +25,7 @@ namespace LC::Azoth::StatusChange
 
 	namespace
 	{
-		void UpdateCustomStatuses (QAction *customAct, const StatusSetter_f& handler)
+		void UpdateCustomStatuses (QObject *context, QAction *customAct, const StatusSetter_f& handler)
 		{
 			std::unique_ptr<QMenu> oldMenu { customAct->menu () };
 			customAct->setMenu (nullptr);
@@ -41,13 +41,13 @@ namespace LC::Azoth::StatusChange
 
 			for (const auto& custom : customs)
 			{
-				auto action = menu->addAction (custom.Name_, [=] { handler (custom.State_, custom.Text_); });
+				auto action = menu->addAction (custom.Name_, context, [=] { handler (custom.State_, custom.Text_); });
 				action->setIcon (ResourcesManager::Instance ().GetIconForState (custom.State_));
 			}
 
 			menu->addSeparator ();
 
-			menu->addAction (QObject::tr ("Other...", "other custom status"), [=] { handler (SInvalid, {}); });
+			menu->addAction (QObject::tr ("Other...", "other custom status"), context, [=] { handler (SInvalid, {}); });
 
 			customAct->setText (QObject::tr ("Custom", "the label for the 'custom status' menu"));
 			customAct->setMenu (menu);
@@ -76,7 +76,8 @@ namespace LC::Azoth::StatusChange
 
 		QObject::connect (result,
 			&QMenu::aboutToShow,
-			[=] { UpdateCustomStatuses (customAct, handler); });
+			context,
+			[=] { UpdateCustomStatuses (context, customAct, handler); });
 		QObject::connect (result,
 			&QObject::destroyed,
 			customAct,

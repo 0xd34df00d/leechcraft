@@ -56,6 +56,7 @@ namespace LC
 		QString Prop_;
 		QString Default_;
 
+		QObject *MarkChangedContext_;
 		std::function<void ()> MarkChanged_;
 	};
 
@@ -63,6 +64,7 @@ namespace LC
 	{
 		QObject::connect (widget,
 				signal,
+				ctx.MarkChangedContext_,
 				[markChanged = ctx.MarkChanged_] { markChanged (); });
 	}
 

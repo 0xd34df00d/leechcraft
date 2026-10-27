@@ -292,12 +292,15 @@ namespace LC
 		{
 			QObject::connect (&view,
 					&DataViewWidget::addRequested,
+					&view,
 					[&view, prop] { StartAdding (view, prop); });
 			QObject::connect (&view,
 					&DataViewWidget::modifyRequested,
+					&view,
 					[&view, prop] { StartModifying (view, prop); });
 			QObject::connect (&view,
 					&DataViewWidget::removeRequested,
+					&view,
 					[&view, prop] { StartRemoving (view, prop); });
 		}
 
@@ -311,6 +314,7 @@ namespace LC
 
 			QObject::connect (&view,
 					&DataViewWidget::customButtonReleased,
+					&view,
 					[&view, prop] (const QByteArray& id)
 					{
 						const auto& selected = view.GetCurrentIndex ();

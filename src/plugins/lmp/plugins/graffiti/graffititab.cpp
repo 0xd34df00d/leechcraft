@@ -285,6 +285,7 @@ namespace LC::LMP::Graffiti
 
 		connect (Ui_.PathLine_,
 				&QComboBox::textActivated,
+				this,
 				[this]
 				{
 					auto path = Ui_.PathLine_->currentText ();
@@ -302,6 +303,7 @@ namespace LC::LMP::Graffiti
 
 		connect (Ui_.DirectoryTree_,
 				&QTreeView::activated,
+				this,
 				[this] (const QModelIndex& index)
 				{
 					const auto& path = FSModel_->filePath (index);
@@ -515,6 +517,7 @@ namespace LC::LMP::Graffiti
 				&GraffitiTab::tagsFetchProgress);
 		connect (fetcher,
 				&TagsFetchManager::tagsFetched,
+				this,
 				[this] (const QString& filename)
 				{
 					const auto& curIdx = Ui_.FilesList_->selectionModel ()->currentIndex ();
@@ -524,6 +527,7 @@ namespace LC::LMP::Graffiti
 				});
 		connect (fetcher,
 				&TagsFetchManager::finished,
+				this,
 				[this] { GetTags_->setEnabled (true); });
 	}
 
@@ -563,6 +567,7 @@ namespace LC::LMP::Graffiti
 		auto splitter = new CueSplitter (cue, path);
 		connect (splitter,
 				&CueSplitter::error,
+				splitter,
 				[] (const QString& error)
 				{
 					const auto& e = Util::MakeNotification (Lits::LMPGraffiti, error, Priority::Critical);
@@ -570,6 +575,7 @@ namespace LC::LMP::Graffiti
 				});
 		connect (splitter,
 				&CueSplitter::finished,
+				splitter,
 				[]
 				{
 					const auto& e = Util::MakeNotification (Lits::LMPGraffiti,

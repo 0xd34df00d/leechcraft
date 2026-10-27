@@ -27,6 +27,7 @@ namespace LC::Azoth::Acetamide
 		const auto showChannels = new QAction { tr ("Channels list"), this };
 		connect (showChannels,
 				&QAction::triggered,
+				this,
 				[this] { ISH_->showChannels (); });
 		Actions_ << showChannels;
 	}

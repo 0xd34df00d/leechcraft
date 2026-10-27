@@ -54,6 +54,7 @@ namespace LC::Util
 				Addon_.BindSelector (Selector_);
 				QObject::connect (&Addon_,
 						&TagsEditorAddon::tagsCommitted,
+						&Addon_,
 						[this] (const TagsChange& change) { Edits_ << change; });
 			}
 
@@ -152,7 +153,7 @@ namespace LC::Util
 
 		// Like a text change handler answering with tags of its own.
 		auto nested = false;
-		QObject::connect (&f.Edit_, &QLineEdit::textChanged, [&]
+		QObject::connect (&f.Edit_, &QLineEdit::textChanged, &f.Edit_, [&]
 				{
 					if (!std::exchange (nested, true))
 						f.Addon_.SetTags ({ B });
@@ -186,7 +187,7 @@ namespace LC::Util
 		f.Addon_.SetTags ({ A });
 
 		// Like a text change handler taking the focus away.
-		QObject::connect (&f.Edit_, &QLineEdit::textChanged, [&f] { f.FinishEditing (); });
+		QObject::connect (&f.Edit_, &QLineEdit::textChanged, &f.Edit_, [&f] { f.FinishEditing (); });
 		f.Addon_.SetTags ({ B });
 		QVERIFY (f.Edits_.isEmpty ());
 	}

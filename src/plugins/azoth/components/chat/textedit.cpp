@@ -75,11 +75,14 @@ namespace LC::Azoth
 		};
 		auto wordShortcut = new QShortcut ({},
 				this,
+				this,
 				remove ([] (QTextCursor& c) { c.select (QTextCursor::WordUnderCursor); }));
 		auto bolShortcut = new QShortcut (QString ("Ctrl+U"),
 				this,
+				this,
 				remove ([] (QTextCursor& c) { c.movePosition (QTextCursor::StartOfLine, QTextCursor::KeepAnchor); }));
 		auto eolShortcut = new QShortcut (QString ("Ctrl+K"),
+				this,
 				this,
 				remove ([] (QTextCursor& c) { c.movePosition (QTextCursor::EndOfLine, QTextCursor::KeepAnchor); }));
 

@@ -42,9 +42,11 @@ namespace LC::BitTorrent
 
 		connect (Ui_.BrowseOpen_,
 				&QPushButton::released,
+				this,
 				chooser (tr ("Select directory with torrents"), Ui_.OpenDirectory_, "LastTorrentDirectory"));
 		connect (Ui_.BrowseSave_,
 				&QPushButton::released,
+				this,
 				chooser (tr ("Select save directory"), Ui_.SaveDirectory_, "LastSaveDirectory"));
 	}
 
