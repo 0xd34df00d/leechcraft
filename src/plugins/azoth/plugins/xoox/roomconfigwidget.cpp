@@ -9,7 +9,9 @@
 #include "roomconfigwidget.h"
 #include <QVBoxLayout>
 #include <QStandardItemModel>
+#include <QPointer>
 #include <QXmppMucManager.h>
+#include <util/sll/util.h>
 #include "roomclentry.h"
 #include "glooxaccount.h"
 #include "clientconnection.h"
@@ -100,17 +102,18 @@ namespace Xoox
 
 	void RoomConfigWidget::on_AddPerm__released ()
 	{
-		AffiliationSelectorDialog dia (this);
-		if (dia.exec () != QDialog::Accepted)
+		const QPointer<AffiliationSelectorDialog> dia { new AffiliationSelectorDialog { this } };
+		const auto deleteGuard = Util::MakeScopeGuard ([dia] { delete dia.data (); });
+		if (dia->exec () != QDialog::Accepted)
 			return;
 
-		const QString& jid = dia.GetJID ();
+		const QString& jid = dia->GetJID ();
 		if (jid.isEmpty ())
 			return;
 
 		QXmppMucItem item;
 		item.setJid (jid);
-		item.setAffiliation (dia.GetAffiliation ());
+		item.setAffiliation (dia->GetAffiliation ());
 		SendItem (item);
 
 		handlePermsReceived ({ item });
@@ -137,14 +140,15 @@ namespace Xoox
 
 		const QString& jid = stdItem->text ();
 
-		AffiliationSelectorDialog dia (this);
-		dia.SetJID (jid);
-		dia.SetAffiliation (aff);
-		dia.SetReason (stdItem->data (ItemRoles::Reason).toString ());
-		if (dia.exec () != QDialog::Accepted)
+		const QPointer<AffiliationSelectorDialog> dia { new AffiliationSelectorDialog { this } };
+		const auto deleteGuard = Util::MakeScopeGuard ([dia] { delete dia.data (); });
+		dia->SetJID (jid);
+		dia->SetAffiliation (aff);
+		dia->SetReason (stdItem->data (ItemRoles::Reason).toString ());
+		if (dia->exec () != QDialog::Accepted)
 			return;
 
-		const QString& newJid = dia.GetJID ();
+		const QString& newJid = dia->GetJID ();
 		if (newJid.isEmpty ())
 			return;
 
@@ -152,8 +156,8 @@ namespace Xoox
 
 		QXmppMucItem item;
 		item.setJid (newJid);
-		item.setAffiliation (dia.GetAffiliation ());
-		item.setReason (dia.GetReason ());
+		item.setAffiliation (dia->GetAffiliation ());
+		item.setReason (dia->GetReason ());
 		SendItem (item);
 
 		if (item.affiliation () != QXmppMucItem::NoAffiliation)
