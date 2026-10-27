@@ -75,7 +75,7 @@ namespace LC::Monocle::Boop
 
 				const auto& resolvedHref = href.startsWith ('#') ?
 						baseUrl.resolved (QUrl::fromEncoded (href.toUtf8 ())) :
-						href;
+						QUrl { href };
 				link.setAttribute ("href"_qs, '#' + InternalizeLinkTarget (resolvedHref));
 			}
 		}

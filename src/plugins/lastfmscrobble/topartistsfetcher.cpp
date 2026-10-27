@@ -88,7 +88,7 @@ namespace Lastfmscrobble
 					QString (),
 					GetImage (artist, "medium"),
 					GetImage (artist, "extralarge"),
-					getText ("url"),
+					QUrl { getText ("url") },
 					Media::TagInfos_t ()
 				},
 				getText ("playcount").toInt (),

@@ -76,7 +76,7 @@ namespace LC::Monocle
 		QTextImageFormat imgFmt;
 		imgFmt.setName (name);
 		SetCharConfig (imgFmt, style.Char_);
-		if (const auto& image = Images_.value (name))
+		if (const auto& image = Images_.value (QUrl { name }))
 		{
 			const auto& size = BoundedToBlockArea (GetImageSize (image, style.Img_), Cursor_);
 

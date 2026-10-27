@@ -387,7 +387,7 @@ namespace Azoth
 		{
 			const auto& id = entry->GetHumanReadableID ();
 			data->setText (id);
-			data->setUrls ({ id });
+			data->setUrls ({ QUrl { id } });
 		}
 	}
 

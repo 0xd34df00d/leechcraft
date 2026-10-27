@@ -81,7 +81,7 @@ namespace CSTP
 
 	AddTask::Task AddTask::GetTask () const
 	{
-		return Task (Ui_.URL_->text (),
+		return Task (QUrl { Ui_.URL_->text () },
 				Ui_.LocalPath_->text (),
 				Ui_.Filename_->text (),
 				Ui_.Comment_->toPlainText ());

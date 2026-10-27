@@ -211,7 +211,7 @@ namespace LC::Aggregator
 			{
 				html += ItemToHtml (*item);
 				if (base.isEmpty ())
-					base = item->Link_;
+					base = QUrl { item->Link_ };
 			}
 		Impl_->Ui_.ItemView_->SetHtml (preHtml + html + "</body></html>"_qs, base);
 	}

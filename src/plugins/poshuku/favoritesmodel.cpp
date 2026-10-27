@@ -66,7 +66,7 @@ namespace Poshuku
 			}
 		case Qt::DecorationRole:
 			if (index.column () == ColumnTitle)
-				return Core::Instance ().GetIcon (Items_ [index.row ()].URL_);
+				return Core::Instance ().GetIcon (QUrl { Items_ [index.row ()].URL_ });
 			else
 				return QVariant ();
 		case Qt::ToolTipRole:

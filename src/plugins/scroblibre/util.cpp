@@ -17,7 +17,7 @@ namespace Scroblibre
 	QUrl ServiceToUrl (const QString& service)
 	{
 		if (service == "libre.fm")
-			return { "http://turtle.libre.fm/" };
+			return QUrl { "http://turtle.libre.fm/" };
 
 		qWarning () << Q_FUNC_INFO
 				<< "unknown service"

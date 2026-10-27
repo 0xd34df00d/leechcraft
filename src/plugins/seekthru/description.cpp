@@ -40,7 +40,7 @@ namespace LC::SeekThru
 
 	QUrl UrlDescription::MakeUrl (const QString& searchStr, const QHash<QString, QVariant>& params) const
 	{
-		QUrl url = Template_;
+		QUrl url { Template_ };
 
 		const auto& items = QUrlQuery { url }.queryItems ();
 

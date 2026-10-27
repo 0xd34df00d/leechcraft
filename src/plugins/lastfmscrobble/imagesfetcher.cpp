@@ -24,9 +24,9 @@ namespace Lastfmscrobble
 {
 	namespace
 	{
-		QString GetUrl (const QString& path)
+		QUrl GetUrl (const QString& path)
 		{
-			return Util::GetServiceUrl ({ "leechcraft.org", 12000, "LASTFM_IMAGES" }, path);
+			return QUrl { Util::GetServiceUrl ({ "leechcraft.org", 12000, "LASTFM_IMAGES" }, path) };
 		}
 	}
 
@@ -71,7 +71,7 @@ namespace Lastfmscrobble
 			return;
 		}
 
-		const auto reply = NAM_->get (QNetworkRequest { url });
+		const auto reply = NAM_->get (QNetworkRequest { QUrl { url } });
 		Util::Sequence (this, Util::HandleReply<Util::ErrorInfo<QString>> (reply, this)) >>
 				Util::Visitor
 				{
@@ -129,7 +129,7 @@ namespace Lastfmscrobble
 			const auto& thumb = data ["thumb"].toString ();
 			const auto& full = data ["full"].toString ();
 
-			Images_ << Media::ArtistImage { {}, {}, {}, thumb, full };
+			Images_ << Media::ArtistImage { {}, {}, {}, QUrl { thumb }, QUrl { full } };
 		}
 
 		HandleDone ();

@@ -212,7 +212,7 @@ namespace Poshuku
 
 		url = url.trimmed ();
 		if (url == "localhost")
-			return { "http://localhost" };
+			return QUrl { "http://localhost" };
 
 		if (url.startsWith ('!'))
 		{

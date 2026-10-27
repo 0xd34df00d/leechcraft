@@ -37,7 +37,7 @@ namespace DeathNote
 {
 	namespace
 	{
-		const QString Url ("http://pics.livejournal.com/interface/simple");
+		const QUrl Url ("http://pics.livejournal.com/interface/simple");
 		//Available sizes: 100, 300, 320, 600, 640, 900, 1000
 
 		const int SmallSize = 320;
@@ -598,12 +598,12 @@ namespace DeathNote
 		QList<Thumbnail> GenerateThumbnails (const QUrl& originalUrl)
 		{
 			Thumbnail small;
-			small.Url_ = originalUrl.toString ().replace ("original", SmallSizeStr);
+			small.Url_ = QUrl { originalUrl.toString ().replace ("original", SmallSizeStr) };
 			small.Height_ = SmallSize;
 			small.Width_ = SmallSize;
 
 			Thumbnail medium;
-			medium.Url_ = originalUrl.toString ().replace ("original", MediumSizeStr);
+			medium.Url_ = QUrl { originalUrl.toString ().replace ("original", MediumSizeStr) };
 			medium.Height_ = MediumSize;
 			medium.Width_ = MediumSize;
 			return { small, medium };

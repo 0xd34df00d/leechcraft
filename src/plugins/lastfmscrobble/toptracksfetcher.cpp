@@ -70,14 +70,14 @@ namespace Lastfmscrobble
 			tracks << Media::TopTrackInfo
 			{
 				getText ("name"),
-				getText ("url"),
+				QUrl { getText ("url") },
 				getText ("playcount").toInt (),
 				getText ("listeners").toInt (),
 				getText ("duration").toInt (),
 				GetImage (trackElem, "medium"),
 				GetImage (trackElem, "extralarge"),
 				artistElem.firstChildElement ("name").text (),
-				artistElem.firstChildElement ("url").text ()
+				QUrl { artistElem.firstChildElement ("url").text () }
 			};
 
 			trackElem = trackElem.nextSiblingElement ("track");

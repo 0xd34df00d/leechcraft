@@ -210,7 +210,7 @@ namespace LC::Monocle::FXB
 				const auto& imageData = QByteArray::fromBase64 (binary.text ().toLatin1 ());
 				const auto& image = QImage::fromData (imageData);
 				const auto& id = binary.attribute ("id"_qs);
-				images [id] = LazyImage
+				images [QUrl { id }] = LazyImage
 						{
 							image.size (),
 							[image] (const QSize& size) { return image.scaled (size, Qt::KeepAspectRatio, Qt::SmoothTransformation); }

@@ -71,7 +71,7 @@ namespace LC::Poshuku::SpeedDial
 			for (size_t i = 0; i < std::min (hostsVec.size (), count); ++i)
 			{
 				const auto& url = hostsVec [i].first.toString ();
-				topSites.append ({ url, url });
+				topSites.append ({ QUrl { url }, url });
 
 				url2score.remove (url);
 			}
@@ -86,7 +86,7 @@ namespace LC::Poshuku::SpeedDial
 				const auto& item = std::find_if (items.begin (), items.end (),
 						[&url] (const HistoryItem& item) { return item.URL_ == url; });
 
-				topPages.append ({ url, item->Title_ });
+				topPages.append ({ QUrl { url }, item->Title_ });
 			}
 
 			return { topPages, topSites };

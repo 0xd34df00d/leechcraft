@@ -336,7 +336,7 @@ namespace Rappor
 					const auto width = sizeElem.firstChildElement ("width").text ().toInt ();
 					const auto height = sizeElem.firstChildElement ("height").text ().toInt ();
 
-					return { src, { width, height } };
+					return { QUrl { src }, { width, height } };
 				}
 
 				return {};

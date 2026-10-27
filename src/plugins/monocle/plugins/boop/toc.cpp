@@ -37,7 +37,7 @@ namespace LC::Monocle::Boop
 					qWarning () << "invalid nav point";
 					continue;
 				}
-				const auto& target = ncxSubpathUrl.resolved (src).toString ();
+				const auto& target = ncxSubpathUrl.resolved (QUrl { src }).toString ();
 				TOCEntryID entry { .Navigation_ = InternalizeLinkTarget (target).toLatin1 (), .Name_ = label };
 				BuildMap (ncxSubpathUrl, entry, navPoint);
 				root.ChildLevel_ << entry;

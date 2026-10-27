@@ -185,7 +185,7 @@ namespace LC::LMP
 			newItems.push_back ({
 					.Name_ = release.Name_,
 					.Year_ = QString::number (release.Year_),
-					.Image_ = iconBase64,
+					.Image_ = QUrl { iconBase64 },
 					.TrackListToolTip_ = MakeTrackListTooltip (release.TrackInfos_),
 				});
 

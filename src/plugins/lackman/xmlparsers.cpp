@@ -171,7 +171,7 @@ namespace LackMan
 			packageInfo.Images_ << image;
 			imageNode = imageNode.nextSiblingElement ("screenshot");
 		}
-		packageInfo.IconURL_ = images.firstChildElement ("icon").attribute ("url");
+		packageInfo.IconURL_ = QUrl { images.firstChildElement ("icon").attribute ("url") };
 
 		QDomElement tags = package.firstChildElement ("tags");
 		QDomElement tagNode = tags.firstChildElement ("tag");

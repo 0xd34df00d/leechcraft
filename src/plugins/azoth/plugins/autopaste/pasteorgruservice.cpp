@@ -17,7 +17,7 @@ namespace LC::Azoth::Autopaste
 	{
 		const QByteArray& data = "type=1&code=" + params.Text_.toUtf8 ().toPercentEncoding ();
 
-		QNetworkRequest req (QString ("http://paste.org.ru/?"));
+		QNetworkRequest req (QUrl ("http://paste.org.ru/?"));
 		req.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
 		req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 

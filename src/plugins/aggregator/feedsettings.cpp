@@ -59,7 +59,7 @@ namespace LC::Aggregator
 				[] (const QString& url)
 				{
 					if (XmlSettingsManager::Instance ().property ("AlwaysUseExternalBrowser").toBool ())
-						QDesktopServices::openUrl ({ url });
+						QDesktopServices::openUrl (QUrl { url });
 					else
 					{
 						const auto& e = Util::MakeEntity (QUrl::fromUserInput (url),

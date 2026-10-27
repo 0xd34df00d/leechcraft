@@ -96,7 +96,7 @@ namespace FatApe
 	void GreaseMonkey::openInTab (const QString& url)
 	{
 		if (Proxy_)
-			Proxy_->OpenInNewTab (url);
+			Proxy_->OpenInNewTab (QUrl { url });
 	}
 
 	QString GreaseMonkey::getResourceText (const QString& resourceName)

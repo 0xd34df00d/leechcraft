@@ -75,7 +75,7 @@ namespace LC::Poshuku::SpeedDial
 	void Plugin::hookBrowserWidgetInitialized (LC::IHookProxy_ptr,
 			QObject *browserWidget)
 	{
-		qobject_cast<IBrowserWidget*> (browserWidget)->GetWebView ()->Load (SpeedDialUrl);
+		qobject_cast<IBrowserWidget*> (browserWidget)->GetWebView ()->Load (QUrl { SpeedDialUrl });
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const

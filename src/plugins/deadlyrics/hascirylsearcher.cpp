@@ -24,9 +24,9 @@ namespace DeadLyrics
 	{
 		namespace
 		{
-			QString GetUrl (const QString& path)
+			QUrl GetUrl (const QString& path)
 			{
-				return Util::GetServiceUrl ({ "127.0.0.1", 12001, "DL_HASCIRYL", false }, path);
+				return QUrl { Util::GetServiceUrl ({ "127.0.0.1", 12001, "DL_HASCIRYL", false }, path) };
 			}
 		}
 	}

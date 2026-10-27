@@ -223,7 +223,7 @@ namespace LC::Monocle
 			if (coverId.isEmpty ())
 				return;
 
-			const auto& image = images.value (coverId);
+			const auto& image = images.value (QUrl { coverId });
 			if (!image)
 			{
 				qWarning () << "unknown cover image"
@@ -237,7 +237,7 @@ namespace LC::Monocle
 			cursor.insertHtml ("<img src='%1' />"_qs.arg (upscaledId));
 
 			const auto& pageSize = doc.pageSize ().toSize ();
-			doc.addResource (QTextDocument::ImageResource, { upscaledId }, image.Load_ (pageSize));
+			doc.addResource (QTextDocument::ImageResource, QUrl { upscaledId }, image.Load_ (pageSize));
 		}
 
 		QHash<int, QList<ILink_ptr>> CreateLinks (const QTextDocument& textDoc, const QVector<InternalLink>& intLinks)

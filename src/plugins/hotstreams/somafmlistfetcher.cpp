@@ -47,7 +47,7 @@ namespace HotStreams
 			{
 				if (pls.attribute ("format") == "mp3")
 				{
-					url = pls.text ();
+					url = QUrl { pls.text () };
 					break;
 				}
 				pls = pls.nextSiblingElement ("fastpls");

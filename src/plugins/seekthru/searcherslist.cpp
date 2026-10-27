@@ -110,7 +110,7 @@ namespace LC::SeekThru
 		if (url.isEmpty ())
 			return;
 
-		Core::Instance ().Add (url);
+		Core::Instance ().Add (QUrl { url });
 	}
 
 	void SearchersList::on_ButtonRemove__released ()

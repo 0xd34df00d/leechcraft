@@ -91,7 +91,7 @@ namespace LC::Azoth
 							QUrl url { text.trimmed () };
 							if (url.scheme ().isEmpty () &&
 									url.host ().isEmpty ())
-								url = "http://" + url.toString ();
+								url = QUrl { "http://" + url.toString () };
 
 							const auto& e = Util::MakeEntity (url,
 									{},

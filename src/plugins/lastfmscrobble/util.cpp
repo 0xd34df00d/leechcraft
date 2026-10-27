@@ -129,7 +129,7 @@ namespace Lastfmscrobble
 		};
 
 		result.Name_ = artist.firstChildElement ("name").text ();
-		result.Page_ = artist.firstChildElement ("url").text ();
+		result.Page_ = QUrl { artist.firstChildElement ("url").text () };
 		result.ShortDesc_ = text ("summary");
 		result.FullDesc_ = text ("content");
 		result.Image_ = GetImage (artist, "extralarge");
@@ -154,7 +154,7 @@ namespace Lastfmscrobble
 		while (!image.isNull ())
 		{
 			if (image.attribute ("size") == size)
-				return image.text ();
+				return QUrl { image.text () };
 			image = image.nextSiblingElement ("image");
 		}
 		return QUrl ();

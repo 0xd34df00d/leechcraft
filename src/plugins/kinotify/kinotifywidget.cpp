@@ -44,9 +44,9 @@ namespace LC::Kinotify
 
 		connect (Ui_.Body_,
 				&QLabel::linkActivated,
-				[] (const QUrl& url)
+				[] (const QString& link)
 				{
-					const auto& e = Util::MakeEntity (url,
+					const auto& e = Util::MakeEntity (QUrl { link },
 							{},
 							FromUserInitiated | OnlyHandle);
 					GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);

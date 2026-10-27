@@ -31,9 +31,9 @@ namespace Blasq
 {
 namespace Spegnersi
 {
-	const auto RequestTokenURL = "https://www.flickr.com/services/oauth/request_token"_qs;
-	const auto UserAuthURL = "https://www.flickr.com/services/oauth/authorize"_qs;
-	const auto AccessTokenURL = "https://www.flickr.com/services/oauth/access_token"_qs;
+	const QUrl RequestTokenURL { "https://www.flickr.com/services/oauth/request_token"_qs };
+	const QUrl UserAuthURL { "https://www.flickr.com/services/oauth/authorize"_qs };
+	const QUrl AccessTokenURL { "https://www.flickr.com/services/oauth/access_token"_qs };
 
 	namespace
 	{
@@ -240,7 +240,7 @@ namespace Spegnersi
 			co_return;
 		}
 
-		const auto reply = AuthMgr_->get ({ "https://api.flickr.com/services/rest/"_qs }, {
+		const auto reply = AuthMgr_->get (QUrl { "https://api.flickr.com/services/rest/"_qs }, {
 					{ "method", "flickr.photos.search" },
 					{ "user_id", "me" },
 					{ "format", "rest" },

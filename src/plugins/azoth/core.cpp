@@ -505,7 +505,7 @@ namespace LC::Azoth
 		if (url.scheme ().isEmpty () &&
 				url.host ().isEmpty () &&
 				url.path ().startsWith ("www."))
-			url = "http://" + url.toString ();
+			url = QUrl { "http://" + url.toString () };
 
 		auto e = Util::MakeEntity (url,
 				{},

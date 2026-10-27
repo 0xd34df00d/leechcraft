@@ -64,7 +64,7 @@ namespace LC::Monocle::PDF
 		case Poppler::Link::Browse:
 		{
 			const auto& browseLink = dynamic_cast<const Poppler::LinkBrowse&> (link);
-			return UrlAction { browseLink.url () };
+			return UrlAction { QUrl { browseLink.url () } };
 		}
 		default:
 			qWarning () << "unsupported link type:" << link.linkType ();

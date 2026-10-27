@@ -200,7 +200,7 @@ namespace LC::Monocle::Boop
 			result.reserve (images.size ());
 			for (auto& maybeImage : images)
 				if (maybeImage)
-					result [maybeImage->first] = std::move (maybeImage->second);
+					result [QUrl { maybeImage->first }] = std::move (maybeImage->second);
 			return result;
 		}
 	}
