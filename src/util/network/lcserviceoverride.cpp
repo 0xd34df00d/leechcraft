@@ -14,7 +14,7 @@ namespace LC::Util
 	{
 		QString GetHost (const ServiceInfo& info)
 		{
-			static const auto& env = qgetenv (info.EnvPrefix_ + "_SERVER_HOST");
+			const auto& env = qEnvironmentVariable ((info.EnvPrefix_ + "_SERVER_HOST").constData ());
 			if (!env.isEmpty ())
 				return env;
 
@@ -23,17 +23,16 @@ namespace LC::Util
 
 		int GetPort (const ServiceInfo& info)
 		{
-			static const auto& env = qgetenv (info.EnvPrefix_ + "_SERVER_PORT");
-			if (!env.isEmpty ())
-				return env.toInt ();
-
-			return info.DefaultPort_;
+			bool ok = false;
+			const auto port = qEnvironmentVariableIntValue ((info.EnvPrefix_ + "_SERVER_PORT").constData (), &ok);
+			return ok ? port : info.DefaultPort_;
 		}
 
 		QString GetProto (const ServiceInfo& info)
 		{
-			static const auto& env = qgetenv (info.EnvPrefix_ + "_NO_HTTPS");
-			return env.isEmpty () && info.UseSslByDefault_ ? QStringLiteral ("https") : QStringLiteral ("http");
+			return qEnvironmentVariableIsEmpty ((info.EnvPrefix_ + "_NO_HTTPS").constData ()) && info.UseSslByDefault_ ?
+					QStringLiteral ("https") :
+					QStringLiteral ("http");
 		}
 	}
 
