@@ -163,7 +163,7 @@ namespace Acetamide
 		void ShowInviteListEnd (const QString&);
 
 		void SendPublicMessage (const QString& msg, const QString& channel);
-		void SendPrivateMessage (IrcMessage*);
+		void SendPrivateMessage (const QString& msg, const QString& nick);
 		void SendMessage2Server (const QString&);
 		QString ParseMessageForCommand (const QString&, const QString&) const;
 		void LeaveChannel (const QString& channel, const QString& msg);

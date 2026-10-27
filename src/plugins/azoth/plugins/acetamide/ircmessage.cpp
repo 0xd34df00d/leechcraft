@@ -29,7 +29,7 @@ namespace LC::Azoth::Acetamide
 		Message_.Nickname_ = NickName_;
 
 		const auto handler = Connection_->GetIrcServerHandler (ID_);
-		handler->SendPrivateMessage (this);
+		handler->SendPrivateMessage (Message_.Body_, NickName_);
 		handler->GetChannelManager ()->SetPrivateChat (GetOtherVariant ());
 	}
 

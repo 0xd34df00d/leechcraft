@@ -50,6 +50,6 @@ namespace LC::Azoth::Acetamide
 
 	void ServerParticipantEntry::SendMessage (const OutgoingMessage& message)
 	{
-		new IrcMessage { message, ISH_->GetServerID (), Nick_, Account_->GetClientConnection ().get () };
+		HandleMessage (new IrcMessage { message, ISH_->GetServerID (), Nick_, Account_->GetClientConnection ().get () });
 	}
 }

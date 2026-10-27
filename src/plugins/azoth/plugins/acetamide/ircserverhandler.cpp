@@ -682,26 +682,10 @@ namespace LC::Azoth::Acetamide
 			IrcParser_->PrivMsgCommand ({ channel, str });
 	}
 
-	void IrcServerHandler::SendPrivateMessage (IrcMessage* msg)
+	void IrcServerHandler::SendPrivateMessage (const QString& msg, const QString& nick)
 	{
-		for (const auto& str : msg->GetBody ().split ('\n'))
-			IrcParser_->PrivMsgCommand ({ msg->GetOtherVariant (), str });
-
-		bool found = false;
-		for (const auto entryObj : ChannelsManager_->
-				GetParticipantsByNick (msg->GetOtherVariant ()))
-		{
-			const auto entry = qobject_cast<EntryBase*> (entryObj);
-			if (!entry)
-				continue;
-
-			found = true;
-			entry->HandleMessage (msg);
-		}
-
-		if (!found &&
-				Nick2Entry_.contains (msg->GetOtherVariant ()))
-			Nick2Entry_ [msg->GetOtherVariant ()]->HandleMessage (msg);
+		for (const auto& str : msg.split ('\n'))
+			IrcParser_->PrivMsgCommand ({ nick, str });
 	}
 
 	void IrcServerHandler::SendMessage2Server (const QString& msg)

@@ -81,7 +81,7 @@ namespace LC::Azoth::Acetamide
 
 	void ChannelParticipantEntry::SendMessage (const OutgoingMessage& message)
 	{
-		new IrcMessage { message, ServerID_, Nick_, Account_->GetClientConnection ().get () };
+		HandleMessage (new IrcMessage { message, ServerID_, Nick_, Account_->GetClientConnection ().get () });
 	}
 
 	QList<ChannelRole> ChannelParticipantEntry::Roles () const
