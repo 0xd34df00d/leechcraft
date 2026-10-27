@@ -395,6 +395,7 @@ namespace LC::Azoth::Sarin
 	{
 		emit Runner_.statusChanged ({ SConnecting, {} });
 
+		const auto& proxyHost = Config_.ProxyHost_.toLatin1 ();
 		const Tox_Options opts
 		{
 			.ipv6_enabled = Config_.AllowIPv6_,
@@ -402,7 +403,7 @@ namespace LC::Azoth::Sarin
 			.local_discovery_enabled = Config_.AllowLocalDiscovery_,
 			.dht_announcements_enabled = true,		// TODO
 			.proxy_type = Config_.ProxyHost_.isEmpty () ? TOX_PROXY_TYPE_NONE : TOX_PROXY_TYPE_SOCKS5,			// TODO support HTTP proxies
-			.proxy_host = Config_.ProxyHost_.isEmpty () ? nullptr : strdup (Config_.ProxyHost_.toLatin1 ()),	// this leaks the string
+			.proxy_host = proxyHost.isEmpty () ? nullptr : proxyHost.constData (),
 			.proxy_port = static_cast<uint16_t> (Config_.ProxyPort_),
 			.start_port = 0,			// TODO
 			.end_port = 0,			// TODO
