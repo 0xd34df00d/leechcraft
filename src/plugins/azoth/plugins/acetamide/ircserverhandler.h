@@ -46,7 +46,7 @@ namespace Acetamide
 		IrcAccount * const Account_;
 		IrcErrorHandler * const ErrorHandler_;
 		IrcParser * const IrcParser_;
-		IrcServerCLEntry * const ServerCLEntry_;
+		const std::unique_ptr<IrcServerCLEntry> ServerCLEntry_;
 		std::unique_ptr<IrcServerSocket> Socket_;
 		UserCommandManager CmdManager_;
 		ServerResponseManager ServerResponseManager_;

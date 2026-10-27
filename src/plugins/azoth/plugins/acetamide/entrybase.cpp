@@ -20,8 +20,7 @@
 namespace LC::Azoth::Acetamide
 {
 	EntryBase::EntryBase (IrcAccount *account)
-	: QObject { account }
-	, Account_ { account }
+	: Account_ { account }
 	{
 	}
 

@@ -40,7 +40,7 @@ namespace LC::Azoth::Acetamide
 	: Account_ { account }
 	, ErrorHandler_ { new IrcErrorHandler { this } }
 	, IrcParser_ { new IrcParser { this } }
-	, ServerCLEntry_ { new IrcServerCLEntry { this, account } }
+	, ServerCLEntry_ { std::make_unique<IrcServerCLEntry> (this, account) }
 	, CmdManager_ { this, IrcParser_ }
 	, ServerResponseManager_ { this }
 	, ChannelsManager_ { new ChannelsManager { this } }
@@ -66,7 +66,7 @@ namespace LC::Azoth::Acetamide
 
 	IrcServerCLEntry* IrcServerHandler::GetCLEntry () const
 	{
-		return ServerCLEntry_;
+		return ServerCLEntry_.get ();
 	}
 
 	IrcAccount* IrcServerHandler::GetAccount () const
