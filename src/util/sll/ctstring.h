@@ -120,7 +120,7 @@ namespace LC::Util
 		constexpr CtString<N, NewChar> CastChars () const noexcept
 		{
 			CtString<N, NewChar> result;
-			std::copy (Data_, Data_ + N, result.Data_);
+			std::copy (Data_, Data_ + Size, result.Data_);
 			return result;
 		}
 
@@ -128,6 +128,11 @@ namespace LC::Util
 		constexpr size_t Count () const noexcept
 		{
 			return std::count (Data_, Data_ + Size, Needle);
+		}
+
+		constexpr bool IsAscii () const noexcept
+		{
+			return std::all_of (Data_, Data_ + Size, [] (std::make_unsigned_t<Char> c) { return c < 0x80; });
 		}
 	};
 
@@ -165,7 +170,11 @@ namespace LC::Util
 			return QString { QStringPrivate { nullptr, const_cast<char16_t*> (terminated.Data_), terminated.Size - 1 } };
 		}
 		else
+		{
+			static_assert (Str.IsAscii (),
+					"cannot convert non-ASCII `char` string to `QString`, consider using the `u` literal prefix");
 			return ToString<Str.template CastChars<char16_t> ()> ();
+		}
 	}
 
 	template<size_t N1, size_t N2, typename Char>
