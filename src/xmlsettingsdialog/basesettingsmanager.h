@@ -180,6 +180,43 @@ namespace Util
 			return Property (propName.data (), def);
 		}
 
+		using QObject::property;
+		using QObject::setProperty;
+
+		/** @brief Returns the value of the property named `propName`.
+		 *
+		 * Property names are persisted as UTF-8, so a name held as a
+		 * `QString` should be passed as its `toUtf8 ()`.
+		 *
+		 * @param[in] propName The name of the property.
+		 * @return The value of the property, or an invalid `QVariant` if
+		 * there is no such property.
+		 *
+		 * @sa setProperty()
+		 */
+		template<ValidPropertyName T>
+		QVariant property (const T& propName) const
+		{
+			return property (propName.data ());
+		}
+
+		/** @brief Sets the property named `propName` to `value`.
+		 *
+		 * Property names are persisted as UTF-8, so a name held as a
+		 * `QString` should be passed as its `toUtf8 ()`.
+		 *
+		 * @param[in] propName The name of the property.
+		 * @param[in] value The new value of the property.
+		 * @return The same as `QObject::setProperty ()`.
+		 *
+		 * @sa property()
+		 */
+		template<ValidPropertyName T, typename V>
+		bool setProperty (const T& propName, V&& value)
+		{
+			return setProperty (propName.data (), std::forward<V> (value));
+		}
+
 		/** @brief Sets the value directly, without metaproperties system.
 		 *
 		 * This function just plainly calls setValue() on the
