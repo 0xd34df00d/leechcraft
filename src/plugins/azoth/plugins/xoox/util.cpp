@@ -108,7 +108,7 @@ namespace XooxUtil
 
 	namespace
 	{
-		QPair<QStringList, StaticClientInfo> ParseClientIdObj (const QVariantMap& map)
+		std::pair<QStringList, StaticClientInfo> ParseClientIdObj (const QVariantMap& map)
 		{
 			const auto& nodeVar = map ["node"];
 
@@ -140,7 +140,7 @@ namespace XooxUtil
 		class StaticClientInfoHolder
 		{
 			QHash<QString, StaticClientInfo> FullMatches_;
-			QList<QPair<QString, StaticClientInfo>> PartialMatches_;
+			QList<std::pair<QString, StaticClientInfo>> PartialMatches_;
 		public:
 			StaticClientInfoHolder ()
 			{

@@ -97,7 +97,7 @@ namespace LC::Util
 			const QStringList& types,
 			AN::NotifyFlags flags = AN::NotifyNone,
 			bool openConfiguration = false,
-			const QList<QPair<QString, AN::ValueMatcher>>& fields = {});
+			const QList<std::pair<QString, AN::ValueMatcher>>& fields = {});
 
 	/** @brief Returns the data filter plugins that can handle \em data.
 	 *

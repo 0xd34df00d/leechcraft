@@ -53,11 +53,11 @@ namespace Lastfmscrobble
 			return;
 		}
 
-		QList<QPair<QString, double>> similar;
+		QList<std::pair<QString, double>> similar;
 		for (int i = 0, size = artistElems.size (); i < size; ++i)
 		{
 			const auto& elem = artistElems.at (i).toElement ();
-			similar << qMakePair (elem.firstChildElement ("name").text (),
+			similar << std::make_pair (elem.firstChildElement ("name").text (),
 						elem.firstChildElement ("match").text ().toDouble () * 100);
 		}
 

@@ -26,7 +26,7 @@ namespace LC::LMP
 		Q_DECLARE_TR_FUNCTIONS (LC::LMP::AudioPropsWidget)
 
 		Ui::AudioPropsWidget Ui_ {};
-		Util::FlatItemsModel<QPair<QString, QString>> * const PropsModel_;
+		Util::FlatItemsModel<std::pair<QString, QString>> * const PropsModel_;
 	public:
 		explicit AudioPropsWidget (QWidget* = nullptr);
 

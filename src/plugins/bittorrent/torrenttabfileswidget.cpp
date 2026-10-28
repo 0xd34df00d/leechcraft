@@ -228,26 +228,26 @@ namespace LC::BitTorrent
 		const auto& cachedRoots = Util::Map (selected,
 				[] (const QModelIndex& idx)
 				{
-					return qMakePair (idx, idx.data (TorrentFilesModel::RoleFullPath).toString ());
+					return std::make_pair (idx, idx.data (TorrentFilesModel::RoleFullPath).toString ());
 				});
 		const auto& priorityRoots = Util::Map (Util::Filter (cachedRoots,
-					[&cachedRoots] (const QPair<QModelIndex, QString>& idxPair)
+					[&cachedRoots] (const std::pair<QModelIndex, QString>& idxPair)
 					{
 						return std::none_of (cachedRoots.begin (), cachedRoots.end (),
-								[&idxPair] (const QPair<QModelIndex, QString>& existing)
+								[&idxPair] (const std::pair<QModelIndex, QString>& existing)
 								{
 									return idxPair.first != existing.first &&
 											idxPair.second.startsWith (existing.second);
 								});
 					}),
-				[] (const QPair<QModelIndex, QString>& idxPair)
+				[] (const std::pair<QModelIndex, QString>& idxPair)
 				{
 					return idxPair.first.siblingAtColumn (TorrentFilesModel::ColumnPriority);
 				});
 		if (!priorityRoots.isEmpty ())
 		{
 			const auto subMenu = menu.addMenu (tr ("Change priority"));
-			const QList<QPair<int, QString>> descrs
+			const QList<std::pair<int, QString>> descrs
 			{
 				{ 0, tr ("File is not downloaded.") },
 				{ 1, tr ("Normal priority, download order depends on availability.") },

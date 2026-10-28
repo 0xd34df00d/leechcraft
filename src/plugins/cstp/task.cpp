@@ -36,7 +36,7 @@ namespace CSTP
 				rep->deleteLater ();
 		}
 
-		QVariantMap Augment (QVariantMap map, const QList<QPair<QString, QVariant>>& pairs)
+		QVariantMap Augment (QVariantMap map, const QList<std::pair<QString, QVariant>>& pairs)
 		{
 			if (pairs.isEmpty ())
 				return map;

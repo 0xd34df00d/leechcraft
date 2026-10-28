@@ -152,7 +152,7 @@ namespace LC::LMP
 
 		void UniteSplitAlbums (Collection::Artists_t& artists)
 		{
-			QHash<QPair<int, QString>, QList<Collection::Album_ptr>> potentialSplitAlbums;
+			QHash<std::pair<int, QString>, QList<Collection::Album_ptr>> potentialSplitAlbums;
 
 			for (const auto& artist : artists)
 				for (const auto& album : artist.Albums_)

@@ -169,7 +169,7 @@ namespace LC::Util
 		return ActionInfo_;
 	}
 
-	ShortcutManager& ShortcutManager::operator<< (const QPair<QByteArray, QAction*>& pair)
+	ShortcutManager& ShortcutManager::operator<< (const std::pair<QByteArray, QAction*>& pair)
 	{
 		RegisterAction (pair.first, pair.second);
 		return *this;

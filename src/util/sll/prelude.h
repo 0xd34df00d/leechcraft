@@ -11,7 +11,7 @@
 #include <functional>
 #include <type_traits>
 #include <iterator>
-#include <QPair>
+#include <utility>
 #include <QStringList>
 
 namespace LC
@@ -50,7 +50,7 @@ namespace Util
 
 	template<typename T1, typename T2,
 		template<typename U> class Container,
-		template<typename U1, typename U2> class Pair = QPair>
+		template<typename U1, typename U2> class Pair = std::pair>
 	auto Zip (const Container<T1>& c1, const Container<T2>& c2) -> Container<Pair<T1, T2>>
 	{
 		return ZipWith (c1, c2,

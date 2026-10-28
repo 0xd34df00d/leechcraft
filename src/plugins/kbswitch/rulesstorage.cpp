@@ -119,7 +119,7 @@ namespace KBSwitch
 			const QString name (desc.name);
 			LayName2Variants_ [varName] << name;
 
-			VarLayHR2NameVarPair_ [hrName] = qMakePair (varName, name);
+			VarLayHR2NameVarPair_ [hrName] = std::make_pair (varName, name);
 		}
 
 		QStringList pcModelStrings;
@@ -181,7 +181,7 @@ namespace KBSwitch
 		return LayName2Desc_;
 	}
 
-	const QHash<QString, QPair<QString, QString>>& RulesStorage::GetVariantsD2Layouts () const
+	const QHash<QString, std::pair<QString, QString>>& RulesStorage::GetVariantsD2Layouts () const
 	{
 		return VarLayHR2NameVarPair_;
 	}

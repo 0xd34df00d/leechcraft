@@ -205,7 +205,7 @@ namespace LC::LMP
 		return QString::localeAwareCompare (leftStr, rightStr) < 0;
 	}
 
-	QPair<QString, QColor> GetRuleSymbol (const Entity& rule)
+	std::pair<QString, QColor> GetRuleSymbol (const Entity& rule)
 	{
 		static const QString flagSym = QString::fromUtf8 ("⚑");
 		static const QString disabledFlagSym = QString::fromUtf8 ("⚐");

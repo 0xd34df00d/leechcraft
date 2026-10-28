@@ -37,7 +37,7 @@ namespace LC::LMP::Graffiti
 	protected:
 		void accept () override;
 	private:
-		QList<QPair<QString, QString>> GetRenames () const;
+		QList<std::pair<QString, QString>> GetRenames () const;
 		void UpdatePreview ();
 	};
 }

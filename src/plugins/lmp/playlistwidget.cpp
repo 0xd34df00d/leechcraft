@@ -457,7 +457,7 @@ namespace LMP
 
 		const auto stdSorts =
 		{
-			QPair<QString, QList<SortingCriteria>>
+			std::pair<QString, QList<SortingCriteria>>
 			{
 				tr ("Artist / Year / Album / Track number"),
 				{
@@ -669,7 +669,7 @@ namespace LMP
 
 	namespace
 	{
-		QIcon SymbolToIcon (const QPair<QString, QColor>& symb, const QFontMetrics& fm)
+		QIcon SymbolToIcon (const std::pair<QString, QColor>& symb, const QFontMetrics& fm)
 		{
 			const auto& rect = fm.boundingRect (symb.first);
 

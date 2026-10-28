@@ -34,7 +34,7 @@ namespace LC
 		QStandardItemModel *Model_;
 		Util::FixedStringFilterProxyModel *Filter_;
 	public:
-		using IconsList_t = QVector<QPair<QStandardItem*, ActionInfo::Icon_t>>;
+		using IconsList_t = QVector<std::pair<QStandardItem*, ActionInfo::Icon_t>>;
 	private:
 		IconsList_t Icons_;
 	public:

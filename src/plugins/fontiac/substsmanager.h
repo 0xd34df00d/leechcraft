@@ -8,9 +8,9 @@
 
 #pragma once
 
+#include <utility>
 #include <QObject>
 #include <QList>
-#include <QPair>
 #include <QVariantList>
 #include <QModelIndexList>
 
@@ -28,7 +28,7 @@ namespace Fontiac
 
 		QStandardItemModel * const Model_;
 
-		QList<QPair<QString, QString>> Substitutes_;
+		QList<std::pair<QString, QString>> Substitutes_;
 	public:
 		SubstsManager (QObject *parent = nullptr);
 

@@ -8,8 +8,8 @@
 
 #pragma once
 
+#include <utility>
 #include <QList>
-#include <QPair>
 #include <QString>
 #include <QMap>
 #include <interfaces/media/audiostructs.h>

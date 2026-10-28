@@ -9,9 +9,9 @@
 #pragma once
 
 #include <functional>
+#include <utility>
 #include <QObject>
 #include <QQueue>
-#include <QPair>
 #include <QDomElement>
 #include <QNetworkReply>
 #include <util/threads/coro/taskfwd.h>
@@ -50,7 +50,7 @@ namespace Metida
 		};
 
 		QHash<QNetworkReply*, RequestType> Reply2RequestType_;
-		QMap<QPair<int, int>, LJCommentEntry> Id2CommentEntry_;
+		QMap<std::pair<int, int>, LJCommentEntry> Id2CommentEntry_;
 	public:
 		LJXmlRPC (LJAccount *acc, const ICoreProxy_ptr& proxy, QObject *parent = 0);
 

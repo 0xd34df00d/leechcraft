@@ -29,8 +29,8 @@ namespace Xoox
 	public:
 		VCardListEditDialog (const QStringList& options, QWidget* = 0);
 
-		void AddItems (const QList<QPair<QString, QStringList>>&);
-		QList<QPair<QString, QStringList>> GetItems () const;
+		void AddItems (const QList<std::pair<QString, QStringList>>&);
+		QList<std::pair<QString, QStringList>> GetItems () const;
 	private slots:
 		void on_Add__released ();
 		void on_Remove__released ();

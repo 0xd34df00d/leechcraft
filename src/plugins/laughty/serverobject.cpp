@@ -63,7 +63,7 @@ namespace Laughty
 			}
 		}
 
-		QPair<QString, QString> GetCatTypePair (const QVariantMap&)
+		std::pair<QString, QString> GetCatTypePair (const QVariantMap&)
 		{
 			return { AN::CatGeneric, AN::TypeGeneric };
 		}

@@ -43,7 +43,7 @@ namespace LC::Aggregator::Parsers
 	QString GetCommentsRSS (const QDomElement&);
 	QString GetCommentsLink (const QDomElement&);
 
-	QPair<double, double> GetGeoPoint (const QDomElement&);
+	std::pair<double, double> GetGeoPoint (const QDomElement&);
 
 	QDateTime GetDCDateTime (const QDomElement&);
 

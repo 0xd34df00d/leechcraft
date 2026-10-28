@@ -90,7 +90,7 @@ protected:
 
 namespace LC
 {
-	typedef QList<QPair<QByteArray, QVariant>> DynPropertiesList_t;
+	typedef QList<std::pair<QByteArray, QVariant>> DynPropertiesList_t;
 
 	/** @brief Keeps the tab state between runs.
 	 *

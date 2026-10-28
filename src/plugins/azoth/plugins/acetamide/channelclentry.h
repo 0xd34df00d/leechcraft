@@ -90,8 +90,8 @@ namespace LC::Azoth::Acetamide
 		// IMUCPerms
 		QByteArray GetAffName (const ICLEntry&) const override;
 		MUCPerms_t GetPerms (const ICLEntry&) const override;
-		QPair<QByteArray, QByteArray> GetKickPerm () const override;
-		QPair<QByteArray, QByteArray> GetBanPerm () const override;
+		std::pair<QByteArray, QByteArray> GetKickPerm () const override;
+		std::pair<QByteArray, QByteArray> GetBanPerm () const override;
 		void SetPerm (ICLEntry&, const QByteArray&, const QByteArray&, const QString&) override;
 		MUCPerms_t GetPossiblePerms () const override;
 		QString GetUserString (const QByteArray&) const override;

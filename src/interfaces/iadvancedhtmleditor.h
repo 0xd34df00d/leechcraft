@@ -9,7 +9,7 @@
 #pragma once
 
 #include <functional>
-#include <QPair>
+#include <utility>
 #include <QList>
 #include <QRegularExpression>
 
@@ -38,7 +38,7 @@ class Q_DECL_EXPORT IAdvancedHTMLEditor
 public:
 	virtual ~IAdvancedHTMLEditor () {}
 
-	typedef QPair<QRegularExpression, QString> Replacement_t;
+	typedef std::pair<QRegularExpression, QString> Replacement_t;
 	typedef QList<Replacement_t> Replacements_t;
 
 	/** @brief Describes a single custom tag.

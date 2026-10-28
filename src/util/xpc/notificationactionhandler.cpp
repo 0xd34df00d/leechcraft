@@ -19,7 +19,7 @@ namespace LC::Util
 
 	void NotificationActionHandler::AddFunction (const QString& name, Callback_t callback)
 	{
-		ActionName2Callback_ << qMakePair (name, callback);
+		ActionName2Callback_ << std::make_pair (name, callback);
 		static const auto notificationAction = QStringLiteral ("NotificationActions");
 		const QStringList& sl = Entity_.Additional_ [notificationAction].toStringList ();
 		Entity_.Additional_ [notificationAction] = sl + QStringList (name);

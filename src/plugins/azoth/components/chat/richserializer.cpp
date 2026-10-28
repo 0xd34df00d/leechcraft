@@ -53,7 +53,7 @@ namespace LC::Azoth
 		return Xhtml_;
 	}
 
-	QPair<QString, QString> RichSerializer::GetBlockTags (const QTextBlockFormat& fmt)
+	std::pair<QString, QString> RichSerializer::GetBlockTags (const QTextBlockFormat& fmt)
 	{
 		if (fmt.hasProperty (QTextBlockFormat::Property::BlockAlignment))
 		{
@@ -116,7 +116,7 @@ namespace LC::Azoth
 		return attrs;
 	}
 
-	QPair<QStringList, QStringList> RichSerializer::GetFragmentTags (const QTextCharFormat& fmt)
+	std::pair<QStringList, QStringList> RichSerializer::GetFragmentTags (const QTextCharFormat& fmt)
 	{
 		QStringList open;
 		QStringList close;

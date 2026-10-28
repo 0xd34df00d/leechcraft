@@ -78,7 +78,7 @@ namespace LC::Util
 		AddrList_t GetAddresses () const;
 	private:
 		void SaveSettings () const;
-		void AppendRow (const QPair<QString, QString>&);
+		void AppendRow (const std::pair<QString, QString>&);
 	public Q_SLOTS:
 		/** @brief Invoked by XML settings dialog to add new user-selected
 		 * items.

@@ -77,7 +77,7 @@ namespace Dolozhee
 		return result;
 	}
 
-	QList<QPair<QString, QString>> BugReportPage::GetReportSections () const
+	QList<std::pair<QString, QString>> BugReportPage::GetReportSections () const
 	{
 		return
 		{

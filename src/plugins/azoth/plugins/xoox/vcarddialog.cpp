@@ -378,7 +378,7 @@ namespace LC::Azoth::Xoox
 			if (phone.number ().isEmpty ())
 				continue;
 
-			QPair<QString, QStringList> pair;
+			std::pair<QString, QStringList> pair;
 			pair.first = phone.number ();
 
 			for (std::size_t i = 0; i < type2pos.size (); ++i)
@@ -434,7 +434,7 @@ namespace LC::Azoth::Xoox
 			if (email.address ().isEmpty ())
 				continue;
 
-			QPair<QString, QStringList> pair;
+			std::pair<QString, QStringList> pair;
 			pair.first = email.address ();
 			for (std::size_t i = 0; i < type2pos.size (); ++i)
 				if (email.type () & type2pos [i])

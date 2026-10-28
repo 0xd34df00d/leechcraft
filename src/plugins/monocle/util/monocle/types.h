@@ -9,7 +9,6 @@
 #pragma once
 
 #include <QImage>
-#include <QPair>
 #include <QString>
 #include <QTextCharFormat>
 #include <QVector>

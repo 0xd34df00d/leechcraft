@@ -19,7 +19,7 @@ namespace HttHare
 {
 	namespace ip = boost::asio::ip;
 
-	Server::Server (const QList<QPair<QString, QString>>& addresses)
+	Server::Server (const QList<std::pair<QString, QString>>& addresses)
 	: IconResolver_ { new IconResolver  }
 	, TrManager_ { new TrManager }
 	{

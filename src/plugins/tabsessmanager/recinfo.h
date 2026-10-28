@@ -20,7 +20,7 @@ namespace LC::TabSessManager
 	{
 		int Order_ = -1;
 		QByteArray Data_;
-		QList<QPair<QByteArray, QVariant>> Props_;
+		QList<std::pair<QByteArray, QVariant>> Props_;
 		QString Name_;
 		QIcon Icon_;
 		int WindowID_ = -1;

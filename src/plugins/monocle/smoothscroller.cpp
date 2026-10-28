@@ -52,7 +52,7 @@ namespace LC::Monocle
 		}
 
 		const auto& current = View_.GetCurrentCenter ();
-		ScrollPath_ = qMakePair (current, p);
+		ScrollPath_ = std::make_pair (current, p);
 
 		if (ScrollTimeline_.state () != QTimeLine::NotRunning)
 			ScrollTimeline_.stop ();

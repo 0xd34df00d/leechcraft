@@ -398,7 +398,7 @@ namespace LC::LMP
 	{
 		IgnoredTracks_.unite (tracksIds);
 
-		QSet<QPair<int, int>> albums2check;
+		QSet<std::pair<int, int>> albums2check;
 		QSet<int> artists2check;
 		for (const auto trackId : tracksIds)
 			if (const auto info = Collection_.GetTrackInfo (trackId))

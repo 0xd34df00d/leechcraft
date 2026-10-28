@@ -98,7 +98,7 @@ namespace Xoox
 		return Model_;
 	}
 
-	QList<QPair<QByteArray, QString>> SDSession::GetActionsFor (const QModelIndex& index)
+	QList<std::pair<QByteArray, QString>> SDSession::GetActionsFor (const QModelIndex& index)
 	{
 		if (!index.isValid ())
 			return {};
@@ -113,7 +113,7 @@ namespace Xoox
 					[&name] (const auto& id) { return id.category () == name; });
 		};
 
-		QList<QPair<QByteArray, QString>> result;
+		QList<std::pair<QByteArray, QString>> result;
 		if (info.Caps_.contains ("vcard-temp") &&
 				!info.JID_.isEmpty ())
 			result.append ({ "view-vcard", tr ("View VCard...") });

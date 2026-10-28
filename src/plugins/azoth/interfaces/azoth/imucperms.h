@@ -8,11 +8,11 @@
 
 #ifndef PLUGINS_AZOTH_INTERFACES_IMUCPERMS_H
 #define PLUGINS_AZOTH_INTERFACES_IMUCPERMS_H
+#include <utility>
 #include <QFlags>
 #include <QMetaType>
 #include <QMap>
 #include <QByteArray>
-#include <QPair>
 #include <util/azoth/emitters/mucperms.h>
 
 namespace LC
@@ -69,8 +69,8 @@ namespace Azoth
 		 */
 		virtual MUCPerms_t GetPerms (const ICLEntry& participant) const = 0;
 
-		virtual QPair<QByteArray, QByteArray> GetKickPerm () const = 0;
-		virtual QPair<QByteArray, QByteArray> GetBanPerm () const = 0;
+		virtual std::pair<QByteArray, QByteArray> GetKickPerm () const = 0;
+		virtual std::pair<QByteArray, QByteArray> GetBanPerm () const = 0;
 
 		/** @brief Returns the name of the affiliation icon.
 		 *

@@ -37,11 +37,11 @@ namespace Metida
 		return new ProfileWidget (this, Proxy_);
 	}
 
-	QList<QPair<QIcon, QString>> LJProfile::GetPostingTargets () const
+	QList<std::pair<QIcon, QString>> LJProfile::GetPostingTargets () const
 	{
 		const auto mgr = Proxy_->GetIconThemeManager ();
 
-		QList<QPair<QIcon, QString>> targets;
+		QList<std::pair<QIcon, QString>> targets;
 		const auto& icon = mgr->GetIcon ("system-users");
 		IAccount *acc = qobject_cast<IAccount*> (ParentAccount_);
 		if (!acc)

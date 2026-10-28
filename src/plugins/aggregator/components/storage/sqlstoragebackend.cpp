@@ -530,7 +530,7 @@ namespace LC::Aggregator
 
 	IDType_t SQLStorageBackend::GetHighestID (const PoolType& type) const
 	{
-		static const QHash<PoolType, QPair<QByteArray, QByteArray>> tables
+		static const QHash<PoolType, std::pair<QByteArray, QByteArray>> tables
 		{
 			{ PTFeed, { "feed_id", "feeds" } },
 			{ PTChannel, { "channel_id", "channels" } },

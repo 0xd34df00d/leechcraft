@@ -21,7 +21,7 @@ namespace Azoth
 	{
 	}
 
-	QPair<QString, QString> CustomChatStyleManager::GetForEntry (ICLEntry *entry) const
+	std::pair<QString, QString> CustomChatStyleManager::GetForEntry (ICLEntry *entry) const
 	{
 		if (!entry)
 			return {};
@@ -32,12 +32,12 @@ namespace Azoth
 				GetStyleForAccount (acc);
 	}
 
-	QPair<QString, QString> CustomChatStyleManager::GetStyleForAccount (IAccount *acc) const
+	std::pair<QString, QString> CustomChatStyleManager::GetStyleForAccount (IAccount *acc) const
 	{
 		return GetProps ("Chat", acc);
 	}
 
-	QPair<QString, QString> CustomChatStyleManager::GetMUCStyleForAccount (IAccount *acc) const
+	std::pair<QString, QString> CustomChatStyleManager::GetMUCStyleForAccount (IAccount *acc) const
 	{
 		return GetProps ("MUC", acc);
 	}
@@ -74,7 +74,7 @@ namespace Azoth
 		emit accountStyleChanged (acc);
 	}
 
-	QPair<QString, QString> CustomChatStyleManager::GetProps (const QString& prefix, IAccount *acc) const
+	std::pair<QString, QString> CustomChatStyleManager::GetProps (const QString& prefix, IAccount *acc) const
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 					QCoreApplication::applicationName () + "_Azoth");

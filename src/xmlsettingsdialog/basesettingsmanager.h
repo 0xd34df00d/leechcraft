@@ -11,7 +11,6 @@
 #include <memory>
 #include <functional>
 #include <variant>
-#include <QPair>
 #include <QObject>
 #include <QSettings>
 #include <QStringList>

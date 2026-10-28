@@ -57,7 +57,7 @@ namespace Xoox
 			return false;
 		}
 
-		BobCache_.insert (qMakePair (bobIq.GetCid (), bobIq.from ()),
+		BobCache_.insert (std::make_pair (bobIq.GetCid (), bobIq.from ()),
 				new QByteArray (bobIq.GetData ()),
 				bobIq.GetData ().size () / 1024);
 
@@ -86,7 +86,7 @@ namespace Xoox
 
 	QByteArray XMPPBobManager::Take (const QString& jid, const QString& cid)
 	{
-		QPair<QString, QString> key (cid, jid);
+		std::pair<QString, QString> key (cid, jid);
 		if (BobCache_.contains (key))
 			return *BobCache_ [key];
 

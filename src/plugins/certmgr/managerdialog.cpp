@@ -68,7 +68,7 @@ namespace CertMgr
 		if (paths.isEmpty ())
 			return;
 
-		using CertPair_t = QPair<QSslCertificate, QByteArray>;
+		using CertPair_t = std::pair<QSslCertificate, QByteArray>;
 		QList<CertPair_t> certs;
 		for (const auto& path : paths)
 		{

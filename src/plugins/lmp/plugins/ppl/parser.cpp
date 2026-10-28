@@ -16,7 +16,7 @@ namespace LC::LMP::PPL
 {
 	namespace
 	{
-		std::optional<QPair<Media::AudioInfo, QDateTime>> ParseTrack (QStringView line)
+		std::optional<std::pair<Media::AudioInfo, QDateTime>> ParseTrack (QStringView line)
 		{
 			enum
 			{

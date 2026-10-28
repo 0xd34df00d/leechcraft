@@ -38,7 +38,7 @@ namespace XProxy
 	bool operator< (const Proxy&, const Proxy&);
 	bool operator== (const Proxy&, const Proxy&);
 
-	using Entry_t = QPair<ReqTarget, Proxy>;
+	using Entry_t = std::pair<ReqTarget, Proxy>;
 
 	QDataStream& operator<< (QDataStream&, const Proxy&);
 	QDataStream& operator>> (QDataStream&, Proxy&);

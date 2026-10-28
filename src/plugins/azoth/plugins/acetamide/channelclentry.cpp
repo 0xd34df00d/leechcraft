@@ -325,12 +325,12 @@ namespace LC::Azoth::Acetamide
 		return result;
 	}
 
-	QPair<QByteArray, QByteArray> ChannelCLEntry::GetKickPerm () const
+	std::pair<QByteArray, QByteArray> ChannelCLEntry::GetKickPerm () const
 	{
 		return {};
 	}
 
-	QPair<QByteArray, QByteArray> ChannelCLEntry::GetBanPerm () const
+	std::pair<QByteArray, QByteArray> ChannelCLEntry::GetBanPerm () const
 	{
 		return {};
 	}

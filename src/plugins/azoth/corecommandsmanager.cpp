@@ -94,7 +94,7 @@ namespace Azoth
 				State NextState_;
 			};
 
-			const QList<QPair<Pattern, Rep>> Repls_
+			const QList<std::pair<Pattern, Rep>> Repls_
 			{
 				{ { "_", State::None, true }, { "em", State::Em } },
 				{ { "@", State::None, true }, { "code", State::Code } },
@@ -112,7 +112,7 @@ namespace Azoth
 
 			QString operator() ();
 		private:
-			int HandleSubstr (const QPair<Pattern, Rep>& rule, int pos);
+			int HandleSubstr (const std::pair<Pattern, Rep>& rule, int pos);
 		};
 
 		MDParser::MDParser (const QString& body)
@@ -146,7 +146,7 @@ namespace Azoth
 			return Body_;
 		}
 
-		int MDParser::HandleSubstr (const QPair<Pattern, Rep>& rule, int pos)
+		int MDParser::HandleSubstr (const std::pair<Pattern, Rep>& rule, int pos)
 		{
 			const auto& pat = rule.first;
 			const auto& rep = rule.second;

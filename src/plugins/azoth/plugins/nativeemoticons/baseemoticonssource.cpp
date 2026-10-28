@@ -36,9 +36,9 @@ namespace NativeEmoticons
 		return Util::AsSet (ParseFile (pack).keys ());
 	}
 
-	QList<QPair<QImage, QString>> BaseEmoticonsSource::GetReprImages (const QString& pack) const
+	QList<std::pair<QImage, QString>> BaseEmoticonsSource::GetReprImages (const QString& pack) const
 	{
-		QList<QPair<QImage, QString>> result;
+		QList<std::pair<QImage, QString>> result;
 
 		QSet<QString> knownPaths;
 		for (const auto& [smileText, path] : Util::Stlize (ParseFile (pack)))

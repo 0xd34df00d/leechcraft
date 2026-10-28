@@ -507,7 +507,7 @@ namespace LC::Azoth::Acetamide
 
 	void ChannelHandler::SetUserLimit (bool islimit, int limit)
 	{
-		ChannelMode_.UserLimit_ = qMakePair (islimit, limit);
+		ChannelMode_.UserLimit_ = std::make_pair (islimit, limit);
 		const auto& msg = islimit ?
 				tr ("Limit user set to %1 (+l)").arg (limit) :
 				tr ("Remove limit user (-l)");
@@ -518,7 +518,7 @@ namespace LC::Azoth::Acetamide
 
 	void ChannelHandler::SetChannelKey (bool iskey, const QString& key)
 	{
-		ChannelMode_.ChannelKey_ = qMakePair (iskey, key);
+		ChannelMode_.ChannelKey_ = std::make_pair (iskey, key);
 		const auto& msg = iskey ?
 				tr ("Channel key set to %1 (+k)").arg (key) :
 				tr ("Remove channel key (-k)");

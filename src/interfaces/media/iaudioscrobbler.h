@@ -26,7 +26,7 @@ namespace Media
 		/** @brief A backdated track - a track with its real playback
 		 * time.
 		 */
-		using BackdatedTrack_t = QPair<Media::AudioInfo, QDateTime>;
+		using BackdatedTrack_t = std::pair<Media::AudioInfo, QDateTime>;
 
 		/** @brief A list of backdated tracks.
 		 */

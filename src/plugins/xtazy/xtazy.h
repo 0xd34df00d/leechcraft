@@ -39,7 +39,7 @@ namespace Xtazy
 
 		Media::AudioInfo Previous_;
 
-		typedef QPair<QPointer<QObject>, QString> UploadNotifee_t;
+		typedef std::pair<QPointer<QObject>, QString> UploadNotifee_t;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

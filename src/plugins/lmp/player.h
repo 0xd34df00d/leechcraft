@@ -24,7 +24,7 @@ class QStandardItem;
 class QAbstractItemModel;
 class QStandardItemModel;
 
-typedef QPair<QString, QString> StringPair_t;
+typedef std::pair<QString, QString> StringPair_t;
 
 namespace LC
 {

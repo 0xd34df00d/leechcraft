@@ -58,7 +58,7 @@ namespace LC::Util
 		 */
 		using Callback_t = std::function<void ()>;
 	private:
-		QList<QPair<QString, Callback_t>> ActionName2Callback_;
+		QList<std::pair<QString, Callback_t>> ActionName2Callback_;
 
 		QList<QPointer<QObject>> DependentObjects_;
 	public:

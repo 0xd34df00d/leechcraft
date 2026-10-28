@@ -118,7 +118,7 @@ namespace LMP
 				const auto& infoCache = Util::Map (items,
 						[] (QStandardItem *item)
 						{
-							return qMakePair (item, item->data (Player::Role::Info).value<MediaInfo> ());
+							return std::make_pair (item, item->data (Player::Role::Info).value<MediaInfo> ());
 						});
 
 				for (const auto& rule : rules)

@@ -10,10 +10,10 @@
 
 #include <functional>
 #include <optional>
+#include <utility>
 #include <QObject>
 #include <QDateTime>
 #include <QPointer>
-#include <QPair>
 #include "sllconfig.h"
 
 class QTimer;
@@ -51,7 +51,7 @@ namespace Util
 		bool Paused_;
 
 		typedef std::optional<QPointer<QObject>> OptionalTracker_t;
-		QList<QPair<std::function<void ()>, std::optional<QPointer<QObject>>>> Queue_;
+		QList<std::pair<std::function<void ()>, std::optional<QPointer<QObject>>>> Queue_;
 	public:
 		/** @brief Creates a queue manager with the given \em timeout.
 		 *

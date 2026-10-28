@@ -198,7 +198,7 @@ namespace Azoth
 			}
 		}
 
-		QPair<QString, AN::ValueMatcher> MatcherFor (const EntryField<QString>& field, const ICLEntry& entry)
+		std::pair<QString, AN::ValueMatcher> MatcherFor (const EntryField<QString>& field, const ICLEntry& entry)
 		{
 			return { field.Id_, AN::StringValueMatcher { field.Get_ (entry) } };
 		}
@@ -460,8 +460,8 @@ namespace Azoth
 
 	namespace
 	{
-		QList<QPair<QString, AN::ValueMatcher>> WithEntryIdent (const ICLEntry& entry,
-				std::initializer_list<QPair<QString, AN::ValueMatcher>> extra = {})
+		QList<std::pair<QString, AN::ValueMatcher>> WithEntryIdent (const ICLEntry& entry,
+				std::initializer_list<std::pair<QString, AN::ValueMatcher>> extra = {})
 		{
 			QList result
 			{

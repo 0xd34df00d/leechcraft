@@ -101,7 +101,7 @@ namespace LMP
 		dynamicRoot->setEditable (false);
 		Model_->appendRow (dynamicRoot);
 
-		const std::initializer_list<QPair<PlaylistTypes, QString>> typesNames
+		const std::initializer_list<std::pair<PlaylistTypes, QString>> typesNames
 		{
 			{ PlaylistTypes::Random50, tr ("50 random tracks") },
 			{ PlaylistTypes::LovedTracks, tr ("Loved tracks") },

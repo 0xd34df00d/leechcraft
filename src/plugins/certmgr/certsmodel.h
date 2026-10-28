@@ -18,7 +18,7 @@ namespace CertMgr
 {
 	class CertsModel : public QAbstractItemModel
 	{
-		typedef QList<QPair<QString, QList<QSslCertificate>>> CertsDict_t;
+		typedef QList<std::pair<QString, QList<QSslCertificate>>> CertsDict_t;
 		CertsDict_t Issuer2Certs_;
 
 		QList<QSslCertificate> Blacklisted_;

@@ -76,7 +76,7 @@ namespace DU
 
 	bool SetDockBadges (const QList<NotificationData>& badges)
 	{
-		typedef QList<QPair<QString, QColor>> BadgePairs;
+		typedef QList<std::pair<QString, QColor>> BadgePairs;
 
 		auto view = GetBadgeView ();
 		if (!view)

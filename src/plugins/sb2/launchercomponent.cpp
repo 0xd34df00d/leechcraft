@@ -184,14 +184,14 @@ namespace LC::SB2
 		return item;
 	}
 
-	QPair<TabClassInfo, IHaveTabs*> LauncherComponent::FindTC (const QByteArray& tc) const
+	std::pair<TabClassInfo, IHaveTabs*> LauncherComponent::FindTC (const QByteArray& tc) const
 	{
 		for (auto iht : GetProxyHolder ()->GetPluginsManager ()->GetAllCastableTo<IHaveTabs*> ())
 			for (const auto& fullTC : iht->GetTabClasses ())
 				if (fullTC.TabClass_ == tc)
 					return { fullTC, iht };
 
-		return QPair<TabClassInfo, IHaveTabs*> ();
+		return std::pair<TabClassInfo, IHaveTabs*> ();
 	}
 
 	void LauncherComponent::handlePluginsAvailable ()

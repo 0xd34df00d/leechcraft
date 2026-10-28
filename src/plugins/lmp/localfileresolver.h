@@ -30,7 +30,7 @@ namespace LMP
 
 		QMutex TaglibMutex_;
 		QReadWriteLock CacheLock_;
-		QHash<QString, QPair<QDateTime, MediaInfo>> Cache_;
+		QHash<QString, std::pair<QDateTime, MediaInfo>> Cache_;
 	public:
 		using QObject::QObject;
 

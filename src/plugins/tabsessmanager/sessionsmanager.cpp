@@ -71,7 +71,7 @@ namespace LC::TabSessManager
 				QByteArray recData;
 				QString name;
 				QIcon icon;
-				QList<QPair<QByteArray, QVariant>> props;
+				QList<std::pair<QByteArray, QVariant>> props;
 				int winId = 0;
 
 				str >> pluginId >> recData >> name >> icon >> props >> winId;
@@ -214,7 +214,7 @@ namespace LC::TabSessManager
 
 	void SessionsManager::OpenTabs (const QHash<QObject*, QList<RecInfo>>& tabs)
 	{
-		QList<QPair<QObject*, RecInfo>> ordered;
+		QList<std::pair<QObject*, RecInfo>> ordered;
 		for (auto i = tabs.begin (); i != tabs.end (); ++i)
 			for (const auto& info : i.value ())
 				ordered.append ({ i.key (), info });

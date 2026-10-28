@@ -9,7 +9,6 @@
 #pragma once
 
 #include <QObject>
-#include <QPair>
 
 namespace LC::TabSessManager
 {

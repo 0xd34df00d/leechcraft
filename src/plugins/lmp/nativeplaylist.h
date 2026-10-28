@@ -18,7 +18,7 @@ namespace LMP
 	class Playlist;
 	struct MediaInfo;
 
-	using NativePlaylistItem_t = QPair<AudioSource, std::optional<MediaInfo>>;
+	using NativePlaylistItem_t = std::pair<AudioSource, std::optional<MediaInfo>>;
 	using NativePlaylist_t = QList<NativePlaylistItem_t>;
 
 	Playlist ToDumbPlaylist (const NativePlaylist_t&);

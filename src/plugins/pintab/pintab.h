@@ -33,7 +33,7 @@ namespace LC::PinTab
 
 		ICoreProxy_ptr Proxy_;
 
-		QHash<QMainWindow*, QHash<QWidget*, QPair<QString, QWidget*>>> Window2Widget2TabData_;
+		QHash<QMainWindow*, QHash<QWidget*, std::pair<QString, QWidget*>>> Window2Widget2TabData_;
 		QTabBar::ButtonPosition CloseSide_;
 	public:
 		void Init (ICoreProxy_ptr proxy) override;

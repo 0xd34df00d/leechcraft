@@ -123,7 +123,7 @@ namespace MuCommands
 			return nullptr;
 		}
 
-		QString FormatRepresentation (const QList<QPair<QString, QVariant>>& repr)
+		QString FormatRepresentation (const QList<std::pair<QString, QVariant>>& repr)
 		{
 			QStringList strings;
 
@@ -528,7 +528,7 @@ namespace MuCommands
 
 	namespace
 	{
-		void PerformRoleAction (const QPair<QByteArray, QByteArray>& role,
+		void PerformRoleAction (const std::pair<QByteArray, QByteArray>& role,
 				QObject *mucEntryObj, QString str)
 		{
 			if (role.first.isEmpty () && role.second.isEmpty ())

@@ -321,7 +321,7 @@ namespace Rappor
 			item->setData (idText, CollectionRole::Name);
 
 			const auto& sizesElem = photoElem.firstChildElement ("sizes");
-			auto getType = [&sizesElem] (const QString& type) -> QPair<QUrl, QSize>
+			auto getType = [&sizesElem] (const QString& type) -> std::pair<QUrl, QSize>
 			{
 				auto sizeElem = sizesElem.firstChildElement ("size");
 				while (!sizeElem.isNull ())

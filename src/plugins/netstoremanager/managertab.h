@@ -78,7 +78,7 @@ namespace NetStoreManager
 			Copy,
 			Move
 		};
-		QPair<TransferOperation, QList<QByteArray>> TransferedIDs_;
+		std::pair<TransferOperation, QList<QByteArray>> TransferedIDs_;
 
 		QAction *OpenFile_;
 		QAction *CopyURL_;

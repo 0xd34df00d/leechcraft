@@ -165,9 +165,9 @@ namespace LC::LMP::Graffiti
 				createIndex (pos - Files_.begin (), 0);
 	}
 
-	QList<QPair<MediaInfo, MediaInfo>> FilesModel::GetModified () const
+	QList<std::pair<MediaInfo, MediaInfo>> FilesModel::GetModified () const
 	{
-		QList<QPair<MediaInfo, MediaInfo>> result;
+		QList<std::pair<MediaInfo, MediaInfo>> result;
 		for (const auto& file : Files_)
 			if (file.Info_ != file.OrigInfo_)
 				result.push_back ({ file.Info_, file.OrigInfo_ });

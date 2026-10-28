@@ -8,8 +8,8 @@
 
 #pragma once
 
+#include <utility>
 #include <QStringList>
-#include <QPair>
 #include <QDateTime>
 #include <QMetaType>
 
@@ -128,8 +128,8 @@ namespace LC::Azoth::Acetamide
 		bool SecretMode_ = false;
 		bool ReOpMode_ = false;
 		bool OnlyOpChangeTopicMode_ = false;
-		QPair<bool, int> UserLimit_ { false, 0 };
-		QPair<bool, QString> ChannelKey_ { false, {} };
+		std::pair<bool, int> UserLimit_ { false, 0 };
+		std::pair<bool, QString> ChannelKey_ { false, {} };
 	};
 
 	struct NickServIdentify

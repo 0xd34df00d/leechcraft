@@ -343,12 +343,12 @@ namespace Xoox
 		return result;
 	}
 
-	QPair<QByteArray, QByteArray> RoomCLEntry::GetKickPerm () const
+	std::pair<QByteArray, QByteArray> RoomCLEntry::GetKickPerm () const
 	{
 		return { "role", Role2Str_ [QXmppMucItem::Role::NoRole] };
 	}
 
-	QPair<QByteArray, QByteArray> RoomCLEntry::GetBanPerm () const
+	std::pair<QByteArray, QByteArray> RoomCLEntry::GetBanPerm () const
 	{
 		return { "aff", Aff2Str_ [QXmppMucItem::Affiliation::OutcastAffiliation] };
 	}

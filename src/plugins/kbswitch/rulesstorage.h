@@ -28,7 +28,7 @@ namespace KBSwitch
 		QHash<QString, QString> LayDesc2Name_;
 
 		QHash<QString, QStringList> LayName2Variants_;
-		QHash<QString, QPair<QString, QString>> VarLayHR2NameVarPair_;
+		QHash<QString, std::pair<QString, QString>> VarLayHR2NameVarPair_;
 
 		QHash<QString, QString> KBModels_;
 		QHash<QString, QString> KBModelString2Code_;
@@ -41,7 +41,7 @@ namespace KBSwitch
 		const QHash<QString, QString>& GetLayoutsD2N () const;
 		const QHash<QString, QString>& GetLayoutsN2D () const;
 
-		const QHash<QString, QPair<QString, QString>>& GetVariantsD2Layouts () const;
+		const QHash<QString, std::pair<QString, QString>>& GetVariantsD2Layouts () const;
 
 		QStringList GetLayoutVariants (const QString&) const;
 

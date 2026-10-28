@@ -133,7 +133,7 @@ namespace LC::Util
 			return;
 		}
 
-		QList<QPair<QString, int>> dirs;
+		QList<std::pair<QString, int>> dirs;
 		for (const auto& pair : Util::Stlize (Directories_))
 		{
 			const auto& getters = pair.second;

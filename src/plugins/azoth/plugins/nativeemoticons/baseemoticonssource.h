@@ -37,7 +37,7 @@ namespace NativeEmoticons
 
 		QAbstractItemModel* GetOptionsModel () const;
 		QSet<QString> GetEmoticonStrings (const QString&) const;
-		QList<QPair<QImage, QString>> GetReprImages (const QString&) const;
+		QList<std::pair<QImage, QString>> GetReprImages (const QString&) const;
 		QByteArray GetImage (const QString&, const QString&) const;
 	protected:
 		virtual String2Filename_t ParseFile (const QString&) const = 0;

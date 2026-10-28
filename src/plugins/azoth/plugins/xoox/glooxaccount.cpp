@@ -760,7 +760,7 @@ namespace Xoox
 				return;
 
 			RemoveEntry (existingObj);
-			ExistingEntry2JoinConflict_ [existing] = qMakePair (jid, nick);
+			ExistingEntry2JoinConflict_ [existing] = std::make_pair (jid, nick);
 			return;
 		}
 

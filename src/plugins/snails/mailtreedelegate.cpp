@@ -52,7 +52,7 @@ namespace Snails
 			return index.sibling (index.row (), static_cast<int> (column)).data ().toString ();
 		}
 
-		QPair<QFont, QFontMetrics> GetSubjectFont (const QModelIndex& index, QFont font)
+		std::pair<QFont, QFontMetrics> GetSubjectFont (const QModelIndex& index, QFont font)
 		{
 			if (!index.data (MailModel::MailRole::IsRead).toBool ())
 				font.setBold (true);

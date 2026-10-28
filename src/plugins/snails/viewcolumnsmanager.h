@@ -8,8 +8,8 @@
 
 #pragma once
 
+#include <utility>
 #include <QObject>
-#include <QPair>
 
 class QHeaderView;
 
@@ -28,7 +28,7 @@ namespace Snails
 
 		bool IgnoreResizes_ = false;
 
-		QList<QPair<int, int>> Swaps_;
+		QList<std::pair<int, int>> Swaps_;
 	public:
 		ViewColumnsManager (QHeaderView*);
 
@@ -37,7 +37,7 @@ namespace Snails
 		void SetDefaultWidths (const QList<int>&);
 		void SetDefaultWidths (const QStringList&);
 
-		void SetSwaps (const QList<QPair<int, int>>&);
+		void SetSwaps (const QList<std::pair<int, int>>&);
 
 		bool eventFilter (QObject*, QEvent*);
 	private slots:

@@ -127,7 +127,7 @@ namespace Poshuku
 		std::shared_ptr<IWebView> CreateWebView ();
 	private:
 		BrowserWidget* CreateBrowserWidget (const std::shared_ptr<IWebView>&, const QUrl&,
-				bool, const QList<QPair<QByteArray, QVariant>>&);
+				bool, const QList<std::pair<QByteArray, QVariant>>&);
 		void HandleHistory (IWebView*);
 		/** Sets up the connections between widget's signals
 			* and our signals/slots that are always useful, both in own

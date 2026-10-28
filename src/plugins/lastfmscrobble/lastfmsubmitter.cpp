@@ -87,7 +87,7 @@ namespace Lastfmscrobble
 			SubmitTimer_->start (std::min (info.Length_ / 2, 240) * 1000);
 	}
 
-	void LastFMSubmitter::SendBackdated (const QList<QPair<Media::AudioInfo, QDateTime>>& backdateList)
+	void LastFMSubmitter::SendBackdated (const QList<std::pair<Media::AudioInfo, QDateTime>>& backdateList)
 	{
 		const auto& submissions = Util::Map (backdateList,
 				[] (const auto& pair) -> lastfm::Track

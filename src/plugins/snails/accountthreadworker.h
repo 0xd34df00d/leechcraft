@@ -113,7 +113,7 @@ namespace Snails
 		SyncStatusesResult SyncMessagesStatuses (const QStringList&);
 
 		using MsgCountError_t = std::variant<FolderNotFound>;
-		using MsgCountResult_t = Util::Either<MsgCountError_t, QPair<int, int>>;
+		using MsgCountResult_t = Util::Either<MsgCountError_t, std::pair<int, int>>;
 		MsgCountResult_t GetMessageCount (const QStringList& folder);
 
 		using SetReadStatusResult_t = Util::Either<std::variant<FolderNotFound>, Util::Void>;

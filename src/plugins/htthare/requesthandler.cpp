@@ -207,9 +207,9 @@ namespace HttHare
 
 	namespace
 	{
-		QList<QPair<qint64, qint64>> ParseRanges (QString str, qint64 fullSize)
+		QList<std::pair<qint64, qint64>> ParseRanges (QString str, qint64 fullSize)
 		{
-			QList<QPair<qint64, qint64>> result;
+			QList<std::pair<qint64, qint64>> result;
 
 			const auto eqPos = str.indexOf ('=');
 			if (eqPos >= 0)
@@ -268,7 +268,7 @@ namespace HttHare
 	namespace
 	{
 #if !defined (Q_OS_LINUX) && !defined (Q_OS_FREEBSD) && !defined (Q_OS_MAC)
-		QPair<int, qint64> DumbSendfile (const std::shared_ptr<QFile>& file,
+		std::pair<int, qint64> DumbSendfile (const std::shared_ptr<QFile>& file,
 				boost::asio::ip::tcp::socket& sock, int offset, int toTransfer)
 		{
 			if (!file->seek (offset))
@@ -295,8 +295,8 @@ namespace HttHare
 			std::shared_ptr<QFile> File_;
 			off_t Offset_;
 
-			QPair<qint64, qint64> CurrentRange_;
-			QList<QPair<qint64, qint64>> TailRanges_;
+			std::pair<qint64, qint64> CurrentRange_;
+			QList<std::pair<qint64, qint64>> TailRanges_;
 
 			std::function<void (boost::system::error_code)> Handler_;
 

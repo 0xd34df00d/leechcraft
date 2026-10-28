@@ -83,7 +83,7 @@ namespace LC::PinTab
 
 		const auto tabIndex = tw->IndexOf (tab);
 
-		auto pair = qMakePair (tw->TabText (tabIndex), tw->TabButton (tabIndex, CloseSide_));
+		auto pair = std::make_pair (tw->TabText (tabIndex), tw->TabButton (tabIndex, CloseSide_));
 		tw->SetTabText (tabIndex, {});
 		tw->SetTabClosable (tabIndex, false);
 

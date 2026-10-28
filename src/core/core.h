@@ -11,7 +11,6 @@
 #include <memory>
 #include <QObject>
 #include <QString>
-#include <QPair>
 #include <QTimer>
 #include <interfaces/iinfo.h>
 #include <interfaces/structures.h>

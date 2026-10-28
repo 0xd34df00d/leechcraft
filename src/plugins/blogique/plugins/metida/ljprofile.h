@@ -42,7 +42,7 @@ namespace Metida
 		LJProfile (QObject *parentAccount, const ICoreProxy_ptr&, QObject *parent = nullptr);
 
 		QWidget* GetProfileWidget () override;
-		QList<QPair<QIcon, QString>> GetPostingTargets () const override;
+		QList<std::pair<QIcon, QString>> GetPostingTargets () const override;
 
 		LJProfileData GetProfileData () const;
 		QObject* GetParentAccount () const;

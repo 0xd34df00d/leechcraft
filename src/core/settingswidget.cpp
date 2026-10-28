@@ -111,7 +111,7 @@ namespace LC
 			item->setToolTip (0, itemName);
 			Ui_.Cats_->addTopLevelItem (item);
 
-			Item2Page_ [item] = qMakePair (ihs, pgId++);
+			Item2Page_ [item] = std::make_pair (ihs, pgId++);
 		}
 
 		UpdateSearchHighlights ();

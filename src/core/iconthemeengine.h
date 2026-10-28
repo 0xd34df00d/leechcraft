@@ -39,7 +39,7 @@ namespace LC
 		QStringList IconSets_;
 
 		QReadWriteLock IconCacheLock_;
-		QHash<QPair<QString, QString>, QIcon> IconCache_;
+		QHash<std::pair<QString, QString>, QIcon> IconCache_;
 
 		QHash<QString, QIcon> PluginIconCache_;
 		std::shared_ptr<Util::ResourceLoader> PluginIconLoader_;

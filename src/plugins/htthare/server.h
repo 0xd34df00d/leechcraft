@@ -36,7 +36,7 @@ namespace HttHare
 		IconResolver * const IconResolver_;
 		TrManager * const TrManager_;
 	public:
-		Server (const QList<QPair<QString, QString>>& addresses);
+		Server (const QList<std::pair<QString, QString>>& addresses);
 		~Server ();
 
 		Server (const Server&) = delete;

@@ -86,7 +86,7 @@ namespace LC::Util
 				QVariant::fromValue (GetAddresses ()));
 	}
 
-	void AddressesModelManager::AppendRow (const QPair<QString, QString>& pair)
+	void AddressesModelManager::AppendRow (const std::pair<QString, QString>& pair)
 	{
 		QList<QStandardItem*> items
 		{

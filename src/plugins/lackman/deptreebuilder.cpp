@@ -273,7 +273,7 @@ namespace LackMan
 
 			Vertex_t packageVertex = Package2Vertex_ [packageId];
 			Edge_t edge = boost::add_edge (packageVertex, depVertex, Graph_).first;
-			Edge2Vertices_ [edge] = qMakePair (packageVertex, depVertex);
+			Edge2Vertices_ [edge] = std::make_pair (packageVertex, depVertex);
 
 			for (const auto& lpi : Core::Instance ().GetDependencyFulfillers (dep))
 			{
@@ -291,7 +291,7 @@ namespace LackMan
 					ffVertex = Package2Vertex_ [lpi.PackageID_];
 
 				Edge_t edge = boost::add_edge (depVertex, ffVertex, Graph_).first;
-				Edge2Vertices_ [edge] = qMakePair (depVertex, ffVertex);
+				Edge2Vertices_ [edge] = std::make_pair (depVertex, ffVertex);
 			}
 		}
 	}

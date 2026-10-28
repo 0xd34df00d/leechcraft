@@ -8,9 +8,9 @@
 
 #pragma once
 
+#include <utility>
 #include <QtPlugin>
 #include <QList>
-#include <QPair>
 #include <QVariant>
 
 namespace LC
@@ -29,7 +29,7 @@ namespace Azoth
 
 		virtual QVariant GetMetaInfo (DataField) const = 0;
 
-		virtual QList<QPair<QString, QVariant>> GetVCardRepresentation () const = 0;
+		virtual QList<std::pair<QString, QVariant>> GetVCardRepresentation () const = 0;
 	protected:
 		virtual void vcardUpdated () = 0;
 	};

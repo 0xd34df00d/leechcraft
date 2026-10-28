@@ -498,7 +498,7 @@ namespace Azoth
 		}
 	}
 
-	using ActionsVector_t = QList<QPair<QByteArray, EntryActor_f>>;
+	using ActionsVector_t = QList<std::pair<QByteArray, EntryActor_f>>;
 
 	struct ActionsManager::ActionsVectors
 	{

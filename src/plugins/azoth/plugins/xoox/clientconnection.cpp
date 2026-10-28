@@ -228,9 +228,9 @@ namespace Xoox
 				SLOT (handleVersionReceived (QXmppVersionIq)));
 
 		connect (Settings_,
-				SIGNAL (kaParamsChanged (QPair<int, int>)),
+				SIGNAL (kaParamsChanged (std::pair<int, int>)),
 				this,
-				SLOT (setKAParams (QPair<int, int>)));
+				SLOT (setKAParams (std::pair<int, int>)));
 		connect (Settings_,
 				SIGNAL (photoHashChanged (QByteArray)),
 				this,
@@ -946,7 +946,7 @@ namespace Xoox
 		else if (!JID2CLEntry_.contains (bare))
 		{
 			if (JID2CLEntry_.isEmpty ())
-				InitialEventQueue_ << qMakePair (from, event->Clone ());
+				InitialEventQueue_ << std::make_pair (from, event->Clone ());
 			else
 				qWarning () << Q_FUNC_INFO
 						<< "unknown PEP event source"
@@ -1077,7 +1077,7 @@ namespace Xoox
 		cb (iq);
 	}
 
-	void ClientConnection::setKAParams (const QPair<int, int>& p)
+	void ClientConnection::setKAParams (const std::pair<int, int>& p)
 	{
 		if (!Client_)
 			return;

@@ -70,7 +70,7 @@ namespace LC::LMP::Graffiti
 		QModelIndex FindIndex (const QString& path) const;
 		QModelIndex FindIndexByFileName (const QString& name) const;
 
-		QList<QPair<MediaInfo, MediaInfo>> GetModified () const;
+		QList<std::pair<MediaInfo, MediaInfo>> GetModified () const;
 	private:
 		QList<File>::iterator FindFile (const QString&);
 		QList<File>::const_iterator FindFile (const QString&) const;

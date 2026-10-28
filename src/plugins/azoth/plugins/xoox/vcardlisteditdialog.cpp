@@ -29,7 +29,7 @@ namespace Xoox
 		Ui_.Items_->setModel (Model_);
 	}
 
-	void VCardListEditDialog::AddItems (const QList<QPair<QString, QStringList>>& items)
+	void VCardListEditDialog::AddItems (const QList<std::pair<QString, QStringList>>& items)
 	{
 		const int rc = Model_->columnCount ();
 		for (const auto& item : items)
@@ -50,9 +50,9 @@ namespace Xoox
 		}
 	}
 
-	QList<QPair<QString, QStringList>> VCardListEditDialog::GetItems () const
+	QList<std::pair<QString, QStringList>> VCardListEditDialog::GetItems () const
 	{
-		QList<QPair<QString, QStringList>> result;
+		QList<std::pair<QString, QStringList>> result;
 
 		const int rc = Model_->columnCount ();
 		for (int i = 0, rows = Model_->rowCount (); i < rows; ++i)
@@ -64,7 +64,7 @@ namespace Xoox
 				if (Model_->item (i, j)->checkState () == Qt::Checked)
 					options << Model_->horizontalHeaderItem (j)->text ();
 			}
-			result << qMakePair (text, options);
+			result << std::make_pair (text, options);
 		}
 
 		return result;

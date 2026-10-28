@@ -151,7 +151,7 @@ namespace LC::Monocle
 
 	namespace
 	{
-		auto GetCursorsPositions (QTextDocument& doc, const QVector<QPair<QTextCursor, QTextCursor>>& cursors)
+		auto GetCursorsPositions (QTextDocument& doc, const QVector<std::pair<QTextCursor, QTextCursor>>& cursors)
 		{
 			const auto& pageSize = doc.pageSize ();
 			const auto pageHeight = pageSize.height ();
@@ -165,7 +165,7 @@ namespace LC::Monocle
 
 			const auto scale = QTransform {}.scale (1 / pageSize.width (), 1 / pageSize.height ());
 
-			QVector<QPair<int, PageRelativeRectBase>> result;
+			QVector<std::pair<int, PageRelativeRectBase>> result;
 			result.reserve (cursors.size ());
 			for (const auto& pair : cursors)
 			{
@@ -182,13 +182,13 @@ namespace LC::Monocle
 					endRect.setX (0);
 				}
 				QRectF bounding { rect | endRect };
-				result << QPair { pageNum, PageRelativeRectBase { scale.mapRect (bounding) } };
+				result << std::pair { pageNum, PageRelativeRectBase { scale.mapRect (bounding) } };
 			}
 			return result;
 		}
 
 		template<typename T>
-		QMap<int, QList<T>> ListToMap (const QVector<QPair<int, T>>& list)
+		QMap<int, QList<T>> ListToMap (const QVector<std::pair<int, T>>& list)
 		{
 			QMap<int, QList<T>> result;
 			for (const auto& [page, rect] : list)
@@ -199,7 +199,7 @@ namespace LC::Monocle
 
 	QMap<int, QList<PageRelativeRectBase>> TextDocumentAdapter::GetTextPositions (const QString& text, Qt::CaseSensitivity cs)
 	{
-		QVector<QPair<QTextCursor, QTextCursor>> cursors;
+		QVector<std::pair<QTextCursor, QTextCursor>> cursors;
 
 		const auto tdFlags = cs == Qt::CaseSensitive ?
 				QTextDocument::FindCaseSensitively :
@@ -209,7 +209,7 @@ namespace LC::Monocle
 		{
 			auto startCursor = cursor;
 			startCursor.setPosition (cursor.selectionStart ());
-			cursors << QPair { startCursor, cursor };
+			cursors << std::pair { startCursor, cursor };
 			cursor = Doc_->find (text, cursor, tdFlags);
 		}
 

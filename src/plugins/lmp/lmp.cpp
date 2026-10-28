@@ -44,7 +44,7 @@
 #include "mpris/instance.h"
 #endif
 
-typedef QList<QPair<QString, QUrl>> CustomStationsList_t;
+typedef QList<std::pair<QString, QUrl>> CustomStationsList_t;
 Q_DECLARE_METATYPE (CustomStationsList_t);
 
 namespace LC
@@ -87,7 +87,7 @@ namespace LMP
 		gchar **argv = argvarr;
 		gst_init (&argc, &argv);
 
-		qRegisterMetaType<QList<QPair<QString, QUrl>>> ("QList<QPair<QString, QUrl>>");
+		qRegisterMetaType<QList<std::pair<QString, QUrl>>> ("QList<std::pair<QString, QUrl>>");
 		qRegisterMetaType<SavedFilterInfo> ("LC::LMP::SavedFilterInfo");
 		qRegisterMetaType<QList<SavedFilterInfo>> ("QList<LC::LMP::SavedFilterInfo>");
 

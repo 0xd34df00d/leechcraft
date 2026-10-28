@@ -868,7 +868,7 @@ namespace LC::LMP
 
 	void LocalCollectionStorage::CreateTables ()
 	{
-		typedef QPair<QString, QString> QueryPair_t;
+		typedef std::pair<QString, QString> QueryPair_t;
 		QList<QueryPair_t> table2query;
 		table2query << QueryPair_t ("artists",
 				"CREATE TABLE artists ("

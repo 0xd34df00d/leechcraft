@@ -8,9 +8,9 @@
 
 #pragma once
 
+#include <utility>
 #include <QObject>
 #include <QString>
-#include <QPair>
 #include <QXmppTransferManager.h>
 #include <QXmppConfiguration.h>
 
@@ -39,7 +39,7 @@ namespace Xoox
 
 		QByteArray OurPhotoHash_;
 
-		QPair<int, int> KAParams_;
+		std::pair<int, int> KAParams_;
 		bool FileLogEnabled_;
 
 		int Priority_;
@@ -87,8 +87,8 @@ namespace Xoox
 		QByteArray GetPhotoHash () const;
 		void SetPhotoHash (const QByteArray&);
 
-		QPair<int, int> GetKAParams () const;
-		void SetKAParams (const QPair<int, int>&);
+		std::pair<int, int> GetKAParams () const;
+		void SetKAParams (const std::pair<int, int>&);
 
 		bool GetFileLogEnabled () const;
 		void SetFileLogEnabled (bool);
@@ -130,7 +130,7 @@ namespace Xoox
 		void hostChanged (const QString&);
 		void portChanged (int);
 		void photoHashChanged (const QByteArray&);
-		void kaParamsChanged (const QPair<int, int>&);
+		void kaParamsChanged (const std::pair<int, int>&);
 		void fileLogChanged (bool);
 		void priorityChanged (int);
 		void tlsModeChanged (QXmppConfiguration::StreamSecurityMode);

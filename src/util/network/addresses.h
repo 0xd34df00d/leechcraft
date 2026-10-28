@@ -8,8 +8,8 @@
 
 #pragma once
 
+#include <utility>
 #include <QList>
-#include <QPair>
 #include <QString>
 #include <QMetaType>
 #include "networkconfig.h"
@@ -18,7 +18,7 @@ class QHostAddress;
 
 namespace LC::Util
 {
-	typedef QList<QPair<QString, QString>> AddrList_t;
+	typedef QList<std::pair<QString, QString>> AddrList_t;
 
 	/** @brief Returns all local addresses.
 	 *

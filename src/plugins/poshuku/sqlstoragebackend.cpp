@@ -207,7 +207,7 @@ namespace Poshuku
 		}
 
 		auto scored = Util::Map (Util::Stlize (url2diffs),
-				[] (const auto& pair) { return QPair { pair.first, Score (pair.second) }; });
+				[] (const auto& pair) { return std::pair { pair.first, Score (pair.second) }; });
 		std::sort (scored.rbegin (), scored.rend (), Util::ComparingBy (Util::Snd));
 
 		return Util::Map (scored,

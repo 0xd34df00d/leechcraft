@@ -103,7 +103,7 @@ namespace LC::Aggregator
 			struct
 			{
 				ids_t Standard_;
-				QList<QPair<IDType_t, std::chrono::minutes>> Custom_;
+				QList<std::pair<IDType_t, std::chrono::minutes>> Custom_;
 			} result;
 
 			const auto sb = StorageBackendManager::Instance ().MakeStorageBackendForThread ();
@@ -114,7 +114,7 @@ namespace LC::Aggregator
 
 			for (const auto id : allIds)
 				if (const auto timeout = sb->GetFeedSettings (id).value_or ({}).UpdateTimeout_)
-					result.Custom_ << QPair { id, std::chrono::minutes { timeout } };
+					result.Custom_ << std::pair { id, std::chrono::minutes { timeout } };
 				else
 					result.Standard_ << id;
 

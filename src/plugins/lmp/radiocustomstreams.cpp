@@ -16,7 +16,7 @@
 #include "radiocustomstation.h"
 #include "xmlsettingsmanager.h"
 
-typedef QList<QPair<QString, QUrl>> CustomStationsList_t;
+typedef QList<std::pair<QString, QUrl>> CustomStationsList_t;
 Q_DECLARE_METATYPE (CustomStationsList_t);
 
 namespace LC

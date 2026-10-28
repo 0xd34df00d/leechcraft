@@ -108,7 +108,7 @@ namespace LMP
 		return left.LocalPath_ < right.LocalPath_;
 	}
 
-	using ResolveResult_t = QList<QPair<AudioSource, MediaInfo>>;
+	using ResolveResult_t = QList<std::pair<AudioSource, MediaInfo>>;
 
 	struct Player::ResolveJobResult
 	{
@@ -665,7 +665,7 @@ namespace LMP
 		}
 
 		NativePlaylist_t HandleRestored (const NativePlaylist_t& playlist,
-				const QHash<QPair<QString, QString>, Media::RadioRestoreVariant_t>& restored)
+				const QHash<std::pair<QString, QString>, Media::RadioRestoreVariant_t>& restored)
 		{
 			std::decay_t<decltype (playlist)> newPlaylist;
 
@@ -750,7 +750,7 @@ namespace LMP
 			Util::Sequence (nullptr, QtConcurrent::run ([syncer] { syncer->waitForFinished (); })) >>
 					[=]
 					{
-						QHash<QPair<QString, QString>, Media::RadioRestoreVariant_t> restored;
+						QHash<std::pair<QString, QString>, Media::RadioRestoreVariant_t> restored;
 						for (const auto& future : syncer->futures ())
 							for (const auto& item : future.result ())
 								restored [{ item.PluginID_, item.RadioID_ }] = item.Restored_;
@@ -877,7 +877,7 @@ namespace LMP
 			futureWatcher->setFuture (QtConcurrent::run (worker));
 		}
 
-		using ResolvedSource_t = QPair<AudioSource, MediaInfo>;
+		using ResolvedSource_t = std::pair<AudioSource, MediaInfo>;
 
 		template<typename NonLocalGetter>
 		ResolvedSource_t PairResolve (const NonLocalGetter& getter, const AudioSource& source)

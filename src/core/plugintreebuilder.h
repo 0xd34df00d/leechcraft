@@ -68,7 +68,7 @@ namespace LC
 		QObjectList GetResult () const;
 	private:
 		void CreateGraph ();
-		QMap<Edge_t, QPair<Vertex_t, Vertex_t>> MakeEdges ();
+		QMap<Edge_t, std::pair<Vertex_t, Vertex_t>> MakeEdges ();
 	};
 }
 

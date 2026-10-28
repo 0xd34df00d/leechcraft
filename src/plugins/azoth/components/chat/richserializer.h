@@ -28,9 +28,9 @@ namespace LC::Azoth
 		bool HasCustomFormatting () const;
 		QString GetXhtml () const;
 	private:
-		QPair<QString, QString> GetBlockTags (const QTextBlockFormat&);
+		std::pair<QString, QString> GetBlockTags (const QTextBlockFormat&);
 
 		QStringList GetSpanStyle (const QTextCharFormat&) const;
-		QPair<QStringList, QStringList> GetFragmentTags (const QTextCharFormat&);
+		std::pair<QStringList, QStringList> GetFragmentTags (const QTextCharFormat&);
 	};
 }

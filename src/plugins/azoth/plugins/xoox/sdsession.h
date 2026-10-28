@@ -70,7 +70,7 @@ namespace Xoox
 		void SetQuery (const QString&);
 		QString GetQuery () const;
 		QAbstractItemModel* GetRepresentationModel () const;
-		QList<QPair<QByteArray, QString>> GetActionsFor (const QModelIndex&);
+		QList<std::pair<QByteArray, QString>> GetActionsFor (const QModelIndex&);
 		void ExecuteAction (const QModelIndex&, const QByteArray&);
 
 		void HandleInfo (const QXmppDiscoveryIq&);

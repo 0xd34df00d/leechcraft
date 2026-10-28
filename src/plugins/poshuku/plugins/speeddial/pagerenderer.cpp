@@ -114,7 +114,7 @@ namespace LC::Poshuku::SpeedDial
 			};
 		}
 
-		Node MakeTable (ImageCache& cache, const QPair<QString, TopList_t>& tableInfo)
+		Node MakeTable (ImageCache& cache, const std::pair<QString, TopList_t>& tableInfo)
 		{
 			const auto& heading = tableInfo.first;
 			const auto& items = tableInfo.second;
@@ -130,7 +130,7 @@ namespace LC::Poshuku::SpeedDial
 		}
 	}
 
-	QByteArray MakePage (ImageCache& cache, const QList<QPair<QString, TopList_t>>& tables)
+	QByteArray MakePage (ImageCache& cache, const QList<std::pair<QString, TopList_t>>& tables)
 	{
 		return Tags::Html ({
 				MakeHead (cache),

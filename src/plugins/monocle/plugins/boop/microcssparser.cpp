@@ -265,7 +265,7 @@ namespace LC::Monocle::Boop::MicroCSS
 
 	quint64 qHash (const TagClassSelector& s)
 	{
-		return qHash (QPair { s.Tag_, s.Class_ });
+		return qHash (std::pair { s.Tag_, s.Class_ });
 	}
 
 	QDebug operator<< (QDebug debug, const Rule& rule)

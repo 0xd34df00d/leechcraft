@@ -40,7 +40,7 @@ namespace Blogique
 		IAccount* GetAccountFromIndex (const QModelIndex& index) const;
 		QAbstractItemModel* GetModel () const;
 
-		QList<QPair<IAccount*, QString>> GetPostingTargets () const;
+		QList<std::pair<IAccount*, QString>> GetPostingTargets () const;
 	};
 }
 }

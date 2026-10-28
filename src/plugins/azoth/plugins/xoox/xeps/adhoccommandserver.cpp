@@ -217,7 +217,7 @@ namespace Xoox
 			{
 				QList states { SChat, SOnline, SAway, SXA, SDND, SInvisible, SOffline };
 				std::ranges::sort (states, &IsLess);
-				return Util::Map (states, [] (State st) { return QPair { StateToID (st), st }; });
+				return Util::Map (states, [] (State st) { return std::pair { StateToID (st), st }; });
 			} ();
 			return pairs;
 		}
@@ -225,7 +225,7 @@ namespace Xoox
 		State ParseState (const QString& id, State fallback)
 		{
 			const auto& pairs = GetStrStatePairs ();
-			const auto pos = std::ranges::find (pairs, id, &QPair<QString, State>::first);
+			const auto pos = std::ranges::find (pairs, id, &std::pair<QString, State>::first);
 			return pos == pairs.end () ? fallback : pos->second;
 		}
 	}
@@ -242,10 +242,10 @@ namespace Xoox
 		const GlooxAccountState& state = Conn_->GetLastState ();
 
 		QString option;
-		QList<QPair<QString, QString>> options;
+		QList<std::pair<QString, QString>> options;
 		for (const auto& [status, rawState] : GetStrStatePairs ())
 		{
-			options << QPair { StateToString (rawState), status };
+			options << std::pair { StateToString (rawState), status };
 			if (rawState == state.State_)
 				option = status;
 		}
@@ -310,9 +310,9 @@ namespace Xoox
 		field.setKey ("FORM_TYPE");
 		fields.append (field);
 
-		QList<QPair<QString, QString>> options;
+		QList<std::pair<QString, QString>> options;
 		for (const auto entry : Conn_->GetRoomCLEntries ())
-			options << QPair
+			options << std::pair
 			{
 				entry->GetHumanReadableAddress () + "/" + entry->GetNick (),
 				entry->GetEntryID ()

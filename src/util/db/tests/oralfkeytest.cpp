@@ -125,7 +125,7 @@ namespace Util
 		auto student = Util::oral::AdaptPtr<Student, OralFactory> (db);
 		auto studentInfo = Util::oral::AdaptPtr<StudentInfo, OralFactory> (db);
 
-		QList<QPair<Student, StudentInfo>> list
+		QList<std::pair<Student, StudentInfo>> list
 		{
 			{ { 0, "Student 1" }, { 0, 0, 18, 1 } },
 			{ { 0, "Student 2" }, { 0, 0, 19, 1 } },

@@ -24,10 +24,10 @@ namespace Fua
 
 		Ui::Changer Ui_;
 
-		const QList<QPair<QString, QString>> IDs_;
+		const QList<std::pair<QString, QString>> IDs_;
 		const QMap<QString, QString> BackLookup_;
 	public:
-		Changer (const QList<QPair<QString, QString>>&,
+		Changer (const QList<std::pair<QString, QString>>&,
 				const QMap<QString, QString>&,
 				const QString& = QString (),
 				const QString& = QString (),

@@ -79,7 +79,7 @@ namespace LC::LMP::Graffiti
 		{
 			rem = rem.mid (4);
 
-			const std::initializer_list<QPair<QStringView, std::function<void (QString)>>> setters
+			const std::initializer_list<std::pair<QStringView, std::function<void (QString)>>> setters
 			{
 				{ u"GENRE", [&result] (const QString& val) { result.Genre_ = val; } },
 				{ u"DATE", [&result] (const QString& val) { result.Date_ = val.toInt (); } },

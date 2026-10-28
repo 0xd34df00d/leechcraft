@@ -41,7 +41,7 @@ namespace Seen
 		QHash<int, ddjvu_page_t*> PendingRenders_;
 		QHash<ddjvu_page_t*, int> PendingRendersNums_;
 
-		using RenderJobsPerScale_t = QHash<QPair<double, double>, QFutureInterface<QImage>>;
+		using RenderJobsPerScale_t = QHash<std::pair<double, double>, QFutureInterface<QImage>>;
 		using RenderJobs_t = QHash<int, RenderJobsPerScale_t>;
 		RenderJobs_t RenderJobs_;
 

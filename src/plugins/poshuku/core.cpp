@@ -276,7 +276,7 @@ namespace Poshuku
 	}
 
 	BrowserWidget* Core::CreateBrowserWidget (const IWebView_ptr& view, const QUrl& url,
-			bool raise, const QList<QPair<QByteArray, QVariant>>& props)
+			bool raise, const QList<std::pair<QByteArray, QVariant>>& props)
 	{
 		const auto widget = new BrowserWidget { BrowserWidget::Kind::Own, view, ShortcutMgr_, Proxy_ };
 		emit browserWidgetCreated (widget);
@@ -306,7 +306,7 @@ namespace Poshuku
 	}
 
 	BrowserWidget* Core::NewURL (const QUrl& url, bool raise,
-			const QList<QPair<QByteArray, QVariant>>& props)
+			const QList<std::pair<QByteArray, QVariant>>& props)
 	{
 		if (!Initialized_)
 			return nullptr;

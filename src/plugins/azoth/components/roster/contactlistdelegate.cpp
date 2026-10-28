@@ -171,7 +171,7 @@ namespace Azoth
 
 	namespace
 	{
-		QPair<int, int> GetCounts (const QModelIndex& index)
+		std::pair<int, int> GetCounts (const QModelIndex& index)
 		{
 			const int visibleCount = index.model ()->rowCount (index);
 

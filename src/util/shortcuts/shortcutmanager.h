@@ -89,7 +89,7 @@ namespace LC::Util
 		 */
 		void RegisterAction (const QByteArray& id, QAction *action);
 
-		using IDPair_t = QPair<QByteArray, QAction*>;
+		using IDPair_t = std::pair<QByteArray, QAction*>;
 
 		void RegisterActions (const std::initializer_list<IDPair_t>& actions);
 
@@ -179,7 +179,7 @@ namespace LC::Util
 		 * @param[in] pair The pair of action ID and the action itself.
 		 * @return The shortcut manager object.
 		 */
-		ShortcutManager& operator<< (const QPair<QByteArray, QAction*>& pair);
+		ShortcutManager& operator<< (const std::pair<QByteArray, QAction*>& pair);
 	private:
 		bool HasActionInfo (const QByteArray&) const;
 	};

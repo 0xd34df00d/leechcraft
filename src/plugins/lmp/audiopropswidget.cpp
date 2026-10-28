@@ -43,7 +43,7 @@ namespace LC::LMP
 {
 	AudioPropsWidget::AudioPropsWidget (QWidget *parent)
 	: QWidget { parent }
-	, PropsModel_ { new Util::FlatItemsModel<QPair<QString, QString>> { { tr ("Property"), tr ("Value") }, this } }
+	, PropsModel_ { new Util::FlatItemsModel<std::pair<QString, QString>> { { tr ("Property"), tr ("Value") }, this } }
 	{
 		Ui_.setupUi (this);
 		Ui_.PropsView_->setModel (PropsModel_);
@@ -100,7 +100,7 @@ namespace LC::LMP
 
 	namespace
 	{
-		using PropsVec_t = QVector<QPair<QString, QString>>;
+		using PropsVec_t = QVector<std::pair<QString, QString>>;
 
 		using namespace TagLib;
 

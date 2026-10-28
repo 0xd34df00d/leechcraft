@@ -26,7 +26,7 @@ namespace XProxy
 
 	QList<Proxy> ProxiesStorage::GetKnownProxies () const
 	{
-		return Util::Map (Proxies_, [] (const QPair<Proxy, QList<ReqTarget>>& pair) { return pair.first; });
+		return Util::Map (Proxies_, [] (const std::pair<Proxy, QList<ReqTarget>>& pair) { return pair.first; });
 	}
 
 	QList<Proxy> ProxiesStorage::FindMatching (const QString& reqHost, int reqPort, const QString& proto) const

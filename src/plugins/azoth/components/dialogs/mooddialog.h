@@ -30,7 +30,7 @@ namespace Azoth
 		MoodInfo GetMood () const;
 		void SetMood (const MoodInfo&);
 	private:
-		static QMap<QString, QPair<QVariant, QIcon>> BuildHumanReadableList ();
+		static QMap<QString, std::pair<QVariant, QIcon>> BuildHumanReadableList ();
 	};
 }
 }

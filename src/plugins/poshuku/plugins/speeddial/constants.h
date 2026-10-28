@@ -25,5 +25,5 @@ namespace LC::Poshuku::SpeedDial
 	const size_t Rows = 2;
 	const size_t Cols = 4;
 
-	using TopList_t = QList<QPair<QUrl, QString>>;
+	using TopList_t = QList<std::pair<QUrl, QString>>;
 }

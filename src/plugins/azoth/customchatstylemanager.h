@@ -8,8 +8,8 @@
 
 #pragma once
 
+#include <utility>
 #include <QObject>
-#include <QPair>
 
 namespace LC
 {
@@ -24,10 +24,10 @@ namespace Azoth
 	public:
 		CustomChatStyleManager (QObject* = 0);
 
-		QPair<QString, QString> GetForEntry (ICLEntry*) const;
+		std::pair<QString, QString> GetForEntry (ICLEntry*) const;
 
-		QPair<QString, QString> GetStyleForAccount (IAccount*) const;
-		QPair<QString, QString> GetMUCStyleForAccount (IAccount*) const;
+		std::pair<QString, QString> GetStyleForAccount (IAccount*) const;
+		std::pair<QString, QString> GetMUCStyleForAccount (IAccount*) const;
 
 		enum class Settable
 		{
@@ -38,7 +38,7 @@ namespace Azoth
 		};
 		void Set (IAccount*, Settable, const QString&);
 	private:
-		QPair<QString, QString> GetProps (const QString&, IAccount*) const;
+		std::pair<QString, QString> GetProps (const QString&, IAccount*) const;
 	signals:
 		void accountStyleChanged (IAccount*);
 	};

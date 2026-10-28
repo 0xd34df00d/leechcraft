@@ -49,7 +49,7 @@ namespace Xtazy
 
 		Util::XmlSettingsDialog_ptr XSD_;
 
-		using UploadNotifee_t = QPair<QPointer<QObject>, QString>;
+		using UploadNotifee_t = std::pair<QPointer<QObject>, QString>;
 		QMap<QString, QList<UploadNotifee_t>> PendingUploads_;
 
 		StaticCommands_t Commands_;

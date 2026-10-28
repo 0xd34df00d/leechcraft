@@ -57,7 +57,7 @@ namespace LC::Util::Views
 		};
 	}
 
-	template<template<typename, typename> class PairType = QPair, typename C1, typename C2>
+	template<template<typename, typename> class PairType = std::pair, typename C1, typename C2>
 	auto Zip (C1&& c1, C2&& c2)
 	{
 		using ZIt = detail::ZipIterator<PairType, typename std::decay_t<C1>::const_iterator, typename std::decay_t<C2>::const_iterator>;

@@ -153,7 +153,7 @@ namespace LC::Aggregator
 
 		Nodes MakeScene (const MRSSScene& scene)
 		{
-			const QVector<QPair<QString, QString>> rows
+			const QVector<std::pair<QString, QString>> rows
 			{
 				{ TrCtx::tr ("Title"), scene.Title_ },
 				{ TrCtx::tr ("Start time"), scene.StartTime_ },
@@ -198,7 +198,7 @@ namespace LC::Aggregator
 
 		Nodes MakeStats (const MRSSEntry& entry, const TextColor& color)
 		{
-			const QVector<QPair<QString, int>> rows
+			const QVector<std::pair<QString, int>> rows
 			{
 				{ TrCtx::tr ("Views"), entry.Views_ },
 				{ TrCtx::tr ("Bookmarks"), entry.Favs_ },
@@ -219,7 +219,7 @@ namespace LC::Aggregator
 			return MakeSubblock (TrCtx::tr ("Statistics"), color, std::move (nodes));
 		}
 
-		QPair<QString, QString> IntRow (const QString& name, QStringNumber auto value)
+		std::pair<QString, QString> IntRow (const QString& name, QStringNumber auto value)
 		{
 			return { name, value ? QString::number (value) : QString {} };
 		}
@@ -229,7 +229,7 @@ namespace LC::Aggregator
 			QString size;
 			if (entry.Width_ && entry.Height_)
 				size = QString::number (entry.Width_) + 'x' + QString::number (entry.Height_);
-			const QVector<QPair<QString, QString>> rows
+			const QVector<std::pair<QString, QString>> rows
 			{
 				IntRow (TrCtx::tr ("Duration"), entry.Duration_),
 				IntRow (TrCtx::tr ("Channels"), entry.Channels_),

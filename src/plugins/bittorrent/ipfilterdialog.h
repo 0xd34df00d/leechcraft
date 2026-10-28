@@ -14,7 +14,7 @@
 
 namespace LC::BitTorrent
 {
-	using BanRange_t = QPair<QString, QString>;
+	using BanRange_t = std::pair<QString, QString>;
 
 	class IPFilterDialog : public QDialog
 	{

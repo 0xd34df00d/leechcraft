@@ -67,7 +67,7 @@ namespace NetStoreManager
 
 		QUrl Url_;
 		QUrl ShareUrl_;
-		QMap<QUrl, QPair<QString, QString>> ExportLinks;
+		QMap<QUrl, std::pair<QString, QString>> ExportLinks;
 
 		bool Shared_ = false;
 

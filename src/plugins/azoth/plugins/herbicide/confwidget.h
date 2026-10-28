@@ -28,7 +28,7 @@ namespace Herbicide
 		Q_OBJECT
 		
 		Ui::ConfWidget Ui_;
-		QList<QList<QPair<QString, QStringList>>> PredefinedQuests_;
+		QList<QList<std::pair<QString, QStringList>>> PredefinedQuests_;
 
 		Util::BaseSettingsManager * const BSM_;
 

@@ -154,7 +154,7 @@ namespace MusicZombie
 				[this] (auto&& pair)
 				{
 					pair.second.intersect (Hints_);
-					return QPair { pair.first, pair.second.size () };
+					return std::pair { pair.first, pair.second.size () };
 				});
 
 		const auto maxElem = std::max_element (xSizes.begin (), xSizes.end (), Util::ComparingBy (Util::Snd));

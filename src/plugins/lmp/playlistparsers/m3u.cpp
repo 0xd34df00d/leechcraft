@@ -23,7 +23,7 @@ namespace M3U
 {
 	namespace
 	{
-		QPair<QString, QVariant> ParseMetadata (QString str)
+		std::pair<QString, QVariant> ParseMetadata (QString str)
 		{
 			const auto eqIdx = str.indexOf ('=');
 			if (eqIdx == -1)

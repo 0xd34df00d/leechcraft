@@ -57,7 +57,7 @@ namespace Dolozhee
 		const auto type = typePage->GetReportType ();
 
 		QString title;
-		QList<QPair<QString, QString>> sections;
+		QList<std::pair<QString, QString>> sections;
 		QString typeText;
 		switch (type)
 		{

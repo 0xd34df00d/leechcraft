@@ -54,9 +54,9 @@ namespace LC::LMP::Graffiti
 		UpdatePreview ();
 	}
 
-	QList<QPair<QString, QString>> RenameDialog::GetRenames () const
+	QList<std::pair<QString, QString>> RenameDialog::GetRenames () const
 	{
-		QList<QPair<QString, QString>> result;
+		QList<std::pair<QString, QString>> result;
 		for (const auto& pair : Util::Zip (Infos_, Names_))
 			if (QFileInfo (pair.first.LocalPath_).fileName () != pair.second)
 				result.push_back ({ pair.first.LocalPath_, pair.second });
@@ -65,7 +65,7 @@ namespace LC::LMP::Graffiti
 
 	namespace
 	{
-		void Rename (const QList<QPair<QString, QString>>& pairs)
+		void Rename (const QList<std::pair<QString, QString>>& pairs)
 		{
 			for (const auto& pair : pairs)
 			{

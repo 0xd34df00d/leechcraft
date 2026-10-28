@@ -16,7 +16,7 @@ namespace Poshuku
 {
 namespace Fua
 {
-	Changer::Changer (const QList<QPair<QString, QString>>& ids,
+	Changer::Changer (const QList<std::pair<QString, QString>>& ids,
 			const QMap<QString, QString>& backLookup,
 			const QString& suggestedDomain,
 			const QString& selectedID,
@@ -27,7 +27,7 @@ namespace Fua
 	{
 		Ui_.setupUi (this);
 
-		Ui_.Agent_->addItems (Util::Map (ids, [] (const QPair<QString, QString>& pair) { return pair.first; }));
+		Ui_.Agent_->addItems (Util::Map (ids, [] (const std::pair<QString, QString>& pair) { return pair.first; }));
 		Ui_.Domain_->setText (suggestedDomain);
 		Ui_.IDString_->setText (selectedID);
 		Ui_.Agent_->setCurrentIndex (Ui_.Agent_->findText (BackLookup_ [selectedID]));

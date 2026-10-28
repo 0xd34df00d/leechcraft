@@ -31,7 +31,7 @@ namespace LC
 
 		const QRegularExpression InvalidNameWarning { "^invalid tag name "_qs };
 
-		using Rows = QList<QPair<QUuid, QString>>;
+		using Rows = QList<std::pair<QUuid, QString>>;
 
 		std::unique_ptr<TagsStorage> Seeded (const Rows& rows)
 		{
@@ -135,7 +135,7 @@ namespace LC
 		QCOMPARE (inserted.size (), 1);
 		QCOMPARE (updated.size (), 1);
 		QCOMPARE (updated.first ().first ().toStringList (), f.Manager_.GetAllTags ());
-		QVERIFY (f.Storage_.GetAllTags ().contains (QPair { QUuid { id->Id_ }, Work }));
+		QVERIFY (f.Storage_.GetAllTags ().contains (std::pair { QUuid { id->Id_ }, Work }));
 
 		QVERIFY (f.Manager_.GetID (Work) == id);
 		QCOMPARE (f.Manager_.rowCount ({}), 2);
@@ -242,7 +242,7 @@ namespace LC
 
 		Rows rows;
 		for (const auto& name : stored)
-			rows << QPair { QUuid::createUuid (), name };
+			rows << std::pair { QUuid::createUuid (), name };
 
 		QTest::ignoreMessage (QtWarningMsg, qPrintable (warning));
 		Fixture f { rows };

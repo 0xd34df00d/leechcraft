@@ -24,7 +24,7 @@ namespace XProxy
 	{
 		const ScriptsManager * const ScriptsMgr_;
 
-		QList<QPair<Proxy, QList<ReqTarget>>> Proxies_;
+		QList<std::pair<Proxy, QList<ReqTarget>>> Proxies_;
 		QMap<Proxy, QList<UrlListScript*>> Scripts_;
 	public:
 		ProxiesStorage (const ScriptsManager*, QObject* = nullptr);

@@ -17,7 +17,7 @@ namespace LC::Azoth::Acetamide
 {
 	namespace
 	{
-		QByteArray With (QByteArray str, std::initializer_list<QPair<QByteArray, QByteArray>> subs)
+		QByteArray With (QByteArray str, std::initializer_list<std::pair<QByteArray, QByteArray>> subs)
 		{
 			for (const auto& [key, value] : subs)
 				str.replace (key, value);

@@ -33,6 +33,6 @@ namespace LC
 		void AddTag (const Id&, const QString&);
 		void DeleteTag (const Id&);
 		void SetTagName (const Id&, const QString&);
-		QList<QPair<Id, QString>> GetAllTags () const;
+		QList<std::pair<Id, QString>> GetAllTags () const;
 	};
 }

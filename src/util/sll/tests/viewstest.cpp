@@ -22,7 +22,7 @@ namespace Util
 		QList<int> ints { 1, 2, 3 };
 		QList<QString> strings { "a", "b", "c" };
 
-		QList<QPair<int, QString>> pairs;
+		QList<std::pair<int, QString>> pairs;
 		for (const auto& pair : Views::Zip (ints, strings))
 			pairs << pair;
 
@@ -34,7 +34,7 @@ namespace Util
 		QList<int> ints { 1, 2, 3, 4, 5 };
 		QList<QString> strings { "a", "b", "c" };
 
-		QList<QPair<int, QString>> pairs;
+		QList<std::pair<int, QString>> pairs;
 		for (const auto& pair : Views::Zip (ints, strings))
 			pairs << pair;
 

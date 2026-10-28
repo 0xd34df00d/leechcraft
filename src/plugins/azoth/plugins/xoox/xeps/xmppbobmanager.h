@@ -23,7 +23,7 @@ namespace Xoox
 	{
 		Q_OBJECT
 
-		QCache<QPair<QString, QString>, QByteArray> BobCache_;
+		QCache<std::pair<QString, QString>, QByteArray> BobCache_;
 	public:
 		XMPPBobManager (unsigned int cacheSizeKb = 2048);
 

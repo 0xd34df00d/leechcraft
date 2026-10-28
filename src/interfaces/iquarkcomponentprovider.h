@@ -63,7 +63,7 @@ namespace LC
 
 		/** @brief Dynamic properties to be exposed to the engine.
 		 */
-		QList<QPair<QString, QObject*>> DynamicProps_;
+		QList<std::pair<QString, QObject*>> DynamicProps_;
 
 		/** @brief Context-depended properties to be exposed to the engine.
 		 */
@@ -74,7 +74,7 @@ namespace LC
 		 * These properties are set once upon adding quark to a view,
 		 * and they are not modified further.
 		 */
-		QList<QPair<QString, QVariant>> StaticProps_;
+		QList<std::pair<QString, QVariant>> StaticProps_;
 
 		/** @brief The image providers to be exposed to the engine.
 		 *
@@ -82,7 +82,7 @@ namespace LC
 		 * Each image provider is added to the engine under the name in
 		 * the corresponding QString upon addng the quark to the view.
 		 */
-		QList<QPair<QString, QQuickImageProvider*>> ImageProviders_;
+		QList<std::pair<QString, QQuickImageProvider*>> ImageProviders_;
 
 		/** @brief Initializes a null quark component.
 		 */

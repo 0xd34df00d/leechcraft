@@ -71,7 +71,7 @@ namespace LMP
 			QWriteLocker locker (&CacheLock_);
 			if (Cache_.size () > 200)
 				Cache_.clear ();
-			Cache_ [file] = qMakePair (modified, info);
+			Cache_ [file] = std::make_pair (modified, info);
 		}
 		return info;
 	}

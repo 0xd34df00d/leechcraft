@@ -10,7 +10,6 @@
 
 #include <QString>
 #include <QList>
-#include <QPair>
 
 namespace LC::Snails
 {

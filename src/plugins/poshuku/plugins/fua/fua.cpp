@@ -115,7 +115,7 @@ namespace Fua
 		settings.endArray ();
 	}
 
-	const QList<QPair<QString, QString>>& FUA::GetBrowser2ID () const
+	const QList<std::pair<QString, QString>>& FUA::GetBrowser2ID () const
 	{
 		return Browser2ID_;
 	}
@@ -127,7 +127,7 @@ namespace Fua
 
 	namespace
 	{
-		QList<QPair<QString, QString>> LoadFromJson ()
+		QList<std::pair<QString, QString>> LoadFromJson ()
 		{
 			QFile file { ":/poshuku/fua/resources/data/substs.json" };
 			if (!file.open (QIODevice::ReadOnly))
@@ -140,7 +140,7 @@ namespace Fua
 
 			const auto& json = Util::ParseJson (&file, Q_FUNC_INFO);
 
-			QList<QPair<QString, QString>> result;
+			QList<std::pair<QString, QString>> result;
 
 			for (const auto& itemVar : json.toList ())
 			{
@@ -161,7 +161,7 @@ namespace Fua
 			return result;
 		}
 
-		QMap<QString, QString> MakeLookupMap (const QList<QPair<QString, QString>>& pairs)
+		QMap<QString, QString> MakeLookupMap (const QList<std::pair<QString, QString>>& pairs)
 		{
 			QMap<QString, QString> result;
 			for (const auto& pair : pairs)

@@ -126,7 +126,7 @@ namespace Xoox
 		struct Managers;
 		std::shared_ptr<Managers> Managers_;
 
-		QHash<ICLEntry*, QPair<QString, QString>> ExistingEntry2JoinConflict_;
+		QHash<ICLEntry*, std::pair<QString, QString>> ExistingEntry2JoinConflict_;
 
 		QAction *SelfVCardAction_;
 		QAction *PrivacyDialogAction_;

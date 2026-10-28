@@ -948,7 +948,7 @@ namespace LC::Azoth
 				return;
 
 			using Fun_t = bool (*) (const QDomNodeList&);
-			QList<QPair<QByteArray, Fun_t>> processors
+			QList<std::pair<QByteArray, Fun_t>> processors
 			{
 				{ "ShowRichImagesAsLinks", &ReplaceImgsWithLinks },
 				{ "LimitMaxImageSize", &LimitImagesSize }
@@ -1084,7 +1084,7 @@ namespace LC::Azoth
 				pos2smile.remove (i.key () + j);
 		}
 
-		QList<QPair<int, QString>> reversed;
+		QList<std::pair<int, QString>> reversed;
 		reversed.reserve (pos2smile.size ());
 		for (auto i = pos2smile.begin (); i != pos2smile.end (); ++i)
 			reversed.push_front ({ i.key (), i.value () });

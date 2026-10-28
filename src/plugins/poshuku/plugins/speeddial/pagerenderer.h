@@ -16,6 +16,6 @@ namespace LC::Poshuku::SpeedDial
 {
 	class ImageCache;
 
-	QByteArray MakePage (ImageCache& cache, const QList<QPair<QString, TopList_t>>& tables);
+	QByteArray MakePage (ImageCache& cache, const QList<std::pair<QString, TopList_t>>& tables);
 	QByteArray MakeEmptyTopList ();
 }

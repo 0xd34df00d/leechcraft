@@ -21,7 +21,7 @@ namespace LC::BitTorrent
 	class PiecesWidget : public QLabel
 	{
 		int PiecesCount_ = 1;
-		QVector<QPair<int, int>> TrueRanges_;
+		QVector<std::pair<int, int>> TrueRanges_;
 	public:
 		using QLabel::QLabel;
 

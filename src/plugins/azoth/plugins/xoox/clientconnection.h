@@ -109,7 +109,7 @@ namespace Xoox
 		FetchQueue *VersionQueue_;
 
 		QList<QXmppMessage> OfflineMsgQueue_;
-		QList<QPair<QString, PEPEventBase*>> InitialEventQueue_;
+		QList<std::pair<QString, PEPEventBase*>> InitialEventQueue_;
 	public:
 		typedef std::function<void (const QXmppVCardIq&)> VCardCallback_t;
 		typedef std::function<void (QXmppIq)> PacketCallback_t;
@@ -225,7 +225,7 @@ namespace Xoox
 
 		void handleRoomInvitation (const QString&, const QString&, const QString&);
 
-		void setKAParams (const QPair<int, int>&);
+		void setKAParams (const std::pair<int, int>&);
 		void handlePhotoHash ();
 		void handlePriorityChanged (int);
 

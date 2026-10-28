@@ -105,8 +105,8 @@ namespace Xoox
 		// IMUCPerms
 		MUCPerms_t GetPossiblePerms () const override;
 		MUCPerms_t GetPerms (const ICLEntry&) const override;
-		QPair<QByteArray, QByteArray> GetKickPerm () const override;
-		QPair<QByteArray, QByteArray> GetBanPerm () const override;
+		std::pair<QByteArray, QByteArray> GetKickPerm () const override;
+		std::pair<QByteArray, QByteArray> GetBanPerm () const override;
 		QByteArray GetAffName (const ICLEntry&) const override;
 		bool MayChangePerm (const ICLEntry&, const QByteArray&, const QByteArray&) const override;
 		void SetPerm (ICLEntry&, const QByteArray&, const QByteArray&, const QString&) override;

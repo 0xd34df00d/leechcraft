@@ -100,7 +100,7 @@ namespace LackMan
 		TabOpenRequested (tabClass, {});
 	}
 
-	void Plugin::TabOpenRequested (const QByteArray& tabClass, const QList<QPair<QByteArray, QVariant>>& props)
+	void Plugin::TabOpenRequested (const QByteArray& tabClass, const QList<std::pair<QByteArray, QVariant>>& props)
 	{
 		if (tabClass == "Lackman")
 		{

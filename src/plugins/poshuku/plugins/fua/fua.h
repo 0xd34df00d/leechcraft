@@ -39,7 +39,7 @@ namespace Fua
 		std::shared_ptr<QStandardItemModel> Model_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 
-		QList<QPair<QString, QString>> Browser2ID_;
+		QList<std::pair<QString, QString>> Browser2ID_;
 		QMap<QString, QString> BackLookup_;
 	public:
 		void Init (ICoreProxy_ptr);
@@ -55,7 +55,7 @@ namespace Fua
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		void Save () const;
-		const QList<QPair<QString, QString>>& GetBrowser2ID () const;
+		const QList<std::pair<QString, QString>>& GetBrowser2ID () const;
 		const QMap<QString, QString>& GetBackLookupMap () const;
 	public slots:
 		void initPlugin (QObject*);

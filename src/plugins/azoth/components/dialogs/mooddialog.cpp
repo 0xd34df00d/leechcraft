@@ -58,7 +58,7 @@ namespace Azoth
 		Ui_.Text_->setText (moodInfo.Text_);
 	}
 
-	QMap<QString, QPair<QVariant, QIcon>> MoodDialog::BuildHumanReadableList ()
+	QMap<QString, std::pair<QVariant, QIcon>> MoodDialog::BuildHumanReadableList ()
 	{
 		static const auto list = []
 		{
@@ -153,7 +153,7 @@ namespace Azoth
 			const auto& theme = XmlSettingsManager::Instance ().property ("MoodIcons").toString () + '/';
 			const auto rl = ResourcesManager::Instance ().GetResourceLoader (ResourcesManager::RLTMoodIconLoader);
 
-			QMap<QString, QPair<QVariant, QIcon>> list;
+			QMap<QString, std::pair<QVariant, QIcon>> list;
 			for (uint i = 0; i < sizeof (moodStr) / sizeof (moodStr [0]); ++i)
 			{
 				QString name (moodStr [i]);

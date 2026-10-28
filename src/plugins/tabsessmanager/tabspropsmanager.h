@@ -22,7 +22,7 @@ namespace LC::TabSessManager
 	class TabsPropsManager : public QObject
 	{
 	public:
-		using TabsProps_t = QList<QPair<QByteArray, QVariant>>;
+		using TabsProps_t = QList<std::pair<QByteArray, QVariant>>;
 	private:
 		QList<TabsProps_t> TabsPropsQueue_;
 		QList<int> PreferredWindowsQueue_;

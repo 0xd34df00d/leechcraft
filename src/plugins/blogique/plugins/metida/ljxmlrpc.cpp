@@ -257,7 +257,7 @@ namespace Metida
 
 	namespace
 	{
-		QPair<QDomElement, QDomElement> GetStartPart (const QString& name,
+		std::pair<QDomElement, QDomElement> GetStartPart (const QString& name,
 				QDomDocument doc)
 		{
 			QDomElement methodCall = doc.createElement ("methodCall");
@@ -296,7 +296,7 @@ namespace Metida
 			return member;
 		}
 
-		QPair<QDomElement, QDomElement> GetComplexMemberElement (const QString& nameVal,
+		std::pair<QDomElement, QDomElement> GetComplexMemberElement (const QString& nameVal,
 				const QString& typeVal, QDomDocument doc)
 		{
 			QDomElement member = doc.createElement ("member");
@@ -2239,7 +2239,7 @@ namespace Metida
 			QList<int> ids;
 			for (auto comment : ParseComments (document))
 			{
-				auto pairKey = qMakePair (comment.NodeId_, comment.ReplyId_);
+				auto pairKey = std::make_pair (comment.NodeId_, comment.ReplyId_);
 				if (!Id2CommentEntry_.contains (pairKey))
 				{
 					Id2CommentEntry_ [pairKey] = comment;

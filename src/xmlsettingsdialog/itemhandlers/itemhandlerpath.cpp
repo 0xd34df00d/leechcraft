@@ -41,7 +41,7 @@ namespace LC
 			if (def.isEmpty ())
 				return {};
 
-			static const QVector<QPair<QString, QString>> str2loc
+			static const QVector<std::pair<QString, QString>> str2loc
 			{
 				{ "DOCUMENTS", QStandardPaths::writableLocation (QStandardPaths::DocumentsLocation) },
 				{ "DOWNLOAD", QStandardPaths::writableLocation (QStandardPaths::DownloadLocation) },

@@ -101,7 +101,7 @@ namespace Azoth
 		 *
 		 * @sa IResourceSource::GetOptionsModel()
 		 */
-		virtual QList<QPair<QImage, QString>> GetReprImages (const QString& pack) const = 0;
+		virtual QList<std::pair<QImage, QString>> GetReprImages (const QString& pack) const = 0;
 
 		/** @brief Returns the data corresponding to the given smile.
 		 *

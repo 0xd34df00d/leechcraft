@@ -189,12 +189,12 @@ namespace LC::Aggregator::Parsers
 		return GetFirstNodeText (parent, {}, "comments"_qs).value_or (QString {});
 	}
 
-	QPair<double, double> GetGeoPoint (const QDomElement& parent)
+	std::pair<double, double> GetGeoPoint (const QDomElement& parent)
 	{
 		const auto& latStr = GetFirstNodeText (parent, NS::GeoRSSW3, "lat"_qs);
 		const auto& longStr = GetFirstNodeText (parent, NS::GeoRSSW3, "long"_qs);
 		if (latStr && longStr)
-			return QPair { latStr->toDouble (), longStr->toDouble () };
+			return std::pair { latStr->toDouble (), longStr->toDouble () };
 
 		if (const auto& pointStr = GetFirstNodeText (parent, NS::GeoRSSSimple, "point"_qs))
 		{

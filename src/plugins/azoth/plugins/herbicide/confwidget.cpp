@@ -24,7 +24,7 @@ namespace Herbicide
 
 		LoadSettings ();
 
-		const QList<QPair<QString, QStringList>> mathQuests
+		const QList<std::pair<QString, QStringList>> mathQuests
 		{
 			{ "(cos(x))'", { "-sin(x)" } },
 			{ QString::fromUtf8 ("e^(iπ)"), { "-1" } }

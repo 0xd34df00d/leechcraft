@@ -60,7 +60,7 @@ namespace SB2
 		QStandardItem* TryAddTC (const TabClassInfo&);
 		QStandardItem* CreateItem (const TabClassInfo&);
 
-		QPair<TabClassInfo, IHaveTabs*> FindTC (const QByteArray&) const;
+		std::pair<TabClassInfo, IHaveTabs*> FindTC (const QByteArray&) const;
 	public slots:
 		void handlePluginsAvailable ();
 

@@ -39,7 +39,7 @@ namespace LC::LHTR
 		QAction *FindAction_;
 		QAction *ReplaceAction_;
 
-		QList<QPair<QStringView, QAction*>> HtmlActions_;
+		QList<std::pair<QStringView, QAction*>> HtmlActions_;
 	public:
 		explicit RichEditorWidget (QWidget* = nullptr);
 

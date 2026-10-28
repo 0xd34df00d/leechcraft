@@ -208,7 +208,7 @@ namespace LC::Util
 	{
 	public:
 		using FieldGetter_t = detail::FieldGetter_t<T>;
-		using FieldsList_t = QVector<QPair<QByteArray, FieldGetter_t>>;
+		using FieldsList_t = QVector<std::pair<QByteArray, FieldGetter_t>>;
 	private:
 		const QVector<FieldGetter_t> Fields_;
 		const QHash<int, QByteArray> Roles_;

@@ -34,7 +34,7 @@ namespace HttHare
 		QMap<QString, QString> Headers_;
 
 		QByteArray ResponseLine_;
-		QList<QPair<QByteArray, QByteArray>> ResponseHeaders_;
+		QList<std::pair<QByteArray, QByteArray>> ResponseHeaders_;
 		QByteArray CookedRH_;
 		QByteArray ResponseBody_;
 

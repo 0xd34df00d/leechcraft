@@ -59,7 +59,7 @@ namespace LC::BitTorrent
 					ban.SetIP (idx.sibling (idx.row (), 0).data ().toString ());
 					if (ban.exec () == QDialog::Accepted)
 					{
-						BanPeers (*Session_, qMakePair (ban.GetStart (), ban.GetEnd ()));
+						BanPeers (*Session_, std::make_pair (ban.GetStart (), ban.GetEnd ()));
 						SaveFilter (*Session_);
 					}
 				});

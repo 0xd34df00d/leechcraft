@@ -40,7 +40,7 @@ namespace LMP
 
 			const auto pairs =
 			{
-				QPair<QString, QVariant> { "LMP/HasMediaInfo", true },
+				std::pair<QString, QVariant> { "LMP/HasMediaInfo", true },
 				{ "LMP/LocalPath", info.LocalPath_ },
 				{ "LMP/Artist", info.Artist_ },
 				{ "LMP/Album", info.Album_ },

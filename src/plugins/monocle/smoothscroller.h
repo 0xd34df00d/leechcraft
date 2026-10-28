@@ -25,7 +25,7 @@ namespace LC::Monocle
 		PagesView& View_;
 		QTimeLine& ScrollTimeline_;
 
-		QPair<SceneAbsolutePos, SceneAbsolutePos> ScrollPath_;
+		std::pair<SceneAbsolutePos, SceneAbsolutePos> ScrollPath_;
 	public:
 		explicit SmoothScroller (PagesView&, QObject* = nullptr);
 

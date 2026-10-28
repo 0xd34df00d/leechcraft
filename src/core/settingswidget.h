@@ -22,7 +22,7 @@ namespace LC
 
 		Ui::SettingsWidget Ui_;
 
-		QHash<QTreeWidgetItem*, QPair<IHaveSettings*, int>> Item2Page_;
+		QHash<QTreeWidgetItem*, std::pair<IHaveSettings*, int>> Item2Page_;
 	public:
 		using MatchesGetter_t = std::function<QHash<IHaveSettings*, QList<int>> ()>;
 	private:

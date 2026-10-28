@@ -150,7 +150,7 @@ namespace LC
 		if (winMode == "current")
 			return GetPreferredWindowIndex ();
 
-		QPair<int, int> currentMax { -1, 0 };
+		std::pair<int, int> currentMax { -1, 0 };
 		for (int i = 0; i < GetWindowsCount (); ++i)
 		{
 			const auto tm = Windows_ [i].TM_;

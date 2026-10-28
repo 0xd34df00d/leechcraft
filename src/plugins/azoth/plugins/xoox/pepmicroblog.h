@@ -11,7 +11,6 @@
 #include "pepeventbase.h"
 #include <QString>
 #include <QDateTime>
-#include <QPair>
 #include <QMap>
 #include <interfaces/azoth/isupportmicroblogs.h>
 

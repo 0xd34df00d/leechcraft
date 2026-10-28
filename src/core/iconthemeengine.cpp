@@ -65,7 +65,7 @@ IconThemeEngine& IconThemeEngine::Instance ()
 
 QIcon IconThemeEngine::GetIcon (const QString& actionIcon, const QString& actionIconOff)
 {
-	const auto& namePair = qMakePair (actionIcon, actionIconOff);
+	const auto& namePair = std::make_pair (actionIcon, actionIconOff);
 
 	{
 		QReadLocker locker { &IconCacheLock_ };

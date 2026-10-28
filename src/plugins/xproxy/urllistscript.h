@@ -53,7 +53,7 @@ namespace XProxy
 		void refresh ();
 	};
 
-	using ScriptEntry_t = QPair<QByteArray, Proxy>;
+	using ScriptEntry_t = std::pair<QByteArray, Proxy>;
 }
 }
 

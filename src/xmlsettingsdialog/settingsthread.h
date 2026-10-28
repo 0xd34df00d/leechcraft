@@ -24,7 +24,7 @@ namespace Util
 		Q_OBJECT
 
 		QMutex Mutex_;
-		QMap<Util::BaseSettingsManager*, QList<QPair<QString, QVariant>>> Pendings_;
+		QMap<Util::BaseSettingsManager*, QList<std::pair<QString, QVariant>>> Pendings_;
 	public:
 		using QObject::QObject;
 		~SettingsThread ();

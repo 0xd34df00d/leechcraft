@@ -123,9 +123,9 @@ namespace LC
 			return origSplit.join ("\n");
 		}
 
-		QMap<QObject*, QList<QPair<QString, QString>>> BuildGroups (const QObjectList& settables)
+		QMap<QObject*, QList<std::pair<QString, QString>>> BuildGroups (const QObjectList& settables)
 		{
-			QMap<QObject*, QList<QPair<QString, QString>>> result;
+			QMap<QObject*, QList<std::pair<QString, QString>>> result;
 			for (const auto obj : settables)
 			{
 				if (obj == Core::Instance ().GetCoreInstanceObject ())
@@ -143,7 +143,7 @@ namespace LC
 		const QObjectList& settables = Core::Instance ().GetPluginManager ()->GetAllCastableRoots<IHaveSettings*> ();
 
 		const auto& obj2groups = BuildGroups (settables);
-		QSet<QPair<QString, QString>> allGroups;
+		QSet<std::pair<QString, QString>> allGroups;
 		for (const auto& list : obj2groups)
 			allGroups += Util::AsSet (list);
 

@@ -62,7 +62,7 @@ namespace Snails
 		SetDefaultWidths (widths);
 	}
 
-	void ViewColumnsManager::SetSwaps (const QList<QPair<int, int>>& swaps)
+	void ViewColumnsManager::SetSwaps (const QList<std::pair<int, int>>& swaps)
 	{
 		Swaps_ = swaps;
 	}

@@ -55,7 +55,7 @@ namespace BitTorrent
 	class CachedStatusKeeper;
 	struct NewTorrentParams;
 
-	using BanRange_t = QPair<QString, QString>;
+	using BanRange_t = std::pair<QString, QString>;
 
 	class Core : public QAbstractItemModel
 	{

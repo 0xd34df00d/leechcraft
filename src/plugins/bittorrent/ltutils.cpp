@@ -7,8 +7,8 @@
  **********************************************************************/
 
 #include "ltutils.h"
+#include <utility>
 #include <QString>
-#include <QPair>
 #include <QSettings>
 #include <QCoreApplication>
 #include <QUrl>
@@ -40,7 +40,7 @@ namespace LC::BitTorrent
 			});
 	}
 
-	void BanPeers (libtorrent::session& session, const QPair<QString, QString>& peers, bool block)
+	void BanPeers (libtorrent::session& session, const std::pair<QString, QString>& peers, bool block)
 	{
 		auto filter = session.get_ip_filter ();
 		filter.add_rule (libtorrent::make_address (peers.first.toStdString ()),
@@ -73,7 +73,7 @@ namespace LC::BitTorrent
 	{
 		const auto& [v4, v6] = session.get_ip_filter ().export_filter ();
 
-		QList<QPair<BanRange_t, bool>> result;
+		QList<std::pair<BanRange_t, bool>> result;
 		for (const auto& range : v4)
 			result.push_back ({ GetBanRange (range), IsBlocked (range.flags) });
 		for (const auto& range : v6)

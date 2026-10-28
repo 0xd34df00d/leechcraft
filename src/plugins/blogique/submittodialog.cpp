@@ -54,9 +54,9 @@ namespace Blogique
 		return Model_;
 	}
 
-	QList<QPair<IAccount*, QString>> SubmitToDialog::GetPostingTargets () const
+	QList<std::pair<IAccount*, QString>> SubmitToDialog::GetPostingTargets () const
 	{
-		QList<QPair<IAccount*, QString>> result;
+		QList<std::pair<IAccount*, QString>> result;
 		for (int i = 0; i < Model_->rowCount (); ++i)
 		{
 			auto accItem = Model_->item (i, Account);
@@ -72,7 +72,7 @@ namespace Blogique
 			QString target;
 			if (ibp->GetFeatures () & IBloggingPlatform::BPFSelectablePostDestination)
 				target = targetItem->data (SelectTargetDelegate::TargetRole).toString ();
-			result << QPair { account, target };
+			result << std::pair { account, target };
 		}
 
 		return result;

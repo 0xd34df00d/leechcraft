@@ -17,9 +17,9 @@ namespace LC::BitTorrent
 {
 	namespace
 	{
-		QVector<QPair<int, int>> FindTrues (const libtorrent::bitfield& pieces)
+		QVector<std::pair<int, int>> FindTrues (const libtorrent::bitfield& pieces)
 		{
-			QVector<QPair<int, int>> result;
+			QVector<std::pair<int, int>> result;
 			if (pieces.empty ())
 				return result;
 

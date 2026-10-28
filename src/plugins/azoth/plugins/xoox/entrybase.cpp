@@ -270,13 +270,13 @@ namespace Xoox
 		return QVariant ();
 	}
 
-	QList<QPair<QString, QVariant>> EntryBase::GetVCardRepresentation () const
+	QList<std::pair<QString, QVariant>> EntryBase::GetVCardRepresentation () const
 	{
 		Account_->GetClientConnection ()->FetchVCard (GetJID ());
 
 		const auto vcard = GetVCard ();
 
-		QList<QPair<QString, QVariant>> result
+		QList<std::pair<QString, QVariant>> result
 		{
 			{ tr ("Photo"), QImage::fromData (vcard.photo ()) },
 			{ "JID", vcard.from () },

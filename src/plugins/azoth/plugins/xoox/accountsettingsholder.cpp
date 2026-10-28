@@ -26,7 +26,7 @@ namespace Xoox
 	, ReconnectScheduled_ (false)
 	, Account_ (parent)
 	, Port_ (-1)
-	, KAParams_ (qMakePair (90, 60))
+	, KAParams_ (std::make_pair (90, 60))
 	, FileLogEnabled_ (false)
 	, Priority_ (5)
 	, TLSMode_ (QXmppConfiguration::TLSEnabled)
@@ -188,7 +188,7 @@ namespace Xoox
 		if (!pass.isNull ())
 			Account_->GetParentProtocol ()->GetProxyObject ()->SetPassword (pass, Account_);
 
-		SetKAParams (qMakePair (w->GetKAInterval (), w->GetKATimeout ()));
+		SetKAParams (std::make_pair (w->GetKAInterval (), w->GetKATimeout ()));
 
 		emit accountSettingsChanged ();
 	}
@@ -283,12 +283,12 @@ namespace Xoox
 		emit accountSettingsChanged ();
 	}
 
-	QPair<int, int> AccountSettingsHolder::GetKAParams () const
+	std::pair<int, int> AccountSettingsHolder::GetKAParams () const
 	{
 		return KAParams_;
 	}
 
-	void AccountSettingsHolder::SetKAParams (const QPair<int, int>& params)
+	void AccountSettingsHolder::SetKAParams (const std::pair<int, int>& params)
 	{
 		if (params == KAParams_)
 			return;

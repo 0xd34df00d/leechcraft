@@ -54,7 +54,7 @@ namespace LMP
 
 	bool CompareArtists (QString, QString, bool withoutThe);
 
-	QPair<QString, QColor> GetRuleSymbol (const Entity&);
+	std::pair<QString, QColor> GetRuleSymbol (const Entity&);
 
 	QString FormatDateTime (const QDateTime& datetime);
 

@@ -652,7 +652,7 @@ namespace Snails
 		Util::Sequence (this, future) >>
 				Util::Visitor
 				{
-					[=] (QPair<int, int> counts) { HandleMessageCountFetched (counts.first, counts.second, folder); },
+					[=] (std::pair<int, int> counts) { HandleMessageCountFetched (counts.first, counts.second, folder); },
 					Util::Visitor { [] (auto e) { qWarning () << Q_FUNC_INFO << e.what (); } }
 				};
 	}

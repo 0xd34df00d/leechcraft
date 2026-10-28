@@ -68,7 +68,7 @@ namespace SvcAuth
 		using RequestQueue_t = QList<std::function<void (QString)>> ;
 		using RequestQueue_ptr = RequestQueue_t*;
 
-		using PrioRequestQueue_t = QList<QPair<std::function<void (QString)>, QueuePriority>>;
+		using PrioRequestQueue_t = QList<std::pair<std::function<void (QString)>, QueuePriority>>;
 		using PrioRequestQueue_ptr = PrioRequestQueue_t*;
 
 		using ScheduleGuard_t = Util::DefaultScopeGuard;

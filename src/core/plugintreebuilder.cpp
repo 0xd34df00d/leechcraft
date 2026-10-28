@@ -212,9 +212,9 @@ namespace LC
 		}
 	}
 
-	QMap<PluginTreeBuilder::Edge_t, QPair<PluginTreeBuilder::Vertex_t, PluginTreeBuilder::Vertex_t>> PluginTreeBuilder::MakeEdges ()
+	QMap<PluginTreeBuilder::Edge_t, std::pair<PluginTreeBuilder::Vertex_t, PluginTreeBuilder::Vertex_t>> PluginTreeBuilder::MakeEdges ()
 	{
-		QSet<QPair<Vertex_t, Vertex_t>> depVertices;
+		QSet<std::pair<Vertex_t, Vertex_t>> depVertices;
 		boost::graph_traits<Graph_t>::vertex_iterator vi, vi_end;
 		for (boost::tie (vi, vi_end) = boost::vertices (Graph_); vi != vi_end; ++vi)
 		{
@@ -230,19 +230,19 @@ namespace LC
 				if (fInter.size ())
 				{
 					Graph_ [*vi].UnfulfilledFeatureDeps_.subtract (fInter);
-					depVertices << qMakePair (*vi, *vj);
+					depVertices << std::make_pair (*vi, *vj);
 				}
 
 				const QSet<QByteArray> pInter = QSet<QByteArray> (pdeps).intersect (Graph_ [*vj].P2PProvides_);
 				if (pInter.size ())
 				{
 					Graph_ [*vi].UnfulfilledP2PDeps_.subtract (pInter);
-					depVertices << qMakePair (*vi, *vj);
+					depVertices << std::make_pair (*vi, *vj);
 				}
 			}
 		}
 
-		QMap<Edge_t, QPair<Vertex_t, Vertex_t>> result;
+		QMap<Edge_t, std::pair<Vertex_t, Vertex_t>> result;
 		for (const auto& pair : depVertices)
 			result [boost::add_edge (pair.first, pair.second, Graph_).first] = pair;
 		return result;

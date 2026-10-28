@@ -10,7 +10,7 @@
 
 #include <cstdint>
 #include <string>
-#include <QPair>
+#include <utility>
 #include <libtorrent/fwd.hpp>
 #include <libtorrent/units.hpp>
 
@@ -28,8 +28,8 @@ namespace LC::BitTorrent
 {
 	void AddPeer (const libtorrent::torrent_handle& handle, const QString& ip, unsigned short port);
 
-	using BanRange_t = QPair<QString, QString>;
-	using BanList_t = QList<QPair<BanRange_t, bool>>;
+	using BanRange_t = std::pair<QString, QString>;
+	using BanList_t = QList<std::pair<BanRange_t, bool>>;
 
 	void BanPeers (libtorrent::session&, const BanRange_t&, bool block = true);
 	BanList_t GetFilter (const libtorrent::session&);

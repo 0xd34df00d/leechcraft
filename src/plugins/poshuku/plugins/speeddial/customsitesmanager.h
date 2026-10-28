@@ -18,7 +18,7 @@ class QStandardItemModel;
 
 namespace LC::Poshuku::SpeedDial
 {
-	typedef QPair<QString, QUrl> Addr_t;
+	typedef std::pair<QString, QUrl> Addr_t;
 	typedef QList<Addr_t> AddrList_t;
 
 	class CustomSitesManager : public QObject

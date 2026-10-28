@@ -64,7 +64,7 @@ private:
 	static bool registerShortcut(quint32 nativeKey, quint32 nativeMods);
 	static bool unregisterShortcut(quint32 nativeKey, quint32 nativeMods);
 
-	static QHash<QPair<quint32, quint32>, QxtGlobalShortcut*> shortcuts;
+	static QHash<std::pair<quint32, quint32>, QxtGlobalShortcut*> shortcuts;
 };
 
 #endif // QXTGLOBALSHORTCUT_P_H

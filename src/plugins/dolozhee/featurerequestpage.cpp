@@ -48,7 +48,7 @@ namespace Dolozhee
 		return Ui_.Description_->toPlainText ();
 	}
 
-	QList<QPair<QString, QString>> FeatureRequestPage::GetReportSections () const
+	QList<std::pair<QString, QString>> FeatureRequestPage::GetReportSections () const
 	{
 		return { { "Description", Ui_.Description_->toPlainText () } };
 	}
