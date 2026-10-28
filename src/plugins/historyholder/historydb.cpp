@@ -179,10 +179,7 @@ namespace HistoryHolder
 
 		const auto& historyId = Util::GetLastId (InsertHistory_);
 
-		auto tags = entity.Additional_ [" Tags"].value<QList<TagId>> ();
-		if (tags.isEmpty ())
-			tags.push_back ({});
-		AssociateTags (historyId, AddTags (tags));
+		AssociateTags (historyId, AddTags (entity.Additional_ [" Tags"].value<QList<TagId>> ()));
 
 		InsertEntity_.bindValue (":entryId", historyId);
 		InsertEntity_.bindValue (":entity", SerializeEntity (entity));
