@@ -16,10 +16,11 @@
 #include <QUrl>
 #include <QSqlQueryModel>
 #include <QtDebug>
-#include <util/structuresops.h>
 #include <util/sys/paths.h>
 #include <util/db/dblock.h>
 #include <util/db/util.h>
+#include <util/sll/prelude.h>
+#include <interfaces/structures.h>
 #include <interfaces/core/itagsmanager.h>
 
 namespace LC
@@ -49,14 +50,67 @@ namespace HistoryHolder
 		LoadTags ();
 	}
 
+	namespace
+	{
+		class HistoryModel final : public QSqlQueryModel
+		{
+			const ITagsManager& TM_;
+		public:
+			enum Column
+			{
+				Title,
+				Timestamp,
+				Tags,
+			};
+
+			HistoryModel (const QSqlDatabase& db, const ITagsManager& tm)
+			: TM_ { tm }
+			{
+				setQuery (QSqlQuery { Util::LoadQuery ("historyholder", "select_history"), db });
+				if (lastError ().isValid ())
+					Util::DBLock::DumpError (lastError ());
+			}
+
+			QVariant data (const QModelIndex& index, int role) const override
+			{
+				if (role == +CustomDataRoles::Tags)
+					return QVariant::fromValue (GetTagIds (index.row ()));
+
+				if (role == Qt::DisplayRole && index.column () == Tags)
+					return TM_.JoinIDs (GetTagIds (index.row ()));
+
+				return QSqlQueryModel::data (index, role);
+			}
+
+			QVariant headerData (int section, Qt::Orientation orientation, int role) const override
+			{
+				if (orientation != Qt::Horizontal || role != Qt::DisplayRole)
+					return QSqlQueryModel::headerData (section, orientation, role);
+
+				switch (section)
+				{
+				case Title:
+					return HistoryDB::tr ("Title");
+				case Timestamp:
+					return HistoryDB::tr ("Date");
+				case Tags:
+					return HistoryDB::tr ("Tags");
+				}
+				return {};
+			}
+		private:
+			QList<TagId> GetTagIds (int row) const
+			{
+				// the separator is the one select_history.sql passes to GROUP_CONCAT()
+				const auto& joined = QSqlQueryModel::data (index (row, Tags)).toString ();
+				return Util::Map (joined.split (';', Qt::SkipEmptyParts), [] (const QString& id) { return TagId { id }; });
+			}
+		};
+	}
+
 	std::shared_ptr<QAbstractItemModel> HistoryDB::CreateModel () const
 	{
-		auto model = std::make_shared<QSqlQueryModel> ();
-
-		auto selectHistory = QSqlQuery { DB_ };
-		selectHistory.prepare (Util::LoadQuery ("historyholder", "select_history"));
-		model->setQuery (std::move (selectHistory));
-		return model;
+		return std::make_shared<HistoryModel> (DB_, *TM_);
 	}
 
 	void HistoryDB::Add (const Entity& entity)
