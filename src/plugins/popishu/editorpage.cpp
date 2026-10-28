@@ -760,6 +760,7 @@ namespace Popishu
 		action->setData (filePath);
 		connect (action,
 				&QAction::triggered,
+				this,
 				[this, filePath]
 				{
 					if (!QFile::exists (filePath))

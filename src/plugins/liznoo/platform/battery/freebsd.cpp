@@ -22,7 +22,7 @@ namespace LC::Liznoo::Battery
 	{
 		auto timer = new QTimer { this };
 		timer->start (10 * 1000);
-		timer->callOnTimeout ([this] { Update (); });
+		timer->callOnTimeout (this, [this] { Update (); });
 	}
 
 	void FreeBSD::Update ()
