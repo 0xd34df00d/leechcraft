@@ -7,7 +7,6 @@ LC_DEFINE_PLUGIN (
 		historyholder.cpp
 		findproxy.cpp
 		historydb.cpp
-		historyentry.cpp
 	RESOURCES historyholderresources.qrc
 	QT_COMPONENTS Concurrent Gui Sql
 	INSTALL_SHARE

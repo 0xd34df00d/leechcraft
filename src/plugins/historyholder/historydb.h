@@ -33,7 +33,6 @@ namespace HistoryHolder
 		QSqlQuery InsertHistory_;
 		QSqlQuery InsertTags_;
 		QSqlQuery InsertTagsMapping_;
-		QSqlQuery InsertEntity_;
 
 		QMap<QString, int> Tags_;
 	public:

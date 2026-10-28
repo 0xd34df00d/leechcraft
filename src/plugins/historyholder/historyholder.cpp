@@ -12,7 +12,6 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ipluginsmanager.h>
-#include "historyentry.h"
 #include "findproxy.h"
 #include "historydb.h"
 

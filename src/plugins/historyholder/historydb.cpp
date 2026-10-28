@@ -10,7 +10,6 @@
 #include <QFile>
 #include <QSqlQuery>
 #include <QSqlError>
-#include <QDataStream>
 #include <QDir>
 #include <QSettings>
 #include <QCoreApplication>
@@ -22,7 +21,6 @@
 #include <util/db/dblock.h>
 #include <util/db/util.h>
 #include <interfaces/core/itagsmanager.h>
-#include "historyentry.h"
 
 namespace LC
 {
@@ -58,13 +56,6 @@ namespace HistoryHolder
 		auto selectHistory = QSqlQuery { DB_ };
 		selectHistory.prepare (Util::LoadQuery ("historyholder", "select_history"));
 		model->setQuery (std::move (selectHistory));
-
-		/* The following roles should also be handled by the model:
-		 *
-		 * RoleTags
-		 * RoleControls
-		 */
-
 		return model;
 	}
 
@@ -85,7 +76,7 @@ namespace HistoryHolder
 
 		try
 		{
-			for (const auto& table : QStringList { "history", "entities", "tags", "tags_mapping" })
+			for (const auto& table : QStringList { "history", "tags", "tags_mapping" })
 				Util::RunQuery (DB_, "historyholder", "create_" + table);
 		}
 		catch (const std::exception& e)
@@ -109,9 +100,6 @@ namespace HistoryHolder
 
 		InsertTagsMapping_ = QSqlQuery { DB_ };
 		InsertTagsMapping_.prepare (loadQuery ("insert_tags_mapping"));
-
-		InsertEntity_ = QSqlQuery { DB_ };
-		InsertEntity_.prepare (loadQuery ("insert_entity"));
 	}
 
 	void HistoryDB::LoadTags ()
@@ -156,16 +144,6 @@ namespace HistoryHolder
 
 			return stren;
 		}
-
-		QByteArray SerializeEntity (const Entity& e)
-		{
-			QByteArray result;
-
-			QDataStream ostr { &result, QIODevice::ReadWrite };
-			ostr << e;
-
-			return result;
-		}
 	}
 
 	void HistoryDB::Add (const Entity& entity, const QDateTime& ts)
@@ -180,9 +158,6 @@ namespace HistoryHolder
 		const auto& historyId = Util::GetLastId (InsertHistory_);
 
 		AssociateTags (historyId, AddTags (entity.Additional_ [" Tags"].value<QList<TagId>> ()));
-
-		InsertEntity_.bindValue (":entryId", historyId);
-		InsertEntity_.bindValue (":entity", SerializeEntity (entity));
 
 		lock.Good ();
 	}
