@@ -3,14 +3,16 @@
 Three files drive every Jenkins job of the project:
 
 - `Jenkinsfile`: the build logic. `PROFILE=quick` builds the primary distro with the primary compiler and, when
-  green, triggers the job named by `DOWNSTREAM`. `PROFILE=full` builds every distro under `tools/docker/base`
+  green, triggers the job named by `DOWNSTREAM`; a push that touched the images triggers the image job instead, before
+  the build, so that a build the push broke on the old image does not hold the rebuild back. `PROFILE=full` builds
+  every distro under `tools/docker/base`
   with every compiler in `COMPILERS` that the distro's image ships in at least the `MINIMUM` version, one cell
   at a time, and also publishes, per compiler, one warnings result over all its cells with repeats dropped, and one
   badge per cell.
   `SKIP_CELLS` leaves cells out; the build description lists what was skipped and why.
 - `images.Jenkinsfile`: the image rebuilds. Every distro under `tools/docker/base`, or those in `DISTROS`, through
-  `tools/docker/buildimage.sh`; an image whose packages changed is pushed to the registry and, when any changed,
-  `DOWNSTREAM` runs against the new set.
+  `tools/docker/buildimage.sh`; an image that differs from the last pushed one is pushed to the registry and, when
+  any changed, `DOWNSTREAM` runs against the new set.
 - `jobs.groovy`: the job shells. Which jobs exist, which script and profile each runs, its triggers, parameters
   and retention. The `ci-seed` job applies it on every push.
 
@@ -114,11 +116,14 @@ repository besides itself, and the only thing it fetches on its own is that comm
 
 `leechcraft-images` runs `tools/docker/buildimage.sh <distro> <state dir>` for every distro under `tools/docker/base`
 (or those in `DISTROS`), daily at 4 am US Central time and whenever the quick job sees a push touch
-`tools/docker/base/<distro>`, `tools/packaging.ref` or the script itself; such a push rebuilds the touched distros
+`tools/docker/base/<distro>`, `tools/packaging.ref` or the script itself, which it does before its own build, since a
+push that needs the new image fails against the old one; such a push rebuilds the touched distros
 only, or every image when the pin or the script moved, and triggers the full build afterwards in any case
 (`ALWAYS_TRIGGER`). The script rebuilds the image from scratch
-(`--pull --no-cache`), lists the packages of the previous image before and of the new one after, and writes the list,
-the diff, the versions of gcc, clang, Qt and Boost, as `old → new` for one the rebuild moved, and a verdict, `changed` or `unchanged`, into the state directory, which the job archives;
+(`--pull --no-cache`), with a hash of the build context and arguments as a label, lists the packages of the previous
+image and of the last pushed one before and of the new one after, and writes the list,
+the diff, the versions of gcc, clang, Qt and Boost, as `old → new` for one the rebuild moved, and two verdicts, `changed` or `unchanged` by packages or by label
+against the previous image and against the pushed one, into the state directory, which the job archives;
 the Debian and Fedora images also get their `packages` stage exported there, of which everything but the debug symbol
 packages is archived. The diff is the first thing to read when
 a cell breaks after a rebuild. The distros build concurrently under one `lc-build` lock, so no compile shares the
@@ -126,13 +131,15 @@ machine with an image build, yet the lock is held for the longest image build ra
 a distro whose build fails keeps its previous image and fails the run without stopping the others. The packages are listed through dpkg, rpm, pacman, apk or the Portage database; an image with
 none of them gets the verdict `unknown`, which counts as changed for the push and the trigger and keeps the run
 unstable until `buildimage.sh` has learnt the package manager, so a new distro never hides behind `unchanged`.
-An image whose packages changed is pushed to the registry (`PUSH`, with the credentials named by
+An image that differs from the last pushed one is pushed to the registry (`PUSH`, with the credentials named by
 `REGISTRY_CREDENTIALS`) as soon as it is built, while the others still build: a push is a minute of single-core
-compression per image, so pushing them in a row after the last build cost as much again as the builds. The login of the
+compression per image, so pushing them in a row after the last build cost as much again as the builds. The pushed image
+keeps the tag `leechcraft/ci_<distro>:pushed` on the agent as the baseline of that comparison: the previous image is the
+wrong one once a push failed or a run did not push, and would hide a stale registry behind `unchanged`. The login of the
 run lives in a docker config directory of the workspace and goes away with the run. When any image changed, or
 `ALWAYS_TRIGGER` is set, `DOWNSTREAM` runs as soon as the last image is done. The run ends by pruning
 what the rebuilds left untagged and the build cache that even a `--no-cache` build writes, and its description lists
-every distro's verdict and toolchain versions. Mail goes to `NOTIFY` on a change of status only.
+every distro's verdict, whether it was pushed, and its toolchain versions. Mail goes to `NOTIFY` on a change of status only.
 
 The matrix job `CI-base-images` did the same with a shell step edited in the UI; once the pipeline has had a green
 run, disable or delete it, or both will rebuild every day.

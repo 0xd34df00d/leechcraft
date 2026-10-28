@@ -57,7 +57,7 @@ def ciJob(Map opts = [:], String name, String profile, String desc) {
         stringParam 'SKIP_CELLS', opts.skip ?: '', 'Comma-separated cells to leave out, e.g. debian_experimental-clang'
         stringParam 'DOWNSTREAM', opts.downstream ?: '', 'Job to trigger after a green build; empty for none'
         stringParam 'IMAGES', opts.images ?: '',
-                    'Job that rebuilds the images; triggered instead of DOWNSTREAM when the push touched them. Empty for none'
+                    'Job that rebuilds the images; triggered before the build, instead of DOWNSTREAM, when the push touched them. Empty for none'
         stringParam 'NOTIFY', NOTIFY, 'Mail recipients on failures and on status changes; empty disables mail'
     }
 }
@@ -73,7 +73,7 @@ lcPipeline(IMAGES_JOB, 'tools/ci/images.Jenkinsfile',
            'The CI images: rebuilt from scratch daily and after a push that touches them; a change triggers the full build.',
            cron: 'TZ=America/Chicago\nH 4 * * *', keep: 60, keepArtifacts: 7) {
     stringParam 'DISTROS', '', 'Comma-separated distros to rebuild; empty for every one under tools/docker/base'
-    booleanParam 'PUSH', true, 'Push the images whose packages changed to the registry'
+    booleanParam 'PUSH', true, 'Push the images that differ from the last pushed ones to the registry'
     stringParam 'DOWNSTREAM', 'leechcraft-full', 'Job to trigger when an image changed; empty for none'
     booleanParam 'ALWAYS_TRIGGER', false, 'Trigger DOWNSTREAM even when no image changed'
     stringParam 'REGISTRY_CREDENTIALS', REGISTRY_CREDENTIALS, 'Username/password credentials for the registry'

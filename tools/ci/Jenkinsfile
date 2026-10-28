@@ -3,8 +3,9 @@
 // Job-level configuration (triggers, parameters, retention) lives in jobs.groovy so that several jobs can
 // share this file; the PROFILE parameter picks the cells to build:
 //   quick   the primary distro with the primary compiler; a warning its reference build did not have makes it
-//           unstable; unless it failed, triggers the DOWNSTREAM job, or the IMAGES job when the push touched the
-//           images, which rebuilds them and triggers DOWNSTREAM itself
+//           unstable; unless it failed, triggers the DOWNSTREAM job. A push that touched the images triggers the
+//           IMAGES job instead, before the build and whatever becomes of it; that job rebuilds them and triggers
+//           DOWNSTREAM itself
 //   full    every distro under tools/docker/base with every compiler in COMPILERS that the distro's image
 //           ships in at least the MINIMUM version, using a libstdc++ at least as new as the gcc floor, one
 //           cell at a time
@@ -189,17 +190,15 @@ List<String> excluded = (params.SKIP_CELLS ?: '').tokenize(', ')
 timeout(time: 6, unit: 'HOURS') {
     try {
         if (profile == 'quick') {
-            stage(cellName(PRIMARY)) {
-                node(AGENT) {
-                    checkout scm
-                    discoverReferenceBuild(requiredResult: 'UNSTABLE')
-                    grade(runCell(PRIMARY, historical: true, gated: true))
-                }
-            }
-            if (currentBuild.currentResult in ['SUCCESS', 'UNSTABLE']) {
-                // A push that touches the images gets them rebuilt first; the image job then triggers DOWNSTREAM itself,
-                // against the new images, where this build could only have run it against the stale ones.
-                List<String> stale = params.IMAGES ? staleDistros(changedPaths()) : null
+            List<String> stale = null
+            node(AGENT) {
+                checkout scm
+                // The changes are known once the checkout has run. A push that touches the images gets them rebuilt
+                // before the cell runs and whatever the cell then makes of the old image: a push that needs the new
+                // image fails against the old one, and that failure must not keep the old one around. The image job
+                // triggers DOWNSTREAM itself, against the new images, where this build could only have run it against
+                // the stale ones.
+                stale = params.IMAGES ? staleDistros(changedPaths()) : null
                 if (stale != null) {
                     stage("Trigger ${params.IMAGES}") {
                         catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
@@ -208,11 +207,16 @@ timeout(time: 6, unit: 'HOURS') {
                                                booleanParam(name: 'ALWAYS_TRIGGER', value: true)]
                         }
                     }
-                } else if (params.DOWNSTREAM) {
-                    stage("Trigger ${params.DOWNSTREAM}") {
-                        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                            build job: params.DOWNSTREAM, wait: false
-                        }
+                }
+                stage(cellName(PRIMARY)) {
+                    discoverReferenceBuild(requiredResult: 'UNSTABLE')
+                    grade(runCell(PRIMARY, historical: true, gated: true))
+                }
+            }
+            if (stale == null && params.DOWNSTREAM && currentBuild.currentResult in ['SUCCESS', 'UNSTABLE']) {
+                stage("Trigger ${params.DOWNSTREAM}") {
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                        build job: params.DOWNSTREAM, wait: false
                     }
                 }
             }

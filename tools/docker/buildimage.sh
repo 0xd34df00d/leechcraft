@@ -3,14 +3,17 @@
 #
 # Rebuilds the CI image of a distro from scratch (no layer cache, base image pulled afresh) from
 # tools/docker/base/<distro>/Dockerfile, with the distro's directory as the build context, and tags it
-# <IMAGE_PREFIX><distro>:latest. Before the build it lists the packages of the image that holds the tag so far, after
-# the build those of the new one, and writes into the state directory:
+# <IMAGE_PREFIX><distro>:latest, labelled with a hash of the build context and arguments. Before the build it lists
+# the packages of the image that holds the tag so far and of the last pushed image, which whoever pushes tags
+# <IMAGE_PREFIX><distro>:pushed, after the build those of the new one, and writes into the state directory:
 #   <distro>.manifest   the new image's packages, one "name version" per line
 #   <distro>.diff       what changed against the previous image (empty for none, whole list for a first image)
 #   <distro>.toolchain  the versions of gcc, clang, Qt and Boost in the image, or "missing"; "name old → new" for one
 #                       the previous image had in another version
-#   <distro>.status     changed | unchanged | unknown: whether the package list differs from the previous image's;
-#                       unknown when a list could not be taken, which counts as changed downstream
+#   <distro>.status     changed | unchanged | unknown: whether the packages or the context differ from the previous
+#                       image's; unknown when a list could not be taken, which counts as changed downstream
+#   <distro>.publish    the same against the last pushed image, which is what decides a push: the previous image is
+#                       the wrong baseline once a push failed or a run did not push
 #   packages/<distro>/  what the Dockerfile's `packages` stage produces, for Dockerfiles that have one
 # The diff is what to read when a cell breaks the morning after a rebuild.
 # Exit status: 0 when the image was built, 1 when the build failed (the previous image keeps its tag), 3 when the
@@ -34,7 +37,10 @@ build_args=
 if grep -q '^ARG PACKAGING_REF$' "$dockerfile"; then
 	build_args="--build-arg PACKAGING_REF=$packaging_ref"
 fi
-image=${IMAGE_PREFIX:-leechcraft/ci_}$distro:latest
+repo=${IMAGE_PREFIX:-leechcraft/ci_}$distro
+image=$repo:latest
+pushed_image=$repo:pushed
+context_label=org.leechcraft.ci.context
 
 # One "name version" line per installed package, whichever package manager the image has. The listing is captured
 # before sorting, so that a failing docker run fails the function rather than vanishing behind the pipe; an empty
@@ -88,49 +94,101 @@ mark_changed()
 	done
 }
 
-previous=$(docker image inspect --format '{{.Id}}' "$image" 2>/dev/null || true)
-# A listing that fails leaves the verdict unknown, which the job treats as changed and, through the exit status, as
+# Everything the image is built from besides its base image, the files of the build context and the build arguments,
+# hashed for the label: a change the package list does not show, a Dockerfile edit or a packaging commit keeping the
+# version, is thus visible on the image itself, whichever image it is compared with later.
+context_hash()
+{
+	{
+		find "docker/base/$distro" -type f | LC_ALL=C sort | while read -r file; do
+			printf '%s\n' "$file"
+			cat "$file"
+		done
+		printf '%s\n' "$build_args"
+	} | sha256sum | cut -d ' ' -f 1
+}
+
+image_id()
+{
+	docker image inspect --format '{{ .Id }}' "$1" 2>/dev/null || true
+}
+
+# empty for an image built before the label existed, which thus counts as changed
+context_of()
+{
+	docker image inspect --format "{{ with .Config.Labels }}{{ index . \"$context_label\" }}{{ end }}" "$1" 2>/dev/null || true
+}
+
+# changed | unchanged: whether the new image differs from the baseline image given, in the packages listed in the file
+# given or in the context; no baseline is a change
+compare()
+{
+	if [ -z "$1" ] || ! cmp -s "$2" "$state/$distro.manifest" || [ "$(context_of "$1")" != "$context" ]; then
+		echo changed
+	else
+		echo unchanged
+	fi
+}
+
+context=$(context_hash)
+previous=$(image_id "$image")
+pushed=$(image_id "$pushed_image")
+# A listing that fails leaves the verdicts unknown, which the job treats as changed and, through the exit status, as
 # unstable, so that a package manager this script does not know gets noticed rather than hidden behind "unchanged".
 comparable=true
 : > "$state/$distro.previous"
+: > "$state/$distro.pushed"
 : > "$state/$distro.toolchain.previous"
 if [ -n "$previous" ]; then
 	manifest "$previous" > "$state/$distro.previous" || comparable=false
 	toolchain "$previous" > "$state/$distro.toolchain.previous" || : > "$state/$distro.toolchain.previous"
 fi
+if [ -n "$pushed" ] && [ "$pushed" = "$previous" ]; then
+	cp "$state/$distro.previous" "$state/$distro.pushed"
+elif [ -n "$pushed" ]; then
+	manifest "$pushed" > "$state/$distro.pushed" || comparable=false
+fi
 
-docker build --pull --no-cache --network=host $build_args -f "$dockerfile" -t "$image" "docker/base/$distro" || exit 1
+docker build --pull --no-cache --network=host $build_args --label "$context_label=$context" \
+	-f "$dockerfile" -t "$image" "docker/base/$distro" || exit 1
 
 status=0
 manifest "$image" > "$state/$distro.manifest" || comparable=false
 current=$(toolchain "$image") || status=3
 printf '%s\n' "$current" | mark_changed "$state/$distro.toolchain.previous" > "$state/$distro.toolchain"
 if $comparable; then
-	if cmp -s "$state/$distro.previous" "$state/$distro.manifest"; then
-		verdict=unchanged
-	else
-		verdict=changed
-	fi
+	verdict=$(compare "$previous" "$state/$distro.previous")
+	publish=$(compare "$pushed" "$state/$distro.pushed")
 	diff "$state/$distro.previous" "$state/$distro.manifest" > "$state/$distro.diff" || true
 else
 	verdict=unknown
+	publish=unknown
 	status=3
 	: > "$state/$distro.diff"
 fi
 echo $verdict > "$state/$distro.status"
-rm -f "$state/$distro.previous" "$state/$distro.toolchain.previous"
+echo $publish > "$state/$distro.publish"
+rm -f "$state/$distro.previous" "$state/$distro.pushed" "$state/$distro.toolchain.previous"
 
 toolchain_summary=$(tr '\n' ',' < "$state/$distro.toolchain" | sed 's/,$//; s/,/, /g')
 if [ $verdict = unknown ]; then
 	echo "=== $distro: the packages could not be listed, so the image counts as changed; $toolchain_summary"
 else
-	echo "=== $distro: $(wc -l < "$state/$distro.manifest") packages, $verdict since the previous image; $toolchain_summary"
+	echo "=== $distro: $(wc -l < "$state/$distro.manifest") packages, $verdict since the previous image, $publish since the pushed one; $toolchain_summary"
 fi
 if [ -z "$previous" ]; then
 	echo "=== $distro: no previous image to compare with"
-elif [ -s "$state/$distro.diff" ]; then
-	echo "=== $distro: package changes (< previous image, > new image)"
-	cat "$state/$distro.diff"
+else
+	if [ "$(context_of "$previous")" != "$context" ]; then
+		echo "=== $distro: the build context or arguments changed since the previous image"
+	fi
+	if [ -s "$state/$distro.diff" ]; then
+		echo "=== $distro: package changes (< previous image, > new image)"
+		cat "$state/$distro.diff"
+	fi
+fi
+if [ -z "$pushed" ]; then
+	echo "=== $distro: no pushed image to compare with"
 fi
 
 # Anything the `packages` stage produces (the qxmpp packages of the Debian and Fedora images) is exported for the
