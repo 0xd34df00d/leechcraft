@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "pslhandler.h"
-#include <QUrl>
+#include <algorithm>
 #include <util/sll/tokenize.h>
 
 namespace LC::Poshuku::CleanWeb
@@ -15,11 +15,6 @@ namespace LC::Poshuku::CleanWeb
 	PslHandler::PslHandler (QStringView contents)
 	: Tlds_ { ParseFile (contents) }
 	{
-	}
-
-	int PslHandler::GetTldCount (const QUrl& url) const
-	{
-		return GetTldCountHost (url.host ().toLower ());
 	}
 
 	int PslHandler::GetTldCountHost (QStringView host) const
@@ -56,6 +51,22 @@ namespace LC::Poshuku::CleanWeb
 
 		// we've come this far, so the whole domain is the TLD
 		return components.size ();
+	}
+
+	QString PslHandler::GetRegistrableDomain (QStringView host) const
+	{
+		const auto& lowerHost = host.toString ().toLower ();
+		const auto& labels = QStringView { lowerHost }.split ('.', Qt::SkipEmptyParts);
+		const auto count = std::min<qsizetype> (labels.size (), GetTldCountHost (lowerHost) + 1);
+
+		QString result;
+		for (const auto label : labels.last (count))
+		{
+			if (!result.isEmpty ())
+				result += '.';
+			result += label;
+		}
+		return result;
 	}
 
 	Util::StringPathTrie<PslHandler::Kind> PslHandler::ParseFile (QStringView contents)

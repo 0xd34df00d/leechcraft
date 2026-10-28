@@ -11,8 +11,6 @@
 #include <QObject>
 #include <util/sll/stringpathtrie.h>
 
-class QUrl;
-
 namespace LC::Poshuku::CleanWeb
 {
 	class PslHandler
@@ -26,8 +24,14 @@ namespace LC::Poshuku::CleanWeb
 	public:
 		explicit PslHandler (QStringView);
 
-		int GetTldCount (const QUrl&) const;
 		int GetTldCountHost (QStringView) const;
+
+		/** @brief Returns the registrable domain (the public suffix plus one label) of the `host`.
+		 *
+		 * The result is lowercase, without empty labels, so two hosts belong to the same site iff
+		 * their registrable domains are equal. A host that is itself a public suffix is returned whole.
+		 */
+		QString GetRegistrableDomain (QStringView host) const;
 	private:
 		static Util::StringPathTrie<Kind> ParseFile (QStringView);
 	};

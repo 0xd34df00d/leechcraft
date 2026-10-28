@@ -288,18 +288,7 @@ namespace CleanWeb
 
 		bool IsSameDomain (const QUrl& url1, const QUrl& url2, const PslHandler& psl)
 		{
-			const auto tldCount = psl.GetTldCount (url1);
-			const auto tld2count = psl.GetTldCount (url2);
-			if (tldCount != tld2count)
-				return false;
-
-			// example.com -> example (section index is -2)
-			// example.co.uk -> example (section index is -3)
-			const auto nextComponentPos = -tldCount - 1;
-
-			const auto& nextComponent1 = url1.host ().section ('.', nextComponentPos);
-			const auto& nextComponent2 = url1.host ().section ('.', nextComponentPos);
-			return nextComponent1 == nextComponent2;
+			return psl.GetRegistrableDomain (url1.host ()) == psl.GetRegistrableDomain (url2.host ());
 		}
 
 		struct RejectInfo

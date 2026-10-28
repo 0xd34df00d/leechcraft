@@ -18,5 +18,6 @@ namespace LC::Poshuku::CleanWeb
 	private slots:
 		void testExampleLookups ();
 		void testEmpty ();
+		void testRegistrableDomain ();
 	};
 }

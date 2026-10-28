@@ -8,16 +8,17 @@
 
 #include "pslhandlertest.h"
 #include <QtTest>
+#include <util/sll/qtutil.h>
 #include "pslhandler.cpp"
 
 QTEST_APPLESS_MAIN (LC::Poshuku::CleanWeb::PslHandlerTest)
 
 namespace LC::Poshuku::CleanWeb
 {
-	// taken from https://publicsuffix.org/list/
-	void PslHandlerTest::testExampleLookups ()
+	namespace
 	{
-		const QStringView exampleContents = uR"(
+		// taken from https://publicsuffix.org/list/
+		const QStringView ExampleContents = uR"(
 com
 
 *.jp
@@ -28,8 +29,11 @@ com
 !pref.hokkaido.jp
 !metro.tokyo.jp
 )";
+	}
 
-		const PslHandler handler { exampleContents };
+	void PslHandlerTest::testExampleLookups ()
+	{
+		const PslHandler handler { ExampleContents };
 
 		auto find = [&handler] (QStringView host) { return handler.GetTldCountHost (host); };
 		QCOMPARE (find (u"foo.com"), 1);
@@ -48,5 +52,27 @@ com
 		const PslHandler handler { {} };
 
 		QCOMPARE (handler.GetTldCountHost (u"foo.com"), 1);
+	}
+
+	void PslHandlerTest::testRegistrableDomain ()
+	{
+		const PslHandler handler { ExampleContents };
+
+		auto domain = [&handler] (QStringView host) { return handler.GetRegistrableDomain (host); };
+		QCOMPARE (domain (u"foo.com"), u"foo.com"_qs);
+		QCOMPARE (domain (u"a.b.foo.com"), u"foo.com"_qs);
+		QCOMPARE (domain (u"Foo.COM"), u"foo.com"_qs);
+		QCOMPARE (domain (u"foo.com."), u"foo.com"_qs);
+
+		QCOMPARE (domain (u"baz.foo.bar.jp"), u"foo.bar.jp"_qs);
+		QCOMPARE (domain (u"a.b.c.bar.hokkaido.jp"), u"c.bar.hokkaido.jp"_qs);
+		QCOMPARE (domain (u"a.pref.hokkaido.jp"), u"pref.hokkaido.jp"_qs);
+
+		QCOMPARE (domain (u"bar.jp"), u"bar.jp"_qs);
+		QCOMPARE (domain (u"com"), u"com"_qs);
+		QCOMPARE (domain (u"localhost"), u"localhost"_qs);
+
+		QVERIFY (domain (u"ads.foo.com") == domain (u"www.foo.com"));
+		QVERIFY (domain (u"foo.com") != domain (u"bar.com"));
 	}
 }
