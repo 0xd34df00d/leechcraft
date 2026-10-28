@@ -51,7 +51,7 @@ namespace WebAccess
 				for (const auto& parm : Parms_)
 				{
 					result [i] = new char [parm.size () + 1];
-					std::strcpy (result [i], parm.toLatin1 ());
+					std::strcpy (result [i], parm.toLatin1 ().constData ());
 					++i;
 				}
 				result [i] = 0;

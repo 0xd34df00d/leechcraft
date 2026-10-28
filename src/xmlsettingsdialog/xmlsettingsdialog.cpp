@@ -431,7 +431,7 @@ namespace LC::Util
 		if (event->type () == QEvent::DynamicPropertyChange)
 		{
 			const auto& name = static_cast<QDynamicPropertyChangeEvent*> (event)->propertyName ();
-			HandlersManager_->SetValue (name, obj->property (name));
+			HandlersManager_->SetValue (name, obj->property (name.constData ()));
 			return false;
 		}
 		return QObject::eventFilter (obj, event);

@@ -202,7 +202,7 @@ namespace LC::LMP::MPRIS
 				"org.freedesktop.DBus.Properties"_qs,
 				"PropertiesChanged"_qs);
 		signal << "org.mpris.MediaPlayer2.Player"_qs
-			   << QVariantMap { { propName, property (propName.toUtf8 ()) } }
+			   << QVariantMap { { propName, property (propName.toUtf8 ().constData ()) } }
 			   << QStringList {};
 		QDBusConnection::sessionBus ().send (signal);
 	}

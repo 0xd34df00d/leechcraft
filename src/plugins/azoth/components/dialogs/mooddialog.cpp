@@ -20,7 +20,7 @@ namespace Azoth
 {
 	QString MoodDialog::ToHumanReadable (const QString& str)
 	{
-		return tr (str.toLatin1 ());
+		return tr (str.toLatin1 ().constData ());
 	}
 
 	MoodDialog::MoodDialog (QWidget *parent)

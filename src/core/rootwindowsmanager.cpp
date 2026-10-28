@@ -377,7 +377,7 @@ namespace LC
 		const auto mo = w->metaObject ();
 		const auto hasSignal = [mo] (const char *signal)
 		{
-			return mo->indexOfSignal (QMetaObject::normalizedSignature (signal)) >= 0;
+			return mo->indexOfSignal (QMetaObject::normalizedSignature (signal).constData ()) >= 0;
 		};
 		if (hasSignal ("changeTabName (QString)"))
 			connect (w,

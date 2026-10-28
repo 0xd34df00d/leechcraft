@@ -24,7 +24,7 @@ namespace Poshuku
 
 	void PluginManager::AddPlugin (QObject *plugin)
 	{
-		if (plugin->metaObject ()->indexOfMethod (QMetaObject::normalizedSignature ("initPlugin (QObject*)")) != -1)
+		if (plugin->metaObject ()->indexOfMethod ("initPlugin(QObject*)") != -1)
 			QMetaObject::invokeMethod (plugin,
 					"initPlugin",
 					Q_ARG (QObject*, ProxyObject_.get ()));

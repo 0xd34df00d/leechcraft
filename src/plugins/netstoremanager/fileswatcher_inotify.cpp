@@ -40,7 +40,7 @@ namespace NetStoreManager
 
 	void FilesWatcherInotify::AddPath (const QString& path)
 	{
-		const int fd = inotify_add_watch (INotifyDescriptor_, path.toUtf8 (), WatchMask_);
+		const int fd = inotify_add_watch (INotifyDescriptor_, path.toUtf8 ().constData (), WatchMask_);
 		WatchedPathes2Descriptors_.insert ({ path, fd });
 
 		if (!Timer_->isActive ())

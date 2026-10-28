@@ -114,7 +114,7 @@ namespace Util
 					continue;
 
 				const auto& signature = method.methodSignature ();
-				if (receiver->metaObject ()->indexOfMethod (LC_N (signature)) == -1)
+				if (receiver->metaObject ()->indexOfMethod (signature.constData ()) == -1)
 				{
 					if (!destSlot)
 					{
@@ -128,9 +128,9 @@ namespace Util
 				}
 
 				if (!QObject::connect (sender,
-						LC_TOSIGNAL (signature),
+						LC_TOSIGNAL (signature).constData (),
 						receiver,
-						destSlot ? LC_TOSLOT (signature) : LC_TOSIGNAL (signature),
+						(destSlot ? LC_TOSLOT (signature) : LC_TOSIGNAL (signature)).constData (),
 						Qt::UniqueConnection))
 					qWarning () << Q_FUNC_INFO
 							<< "connect for"

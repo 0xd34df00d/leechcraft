@@ -28,7 +28,7 @@ namespace Rosenthal
 		std::unique_ptr<Util::EncodingConverter> Codec_;
 
 		explicit HunspellItem (const QByteArray& path)
-		: Hunspell_ { std::make_unique<Hunspell> (path + ".aff", path + ".dic") }
+		: Hunspell_ { std::make_unique<Hunspell> ((path + ".aff").constData (), (path + ".dic").constData ()) }
 		, Codec_ { std::make_unique<Util::EncodingConverter> (Hunspell_->get_dict_encoding ()) }
 		{
 		}

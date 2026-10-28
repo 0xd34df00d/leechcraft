@@ -74,7 +74,7 @@ namespace LC::BitTorrent
 			ct.set_creator (qPrintable (QString ("LeechCraft BitTorrent %1")
 						.arg (GetProxyHolder ()->GetVersion ())));
 			if (!params.Comment_.isEmpty ())
-				ct.set_comment (params.Comment_.toUtf8 ());
+				ct.set_comment (params.Comment_.toUtf8 ().constData ());
 			for (const auto& seed : params.URLSeeds_)
 				ct.add_url_seed (seed.toStdString ());
 			ct.set_priv (!params.DHTEnabled_);

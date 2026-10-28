@@ -98,7 +98,7 @@ namespace LC::Monocle
 					userSuffix :
 					QByteArray { "PNG" };
 			constexpr auto compression = 100;
-			image.save (filename, suffix, compression);
+			image.save (filename, suffix.constData (), compression);
 		}
 
 		QString GetSelectionText (const QGraphicsScene& scene, IHaveTextContent& ihtc)

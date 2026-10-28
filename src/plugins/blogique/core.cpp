@@ -83,8 +83,7 @@ namespace Blogique
 			return;
 		}
 
-		QByteArray sig = QMetaObject::normalizedSignature ("initPlugin (QObject*)");
-		if (plugin->metaObject ()->indexOfMethod (sig) != -1)
+		if (plugin->metaObject ()->indexOfMethod ("initPlugin(QObject*)") != -1)
 			QMetaObject::invokeMethod (plugin,
 					"initPlugin",
 					Q_ARG (QObject*, PluginProxy_.get ()));

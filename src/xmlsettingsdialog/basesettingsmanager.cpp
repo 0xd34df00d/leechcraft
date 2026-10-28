@@ -126,7 +126,7 @@ namespace LC::Util
 					[&] (const QByteArray& methodName)
 					{
 						if (!QMetaObject::invokeMethod (object,
-								methodName,
+								methodName.constData (),
 								Q_ARG (QVariant, val)))
 							qWarning () << Q_FUNC_INFO
 									<< "could not find method in the metaobject"
@@ -156,7 +156,7 @@ namespace LC::Util
 					[&propValue] (const BaseSettingsManager::VariantHandler_f& func) { func (propValue); },
 					[&] (const QByteArray& methodName)
 					{
-						if (!QMetaObject::invokeMethod (propContext, methodName))
+						if (!QMetaObject::invokeMethod (propContext, methodName.constData ()))
 							qWarning () << Q_FUNC_INFO
 								<< "could not find method in the metaobject"
 								<< propName

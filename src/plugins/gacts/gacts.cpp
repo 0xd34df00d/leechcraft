@@ -89,7 +89,7 @@ namespace GActs
 		connect (sh.get (),
 				SIGNAL (activated ()),
 				receiver,
-				method);
+				method.constData ());
 		RegisteredShortcuts_ [id] = sh;
 
 		RegisterChildren (sh.get (), e);

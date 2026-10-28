@@ -49,7 +49,7 @@ namespace LC::Azoth::Sarin
 
 		const char* what () const noexcept
 		{
-			return Msg_;
+			return Msg_.constData ();
 		}
 
 		CodeType GetCode () const noexcept

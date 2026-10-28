@@ -152,7 +152,7 @@ namespace Azoth
 
 	QString ActivityDialog::ToHumanReadable (const QString& str)
 	{
-		return tr (str.toLatin1 ());
+		return tr (str.toLatin1 ().constData ());
 	}
 
 	ActivityDialog::ActivityDialog (QWidget *parent)

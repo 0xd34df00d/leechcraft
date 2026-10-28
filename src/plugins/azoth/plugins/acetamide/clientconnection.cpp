@@ -266,7 +266,7 @@ namespace LC::Azoth::Acetamide
 	{
 		const QString& statusKey = "DefaultStatus" + QString::number (state);
 		return Account_->GetParentProtocol ()->GetProxyObject ()->GetSettingsManager ()->
-				property (statusKey.toUtf8 ()).toString ();
+				property (statusKey.toUtf8 ().constData ()).toString ();
 	}
 
 	void ClientConnection::serverConnected (const QString&)
