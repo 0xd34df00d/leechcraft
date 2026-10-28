@@ -1,18 +1,6 @@
-FROM fedora:rawhide AS qxmpp
-# the packaging has its own repository; buildimage.sh passes the commit tools/packaging.ref pins, and an empty
-# ref would silently fetch the default branch instead
-ARG PACKAGING_REF
-RUN test -n "$PACKAGING_REF" || { echo 'PACKAGING_REF is empty: build this image through tools/docker/buildimage.sh' >&2; exit 1; }
-ADD https://github.com/0xd34df00d/leechcraft-packaging.git#${PACKAGING_REF} /build/packaging
-RUN /build/packaging/build.sh qxmpp /out
-
-FROM scratch AS packages
-COPY --from=qxmpp /out /
-
 FROM fedora:rawhide
 
-RUN --mount=type=bind,from=qxmpp,source=/out,target=/tmp/qxmpp \
-    dnf install -y \
+RUN dnf install -y \
         cmake ninja-build ccache mold clang git pkgconfig \
         qt6-qtbase-devel qt6-qtbase-private-devel \
         qt6-qttools-devel \
@@ -32,7 +20,7 @@ RUN --mount=type=bind,from=qxmpp,source=/out,target=/tmp/qxmpp \
         libXScrnSaver-devel \
         rb_libtorrent-devel \
         libmaxminddb-devel \
-        /tmp/qxmpp/*.rpm \
+        qxmpp-qt6-devel \
         qca-qt6-devel \
         libotr-devel \
         toxcore-devel \

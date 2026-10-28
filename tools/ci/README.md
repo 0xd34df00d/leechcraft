@@ -89,13 +89,13 @@ failure and on every status change, the full job on status changes only.
   The dist-upgrade stays plain so that apt chooses the experimental versions with the whole package set in view;
   a package that cannot follow makes the image build fail, which is the cue for a `package/unstable` exception.
 
-## qxmpp in the Debian and Fedora images
+## qxmpp in the Debian images
 
-Debian unstable and Fedora rawhide ship a qxmpp older than Xoox needs, so their images build their own. The
+Debian unstable and experimental ship a qxmpp older than Xoox needs, so their images build their own. The
 packaging lives in its own repository, [leechcraft-packaging](https://github.com/0xd34df00d/leechcraft-packaging):
 Debian's and Fedora's own packaging of qxmpp, bumped, and a `build.sh` that builds a package of that repository
 in the running distro's format. The first stage of each of those Dockerfiles fetches the repository at the commit
-`tools/packaging.ref` names and runs `build.sh qxmpp`, which produces .deb or .rpm files; the final stage installs
+`tools/packaging.ref` names and runs `build.sh qxmpp`, which produces .deb files; the final stage installs
 them in place of the distro's development package, from a mount of the first stage's output, so nothing of the
 packaging lands in the image. The package manager thus knows about the library, and a LeechCraft package built in
 such an image depends on exactly these packages, which a repository of ours can ship next to it one day. The

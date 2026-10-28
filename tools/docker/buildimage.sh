@@ -28,7 +28,7 @@ state=$(cd "$state" && pwd)
 cd "$(dirname "$0")/.."
 dockerfile=docker/base/$distro/Dockerfile
 [ -f "$dockerfile" ] || { echo "no such distro: $distro ($dockerfile missing)" >&2; exit 64; }
-# The Debian and Fedora Dockerfiles fetch the qxmpp packaging from its own repository at this commit; see the CI README.
+# The Debian Dockerfiles fetch the qxmpp packaging from its own repository at this commit; see the CI README.
 packaging_ref=$(cat packaging.ref)
 printf '%s' "$packaging_ref" | grep -Eq '^[0-9a-f]{40}$' \
 	|| { echo "packaging.ref must hold the full hash of a leechcraft-packaging commit, not '$packaging_ref'" >&2; exit 64; }
@@ -191,8 +191,8 @@ if [ -z "$pushed" ]; then
 	echo "=== $distro: no pushed image to compare with"
 fi
 
-# Anything the `packages` stage produces (the qxmpp packages of the Debian and Fedora images) is exported for the
-# record. The stage was built a moment ago, so this is a cache hit, not a second build.
+# Anything the `packages` stage produces (the qxmpp packages of the Debian images) is exported for the record. The
+# stage was built a moment ago, so this is a cache hit, not a second build.
 if grep -q '^FROM .* AS packages$' "$dockerfile"; then
 	rm -rf "$state/packages/$distro"
 	docker build --network=host $build_args -f "$dockerfile" --target packages --output "type=local,dest=$state/packages/$distro" "docker/base/$distro" \
