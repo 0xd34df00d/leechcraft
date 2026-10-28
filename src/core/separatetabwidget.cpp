@@ -103,8 +103,6 @@ namespace LC
 	void SeparateTabWidget::SetWindow (MainWindow *window)
 	{
 		Window_ = window;
-
-		MainTabBar_->SetWindow (window);
 	}
 
 	QObject* SeparateTabWidget::GetQObject ()

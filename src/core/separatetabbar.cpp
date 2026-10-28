@@ -20,9 +20,6 @@
 #include <interfaces/idndtab.h>
 #include "coreproxy.h"
 #include "separatetabwidget.h"
-#include "core.h"
-#include "tabmanager.h"
-#include "rootwindowsmanager.h"
 
 namespace LC
 {
@@ -45,11 +42,6 @@ namespace LC
 				SIGNAL (currentChanged (int)),
 				this,
 				SLOT (toggleCloseButtons ()));
-	}
-
-	void SeparateTabBar::SetWindow (MainWindow *win)
-	{
-		Window_ = win;
 	}
 
 	void SeparateTabBar::SetTabClosable (int index, bool closable, QWidget *closeButton)
@@ -201,27 +193,23 @@ namespace LC
 
 	void SeparateTabBar::mouseReleaseEvent (QMouseEvent *event)
 	{
-		int index = tabAt (event->pos ());
-		if (index == count () - 1 &&
-				event->button () == Qt::LeftButton)
-		{
-			emit addDefaultTab ();
-			return;
-		}
+		if (tabAt (event->pos ()) == count () - 1)
+			switch (event->button ())
+			{
+			case Qt::LeftButton:
+				emit addDefaultTab ();
+				return;
+			case Qt::MiddleButton:
+				return;
+			default:
+				break;
+			}
 
 		if (InMove_)
 		{
 			emit releasedMouseAfterMove (currentIndex ());
 			InMove_ = false;
 			emit currentChanged (currentIndex ());
-		}
-		else if (index != -1 &&
-				event->button () == Qt::MiddleButton &&
-				index != count () - 1)
-		{
-			auto rootWM = Core::Instance ().GetRootWindowsManager ();
-			auto tm = rootWM->GetTabManager (Window_);
-			tm->remove (index);
 		}
 
 		QTabBar::mouseReleaseEvent (event);

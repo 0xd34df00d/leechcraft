@@ -13,7 +13,6 @@
 
 namespace LC
 {
-	class MainWindow;
 	class SeparateTabWidget;
 
 	struct TabInfo;
@@ -21,8 +20,6 @@ namespace LC
 	class SeparateTabBar : public QTabBar
 	{
 		Q_OBJECT
-
-		MainWindow *Window_ = nullptr;
 
 		bool InMove_ = false;
 		SeparateTabWidget *TabWidget_ = nullptr;
@@ -33,8 +30,6 @@ namespace LC
 		mutable QVector<int> ComputedWidths_;
 	public:
 		explicit SeparateTabBar (QWidget* = 0);
-
-		void SetWindow (MainWindow*);
 
 		void SetTabClosable (int index, bool closable, QWidget *closeButton = 0);
 		void SetTabWidget (SeparateTabWidget*);
