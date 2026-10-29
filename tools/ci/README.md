@@ -89,7 +89,8 @@ failure and on every status change, the full job on status changes only.
   failing test fails the cell, as a failing build does, rather than making the build unstable: yellow stays the
   quick job's signal for new warnings. A test that hangs fails after two minutes. The tests run where they were
   built, without a display and without network: a test that creates widgets selects the offscreen platform itself,
-  in its `initMain`, as `util/tags`' tests do.
+  in its `initMain`, as `util/tags`' tests do. The Imgaste upload test posts to the real hosting services, so it
+  runs only with `LC_TEST_EXTERNAL_SERVICES=1`, which CI never sets; ctest and the Test Result report it as skipped.
 - `debian_experimental` installs from experimental wherever that suite has a package: `-t experimental` on the
   install step, `clang-24`, and `APT_TARGET_RELEASE=experimental` for the qxmpp stage so that the library is built
   against the same stack. Without `-t`, apt never picks experimental, since the suite is pinned below everything.
