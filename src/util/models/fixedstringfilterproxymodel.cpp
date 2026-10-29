@@ -8,9 +8,19 @@
 
 #include "fixedstringfilterproxymodel.h"
 #include <ranges>
+#include <QtDebug>
 
 namespace LC::Util
 {
+	namespace
+	{
+		void ReportIgnoredQtFilter (const QObject *model, const char *qtFilter, const char *replacement)
+		{
+			qCritical ().nospace () << model << ": FixedStringFilterProxyModel ignores QSortFilterProxyModel's "
+					<< qtFilter << ", use " << replacement << " instead";
+		}
+	}
+
 	FixedStringFilterProxyModel::FixedStringFilterProxyModel (QObject *parent)
 	: FixedStringFilterProxyModel { Qt::CaseInsensitive, parent }
 	{
@@ -21,6 +31,19 @@ namespace LC::Util
 	{
 		Filter_.setCaseSensitivity (cs);
 		setRecursiveFilteringEnabled (true);
+
+		FilterRegexGuard_ = bindableFilterRegularExpression ().addNotifier ([this]
+				{
+					ReportIgnoredQtFilter (this,
+							"filter regular expression and case sensitivity",
+							"SetFilterString () and SetCaseSensitivity ()");
+				});
+		FilterKeyColumnGuard_ = bindableFilterKeyColumn ().addNotifier ([this]
+				{ ReportIgnoredQtFilter (this, "filter key column", "SetFilterColumns ()"); });
+		connect (this,
+				&QSortFilterProxyModel::filterRoleChanged,
+				this,
+				[this] { ReportIgnoredQtFilter (this, "filter role", "SetFilterRoles ()"); });
 	}
 
 	void FixedStringFilterProxyModel::SetCaseSensitivity (Qt::CaseSensitivity cs)

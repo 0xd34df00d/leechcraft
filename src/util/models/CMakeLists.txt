@@ -22,5 +22,6 @@ add_util_library (util-models
 
 if (ENABLE_UTIL_TESTS)
 	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests ${CMAKE_CURRENT_SOURCE_DIR})
+	AddUtilTest (models_fixedstringfilterproxymodel tests/fixedstringfilterproxymodeltest.cpp UtilModelsFixedStringFilterProxyModelTest leechcraft-util-models)
 	AddUtilTest (models_flattofoldersproxymodel tests/flattofoldersproxymodeltest.cpp UtilModelsFlatToFoldersProxyModelTest leechcraft-util-models)
 endif ()

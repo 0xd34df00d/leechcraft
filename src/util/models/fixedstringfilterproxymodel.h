@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QProperty>
 #include <QSortFilterProxyModel>
 #include "modelsconfig.h"
 
@@ -18,6 +19,9 @@ namespace LC::Util
 		QStringMatcher Filter_;
 		QList<int> Columns_ {};
 		QList<int> Roles_ { Qt::DisplayRole };
+
+		QPropertyNotifier FilterRegexGuard_;
+		QPropertyNotifier FilterKeyColumnGuard_;
 	public:
 		explicit FixedStringFilterProxyModel (QObject* = nullptr);
 		explicit FixedStringFilterProxyModel (Qt::CaseSensitivity, QObject* = nullptr);
