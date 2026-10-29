@@ -372,7 +372,7 @@ namespace LC::SB2
 				qobject_cast<ITabWidget*> (widget)->GetTabClassInfo () :
 				TabClassInfo ();
 
-		for (const auto& [key, items] : TC2Items_.asKeyValueRange ())
+		for (const auto& [key, items] : std::as_const (TC2Items_).asKeyValueRange ())
 		{
 			const bool isSelectedTC = key == tc.TabClass_;
 			for (auto item : items)

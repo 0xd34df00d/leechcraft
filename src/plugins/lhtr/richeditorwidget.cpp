@@ -494,7 +494,7 @@ const findParent = (item, name) => {
 		}
 
 		CustomTagNames_.clear ();
-		for (const auto& [type, names] : tagNames.asKeyValueRange ())
+		for (const auto& [type, names] : std::as_const (tagNames).asKeyValueRange ())
 			CustomTagNames_ [type] = names.join (',');
 	}
 

@@ -310,7 +310,7 @@ namespace LC::AdvancedNotifications
 		QSet<QSystemTrayIcon*> visibleIcons;
 		QSet<QAction*> actsUpd;
 
-		for (const auto& [event, data] : Events_.asKeyValueRange ())
+		for (const auto& [event, data] : std::as_const (Events_).asKeyValueRange ())
 		{
 			const auto icon = Category2Icon_.value (data.Category_);
 			if (icon)

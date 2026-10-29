@@ -715,7 +715,7 @@ namespace Xoox
 
 		QStringList removedJids;
 		for (const QSet<QString> serverJidsSet { serverJids.begin (), serverJids.end () };
-			const auto& [jid, entry] : JID2CLEntry_.asKeyValueRange ())
+			const auto& [jid, entry] : std::as_const (JID2CLEntry_).asKeyValueRange ())
 			if (!serverJidsSet.contains (jid) && entry->IsRosterEntry ())
 				removedJids << jid;
 		for (const auto& jid : removedJids)

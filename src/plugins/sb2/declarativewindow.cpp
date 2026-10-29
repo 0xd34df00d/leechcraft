@@ -41,7 +41,7 @@ namespace LC::SB2
 			{ QStringLiteral ("colorProxy"),
 					QVariant::fromValue (new Util::ColorThemeProxy (GetProxyHolder ()->GetColorThemeManager (), this)) }
 		};
-		for (const auto& [key, value] : params.asKeyValueRange ())
+		for (const auto& [key, value] : std::as_const (params).asKeyValueRange ())
 			propsVec.push_back ({ key, value });
 		rootContext ()->setContextProperties (propsVec);
 

@@ -413,7 +413,7 @@ namespace Hestia
 		lock.Init ();
 
 		const auto& tables = AccountDB_.tables ();
-		for (const auto& [key, query] : table2query.asKeyValueRange ())
+		for (const auto& [key, query] : std::as_const (table2query).asKeyValueRange ())
 			if (!tables.contains (key))
 			{
 				QSqlQuery q (AccountDB_);

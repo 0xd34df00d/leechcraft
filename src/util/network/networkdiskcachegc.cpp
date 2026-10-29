@@ -134,7 +134,7 @@ namespace LC::Util
 		}
 
 		QList<std::pair<QString, int>> dirs;
-		for (const auto& pair : Directories_.asKeyValueRange ())
+		for (const auto& pair : std::as_const (Directories_).asKeyValueRange ())
 		{
 			const auto& getters = pair.second;
 			const auto minSize = (*std::min_element (getters.begin (), getters.end (),

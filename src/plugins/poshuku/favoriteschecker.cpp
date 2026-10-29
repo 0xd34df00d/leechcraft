@@ -108,7 +108,7 @@ namespace Poshuku
 
 		QMap<QString, QString> result;
 
-		for (const auto& pair : Results_.asKeyValueRange ())
+		for (const auto& pair : std::as_const (Results_).asKeyValueRange ())
 		{
 			const auto& key = pair.first;
 			const auto& res = pair.second;

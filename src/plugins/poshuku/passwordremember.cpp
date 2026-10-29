@@ -66,7 +66,7 @@ namespace Poshuku
 		if (!storage)
 			return;
 
-		for (const auto& pair : TempData_.asKeyValueRange ())
+		for (const auto& pair : std::as_const (TempData_).asKeyValueRange ())
 			storage->Set ("org.LeechCraft.Poshuku.Forms.InputByName/" + pair.first.toUtf8 (),
 					Util::Map (pair.second, [] (const ElementData& ed) { return QVariant::fromValue (ed); }));
 	}
@@ -80,7 +80,7 @@ namespace Poshuku
 	void PasswordRemember::on_Never__released ()
 	{
 		const auto sb = Core::Instance ().GetStorageBackend ();
-		for (const auto& pair : TempData_.asKeyValueRange ())
+		for (const auto& pair : std::as_const (TempData_).asKeyValueRange ())
 			for (const auto& ed : pair.second)
 				sb->SetFormsIgnored (ed.PageURL_.toString (), true);
 

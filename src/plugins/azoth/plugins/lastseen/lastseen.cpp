@@ -150,7 +150,7 @@ namespace LastSeen
 			auto lock = Storage_->BeginTransaction ();
 
 			const auto& proc = reporter->InitiateProcess (tr ("Writing the database"), 0, stats.size ());
-			for (const auto& pair : stats.asKeyValueRange ())
+			for (const auto& pair : std::as_const (stats).asKeyValueRange ())
 			{
 				Storage_->SetEntryStats (pair.first, pair.second);
 				++*proc;

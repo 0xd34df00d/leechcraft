@@ -50,7 +50,7 @@ namespace LC::Monocle
 
 		XmlSettingsManager::Instance ().setProperty ("RecentlyOpened", OpenedDocs_);
 
-		for (const auto& [menu, handler] : Handlers_.asKeyValueRange ())
+		for (const auto& [menu, handler] : std::as_const (Handlers_).asKeyValueRange ())
 			UpdateMenu (menu, handler);
 	}
 

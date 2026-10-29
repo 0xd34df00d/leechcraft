@@ -113,7 +113,7 @@ namespace Snails
 					}),
 				Folders_.end ());
 
-		for (const auto& pair : flags.asKeyValueRange ())
+		for (const auto& pair : std::as_const (flags).asKeyValueRange ())
 			Folder2Flags_ [pair.first] = static_cast<FolderFlags> (pair.second);
 	}
 }

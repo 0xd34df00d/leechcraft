@@ -206,7 +206,7 @@ namespace Poshuku
 			url2diffs [item.URL_] << item.Date_->secsTo (now);
 		}
 
-		auto scored = Util::Map (url2diffs.asKeyValueRange (),
+		auto scored = Util::Map (std::as_const (url2diffs).asKeyValueRange (),
 				[] (const auto& pair) { return std::pair { pair.first, Score (pair.second) }; });
 		std::sort (scored.rbegin (), scored.rend (), Util::ComparingBy (Util::Snd));
 

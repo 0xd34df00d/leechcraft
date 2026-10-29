@@ -476,7 +476,7 @@ namespace Azoth
 	{
 		Avatar2TooltipSrcCache_.clear ();
 
-		for (const auto& pair : Entry2Items_.asKeyValueRange ())
+		for (const auto& pair : std::as_const (Entry2Items_).asKeyValueRange ())
 			DirtyTooltips_ << pair.first;
 	}
 }

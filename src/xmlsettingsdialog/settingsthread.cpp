@@ -42,7 +42,7 @@ namespace LC
 			swap (pendings, Pendings_);
 		}
 
-		for (const auto& [settingsMgr, updates] : pendings.asKeyValueRange ())
+		for (const auto& [settingsMgr, updates] : std::as_const (pendings).asKeyValueRange ())
 		{
 			const auto& s = settingsMgr->MakeSettings ();
 			for (const auto& [key, value] : updates)

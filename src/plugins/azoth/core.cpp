@@ -1451,7 +1451,7 @@ namespace LC::Azoth
 			}
 		else if (e.Entity_ == PowerState::WokeUp)
 		{
-			for (const auto& pair : SavedStatus_.asKeyValueRange ())
+			for (const auto& pair : std::as_const (SavedStatus_).asKeyValueRange ())
 				pair.first->ChangeState (pair.second);
 			SavedStatus_.clear ();
 		}
@@ -1850,7 +1850,7 @@ namespace LC::Azoth
 			return dev.get ();
 		};
 
-		for (const auto [entry, items] : Entry2Items_.asKeyValueRange ())
+		for (const auto [entry, items] : std::as_const (Entry2Items_).asKeyValueRange ())
 		{
 			const auto icon = getIcon (entry->GetStatus ().State_);
 			for (auto item : items)
@@ -1867,7 +1867,7 @@ namespace LC::Azoth
 
 	void Core::handleGroupContactsChanged ()
 	{
-		for (const auto& pair : Entry2Items_.asKeyValueRange ())
+		for (const auto& pair : std::as_const (Entry2Items_).asKeyValueRange ())
 		{
 			const auto entry = pair.first;
 			if (entry->GetEntryType () == ICLEntry::EntryType::Chat)

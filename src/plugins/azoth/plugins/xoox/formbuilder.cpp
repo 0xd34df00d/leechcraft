@@ -53,7 +53,7 @@ namespace Xoox
 		QHash<QString, QXmppDataForm::Field> GetFields ()
 		{
 			QHash<QString, QXmppDataForm::Field> result;
-			for (const auto& [widget, field] : Widget2Field_.asKeyValueRange ())
+			for (const auto& [widget, field] : std::as_const (Widget2Field_).asKeyValueRange ())
 				if (const auto& var = GetData (widget);
 					!var.isNull ())
 				{

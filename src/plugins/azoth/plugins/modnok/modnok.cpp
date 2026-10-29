@@ -194,7 +194,7 @@ namespace Modnok
 						});
 		}
 
-		for (const auto& [formula, image] : replaceMap.asKeyValueRange ())
+		for (const auto& [formula, image] : std::as_const (replaceMap).asKeyValueRange ())
 		{
 			auto escFormula = formula;
 			escFormula.replace ('\"', "&quot;");

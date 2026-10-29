@@ -84,7 +84,7 @@ namespace OnlineBookmarks
 	void AccountsSettings::UpdateDates ()
 	{
 		QLocale loc;
-		for (auto [item, acc] : Item2Account_.asKeyValueRange ())
+		for (auto [item, acc] : std::as_const (Item2Account_).asKeyValueRange ())
 		{
 			int row = item->row ();
 			const auto parentItem = item->parent ();
@@ -114,7 +114,7 @@ namespace OnlineBookmarks
 	void AccountsSettings::accept ()
 	{
 		QObjectList accounts;
-		for (auto [item, acc] : Item2Account_.asKeyValueRange ())
+		for (auto [item, acc] : std::as_const (Item2Account_).asKeyValueRange ())
 			if (item->checkState () == Qt::Checked)
 			{
 				acc->SetSyncing (true);

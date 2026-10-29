@@ -880,7 +880,7 @@ namespace LC::Aggregator
 		for (const auto& item : items)
 			affectedChannels [item.Channel_] << item.Item_;
 
-		for (const auto [cid, chanItems] : affectedChannels.asKeyValueRange ())
+		for (const auto [cid, chanItems] : std::as_const (affectedChannels).asKeyValueRange ())
 		{
 			QSet<IDType_t> affected;
 			affected.reserve (chanItems.size ());
@@ -958,7 +958,7 @@ namespace LC::Aggregator
 
 		emit itemsRemoved (items);
 
-		for (const auto& [cid, delta] : modifiedChannels.asKeyValueRange ())
+		for (const auto& [cid, delta] : std::as_const (modifiedChannels).asKeyValueRange ())
 			emit channelUnreadCountUpdated (cid, UnreadDelta { delta });
 	}
 

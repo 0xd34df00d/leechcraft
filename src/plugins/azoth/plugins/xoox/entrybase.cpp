@@ -997,7 +997,7 @@ namespace Xoox
 		{
 			QStringList commandable;
 			const auto capsMgr = Account_->GetClientConnection ()->GetCapsManager ();
-			for (const auto& pair : Variants_.asKeyValueRange ())
+			for (const auto& pair : std::as_const (Variants_).asKeyValueRange ())
 			{
 				const auto& caps = capsMgr->GetRawCaps (pair.second.VerString_);
 				if (caps.isEmpty () ||

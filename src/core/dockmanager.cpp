@@ -247,7 +247,7 @@ namespace LC
 
 		QList<QDockWidget*> toShowFirst;
 		QList<QDockWidget*> toShowLast;
-		for (const auto& [dock, info] : Dock2Info_.asKeyValueRange ())
+		for (const auto& [dock, info] : std::as_const (Dock2Info_).asKeyValueRange ())
 		{
 			const auto otherWindow = RootWM_->GetWindowIndex (info.Window_);
 			if (otherWindow != thisWindowIdx)

@@ -78,7 +78,7 @@ namespace Azoth
 	{
 		const auto& msg = Ui_.Message_->toPlainText ();
 
-		for (const auto [entry, item] : Entry2Item_.asKeyValueRange ())
+		for (const auto [entry, item] : std::as_const (Entry2Item_).asKeyValueRange ())
 		{
 			if (item->checkState () == Qt::Checked)
 				SendMessage (*entry, { .Body_ = msg });
