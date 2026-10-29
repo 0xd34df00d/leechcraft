@@ -132,14 +132,7 @@ namespace LMP
 						(info.Year_ == GetFilterString ().toInt (&isInt) && isInt))
 					return true;
 
-				if (IsMatch (info.Title_) || IsMatch (info.LocalPath_))
-					return true;
-
-				for (int i = 0, rc = sourceModel ()->rowCount (idx); i < rc; ++i)
-					if (filterAcceptsRow (i, idx))
-						return true;
-
-				return false;
+				return IsMatch (info.Title_) || IsMatch (info.LocalPath_);
 			}
 		};
 	}
