@@ -385,6 +385,7 @@ namespace LC::BitTorrent
 		const auto& parentNode = MkParentIfDoesntExist (newPath, true);
 
 		node->Name_ = QString::fromStdU16String (newPath.filename ().u16string ());
+		node->ParentPath_ = newPath.parent_path ();
 		node->Reparent (parentNode);
 
 		beginInsertRows (FindIndex (newPath.parent_path ()), parentNode->GetRowCount (), parentNode->GetRowCount ());
