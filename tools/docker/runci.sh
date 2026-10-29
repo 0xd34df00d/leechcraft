@@ -1,17 +1,22 @@
 #!/usr/bin/env sh
-# Usage: [CCACHE_HOST_DIR=<absolute path>] [NINJA_LOG=<absolute path>] runci.sh <distro> <gcc|clang> [build|tidy|version|stdlib]
+# Usage: [CCACHE_HOST_DIR=<absolute path>] [NINJA_LOG=<absolute path>] [TEST_REPORT=<absolute path>]
+#        runci.sh <distro> <gcc|clang> [build|tidy|version|stdlib]
 #
 # build and tidy build the checkout in the current directory inside the leechcraft/ci_<distro> image: from
 # scratch, in a tmpfs, without network access, on every core. With CCACHE_HOST_DIR set, the compilers run through
 # ccache with that directory as the cache, which may grow to nine tenths of the filesystem holding it, and the
 # output ends with the cache statistics of the build; an image without ccache builds without it and says so. Links go
 # through mold when the image has it; an image without it links with its default linker and says so.
+# build then runs the tests with ctest, as many at once as there are cores, in the same environment: no display, so
+# a test that creates widgets selects the offscreen platform itself, in its initMain. With TEST_REPORT set, ctest
+# writes the tests' JUnit report to that path.
 # With NINJA_LOG set, the build directory's .ninja_log, ninja's record of when every step started and ended, is
 # copied to that path once the build has ended, failed or not; tools/ci/ninjalog.py reads it.
-# Exit status: 0 on success, 1 when the build fails, 2 when
-# configure fails (on a rolling distro that almost always means a dependency moved), 64 on bad arguments; 126
-# and 127 from a tool missing inside the image are passed through. version prints the major version of that
-# compiler in the image, or `missing`; stdlib prints the release of the libstdc++ that compiler uses, or `missing`.
+# Both files are removed first, so that a run which ends before writing one leaves none behind.
+# Exit status: 0 on success, 1 when the build fails, 2 when configure fails (on a rolling distro that almost always
+# means a dependency moved), 3 when a test fails, 64 on bad arguments; 126 and 127 from a tool missing inside the
+# image are passed through. version prints the major version of that compiler in the image, or `missing`; stdlib
+# prints the release of the libstdc++ that compiler uses, or `missing`.
 set -eu
 
 distro=${1:?usage: runci.sh <distro> <gcc|clang> [build|tidy|version|stdlib]}
@@ -31,16 +36,9 @@ if [ -n "${CCACHE_HOST_DIR:-}" ]; then
 	autogen_jobs=4
 fi
 
-# the directory of the log is mounted and the container writes the file, as root like the cache
-log_opts=
-if [ -n "${NINJA_LOG:-}" ]; then
-	mkdir -p "$(dirname "$NINJA_LOG")"
-	log_opts="--mount type=bind,src=$(cd "$(dirname "$NINJA_LOG")" && pwd),dst=/work/out --env NINJA_LOG_NAME=$(basename "$NINJA_LOG")"
-fi
-
 case ${3:-build} in
-	build) cmake_extra= ;;
-	tidy) cmake_extra=-DCMAKE_CXX_CLANG_TIDY=clang-tidy ;;
+	build) cmake_extra=; run_tests=yes ;;
+	tidy) cmake_extra=-DCMAKE_CXX_CLANG_TIDY=clang-tidy; run_tests=no ;;
 	version)
 		v=$(docker run --rm --network=none "$image" sh -c \
 			"command -v $cxx >/dev/null || { echo missing; exit 0; }; $cxx -dumpfullversion -dumpversion 2>/dev/null || $cxx -dumpversion")
@@ -56,6 +54,19 @@ case ${3:-build} in
 	*) echo "unknown mode: $3" >&2; exit 64 ;;
 esac
 
+# the directory of each file is mounted and the container writes the file, as root like the cache
+out_opts=
+if [ -n "${NINJA_LOG:-}" ]; then
+	mkdir -p "$(dirname "$NINJA_LOG")"
+	rm -f "$NINJA_LOG"
+	out_opts="--mount type=bind,src=$(cd "$(dirname "$NINJA_LOG")" && pwd),dst=/work/out --env NINJA_LOG_NAME=$(basename "$NINJA_LOG")"
+fi
+if [ -n "${TEST_REPORT:-}" ]; then
+	mkdir -p "$(dirname "$TEST_REPORT")"
+	rm -f "$TEST_REPORT"
+	out_opts="$out_opts --mount type=bind,src=$(cd "$(dirname "$TEST_REPORT")" && pwd),dst=/work/tests --env TEST_REPORT_NAME=$(basename "$TEST_REPORT")"
+fi
+
 # CMAKE_AUTOGEN_PARALLEL: in an uncached build an autogen step runs moc one file at a time, since ninja alone fills the
 # machine with the other steps and a full build measured the same either way. In a cached build the compiles are cache
 # hits, and the autogen steps of the largest targets, eighty moc and uic runs one after another, are the longest thing
@@ -66,15 +77,18 @@ esac
 # CMake pick /usr/lib64/ccache/g++ and route every compiler call, scans and links included, through ccache a second time.
 # LC_ALL=C: gcc quotes with ‘’ under a UTF-8 locale and with '' otherwise; Arch's image sets LANG=C.UTF-8, the others nothing,
 # and the aggregated warnings treat the two spellings as two issues.
+# --tmpfs rather than --mount for the build directory: the tests run from it, Docker mounts a tmpfs noexec unless told
+# otherwise, and only --tmpfs takes mount options. The ctest timeout fails a hung test in two minutes rather than
+# holding the build lock until the job's own timeout.
 exec docker run \
 	--rm \
 	--network=none \
 	--env LC_ALL=C \
 	--workdir /work \
 	--mount type=bind,src="$PWD",dst=/work/leechcraft \
-	--mount type=tmpfs,dst=/work/build \
+	--tmpfs /work/build:exec \
 	$ccache_opts \
-	$log_opts \
+	$out_opts \
 	"$image" \
 	sh -c "
 		cd /work/build &&
@@ -93,5 +107,9 @@ exec docker run \
 			|| { s=\$?; [ \$s -ge 126 ] && exit \$s; exit 2; }; } &&
 		{ cmake --build . -j$(nproc) -- -k0 && s=0 || s=1;
 		  [ -z \"\${NINJA_LOG_NAME:-}\" ] || cp .ninja_log \"/work/out/\$NINJA_LOG_NAME\";
+		  if [ \$s = 0 ] && [ $run_tests = yes ]; then
+		    ctest -j$(nproc) --timeout 120 --output-on-failure --no-tests=error \
+		      \${TEST_REPORT_NAME:+--output-junit /work/tests/\$TEST_REPORT_NAME} || s=3;
+		  fi;
 		  [ -z \"\$launcher\" ] || ccache -s; exit \$s; }
 	"

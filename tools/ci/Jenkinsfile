@@ -9,16 +9,17 @@
 //   full    every distro under tools/docker/base with every compiler in COMPILERS that the distro's image
 //           ships in at least the MINIMUM version, using a libstdc++ at least as new as the gcc floor, one
 //           cell at a time
-// A cell builds the checkout with tools/docker/runci.sh inside the distro's image, scans the compiler output
-// with Warnings NG and publishes the result, and archives ninja's log of the build, ninja-logs/<cell>.ninja_log, the start
+// A cell builds the checkout with tools/docker/runci.sh inside the distro's image and runs the tests, scans the compiler
+// output with Warnings NG and publishes the result, publishes the tests' results, one package per cell, and archives
+// ninja's log of the build, ninja-logs/<cell>.ninja_log, the start
 // and end of every step, which tools/ci/ninjalog.py reads. The full profile also publishes, per compiler, one result over all its cells
 // with the repeats dropped, and a badge per cell for the README, under the cell's name, which says passing, failing, or why
 // the cell was skipped.
 // Every build, in every job, takes the same lock around its compile, so only one build runs at a time and
 // build times stay comparable. The full profile compiles through ccache, one cache for all cells on a partition
 // of the agent dedicated to it, since its build times are not the measurement; the quick profile does not, so
-// that its build time stays comparable from build to build. A cell that fails to configure or to build fails the run; the message
-// names which, since on a rolling distro a configure failure almost always means a dependency moved.
+// that its build time stays comparable from build to build. A cell that fails to configure, to build, or a test fails the run;
+// the message names which, since on a rolling distro a configure failure almost always means a dependency moved.
 
 import groovy.transform.Field
 
@@ -26,6 +27,7 @@ import groovy.transform.Field
 @Field final String BUILD_LOCK = 'lc-build'
 @Field final String CCACHE_HOST_DIR = '/var/cache/ci-ccache'
 @Field final String NINJA_LOGS = 'ninja-logs'
+@Field final String TEST_REPORTS = 'test-reports'
 @Field final List<String> COMPILERS = ['gcc', 'clang']
 @Field final Map<String, Integer> MINIMUM = [gcc: 16, clang: 23]
 @Field final Map PRIMARY = [distro: 'opensuse_factory', compiler: 'clang']
@@ -93,6 +95,20 @@ Map registerBadges(Map plan) {
     badges
 }
 
+// ctest names a test after its executable alone, and every cell runs the same tests: with the cell's name prefixed to the
+// class, each cell is a package of its own in the build's test results, and a test keeps its history per cell. That name
+// being in the package, the plugin's own prefix of the stage's name, added in builds with several stages, would only repeat
+// it (keepTestNames). A failing test fails the cell through runci.sh's exit status, as a failing build does, rather than
+// making the build unstable (skipMarkingBuildUnstable). No report means no test ran: the build failed, or the cell is tidy.
+void publishTests(String name) {
+    String report = "${TEST_REPORTS}/${name}.xml"
+    if (!fileExists(report))
+        return
+    sh(label: "prefix ${name} to the tests",
+       script: "sed -i -e 's/<testsuite name=\"[^\"]*\"/<testsuite name=\"${name}\"/' -e 's/ classname=\"/ classname=\"${name}./' ${report}")
+    junit(testResults: report, keepTestNames: true, skipMarkingBuildUnstable: true)
+}
+
 // Warnings NG only computes new and fixed issues against a reference build chosen by the Forensics step above:
 // without it every issue counts as outstanding. The first sed folds the path through which moc-generated
 // sources include a header (build dir, autogen dir, then ../.. back into the checkout) onto the header itself,
@@ -106,7 +122,8 @@ Map runCell(Map opts, Map cell) {
     String name = cellName(cell)
     String log = "${name}.log"
     int rc = 0
-    List<String> environment = ["NINJA_LOG=${env.WORKSPACE}/${NINJA_LOGS}/${name}.ninja_log"]
+    List<String> environment = ["NINJA_LOG=${env.WORKSPACE}/${NINJA_LOGS}/${name}.ninja_log",
+                                "TEST_REPORT=${env.WORKSPACE}/${TEST_REPORTS}/${name}.xml"]
     if (opts.cached)
         environment << "CCACHE_HOST_DIR=${CCACHE_HOST_DIR}"
     lock(BUILD_LOCK) {
@@ -120,6 +137,7 @@ tools/docker/runci.sh ${cell.distro} ${cell.compiler} ${cell.tidy ? 'tidy' : 'bu
         }
     }
     archiveArtifacts(artifacts: "${NINJA_LOGS}/${name}.ninja_log", allowEmptyArchive: true)
+    publishTests(name)
     def tool
     if (cell.tidy)
         tool = clangTidy(pattern: log, id: name, name: name)
@@ -148,6 +166,7 @@ void grade(Map outcome) {
         return
     String what = outcome.rc == 2 ? 'configure failed, most likely a missing dependency'
                 : outcome.rc == 1 ? 'build failed'
+                : outcome.rc == 3 ? 'tests failed'
                 : "runner failed with status ${outcome.rc}, probably a tool missing from the image"
     error("${outcome.name}: ${what}")
 }

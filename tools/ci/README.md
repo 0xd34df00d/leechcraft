@@ -19,15 +19,16 @@ Three files drive every Jenkins job of the project:
 A cell runs `tools/docker/runci.sh <distro> <gcc|clang> [build|tidy]` in the distro's `leechcraft/ci_<distro>`
 image: a from-scratch build without network, in a tmpfs, on every core, needing only `sh`, `cmake`, `ninja` and
 the compilers inside the image; with `mold` in the image the cell links through it, without it through the distro's
-default linker, and says so. An uncached build runs moc one file at a time per target (`CMAKE_AUTOGEN_PARALLEL=1`),
+default linker, and says so. A build that succeeds is followed by the tests, all of them, as many at once as there
+are cores. An uncached build runs moc one file at a time per target (`CMAKE_AUTOGEN_PARALLEL=1`),
 since ninja already fills every core with the other steps; a cached build, whose compiles are cache hits, runs four at
 a time, since the autogen steps of the largest targets are otherwise the longest thing in it. Every build in every job takes the `lc-build` lock around its compile, so only
 one compile runs on the machine at a time and build times stay comparable; a quick build waits for at most one
 cell of a running full build, or for one round of image rebuilds. The full profile compiles through ccache, with one cache for all cells at
 `/var/cache/ci-ccache` on the agent, a partition dedicated to it that the cache may fill to nine tenths, and each
 cell's log ending with that build's cache statistics; the quick profile does not, so that its build time stays a
-measurement. An image without ccache builds without it and says so. A cell that fails to configure or to build
-fails the run; the message says which, because on a
+measurement. An image without ccache builds without it and says so. A cell that fails to configure, to build, or a
+test fails the run; the message says which, because on a
 rolling distro a configure failure almost always means a dependency moved. The quick job mails `NOTIFY` on every
 failure and on every status change, the full job on status changes only.
 
@@ -83,6 +84,12 @@ failure and on every status change, the full job on status changes only.
   `tools/ci/ninjalog.py <log>` reports the longest steps, the time by kind of step, how many steps ran at a time over
   the build and what was still running at the end; `--trace` writes a Chrome trace for ui.perfetto.dev. Read it before
   touching the build's parallelism: a cell that ends on one long step was waiting for that step, not working.
+- Every cell publishes its tests' results from ctest's JUnit report, with the cell's name prefixed to each test's
+  class, so each cell is a package of its own in the build's Test Result and a test's history stays per cell. A
+  failing test fails the cell, as a failing build does, rather than making the build unstable: yellow stays the
+  quick job's signal for new warnings. A test that hangs fails after two minutes. The tests run where they were
+  built, without a display and without network: a test that creates widgets selects the offscreen platform itself,
+  in its `initMain`, as `util/tags`' tests do.
 - `debian_experimental` installs from experimental wherever that suite has a package: `-t experimental` on the
   install step, `clang-24`, and `APT_TARGET_RELEASE=experimental` for the qxmpp stage so that the library is built
   against the same stack. Without `-t`, apt never picks experimental, since the suite is pinned below everything.
