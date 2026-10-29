@@ -23,26 +23,6 @@ namespace LC::BitTorrent
 {
 	namespace
 	{
-		class FilesProxyModel final : public Util::FixedStringFilterProxyModel
-		{
-		public:
-			using FixedStringFilterProxyModel::FixedStringFilterProxyModel;
-		protected:
-			bool filterAcceptsRow (int row, const QModelIndex& parent) const override
-			{
-				const auto& idx = sourceModel ()->index (row, TorrentFilesModel::ColumnPath, parent);
-				if (IsMatch (idx.data ().toString ()))
-					return true;
-
-				const auto rc = sourceModel ()->rowCount (idx);
-				for (int i = 0; i < rc; ++i)
-					if (filterAcceptsRow (i, idx))
-						return true;
-
-				return false;
-			}
-		};
-
 		Util::ProgressDelegate::Progress GetFileProgress (const QModelIndex& idx)
 		{
 			const auto progress = idx.data (TorrentFilesModel::RoleProgress).toDouble () * 100;
@@ -63,12 +43,14 @@ namespace LC::BitTorrent
 
 	TorrentTabFilesWidget::TorrentTabFilesWidget (QWidget *parent)
 	: QWidget { parent }
-	, ProxyModel_ { std::make_unique<FilesProxyModel> (this) }
+	, ProxyModel_ { std::make_unique<Util::FixedStringFilterProxyModel> (this) }
 	{
 		Ui_.setupUi (this);
 
 		new Util::ClearLineEditAddon { GetProxyHolder (), Ui_.SearchLine_ };
 
+		ProxyModel_->SetFilterColumns ({ TorrentFilesModel::ColumnPath });
+		ProxyModel_->setAutoAcceptChildRows (true);
 		ProxyModel_->setSortRole (TorrentFilesModel::RoleSort);
 		Ui_.FilesView_->setItemDelegate (new FilesViewDelegate (Ui_.FilesView_));
 		Ui_.FilesView_->setItemDelegateForColumn (TorrentFilesModel::ColumnProgress,
