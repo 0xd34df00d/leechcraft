@@ -10,7 +10,7 @@
 #include <QtTest>
 #include "slotclosure.h"
 
-QTEST_MAIN (LC::Util::SlotClosureTest)
+QTEST_GUILESS_MAIN (LC::Util::SlotClosureTest)
 
 namespace LC
 {

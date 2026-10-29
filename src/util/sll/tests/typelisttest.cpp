@@ -11,7 +11,7 @@
 #include <typelist.h>
 #include <typelevel.h>
 
-QTEST_MAIN (LC::Util::TypelistTest)
+QTEST_APPLESS_MAIN (LC::Util::TypelistTest)
 
 namespace LC
 {

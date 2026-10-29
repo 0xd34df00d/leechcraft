@@ -10,7 +10,7 @@
 #include <QtTest>
 #include <detector.h>
 
-QTEST_MAIN (LC::Util::DetectorTest)
+QTEST_APPLESS_MAIN (LC::Util::DetectorTest)
 
 namespace LC
 {

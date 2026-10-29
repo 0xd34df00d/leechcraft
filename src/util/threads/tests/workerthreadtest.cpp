@@ -10,7 +10,7 @@
 #include <QtTest>
 #include <workerthreadbase.h>
 
-QTEST_MAIN (LC::Util::WorkerThreadTest)
+QTEST_GUILESS_MAIN (LC::Util::WorkerThreadTest)
 
 namespace LC::Util
 {

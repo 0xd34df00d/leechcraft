@@ -11,7 +11,7 @@
 #include <prelude.h>
 #include <qtutil.h>
 
-QTEST_MAIN (LC::Util::PreludeTest)
+QTEST_APPLESS_MAIN (LC::Util::PreludeTest)
 
 namespace LC::Util
 {

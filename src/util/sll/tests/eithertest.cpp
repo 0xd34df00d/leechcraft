@@ -12,7 +12,7 @@
 #include <void.h>
 #include <functor.h>
 
-QTEST_MAIN (LC::Util::EitherTest)
+QTEST_APPLESS_MAIN (LC::Util::EitherTest)
 
 namespace LC
 {

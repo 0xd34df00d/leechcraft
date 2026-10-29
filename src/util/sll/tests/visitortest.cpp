@@ -10,7 +10,7 @@
 #include <QtTest>
 #include <visitor.h>
 
-QTEST_MAIN (LC::Util::VisitorTest)
+QTEST_APPLESS_MAIN (LC::Util::VisitorTest)
 
 namespace LC
 {

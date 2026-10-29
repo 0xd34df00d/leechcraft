@@ -12,7 +12,7 @@
 #include <QtTest>
 #include "trackingpointer.h"
 
-QTEST_MAIN (LC::Util::TrackingPointerTest)
+QTEST_APPLESS_MAIN (LC::Util::TrackingPointerTest)
 
 namespace LC::Util
 {

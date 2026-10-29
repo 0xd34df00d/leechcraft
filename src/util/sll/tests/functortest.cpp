@@ -10,7 +10,7 @@
 #include <QtTest>
 #include <functor.h>
 
-QTEST_MAIN (LC::Util::FunctorTest)
+QTEST_APPLESS_MAIN (LC::Util::FunctorTest)
 
 namespace LC
 {

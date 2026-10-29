@@ -12,7 +12,7 @@
 #include <futures.h>
 #include "common.h"
 
-QTEST_MAIN (LC::Util::FuturesTest)
+QTEST_GUILESS_MAIN (LC::Util::FuturesTest)
 
 namespace LC::Util
 {

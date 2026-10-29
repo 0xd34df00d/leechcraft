@@ -12,7 +12,7 @@
 #include <QtTest>
 #include <domchildrenrange.h>
 
-QTEST_MAIN (LC::Util::DomChildrenRangeTest)
+QTEST_APPLESS_MAIN (LC::Util::DomChildrenRangeTest)
 
 namespace LC
 {

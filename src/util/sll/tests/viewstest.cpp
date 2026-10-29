@@ -11,7 +11,7 @@
 #include <views.h>
 #include <prelude.h>
 
-QTEST_MAIN (LC::Util::ViewsTest)
+QTEST_APPLESS_MAIN (LC::Util::ViewsTest)
 
 namespace LC
 {

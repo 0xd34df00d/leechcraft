@@ -11,7 +11,7 @@
 #include <QtTest>
 #include <typegetter.h>
 
-QTEST_MAIN (LC::Util::TypeGetterTest)
+QTEST_APPLESS_MAIN (LC::Util::TypeGetterTest)
 
 namespace LC
 {
