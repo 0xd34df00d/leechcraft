@@ -16,6 +16,7 @@ namespace LC::Imgaste
 	{
 		Q_OBJECT
 	private slots:
+		void testUpload_data ();
 		void testUpload ();
 	};
 }

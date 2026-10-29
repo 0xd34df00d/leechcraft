@@ -17,6 +17,8 @@
 #include <util/threads/coro/getresult.h>
 #include "hostingservice.h"
 
+Q_DECLARE_METATYPE (LC::Imgaste::HostingService)
+
 QTEST_GUILESS_MAIN (LC::Imgaste::UploadTest)
 
 namespace LC::Imgaste
@@ -35,32 +37,36 @@ namespace LC::Imgaste
 
 			return bytes;
 		}
+
+		Util::Task<Util::NetworkResult> Upload (HostingService service, QNetworkAccessManager& nam)
+		{
+			co_return co_await *Post (service, GetImageContents (), Format::PNG, nam);
+		}
+	}
+
+	void UploadTest::testUpload_data ()
+	{
+		if (!qEnvironmentVariableIntValue ("LC_TEST_EXTERNAL_SERVICES"))
+			QSKIP ("uploads to the real hosting services, set LC_TEST_EXTERNAL_SERVICES=1 to run");
+
+		QTest::addColumn<HostingService> ("service");
+
+		for (const auto& service : GetAllServices ())
+			QTest::newRow (qPrintable (service.Name_)) << service;
 	}
 
 	void UploadTest::testUpload ()
 	{
-		auto task = [] () -> Util::Task<void>
-		{
-			const auto& contents = GetImageContents ();
-			qDebug () << "file size:" << contents.size ();
+		QFETCH (const HostingService, service);
 
-			QNetworkAccessManager nam;
-			for (const auto& service : GetAllServices ())
-			{
-				qDebug () << "testing" << service.Name_;
-				const auto& result = co_await *Post (service, contents, Format::PNG, nam);
-				if (const auto err = result.IsError ())
-				{
-					qCritical () << "got error:" << *err;
-					continue;
-				}
+		QNetworkAccessManager nam;
+		nam.setTransferTimeout ();
+		const auto& result = Util::GetTaskResult (Upload (service, nam));
+		if (const auto error = result.IsError ())
+			QFAIL (qPrintable (error->ErrorText_));
 
-				Util::Visit (service.GetLink_ (result.GetReplyData ()),
-						[&] (HostingService::Error) { qCritical () << "cannot get link:" << result.GetReplyData (); },
-						[] (const QString& link) { qDebug () << "got link:" << link; });
-			}
-		} ();
-
-		Util::GetTaskResult (std::move (task));
+		const auto& link = service.GetLink_ (result.GetReplyData ());
+		QVERIFY2 (link.IsRight (), result.GetReplyData ().constData ());
+		qDebug () << link.GetRight ();
 	}
 }
