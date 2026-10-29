@@ -13,7 +13,7 @@
 #include <util/sll/qtutil.h>
 #include "fixedstringfilterproxymodel.h"
 
-QTEST_GUILESS_MAIN (LC::Util::FixedStringFilterProxyModelTest)
+QTEST_APPLESS_MAIN (LC::Util::FixedStringFilterProxyModelTest)
 
 namespace LC::Util
 {

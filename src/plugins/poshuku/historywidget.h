@@ -17,8 +17,6 @@ namespace LC::Util
 
 namespace LC::Poshuku
 {
-	class HistoryFilterModel;
-
 	class HistoryWidget : public QWidget
 	{
 		Q_DECLARE_TR_FUNCTIONS (Poshuku::HistoryWidget)

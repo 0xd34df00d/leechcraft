@@ -16,14 +16,14 @@ namespace LC::Util
 {
 	/** @brief Provides filter model with additional tags filter mode.
 	 *
-	 * This model behaves just like a normal QSortFilterProxyModel except
+	 * This model behaves just like `FixedStringFilterProxyModel` except
 	 * it supports filtering by tags. In this mode row is accepted either
 	 * if all tags from the request are found in the row (the default
 	 * mode) or if the intersection of the two sets is just non-empty.
 	 * The mode can be set via SetTagsInclusionMode() function. The tags
 	 * filtering mode itself is enabled via SetTagsMode() function.
 	 *
-	 * The tags are obtained by splitting the filter pattern by the
+	 * The tags are obtained by splitting the filter string by the
 	 * separator, which is <em>;</em> by default but can be set via the
 	 * SetSeparator() method.
 	 */
@@ -77,12 +77,10 @@ namespace LC::Util
 
 		/** @brief Sets the separator for the tags.
 		 *
-		 * The separator is used to split the regexp filter string (the
-		 * one set via <code>setFilterFixedString()</code> method) into
-		 * the list of tags.
+		 * The separator is used to split the filter string (the one set
+		 * via `SetFilterString()`) into the list of tags.
 		 *
-		 * Setting this property will invalidate the model if the
-		 * <code>dynamicSortFilter()</code> property is true.
+		 * Setting this property re-filters the model.
 		 *
 		 * @param[in] separator The separator string.
 		 *
@@ -92,8 +90,7 @@ namespace LC::Util
 
 		/** @brief Sets the tags inclusion mode.
 		 *
-		 * Setting this property will invalidate the model if the
-		 * <code>dynamicSortFilter()</code> property is true.
+		 * Setting this property re-filters the model.
 		 *
 		 * @param[in] mode The tags inclusion mode.
 		 */
