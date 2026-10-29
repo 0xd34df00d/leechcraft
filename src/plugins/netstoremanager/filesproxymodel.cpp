@@ -23,12 +23,6 @@ namespace NetStoreManager
 		setSortLocaleAware (true);
 	}
 
-	bool FilesProxyModel::filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const
-	{
-		const QModelIndex& index = sourceModel ()->index (sourceRow, 0, sourceParent);
-		return sourceModel ()->data (index).toString ().contains (filterRegularExpression ().pattern ());
-	}
-
 	bool FilesProxyModel::lessThan (const QModelIndex& left, const QModelIndex& right) const
 	{
 		bool leftIsFolder = sourceModel ()->data (left, ListingRole::IsDirectory).toBool ();
