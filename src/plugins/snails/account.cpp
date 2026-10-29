@@ -223,7 +223,7 @@ namespace Snails
 					{
 						SyncStats stats;
 
-						for (const auto& pair : Util::Stlize (right.Messages_))
+						for (const auto& pair : right.Messages_.asKeyValueRange ())
 						{
 							const auto& folder = pair.first;
 							const auto& msgs = pair.second;
@@ -295,7 +295,7 @@ namespace Snails
 				{
 					[=] (const QHash<QByteArray, MessageBodies>& bodiesHash)
 					{
-						for (const auto& [msgId, bodies] : Util::Stlize (bodiesHash))
+						for (const auto& [msgId, bodies] : bodiesHash.asKeyValueRange ())
 							Storage_->SaveMessageBodies (this, folder, msgId, bodies);
 					},
 					Util::Visitor { [] (auto e) { qWarning () << Q_FUNC_INFO << e.what (); } }

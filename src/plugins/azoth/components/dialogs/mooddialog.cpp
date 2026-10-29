@@ -30,7 +30,7 @@ namespace Azoth
 
 		Ui_.Mood_->addTopLevelItem (new QTreeWidgetItem { { tr ("<clear>") } });
 
-		for (const auto& pair : Util::Stlize (BuildHumanReadableList ()))
+		for (const auto& moods = BuildHumanReadableList (); const auto& pair : moods.asKeyValueRange ())
 		{
 			const auto item = new QTreeWidgetItem { { pair.first } };
 			item->setIcon (0, pair.second.second);

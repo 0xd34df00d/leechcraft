@@ -19,7 +19,7 @@ namespace LC::Azoth::Xoox
 		if (!descr.Value_.isEmpty ())
 			elem.setValue (descr.Value_);
 
-		for (const auto& [attr, value] : Util::Stlize (descr.Attributes_))
+		for (const auto& [attr, value] : descr.Attributes_.asKeyValueRange ())
 			elem.setAttribute (attr, value);
 
 		for (const auto& child : descr.Children_)

@@ -183,7 +183,7 @@ namespace LC::AdvancedNotifications
 					Ui_.RulesTree_->setCurrentIndex (index);
 				});
 
-		for (const auto& pair : Util::Stlize (Util::AN::GetCategoryNameMap ()))
+		for (const auto& categories = Util::AN::GetCategoryNameMap (); const auto& pair : categories.asKeyValueRange ())
 			Ui_.EventCat_->addItem (pair.second, pair.first);
 
 		XmlSettingsManager::Instance ().RegisterObject ("AudioTheme",

@@ -150,7 +150,7 @@ namespace MusicZombie
 
 	void PendingDisco::HandleDataWithHints (Artist2Releases_t& artist2releases)
 	{
-		const auto& xSizes = Util::Map (Util::Stlize (artist2releases),
+		const auto& xSizes = Util::Map (artist2releases.asKeyValueRange (),
 				[this] (auto&& pair)
 				{
 					pair.second.intersect (Hints_);

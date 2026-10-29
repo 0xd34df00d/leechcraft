@@ -105,7 +105,7 @@ namespace M3U
 
 		for (const auto& item : sources)
 		{
-			for (const auto& pair : Util::Stlize (item.Additional_))
+			for (const auto& pair : item.Additional_.asKeyValueRange ())
 				file.write (("#" + pair.first + "=" + pair.second.toString () + "\n").toUtf8 ());
 			file.write (item.Source_.ToUrl ().toEncoded ());
 			file.write ("\n");

@@ -60,7 +60,7 @@ namespace Tracolor
 				.property ("HidingThreshold").toInt ();
 
 		QHash<QString, IconsCacheEntry> icons;
-		for (const auto& pair : Util::Stlize (SettingsMgr_->GetEnabledEvents ()))
+		for (const auto& events = SettingsMgr_->GetEnabledEvents (); const auto& pair : events.asKeyValueRange ())
 		{
 			const auto rate = EvMgr_->GetEntryEventRate (entryId, pair.first.toUtf8 ());
 			if (rate < std::numeric_limits<double>::epsilon () * tolerance)
@@ -89,14 +89,14 @@ namespace Tracolor
 
 	void IconsManager::RegenCaches ()
 	{
-		for (const auto& pair : Util::Stlize (std::exchange (IconsCache_, {})))
+		for (const auto& oldCache = std::exchange (IconsCache_, {}); const auto& pair : oldCache.asKeyValueRange ())
 		{
 			RegenCache (pair.first);
 
 			const auto& oldEntries = pair.second;
 			const auto& newEntries = IconsCache_.value (pair.first);
 
-			const auto& stlized = Util::Stlize (newEntries);
+			const auto& stlized = newEntries.asKeyValueRange ();
 			if (oldEntries.size () != newEntries.size () ||
 					std::any_of (stlized.begin (), stlized.end (),
 							[&oldEntries] (const auto& newEntryPair)

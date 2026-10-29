@@ -105,7 +105,7 @@ namespace LC::AdvancedNotifications
 				[this] (const QModelIndex& idx) { return Model_->itemFromIndex (idx); });
 		const auto& hierarchy = BuildHierarchy (allItems);
 
-		for (const auto& pair : Util::Stlize (hierarchy))
+		for (const auto& pair : hierarchy.asKeyValueRange ())
 		{
 			const auto& entityNode = pair.first;
 			const auto& fieldNodes = pair.second;

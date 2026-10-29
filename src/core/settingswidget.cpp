@@ -69,7 +69,7 @@ namespace LC
 	{
 		const auto& matches = MatchesGetter_ ();
 
-		for (const auto& [item, page] : Util::Stlize (Item2Page_))
+		for (const auto& [item, page] : Item2Page_.asKeyValueRange ())
 		{
 			const bool enabled = !matches.contains (page.first) ||
 					matches [page.first].contains (page.second);

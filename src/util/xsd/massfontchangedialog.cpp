@@ -38,7 +38,7 @@ namespace LC::Util
 	QList<IWkFontsSettable::FontFamily> MassFontChangeDialog::GetFamilies () const
 	{
 		QList<IWkFontsSettable::FontFamily> result;
-		for (const auto& pair : Util::Stlize (Family2Box_))
+		for (const auto& pair : Family2Box_.asKeyValueRange ())
 			if (pair.second->checkState () == Qt::Checked)
 				result << pair.first;
 		return result;

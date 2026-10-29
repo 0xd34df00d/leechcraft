@@ -124,7 +124,7 @@ namespace
 	template<>
 	void FeedHeaders (const QMap<QString, QVariant>& headers, HeaderModel *model)
 	{
-		for (const auto& pair : Util::Stlize (headers))
+		for (const auto& pair : headers.asKeyValueRange ())
 			model->AddHeader (pair.first, pair.second.toString ());
 	}
 }

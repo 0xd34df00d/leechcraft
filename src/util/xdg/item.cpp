@@ -188,7 +188,7 @@ namespace LC::Util::XDG
 		QHash<QString, QString> FirstValues (const QHash<QString, QStringList>& hash)
 		{
 			QHash<QString, QString> result;
-			for (const auto& [key, values] : Util::Stlize (hash))
+			for (const auto& [key, values] : hash.asKeyValueRange ())
 				result [key] = values.value (0);
 			return result;
 		}

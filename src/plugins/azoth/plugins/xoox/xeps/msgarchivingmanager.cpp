@@ -234,7 +234,7 @@ namespace Xoox
 		pref.setTagName ("pref");
 		pref.setAttribute ("xmlns", NsArchive);
 
-		for (const auto& [meth, policy] : Util::Stlize (map))
+		for (const auto& [meth, policy] : map.asKeyValueRange ())
 		{
 			QXmppElement elem;
 			elem.setTagName ("method");

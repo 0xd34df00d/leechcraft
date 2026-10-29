@@ -65,11 +65,11 @@ namespace Snails
 		SaveCurrentText ();
 
 		const auto localCopy = Unsaved_;
-		for (const auto& rootPair : Util::Stlize (localCopy))
+		for (const auto& rootPair : localCopy.asKeyValueRange ())
 		{
 			const auto contentType = rootPair.first;
 
-			for (const auto& pair : Util::Stlize (rootPair.second))
+			for (const auto& pair : rootPair.second.asKeyValueRange ())
 			{
 				Util::Visit (TemplatesMgr_->SaveTemplate (contentType, pair.first, nullptr, pair.second).AsVariant (),
 						[=] (Util::Void)

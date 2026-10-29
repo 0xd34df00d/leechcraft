@@ -741,7 +741,7 @@ namespace LMP
 			const auto syncer = std::make_shared<QFutureSynchronizer<Media::RadiosRestoreResult_t>> ();
 
 			const auto ipm = proxy->GetPluginsManager ();
-			for (const auto& pair : Util::Stlize (plugin2infos))
+			for (const auto& pair : plugin2infos.asKeyValueRange ())
 				HandlePluginInfos (pair.first, pair.second, syncer.get (), ipm);
 
 			if (syncer->futures ().isEmpty ())

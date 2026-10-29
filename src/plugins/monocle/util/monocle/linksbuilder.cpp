@@ -36,7 +36,7 @@ namespace LC::Monocle
 	{
 		QVector<InternalLink> links;
 		links.reserve (Sources_.size ());
-		for (const auto& [id, anchorSources] : Util::Stlize (Sources_))
+		for (const auto& [id, anchorSources] : Sources_.asKeyValueRange ())
 		{
 			const auto targetPos = Targets_.find (id);
 			if (targetPos == Targets_.end ())

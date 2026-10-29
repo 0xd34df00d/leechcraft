@@ -43,7 +43,7 @@ namespace LC::HotSensors
 
 		QList<QStandardItem*> items;
 
-		for (const auto& pair : Util::Stlize (history))
+		for (const auto& pair : history.asKeyValueRange ())
 		{
 			const auto& name = pair.first;
 

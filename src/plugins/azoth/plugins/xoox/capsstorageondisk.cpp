@@ -210,13 +210,13 @@ namespace Xoox
 		Util::DBLock lock { DB_ };
 		lock.Init ();
 
-		for (const auto& pair : Util::Stlize (features))
+		for (const auto& pair : features.asKeyValueRange ())
 		{
 			AddFeatures (pair.first, pair.second);
 			++*proc;
 		}
 
-		for (const auto& pair : Util::Stlize (identities))
+		for (const auto& pair : identities.asKeyValueRange ())
 		{
 			AddIdentities (pair.first, pair.second);
 			++*proc;

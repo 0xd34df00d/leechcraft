@@ -33,7 +33,7 @@ namespace Xoox
 		geoloc.setTagName ("geoloc");
 		geoloc.setAttribute ("xmlns", NsLocationNode);
 
-		for (const auto& [key, val] : Util::Stlize (Info_))
+		for (const auto& [key, val] : Info_.asKeyValueRange ())
 		{
 			QXmppElement elem;
 			elem.setTagName (key);

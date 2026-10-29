@@ -162,13 +162,13 @@ namespace Azoth
 
 		Ui_.ActivityTree_->addTopLevelItem (new QTreeWidgetItem { { tr ("<clear>") } });
 
-		for (const auto& [name, specifics] : Util::Stlize (GetActivityInfos ()))
+		for (const auto& activities = GetActivityInfos (); const auto& [name, specifics] : activities.asKeyValueRange ())
 		{
 			const auto item = new QTreeWidgetItem { { name } };
 			item->setIcon (0, specifics.Icon_);
 			item->setData (0, Qt::UserRole, QVariant::fromValue (ActivityInfo { specifics.RawName_, {}, {} }));
 
-			for (const auto& [specificName, specificInfo] : Util::Stlize (specifics.Payload_))
+			for (const auto& [specificName, specificInfo] : specifics.Payload_.asKeyValueRange ())
 			{
 				const auto subItem = new QTreeWidgetItem { { specificName } };
 				subItem->setIcon (0, specificInfo.Icon_);

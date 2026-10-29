@@ -60,7 +60,7 @@ namespace LC::Util::XDG
 		{
 			Cat2ID2Item_t result;
 
-			for (const auto& pair : Util::Stlize (items))
+			for (const auto& pair : items.asKeyValueRange ())
 			{
 				auto& map = result [pair.first];
 				for (const auto& item : pair.second)
@@ -74,7 +74,7 @@ namespace LC::Util::XDG
 		{
 			Cat2Items_t result;
 
-			for (const auto& pair : Util::Stlize (items))
+			for (const auto& pair : items.asKeyValueRange ())
 				std::copy (pair.second.begin (), pair.second.end (),
 						std::back_inserter (result [pair.first]));
 

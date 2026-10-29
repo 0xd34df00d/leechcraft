@@ -494,7 +494,7 @@ const findParent = (item, name) => {
 		}
 
 		CustomTagNames_.clear ();
-		for (const auto& [type, names] : Util::Stlize (tagNames))
+		for (const auto& [type, names] : tagNames.asKeyValueRange ())
 			CustomTagNames_ [type] = names.join (',');
 	}
 
@@ -970,7 +970,7 @@ if (parentItem == null) {
 	void RichEditorWidget::HandleInlineCmd (QStringView tag, const QVariantMap& attrs)
 	{
 		QString attrsStr;
-		for (const auto& [name, val] : Util::Stlize (attrs))
+		for (const auto& [name, val] : attrs.asKeyValueRange ())
 			for (auto i = attrs.begin (), end = attrs.end (); i != end; ++i)
 				attrsStr += u"	span.setAttribute ('%1', '%2');"_qsv.arg (name, val.toString ());
 

@@ -80,7 +80,7 @@ namespace Snails
 		QByteArray result;
 
 		QHash<QStringList, int> flags;
-		for (const auto& pair : Util::Stlize (Folder2Flags_))
+		for (const auto& pair : Folder2Flags_.asKeyValueRange ())
 			flags [pair.first] = pair.second;
 
 		QDataStream out (&result, QIODevice::WriteOnly);
@@ -113,7 +113,7 @@ namespace Snails
 					}),
 				Folders_.end ());
 
-		for (const auto& pair : Util::Stlize (flags))
+		for (const auto& pair : flags.asKeyValueRange ())
 			Folder2Flags_ [pair.first] = static_cast<FolderFlags> (pair.second);
 	}
 }

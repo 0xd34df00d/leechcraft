@@ -41,7 +41,7 @@ namespace CSTP
 			if (pairs.isEmpty ())
 				return map;
 
-			const auto& keys = Util::Map (Util::Stlize (map),
+			const auto& keys = Util::Map (map.asKeyValueRange (),
 					[] (const std::pair<QString, QVariant>& p) { return std::move (p.first).trimmed (); });
 			for (const auto& pair : pairs)
 				if (!keys.contains (pair.first, Qt::CaseInsensitive))
@@ -173,7 +173,7 @@ namespace CSTP
 
 		RestartTime ();
 
-		for (const auto& pair : Util::Stlize (Headers_))
+		for (const auto& pair : Headers_.asKeyValueRange ())
 			req.setRawHeader (pair.first.toLatin1 (), pair.second.toByteArray ());
 
 		auto nam = GetProxyHolder ()->GetNetworkAccessManager ();

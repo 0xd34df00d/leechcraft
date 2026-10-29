@@ -187,7 +187,7 @@ namespace OnlineBookmarks
 
 	QModelIndex Core::GetServiceIndex (QObject *object) const
 	{
-		for (auto [item, service] : Util::Stlize (Item2Service_))
+		for (auto [item, service] : Item2Service_.asKeyValueRange ())
 			if (service == qobject_cast<IBookmarksService*> (object))
 				return item->index ();
 

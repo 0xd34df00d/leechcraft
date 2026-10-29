@@ -177,7 +177,7 @@ namespace LC
 	void ItemHandlerFactory::Accept ()
 	{
 		const auto storage = XSD_.GetManagerObject ();
-		for (const auto& [prop, val] : Util::Stlize (Prop2NewVal_))
+		for (const auto& [prop, val] : Prop2NewVal_.asKeyValueRange ())
 			storage->setProperty (prop.toLatin1 ().constData (), val);
 		Prop2NewVal_.clear ();
 
@@ -188,7 +188,7 @@ namespace LC
 	void ItemHandlerFactory::Reject ()
 	{
 		const auto storage = XSD_.GetManagerObject ();
-		for (const auto& [prop, _] : Util::Stlize (Prop2NewVal_))
+		for (const auto& [prop, _] : Prop2NewVal_.asKeyValueRange ())
 		{
 			const auto& info = Prop2Info_ [prop];
 			const auto guard = ExpectPropChange (prop);

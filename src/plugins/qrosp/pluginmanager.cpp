@@ -38,7 +38,7 @@ namespace Qrosp
 				<< "found"
 				<< plugins;
 
-		for (const auto& pair : Util::Stlize (plugins))
+		for (const auto& pair : plugins.asKeyValueRange ())
 		{
 			const auto& type = pair.first;
 			if (!interpreters.contains (type))

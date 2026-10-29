@@ -41,7 +41,7 @@ namespace NativeEmoticons
 		QList<std::pair<QImage, QString>> result;
 
 		QSet<QString> knownPaths;
-		for (const auto& [smileText, path] : Util::Stlize (ParseFile (pack)))
+		for (const auto& smiles = ParseFile (pack); const auto& [smileText, path] : smiles.asKeyValueRange ())
 		{
 			if (knownPaths.contains (path))
 				continue;

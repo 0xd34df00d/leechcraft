@@ -69,7 +69,7 @@ namespace Tracolor
 
 	void EntryEventsManager::decayRates ()
 	{
-		for (const auto& pair : Util::Stlize (EntryEvents_))
+		for (const auto& pair : EntryEvents_.asKeyValueRange ())
 			emit entryEventRateChanged (pair.first);
 	}
 }

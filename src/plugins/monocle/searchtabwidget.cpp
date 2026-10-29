@@ -55,7 +55,7 @@ namespace LC::Monocle
 
 		QList<QStandardItem*> pageItems;
 		int globalPosIdx = 0;
-		for (const auto& [pageNum, posList] : Util::Stlize (results.Positions_))
+		for (const auto& [pageNum, posList] : results.Positions_.asKeyValueRange ())
 		{
 			if (posList.isEmpty ())
 				continue;

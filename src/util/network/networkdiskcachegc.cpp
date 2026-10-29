@@ -134,7 +134,7 @@ namespace LC::Util
 		}
 
 		QList<std::pair<QString, int>> dirs;
-		for (const auto& pair : Util::Stlize (Directories_))
+		for (const auto& pair : Directories_.asKeyValueRange ())
 		{
 			const auto& getters = pair.second;
 			const auto minSize = (*std::min_element (getters.begin (), getters.end (),
@@ -158,7 +158,7 @@ namespace LC::Util
 				[this] (const QMap<QString, qint64>& sizes)
 				{
 					IsCollecting_ = false;
-					for (const auto& pair : Util::Stlize (sizes))
+					for (const auto& pair : sizes.asKeyValueRange ())
 						LastSizes_ [pair.first] = pair.second;
 				};
 	}

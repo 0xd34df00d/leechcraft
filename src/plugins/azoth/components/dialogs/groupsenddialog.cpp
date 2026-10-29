@@ -78,7 +78,7 @@ namespace Azoth
 	{
 		const auto& msg = Ui_.Message_->toPlainText ();
 
-		for (const auto [entry, item] : Util::Stlize (Entry2Item_))
+		for (const auto [entry, item] : Entry2Item_.asKeyValueRange ())
 		{
 			if (item->checkState () == Qt::Checked)
 				SendMessage (*entry, { .Body_ = msg });
@@ -104,7 +104,7 @@ namespace Azoth
 		template<typename T, typename F>
 		void MarkOnly (const T& items, const F& f)
 		{
-			for (const auto [entry, item] : Util::Stlize (items))
+			for (const auto [entry, item] : items.asKeyValueRange ())
 			{
 				const auto state = f (entry->GetStatus ().State_) ?
 						Qt::Checked :

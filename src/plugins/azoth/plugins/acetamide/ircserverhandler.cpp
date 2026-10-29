@@ -926,7 +926,7 @@ namespace LC::Azoth::Acetamide
 		{
 			ISupport_.reserve (ISupport_.size () + res->size ());
 
-			for (auto&& [key, value] : Util::Stlize (*res))
+			for (auto&& [key, value] : res->asKeyValueRange ())
 				ISupport_ [key] = std::move (value);
 		}
 	}

@@ -209,7 +209,7 @@ namespace LC
 
 		qobject_cast<QBoxLayout*> (Ui_.ListContents_->layout ())->addStretch ();
 
-		for (const auto& pair : Util::Stlize (group2buttons))
+		for (const auto& pair : group2buttons.asKeyValueRange ())
 		{
 			const auto& buttons = pair.second;
 			const auto height = std::accumulate (buttons.begin (), buttons.end (), 0,
@@ -342,7 +342,7 @@ namespace LC
 			return;
 
 		LastSearch_ = text;
-		for (const auto& pair : Util::Stlize (Button2SettableRoot_))
+		for (const auto& pair : Button2SettableRoot_.asKeyValueRange ())
 		{
 			auto toolButton = pair.first;
 			auto rootObj = pair.second;

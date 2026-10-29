@@ -93,7 +93,7 @@ namespace Metida
 		lock.Init ();
 
 		const auto& tables = MetidaDB_.tables ();
-		for (const auto& [key, query] : Util::Stlize (table2query))
+		for (const auto& [key, query] : table2query.asKeyValueRange ())
 			if (!tables.contains (key))
 			{
 				QSqlQuery q (MetidaDB_);

@@ -195,7 +195,7 @@ namespace LC::Azoth::Xoox
 
 	bool GlooxCLEntry::IsGateway (QString *variant) const
 	{
-		for (const auto& [varCand, info] : Util::Stlize (Variants_))
+		for (const auto& [varCand, info] : Variants_.asKeyValueRange ())
 			for (const auto& id : info.Identities_)
 				if (id.category () == "gateway")
 				{

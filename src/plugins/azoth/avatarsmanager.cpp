@@ -152,7 +152,7 @@ namespace Azoth
 
 	void AvatarsManager::HandleSubscriptions (QObject *entry)
 	{
-		for (const auto& pair : Util::Stlize (Subscriptions_.value (entry)))
+		for (const auto& subscriptions = Subscriptions_.value (entry); const auto& pair : subscriptions.asKeyValueRange ())
 		{
 			if (pair.second.isEmpty ())
 				continue;

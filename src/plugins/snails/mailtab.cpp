@@ -218,7 +218,7 @@ namespace Snails
 
 	void MailTab::FillShortcutsManager (Util::ShortcutManager *sm, const ICoreProxy_ptr& proxy)
 	{
-		for (const auto& pair : Util::Stlize (GetActionInfos ()))
+		for (const auto& actionInfos = GetActionInfos (); const auto& pair : actionInfos.asKeyValueRange ())
 			sm->RegisterActionInfo (pair.first, pair.second.GetInfo (proxy));
 	}
 

@@ -958,7 +958,7 @@ namespace LC::Aggregator
 
 		emit itemsRemoved (items);
 
-		for (const auto& [cid, delta] : Util::Stlize (modifiedChannels))
+		for (const auto& [cid, delta] : modifiedChannels.asKeyValueRange ())
 			emit channelUnreadCountUpdated (cid, UnreadDelta { delta });
 	}
 

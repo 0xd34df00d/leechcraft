@@ -77,7 +77,7 @@ namespace LC
 
 	void MainWindowMenuManager::AddMenus (const QMap<QString, QList<QAction*>>& menus)
 	{
-		for (const auto& pair : Util::Stlize (menus))
+		for (const auto& pair : menus.asKeyValueRange ())
 		{
 			const auto& menuName = pair.first;
 			QMenu *toInsert = nullptr;
@@ -111,7 +111,7 @@ namespace LC
 
 	void MainWindowMenuManager::RemoveMenus (const QMap<QString, QList<QAction*>>& menus)
 	{
-		for (const auto& pair : Util::Stlize (menus))
+		for (const auto& pair : menus.asKeyValueRange ())
 		{
 			const auto& menuName = pair.first;
 

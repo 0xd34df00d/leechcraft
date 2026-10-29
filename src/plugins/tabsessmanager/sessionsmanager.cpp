@@ -329,7 +329,7 @@ namespace LC::TabSessManager
 					plugin2recoveries [tw->ParentMultiTabs ()] << info->Data_;
 			}
 
-		for (const auto& pair : Util::Stlize (tabs))
+		for (const auto& pair : tabs.asKeyValueRange ())
 		{
 			const auto& present = plugin2recoveries.value (pair.first);
 

@@ -263,7 +263,7 @@ namespace LC::Aggregator
 
 			Nodes nodes;
 			nodes.reserve (grouped.size () * 2);
-			for (auto&& [type, typeNodes] : Util::Stlize (grouped))
+			for (auto&& [type, typeNodes] : grouped.asKeyValueRange ())
 				nodes += MakeSubblock (type, color, { Tags::Ul (std::move (typeNodes)) });
 			return nodes;
 		}

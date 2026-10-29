@@ -128,17 +128,17 @@ namespace LastSeen
 		{
 			const auto& proc = reporter->InitiateProcess (tr ("Uniting keys"), 0, 3);
 
-			for (const auto& pair : Util::Stlize (avail))
+			for (const auto& pair : avail.asKeyValueRange ())
 				stats [pair.first].Available_ = pair.second;
 
 			++*proc;
 
-			for (const auto& pair : Util::Stlize (online))
+			for (const auto& pair : online.asKeyValueRange ())
 				stats [pair.first].Online_ = pair.second;
 
 			++*proc;
 
-			for (const auto& pair : Util::Stlize (status))
+			for (const auto& pair : status.asKeyValueRange ())
 				stats [pair.first].StatusChange_ = pair.second;
 
 			++*proc;
@@ -150,7 +150,7 @@ namespace LastSeen
 			auto lock = Storage_->BeginTransaction ();
 
 			const auto& proc = reporter->InitiateProcess (tr ("Writing the database"), 0, stats.size ());
-			for (const auto& pair : Util::Stlize (stats))
+			for (const auto& pair : stats.asKeyValueRange ())
 			{
 				Storage_->SetEntryStats (pair.first, pair.second);
 				++*proc;

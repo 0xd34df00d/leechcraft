@@ -84,7 +84,7 @@ namespace OnlineBookmarks
 	void AccountsSettings::UpdateDates ()
 	{
 		QLocale loc;
-		for (auto [item, acc] : Util::Stlize (Item2Account_))
+		for (auto [item, acc] : Item2Account_.asKeyValueRange ())
 		{
 			int row = item->row ();
 			const auto parentItem = item->parent ();
@@ -95,7 +95,7 @@ namespace OnlineBookmarks
 
 	QModelIndex AccountsSettings::GetServiceIndex (QObject *serviceObj) const
 	{
-		for (auto [item, service] : Util::Stlize (Item2Service_))
+		for (auto [item, service] : Item2Service_.asKeyValueRange ())
 			if (service == qobject_cast<IBookmarksService*> (serviceObj))
 				return item->index ();
 
@@ -114,7 +114,7 @@ namespace OnlineBookmarks
 	void AccountsSettings::accept ()
 	{
 		QObjectList accounts;
-		for (auto [item, acc] : Util::Stlize (Item2Account_))
+		for (auto [item, acc] : Item2Account_.asKeyValueRange ())
 			if (item->checkState () == Qt::Checked)
 			{
 				acc->SetSyncing (true);

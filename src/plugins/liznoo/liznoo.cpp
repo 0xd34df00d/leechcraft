@@ -261,7 +261,7 @@ namespace Liznoo
 
 	void Plugin::handleUpdateHistory ()
 	{
-		for (const auto& pair : Util::Stlize (Battery2LastInfo_))
+		for (const auto& pair : Battery2LastInfo_.asKeyValueRange ())
 		{
 			const auto& id = pair.first;
 			auto pos = Battery2History_.find (id);
@@ -270,7 +270,7 @@ namespace Liznoo
 			pos->push_back (BatteryHistory { pair.second });
 		}
 
-		for (const auto& pair : Util::Stlize (Battery2Dialog_))
+		for (const auto& pair : Battery2Dialog_.asKeyValueRange ())
 		{
 			const auto& id = pair.first;
 			pair.second->UpdateHistory (Battery2History_ [id], Battery2LastInfo_ [id]);

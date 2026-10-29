@@ -79,7 +79,7 @@ namespace Xoox
 		source.appendChild (GetAuthorElem (AuthorName_, AuthorURI_));
 		entry.appendChild (source);
 
-		for (const auto& [key, value] : Util::Stlize (Contents_))
+		for (const auto& [key, value] : Contents_.asKeyValueRange ())
 		{
 			QXmppElement cElem;
 			cElem.setTagName ("content");

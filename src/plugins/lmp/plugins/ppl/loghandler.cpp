@@ -167,7 +167,7 @@ namespace LC::LMP::PPL
 							if (shouldSubmit)
 								scrob2tracks [scrobbler] << track.Track_;
 
-					for (const auto& pair : Util::Stlize (scrob2tracks))
+					for (const auto& pair : scrob2tracks.asKeyValueRange ())
 						pair.first->SendBackdated (pair.second);
 
 					QFile::remove (logPath);

@@ -93,7 +93,7 @@ namespace LC
 			const auto systemItem = new QStandardItem (QObject::tr ("System"));
 			systemItem->setData ("system", Qt::UserRole);
 			model->appendRow (systemItem);
-			for (const auto& pair : Util::Stlize (GetInstalledLanguages ()))
+			for (const auto& languages = GetInstalledLanguages (); const auto& pair : languages.asKeyValueRange ())
 			{
 				const auto item = new QStandardItem { pair.first };
 				item->setData (pair.second, Qt::UserRole);

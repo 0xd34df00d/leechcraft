@@ -188,7 +188,7 @@ namespace LC::Lemon
 
 		const auto backtrack = GetBacktrackSize ();
 
-		for (auto&& [name, info] : Util::Stlize (ActiveInterfaces_))
+		for (auto&& [name, info] : ActiveInterfaces_.asKeyValueRange ())
 		{
 			const auto& bytesStats = Backend_->GetCurrentNumBytes (name);
 

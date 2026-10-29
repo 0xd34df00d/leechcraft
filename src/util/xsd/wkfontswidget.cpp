@@ -76,10 +76,10 @@ namespace LC::Util
 				this,
 				[this, settable] { Settables_.removeOne (settable); });
 
-		for (const auto& pair : Util::Stlize (Family2Chooser_))
+		for (const auto& pair : Family2Chooser_.asKeyValueRange ())
 			settable->SetFontFamily (pair.first, pair.second->GetFont ());
 
-		for (const auto& pair : Util::Stlize (Size2Spinbox_))
+		for (const auto& pair : Size2Spinbox_.asKeyValueRange ())
 			settable->SetFontSize (pair.first, pair.second->value ());
 	}
 
@@ -93,7 +93,7 @@ namespace LC::Util
 
 	void WkFontsWidget::ResetFontChoosers ()
 	{
-		for (const auto& pair : Util::Stlize (Family2Chooser_))
+		for (const auto& pair : Family2Chooser_.asKeyValueRange ())
 		{
 			const auto& option = Family2Name_ [pair.first];
 			pair.second->SetFont (BSM_->property (option.data ()).value<QFont> ());
@@ -102,7 +102,7 @@ namespace LC::Util
 
 	void WkFontsWidget::ResetSizeChoosers ()
 	{
-		for (const auto& pair : Util::Stlize (Size2Spinbox_))
+		for (const auto& pair : Size2Spinbox_.asKeyValueRange ())
 		{
 			const auto& option = Size2Name_ [pair.first];
 			pair.second->setValue (BSM_->Property (option, 10).toInt ());
@@ -111,7 +111,7 @@ namespace LC::Util
 
 	void WkFontsWidget::ApplyPendingSizeChanges ()
 	{
-		for (const auto& pair : Util::Stlize (PendingSizeChanges_))
+		for (const auto& pair : PendingSizeChanges_.asKeyValueRange ())
 		{
 			BSM_->setProperty (Size2Name_ [pair.first].data (), pair.second);
 			emit sizeChanged (pair.first, pair.second);
@@ -126,10 +126,10 @@ namespace LC::Util
 	void WkFontsWidget::ChangeAllFonts ()
 	{
 		QHash<QString, QList<IWkFontsSettable::FontFamily>> families;
-		for (const auto& pair : Util::Stlize (Family2Chooser_))
+		for (const auto& pair : Family2Chooser_.asKeyValueRange ())
 			families [pair.second->GetFont ().family ()] << pair.first;
 
-		const auto& stlized = Util::Stlize (families);
+		const auto& stlized = families.asKeyValueRange ();
 		const auto& maxPair = *std::max_element (stlized.begin (), stlized.end (),
 				ComparingBy ([] (auto pair) { return pair.second.size (); }));
 
@@ -156,7 +156,7 @@ namespace LC::Util
 	{
 		ApplyPendingSizeChanges ();
 
-		for (const auto& pair : Util::Stlize (PendingFontChanges_))
+		for (const auto& pair : PendingFontChanges_.asKeyValueRange ())
 		{
 			BSM_->setProperty (Family2Name_ [pair.first].data (), pair.second);
 			emit fontChanged (pair.first, pair.second);

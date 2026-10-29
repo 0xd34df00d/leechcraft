@@ -69,7 +69,7 @@ namespace LC::TabSessManager
 
 		menu->addSeparator ();
 
-		for (const auto& [obj, infos] : Util::Stlize (SessMgr_->GetTabsInSession (name)))
+		for (const auto& tabs = SessMgr_->GetTabsInSession (name); const auto& [obj, infos] : tabs.asKeyValueRange ())
 		{
 			const auto ii = qobject_cast<IInfo*> (obj);
 			const auto submenu = menu->addMenu (ii->GetIcon (), ii->GetName ());

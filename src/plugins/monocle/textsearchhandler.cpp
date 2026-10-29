@@ -109,7 +109,7 @@ namespace LC::Monocle
 	void TextSearchHandler::BuildHighlights (const QMap<int, QList<PageRelativeRectBase>>& map)
 	{
 		const QBrush brush (Qt::yellow);
-		for (const auto& [pageIdx, rects] : Util::Stlize (map))
+		for (const auto& [pageIdx, rects] : map.asKeyValueRange ())
 		{
 			const auto page = Pages_ [pageIdx];
 			for (const auto& rect : rects)

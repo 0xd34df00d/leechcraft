@@ -99,7 +99,7 @@ namespace NetStoreManager
 						id2StandardItem [item.ID_] = dir;
 					}
 
-					for (const auto& pair : Util::Stlize (id2StandardItem))
+					for (const auto& pair : id2StandardItem.asKeyValueRange ())
 					{
 						const auto& key = pair.first;
 						const auto& id = id2Item [key].ParentID_;

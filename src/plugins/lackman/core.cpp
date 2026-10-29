@@ -292,7 +292,7 @@ namespace LackMan
 				.arg (version)
 				.arg (info.VersionArchivers_.value (version, "gz"));
 
-		for (auto [repoId, components] : Util::Stlize (repo2cmpt))
+		for (auto [repoId, components] : repo2cmpt.asKeyValueRange ())
 		{
 			const auto& ri = Storage_->GetRepo (repoId);
 			auto path = ri.URL_.path ();

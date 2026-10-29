@@ -40,7 +40,7 @@ namespace LackMan
 				<< "; package sizes:" << PackageSizes_
 				<< "; dependencies:";
 
-		for (auto [version, deps] : Util::Stlize (Deps_))
+		for (auto [version, deps] : Deps_.asKeyValueRange ())
 			for (const auto& d : deps)
 				qDebug () << "\t" << version << d.Type_ << d.Name_ << d.Version_;
 

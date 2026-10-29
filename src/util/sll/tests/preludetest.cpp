@@ -52,7 +52,7 @@ namespace LC::Util
 	void PreludeTest::testMapMapStlized ()
 	{
 		const auto& map = GetSimpleMap ();
-		const auto& list = Map (Stlize (map), [] (const std::pair<int, QString>& pair) { return pair.second; });
+		const auto& list = Map (map.asKeyValueRange (), [] (const std::pair<int, QString>& pair) { return pair.second; });
 
 		QCOMPARE (list, QStringList { map.values () });
 	}

@@ -316,7 +316,7 @@ namespace LC::LMP
 			{ tr ("Length"), QString::number (info.Length_) },
 		};
 
-		for (const auto& [key, value] : Util::Stlize (info.Additional_))
+		for (const auto& [key, value] : info.Additional_.asKeyValueRange ())
 			props.push_back ({ key, value.toString () });
 
 		if (!info.LocalPath_.isEmpty ())

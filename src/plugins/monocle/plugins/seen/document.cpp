@@ -221,7 +221,7 @@ namespace Seen
 						const auto& srcSize = ctx.SrcSize_;
 
 						Result result;
-						for (const auto& pair : Util::Stlize (ctx.RenderJobs_))
+						for (const auto& pair : ctx.RenderJobs_.asKeyValueRange ())
 						{
 							const auto& scale = pair.first;
 							const auto& size = srcSize.scaled (srcSize.width () * scale.first,

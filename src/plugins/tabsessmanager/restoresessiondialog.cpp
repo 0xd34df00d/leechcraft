@@ -29,7 +29,7 @@ namespace LC::TabSessManager
 
 	void RestoreSessionDialog::SetTabs (const QHash<QObject*, QList<RecInfo>>& pages)
 	{
-		for (const auto [obj, infos] : Util::Stlize (pages))
+		for (const auto [obj, infos] : pages.asKeyValueRange ())
 		{
 			const auto ii = qobject_cast<IInfo*> (obj);
 

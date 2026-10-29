@@ -34,7 +34,7 @@ namespace LMP
 		{
 			QVariantMap result;
 
-			for (const auto& pair : Util::Stlize (info.Additional_))
+			for (const auto& pair : info.Additional_.asKeyValueRange ())
 				if (pair.second.canConvert<QString> ())
 					result [pair.first] = pair.second;
 
@@ -93,7 +93,7 @@ namespace LMP
 			Additional_ ["LMP/TrackNumber"].toInt ()
 		};
 
-		for (const auto& pair : Util::Stlize (Additional_))
+		for (const auto& pair : Additional_.asKeyValueRange ())
 			if (!knownFields.contains (pair.first))
 				info.Additional_ [pair.first] = pair.second;
 

@@ -77,7 +77,7 @@ namespace DCAC
 		template<typename F, typename = std::result_of_t<F (const QImage&)>>
 		void BenchmarkFunctionImpl (F&& f, int)
 		{
-			for (const auto& pair : Util::Stlize (BenchImages_))
+			for (const auto& pair : BenchImages_.asKeyValueRange ())
 			{
 				const auto& list = pair.second;
 
@@ -99,7 +99,7 @@ namespace DCAC
 		template<typename F>
 		void BenchmarkFunctionImpl (F&& f, float)
 		{
-			for (const auto& pair : Util::Stlize (BenchImages_))
+			for (const auto& pair : BenchImages_.asKeyValueRange ())
 			{
 				auto list = pair.second;
 

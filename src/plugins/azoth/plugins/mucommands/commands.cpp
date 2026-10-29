@@ -611,7 +611,7 @@ namespace MuCommands
 		}
 
 		QStringList classes;
-		for (const auto& classInfo : Util::Stlize (mucPerms->GetPossiblePerms ()))
+		for (const auto& perms = mucPerms->GetPossiblePerms (); const auto& classInfo : perms.asKeyValueRange ())
 		{
 			const auto& classId = classInfo.first;
 

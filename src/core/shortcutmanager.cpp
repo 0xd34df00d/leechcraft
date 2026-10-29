@@ -140,7 +140,7 @@ namespace LC
 		IconsList_t newIcons;
 		newIcons.reserve (info.size ());
 
-		for (const auto& pair : Util::Stlize (info))
+		for (const auto& pair : info.asKeyValueRange ())
 		{
 			const auto& name = pair.first;
 			const auto& value = pair.second;

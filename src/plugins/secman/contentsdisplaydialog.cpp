@@ -40,7 +40,7 @@ namespace SecMan
 			else if (var.canConvert<QVariantMap> ())
 			{
 				QStringList subvars;
-				for (const auto& pair : Util::Stlize (var.toMap ()))
+				for (const auto& map = var.toMap (); const auto& pair : map.asKeyValueRange ())
 					subvars << "{ " + pair.first + " -> " + Unserialize (pair.second) + "}";
 				return "Map { " + subvars.join ("; ") + " }";
 			}

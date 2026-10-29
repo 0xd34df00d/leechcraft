@@ -194,7 +194,7 @@ namespace Modnok
 						});
 		}
 
-		for (const auto& [formula, image] : Util::Stlize (replaceMap))
+		for (const auto& [formula, image] : replaceMap.asKeyValueRange ())
 		{
 			auto escFormula = formula;
 			escFormula.replace ('\"', "&quot;");

@@ -66,7 +66,7 @@ namespace LMP
 
 	QString PerformSubstitutions (QString mask, const MediaInfo& info, SubstitutionFlags flags)
 	{
-		for (const auto& pair : Util::Stlize (GetSubstGetters ()))
+		for (const auto& getters = GetSubstGetters (); const auto& pair : getters.asKeyValueRange ())
 		{
 			auto value = pair.second (info);
 			if (flags & SubstitutionFlag::SFSafeFilesystem)

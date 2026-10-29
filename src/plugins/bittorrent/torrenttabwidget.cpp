@@ -318,7 +318,7 @@ namespace LC::BitTorrent
 
 		Ui_.PerTrackerStats_->clear ();
 
-		for (const auto& [domain, stats] : Util::Stlize (GetPerTrackerStats (*Session_)))
+		for (const auto& trackerStats = GetPerTrackerStats (*Session_); const auto& [domain, stats] : trackerStats.asKeyValueRange ())
 		{
 			const QStringList strings
 			{

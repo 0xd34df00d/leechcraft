@@ -66,7 +66,7 @@ namespace XProxy
 					}))
 				result << pair.first;
 		}
-		for (const auto& pair : Util::Stlize (Scripts_))
+		for (const auto& pair : Scripts_.asKeyValueRange ())
 		{
 			if (result.contains (pair.first))
 				continue;
@@ -188,7 +188,7 @@ namespace XProxy
 				entries.append ({ target, pair.first });
 
 		QList<ScriptEntry_t> scripts;
-		for (const auto pair : Util::Stlize (Scripts_))
+		for (const auto pair : Scripts_.asKeyValueRange ())
 			for (const auto script : pair.second)
 				scripts.append ({ script->GetListId (), pair.first });
 

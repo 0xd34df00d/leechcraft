@@ -208,7 +208,7 @@ namespace Azoth
 
 			tip += "<hr />";
 			const auto& perms = mucPerms->GetPerms (entry);
-			for (const auto& pair : Util::Stlize (perms))
+			for (const auto& pair : perms.asKeyValueRange ())
 			{
 				const auto& permClass = pair.first;
 
@@ -374,7 +374,7 @@ namespace Azoth
 			if (info.contains ("custom_user_visible_map"))
 			{
 				const auto& map = info ["custom_user_visible_map"].toMap ();
-				for (const auto& pair : Util::Stlize (map))
+				for (const auto& pair : map.asKeyValueRange ())
 					tip += "<br />" + pair.first + ": " + pair.second.toString ().toHtmlEscaped () + "<br />";
 			}
 		}
@@ -476,7 +476,7 @@ namespace Azoth
 	{
 		Avatar2TooltipSrcCache_.clear ();
 
-		for (const auto& pair : Util::Stlize (Entry2Items_))
+		for (const auto& pair : Entry2Items_.asKeyValueRange ())
 			DirtyTooltips_ << pair.first;
 	}
 }

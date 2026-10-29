@@ -518,7 +518,7 @@ namespace Snails
 				msg.InReplyTo_.join ('\n')
 			});
 
-		for (const auto& [type, addrs] : Util::Stlize (msg.Addresses_))
+		for (const auto& [type, addrs] : msg.Addresses_.asKeyValueRange ())
 			for (const auto& addr : addrs)
 				Addresses_->Insert ({ {}, id, type, addr.Name_, addr.Email_ });
 
