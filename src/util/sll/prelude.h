@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <concepts>
 #include <functional>
 #include <type_traits>
 #include <iterator>
@@ -76,6 +77,7 @@ namespace Util
 		};
 
 		template<template<typename...> class Container, typename U, typename T>
+			requires std::default_initializable<Container<T>>
 		struct Replace<Container<U>, T>
 		{
 			using Type = Container<T>;
