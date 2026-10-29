@@ -27,6 +27,7 @@
 #include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/gui/clearlineeditaddon.h>
+#include <util/models/fixedstringfilterproxymodel.h>
 #include <util/sll/functional.h>
 #include <util/sll/slotclosure.h>
 #include <util/sll/prelude.h>
@@ -113,35 +114,25 @@ namespace LMP
 			}
 		};
 
-		class TreeFilterModel : public QSortFilterProxyModel
+		class TreeFilterModel : public Util::FixedStringFilterProxyModel
 		{
 		public:
-			TreeFilterModel (QObject *parent = 0)
-			: QSortFilterProxyModel (parent)
-			{
-				setDynamicSortFilter (true);
-			}
+			using FixedStringFilterProxyModel::FixedStringFilterProxyModel;
 		protected:
-			bool filterAcceptsRow (int row, const QModelIndex& parent) const
+			bool filterAcceptsRow (int row, const QModelIndex& parent) const override
 			{
-				const auto& str = filterRegularExpression ().pattern ();
-				if (str.isEmpty ())
+				if (!IsFilterSet ())
 					return true;
-
-				auto check = [&str] (const QString& string)
-				{
-					return string.contains (str, Qt::CaseInsensitive);
-				};
 
 				const auto& idx = sourceModel ()->index (row, 0, parent);
 				const auto& info = idx.data (Player::Role::Info).value<MediaInfo> ();
 				bool isInt = false;
-				if (check (info.Artist_) ||
-						check (info.Album_) ||
-						(info.Year_ == str.toInt (&isInt) && isInt))
+				if (IsMatch (info.Artist_) ||
+						IsMatch (info.Album_) ||
+						(info.Year_ == GetFilterString ().toInt (&isInt) && isInt))
 					return true;
 
-				if (check (info.Title_) || check (info.LocalPath_))
+				if (IsMatch (info.Title_) || IsMatch (info.LocalPath_))
 					return true;
 
 				for (int i = 0, rc = sourceModel ()->rowCount (idx); i < rc; ++i)
@@ -166,9 +157,9 @@ namespace LMP
 		Ui_.BufferProgress_->hide ();
 
 		connect (Ui_.SearchPlaylist_,
-				SIGNAL (textChanged (QString)),
+				&QLineEdit::textChanged,
 				PlaylistFilter_,
-				SLOT (setFilterFixedString (QString)));
+				&Util::FixedStringFilterProxyModel::SetFilterString);
 
 		new PlaylistWidgetViewExpander { PlaylistFilter_, [this] { expandAll (); }, this };
 

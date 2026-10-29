@@ -17,10 +17,13 @@
 class QToolBar;
 class QActionGroup;
 class QUndoStack;
-class QSortFilterProxyModel;
-
 namespace LC
 {
+namespace Util
+{
+	class FixedStringFilterProxyModel;
+}
+
 namespace LMP
 {
 	class Player;
@@ -32,7 +35,7 @@ namespace LMP
 		Ui::PlaylistWidget Ui_;
 		QToolBar * const PlaylistToolbar_;
 		QActionGroup *PlayModesGroup_ = nullptr;
-		QSortFilterProxyModel * const PlaylistFilter_;
+		Util::FixedStringFilterProxyModel * const PlaylistFilter_;
 
 		QUndoStack * const UndoStack_;
 
