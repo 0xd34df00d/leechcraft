@@ -12,10 +12,14 @@
 #include "ui_radiowidget.h"
 
 class QStandardItem;
-class QSortFilterProxyModel;
 
 namespace LC
 {
+namespace Util
+{
+	class FixedStringFilterProxyModel;
+}
+
 namespace LMP
 {
 	class Player;
@@ -27,7 +31,7 @@ namespace LMP
 		Ui::RadioWidget Ui_;
 
 		Player *Player_ = nullptr;
-		QSortFilterProxyModel *StationsProxy_;
+		Util::FixedStringFilterProxyModel *StationsProxy_;
 	public:
 		RadioWidget (QWidget* = 0);
 

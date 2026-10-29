@@ -13,6 +13,7 @@
 #include <QDir>
 #include <QtDebug>
 #include <util/gui/clearlineeditaddon.h>
+#include <util/models/fixedstringfilterproxymodel.h>
 #include <util/sll/functional.h>
 #include <util/sll/prelude.h>
 #include <interfaces/media/iradiostationprovider.h>
@@ -30,25 +31,21 @@ namespace LMP
 {
 	namespace
 	{
-		class StationsFilterModel : public QSortFilterProxyModel
+		class StationsFilterModel : public Util::FixedStringFilterProxyModel
 		{
 		public:
-			StationsFilterModel (QObject *parent)
-			: QSortFilterProxyModel (parent)
-			{
-			}
+			using FixedStringFilterProxyModel::FixedStringFilterProxyModel;
 		protected:
-			bool filterAcceptsRow (int row, const QModelIndex& parent) const
+			bool filterAcceptsRow (int row, const QModelIndex& parent) const override
 			{
-				const auto& pat = filterRegularExpression ().pattern ();
-				if (pat.isEmpty ())
+				if (!IsFilterSet ())
 					return true;
 
 				const auto& idx = sourceModel ()->index (row, 0, parent);
 				if (idx.data (Media::RadioItemRole::ItemType).toInt () == Media::RadioType::None)
 					return true;
 
-				return idx.data ().toString ().contains (pat, Qt::CaseInsensitive);
+				return IsMatch (idx.data ().toString ());
 			}
 		};
 	}
@@ -64,9 +61,9 @@ namespace LMP
 		Ui_.StationsView_->setModel (StationsProxy_);
 
 		connect (Ui_.StationsSearch_,
-				SIGNAL (textChanged (QString)),
+				&QLineEdit::textChanged,
 				StationsProxy_,
-				SLOT (setFilterFixedString (QString)));
+				&Util::FixedStringFilterProxyModel::SetFilterString);
 
 		new Util::ClearLineEditAddon (GetProxyHolder (), Ui_.StationsSearch_);
 	}
