@@ -8,6 +8,7 @@
 
 #include "uploadtest.h"
 #include <QBuffer>
+#include <QCoreApplication>
 #include <QImage>
 #include <QNetworkAccessManager>
 #include <QtDebug>
@@ -19,7 +20,18 @@
 
 Q_DECLARE_METATYPE (LC::Imgaste::HostingService)
 
-QTEST_GUILESS_MAIN (LC::Imgaste::UploadTest)
+int main (int argc, char *argv [])
+{
+	if (!qEnvironmentVariableIntValue ("LC_TEST_EXTERNAL_SERVICES"))
+	{
+		qInfo () << "uploads to the real hosting services, set LC_TEST_EXTERNAL_SERVICES=1 to run";
+		return LC_TEST_SKIP_RETURN_CODE;
+	}
+
+	QCoreApplication app { argc, argv };
+	LC::Imgaste::UploadTest test;
+	return QTest::qExec (&test, argc, argv);
+}
 
 namespace LC::Imgaste
 {
@@ -46,9 +58,6 @@ namespace LC::Imgaste
 
 	void UploadTest::testUpload_data ()
 	{
-		if (!qEnvironmentVariableIntValue ("LC_TEST_EXTERNAL_SERVICES"))
-			QSKIP ("uploads to the real hosting services, set LC_TEST_EXTERNAL_SERVICES=1 to run");
-
 		QTest::addColumn<HostingService> ("service");
 
 		for (const auto& service : GetAllServices ())

@@ -138,8 +138,12 @@ function (LC_DEFINE_PLUGIN)
 
 			cmake_parse_arguments (T "" "" "SRCS;QT_COMPONENTS;LINK_LIBRARIES" ${ARGN})
 			set (_fullExecName lc_${PROJECT_NAME}_test_${_name})
+			# Qt Test caps its failure-count exit status at 127.
+			set (_skipReturnCode 254)
 			add_executable (${_fullExecName} WIN32 ${T_SRCS})
+			target_compile_definitions (${_fullExecName} PRIVATE LC_TEST_SKIP_RETURN_CODE=${_skipReturnCode})
 			add_test (${_fullExecName} ${_fullExecName})
+			set_tests_properties (${_fullExecName} PROPERTIES SKIP_RETURN_CODE ${_skipReturnCode})
 			FindQtLibs (${_fullExecName} Test ${T_QT_COMPONENTS})
 			target_link_libraries (${_fullExecName} leechcraft_${PROJECT_NAME} ${LEECHCRAFT_LIBRARIES} ${T_LINK_LIBRARIES})
 		endfunction ()
