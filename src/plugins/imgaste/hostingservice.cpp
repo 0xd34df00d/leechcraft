@@ -30,33 +30,6 @@ namespace LC::Imgaste
 			return info.Size_ <= SizeLimit;
 		}
 
-		namespace Imagebin
-		{
-			auto Upload (const QByteArray& data, Format fmt)
-			{
-				return BuildRequest ({
-							{ "t"_qba, "file"_qba },
-							{ "title"_qba, ""_qba },
-							{ "description"_qba, ""_qba },
-							{ "tags"_qba, "leechcraft"_qba },
-							{ "category"_qba, "general"_qba },
-							{ "private"_qba, "true"_qba },
-						},
-						{ .Format_ = fmt, .FieldName_ = "file"_qba, .Data_ = data });
-			}
-
-			HostingService::Result_t GetLink (QStringView contents)
-			{
-				constexpr static QStringView urlMarker = u"url:"_qsv;
-
-				const auto& lines = contents.split ('\n');
-				const auto pos = std::ranges::find_if (lines, [] (auto line) { return line.startsWith (urlMarker); });
-				if (pos == lines.end ())
-					return { Util::AsLeft, {} };
-				return pos->mid (urlMarker.size ()).toString ();
-			}
-		}
-
 		namespace Catbox
 		{
 			auto Upload (const QByteArray& data, Format fmt)
@@ -159,13 +132,6 @@ namespace LC::Imgaste
 				.Accepts_ = CheckSize<20_mib>,
 				.Upload_ = Tinystash::Upload,
 				.GetLink_ = GetLinkTrimmed
-			},
-			{
-				.Name_ = "imagebin.ca"_qs,
-				.UploadUrl_ { "https://imagebin.ca/upload.php"_qs },
-				.Accepts_ = CheckSize<15_mib>,
-				.Upload_ = Imagebin::Upload,
-				.GetLink_ = Imagebin::GetLink
 			},
 		};
 
