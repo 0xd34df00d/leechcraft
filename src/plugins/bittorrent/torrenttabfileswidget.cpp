@@ -87,7 +87,7 @@ namespace LC::BitTorrent
 				this,
 				[this] (const QString& text)
 				{
-					ProxyModel_->setFilterFixedString (text);
+					ProxyModel_->SetFilterString (text);
 					Ui_.FilesView_->expandAll ();
 				});
 

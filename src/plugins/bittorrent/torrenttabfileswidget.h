@@ -12,7 +12,10 @@
 #include <QModelIndex>
 #include "ui_torrenttabfileswidget.h"
 
-class QSortFilterProxyModel;
+namespace LC::Util
+{
+	class FixedStringFilterProxyModel;
+}
 
 namespace LC::BitTorrent
 {
@@ -24,7 +27,7 @@ namespace LC::BitTorrent
 		Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::TorrentTabFilesWidget)
 
 		Ui::TorrentTabFilesWidget Ui_;
-		const std::unique_ptr<QSortFilterProxyModel> ProxyModel_;
+		const std::unique_ptr<Util::FixedStringFilterProxyModel> ProxyModel_;
 
 		AlertDispatcher *AlertDispatcher_;
 
