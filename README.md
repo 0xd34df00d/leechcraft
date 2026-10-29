@@ -1,5 +1,19 @@
 [![Build Status](https://jenkins.leechcraft.org/job/leechcraft/badge/icon)](http://jenkins.leechcraft.org/job/leechcraft/)
 
+<details>
+<summary>Full build status</summary>
+
+| gcc | clang |
+| --- | --- |
+| [![Alpine Edge / gcc](https://jenkins.leechcraft.org/job/leechcraft-full/badge/icon?build=lastCompleted&config=alpine_edge-gcc&subject=Alpine%20Edge%20/%20gcc)](https://jenkins.leechcraft.org/job/leechcraft-full/lastCompletedBuild/) | [![Alpine Edge / clang](https://jenkins.leechcraft.org/job/leechcraft-full/badge/icon?build=lastCompleted&config=alpine_edge-clang&subject=Alpine%20Edge%20/%20clang)](https://jenkins.leechcraft.org/job/leechcraft-full/lastCompletedBuild/) |
+| [![Arch Linux / gcc](https://jenkins.leechcraft.org/job/leechcraft-full/badge/icon?build=lastCompleted&config=arch_linux-gcc&subject=Arch%20Linux%20/%20gcc)](https://jenkins.leechcraft.org/job/leechcraft-full/lastCompletedBuild/) | [![Arch Linux / clang](https://jenkins.leechcraft.org/job/leechcraft-full/badge/icon?build=lastCompleted&config=arch_linux-clang&subject=Arch%20Linux%20/%20clang)](https://jenkins.leechcraft.org/job/leechcraft-full/lastCompletedBuild/) |
+| [![Debian Experimental / gcc](https://jenkins.leechcraft.org/job/leechcraft-full/badge/icon?build=lastCompleted&config=debian_experimental-gcc&subject=Debian%20Experimental%20/%20gcc)](https://jenkins.leechcraft.org/job/leechcraft-full/lastCompletedBuild/) | [![Debian Experimental / clang](https://jenkins.leechcraft.org/job/leechcraft-full/badge/icon?build=lastCompleted&config=debian_experimental-clang&subject=Debian%20Experimental%20/%20clang)](https://jenkins.leechcraft.org/job/leechcraft-full/lastCompletedBuild/) |
+| [![Debian Unstable / gcc](https://jenkins.leechcraft.org/job/leechcraft-full/badge/icon?build=lastCompleted&config=debian_unstable-gcc&subject=Debian%20Unstable%20/%20gcc)](https://jenkins.leechcraft.org/job/leechcraft-full/lastCompletedBuild/) | [![Debian Unstable / clang](https://jenkins.leechcraft.org/job/leechcraft-full/badge/icon?build=lastCompleted&config=debian_unstable-clang&subject=Debian%20Unstable%20/%20clang)](https://jenkins.leechcraft.org/job/leechcraft-full/lastCompletedBuild/) |
+| [![Fedora Rawhide / gcc](https://jenkins.leechcraft.org/job/leechcraft-full/badge/icon?build=lastCompleted&config=fedora_rawhide-gcc&subject=Fedora%20Rawhide%20/%20gcc)](https://jenkins.leechcraft.org/job/leechcraft-full/lastCompletedBuild/) | [![Fedora Rawhide / clang](https://jenkins.leechcraft.org/job/leechcraft-full/badge/icon?build=lastCompleted&config=fedora_rawhide-clang&subject=Fedora%20Rawhide%20/%20clang)](https://jenkins.leechcraft.org/job/leechcraft-full/lastCompletedBuild/) |
+| [![Gentoo Stable / gcc](https://jenkins.leechcraft.org/job/leechcraft-full/badge/icon?build=lastCompleted&config=gentoo_stable-gcc&subject=Gentoo%20Stable%20/%20gcc)](https://jenkins.leechcraft.org/job/leechcraft-full/lastCompletedBuild/) | [![Gentoo Stable / clang](https://jenkins.leechcraft.org/job/leechcraft-full/badge/icon?build=lastCompleted&config=gentoo_stable-clang&subject=Gentoo%20Stable%20/%20clang)](https://jenkins.leechcraft.org/job/leechcraft-full/lastCompletedBuild/) |
+| [![openSUSE Factory / gcc](https://jenkins.leechcraft.org/job/leechcraft-full/badge/icon?build=lastCompleted&config=opensuse_factory-gcc&subject=openSUSE%20Factory%20/%20gcc)](https://jenkins.leechcraft.org/job/leechcraft-full/lastCompletedBuild/) | [![openSUSE Factory / clang](https://jenkins.leechcraft.org/job/leechcraft-full/badge/icon?build=lastCompleted&config=opensuse_factory-clang&subject=openSUSE%20Factory%20/%20clang)](https://jenkins.leechcraft.org/job/leechcraft-full/lastCompletedBuild/) |
+</details>
+
 LeechCraft is a (C++ and Qt-based) modular live environment: a kind
 of a desktop environment with a focus on the actual applications for
 some typical desktop tasks and their interoperation. For instance,
