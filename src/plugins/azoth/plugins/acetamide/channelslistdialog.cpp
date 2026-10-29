@@ -87,7 +87,7 @@ namespace LC::Azoth::Acetamide
 				{
 					Buffer_.append ({
 							MakeItem (info.ChannelName_),
-							MakeItem (QString::number (info.UsersCount_)),
+							MakeItem (info.UsersCount_),
 							MakeItem (info.Topic_),
 						});
 					for (const auto item : Buffer_.last ())
