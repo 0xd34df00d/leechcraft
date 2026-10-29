@@ -9,6 +9,7 @@
 #include "playlistdelegate.h"
 #include <QTreeView>
 #include <QPainter>
+#include <QPainterStateGuard>
 #include <QApplication>
 #include <util/util.h>
 #include <interfaces/structures.h>
@@ -95,15 +96,16 @@ namespace LMP
 		auto oneShotRect = option.rect;
 		oneShotRect.setWidth (std::max (textWidth + 2 * Padding, oneShotRect.height ()));
 
-		painter->save ();
-		painter->setRenderHint (QPainter::Antialiasing);
-		painter->setRenderHint (QPainter::TextAntialiasing);
-		painter->setBrush (option.palette.brush (drawSelected ?
-					QPalette::Highlight :
-					QPalette::Button));
-		painter->setPen (option.palette.color (QPalette::ButtonText));
-		painter->drawEllipse (oneShotRect);
-		painter->restore ();
+		{
+			QPainterStateGuard guard { painter };
+			painter->setRenderHint (QPainter::Antialiasing);
+			painter->setRenderHint (QPainter::TextAntialiasing);
+			painter->setBrush (option.palette.brush (drawSelected ?
+						QPalette::Highlight :
+						QPalette::Button));
+			painter->setPen (option.palette.color (QPalette::ButtonText));
+			painter->drawEllipse (oneShotRect);
+		}
 
 		style->drawItemText (painter,
 				oneShotRect,
@@ -126,7 +128,7 @@ namespace LMP
 
 		for (const auto& rule : rulesVar.value<QList<Entity>> ())
 		{
-			painter->save ();
+			QPainterStateGuard guard { painter };
 
 			auto ruleRect = option.rect;
 			ruleRect.setWidth (rectWidth);
@@ -142,8 +144,6 @@ namespace LMP
 					option.palette,
 					true,
 					ruleSymb.first);
-
-			painter->restore ();
 
 			option.rect.adjust (ruleRect.width () + Padding, 0, 0, 0);
 		}
@@ -162,7 +162,7 @@ namespace LMP
 
 		auto bgOpt = option;
 
-		painter->save ();
+		QPainterStateGuard guard { painter };
 
 		if (index.data (Player::Role::IsCurrent).toBool ())
 		{
@@ -220,7 +220,6 @@ namespace LMP
 		itemStr = option.fontMetrics.elidedText (itemStr, Qt::ElideRight, itemTextRect.width ());
 
 		style->drawItemText (painter, itemTextRect, 0, option.palette, true, itemStr);
-		painter->restore ();
 	}
 
 	void PlaylistDelegate::PaintAlbum (QPainter *painter,
@@ -248,7 +247,7 @@ namespace LMP
 
 		int x = option.rect.left () + maxIconHeight + 3 * Padding;
 		int y = option.rect.top ();
-		painter->save ();
+		QPainterStateGuard guard { painter };
 
 		if (option.state & QStyle::State_Selected)
 			painter->setPen (option.palette.color (QPalette::HighlightedText));
@@ -269,8 +268,6 @@ namespace LMP
 		if (lengthStr.startsWith ("00:"))
 			lengthStr = lengthStr.mid (3);
 		painter->drawText (option.rect.adjusted (Padding, Padding, -Padding, -Padding), Qt::AlignRight, lengthStr);
-
-		painter->restore ();
 	}
 }
 }

@@ -12,6 +12,7 @@
 #include <QDomElement>
 #include <QGuiApplication>
 #include <QPainter>
+#include <QPainterStateGuard>
 #include <QTextDocument>
 #include <QTextBlock>
 #include <QTextEdit>
@@ -133,8 +134,7 @@ namespace LC::Monocle
 
 	void TextDocumentAdapter::PaintPage (QPainter *painter, int page, double xScale, double yScale)
 	{
-		painter->save ();
-		const auto oldHints = painter->renderHints ();
+		QPainterStateGuard guard { painter };
 		painter->setRenderHints (DefaultHints);
 
 		painter->scale (xScale, yScale);
@@ -144,9 +144,6 @@ namespace LC::Monocle
 		QRectF rect (QPointF (0, 0), size);
 		rect.moveTop (rect.height () * page);
 		Doc_->drawContents (painter, rect);
-
-		painter->setRenderHints (oldHints);
-		painter->restore ();
 	}
 
 	namespace

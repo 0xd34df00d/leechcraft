@@ -10,6 +10,7 @@
 #include <cmath>
 #include <QTreeView>
 #include <QPainter>
+#include <QPainterStateGuard>
 #include <QTextDocument>
 #include <QApplication>
 #include <QResizeEvent>
@@ -37,7 +38,7 @@ namespace Monocle
 			return;
 		}
 
-		painter->save ();
+		QPainterStateGuard guard { painter };
 		painter->translate (-View_->indentation (), 0);
 
 		auto option = opt;
@@ -52,12 +53,8 @@ namespace Monocle
 		const auto style = option.widget ? option.widget->style () : QApplication::style ();
 		style->drawPrimitive (QStyle::PE_PanelItemViewItem, &option, painter, option.widget);
 
-		painter->save ();
 		painter->translate (option.rect.topLeft ());
 		GetDoc (index, option.rect.width ())->drawContents (painter);
-		painter->restore ();
-
-		painter->restore ();
 	}
 
 	QSize AnnTreeDelegate::sizeHint (const QStyleOptionViewItem& opt, const QModelIndex& index) const

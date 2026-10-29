@@ -8,6 +8,7 @@
 
 #include "calendarwidget.h"
 #include <QPainter>
+#include <QPainterStateGuard>
 
 namespace LC
 {
@@ -31,7 +32,7 @@ namespace Blogique
 		if (Date2EntriesCount_.contains (date) &&
 				Date2EntriesCount_ [date])
 		{
-			painter->save ();
+			QPainterStateGuard guard { painter };
 			painter->setBrush (QBrush (Qt::blue));
 			const QPointF points [3] =
 			{
@@ -40,7 +41,6 @@ namespace Blogique
 				QPointF (rect.x (), rect.bottom ())
 			};
 			painter->drawPolygon (points, 3);
-			painter->restore ();
 		}
 	}
 }

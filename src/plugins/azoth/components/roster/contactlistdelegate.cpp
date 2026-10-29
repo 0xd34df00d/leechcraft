@@ -9,6 +9,7 @@
 #include "contactlistdelegate.h"
 #include <algorithm>
 #include <QPainter>
+#include <QPainterStateGuard>
 #include <QPixmap>
 #include <QApplication>
 #include <QAbstractProxyModel>
@@ -74,7 +75,7 @@ namespace Azoth
 	void ContactListDelegate::paint (QPainter *painter,
 			const QStyleOptionViewItem& sopt, const QModelIndex& index) const
 	{
-		painter->save ();
+		QPainterStateGuard guard { painter };
 		switch (index.data (CLREntryType).value<CLEntryType> ())
 		{
 		case CLETAccount:
@@ -87,7 +88,6 @@ namespace Azoth
 			DrawContact (painter, sopt, index);
 			break;
 		}
-		painter->restore ();
 	}
 
 	QSize ContactListDelegate::sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const

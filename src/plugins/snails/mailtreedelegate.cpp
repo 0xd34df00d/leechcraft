@@ -8,6 +8,7 @@
 
 #include "mailtreedelegate.h"
 #include <QPainter>
+#include <QPainterStateGuard>
 #include <QMouseEvent>
 #include <QToolBar>
 #include <QTreeView>
@@ -116,7 +117,7 @@ namespace Snails
 
 		const auto style = GetStyle (option);
 
-		painter->save ();
+		QPainterStateGuard guard { painter };
 
 		style->drawPrimitive (QStyle::PE_PanelItemViewItem, &option, painter, option.widget);
 
@@ -175,8 +176,6 @@ namespace Snails
 		painter->drawText (option.rect.left (),
 				y,
 				fontFM.elidedText (from, Qt::ElideRight, option.rect.width () - dateWidth - 5 * HorizontalPadding));
-
-		painter->restore ();
 	}
 
 	QSize MailTreeDelegate::sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const
@@ -395,7 +394,7 @@ namespace Snails
 		if (ActionsHintsBalls_)
 			height -= VerticalPadding_ * 2;
 
-		painter->save ();
+		QPainterStateGuard guard { painter };
 		painter->setRenderHint (QPainter::Antialiasing);
 
 		painter->setPen (Qt::NoPen);
@@ -427,8 +426,6 @@ namespace Snails
 
 			rect.moveLeft (rect.left () - height - HorizontalPadding);
 		}
-
-		painter->restore ();
 
 		return option.rect.right () - rect.right ();
 	}

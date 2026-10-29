@@ -8,6 +8,7 @@
 
 #include "collectiondelegate.h"
 #include <QPainter>
+#include <QPainterStateGuard>
 #include <QApplication>
 #include "literals.h"
 #include "localcollectionmodel.h"
@@ -74,7 +75,7 @@ namespace LC::LMP
 				option.widget->style () :
 				QApplication::style ();
 
-		painter->save ();
+		QPainterStateGuard guard { painter };
 
 		style->drawPrimitive (QStyle::PE_PanelItemViewItem, &option, painter, option.widget);
 
@@ -97,8 +98,6 @@ namespace LC::LMP
 				Qt::AlignVCenter, text);
 
 		PaintBorder (painter, option);
-
-		painter->restore ();
 	}
 
 	void CollectionDelegate::PaintOther (QPainter *painter,
