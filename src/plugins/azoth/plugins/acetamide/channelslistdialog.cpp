@@ -10,7 +10,7 @@
 #include <chrono>
 #include <QTimer>
 #include <QStandardItemModel>
-#include "channelslistfilterproxymodel.h"
+#include <QSortFilterProxyModel>
 #include "ircserverhandler.h"
 #include "localtypes.h"
 
@@ -42,12 +42,15 @@ namespace LC::Azoth::Acetamide
 		Ui_.setupUi (this);
 
 		const auto bufferTimer = new QTimer { this };
-		const auto filterModel = new ChannelsListFilterProxyModel { this };
+		const auto filterModel = new QSortFilterProxyModel { this };
 		const auto model = new QStandardItemModel { this };
 
 		model->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Users count"), tr ("Topic") });
 		filterModel->setSourceModel (model);
 		filterModel->setSortRole (SortRole);
+		filterModel->setSortCaseSensitivity (Qt::CaseInsensitive);
+		filterModel->setSortLocaleAware (true);
+		filterModel->setFilterCaseSensitivity (Qt::CaseInsensitive);
 		Ui_.ChannelsList_->setModel (filterModel);
 		Ui_.ChannelsList_->setColumnWidth (ChannelName, fontMetrics ().horizontalAdvance (QStringLiteral ("#asomewhatlongchannelname")));
 		Ui_.ChannelsList_->setColumnWidth (ParticipantsCount, fontMetrics ().horizontalAdvance (QStringLiteral ("99999")));
@@ -94,7 +97,7 @@ namespace LC::Azoth::Acetamide
 		connect (Ui_.Filter_,
 				&QLineEdit::textChanged,
 				filterModel,
-				qOverload<const QString&> (&ChannelsListFilterProxyModel::setFilterRegularExpression));
+				qOverload<const QString&> (&QSortFilterProxyModel::setFilterRegularExpression));
 		connect (Ui_.ChannelsList_,
 				&QTreeView::activated,
 				this,

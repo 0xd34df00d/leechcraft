@@ -18,7 +18,6 @@ class QTimer;
 
 namespace LC::Azoth::Acetamide
 {
-	class ChannelsListFilterProxyModel;
 	class IrcServerHandler;
 	struct ChannelsDiscoverInfo;
 

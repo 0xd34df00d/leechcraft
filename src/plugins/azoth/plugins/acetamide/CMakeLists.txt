@@ -12,7 +12,6 @@ LC_DEFINE_PLUGIN (
 		channelparticipantentry.cpp
 		channelpublicmessage.cpp
 		channelslistdialog.cpp
-		channelslistfilterproxymodel.cpp
 		channelsmanager.cpp
 		channelsubjecttracker.cpp
 		clientconnection.cpp
