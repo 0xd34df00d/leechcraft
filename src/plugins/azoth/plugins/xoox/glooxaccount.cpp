@@ -667,7 +667,7 @@ namespace Xoox
 		}
 
 		auto mgr = ClientConnection_->GetCryptHandler ()->GetPGPManager ();
-		mgr->SetPublicKey (entry->GetHumanReadableID (), pubKey);
+		mgr->SetPublicKey (entry->GetHumanReadableAddress (), pubKey);
 	}
 
 	QCA::PGPKey GlooxAccount::GetEntryKey (QObject *entryObj) const
@@ -682,7 +682,7 @@ namespace Xoox
 		}
 
 		auto mgr = ClientConnection_->GetCryptHandler ()->GetPGPManager ();
-		return mgr->PublicKey (entry->GetHumanReadableID ());
+		return mgr->PublicKey (entry->GetHumanReadableAddress ());
 	}
 
 	GPGExceptions::MaybeException_t GlooxAccount::SetEncryptionEnabled (QObject *entry, bool enabled)
