@@ -43,7 +43,7 @@ namespace LC::Poshuku
 				[this] (Qt::CheckState state)
 				{
 					const auto cs = state == Qt::Checked ? Qt::CaseSensitive : Qt::CaseInsensitive;
-					HistoryFilterModel_->setFilterCaseSensitivity (cs);
+					HistoryFilterModel_->SetCaseSensitivity (cs);
 				});
 
 		const auto itemsHeader = Ui_.HistoryView_->header ();
