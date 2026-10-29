@@ -18,6 +18,7 @@
 #include "components/models/torrentfilesmodel.h"
 #include "filesviewdelegate.h"
 #include "ltutils.h"
+#include "xmlsettingsmanager.h"
 
 namespace LC::BitTorrent
 {
@@ -50,7 +51,6 @@ namespace LC::BitTorrent
 		new Util::ClearLineEditAddon { GetProxyHolder (), Ui_.SearchLine_ };
 
 		ProxyModel_->SetFilterColumns ({ TorrentFilesModel::ColumnPath });
-		ProxyModel_->setAutoAcceptChildRows (true);
 		ProxyModel_->setSortRole (TorrentFilesModel::RoleSort);
 		Ui_.FilesView_->setItemDelegate (new FilesViewDelegate (Ui_.FilesView_));
 		Ui_.FilesView_->setItemDelegateForColumn (TorrentFilesModel::ColumnProgress,
@@ -72,6 +72,16 @@ namespace LC::BitTorrent
 					ProxyModel_->SetFilterString (text);
 					Ui_.FilesView_->expandAll ();
 				});
+		connect (Ui_.SearchFullPaths_,
+				&QCheckBox::toggled,
+				this,
+				[this] (bool fullPaths)
+				{
+					ProxyModel_->SetFilterRoles ({ fullPaths ? +TorrentFilesModel::RoleFullPath : +Qt::DisplayRole });
+					Ui_.FilesView_->expandAll ();
+					XmlSettingsManager::Instance ().setProperty ("FilesSearchFullPaths", fullPaths);
+				});
+		Ui_.SearchFullPaths_->setChecked (XmlSettingsManager::Instance ().Property ("FilesSearchFullPaths", false).toBool ());
 
 		connect (Ui_.FilePriorityRegulator_,
 				&QSpinBox::valueChanged,
@@ -117,6 +127,7 @@ namespace LC::BitTorrent
 
 		const auto filesCount = GetFilesCount (handle);
 		Ui_.SearchLine_->setVisible (filesCount > 1);
+		Ui_.SearchFullPaths_->setVisible (filesCount > 1);
 
 		const auto& fm = Ui_.FilesView_->fontMetrics ();
 		Ui_.FilesView_->header ()->resizeSection (0,
