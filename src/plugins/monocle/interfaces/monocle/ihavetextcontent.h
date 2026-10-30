@@ -29,6 +29,11 @@ namespace LC::Monocle
 		PageRelativeRectBase Rect_;
 		NextSpaceKind NextSpaceKind_;
 
+		/** @brief One rect per QChar of Text_.
+		 *
+		 * Letters_ is parallel to the UTF-16 units of Text_, so a non-BMP
+		 * character contributes two entries, both holding its glyph's rect.
+		 */
 		std::optional<QVector<PageRelativeRectBase>> Letters_ {};
 	};
 

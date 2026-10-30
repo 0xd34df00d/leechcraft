@@ -197,8 +197,14 @@ namespace LC::Monocle::PDF
 			{
 				QVector<PageRelativeRectBase> letters;
 				letters.reserve (text.size ());
-				for (int i = 0; i < text.size (); ++i)
-					letters << ToPageRelative (textBox->charBoundingBox (i), *page);
+				// poppler indexes character boxes by code point, Text_ by UTF-16 unit
+				int charIdx = 0;
+				for (const auto unit : text)
+				{
+					letters << ToPageRelative (textBox->charBoundingBox (charIdx), *page);
+					if (!unit.isHighSurrogate ())
+						++charIdx;
+				}
 				box.Letters_ = std::move (letters);
 			}
 			result.push_back (std::move (box));
