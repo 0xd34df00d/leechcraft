@@ -16,6 +16,7 @@ LC_DEFINE_PLUGIN (
 
 configure_file (leechcraft-session.in leechcraft-session @ONLY)
 install (PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/leechcraft-session DESTINATION ${LC_BINDIR})
+install (FILES freedesktop/LCDE.desktop DESTINATION share/xsessions)
 
 install (DIRECTORY share/fenet DESTINATION ${LC_SHARE_DEST}
 		FILES_MATCHING PATTERN "*.sh"
