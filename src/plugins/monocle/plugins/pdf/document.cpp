@@ -179,13 +179,8 @@ namespace LC::Monocle::PDF
 
 		const auto charLevelPrecision = XmlSettingsManager::Instance ().property ("CharPreciseSelection").toBool ();
 
-		const auto resultSize = charLevelPrecision ?
-				std::accumulate (popplerBoxes.begin (), popplerBoxes.end (), 0,
-						[] (int acc, auto&& textBox) { return acc + textBox->text ().size (); }) :
-				popplerBoxes.size ();
-
 		QVector<TextBox> result;
-		result.reserve (resultSize);
+		result.reserve (popplerBoxes.size ());
 		for (const auto& textBox : popplerBoxes)
 		{
 			const auto& text = textBox->text ();
