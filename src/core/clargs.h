@@ -41,6 +41,7 @@ namespace LC::CL
 		bool Multiprocess_;
 
 		bool Restart_;
+		bool Autorestart_;
 
 		QStringList Plugins_;
 	};

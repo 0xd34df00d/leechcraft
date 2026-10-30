@@ -186,6 +186,7 @@ namespace LC::CL
 			.Multiprocess_ = parser.isSet ("multiprocess"_qs),
 
 			.Restart_ = parser.isSet ("restart"_qs),
+			.Autorestart_ = parser.isSet ("autorestart"_qs),
 
 			.Plugins_ = parser.values ("plugin"_qs),
 		};

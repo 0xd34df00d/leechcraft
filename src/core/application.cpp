@@ -419,14 +419,13 @@ namespace LC
 
 	void Application::InitSessionManager ()
 	{
+		if (!CLArgs_->Autorestart_)
+			return;
+
 		connect (this,
 				&QGuiApplication::saveStateRequest,
 				this,
-				[this] (QSessionManager& sm)
-				{
-					if (Arguments_.contains ("-autorestart"))
-						sm.setRestartHint (QSessionManager::RestartImmediately);
-				});
+				[] (QSessionManager& sm) { sm.setRestartHint (QSessionManager::RestartImmediately); });
 	}
 
 	void Application::finishInit ()
