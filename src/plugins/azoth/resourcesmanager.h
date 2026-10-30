@@ -12,9 +12,9 @@
 #include <QObject>
 #include <QMap>
 #include <QHash>
+#include <QIcon>
 #include "interfaces/azoth/azothcommon.h"
 
-class QIcon;
 class QIODevice;
 
 namespace LC

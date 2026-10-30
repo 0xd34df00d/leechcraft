@@ -10,6 +10,7 @@
 
 #include <QObject>
 #include <QUrl>
+#include <interfaces/media/audiostructs.h>
 #include <interfaces/media/iradiostation.h>
 #include <interfaces/media/imodifiableradiostation.h>
 

@@ -40,6 +40,7 @@ namespace Xoox
 		uint64_t JobIdGen_ = 0;
 	public:
 		TransferManager (QXmppTransferManager&, ClientConnection&, GlooxAccount&);
+		~TransferManager () override;
 
 		Emitters::TransferManager& GetTransferManagerEmitter () override;
 		bool IsAvailable () const override;

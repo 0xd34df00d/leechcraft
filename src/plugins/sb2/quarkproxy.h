@@ -12,9 +12,9 @@
 #include <QPointer>
 #include <QHash>
 #include <QUrl>
+#include <QPoint>
+#include <QRect>
 #include <interfaces/core/icoreproxy.h>
-
-class QPoint;
 
 namespace LC::SB2
 {

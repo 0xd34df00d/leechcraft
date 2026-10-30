@@ -9,13 +9,12 @@
 #pragma once
 
 #include <QXmppClientExtension.h>
+#include <interfaces/azoth/isupportriex.h>
 
 namespace LC
 {
 namespace Azoth
 {
-struct RIEXItem;
-
 namespace Xoox
 {
 	class EntryBase;

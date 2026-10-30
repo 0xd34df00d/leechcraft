@@ -11,6 +11,7 @@
 #include <QObject>
 #include <QHash>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/blasq/isupportuploads.h>
 
 class QNetworkReply;
 class QUrl;
@@ -24,8 +25,6 @@ namespace Util
 
 namespace Blasq
 {
-struct UploadItem;
-
 namespace Rappor
 {
 	class VkAccount;

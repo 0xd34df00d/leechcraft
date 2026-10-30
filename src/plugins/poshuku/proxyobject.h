@@ -9,6 +9,8 @@
 #pragma once
 
 #include <QObject>
+#include <QVariant>
+#include "interfaces/poshuku/ibrowserwidget.h"
 #include "interfaces/poshuku/iproxyobject.h"
 
 namespace LC

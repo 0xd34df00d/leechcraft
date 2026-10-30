@@ -11,9 +11,9 @@
 #include <QObject>
 #include <QDir>
 #include <QSet>
+#include <QUrl>
 
 class QFileSystemWatcher;
-class QUrl;
 
 namespace LC::SB2
 {

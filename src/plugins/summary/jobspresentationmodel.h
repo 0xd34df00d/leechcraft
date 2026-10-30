@@ -9,11 +9,7 @@
 #pragma once
 
 #include <QIdentityProxyModel>
-
-namespace LC
-{
-	struct RowInfo;
-}
+#include <interfaces/ijobholder.h>
 
 namespace LC::Summary
 {

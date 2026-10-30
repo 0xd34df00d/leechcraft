@@ -12,6 +12,7 @@
 #include <QObject>
 #include <QHash>
 #include <QSet>
+#include <QVariant>
 #include "compinfo.h"
 
 class QStandardItemModel;

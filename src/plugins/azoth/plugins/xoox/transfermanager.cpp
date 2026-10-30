@@ -61,6 +61,8 @@ namespace Xoox
 		updateFTSettings ();
 	}
 
+	TransferManager::~TransferManager () = default;
+
 	Emitters::TransferManager& TransferManager::GetTransferManagerEmitter ()
 	{
 		return Emitter_;

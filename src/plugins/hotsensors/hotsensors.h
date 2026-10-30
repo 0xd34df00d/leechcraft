@@ -13,14 +13,11 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iquarkcomponentprovider.h>
 #include "backend.h"
+#include "historymanager.h"
 #include "plotmanager.h"
 
 namespace LC::HotSensors
 {
-	class Backend;
-	class HistoryManager;
-	class PlotManager;
-
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IQuarkComponentProvider

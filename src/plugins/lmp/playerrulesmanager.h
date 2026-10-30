@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QObject>
+#include <interfaces/structures.h>
 
 class QStandardItemModel;
 class QStandardItem;
@@ -16,8 +17,6 @@ class QModelIndex;
 
 namespace LC
 {
-struct Entity;
-
 namespace LMP
 {
 	class PlayerRulesManager : public QObject
