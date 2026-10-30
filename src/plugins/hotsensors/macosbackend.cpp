@@ -9,7 +9,6 @@
 #include "macosbackend.h"
 #include <limits>
 #include <QtConcurrent>
-#include <QCoreApplication>
 #include <QtDebug>
 #include <IOKit/IOKitLib.h>
 
@@ -246,7 +245,7 @@ namespace LC::HotSensors
 	MacOsBackend::MacOsBackend (QObject *parent)
 	: Backend { parent }
 	{
-		if (QCoreApplication::arguments ().contains ("--enumerateSensors"))
+		if (qEnvironmentVariableIntValue ("LC_HOTSENSORS_ENUMERATE_SENSORS"))
 			EnumerateSensors ();
 	}
 
