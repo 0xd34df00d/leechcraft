@@ -153,8 +153,7 @@ namespace LC::AnHero
 	{
 		const std::unique_ptr<QTranslator> translator { Util::InstallTranslator ("anhero"_qs) };
 
-		auto args = QCoreApplication::arguments ();
-		if (args.contains ("-noanhero"_qs))
+		if (qEnvironmentVariableIntValue ("LC_ANHERO_DISABLE"))
 			return;
 
 #ifdef Q_OS_MAC
@@ -162,6 +161,7 @@ namespace LC::AnHero
 			return;
 #endif
 
+		auto args = QCoreApplication::arguments ();
 		args.removeFirst ();
 
 		AppPath_ = QCoreApplication::applicationFilePath ().toUtf8 ();
