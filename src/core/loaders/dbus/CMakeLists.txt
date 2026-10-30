@@ -14,7 +14,6 @@ add_executable (lc_plugin_wrapper${LC_EXEC_SUFFIX} WIN32
 	${SRCS}
 	)
 target_link_libraries (lc_plugin_wrapper${LC_EXEC_SUFFIX}
-		${Boost_PROGRAM_OPTIONS_LIBRARY}
 		${LEECHCRAFT_LIBRARIES}
 		${ADDITIONAL_LIBS}
 		)

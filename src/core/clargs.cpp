@@ -7,104 +7,56 @@
  **********************************************************************/
 
 #include "clargs.h"
-#include <boost/program_options.hpp>
+#include <QCommandLineParser>
 #include <QDir>
 #include <QStringList>
 #include <QUrl>
 #include <QtDebug>
 #include <interfaces/structures.h>
+#include <util/sll/qtutil.h>
 #include <util/xpc/util.h>
-
-namespace bpo = boost::program_options;
 
 namespace LC::CL
 {
 	namespace
 	{
-		bpo::options_description GetOptions ()
+		void SetupParser (QCommandLineParser& parser)
 		{
-			bpo::options_description invisible ("Invisible options");
-			invisible.add_options ()
-					("entity,E", bpo::wvalue<std::vector<std::wstring>> (), "the entity to handle");
+			QCommandLineOption entity { { "E"_qs, "entity"_qs }, "the entity to handle"_qs, "entity"_qs };
+			entity.setFlags (QCommandLineOption::HiddenFromHelp);
 
-			bpo::options_description desc ("Allowed options");
-			desc.add_options ()
-					("help", "show the help message")
-					("version,v", "print LC version")
-					("download,D", "only choose downloaders for the entity: it should be downloaded but not handled")
-					("handle,H", "only choose handlers for the entity: it should be handled but not downloaded")
-					("type,T", bpo::value<std::string> (), "the type of the entity: url, url_encoded, file (for file paths) and such")
-					("additional,A", bpo::value<std::vector<std::string>> (), "parameters for the Additional entity vmap in the form of name:value")
-					("automatic", "the entity is a result of some automatic stuff, not user's actions")
-					("bt", "print backtraces for warning messages into warning.log")
-					("plugin,P", bpo::value<std::vector<std::string>> (), "load only given plugin and ignore already running instances of LC")
-					("multiprocess,M", "load plugins in separate processes")
-					("nolog", "disable custom file logger and print everything to stdout/stderr")
-					("clear-socket", "clear stalled socket, use if you believe previous LC instance has terminated but failed to close its local socket properly")
-					("no-app-catch", "disable exceptions catch-all in QApplication::notify(), useful for debugging purposes")
-					("safe-mode", "disable all plugins so that you can manually enable them in Settings later")
-					("list-plugins", "list all non-adapted plugins that were found and exit (this one doesn't check if plugins are valid and loadable)")
-					("no-resource-caching", "disable caching of dynamic loadable resources (useful for stuff like Azoth themes development)")
-					("autorestart", "automatically restart LC if it's closed (not guaranteed to work everywhere, especially on Windows and Mac OS X)")
-					("minimized", "start LC minimized to tray")
-					("no-splash-screen", "do not show the splash screen")
-					("restart", "restart the LC");
-
-			bpo::options_description all;
-			all.add (desc);
-			all.add (invisible);
-			return all;
+			parser.addOptions ({
+					{ "help"_qs, "show the help message"_qs },
+					{ { "v"_qs, "version"_qs }, "print LC version"_qs },
+					{ { "D"_qs, "download"_qs }, "only choose downloaders for the entity: it should be downloaded but not handled"_qs },
+					{ { "H"_qs, "handle"_qs }, "only choose handlers for the entity: it should be handled but not downloaded"_qs },
+					{ { "T"_qs, "type"_qs }, "the type of the entity: url, url_encoded, file (for file paths) and such"_qs, "type"_qs },
+					{ { "A"_qs, "additional"_qs }, "parameters for the Additional entity vmap in the form of name:value"_qs, "name:value"_qs },
+					{ "automatic"_qs, "the entity is a result of some automatic stuff, not user's actions"_qs },
+					{ "bt"_qs, "print backtraces for warning messages into warning.log"_qs },
+					{ { "P"_qs, "plugin"_qs }, "load only given plugin and ignore already running instances of LC"_qs, "plugin"_qs },
+					{ { "M"_qs, "multiprocess"_qs }, "load plugins in separate processes"_qs },
+					{ "nolog"_qs, "disable custom file logger and print everything to stdout/stderr"_qs },
+					{ "clear-socket"_qs, "clear stalled socket, use if you believe previous LC instance has terminated but failed to close its local socket properly"_qs },
+					{ "no-app-catch"_qs, "disable exceptions catch-all in QApplication::notify(), useful for debugging purposes"_qs },
+					{ "safe-mode"_qs, "disable all plugins so that you can manually enable them in Settings later"_qs },
+					{ "list-plugins"_qs, "list all non-adapted plugins that were found and exit (this one doesn't check if plugins are valid and loadable)"_qs },
+					{ "no-resource-caching"_qs, "disable caching of dynamic loadable resources (useful for stuff like Azoth themes development)"_qs },
+					{ "autorestart"_qs, "automatically restart LC if it's closed (not guaranteed to work everywhere, especially on Windows and Mac OS X)"_qs },
+					{ "desktop"_qs, "run LC as the desktop environment (used by leechcraft-session)"_qs },
+					{ "minimized"_qs, "start LC minimized to tray"_qs },
+					{ "no-splash-screen"_qs, "do not show the splash screen"_qs },
+					{ "restart"_qs, "restart the LC"_qs },
+					entity,
+				});
+			parser.addPositionalArgument ("entity"_qs, "the entity to handle"_qs, "[entity...]"_qs);
 		}
 
-		bpo::variables_map Parse (bpo::wcommand_line_parser& parser)
-		{
-			bpo::variables_map vm;
-
-			bpo::positional_options_description pdesc;
-			pdesc.add ("entity", -1);
-
-			bpo::store (parser
-						.options (GetOptions ())
-						.positional (pdesc)
-						.allow_unregistered ()
-						.run (),
-					vm);
-			bpo::notify (vm);
-
-			return vm;
-		}
-
-		QStringList ToStringList (const bpo::variables_map& vmap, const std::string& key)
-		{
-			if (!vmap.count (key))
-				return {};
-
-			QStringList result;
-			for (const auto& str : vmap [key].as<std::vector<std::string>> ())
-				result << QString::fromStdString (str);
-			return result;
-		}
-
-		QString GetType (const bpo::variables_map& map)
-		{
-			const auto pos = map.find ("type");
-			if (pos == map.end ())
-				return {};
-
-			return QString::fromStdString (pos->second.as<std::string> ());
-		}
-
-		QVariantMap GetAdditionalMap (const bpo::variables_map& map)
+		QVariantMap GetAdditionalMap (const QCommandLineParser& parser)
 		{
 			QVariantMap addMap;
-
-			const auto pos = map.find ("additional");
-			if (pos == map.end ())
-				return addMap;
-
-			for (const auto& add : pos->second.as<std::vector<std::string>> ())
+			for (const auto& str : parser.values ("additional"_qs))
 			{
-				const auto& str = QString::fromStdString (add);
 				const auto& name = str.section (':', 0, 0);
 				const auto& value = str.section (':', 1);
 				if (value.isEmpty ())
@@ -125,21 +77,21 @@ namespace LC::CL
 			return addMap;
 		}
 
-		TaskParameters GetTaskParams (const bpo::variables_map& map)
+		TaskParameters GetTaskParams (const QCommandLineParser& parser)
 		{
 			TaskParameters tp { FromCommandLine };
-			if (map.count ("automatic"))
+			if (parser.isSet ("automatic"_qs))
 				tp |= AutoAccept;
 			else
 				tp |= FromUserInitiated;
 
-			if (map.count ("handle"))
+			if (parser.isSet ("handle"_qs))
 			{
 				tp |= OnlyHandle;
 				tp |= AutoAccept;
 			}
 
-			if (map.count ("download"))
+			if (parser.isSet ("download"_qs))
 			{
 				tp |= OnlyDownload;
 				tp |= AutoAccept;
@@ -159,23 +111,21 @@ namespace LC::CL
 			return QUrl::fromLocalFile (QDir { curDir }.filePath (entity));
 		}
 
-		QVector<Entity> ParseEntities (const bpo::variables_map& map, const QString& curDir)
+		QVector<Entity> ParseEntities (const QCommandLineParser& parser, const QString& curDir)
 		{
-			if (!map.count ("entity"))
+			const auto& rawEntities = parser.values ("entity"_qs) + parser.positionalArguments ();
+			if (rawEntities.isEmpty ())
 				return {};
 
-			const auto& tp = GetTaskParams (map);
-			const auto& type = GetType (map);
-			const auto& addMap = GetAdditionalMap (map);
+			const auto& tp = GetTaskParams (parser);
+			const auto& type = parser.value ("type"_qs);
+			const auto& addMap = GetAdditionalMap (parser);
 
-			const auto& rawEntities = map ["entity"].as<std::vector<std::wstring>> ();
 			QVector<Entity> result;
 			result.reserve (rawEntities.size ());
-			for (const auto& rawEntity : rawEntities)
+			for (const auto& entity : rawEntities)
 			{
 				QVariant ve;
-
-				const auto& entity = QString::fromWCharArray (rawEntity.c_str ());
 
 				if (type == "url")
 					ve = QUrl (entity);
@@ -204,47 +154,47 @@ namespace LC::CL
 		}
 	}
 
-	Args Parse (const QStringList& args, const QString& curDir)
+	Util::Either<QString, Args> Parse (const QStringList& args, const QString& curDir)
 	{
-		std::vector<std::wstring> strings;
-		for (const auto& arg : args)
-			strings.push_back (arg.toStdWString ());
-		bpo::wcommand_line_parser parser (strings);
-		auto vmap = Parse (parser);
+		QCommandLineParser parser;
+		SetupParser (parser);
 
-		return
+		// parse () skips the first argument as the program name
+		if (!parser.parse (QStringList { QString {} } + args))
+			return { Util::AsLeft, parser.errorText () };
+
+		return Args
 		{
-			.Entities_ = ParseEntities (vmap, curDir),
+			.Entities_ = ParseEntities (parser, curDir),
 
-			.HelpRequested_ = vmap.contains ("help"),
-			.VersionRequested_ = vmap.contains ("version"),
-			.ListPluginsRequested_ = vmap.contains ("list-plugins"),
+			.HelpRequested_ = parser.isSet ("help"_qs),
+			.VersionRequested_ = parser.isSet ("version"_qs),
+			.ListPluginsRequested_ = parser.isSet ("list-plugins"_qs),
 
-			.NoResourceCaching_ = vmap.contains ("no-resource-caching"),
-			.NoSplashScreen_ = vmap.contains ("no-splash-screen"),
-			.Minimized_ = vmap.contains ("minimized"),
+			.NoResourceCaching_ = parser.isSet ("no-resource-caching"_qs),
+			.NoSplashScreen_ = parser.isSet ("no-splash-screen"_qs),
+			.Minimized_ = parser.isSet ("minimized"_qs),
 
-			.SafeMode_ = vmap.contains ("safe-mode"),
+			.SafeMode_ = parser.isSet ("safe-mode"_qs),
 
-			.CatchExceptions_ = !vmap.contains ("no-app-catch"),
-			.NoLog_ = vmap.contains ("nolog"),
-			.Backtrace_ = vmap.contains ("bt"),
+			.CatchExceptions_ = !parser.isSet ("no-app-catch"_qs),
+			.NoLog_ = parser.isSet ("nolog"_qs),
+			.Backtrace_ = parser.isSet ("bt"_qs),
 
-			.ClearSocket_ = vmap.contains ("clear-socket"),
+			.ClearSocket_ = parser.isSet ("clear-socket"_qs),
 
-			.Multiprocess_ = vmap.contains ("multiprocess"),
+			.Multiprocess_ = parser.isSet ("multiprocess"_qs),
 
-			.Restart_ = vmap.contains ("restart"),
+			.Restart_ = parser.isSet ("restart"_qs),
 
-			.Plugins_ = ToStringList (vmap, "plugin"),
+			.Plugins_ = parser.values ("plugin"_qs),
 		};
 	}
 
-	std::string GetHelp ()
+	QString GetHelp ()
 	{
-		const auto& opts = GetOptions ();
-		std::stringstream ss;
-		ss << opts;
-		return ss.str ();
+		QCommandLineParser parser;
+		SetupParser (parser);
+		return parser.helpText ();
 	}
 }

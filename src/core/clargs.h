@@ -10,6 +10,7 @@
 
 #include <QVector>
 #include <QStringList>
+#include <util/sll/either.h>
 
 namespace LC
 {
@@ -44,6 +45,6 @@ namespace LC::CL
 		QStringList Plugins_;
 	};
 
-	Args Parse (const QStringList& args, const QString& curDir);
-	std::string GetHelp ();
+	Util::Either<QString, Args> Parse (const QStringList& args, const QString& curDir);
+	QString GetHelp ();
 }

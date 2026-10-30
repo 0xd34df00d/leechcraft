@@ -7,10 +7,10 @@
  **********************************************************************/
 
 #include "application.h"
-#include <iostream>
 #include <cstring>
 #include <cstdlib>
 #include <boost/scoped_array.hpp>
+#include <QCommandLineParser>
 #include <QEvent>
 #include <QtDebug>
 #include <QLocalServer>
@@ -42,6 +42,7 @@
 #include <util/util.h>
 #include <util/structuresops.h>
 #include <util/sll/exceptions.h>
+#include <util/sll/qtutil.h>
 #include <util/sys/paths.h>
 #include <util/qml/tooltipitem.h>
 #include <util/threads/concurrentexception.h>
@@ -79,25 +80,28 @@ namespace LC
 		qputenv ("PX_MODULE_PATH", {});
 
 		Arguments_ = arguments ().mid (1);
-		CLArgs_ = std::make_unique<CL::Args> (CL::Parse (Arguments_, QDir::currentPath ()));
+		auto parsedArgs = CL::Parse (Arguments_, QDir::currentPath ());
+		if (parsedArgs.IsLeft ())
+			QCommandLineParser::showMessageAndExit (QCommandLineParser::MessageType::Error,
+					"%1: %2\n"_qs.arg (applicationName (), parsedArgs.GetLeft ()),
+					EInvalidArguments);
+		CLArgs_ = std::make_unique<CL::Args> (std::move (parsedArgs.GetRight ()));
 
 		if (CLArgs_->HelpRequested_)
-		{
-			std::cout << "LeechCraft " << Version << " (https://leechcraft.org)" << std::endl;
-			std::cout << std::endl;
-			std::cout << CL::GetHelp () << std::endl;
-			std::exit (EHelpRequested);
-		}
+			QCommandLineParser::showMessageAndExit (QCommandLineParser::MessageType::Information,
+					"LeechCraft %1 (https://leechcraft.org)\n\n%2"_qs.arg (QString::fromLatin1 (Version), CL::GetHelp ()),
+					EHelpRequested);
 
 		if (CLArgs_->VersionRequested_)
 		{
-			std::cout << "LeechCraft " << Version << " (https://leechcraft.org)" << std::endl;
 #ifdef Q_OS_WIN32
-			std::cout << " <this version does not have UNLIMITED CAT POWER :(>" << std::endl;
+			const auto& catPower = " <this version does not have UNLIMITED CAT POWER :(>"_qs;
 #else
-			std::cout << " this version has the UNLIMITED CAT POWER :3 ε:" << std::endl;
+			const auto& catPower = u" this version has the UNLIMITED CAT POWER :3 ε:"_qs;
 #endif
-			std::exit (EVersionRequested);
+			QCommandLineParser::showMessageAndExit (QCommandLineParser::MessageType::Information,
+					"LeechCraft %1 (https://leechcraft.org)\n%2\n"_qs.arg (QString::fromLatin1 (Version), catPower),
+					EVersionRequested);
 		}
 
 		if (CLArgs_->ClearSocket_)
@@ -196,11 +200,6 @@ namespace LC
 
 	Application::~Application () = default;
 
-	const QStringList& Application::Arguments () const
-	{
-		return Arguments_;
-	}
-
 	const CL::Args& Application::GetParsedArguments () const
 	{
 		return *CLArgs_;
@@ -258,7 +257,8 @@ namespace LC
 		if (event->type () == QEvent::LanguageChange)
 			return true;
 
-		if (!CLArgs_->CatchExceptions_)
+		// CLArgs_ is null if the constructor exits on invalid arguments, and exit () still delivers events
+		if (!CLArgs_ || !CLArgs_->CatchExceptions_)
 			return QApplication::notify (obj, event);
 
 		try

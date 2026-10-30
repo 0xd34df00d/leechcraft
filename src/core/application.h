@@ -43,7 +43,8 @@ namespace LC
 			EPaths = 2,
 			EHelpRequested = 3,
 			EGeneralSocketError = 4,
-			EVersionRequested = 5
+			EVersionRequested = 5,
+			EInvalidArguments = 6,
 		};
 
 		/** Constructs the Application, parses the command line,
@@ -56,14 +57,6 @@ namespace LC
 		Application (int& argc, char **argv);
 
 		~Application () override;
-
-		/** Returns the cached copy of QCoreApplication::arguments().
-		 * Provided for performance reasons, as Qt docs say that calling
-		 * the original function is slow.
-		 *
-		 * @return Cached copy of QCoreApplication::arguments().
-		 */
-		const QStringList& Arguments () const;
 
 		const CL::Args& GetParsedArguments () const;
 

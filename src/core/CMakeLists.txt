@@ -4,7 +4,6 @@ include_directories (${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}/..
 	${CMAKE_CURRENT_SOURCE_DIR}/..
 	${CMAKE_CURRENT_SOURCE_DIR}
-	${Boost_INCLUDE_DIR}
 	)
 
 option (WITH_DBUS_LOADERS "Build D-Bus loaders on UNIX" OFF)
@@ -14,7 +13,7 @@ if (WITH_X11 AND NOT APPLE)
 	find_package (X11)
 endif ()
 
-add_compile_definitions (BOOST_PROGRAM_OPTIONS_DYN_LINK
+add_compile_definitions (
 	$<$<BOOL:${WITH_DBUS_LOADERS}>:WITH_DBUS_LOADERS>
 	$<$<BOOL:${WITH_QWT}>:WITH_QWT>
 	$<$<BOOL:${X11_FOUND}>:HAVE_X11>
@@ -123,7 +122,7 @@ else ()
 endif ()
 
 target_link_libraries (leechcraft-core
-		${Boost_PROGRAM_OPTIONS_LIBRARY}
+		Boost::headers
 		${LEECHCRAFT_LIBRARIES}
 		$<$<BOOL:${X11_FOUND}>:${X11_X11_LIB}>
 		$<$<NOT:$<PLATFORM_ID:Darwin>>:stdc++exp>

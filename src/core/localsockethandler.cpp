@@ -54,8 +54,13 @@ namespace LC
 
 		qDebug () << Q_FUNC_INFO << arguments << foreignPath;
 
-		for (const auto& entity : CL::Parse (arguments, foreignPath).Entities_)
-			EntityManager { nullptr, nullptr }.HandleEntity (entity);
+		Util::Visit (CL::Parse (arguments, foreignPath),
+				[] (const CL::Args& args)
+				{
+					for (const auto& entity : args.Entities_)
+						EntityManager { nullptr, nullptr }.HandleEntity (entity);
+				},
+				[] (const QString& error) { qWarning () << "cannot parse the arguments:" << error; });
 	}
 
 	namespace
