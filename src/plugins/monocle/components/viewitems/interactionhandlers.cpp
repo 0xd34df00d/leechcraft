@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "interactionhandlers.h"
-#include <ranges>
+#include <algorithm>
 #include <QClipboard>
 #include <QGuiApplication>
 #include <QImageWriter>
@@ -16,12 +16,12 @@
 #include <QMouseEvent>
 #include <interfaces/core/icoreproxy.h>
 #include <util/sll/qtutil.h>
-#include <util/sll/util.h>
 #include <util/xpc/stddatafiltermenucreator.h>
 #include "interfaces/monocle/idocument.h"
 #include "interfaces/monocle/ihavetextcontent.h"
 #include "pagegraphicsitem.h"
 #include "pagesview.h"
+#include "textselectionitem.h"
 #include "xmlsettingsmanager.h"
 
 namespace LC::Monocle
@@ -181,22 +181,17 @@ namespace LC::Monocle
 		}
 	}
 
-	struct TextSelectionInteraction::BoxRepr
-	{
-		TextBox Box_;
-		std::shared_ptr<QGraphicsRectItem> Item_;
-
-		bool IsWordPart_ = false;
-	};
-
 	TextSelectionInteraction::TextSelectionInteraction (PagesView& view, IDocument& doc, const QVector<PageGraphicsItem*>& pages)
 	: InteractionHandler { view, { .DragMode_ = QGraphicsView::NoDrag, .Cursor_ = Qt::IBeamCursor } }
 	, IHTC_ { GetIHTC (doc) }
-	, Pages_ { pages }
+	, Pages_ { pages.begin (), pages.end () }
 	{
 	}
 
-	TextSelectionInteraction::~TextSelectionInteraction () = default;
+	TextSelectionInteraction::~TextSelectionInteraction ()
+	{
+		ClearSelection ();
+	}
 
 	namespace
 	{
@@ -215,7 +210,7 @@ namespace LC::Monocle
 				const F& proj = {})
 		{
 			const auto first = std::ranges::find_if (boxes.begin (), boxes.end (),
-					[&] (const PageRelativeRect& rect)
+					[&] (const PageRelativeRectBase& rect)
 					{
 						const auto& bottomRight = rect.BottomRight<PageRelativePos> ();
 						return bottomRight.BothGeqThan (firstPos) || bottomRight.BothGeqThan (lastPos);
@@ -229,7 +224,7 @@ namespace LC::Monocle
 					firstPos;
 
 			const auto last = std::ranges::find_if (boxes.rbegin (), std::reverse_iterator { std::next (first) },
-					[&] (const PageRelativeRect& rect)
+					[&] (const PageRelativeRectBase& rect)
 					{
 						return rect.TopLeft<PageRelativePos> ().BothLeqThan (contraPos);
 					},
@@ -237,9 +232,9 @@ namespace LC::Monocle
 			return std::pair { first, last };
 		}
 
-		auto ToTuple (const TextSelectionInteraction::SelectionCornerInfo& info)
+		auto ToTuple (const PageWithRelativePos& info)
 		{
-			return std::tuple { info.first->GetPageNum (), info.second.P_.y (), info.second.P_.x () };
+			return std::tuple { info.Page_, info.Pos_.P_.y (), info.Pos_.P_.x () };
 		}
 	}
 
@@ -247,7 +242,7 @@ namespace LC::Monocle
 	{
 		IsSelectionGesture_ = false;
 
-		ClearBoxes ();
+		ClearSelection ();
 
 		SelectionStart_.reset ();
 		EnsureHasSelectionStart (ViewAbsolutePos { ev.position () });
@@ -264,84 +259,87 @@ namespace LC::Monocle
 
 	namespace
 	{
-		void UndoWordPart (PageGraphicsItem& page, TextSelectionInteraction::BoxRepr& repr)
+		struct LetterRange
 		{
-			if (repr.IsWordPart_)
-			{
-				repr.IsWordPart_ = false;
-				page.SetChildRect (repr.Item_.get (), repr.Box_.Rect_);
-			}
-		}
-
-		enum class SelectMidWordOpts : std::uint8_t
-		{
-			None,
-			ForceBeginIncluded,
-			ForceEndIncluded,
+			qsizetype Begin_;
+			qsizetype End_;
 		};
 
-		void SelectMidWord (PageGraphicsItem& page, PageRelativePos startPos, PageRelativePos endPos,
-				TextSelectionInteraction::BoxRepr& repr,
-				SelectMidWordOpts opts = SelectMidWordOpts::None)
+		LetterRange WholeBox (const TextBox& box)
 		{
-			if (!repr.Box_.Letters_)
-				return;
-
-			const auto& firstWordLetters = *repr.Box_.Letters_;
-
-			auto [firstWordBegin, firstWordEnd] = GetSelectedRange (firstWordLetters, startPos, endPos);
-			if (opts == SelectMidWordOpts::ForceBeginIncluded)
-				firstWordBegin = firstWordLetters.begin ();
-			if (opts == SelectMidWordOpts::ForceEndIncluded)
-				firstWordEnd = firstWordLetters.end ();
-
-			if (firstWordBegin == firstWordLetters.begin () && firstWordEnd == firstWordLetters.end ())
-				UndoWordPart (page, repr);
-			else
-			{
-				repr.IsWordPart_ = true;
-				page.SetChildRect (repr.Item_.get (), *firstWordBegin | *(firstWordEnd - 1));
-			}
+			return { 0, box.Text_.size () };
 		}
 
-		void SelectMidWords (PageGraphicsItem& page, PageRelativePos startPos, PageRelativePos endPos,
-				std::vector<TextSelectionInteraction::BoxRepr>::iterator selBegin,
-				std::vector<TextSelectionInteraction::BoxRepr>::iterator selEnd)
+		LetterRange SelectLetters (const TextBox& box, PageRelativePos startPos, PageRelativePos endPos)
 		{
-			if (selBegin == selEnd)
-				return;
+			if (!box.Letters_)
+				return WholeBox (box);
 
-			const auto postBegin = selBegin + 1;
-			const auto preEnd = selEnd - 1;
+			const auto& letters = *box.Letters_;
+			const auto [begin, end] = GetSelectedRange (letters, startPos, endPos);
+			if (begin == letters.end ())
+				return WholeBox (box);
 
-			if (postBegin <= preEnd)
-				for (auto& repr : std::ranges::subrange (postBegin, preEnd))
-					UndoWordPart (page, repr);
+			return { begin - letters.begin (), end - letters.begin () };
+		}
 
-			if (selEnd - selBegin == 1)
-				SelectMidWord (page, startPos, endPos, *selBegin);
-			else
+		struct BoxPositionInfo
+		{
+			bool IsFirst_;
+			bool IsLast_;
+		};
+
+		BoxPositionInfo GetBoxPositionInfo (const TextSelectionInteraction::Selection& sel, qsizetype boxIdx)
+		{
+			return { .IsFirst_ = boxIdx == sel.Start_.Box_, .IsLast_ = boxIdx == sel.End_.Box_ };
+		}
+
+		LetterRange GetLetters (const TextSelectionInteraction::Selection& sel, BoxPositionInfo boxPos, const TextBox& box)
+		{
+			return
 			{
-				SelectMidWord (page, startPos, endPos, *selBegin, SelectMidWordOpts::ForceEndIncluded);
-				SelectMidWord (page, startPos, endPos, *preEnd, SelectMidWordOpts::ForceBeginIncluded);
+				.Begin_ = boxPos.IsFirst_ ? sel.Start_.Letter_ : 0,
+				.End_ = boxPos.IsLast_ ? sel.End_.Letter_ : box.Text_.size (),
+			};
+		}
+
+		QVector<PageRelativeRect> GetSelectionRects (const TextSelectionInteraction::PageText& text)
+		{
+			QVector<PageRelativeRect> rects;
+			if (!text.Selection_)
+				return rects;
+
+			const auto& sel = *text.Selection_;
+			rects.reserve (sel.End_.Box_ - sel.Start_.Box_ + 1);
+			for (auto i = sel.Start_.Box_; i <= sel.End_.Box_; ++i)
+			{
+				const auto& box = text.Boxes_ [i];
+				const auto [begin, end] = GetLetters (sel, GetBoxPositionInfo (sel, i), box);
+				if (box.Letters_ && (begin > 0 || end < box.Text_.size ()))
+					rects << (box.Letters_->at (begin) | box.Letters_->at (end - 1));
+				else
+					rects << box.Rect_;
 			}
+			return rects;
 		}
 	}
 
-	void TextSelectionInteraction::SelectOnPage (PageGraphicsItem& page, PageRelativePos startPos, PageRelativePos endPos)
+	void TextSelectionInteraction::SelectOnPage (int pageNum, PageRelativePos startPos, PageRelativePos endPos)
 	{
-		auto& boxes = LoadBoxes (page);
+		auto& text = LoadText (pageNum);
+		const auto& boxes = text.Boxes_;
 
 		const auto [selBegin, selEnd] = GetSelectedRange (boxes, startPos, endPos,
-				[] (const TextSelectionInteraction::BoxRepr& boxRepr) { return boxRepr.Box_.Rect_; });
-		for (auto& box : std::ranges::subrange (boxes.begin (), selBegin))
-			box.Item_->setVisible (false);
-		for (auto& box : std::ranges::subrange (selBegin, selEnd))
-			box.Item_->setVisible (true);
-		for (auto& box : std::ranges::subrange (selEnd, boxes.end ()))
-			box.Item_->setVisible (false);
+				[] (const TextBox& box) { return box.Rect_; });
+		if (selBegin == selEnd)
+			return;
 
-		SelectMidWords (page, startPos, endPos, selBegin, selEnd);
+		const auto selLast = selEnd - 1;
+		text.Selection_ = Selection
+		{
+			.Start_ = { selBegin - boxes.begin (), SelectLetters (*selBegin, startPos, endPos).Begin_ },
+			.End_ = { selLast - boxes.begin (), SelectLetters (*selLast, startPos, endPos).End_ },
+		};
 	}
 
 	namespace
@@ -376,39 +374,26 @@ namespace LC::Monocle
 
 	void TextSelectionInteraction::Released (QMouseEvent& ev)
 	{
-		const auto guard = Util::MakeScopeGuard ([this] { ClearBoxes (); });
-
 		if (!IsSelectionGesture_)
 			return;
 
 		UpdateSelection (ViewAbsolutePos { ev.position () });
 
-		const auto selectedBoxesCount = std::accumulate (Boxes_.begin (), Boxes_.end (), 0,
-				[] (int acc, auto&& boxes)
-				{
-					return acc + std::ranges::count_if (boxes, [] (auto&& box) { return box.Item_->isVisible (); });
-				});
-
-		QStringList textBits;
-		textBits.reserve (selectedBoxesCount * 2);
-
-		const auto preserveNewlines = ShouldPreserveNewlines (ev);
-		for (const auto& boxes : Boxes_)
-			for (auto& box : boxes)
-				if (box.Item_->isVisible ())
-				{
-					textBits << box.Box_.Text_;
-					if (const auto nextSym = GetNextSpace (box.Box_.NextSpaceKind_, preserveNewlines))
-						textBits << *nextSym;
-				}
-
-		const auto& text = textBits.join (QStringView {}).trimmed ();
+		const auto& text = GetSelectedText (ShouldPreserveNewlines (ev));
 		if (text.isEmpty ())
+		{
+			ClearSelection ();
 			return;
+		}
 
-		QMenu menu { &View_ };
-		FillMenuForText (menu, text);
-		menu.exec (ev.globalPosition ().toPoint ());
+		const auto menu = new QMenu { &View_ };
+		menu->setAttribute (Qt::WA_DeleteOnClose);
+		FillMenuForText (*menu, text);
+		connect (menu,
+				&QMenu::aboutToHide,
+				this,
+				&TextSelectionInteraction::ClearSelection);
+		menu->popup (ev.globalPosition ().toPoint ());
 	}
 
 	void TextSelectionInteraction::DoubleClicked (QMouseEvent& ev)
@@ -431,22 +416,34 @@ namespace LC::Monocle
 		const auto [startPage, startPos] = selTopLeft;
 		const auto [endPage, endPos] = selBottomRight;
 
+		for (auto& text : Texts_)
+			text.Selection_.reset ();
+
 		if (startPage == endPage)
-			SelectOnPage (*startPage, startPos, endPos);
+			SelectOnPage (startPage, startPos, endPos);
 		else
 		{
-			SelectOnPage (*startPage, startPos, PageRelativePos { 1, 1 });
-			for (int i = startPage->GetPageNum () + 1; i < endPage->GetPageNum (); ++i)
-				SelectOnPage (*Pages_ [i], PageRelativePos { 0, 0 }, PageRelativePos { 1, 1 });
-			SelectOnPage (*endPage, PageRelativePos { 0, 0 }, endPos);
+			SelectOnPage (startPage, startPos, PageRelativePos { 1, 1 });
+			for (int i = startPage + 1; i < endPage; ++i)
+				SelectOnPage (i, PageRelativePos { 0, 0 }, PageRelativePos { 1, 1 });
+			SelectOnPage (endPage, PageRelativePos { 0, 0 }, endPos);
 		}
 
-		for (auto& boxes : std::ranges::subrange (Boxes_.begin (), Boxes_.find (startPage->GetPageNum ())))
-			for (auto& box : boxes)
-				box.Item_->setVisible (false);
-		for (auto& boxes : std::ranges::subrange (std::next (Boxes_.find (endPage->GetPageNum ())), Boxes_.end ()))
-			for (auto& box : boxes)
-				box.Item_->setVisible (false);
+		UpdateOverlays ();
+	}
+
+	void TextSelectionInteraction::UpdateOverlays ()
+	{
+		for (auto&& [page, text] : Texts_.asKeyValueRange ())
+		{
+			const auto& rects = GetSelectionRects (text);
+			if (rects.isEmpty () && !text.Overlay_)
+				continue;
+
+			if (!text.Overlay_)
+				text.Overlay_ = new TextSelectionItem { *Pages_ [page] };
+			text.Overlay_->SetRects (rects);
+		}
 	}
 
 	void TextSelectionInteraction::EnsureHasSelectionStart (ViewAbsolutePos pos)
@@ -455,58 +452,47 @@ namespace LC::Monocle
 			SelectionStart_ = GetPageInfo (pos);
 	}
 
-	auto TextSelectionInteraction::LoadBoxes (PageGraphicsItem& item) -> std::vector<BoxRepr>&
+	auto TextSelectionInteraction::LoadText (int pageNum) -> PageText&
 	{
-		const auto pageNum = item.GetPageNum ();
+		if (const auto pos = Texts_.find (pageNum); pos != Texts_.end ())
+			return *pos;
 
-		auto& infos = Boxes_ [pageNum];
-		if (!infos.empty ())
-			return infos;
-
-		connect (&item,
-				&QObject::destroyed,
-				this,
-				[this, pageNum] { Boxes_.remove (pageNum); });
-
-		const QPen boxPen { Qt::transparent };
-		auto boxBrush = View_.palette ().brush (QPalette::ColorRole::Highlight);
-
-		const auto& boxes = IHTC_.GetTextBoxes (pageNum);
-		infos.reserve (boxes.size ());
-		for (const auto& box : boxes)
-		{
-			auto rectItem = std::make_shared<QGraphicsRectItem> (&item);
-			rectItem->setZValue (1);
-			rectItem->setOpacity (0.5);
-			rectItem->setPen (boxPen);
-			rectItem->setBrush (boxBrush);
-			rectItem->setVisible (false);
-
-			item.RegisterChildRect (rectItem.get (),
-					box.Rect_,
-					[rawItem = rectItem.get ()] (const PageAbsoluteRect& rect) { rawItem->setRect (rect.ToRectF ()); });
-			infos.emplace_back (box, std::move (rectItem));
-		}
-
-		return infos;
+		return *Texts_.insert (pageNum, { .Boxes_ = IHTC_.GetTextBoxes (pageNum), .Selection_ = {}, .Overlay_ = {} });
 	}
 
-	auto TextSelectionInteraction::GetPageInfo (ViewAbsolutePos viewPos) -> std::optional<SelectionCornerInfo>
+	auto TextSelectionInteraction::GetPageInfo (ViewAbsolutePos viewPos) const -> std::optional<PageWithRelativePos>
 	{
 		const auto& scenePos = viewPos.ToSceneAbsolute (View_);
 		const auto item = GetItemAt (scenePos, *View_.scene ());
 		if (!item)
 			return {};
 
-		return SelectionCornerInfo
-		{
-			item,
-			scenePos.ToPageRelative (*item),
-		};
+		return PageWithRelativePos { item->GetPageNum (), scenePos.ToPageRelative (*item) };
 	}
 
-	void TextSelectionInteraction::ClearBoxes ()
+	QString TextSelectionInteraction::GetSelectedText (bool preserveNewlines) const
 	{
-		Boxes_.clear ();
+		QStringList textBits;
+		for (const auto& [boxes, selection, _] : Texts_)
+		{
+			if (!selection)
+				continue;
+
+			for (auto i = selection->Start_.Box_; i <= selection->End_.Box_; ++i)
+			{
+				const auto& box = boxes [i];
+				textBits << box.Text_;
+				if (const auto nextSym = GetNextSpace (box.NextSpaceKind_, preserveNewlines))
+					textBits << *nextSym;
+			}
+		}
+		return textBits.join (QStringView {}).trimmed ();
+	}
+
+	void TextSelectionInteraction::ClearSelection ()
+	{
+		for (const auto& text : Texts_)
+			delete text.Overlay_.data ();
+		Texts_.clear ();
 	}
 }

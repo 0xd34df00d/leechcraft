@@ -10,16 +10,17 @@
 
 #include <QCoreApplication>
 #include <QMap>
+#include <QPointer>
 #include "interfaces/monocle/ihavetextcontent.h"
 #include "components/layout/positions.h"
 
-class QGraphicsRectItem;
 class QMouseEvent;
 
 namespace LC::Monocle
 {
 	class IDocument;
 	class PagesView;
+	class TextSelectionItem;
 
 	class InteractionHandler : public QObject
 	{
@@ -59,14 +60,29 @@ namespace LC::Monocle
 	class TextSelectionInteraction final : public InteractionHandler
 	{
 	public:
-		struct BoxRepr;
+		struct Position
+		{
+			qsizetype Box_;
+			qsizetype Letter_;
+		};
 
-		using SelectionCornerInfo = std::pair<PageGraphicsItem*, PageRelativePos>;
+		struct Selection
+		{
+			Position Start_;
+			Position End_;
+		};
+
+		struct PageText
+		{
+			QVector<TextBox> Boxes_;
+			std::optional<Selection> Selection_;
+			QPointer<TextSelectionItem> Overlay_;
+		};
 	private:
-		QMap<int, std::vector<BoxRepr>> Boxes_;
-		std::optional<SelectionCornerInfo> SelectionStart_;
 		IHaveTextContent& IHTC_;
-		const QVector<PageGraphicsItem*> Pages_;
+		const QVector<QPointer<PageGraphicsItem>> Pages_;
+		QMap<int, PageText> Texts_;
+		std::optional<PageWithRelativePos> SelectionStart_;
 		bool IsSelectionGesture_ = false;
 	public:
 		explicit TextSelectionInteraction (PagesView&, IDocument&, const QVector<PageGraphicsItem*>&);
@@ -79,13 +95,15 @@ namespace LC::Monocle
 		void DoubleClicked (QMouseEvent&) override;
 	private:
 		void UpdateSelection (ViewAbsolutePos);
+		void UpdateOverlays ();
 
-		void SelectOnPage (PageGraphicsItem&, PageRelativePos, PageRelativePos);
+		void SelectOnPage (int page, PageRelativePos, PageRelativePos);
+		QString GetSelectedText (bool preserveNewlines) const;
 
 		void EnsureHasSelectionStart (ViewAbsolutePos pos);
-		std::vector<BoxRepr>& LoadBoxes (PageGraphicsItem&);
-		std::optional<SelectionCornerInfo> GetPageInfo (ViewAbsolutePos);
+		PageText& LoadText (int page);
+		std::optional<PageWithRelativePos> GetPageInfo (ViewAbsolutePos) const;
 
-		void ClearBoxes ();
+		void ClearSelection ();
 	};
 }
