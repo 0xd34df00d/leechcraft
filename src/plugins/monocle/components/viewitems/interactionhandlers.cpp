@@ -241,6 +241,7 @@ namespace LC::Monocle
 	void TextSelectionInteraction::Pressed (QMouseEvent& ev)
 	{
 		IsSelectionGesture_ = false;
+		Granularity_ = Granularity::Letters;
 
 		ClearSelection ();
 
@@ -270,9 +271,10 @@ namespace LC::Monocle
 			return { 0, box.Text_.size () };
 		}
 
-		LetterRange SelectLetters (const TextBox& box, PageRelativePos startPos, PageRelativePos endPos)
+		LetterRange SelectLetters (const TextBox& box, PageRelativePos startPos, PageRelativePos endPos,
+				TextSelectionInteraction::Granularity granularity)
 		{
-			if (!box.Letters_)
+			if (granularity == TextSelectionInteraction::Granularity::Words || !box.Letters_)
 				return WholeBox (box);
 
 			const auto& letters = *box.Letters_;
@@ -337,8 +339,8 @@ namespace LC::Monocle
 		const auto selLast = selEnd - 1;
 		text.Selection_ = Selection
 		{
-			.Start_ = { selBegin - boxes.begin (), SelectLetters (*selBegin, startPos, endPos).Begin_ },
-			.End_ = { selLast - boxes.begin (), SelectLetters (*selLast, startPos, endPos).End_ },
+			.Start_ = { selBegin - boxes.begin (), SelectLetters (*selBegin, startPos, endPos, Granularity_).Begin_ },
+			.End_ = { selLast - boxes.begin (), SelectLetters (*selLast, startPos, endPos, Granularity_).End_ },
 		};
 	}
 
@@ -399,6 +401,7 @@ namespace LC::Monocle
 	void TextSelectionInteraction::DoubleClicked (QMouseEvent& ev)
 	{
 		IsSelectionGesture_ = true;
+		Granularity_ = Granularity::Words;
 		UpdateSelection (ViewAbsolutePos { ev.position () });
 	}
 

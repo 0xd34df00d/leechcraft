@@ -60,6 +60,12 @@ namespace LC::Monocle
 	class TextSelectionInteraction final : public InteractionHandler
 	{
 	public:
+		enum class Granularity : std::uint8_t
+		{
+			Letters,
+			Words,
+		};
+
 		struct Position
 		{
 			qsizetype Box_;
@@ -83,6 +89,7 @@ namespace LC::Monocle
 		const QVector<QPointer<PageGraphicsItem>> Pages_;
 		QMap<int, PageText> Texts_;
 		std::optional<PageWithRelativePos> SelectionStart_;
+		Granularity Granularity_ = Granularity::Letters;
 		bool IsSelectionGesture_ = false;
 	public:
 		explicit TextSelectionInteraction (PagesView&, IDocument&, const QVector<PageGraphicsItem*>&);
