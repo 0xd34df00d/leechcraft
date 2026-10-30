@@ -25,7 +25,6 @@ RUN --mount=type=bind,from=qxmpp,source=/out,target=/tmp/qxmpp \
         qt6-scxml-dev \
         qt6-networkauth-dev \
         libboost-dev \
-        libboost-program-options-dev \
         libboost-container-dev \
         libx11-dev \
         libxkbfile-dev \
