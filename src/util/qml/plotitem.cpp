@@ -21,8 +21,6 @@
 #include <qwt_text_label.h>
 #include <qwt_plot_canvas.h>
 
-Q_DECLARE_METATYPE (QList<QPointF>)
-
 namespace LC::Util
 {
 	PlotItem::PlotItem (QQuickItem *parent)

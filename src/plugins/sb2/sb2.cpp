@@ -26,8 +26,6 @@
 #include "desaturateeffect.h"
 #include "dockactioncomponent.h"
 
-Q_DECLARE_METATYPE (QSet<QByteArray>);
-
 namespace LC::SB2
 {
 	void Plugin::Init (ICoreProxy_ptr)

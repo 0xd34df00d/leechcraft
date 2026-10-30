@@ -11,7 +11,6 @@
 #include <utility>
 #include <QList>
 #include <QString>
-#include <QMetaType>
 #include "networkconfig.h"
 
 class QHostAddress;
@@ -47,5 +46,3 @@ namespace LC::Util
 	 */
 	UTIL_NETWORK_API QList<QHostAddress> GetAllAddresses ();
 }
-
-Q_DECLARE_METATYPE (LC::Util::AddrList_t)

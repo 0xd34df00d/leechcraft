@@ -74,4 +74,3 @@ namespace LC::LMP
 }
 
 Q_DECLARE_METATYPE (LC::LMP::SavedFilterInfo)
-Q_DECLARE_METATYPE (QList<LC::LMP::SavedFilterInfo>)

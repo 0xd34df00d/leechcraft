@@ -10,7 +10,6 @@
 
 #include <memory>
 #include <QList>
-#include <QMetaType>
 #include <interfaces/structures.h>
 #include <interfaces/ijobholder.h>
 
@@ -78,6 +77,3 @@ namespace LC::Aggregator
 	class SQLStorageBackend;
 	using SQLStorageBackend_ptr = std::shared_ptr<SQLStorageBackend>;
 }
-
-Q_DECLARE_METATYPE (LC::Aggregator::IDType_t)
-Q_DECLARE_METATYPE (QList<LC::Aggregator::IDType_t>)

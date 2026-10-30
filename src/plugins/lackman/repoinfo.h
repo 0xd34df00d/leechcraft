@@ -196,7 +196,6 @@ namespace LackMan
 
 Q_DECLARE_METATYPE (LC::LackMan::RepoInfo)
 Q_DECLARE_METATYPE (LC::LackMan::PackageShortInfo)
-Q_DECLARE_METATYPE (LC::LackMan::PackageShortInfoList)
 Q_DECLARE_METATYPE (LC::LackMan::PackageInfo)
 
 #endif

@@ -19,7 +19,6 @@
 class QAction;
 
 using QKeySequences_t = QList<QKeySequence>;
-Q_DECLARE_METATYPE (QKeySequences_t)
 
 namespace LC
 {

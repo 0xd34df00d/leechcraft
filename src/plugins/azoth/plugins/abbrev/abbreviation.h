@@ -27,4 +27,3 @@ namespace LC::Azoth::Abbrev
 }
 
 Q_DECLARE_METATYPE (LC::Azoth::Abbrev::Abbreviation)
-Q_DECLARE_METATYPE (QList<LC::Azoth::Abbrev::Abbreviation>)

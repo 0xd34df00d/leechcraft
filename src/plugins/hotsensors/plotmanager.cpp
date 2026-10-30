@@ -12,8 +12,6 @@
 #include "sensorsgraphmodel.h"
 #include "historymanager.h"
 
-Q_DECLARE_METATYPE (QList<QPointF>)
-
 namespace LC::HotSensors
 {
 	PlotManager::PlotManager (QObject *parent)

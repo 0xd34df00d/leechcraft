@@ -17,8 +17,6 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/icoreproxy.h>
 
-Q_DECLARE_METATYPE (QSet<QString>);
-
 namespace LC::Azoth::Depester
 {
 	void Plugin::Init (ICoreProxy_ptr)

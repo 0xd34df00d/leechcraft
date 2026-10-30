@@ -124,4 +124,3 @@ QDebug operator<< (QDebug dbg, const LC::AdvancedNotifications::TrayParams&);
 QDebug operator<< (QDebug dbg, const LC::AdvancedNotifications::CmdParams&);
 
 Q_DECLARE_METATYPE (LC::AdvancedNotifications::NotificationRule)
-Q_DECLARE_METATYPE (QList<LC::AdvancedNotifications::NotificationRule>)

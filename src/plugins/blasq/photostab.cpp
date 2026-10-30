@@ -39,8 +39,6 @@
 #include "uploadphotosdialog.h"
 #include "photosproxymodel.h"
 
-Q_DECLARE_METATYPE (QModelIndex)
-
 namespace LC
 {
 namespace Blasq

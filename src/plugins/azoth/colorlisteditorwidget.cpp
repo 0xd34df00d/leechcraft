@@ -13,8 +13,6 @@
 #include <QtDebug>
 #include "xmlsettingsmanager.h"
 
-Q_DECLARE_METATYPE (QList<QColor>);
-
 namespace LC
 {
 namespace Azoth

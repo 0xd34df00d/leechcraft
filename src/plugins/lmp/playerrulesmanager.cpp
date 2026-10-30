@@ -23,8 +23,6 @@
 #include <util/xpc/anutil.h>
 #include "player.h"
 
-Q_DECLARE_METATYPE (QList<LC::Entity>)
-
 namespace LC
 {
 namespace LMP

@@ -22,8 +22,6 @@
 #include "roles.h"
 #include "stringlistradiostation.h"
 
-Q_DECLARE_METATYPE (QList<QUrl>);
-
 namespace LC
 {
 namespace HotStreams

@@ -16,7 +16,6 @@
 #include "headermodel.h"
 
 using GuardedReply_t = QPointer<QNetworkReply>;
-Q_DECLARE_METATYPE (GuardedReply_t)
 
 namespace LC
 {

@@ -76,7 +76,6 @@ using EntryActor_f = std::variant<LC::Util::Void, SingleEntryActor_f, MultiEntry
 Q_DECLARE_METATYPE (EntryActor_f);
 
 using EntriesList_t = QList<LC::Azoth::ICLEntry*>;
-Q_DECLARE_METATYPE (EntriesList_t);
 
 namespace LC
 {

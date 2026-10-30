@@ -43,5 +43,3 @@ namespace LC::Poshuku::SpeedDial
 		void removeRequested (const QString&, const QModelIndexList&);
 	};
 }
-
-Q_DECLARE_METATYPE (LC::Poshuku::SpeedDial::AddrList_t)

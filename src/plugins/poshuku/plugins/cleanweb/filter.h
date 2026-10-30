@@ -117,4 +117,3 @@ namespace CleanWeb
 }
 
 Q_DECLARE_METATYPE (LC::Poshuku::CleanWeb::FilterItem)
-Q_DECLARE_METATYPE (QList<LC::Poshuku::CleanWeb::FilterItem>)

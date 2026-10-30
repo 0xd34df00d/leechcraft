@@ -48,4 +48,3 @@ namespace XProxy
 }
 
 Q_DECLARE_METATYPE (LC::XProxy::Entry_t)
-Q_DECLARE_METATYPE (QList<LC::XProxy::Entry_t>)

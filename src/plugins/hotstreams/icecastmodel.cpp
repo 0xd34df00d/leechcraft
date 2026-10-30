@@ -12,8 +12,6 @@
 #include <util/sll/unreachable.h>
 #include "roles.h"
 
-Q_DECLARE_METATYPE (QList<QUrl>)
-
 namespace LC
 {
 namespace HotStreams

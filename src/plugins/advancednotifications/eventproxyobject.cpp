@@ -11,8 +11,6 @@
 #include <util/util.h>
 #include "actionsproxyobject.h"
 
-Q_DECLARE_METATYPE (QList<QObject*>)
-
 namespace LC::AdvancedNotifications
 {
 	EventProxyObject::EventProxyObject (const EventData& ed, QObject *parent)

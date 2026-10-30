@@ -36,7 +36,6 @@ namespace LC::Util::detail
 }
 
 Q_DECLARE_METATYPE (LC::Util::detail::IconFrame)
-Q_DECLARE_METATYPE (QList<LC::Util::detail::IconFrame>)
 Q_DECLARE_METATYPE (LC::Util::detail::DBusTooltip)
 
 namespace LC::Util::detail

@@ -77,4 +77,3 @@ namespace Aggregator
 Q_DECLARE_METATYPE (LC::Aggregator::ChannelShort)
 Q_DECLARE_METATYPE (LC::Aggregator::Channel)
 Q_DECLARE_METATYPE (LC::Aggregator::Channel_ptr)
-Q_DECLARE_METATYPE (LC::Aggregator::channels_container_t)

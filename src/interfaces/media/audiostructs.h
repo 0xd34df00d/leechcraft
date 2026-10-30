@@ -158,4 +158,3 @@ namespace Media
 }
 
 Q_DECLARE_METATYPE (Media::AudioInfo)
-Q_DECLARE_METATYPE (QList<Media::AudioInfo>)

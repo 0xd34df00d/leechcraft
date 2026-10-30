@@ -234,6 +234,5 @@ public:
 Q_DECLARE_INTERFACE (IANEmitter, "org.Deviant.LeechCraft.IANEmitter/1.0")
 Q_DECLARE_METATYPE (LC::AN::FieldData)
 Q_DECLARE_METATYPE (LC::AN::ValueMatcher)
-Q_DECLARE_METATYPE (QList<LC::AN::ValueMatcher>)
 
 Q_DECLARE_OPERATORS_FOR_FLAGS (LC::AN::IntValueMatcher::Operations)

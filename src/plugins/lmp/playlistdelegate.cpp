@@ -19,8 +19,6 @@
 #include "player.h"
 #include "util.h"
 
-Q_DECLARE_METATYPE (QList<LC::Entity>)
-
 namespace LC
 {
 namespace LMP

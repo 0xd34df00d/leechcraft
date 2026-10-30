@@ -59,4 +59,3 @@ namespace LMP
 }
 
 Q_DECLARE_METATYPE (LC::LMP::AudioSource)
-Q_DECLARE_METATYPE (LC::LMP::AudioSources_t)

@@ -25,8 +25,6 @@
 #include "viewmanager.h"
 #include "sbview.h"
 
-Q_DECLARE_METATYPE (QSet<QByteArray>);
-
 namespace LC::SB2
 {
 	namespace

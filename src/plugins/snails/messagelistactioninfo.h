@@ -45,4 +45,3 @@ namespace Snails
 DECLARE_BIT_FLAGS (LC::Snails::MessageListActionFlag)
 
 Q_DECLARE_METATYPE (LC::Snails::MessageListActionInfo)
-Q_DECLARE_METATYPE (QList<LC::Snails::MessageListActionInfo>)

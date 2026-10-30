@@ -33,8 +33,6 @@ namespace LastSeen
 }
 }
 
-Q_DECLARE_METATYPE (LC::Azoth::LastSeen::LastHash_t);
-
 namespace LC
 {
 namespace Azoth

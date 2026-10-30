@@ -10,7 +10,6 @@
 
 #include <memory>
 #include <QObject>
-#include <QMetaType>
 #include <QDBusObjectPath>
 #include <QIcon>
 
@@ -19,8 +18,6 @@ class QDBusArgument;
 class ICoreProxy;
 
 typedef std::shared_ptr<ICoreProxy> ICoreProxy_ptr;
-
-Q_DECLARE_METATYPE (QIcon)
 
 QDBusArgument& operator<< (QDBusArgument&, const ICoreProxy_ptr&);
 const QDBusArgument& operator>> (const QDBusArgument&, ICoreProxy_ptr&);

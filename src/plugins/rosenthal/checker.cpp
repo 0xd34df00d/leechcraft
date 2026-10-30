@@ -16,8 +16,6 @@
 #include <util/sys/encodingconverter.h>
 #include "knowndictsmanager.h"
 
-Q_DECLARE_METATYPE (QSet<QString>)
-
 namespace LC
 {
 namespace Rosenthal

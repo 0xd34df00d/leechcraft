@@ -63,4 +63,3 @@ namespace NetStoreManager
 }
 
 Q_DECLARE_METATYPE (LC::NetStoreManager::SyncerInfo)
-Q_DECLARE_METATYPE (QList<LC::NetStoreManager::SyncerInfo>)

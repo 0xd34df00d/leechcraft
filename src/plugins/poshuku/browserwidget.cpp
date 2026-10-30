@@ -63,8 +63,6 @@
 #include "featurepermnotification.h"
 #include "browserwidgetsettingshandler.h"
 
-Q_DECLARE_METATYPE (QList<QObject*>);
-
 namespace LC
 {
 namespace Poshuku

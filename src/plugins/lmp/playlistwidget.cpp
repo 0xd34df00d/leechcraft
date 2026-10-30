@@ -51,8 +51,6 @@
 #include "playlistwidgetviewexpander.h"
 #include "literals.h"
 
-Q_DECLARE_METATYPE (QList<LC::Entity>)
-
 namespace LC
 {
 namespace LMP

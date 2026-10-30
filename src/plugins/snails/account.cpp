@@ -44,9 +44,6 @@
 #include "messageinfo.h"
 #include "messagebodies.h"
 
-Q_DECLARE_METATYPE (QList<QStringList>)
-Q_DECLARE_METATYPE (QList<QByteArray>)
-
 namespace LC
 {
 namespace Snails

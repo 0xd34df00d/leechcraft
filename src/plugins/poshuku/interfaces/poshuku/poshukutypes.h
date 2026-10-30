@@ -108,5 +108,3 @@ namespace Poshuku
 }
 
 Q_DECLARE_METATYPE (LC::Poshuku::ElementData)
-Q_DECLARE_METATYPE (LC::Poshuku::ElementsData_t)
-Q_DECLARE_METATYPE (LC::Poshuku::PageFormsData_t)

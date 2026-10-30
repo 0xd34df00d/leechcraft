@@ -26,5 +26,3 @@ namespace LC::Intermutko
 }
 
 Q_DECLARE_METATYPE (LC::Intermutko::LocaleEntry)
-
-Q_DECLARE_METATYPE (QList<LC::Intermutko::LocaleEntry>)

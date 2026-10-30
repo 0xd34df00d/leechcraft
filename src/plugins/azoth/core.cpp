@@ -90,8 +90,6 @@
 #include "sslerrorshandler.h"
 #include "roles.h"
 
-Q_DECLARE_METATYPE (QPointer<QObject>);
-
 namespace LC::Azoth
 {
 	QDataStream& operator<< (QDataStream& out, const EntryStatus& status)
