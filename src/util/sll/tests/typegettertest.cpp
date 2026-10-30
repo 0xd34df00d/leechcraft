@@ -8,7 +8,7 @@
 
 #include "typegettertest.h"
 #include <type_traits>
-#include <QtTest>
+#include <QTest>
 #include <typegetter.h>
 
 QTEST_APPLESS_MAIN (LC::Util::TypeGetterTest)

@@ -12,7 +12,7 @@
 #include <QList>
 #include <QMap>
 #include <QDateTime>
-#include <QtPlugin>
+#include <QObject>
 
 namespace LC
 {

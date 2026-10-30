@@ -14,6 +14,7 @@
 #include <QInputDialog>
 #include <QMainWindow>
 #include <QtDebug>
+#include <QIODevice>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaverecoverabletabs.h>

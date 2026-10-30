@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QObject>
+#include <QPointer>
 #include <QStringList>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>

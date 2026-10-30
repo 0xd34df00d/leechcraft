@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <QtPlugin>
+#include <QObject>
 
 template<typename T>
 class QList;

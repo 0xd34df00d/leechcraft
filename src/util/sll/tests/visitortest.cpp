@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "visitortest.h"
-#include <QtTest>
+#include <QTest>
 #include <visitor.h>
 
 QTEST_APPLESS_MAIN (LC::Util::VisitorTest)

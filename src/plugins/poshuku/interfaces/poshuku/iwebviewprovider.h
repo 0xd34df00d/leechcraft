@@ -10,7 +10,7 @@
 
 #include <memory>
 #include <QIcon>
-#include <QtPlugin>
+#include <QObject>
 
 namespace LC::Poshuku
 {

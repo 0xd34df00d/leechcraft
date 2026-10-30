@@ -12,7 +12,7 @@
 #include <QStringList>
 #include <QUrl>
 #include <QMetaType>
-#include <QtPlugin>
+#include <QObject>
 #include <interfaces/structures.h>
 
 namespace LC

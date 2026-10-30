@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "tagsutiltest.h"
-#include <QtTest>
+#include <QTest>
 #include <util/sll/qtutil.h>
 #include "util.h"
 

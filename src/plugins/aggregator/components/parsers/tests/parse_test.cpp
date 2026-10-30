@@ -8,8 +8,8 @@
 
 #include "parse_test.h"
 #include <QDomDocument>
+#include <QTest>
 #include <QUrl>
-#include <QtTest>
 #include <components/parsers/parse.h>
 #include "item.h"
 

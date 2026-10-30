@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "desktopparsertest.h"
-#include <QtTest>
+#include <QTest>
 #include <QtDebug>
 #include <desktopparser.h>
 

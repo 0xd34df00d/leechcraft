@@ -10,6 +10,7 @@
 #include <QString>
 #include <QByteArray>
 #include <QCryptographicHash>
+#include <QObject>
 #include <util/xpc/passutils.h>
 
 namespace LC

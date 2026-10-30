@@ -10,7 +10,7 @@
 
 #include <memory>
 #include <QList>
-#include <QtPlugin>
+#include <QObject>
 
 namespace LC::AdvancedNotifications
 {

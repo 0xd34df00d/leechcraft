@@ -10,7 +10,7 @@
 
 #include <variant>
 #include <QStringList>
-#include <QtPlugin>
+#include <QObject>
 #include <QUrl>
 #include <QMap>
 #include <QDateTime>

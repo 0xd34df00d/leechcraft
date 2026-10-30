@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "reducelightnesstest.h"
-#include <QtTest>
+#include <QTest>
 #include "../reducelightness.cpp"
 
 QTEST_APPLESS_MAIN (LC::Poshuku::DCAC::ReduceLightnessTest)

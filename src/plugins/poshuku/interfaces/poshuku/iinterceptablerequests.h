@@ -11,8 +11,8 @@
 #include <functional>
 #include <variant>
 #include <optional>
+#include <QObject>
 #include <QUrl>
-#include <QtPlugin>
 
 namespace LC
 {

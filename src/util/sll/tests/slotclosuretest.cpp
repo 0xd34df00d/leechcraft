@@ -7,7 +7,8 @@
  **********************************************************************/
 
 #include "slotclosuretest.h"
-#include <QtTest>
+#include <QPointer>
+#include <QTest>
 #include "slotclosure.h"
 
 QTEST_GUILESS_MAIN (LC::Util::SlotClosureTest)

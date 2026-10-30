@@ -8,8 +8,8 @@
 
 #include "corochanneltest.h"
 #include <memory>
+#include <QTest>
 #include <QtConcurrentRun>
-#include <QtTest>
 #include "coro.h"
 #include "coro/channel.h"
 #include "coro/channelutils.h"

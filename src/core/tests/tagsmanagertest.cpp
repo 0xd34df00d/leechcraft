@@ -11,7 +11,7 @@
 #include <QDataStream>
 #include <QRegularExpression>
 #include <QSignalSpy>
-#include <QtTest>
+#include <QTest>
 #include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
 #include "tagsmanager.h"

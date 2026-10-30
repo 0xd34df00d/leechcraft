@@ -10,6 +10,7 @@
 #include <QTimer>
 #include <QtDebug>
 #include <QXmppClient.h>
+#include <QPointer>
 
 namespace LC
 {

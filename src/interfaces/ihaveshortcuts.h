@@ -9,7 +9,7 @@
 #pragma once
 
 #include <variant>
-#include <QtPlugin>
+#include <QObject>
 #include <QString>
 #include <QKeySequence>
 #include <QIcon>

@@ -14,9 +14,9 @@
 #include <stdexcept>
 #include <tuple>
 #include <type_traits>
+#include <QTest>
 #include <QThread>
 #include <QTimer>
-#include <QtTest>
 #include <coro.h>
 #include <coro/corocontext.h>
 #include <coro/getresult.h>

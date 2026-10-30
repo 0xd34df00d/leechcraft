@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <QtPlugin>
+#include <QObject>
 
 /** @brief Interface for plugins wishing to get notifications about the
  * shutdown process.

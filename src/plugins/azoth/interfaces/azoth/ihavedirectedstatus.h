@@ -8,7 +8,7 @@
 
 #ifndef PLUGINS_AZOTH_INTERFACES_IHAVEDIRECTEDSTATUS_H
 #define PLUGINS_AZOTH_INTERFACES_IHAVEDIRECTEDSTATUS_H
-#include <QtPlugin>
+#include <QObject>
 #include "iclentry.h"
 
 namespace LC

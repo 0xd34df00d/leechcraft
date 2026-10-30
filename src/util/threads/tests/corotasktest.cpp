@@ -14,11 +14,14 @@
 #include <string>
 #include <thread>
 #include <variant>
+#include <QBuffer>
+#include <QNetworkReply>
+#include <QPointer>
 #include <QProcess>
 #include <QProcessEnvironment>
 #include <QRegularExpression>
+#include <QTest>
 #include <QtConcurrentRun>
-#include <QtTest>
 #ifdef QT_DBUS_LIB
 #include <QDBusInterface>
 #endif

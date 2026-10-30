@@ -9,7 +9,7 @@
 #pragma once
 
 #include <QIcon>
-#include <QtPlugin>
+#include <QObject>
 #include "ifilterelement.h"
 
 namespace LC

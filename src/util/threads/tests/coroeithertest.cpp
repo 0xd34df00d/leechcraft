@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "coroeithertest.h"
-#include <QtTest>
+#include <QTest>
 #include <util/sll/qtutil.h>
 #include <util/threads/coro.h>
 #include <util/threads/coro/eithercoro.h>

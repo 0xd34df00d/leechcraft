@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <QtPlugin>
+#include <QObject>
 #include <QUrl>
 #include <QString>
 #include <QList>

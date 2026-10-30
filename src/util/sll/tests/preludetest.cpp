@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "preludetest.h"
-#include <QtTest>
+#include <QTest>
 #include <prelude.h>
 #include <qtutil.h>
 

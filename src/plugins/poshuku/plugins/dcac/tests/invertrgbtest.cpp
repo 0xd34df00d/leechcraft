@@ -8,7 +8,7 @@
 
 #include "invertrgbtest.h"
 
-#include <QtTest>
+#include <QTest>
 #include "../invertcolors.cpp"
 
 QTEST_APPLESS_MAIN (LC::Poshuku::DCAC::InvertRgbTest)

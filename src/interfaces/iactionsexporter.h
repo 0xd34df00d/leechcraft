@@ -10,7 +10,7 @@
 #define INTERFACES_IACTIONSEXPORTER_H
 #include <QList>
 #include <QMap>
-#include <QtPlugin>
+#include <QObject>
 
 class QAction;
 

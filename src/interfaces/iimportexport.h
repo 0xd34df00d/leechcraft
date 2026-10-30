@@ -9,7 +9,7 @@
 #ifndef INTERFACES_IIMPORTEXPORT_H
 #define INTERFACES_IIMPORTEXPORT_H
 #include <QByteArray>
-#include <QtPlugin>
+#include <QObject>
 
 /** @brief Interface for plugins which can import/export data to
  * persistent storage.

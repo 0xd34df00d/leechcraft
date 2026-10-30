@@ -8,6 +8,7 @@
  **********************************************************************/
 
 #include "ircserversocket.h"
+#include <QSslSocket>
 #include <QTcpSocket>
 #include <QTimer>
 #include <interfaces/core/ientitymanager.h>

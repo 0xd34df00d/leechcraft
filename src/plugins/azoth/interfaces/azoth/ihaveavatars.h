@@ -10,7 +10,7 @@
 
 #include <QImage>
 #include <QFuture>
-#include <QtPlugin>
+#include <QObject>
 
 namespace LC
 {

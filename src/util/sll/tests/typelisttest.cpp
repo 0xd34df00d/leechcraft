@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "typelisttest.h"
-#include <QtTest>
+#include <QTest>
 #include <typelist.h>
 #include <typelevel.h>
 

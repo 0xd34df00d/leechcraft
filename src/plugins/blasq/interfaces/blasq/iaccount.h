@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <QtPlugin>
+#include <QObject>
 #include "collection.h"
 
 class QAbstractItemModel;

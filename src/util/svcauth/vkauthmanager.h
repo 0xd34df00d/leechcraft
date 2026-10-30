@@ -18,6 +18,7 @@
 #include <util/sll/eitherfwd.h>
 #include "svcauthconfig.h"
 
+class QNetworkReply;
 class QTimer;
 
 template<typename>

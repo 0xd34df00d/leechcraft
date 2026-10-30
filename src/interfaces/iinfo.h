@@ -9,9 +9,9 @@
 #pragma once
 
 #include <memory>
+#include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QtPlugin>
 #include "structures.h"
 
 class ICoreProxy;

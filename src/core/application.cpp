@@ -25,7 +25,7 @@
 #include <QProcess>
 #include <QTimer>
 #include <QCryptographicHash>
-#include <QtQml>
+#include <QQmlEngine>
 #include <QStyle>
 
 #ifdef Q_OS_MAC

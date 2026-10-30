@@ -8,7 +8,7 @@
 
 #ifndef INTERFACES_IDIAGINFO_H
 #define INTERFACES_IDIAGINFO_H
-#include <QtPlugin>
+#include <QObject>
 
 class QString;
 

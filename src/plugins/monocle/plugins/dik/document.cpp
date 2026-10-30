@@ -12,6 +12,7 @@
 #include <QtDebug>
 #include <QTextFrameFormat>
 #include <QTextFrame>
+#include <QRegularExpression>
 #include <util/monocle/resourcedtextdocument.h>
 #include "mobiparser.h"
 

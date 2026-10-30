@@ -7,8 +7,9 @@
  **********************************************************************/
 
 #include "blasq.h"
+#include <QFile>
 #include <QIcon>
-#include <QtQuick>
+#include <QQmlEngine>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/sys/mimedetector.h>
 #include <util/xpc/sessionprops.h>

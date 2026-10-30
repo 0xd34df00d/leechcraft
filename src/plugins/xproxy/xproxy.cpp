@@ -8,6 +8,7 @@
 
 #include "xproxy.h"
 #include <QIcon>
+#include <QNetworkAccessManager>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/core/icoreproxy.h>
 #include "proxyfactory.h"

@@ -9,7 +9,7 @@
 #include "domchildrenrangetest.h"
 #include <QDomDocument>
 #include <QString>
-#include <QtTest>
+#include <QTest>
 #include <domchildrenrange.h>
 
 QTEST_APPLESS_MAIN (LC::Util::DomChildrenRangeTest)

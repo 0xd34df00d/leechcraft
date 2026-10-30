@@ -8,6 +8,7 @@
 
 #include "webengineview.h"
 #include <QIcon>
+#include <QNetworkAccessManager>
 #include <QWebEngineProfile>
 #include <util/network/customcookiejar.h>
 #include <util/sll/qtutil.h>

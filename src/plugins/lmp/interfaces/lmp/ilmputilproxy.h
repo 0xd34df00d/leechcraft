@@ -10,7 +10,7 @@
 
 #include <functional>
 #include <atomic>
-#include <QtPlugin>
+#include <QObject>
 #include <QFileInfo>
 #include <QMap>
 #include <QVariant>

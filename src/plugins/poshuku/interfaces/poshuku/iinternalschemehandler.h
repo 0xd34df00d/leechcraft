@@ -11,8 +11,8 @@
 #include <memory>
 #include <optional>
 #include <variant>
+#include <QObject>
 #include <QUrl>
-#include <QtPlugin>
 #include <util/sll/either.h>
 
 namespace LC::Poshuku

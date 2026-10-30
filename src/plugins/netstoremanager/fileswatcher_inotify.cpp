@@ -13,6 +13,7 @@
 #include <QtDebug>
 #include <QStringList>
 #include <QTimer>
+#include <QRegularExpression>
 #include "utils.h"
 
 namespace LC

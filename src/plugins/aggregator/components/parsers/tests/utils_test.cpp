@@ -8,7 +8,7 @@
 
 #include "utils_test.h"
 #include <QDomDocument>
-#include <QtTest>
+#include <QTest>
 #include <components/parsers/utils.h>
 
 QTEST_GUILESS_MAIN (LC::Aggregator::Parsers::UtilsTest)

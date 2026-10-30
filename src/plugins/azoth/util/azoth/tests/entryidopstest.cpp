@@ -9,7 +9,7 @@
 #include "entryidopstest.h"
 #include <QDataStream>
 #include <QRegularExpression>
-#include <QtTest>
+#include <QTest>
 #include <util/azoth/entryidops.h>
 #include <util/azoth/util.h>
 

@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "colortemptest.h"
-#include <QtTest>
+#include <QTest>
 #include "../colortemp.cpp"
 
 QTEST_APPLESS_MAIN (LC::Poshuku::DCAC::ColorTempTest)

@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "tokenizetest.h"
-#include <QtTest>
+#include <QTest>
 #include <tokenize.h>
 
 QTEST_APPLESS_MAIN (LC::Util::TokenizeTest)

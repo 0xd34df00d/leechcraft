@@ -10,7 +10,6 @@
 
 #include <memory>
 #include <QMetaType>
-#include <QtNetwork/QNetworkAccessManager>
 
 class IShortcutProxy;
 class IMWProxy;
@@ -27,6 +26,7 @@ class QTabWidget;
 class IColorThemeManager;
 class IIconThemeManager;
 class QAction;
+class QNetworkAccessManager;
 
 namespace LC
 {

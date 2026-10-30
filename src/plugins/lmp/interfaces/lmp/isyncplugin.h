@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <QtPlugin>
+#include <QObject>
 #include <QFile>
 #include <QModelIndex>
 #include <util/sll/either.h>

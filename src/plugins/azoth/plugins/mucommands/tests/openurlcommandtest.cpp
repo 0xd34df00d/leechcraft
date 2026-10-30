@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "openurlcommandtest.h"
-#include <QtTest>
+#include <QTest>
 #include <QtDebug>
 #include "openurlcommand.cpp"
 #include "testutil.h"

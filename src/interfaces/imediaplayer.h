@@ -11,7 +11,7 @@
 #include <QString>
 #include <QWidget>
 #include <QUrl>
-#include <QtPlugin>
+#include <QObject>
 
 class Q_DECL_EXPORT IVideoWidget
 {

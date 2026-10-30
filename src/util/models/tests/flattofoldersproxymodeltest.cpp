@@ -16,7 +16,7 @@
 #include <QSignalSpy>
 #include <QSortFilterProxyModel>
 #include <QStandardItemModel>
-#include <QtTest>
+#include <QTest>
 #include <interfaces/structures.h>
 #include <interfaces/core/itagsmanager.h>
 #include "flattofoldersproxymodel.h"

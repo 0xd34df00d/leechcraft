@@ -8,8 +8,8 @@
 
 #pragma once
 
+#include <QObject>
 #include <QString>
-#include <QtPlugin>
 #include "audiostructs.h"
 
 template<typename>

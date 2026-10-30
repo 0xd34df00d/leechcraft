@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "pslhandlertest.h"
-#include <QtTest>
+#include <QTest>
 #include <util/sll/qtutil.h>
 #include "pslhandler.cpp"
 

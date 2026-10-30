@@ -9,9 +9,10 @@
 #pragma once
 
 #include <variant>
-#include <QtPlugin>
+#include <QObject>
 #include <QVariant>
 #include <QStringList>
+#include <QRegularExpression>
 
 namespace LC::AN
 {

@@ -9,6 +9,7 @@
 
 #include "pogooglue.h"
 #include <QIcon>
+#include <QLocale>
 #include <QUrl>
 #include <util/xpc/util.h>
 #include <interfaces/entitytesthandleresult.h>

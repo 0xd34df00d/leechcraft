@@ -9,8 +9,8 @@
 #pragma once
 
 #include <memory>
+#include <QObject>
 #include <QSslError>
-#include <QtPlugin>
 
 template<typename>
 class QList;

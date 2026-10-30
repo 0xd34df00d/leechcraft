@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <QtPlugin>
+#include <QObject>
 
 class Q_DECL_EXPORT IAdvancedPlainTextEditor
 {

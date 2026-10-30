@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "viewstest.h"
-#include <QtTest>
+#include <QTest>
 #include <views.h>
 #include <prelude.h>
 

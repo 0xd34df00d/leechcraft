@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QCoreApplication>
+#include <QMap>
 #include "interfaces/monocle/ihavetextcontent.h"
 #include "components/layout/positions.h"
 

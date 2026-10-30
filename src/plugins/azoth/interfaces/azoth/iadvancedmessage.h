@@ -8,7 +8,7 @@
 
 #ifndef PLUGINS_AZOTH_INTERFACES_IADVANCEDMESSAGE_H
 #define PLUGINS_AZOTH_INTERFACES_IADVANCEDMESSAGE_H
-#include <QtPlugin>
+#include <QObject>
 
 namespace LC
 {

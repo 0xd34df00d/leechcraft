@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "qtutiltest.h"
-#include <QtTest>
+#include <QTest>
 #include <qtutil.h>
 
 QTEST_APPLESS_MAIN (LC::Util::QtUtilTest)

@@ -13,8 +13,9 @@
 #include <memory>
 #include <optional>
 #include <vector>
+#include <QDateTime>
 #include <QModelIndex>
-#include <QtPlugin>
+#include <QObject>
 #include "interfaces/structures.h"
 
 class QAbstractItemModel;

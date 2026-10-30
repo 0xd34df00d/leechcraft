@@ -13,7 +13,7 @@
 #include <variant>
 #include <QMap>
 #include <QMetaType>
-#include <QtPlugin>
+#include <QObject>
 
 class QModelIndex;
 class QAbstractItemModel;

@@ -11,8 +11,8 @@
 #include <QCoreApplication>
 #include <QImage>
 #include <QNetworkAccessManager>
+#include <QTest>
 #include <QtDebug>
-#include <QtTest>
 #include <util/sll/either.h>
 #include <util/threads/coro.h>
 #include <util/threads/coro/getresult.h>

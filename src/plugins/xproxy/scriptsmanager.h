@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <QList>
+#include <QObject>
 #include <interfaces/core/icoreproxy.h>
 
 namespace LC

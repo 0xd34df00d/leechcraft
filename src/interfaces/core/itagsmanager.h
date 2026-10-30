@@ -12,6 +12,7 @@
 #include <QDataStream>
 #include <QHash>
 #include <QMetaType>
+#include <QObject>
 #include <QStringList>
 
 class QAbstractItemModel;

@@ -12,6 +12,7 @@
 #include <QHash>
 #include <interfaces/core/icoreproxy.h>
 
+class QNetworkReply;
 class QUrl;
 
 namespace LC

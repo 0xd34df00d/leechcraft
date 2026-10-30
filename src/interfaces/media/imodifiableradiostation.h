@@ -9,7 +9,7 @@
 #pragma once
 
 #include <memory>
-#include <QtPlugin>
+#include <QObject>
 
 class QUrl;
 class QModelIndex;

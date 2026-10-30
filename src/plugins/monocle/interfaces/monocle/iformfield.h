@@ -9,7 +9,6 @@
 #pragma once
 
 #include <memory>
-#include <QtPlugin>
 #include "ilink.h"
 
 namespace LC::Monocle

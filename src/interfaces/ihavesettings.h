@@ -9,7 +9,7 @@
 #ifndef INTERFACES_IHAVESETTINGS_H
 #define INTERFACES_IHAVESETTINGS_H
 #include <memory>
-#include <QtPlugin>
+#include <QObject>
 
 namespace LC
 {

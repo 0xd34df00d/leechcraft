@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "parsertest.h"
-#include <QtTest>
+#include <QTest>
 #include "parser.cpp"
 
 QTEST_APPLESS_MAIN (LC::LMP::PPL::ParserTest)

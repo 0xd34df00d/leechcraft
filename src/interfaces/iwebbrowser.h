@@ -12,7 +12,7 @@
 #include <QString>
 #include <QWidget>
 #include <QUrl>
-#include <QtPlugin>
+#include <QObject>
 
 /** @brief Common interface for a web widget.
  *

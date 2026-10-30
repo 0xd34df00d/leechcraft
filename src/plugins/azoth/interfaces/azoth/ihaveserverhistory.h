@@ -9,7 +9,7 @@
 #pragma once
 
 #include <QList>
-#include <QtPlugin>
+#include <QObject>
 #include <util/sll/eitherfwd.h>
 #include "imessage.h"
 #include "ihistoryplugin.h"

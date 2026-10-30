@@ -7,7 +7,8 @@
  **********************************************************************/
 
 #include "workerthreadtest.h"
-#include <QtTest>
+#include <QTest>
+#include <QTimer>
 #include <workerthreadbase.h>
 
 QTEST_GUILESS_MAIN (LC::Util::WorkerThreadTest)

@@ -11,7 +11,7 @@
 #include <QDateTime>
 #include <QUrl>
 #include <QStringList>
-#include <QtPlugin>
+#include <QObject>
 #include <util/sll/eitherfwd.h>
 
 template<typename>

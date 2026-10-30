@@ -8,7 +8,7 @@
 
 #include "cryptosystemtest.h"
 #include <cstdlib>
-#include <QtTest/QtTest>
+#include <QTest>
 #include <QByteArray>
 #include <QList>
 #include <QRandomGenerator>

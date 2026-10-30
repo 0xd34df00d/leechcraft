@@ -9,7 +9,6 @@
 #pragma once
 
 #include <memory>
-#include <QtPlugin>
 #include <QMetaType>
 #include "ilink.h"
 

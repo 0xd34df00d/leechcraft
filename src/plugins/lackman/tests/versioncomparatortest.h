@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include <QObject>
-#include <QtTest>
+#include <QTest>
 
 #define VERSIONCOMPARATOR_DEBUG
 #include "../versioncomparator.h"

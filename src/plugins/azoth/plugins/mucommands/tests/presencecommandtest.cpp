@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "presencecommandtest.h"
-#include <QtTest>
+#include <QTest>
 #include <QtDebug>
 #include "presencecommand.cpp"
 #include "testutil.h"

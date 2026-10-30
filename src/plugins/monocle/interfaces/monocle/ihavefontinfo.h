@@ -10,7 +10,7 @@
 
 #include <QString>
 #include <QList>
-#include <QtPlugin>
+#include <QObject>
 #include <util/threads/coro/taskfwd.h>
 
 namespace LC::Monocle

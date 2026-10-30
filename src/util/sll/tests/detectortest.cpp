@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "detectortest.h"
-#include <QtTest>
+#include <QTest>
 #include <detector.h>
 
 QTEST_APPLESS_MAIN (LC::Util::DetectorTest)

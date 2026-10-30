@@ -18,9 +18,9 @@
 #include <QMenu>
 #include <QSignalSpy>
 #include <QStandardItemModel>
+#include <QTest>
 #include <QToolButton>
 #include <QTreeView>
-#include <QtTest>
 #include <util/sll/qtutil.h>
 #include "categoryselector.h"
 #include "categoryselectorwindow.h"

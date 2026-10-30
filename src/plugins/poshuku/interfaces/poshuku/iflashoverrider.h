@@ -8,7 +8,7 @@
 
 #ifndef PLUGINS_POSHUKU_INTERFACES_IFLASHOVERRIDER_H
 #define PLUGINS_POSHUKU_INTERFACES_IFLASHOVERRIDER_H
-#include <QtPlugin>
+#include <QObject>
 
 class QUrl;
 

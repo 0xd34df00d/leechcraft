@@ -8,8 +8,6 @@
 
 #pragma once
 
-#include <QtPlugin>
-
 class QObject;
 class QByteArray;
 

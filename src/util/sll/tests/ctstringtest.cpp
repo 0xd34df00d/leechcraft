@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "ctstringtest.h"
-#include <QtTest>
+#include <QTest>
 #include <ctstring.h>
 #include <ctstringutils.h>
 

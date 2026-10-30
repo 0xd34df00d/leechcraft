@@ -8,7 +8,7 @@
 
 #ifndef INTERFACES_IPLUGINREADY_H
 #define INTERFACES_IPLUGINREADY_H
-#include <QtPlugin>
+#include <QObject>
 #include <QSet>
 
 /** @brief Base class for plugins accepting second-level plugins.

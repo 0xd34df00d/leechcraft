@@ -8,8 +8,8 @@
 
 #pragma once
 
+#include <QObject>
 #include <QUrl>
-#include <QtPlugin>
 #include <util/sll/eitherfwd.h>
 #include "structures.h"
 

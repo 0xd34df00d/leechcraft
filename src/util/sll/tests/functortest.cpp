@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "functortest.h"
-#include <QtTest>
+#include <QTest>
 #include <functor.h>
 
 QTEST_APPLESS_MAIN (LC::Util::FunctorTest)

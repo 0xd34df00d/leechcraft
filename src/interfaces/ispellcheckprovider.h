@@ -9,7 +9,7 @@
 #pragma once
 
 #include <memory>
-#include <QtPlugin>
+#include <QObject>
 
 /** @brief An instance of a spell checker.
  *

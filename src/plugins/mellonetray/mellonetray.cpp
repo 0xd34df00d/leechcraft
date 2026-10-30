@@ -9,7 +9,7 @@
 #include "mellonetray.h"
 #include <stdexcept>
 #include <QIcon>
-#include <QtQuick>
+#include <QQmlEngine>
 #include <util/x11/xwrapper.h>
 #include "traymodel.h"
 #include "iconhandler.h"

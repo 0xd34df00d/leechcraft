@@ -9,7 +9,7 @@
 #pragma once
 
 #include <QMetaType>
-#include <QtPlugin>
+#include <QObject>
 
 namespace LC::Azoth
 {

@@ -8,7 +8,7 @@
 
 #ifndef PLUGINS_AZOTH_INTERFACES_IRICHTEXTMESSAGE_H
 #define PLUGINS_AZOTH_INTERFACES_IRICHTEXTMESSAGE_H
-#include <QtPlugin>
+#include <QObject>
 
 namespace LC
 {

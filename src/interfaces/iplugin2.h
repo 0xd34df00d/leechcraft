@@ -8,7 +8,7 @@
 
 #ifndef INTERFACES_IPLUGIN2_H
 #define INTERFACES_IPLUGIN2_H
-#include <QtPlugin>
+#include <QObject>
 #include <QByteArray>
 #include <QSet>
 

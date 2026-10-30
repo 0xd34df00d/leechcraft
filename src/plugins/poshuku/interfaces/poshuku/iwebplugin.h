@@ -9,7 +9,7 @@
 #pragma once
 
 #include <optional>
-#include <QtPlugin>
+#include <QObject>
 #include <qwebpluginfactory.h>
 
 namespace LC

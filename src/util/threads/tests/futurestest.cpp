@@ -8,7 +8,8 @@
 
 #include "futurestest.h"
 #include <QEventLoop>
-#include <QtTest>
+#include <QTest>
+#include <QTimer>
 #include <futures.h>
 #include "common.h"
 

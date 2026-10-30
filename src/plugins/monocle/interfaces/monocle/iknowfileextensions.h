@@ -8,8 +8,8 @@
 
 #pragma once
 
+#include <QObject>
 #include <QStringList>
-#include <QtPlugin>
 
 namespace LC
 {

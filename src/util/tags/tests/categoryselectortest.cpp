@@ -10,8 +10,8 @@
 #include <QAction>
 #include <QSignalSpy>
 #include <QStandardItemModel>
+#include <QTest>
 #include <QTreeView>
-#include <QtTest>
 #include <util/sll/qtutil.h>
 #include "categoryselector.h"
 

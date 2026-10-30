@@ -9,7 +9,7 @@
 #pragma once
 
 #include <QObject>
-#include <QPoint>
+#include <QPointer>
 #include <interfaces/azoth/imessage.h>
 #include "channelparticipantentry.h"
 

@@ -10,7 +10,7 @@
 
 #include <QString>
 #include <QDateTime>
-#include <QtPlugin>
+#include <QObject>
 #include "messagebase.h"
 
 class QObject;

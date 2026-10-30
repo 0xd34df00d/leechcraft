@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "stringpathtrietest.h"
-#include <QtTest>
+#include <QTest>
 #include <util/sll/prelude.h>
 #include <stringpathtrie.h>
 

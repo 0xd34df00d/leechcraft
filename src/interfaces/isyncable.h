@@ -9,7 +9,7 @@
 #pragma once
 
 #include <QList>
-#include <QtPlugin>
+#include <QObject>
 
 class QObject;
 

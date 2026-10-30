@@ -8,7 +8,7 @@
 
 #ifndef PLUGINS_POSHUKU_IADDRESSBAR_H
 #define PLUGINS_POSHUKU_IADDRESSBAR_H
-#include <QtPlugin>
+#include <QObject>
 class QAction;
 class QToolButton;
 

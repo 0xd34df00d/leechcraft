@@ -10,6 +10,7 @@
 #include <QUuid>
 #include <QDataStream>
 #include <QtDebug>
+#include <QIODevice>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
 

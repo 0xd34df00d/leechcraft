@@ -8,7 +8,7 @@
 
 #include "ooronee.h"
 #include <QIcon>
-#include <QtQuick>
+#include <QQmlEngine>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "droparea.h"

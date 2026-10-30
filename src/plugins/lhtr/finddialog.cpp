@@ -10,6 +10,7 @@
 #include <QWebEnginePage>
 #include <QWebEngineView>
 #include <QTextEdit>
+#include <QPointer>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>

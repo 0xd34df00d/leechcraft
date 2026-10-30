@@ -9,9 +9,9 @@
 
 #pragma once
 
+#include <QDBusAbstractAdaptor>
 #include <QObject>
 #include <QStringList>
-#include <QtDBus>
 
 template<class Key, class Value> class QMap;
 class QVariant;

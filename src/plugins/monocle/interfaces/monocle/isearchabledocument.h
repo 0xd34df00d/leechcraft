@@ -9,7 +9,7 @@
 #pragma once
 
 #include <QMap>
-#include <QtPlugin>
+#include <QObject>
 #include "coordsbase.h"
 
 namespace LC

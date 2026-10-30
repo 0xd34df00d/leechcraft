@@ -17,6 +17,7 @@
 #include <QXmppVCardIq.h>
 #include <QXmppVersionIq.h>
 #include <QXmppDiscoveryIq.h>
+#include <QPointer>
 #include <interfaces/media/audiostructs.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iadvancedclentry.h>

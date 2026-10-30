@@ -11,8 +11,8 @@
 #include <variant>
 #include <functional>
 #include <stdexcept>
+#include <QObject>
 #include <QStringList>
-#include <QtPlugin>
 
 namespace LC
 {

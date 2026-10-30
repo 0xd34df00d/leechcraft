@@ -9,7 +9,7 @@
 #ifndef INTERFACES_IENTITYHANDLER_H
 #define INTERFACES_IENTITYHANDLER_H
 #include <QByteArray>
-#include <QtPlugin>
+#include <QObject>
 #include "structures.h"
 
 struct EntityTestHandleResult;

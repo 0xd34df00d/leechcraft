@@ -9,7 +9,7 @@
 #include "fixedstringfilterproxymodeltest.h"
 #include <functional>
 #include <QStringListModel>
-#include <QtTest>
+#include <QTest>
 #include <util/sll/qtutil.h>
 #include "fixedstringfilterproxymodel.h"
 

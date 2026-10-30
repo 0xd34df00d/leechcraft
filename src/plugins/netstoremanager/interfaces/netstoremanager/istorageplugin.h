@@ -10,7 +10,7 @@
 #define PLUGINS_NETSTOREMANAGER_INTERFACES_NETSTOREMANAGER_ISTORAGEPLUGIN_H
 #include <QString>
 #include <QMetaType>
-#include <QtPlugin>
+#include <QObject>
 
 class QIcon;
 

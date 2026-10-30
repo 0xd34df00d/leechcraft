@@ -8,8 +8,8 @@
 
 #pragma once
 
+#include <QObject>
 #include <QString>
-#include <QtPlugin>
 #include <util/threads/coro/taskfwd.h>
 #include "devicetypes.h"
 

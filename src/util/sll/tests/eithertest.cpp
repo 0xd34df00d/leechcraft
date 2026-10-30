@@ -7,7 +7,7 @@
  **********************************************************************/
 
 #include "eithertest.h"
-#include <QtTest>
+#include <QTest>
 #include <either.h>
 #include <void.h>
 #include <functor.h>

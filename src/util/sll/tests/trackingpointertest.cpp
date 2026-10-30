@@ -9,7 +9,7 @@
 #include "trackingpointertest.h"
 #include <memory>
 #include <type_traits>
-#include <QtTest>
+#include <QTest>
 #include "trackingpointer.h"
 
 QTEST_APPLESS_MAIN (LC::Util::TrackingPointerTest)

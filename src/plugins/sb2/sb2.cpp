@@ -11,7 +11,7 @@
 #include <QMainWindow>
 #include <QStatusBar>
 #include <QGraphicsEffect>
-#include <QtQuick>
+#include <QQmlEngine>
 #include <QtDebug>
 #include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/core/icoreproxy.h>

@@ -12,7 +12,7 @@
 #include <QList>
 #include <QImage>
 #include <QMetaType>
-#include <QtPlugin>
+#include <QObject>
 #include <util/threads/coro/channel.h>
 #include <util/sll/either.h>
 

@@ -9,7 +9,7 @@
 #pragma once
 
 #include <memory>
-#include <QtPlugin>
+#include <QObject>
 
 /** @brief Describes the progress of a single long-running operation.
  *

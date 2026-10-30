@@ -8,7 +8,7 @@
 
 #ifndef PLUGINS_AZOTH_INTERFACES_ISUPPORTGEOLOCATION_H
 #define PLUGINS_AZOTH_INTERFACES_ISUPPORTGEOLOCATION_H
-#include <QtPlugin>
+#include <QObject>
 #include <QMap>
 #include <QVariant>
 
