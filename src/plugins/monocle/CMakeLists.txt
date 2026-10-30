@@ -76,6 +76,7 @@ LC_DEFINE_PLUGIN (
 		components/viewitems/pagegraphicsitem.cpp
 		components/viewitems/pagescontextmenuhandler.cpp
 		components/viewitems/pagesview.cpp
+		components/viewitems/textselectionitem.cpp
 		components/widgets/dock.cpp
 		monocle.cpp
 		documenttab.cpp
