@@ -484,7 +484,8 @@ namespace LC::Monocle
 			for (auto i = selection->Start_.Box_; i <= selection->End_.Box_; ++i)
 			{
 				const auto& box = boxes [i];
-				textBits << box.Text_;
+				const auto [begin, end] = GetLetters (*selection, GetBoxPositionInfo (*selection, i), box);
+				textBits << box.Text_.mid (begin, end - begin);
 				if (const auto nextSym = GetNextSpace (box.NextSpaceKind_, preserveNewlines))
 					textBits << *nextSym;
 			}
