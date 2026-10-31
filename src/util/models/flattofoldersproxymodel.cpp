@@ -11,8 +11,6 @@
 #include <QSet>
 #include <QMimeData>
 #include <util/sll/containerconversions.h>
-#include <interfaces/iinfo.h>
-#include <interfaces/core/itagsmanager.h>
 #include "modelsanitizer.h"
 
 namespace LC::Util
@@ -31,14 +29,14 @@ namespace LC::Util
 
 		QList<FlatTreeItem_ptr> C_;
 		QPersistentModelIndex Index_;
-		QString Name_;
+		QString Key_;
 
 		FlatTreeItem () = default;
 
-		FlatTreeItem (Type type, FlatTreeItem& parent, QString name)
+		FlatTreeItem (Type type, FlatTreeItem& parent, QString key)
 		: Type_ { type }
 		, Parent_ { &parent }
-		, Name_ { std::move (name) }
+		, Key_ { std::move (key) }
 		{
 		}
 
@@ -52,14 +50,14 @@ namespace LC::Util
 			return pos - siblings.begin ();
 		}
 
-		FlatTreeItem_ptr AddFolder (const QString& name)
+		FlatTreeItem_ptr AddFolder (const QString& key)
 		{
-			return C_.emplaceBack (std::make_shared<FlatTreeItem> (Type::Folder, *this, name));
+			return C_.emplaceBack (std::make_shared<FlatTreeItem> (Type::Folder, *this, key));
 		}
 
 		FlatTreeItem_ptr AddLeaf (const QPersistentModelIndex& index)
 		{
-			const auto& leaf = C_.emplaceBack (std::make_shared<FlatTreeItem> (Type::Item, *this, Name_));
+			const auto& leaf = C_.emplaceBack (std::make_shared<FlatTreeItem> (Type::Item, *this, Key_));
 			leaf->Index_ = index;
 			return leaf;
 		}
@@ -71,19 +69,11 @@ namespace LC::Util
 		{
 			return static_cast<FlatTreeItem*> (idx.internalPointer ());
 		}
-
-		QStringList NamesOf (const ITagsManager& tm, const QModelIndex& idx)
-		{
-			auto names = tm.GetTags (idx.data (+CustomDataRoles::Tags).value<QList<TagId>> ());
-			if (names.isEmpty ())
-				names << QString {};
-			return names;
-		}
 	}
 
-	FlatToFoldersProxyModel::FlatToFoldersProxyModel (const ITagsManager *itm, QObject *parent)
+	FlatToFoldersProxyModel::FlatToFoldersProxyModel (Config config, QObject *parent)
 	: QAbstractItemModel { parent }
-	, TM_ { itm }
+	, Config_ { std::move (config) }
 	, Root_ { std::make_shared<FlatTreeItem> () }
 	{
 		InstallModelSanitizer (*this);
@@ -110,7 +100,7 @@ namespace LC::Util
 		}
 
 		if (fti->Type_ == FlatTreeItem::Type::Folder && index.column () == 0 && role == Qt::DisplayRole)
-			return fti->Name_.isEmpty () ? tr ("untagged") : fti->Name_;
+			return fti->Key_.isEmpty () ? Config_.UnkeyedLabel_ : fti->Key_;
 
 		return {};
 	}
@@ -229,7 +219,7 @@ namespace LC::Util
 			modified.setData (format, data->data (format));
 
 		if (parent.isValid ())
-			modified.setData (QStringLiteral ("x-leechcraft/tag"), ToFlat (parent)->Name_.toUtf8 ());
+			modified.setData (Config_.DropFormat_, ToFlat (parent)->Key_.toUtf8 ());
 
 		return SourceModel_->dropMimeData (&modified, action, -1, -1, QModelIndex ());
 	}
@@ -334,21 +324,30 @@ namespace LC::Util
 		return result;
 	}
 
-	FlatTreeItem_ptr FlatToFoldersProxyModel::FindFolder (const QString& name) const
+	QStringList FlatToFoldersProxyModel::KeysOf (const QModelIndex& index) const
+	{
+		auto keys = Config_.KeysOf_ (index);
+		keys.removeDuplicates ();
+		if (keys.isEmpty ())
+			keys << QString {};
+		return keys;
+	}
+
+	FlatTreeItem_ptr FlatToFoldersProxyModel::FindFolder (const QString& key) const
 	{
 		const auto& folders = Root_->C_;
-		const auto pos = std::ranges::find (folders, name, &FlatTreeItem::Name_);
+		const auto pos = std::ranges::find (folders, key, &FlatTreeItem::Key_);
 		return pos == folders.end () ? nullptr : *pos;
 	}
 
-	FlatTreeItem_ptr FlatToFoldersProxyModel::GetFolder (const QString& name)
+	FlatTreeItem_ptr FlatToFoldersProxyModel::GetFolder (const QString& key)
 	{
-		if (const auto& folder = FindFolder (name))
+		if (const auto& folder = FindFolder (key))
 			return folder;
 
 		const auto row = Root_->C_.size ();
 		beginInsertRows ({}, row, row);
-		const auto& folder = Root_->AddFolder (name);
+		const auto& folder = Root_->AddFolder (key);
 		endInsertRows ();
 		return folder;
 	}
@@ -363,9 +362,9 @@ namespace LC::Util
 		return createIndex (item.Row (), column, &item);
 	}
 
-	void FlatToFoldersProxyModel::AddForName (const QString& name, const QPersistentModelIndex& pidx)
+	void FlatToFoldersProxyModel::AddForKey (const QString& key, const QPersistentModelIndex& pidx)
 	{
-		const auto& folder = GetFolder (name);
+		const auto& folder = GetFolder (key);
 		const auto row = folder->C_.size ();
 		beginInsertRows (IndexOf (*folder), row, row);
 		Items_.insert (pidx, folder->AddLeaf (pidx));
@@ -395,15 +394,15 @@ namespace LC::Util
 		for (int row = topLeft.row (); row <= bottomRight.row (); ++row)
 		{
 			const QPersistentModelIndex pidx { topLeft.sibling (row, 0) };
-			auto names = AsSet (NamesOf (*TM_, pidx));
+			auto keys = AsSet (KeysOf (pidx));
 			for (const auto& leaf : Items_.values (pidx))
-				if (names.remove (leaf->Name_))
+				if (keys.remove (leaf->Key_))
 					emit dataChanged (IndexOf (*leaf), IndexOf (*leaf, columnCount () - 1), roles);
 				else
 					RemoveLeaf (leaf);
 
-			for (const auto& name : names)
-				AddForName (name, pidx);
+			for (const auto& key : keys)
+				AddForKey (key, pidx);
 		}
 	}
 
@@ -416,11 +415,11 @@ namespace LC::Util
 			for (int i = 0, size = SourceModel_->rowCount (); i < size; ++i)
 			{
 				const QPersistentModelIndex pidx { SourceModel_->index (i, 0) };
-				for (const auto& name : NamesOf (*TM_, pidx))
+				for (const auto& key : KeysOf (pidx))
 				{
-					auto folder = FindFolder (name);
+					auto folder = FindFolder (key);
 					if (!folder)
-						folder = Root_->AddFolder (name);
+						folder = Root_->AddFolder (key);
 					Items_.insert (pidx, folder->AddLeaf (pidx));
 				}
 			}
@@ -432,8 +431,8 @@ namespace LC::Util
 		for (int i = start; i <= end; ++i)
 		{
 			const QPersistentModelIndex pidx { SourceModel_->index (i, 0) };
-			for (const auto& name : NamesOf (*TM_, pidx))
-				AddForName (name, pidx);
+			for (const auto& key : KeysOf (pidx))
+				AddForKey (key, pidx);
 		}
 	}
 

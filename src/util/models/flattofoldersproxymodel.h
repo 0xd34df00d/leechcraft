@@ -8,11 +8,11 @@
 
 #pragma once
 
+#include <functional>
 #include <memory>
 #include <QAbstractItemModel>
 #include <QStringList>
 #include <QMultiHash>
-#include <interfaces/core/itagsmanager.h>
 #include "modelsconfig.h"
 
 namespace LC::Util
@@ -20,18 +20,18 @@ namespace LC::Util
 	struct FlatTreeItem;
 	using FlatTreeItem_ptr = std::shared_ptr<FlatTreeItem>;
 
-	/** Groups the rows of a flat source model into folders by tag name.
+	/** Groups the rows of a flat source model into folders by key.
 	 *
-	 * Tags are read from column 0 of each source row via `CustomDataRoles::Tags`
-	 * as a `QList<TagId>`, and the tags manager resolves them to names. A row
-	 * appears under the folder of every name its tags have, and rows whose
-	 * tags have no names go into a single untagged folder. A folder shows its
-	 * name as `Qt::DisplayRole`. Leaves expose the columns of their source
-	 * rows and map back via `MapToSource()`.
+	 * `Config::KeysOf_` yields the keys of a source row from its column 0
+	 * index, and the row appears under the folder of each of them, a key
+	 * listed twice counting once. Rows with no keys go into a single unkeyed
+	 * folder. A folder shows its key as `Qt::DisplayRole`, the unkeyed one
+	 * shows `Config::UnkeyedLabel_`. Leaves expose the columns of their
+	 * source rows and map back via `MapToSource()`.
 	 *
 	 * A drop onto a folder reaches the source model's `dropMimeData()` with
-	 * the folder's name under the `x-leechcraft/tag` format, empty for the
-	 * untagged folder.
+	 * the folder's key under the `Config::DropFormat_` format, empty for the
+	 * unkeyed folder.
 	 *
 	 * The source must be flat, and its layout changes must move rows as units,
 	 * as every row sort does. Layout changes of the source are not forwarded,
@@ -42,14 +42,24 @@ namespace LC::Util
 	 */
 	class UTIL_MODELS_API FlatToFoldersProxyModel : public QAbstractItemModel
 	{
-		QAbstractItemModel *SourceModel_ = nullptr;
+	public:
+		struct Config
+		{
+			/** The keys of a source row, none of them empty.
+			 */
+			std::function<QStringList (const QModelIndex&)> KeysOf_;
+			QString UnkeyedLabel_;
+			QString DropFormat_;
+		};
+	private:
+		const Config Config_;
 
-		const ITagsManager * const TM_;
+		QAbstractItemModel *SourceModel_ = nullptr;
 
 		FlatTreeItem_ptr Root_;
 		QMultiHash<QPersistentModelIndex, FlatTreeItem_ptr> Items_;
 	public:
-		explicit FlatToFoldersProxyModel (const ITagsManager*, QObject* = nullptr);
+		explicit FlatToFoldersProxyModel (Config, QObject* = nullptr);
 
 		int columnCount (const QModelIndex& = {}) const override;
 		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;
@@ -83,12 +93,13 @@ namespace LC::Util
 			return result;
 		}
 	private:
+		QStringList KeysOf (const QModelIndex&) const;
 		const FlatTreeItem& ToFlatOrRoot (const QModelIndex&) const;
 		QModelIndex IndexOf (const FlatTreeItem&, int column = 0) const;
 
 		FlatTreeItem_ptr FindFolder (const QString&) const;
 		FlatTreeItem_ptr GetFolder (const QString&);
-		void AddForName (const QString&, const QPersistentModelIndex&);
+		void AddForKey (const QString&, const QPersistentModelIndex&);
 		void RemoveLeaf (const FlatTreeItem_ptr&);
 
 		void HandleDataChanged (const QModelIndex&, const QModelIndex&, const QList<int>&);

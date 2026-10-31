@@ -8,7 +8,7 @@
 
 #include "bookmarkswidget.h"
 #include <QMessageBox>
-#include <util/models/flattofoldersproxymodel.h>
+#include <util/tags/tagsfoldersproxymodel.h>
 #include <util/tags/tagseditoraddon.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
@@ -30,7 +30,7 @@ namespace Poshuku
 		FavoritesFilterModel_->setSourceModel (Core::Instance ().GetFavoritesModel ());
 
 		const auto itm = Core::Instance ().GetProxy ()->GetTagsManager ();
-		FlatToFolders_ = std::make_shared<Util::FlatToFoldersProxyModel> (itm);
+		FlatToFolders_ = std::make_shared<Util::TagsFoldersProxyModel> (*itm);
 		handleGroupBookmarks ();
 		XmlSettingsManager::Instance ().RegisterObject ("GroupBookmarksByTags",
 				this, "handleGroupBookmarks");

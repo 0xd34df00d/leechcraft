@@ -20,9 +20,9 @@ namespace LC::Util
 		void initTestCase_data ();
 
 		void testInitialTree ();
-		void testFoldersFollowNames ();
+		void testFoldersFollowKeys ();
 		void testInsertCreatesFoldersOnDemand ();
-		void testRetagKeepsTheSurvivingLeaf ();
+		void testRekeyKeepsTheSurvivingLeaf ();
 		void testRemovingTheLastLeafRemovesTheFolder ();
 		void testRemovalFollowsOwnBookkeeping ();
 		void testSourceSortLeavesTheTreeAlone ();

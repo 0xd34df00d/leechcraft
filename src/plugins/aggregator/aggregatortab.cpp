@@ -14,7 +14,7 @@
 #include <interfaces/core/itagsmanager.h>
 #include <util/gui/statesaver.h>
 #include <util/gui/util.h>
-#include <util/models/flattofoldersproxymodel.h>
+#include <util/tags/tagsfoldersproxymodel.h>
 #include <util/sll/qtutil.h>
 #include <util/tags/tagseditoraddon.h>
 #include <util/util.h>
@@ -43,7 +43,7 @@ namespace LC::Aggregator
 							[] (const QModelIndex& row) { return row.data (ChannelShortStruct).value<ChannelShort> (); });
 				},
 			}) }
-	, FlatToFolders_ { std::make_unique<Util::FlatToFoldersProxyModel> (GetProxyHolder ()->GetTagsManager ()) }
+	, FlatToFolders_ { std::make_unique<Util::TagsFoldersProxyModel> (*GetProxyHolder ()->GetTagsManager ()) }
 	, ChannelsFilterModel_ { new ChannelsFilterModel { this } }
 	, ItemsWidget_ { std::make_unique<ItemsWidget> (ItemsWidget::Dependencies {
 				.ShortcutsMgr_ = deps.ShortcutManager_,

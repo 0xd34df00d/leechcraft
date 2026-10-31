@@ -6,6 +6,7 @@ add_util_library (util-tags
 		tagscompletionmodel.cpp
 		tagseditdelegate.cpp
 		tagsfiltermodel.cpp
+		tagsfoldersproxymodel.cpp
 		tagseditoraddon.cpp
 		util.cpp
 	DEPENDS leechcraft-util-gui

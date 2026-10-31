@@ -17,8 +17,6 @@
 #include <QSortFilterProxyModel>
 #include <QStandardItemModel>
 #include <QTest>
-#include <interfaces/structures.h>
-#include <interfaces/core/itagsmanager.h>
 #include "flattofoldersproxymodel.h"
 
 QTEST_GUILESS_MAIN (LC::Util::FlatToFoldersProxyModelTest)
@@ -28,27 +26,18 @@ namespace LC::Util
 	namespace
 	{
 		constexpr int IdRole = Qt::UserRole + 1;
-		constexpr int TagsRole = +CustomDataRoles::Tags;
-		constexpr auto TagMimeType = "x-leechcraft/tag";
+		constexpr int KeysRole = Qt::UserRole + 2;
+		const auto DropFormat = QStringLiteral ("x-test/folder");
+		const auto Unkeyed = QStringLiteral ("unkeyed");
 
-		// an id's names are joined by '+': "t1+" is a second id named t1, "x+y" has two names and "+" has none
-		struct TagsStub final : ITagsManager
+		FlatToFoldersProxyModel::Config MakeConfig ()
 		{
-			std::optional<TagId> GetID (const QString& tag) override { return TagId { tag }; }
-			using ITagsManager::GetTags;
-			QStringList GetTags (const TagId& id) const override { return id.Id_.split ('+', Qt::SkipEmptyParts); }
-			QStringList GetAllTags () const override { return {}; }
-			QStringList Split (const QString& string) const override { return string.split (';', Qt::SkipEmptyParts); }
-			QList<TagId> SplitToIDs (const QString& string) override { return TagId::FromStrings (Split (string)); }
-			QString Join (const QStringList& tags) const override { return tags.join ("; "); }
-			QString JoinIDs (const QList<TagId>& ids) const override { return Join (TagId::ToStrings (ids)); }
-			QAbstractItemModel* GetModel () override { return nullptr; }
-			QObject* GetQObject () override { return nullptr; }
-		};
-
-		QVariant TagsVariant (const QStringList& tags)
-		{
-			return QVariant::fromValue (TagId::FromStrings (tags));
+			return
+			{
+				.KeysOf_ = [] (const QModelIndex& index) { return index.data (KeysRole).toStringList (); },
+				.UnkeyedLabel_ = Unkeyed,
+				.DropFormat_ = DropFormat,
+			};
 		}
 
 		struct Source : QStandardItemModel
@@ -56,19 +45,19 @@ namespace LC::Util
 			using QStandardItemModel::persistentIndexList;
 
 			mutable QList<int> LastDraggedIds_;
-			std::optional<QByteArray> LastDropTag_;
+			std::optional<QByteArray> LastDropKey_;
 
-			void Append (int id, const QString& text, const QStringList& tags)
+			void Append (int id, const QString& text, const QStringList& keys)
 			{
 				const auto first = new QStandardItem { text };
 				first->setData (id, IdRole);
-				first->setData (TagsVariant (tags), TagsRole);
+				first->setData (keys, KeysRole);
 				appendRow ({ first, new QStandardItem { QString::number (id * 10) } });
 			}
 
-			void SetTags (int row, const QStringList& tags)
+			void SetKeys (int row, const QStringList& keys)
 			{
-				item (row)->setData (TagsVariant (tags), TagsRole);
+				item (row)->setData (keys, KeysRole);
 			}
 
 			QMimeData* mimeData (const QModelIndexList& indexes) const override
@@ -82,8 +71,8 @@ namespace LC::Util
 
 			bool dropMimeData (const QMimeData *data, Qt::DropAction, int, int, const QModelIndex&) override
 			{
-				LastDropTag_ = data->hasFormat (TagMimeType) ?
-						std::optional { data->data (TagMimeType) } :
+				LastDropKey_ = data->hasFormat (DropFormat) ?
+						std::optional { data->data (DropFormat) } :
 						std::nullopt;
 				return true;
 			}
@@ -96,11 +85,10 @@ namespace LC::Util
 
 		struct Fixture
 		{
-			TagsStub Tags_;
 			Source Source_;
 			Filter Filter_;
 			QAbstractItemModel& Upstream_;
-			FlatToFoldersProxyModel Proxy_ { &Tags_ };
+			FlatToFoldersProxyModel Proxy_ { MakeConfig () };
 			QAbstractItemModelTester Tester_ { &Proxy_, QAbstractItemModelTester::FailureReportingMode::QtTest };
 
 			explicit Fixture (bool viaFilter)
@@ -150,14 +138,13 @@ namespace LC::Util
 			}
 		};
 
-		const auto Untagged = QStringLiteral ("untagged");
-
-		QStringList NamesOf (const QModelIndex& index)
+		QStringList KeysOf (const QModelIndex& index)
 		{
-			auto names = TagsStub {}.GetTags (index.data (TagsRole).value<QList<TagId>> ());
-			if (names.isEmpty ())
-				names << Untagged;
-			return names;
+			auto keys = index.data (KeysRole).toStringList ();
+			keys.removeDuplicates ();
+			if (keys.isEmpty ())
+				keys << Unkeyed;
+			return keys;
 		}
 
 		QString FolderName (const QModelIndex& folder)
@@ -173,8 +160,8 @@ namespace LC::Util
 			for (int row = 0; row < upstream.rowCount (); ++row)
 			{
 				const auto& index = upstream.index (row, 0);
-				for (const auto& name : NamesOf (index))
-					result [name] << index.data (IdRole).toInt ();
+				for (const auto& key : KeysOf (index))
+					result [key] << index.data (IdRole).toInt ();
 			}
 			return result;
 		}
@@ -182,14 +169,14 @@ namespace LC::Util
 		QString Describe (const Picture& picture)
 		{
 			QStringList folders;
-			for (const auto& [tag, ids] : picture.asKeyValueRange ())
+			for (const auto& [key, ids] : picture.asKeyValueRange ())
 			{
 				auto sorted = ids.values ();
 				std::ranges::sort (sorted);
 				QStringList idStrings;
 				for (const auto id : sorted)
 					idStrings << QString::number (id);
-				folders << tag + " {" + idStrings.join (' ') + '}';
+				folders << key + " {" + idStrings.join (' ') + '}';
 			}
 			return folders.join ("; ");
 		}
@@ -222,11 +209,11 @@ namespace LC::Util
 				if (upstream.columnCount () > 1)
 					QCOMPARE (proxy.rowCount (folderIdx.siblingAtColumn (1)), 0);
 
-				const auto& tag = FolderName (folderIdx);
-				QVERIFY2 (!actual.contains (tag), qPrintable ("duplicate folder for tag " + tag));
-				QVERIFY2 (proxy.rowCount (folderIdx) > 0, qPrintable ("empty folder for tag " + tag));
+				const auto& key = FolderName (folderIdx);
+				QVERIFY2 (!actual.contains (key), qPrintable ("duplicate folder for key " + key));
+				QVERIFY2 (proxy.rowCount (folderIdx) > 0, qPrintable ("empty folder for key " + key));
 
-				auto& ids = actual [tag];
+				auto& ids = actual [key];
 				for (int l = 0; l < proxy.rowCount (folderIdx); ++l)
 				{
 					++leaves;
@@ -238,7 +225,7 @@ namespace LC::Util
 					const auto& source = proxy.MapToSource (leafIdx);
 					QVERIFY (source.isValid ());
 					QCOMPARE (source.model (), &upstream);
-					QVERIFY (NamesOf (source).contains (tag));
+					QVERIFY (KeysOf (source).contains (key));
 					QVERIFY (proxy.MapFromSource (source).contains (leafIdx));
 					for (int col = 0; col < upstream.columnCount (); ++col)
 						QCOMPARE (proxy.index (l, col, folderIdx).data (), source.siblingAtColumn (col).data ());
@@ -253,7 +240,7 @@ namespace LC::Util
 
 			int expectedLeaves = 0;
 			for (int row = 0; row < upstream.rowCount (); ++row)
-				expectedLeaves += NamesOf (upstream.index (row, 0)).size ();
+				expectedLeaves += KeysOf (upstream.index (row, 0)).size ();
 			QCOMPARE (leaves, expectedLeaves);
 		}
 
@@ -284,26 +271,26 @@ namespace LC::Util
 		f.Attach ();
 		CheckTree (f.Proxy_, f.Upstream_);
 
-		QCOMPARE (Dump (f.Proxy_), (QStringList { "t1: 1 2", "t2: 2", "untagged: 3" }));
+		QCOMPARE (Dump (f.Proxy_), (QStringList { "t1: 1 2", "t2: 2", "unkeyed: 3" }));
 		QCOMPARE (f.Proxy_.headerData (0, Qt::Horizontal, Qt::DisplayRole), f.Upstream_.headerData (0, Qt::Horizontal, Qt::DisplayRole));
 		QCOMPARE (f.Proxy_.flags ({}), Qt::ItemIsDropEnabled);
 	}
 
-	void FlatToFoldersProxyModelTest::testFoldersFollowNames ()
+	void FlatToFoldersProxyModelTest::testFoldersFollowKeys ()
 	{
 		QFETCH_GLOBAL (bool, viaFilter);
 		Fixture f { viaFilter };
 		f.Source_.Append (1, "a", { "t1" });
-		f.Source_.Append (2, "b", { "t1+" });
-		f.Source_.Append (3, "c", { "x+y" });
-		f.Source_.Append (4, "d", { "+" });
-		f.Source_.Append (5, "e", { "t1", "t1+" });
+		f.Source_.Append (2, "b", { "t1" });
+		f.Source_.Append (3, "c", { "x", "y" });
+		f.Source_.Append (4, "d", {});
+		f.Source_.Append (5, "e", { "t1", "t1" });
 		f.Attach ();
 		CheckTree (f.Proxy_, f.Upstream_);
-		QCOMPARE (Dump (f.Proxy_), (QStringList { "t1: 1 2 5", "x: 3", "y: 3", "untagged: 4" }));
+		QCOMPARE (Dump (f.Proxy_), (QStringList { "t1: 1 2 5", "x: 3", "y: 3", "unkeyed: 4" }));
 		Spies spies { f.Proxy_ };
 
-		f.Source_.SetTags (3, { "t1+" });
+		f.Source_.SetKeys (3, { "t1" });
 		QCOMPARE (spies.Inserted_.size (), 1);
 		QCOMPARE (spies.Removed_.size (), 2);
 		CheckTree (f.Proxy_, f.Upstream_);
@@ -329,7 +316,7 @@ namespace LC::Util
 		CheckTree (f.Proxy_, f.Upstream_);
 	}
 
-	void FlatToFoldersProxyModelTest::testRetagKeepsTheSurvivingLeaf ()
+	void FlatToFoldersProxyModelTest::testRekeyKeepsTheSurvivingLeaf ()
 	{
 		QFETCH_GLOBAL (bool, viaFilter);
 		Fixture f { viaFilter };
@@ -337,7 +324,7 @@ namespace LC::Util
 		f.Attach ();
 		Spies spies { f.Proxy_ };
 
-		f.Source_.SetTags (1, { "t2", "t3" });
+		f.Source_.SetKeys (1, { "t2", "t3" });
 
 		QCOMPARE (spies.Data_.size (), 1);
 		const auto& args = spies.Data_.first ();
@@ -345,7 +332,7 @@ namespace LC::Util
 		QCOMPARE (topLeft.data (IdRole).toInt (), 2);
 		QCOMPARE (FolderName (topLeft.parent ()), QString { "t2" });
 		QCOMPARE (args.at (1).value<QModelIndex> ().column (), f.Upstream_.columnCount () - 1);
-		QCOMPARE (args.at (2).value<QList<int>> (), (QList<int> { TagsRole }));
+		QCOMPARE (args.at (2).value<QList<int>> (), (QList<int> { KeysRole }));
 
 		QCOMPARE (spies.Removed_.size (), 1);
 		QCOMPARE (spies.Inserted_.size (), 2);
@@ -377,7 +364,7 @@ namespace LC::Util
 		f.Attach ();
 
 		f.Source_.blockSignals (true);
-		f.Source_.SetTags (2, { "zz" });
+		f.Source_.SetKeys (2, { "zz" });
 		f.Source_.blockSignals (false);
 		f.Source_.removeRow (2);
 
@@ -463,11 +450,15 @@ namespace LC::Util
 		QMimeData payload;
 		payload.setText ("payload");
 		QVERIFY (f.Proxy_.dropMimeData (&payload, Qt::CopyAction, -1, -1, t1));
-		QVERIFY (f.Source_.LastDropTag_.has_value ());
-		QCOMPARE (*f.Source_.LastDropTag_, QByteArray { "t1" });
+		QVERIFY (f.Source_.LastDropKey_.has_value ());
+		QCOMPARE (*f.Source_.LastDropKey_, QByteArray { "t1" });
+
+		QVERIFY (f.Proxy_.dropMimeData (&payload, Qt::CopyAction, -1, -1, f.Proxy_.index (2, 0)));
+		QVERIFY (f.Source_.LastDropKey_.has_value ());
+		QVERIFY (f.Source_.LastDropKey_->isEmpty ());
 
 		QVERIFY (f.Proxy_.dropMimeData (&payload, Qt::CopyAction, -1, -1, {}));
-		QVERIFY (!f.Source_.LastDropTag_.has_value ());
+		QVERIFY (!f.Source_.LastDropKey_.has_value ());
 	}
 
 	void FlatToFoldersProxyModelTest::testReleasesUpstreamIndexes ()
@@ -480,7 +471,7 @@ namespace LC::Util
 		Source other;
 		other.Append (7, "x", { "t1" });
 		{
-			FlatToFoldersProxyModel proxy { &f.Tags_ };
+			FlatToFoldersProxyModel proxy { MakeConfig () };
 			QAbstractItemModelTester tester { &proxy, QAbstractItemModelTester::FailureReportingMode::QtTest };
 
 			proxy.SetSourceModel (&f.Upstream_);
@@ -503,14 +494,16 @@ namespace LC::Util
 
 		constexpr quint32 seed = 20261017;
 		QRandomGenerator gen { seed };
-		const QStringList pool { "t1", "t2", "t3", "t4", "t1+", "t3+t4" };
-		const auto randomTags = [&]
+		const QStringList pool { "t1", "t2", "t3", "t4" };
+		const auto randomKeys = [&]
 		{
-			QStringList tags;
-			for (const auto& tag : pool)
+			QStringList keys;
+			for (const auto& key : pool)
 				if (!gen.bounded (3))
-					tags << tag;
-			return tags;
+					keys << key;
+			if (!keys.isEmpty () && !gen.bounded (4))
+				keys << keys.first ();
+			return keys;
 		};
 		const auto randomText = [&] { return QString { QChar { 'a' + static_cast<int> (gen.bounded (6)) } }; };
 
@@ -521,13 +514,13 @@ namespace LC::Util
 			switch (rows ? gen.bounded (6) : 0)
 			{
 			case 0:
-				f.Source_.Append (nextId++, randomText (), randomTags ());
+				f.Source_.Append (nextId++, randomText (), randomKeys ());
 				break;
 			case 1:
 				f.Source_.removeRow (gen.bounded (rows));
 				break;
 			case 2:
-				f.Source_.SetTags (gen.bounded (rows), randomTags ());
+				f.Source_.SetKeys (gen.bounded (rows), randomKeys ());
 				break;
 			case 3:
 				f.Source_.item (gen.bounded (rows))->setText (randomText ());
