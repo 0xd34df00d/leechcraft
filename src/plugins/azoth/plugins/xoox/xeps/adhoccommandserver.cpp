@@ -367,18 +367,15 @@ namespace Xoox
 				if (msgObj->GetDirection () != IMessage::Direction::In)
 					continue;
 
-				QXmppMessage msg { {}, to, msgObj->GetNativeMessage ().body () };
+				const auto& native = msgObj->GetNativeMessage ();
+
+				QXmppMessage msg { {}, to, native.body () };
 				msg.setStamp (msgObj->GetDateTime ());
 				msg.setXhtml (msgObj->GetRichBody ());
 
-				const auto& var = msgObj->GetOtherVariant ();
-				const auto& from = var.isEmpty () ?
-						base->GetHumanReadableAddress () :
-						base->GetHumanReadableAddress () + '/' + var;
-
 				QXmppExtendedAddress address;
 				address.setType ("ofrom");
-				address.setJid (from);
+				address.setJid (native.from ());
 				msg.setExtendedAddresses ({ address });
 
 				Conn_->GetClient ()->send (std::move (msg));
