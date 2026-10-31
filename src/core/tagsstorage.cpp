@@ -12,15 +12,20 @@
 #include <util/db/dblock.h>
 #include <util/db/util.h>
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 
 namespace LC
 {
 	struct TagsStorage::Record
 	{
-		Util::oral::Unique<Util::oral::NotNull<QByteArray>> Id_;
+		Util::oral::NotNull<QByteArray> Id_;
 		Util::oral::NotNull<QString> Name_;
 
-		constexpr static auto ClassName = "Tags"_ct;
+		constexpr static auto ClassName = "TagNames"_ct;
+
+		using Constraints = Util::oral::Constraints<
+				Util::oral::UniqueSubset<&Record::Id_, &Record::Name_>
+			>;
 	};
 }
 
@@ -50,13 +55,14 @@ namespace LC
 		Util::RunTextQuery (DB_, "PRAGMA journal_mode = WAL;");
 
 		Record_ = Util::oral::AdaptPtr<Record> (DB_);
+		MigrateLegacyTags ();
 	}
 
 	TagsStorage::~TagsStorage () = default;
 
 	void TagsStorage::AddTag (const Id& id, const QString& name)
 	{
-		Record_->Insert ({ id.toByteArray (), name });
+		Record_->Insert ({ id.toByteArray (), name }, Util::oral::InsertAction::Ignore);
 	}
 
 	void TagsStorage::DeleteTag (const Id& id)
@@ -74,5 +80,18 @@ namespace LC
 	{
 		return Util::Map (Record_->Select (),
 				[] (const Record& rec) { return std::pair { QUuid { QString::fromLatin1 (rec.Id_) }, *rec.Name_ }; });
+	}
+
+	// TODO drop this Nov 2027
+	void TagsStorage::MigrateLegacyTags ()
+	{
+		if (!DB_.tables ().contains ("Tags"_qs))
+			return;
+
+		Util::DBLock lock { DB_ };
+		lock.Init ();
+		Util::RunTextQuery (DB_, "INSERT OR IGNORE INTO TagNames (Id, Name) SELECT Id, Name FROM Tags;"_qs);
+		Util::RunTextQuery (DB_, "DROP TABLE Tags;"_qs);
+		lock.Good ();
 	}
 }

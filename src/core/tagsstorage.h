@@ -34,5 +34,7 @@ namespace LC
 		void DeleteTag (const Id&);
 		void SetTagName (const Id&, const QString&);
 		QList<std::pair<Id, QString>> GetAllTags () const;
+	private:
+		void MigrateLegacyTags ();
 	};
 }
