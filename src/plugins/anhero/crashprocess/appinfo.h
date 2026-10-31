@@ -25,6 +25,7 @@ namespace LC::AnHero::CrashProcess
 		QString TsFile_;
 
 		bool SuggestRestart_;
+		bool Supervised_;
 	};
 
 }

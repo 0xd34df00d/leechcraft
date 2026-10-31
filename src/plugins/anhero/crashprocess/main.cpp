@@ -40,6 +40,7 @@ namespace
 		const auto optCmdline = strOpt ("cmdline"_qs, "The command line LeechCraft was started with."_qs);
 		const auto optTsfile = strOpt ("tsfile"_qs, "The translation file to use for the UI strings."_qs);
 		const auto optRestart = mkOpt ({ "suggest_restart"_qs, "Suggest restarting LeechCraft."_qs, "0|1"_qs });
+		const auto optSupervised = mkOpt ({ "supervised"_qs, "LeechCraft is restarted by its supervisor, so don't offer restarting it."_qs, "0|1"_qs });
 		parser.process (*QCoreApplication::instance ());
 
 		const auto require = [&] (const QCommandLineOption& option)
@@ -74,6 +75,7 @@ namespace
 			.ExecLine_ = parser.value (optCmdline),
 			.TsFile_ = parser.value (optTsfile),
 			.SuggestRestart_ = getNum (&QString::toInt, parser.value (optRestart)) != 0,
+			.Supervised_ = getNum (&QString::toInt, parser.value (optSupervised)) != 0,
 		};
 	}
 }

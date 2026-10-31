@@ -34,6 +34,7 @@ namespace LC::AnHero
 		QByteArray AppArgs_;
 		QByteArray TsFile_;
 		bool IsShuttingDown_ = false;
+		bool IsSupervised_ = false;
 
 		void CloseFiles ()
 		{
@@ -111,12 +112,16 @@ namespace LC::AnHero
 				TsFile_.constData (),
 				"--suggest_restart",
 				IsShuttingDown_ ? "0" : "1",
+				"--supervised",
+				IsSupervised_ ? "1" : "0",
 				nullptr
 			};
 
 			Exec (argv);
+			// supervisors like leechcraft-session restart LeechCraft after the latter but not after the former
+			const auto crashWhileQuittingExitCode = 254;
 			const auto crashExitCode = 255;
-			_exit (crashExitCode);
+			_exit (IsShuttingDown_ ? crashWhileQuittingExitCode : crashExitCode);
 		}
 
 		void SetCrashHandler (void (*handler) (int))
@@ -163,6 +168,7 @@ namespace LC::AnHero
 
 		auto args = QCoreApplication::arguments ();
 		args.removeFirst ();
+		IsSupervised_ = args.contains ("--supervised"_qs);
 
 		AppPath_ = QCoreApplication::applicationFilePath ().toUtf8 ();
 		AppDir_ = QCoreApplication::applicationDirPath ().toUtf8 ();

@@ -50,6 +50,7 @@ namespace LC::AnHero::CrashProcess
 		QFont traceFont { QStringLiteral ("monospace") };
 		Ui_.TraceDisplay_->setFont (traceFont);
 		Ui_.RestartBox_->setCheckState (info.SuggestRestart_ ? Qt::Checked : Qt::Unchecked);
+		Ui_.RestartBox_->setHidden (info.Supervised_);
 
 		new Highlighter (Ui_.TraceDisplay_->document ());
 
@@ -94,7 +95,7 @@ namespace LC::AnHero::CrashProcess
 						WriteTrace (filename);
 					}
 
-					if (Ui_.RestartBox_->checkState () == Qt::Checked)
+					if (!Info_.Supervised_ && Ui_.RestartBox_->checkState () == Qt::Checked)
 					{
 						auto cmdlist = CmdLine_.split (' ', Qt::SkipEmptyParts);
 						cmdlist << QStringLiteral ("--restart");
