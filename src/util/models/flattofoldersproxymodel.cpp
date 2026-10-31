@@ -118,9 +118,10 @@ namespace LC::Util
 				if (fti->Tag_.Id_.isEmpty ())
 					return tr ("untagged");
 
-				if (const auto& tag = TM_->GetTag (fti->Tag_))
-					return *tag;
-				return tr ("<unknown tag>");
+				const auto& tags = TM_->GetTags (fti->Tag_);
+				if (tags.isEmpty ())
+					return tr ("<unknown tag>");
+				return TM_->Join (tags);
 			}
 			case +CustomDataRoles::Tags:
 				return QVariant::fromValue (fti->Tag_.Id_.isEmpty () ? QList<TagId> {} : QList { fti->Tag_ });

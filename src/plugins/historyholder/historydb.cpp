@@ -228,7 +228,7 @@ namespace HistoryHolder
 				continue;
 			}
 
-			if (!TM_->GetTag (tag))
+			if (TM_->GetTags (tag).isEmpty ())
 			{
 				qWarning () << "unknown tag" << tag.Id_;
 				continue;

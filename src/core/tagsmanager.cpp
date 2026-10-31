@@ -86,12 +86,12 @@ std::optional<TagId> TagsManager::GetID (const QString& tag)
 	return TagId { ids.front ().toString () };
 }
 
-std::optional<QString> TagsManager::GetTag (const TagId& id) const
+QStringList TagsManager::GetTags (const TagId& id) const
 {
 	const auto pos = Tags_.find (QUuid { id.Id_ });
 	if (pos == Tags_.end ())
 		return {};
-	return *pos;
+	return { *pos };
 }
 
 QStringList TagsManager::GetAllTags () const

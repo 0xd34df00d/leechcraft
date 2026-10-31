@@ -117,9 +117,9 @@ namespace LC
 		const auto& id = f.Manager_.GetID (Work);
 		QVERIFY (id);
 		QCOMPARE (id->Id_, idString);
-		QCOMPARE (f.Manager_.GetTag (TagId { idString }).value_or (QString {}), Work);
-		QVERIFY (!f.Manager_.GetTag (TagId { Low.toString () }));
-		QVERIFY (!f.Manager_.GetTag (TagId { "not an id"_qs }));
+		QCOMPARE (f.Manager_.GetTags (TagId { idString }), QStringList { Work });
+		QVERIFY (f.Manager_.GetTags (TagId { Low.toString () }).isEmpty ());
+		QVERIFY (f.Manager_.GetTags (TagId { "not an id"_qs }).isEmpty ());
 	}
 
 	void TagsManagerTest::testGetIdCreatesAndPersists ()
@@ -130,7 +130,7 @@ namespace LC
 
 		const auto& id = f.Manager_.GetID (Work);
 		QVERIFY (id);
-		QCOMPARE (f.Manager_.GetTag (*id).value_or (QString {}), Work);
+		QCOMPARE (f.Manager_.GetTags (*id), QStringList { Work });
 		QCOMPARE (f.Manager_.rowCount ({}), 2);
 		QCOMPARE (inserted.size (), 1);
 		QCOMPARE (updated.size (), 1);
@@ -148,7 +148,7 @@ namespace LC
 
 		const auto& id = f.Manager_.GetID (" work "_qs);
 		QVERIFY (id);
-		QCOMPARE (f.Manager_.GetTag (*id).value_or (QString {}), Work);
+		QCOMPARE (f.Manager_.GetTags (*id), QStringList { Work });
 		QVERIFY (f.Manager_.GetID (Work) == id);
 		QCOMPARE (f.Manager_.rowCount ({}), 2);
 		QCOMPARE (StoredNames (f.Storage_), (QStringList { Untagged, Work }));
@@ -204,6 +204,19 @@ namespace LC
 		QCOMPARE (f.Manager_.rowCount ({}), 3);
 	}
 
+	void TagsManagerTest::testGetTagsDedupes ()
+	{
+		const auto dup = "dup"_qs;
+
+		Fixture f { Rows { { High, dup }, { Low, dup } } };
+		const auto& a = f.Manager_.GetID ("a"_qs);
+		QVERIFY (a);
+
+		const QList<TagId> ids { TagId { High.toString () }, *a, TagId { Low.toString () }, *a };
+		QCOMPARE (f.Manager_.GetTags (ids), (QStringList { dup, "a"_qs }));
+		QCOMPARE (f.Manager_.JoinIDs (ids), "dup; a"_qs);
+	}
+
 	void TagsManagerTest::testStoredNamesAreRepaired_data ()
 	{
 		QTest::addColumn<QString> ("stored");
@@ -221,7 +234,7 @@ namespace LC
 
 		Fixture f { Rows { { Low, stored } } };
 
-		QCOMPARE (f.Manager_.GetTag (TagId { Low.toString () }).value_or (QString {}), repaired);
+		QCOMPARE (f.Manager_.GetTags (TagId { Low.toString () }), QStringList { repaired });
 		QCOMPARE (Sorted (f.Manager_.GetAllTags ()), Sorted ({ repaired, Untagged }));
 		QCOMPARE (StoredNames (f.Storage_), Sorted ({ repaired, Untagged }));
 	}
@@ -310,7 +323,7 @@ namespace LC
 
 		QVERIFY (f.Manager_.RenameTag (idx, " renamed "_qs).IsRight ());
 		QCOMPARE (idx.data ().toString (), "renamed"_qs);
-		QCOMPARE (f.Manager_.GetTag (*id).value_or (QString {}), "renamed"_qs);
+		QCOMPARE (f.Manager_.GetTags (*id), QStringList { "renamed"_qs });
 		QVERIFY (f.Manager_.GetID ("renamed"_qs) == id);
 		QCOMPARE (changed.size (), 1);
 		QCOMPARE (changed.first ().first ().value<QModelIndex> (), idx);
@@ -332,7 +345,7 @@ namespace LC
 
 		f.Manager_.RemoveTag (IndexOf (f.Manager_, Work));
 		QCOMPARE (f.Manager_.rowCount ({}), 1);
-		QVERIFY (!f.Manager_.GetTag (*id));
+		QVERIFY (f.Manager_.GetTags (*id).isEmpty ());
 		QCOMPARE (removed.size (), 1);
 		QCOMPARE (updated.size (), 1);
 		QCOMPARE (StoredNames (f.Storage_), QStringList { Untagged });

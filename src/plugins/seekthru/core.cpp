@@ -380,7 +380,7 @@ namespace LC::SeekThru
 		for (const auto& d : Descriptions_)
 		{
 			const auto matchingItem = std::find_if (d.Tags_.begin (), d.Tags_.end (),
-					[&catStr, tm] (const TagId& id) { return catStr == tm->GetTag (id); });
+					[&catStr, tm] (const TagId& id) { return tm->GetTags (id).contains (catStr); });
 			if (matchingItem != d.Tags_.end ())
 				result << d;
 		}

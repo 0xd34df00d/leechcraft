@@ -25,6 +25,7 @@ namespace LC
 		void testGetIdRefusesInvalidNames ();
 		void testGetIdsSkipsRefusedNames ();
 		void testDuplicateNamesResolveToTheLowestId ();
+		void testGetTagsDedupes ();
 		void testStoredNamesAreRepaired_data ();
 		void testStoredNamesAreRepaired ();
 		void testUnrepairableStoredNamesAreKept_data ();

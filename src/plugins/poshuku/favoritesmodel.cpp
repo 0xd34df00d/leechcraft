@@ -242,8 +242,7 @@ namespace Poshuku
 		if (data->hasFormat ("x-leechcraft/tag"))
 		{
 			auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
-			if (const auto& visible = tm->GetTag (TagId { QString::fromLatin1 (data->data ("x-leechcraft/tag")) }))
-				visibleTags << *visible;
+			visibleTags = tm->GetTags (TagId { QString::fromLatin1 (data->data ("x-leechcraft/tag")) });
 		}
 
 		auto tryAddUrl = [&visibleTags, this] (const QString& title, const QUrl& url)
@@ -440,7 +439,7 @@ namespace Poshuku
 		beginInsertRows (QModelIndex (), first, first + items.size () - 1);
 		for (items_t::iterator i = items.begin (), end = items.end (); i != end; ++i)
 		{
-			i->Tags_.removeIf ([tm] (const TagId& tag) { return !tm->GetTag (tag); });
+			i->Tags_.removeIf ([tm] (const TagId& tag) { return tm->GetTags (tag).isEmpty (); });
 			Items_.push_back (*i);
 		}
 		endInsertRows ();

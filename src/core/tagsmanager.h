@@ -45,7 +45,8 @@ namespace LC
 		int rowCount (const QModelIndex&) const override;
 
 		std::optional<TagId> GetID (const QString&) override;
-		std::optional<QString> GetTag (const TagId&) const override;
+		using ITagsManager::GetTags;
+		QStringList GetTags (const TagId&) const override;
 		QStringList GetAllTags () const override;
 		QStringList Split (const QString&) const override;
 		QList<TagId> SplitToIDs (const QString&) override;

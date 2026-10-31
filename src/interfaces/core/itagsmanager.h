@@ -82,7 +82,8 @@ Q_DECLARE_METATYPE (LC::TagId)
  *
  * Tag names are trimmed and non-blank,
  * and they don't contain the delimiter (per `Util::GetTagsDelimiter()`)
- * the tags are split by. Tags are referred to by their `LC::TagId`s.
+ * the tags are split by. Tags are referred to by `LC::TagId`s, and an
+ * id may denote several tags (say, after a tag was split).
  *
  * Object returned by the `GetQObject()` function emits these signals:
  * - `tagsUpdated(const QStringList& tags)` when the tags are updated.
@@ -103,7 +104,7 @@ public:
 	 * @return The ID of the tag, or `std::nullopt` if `tag` is blank or
 	 * contains the delimiter.
 	 *
-	 * @sa GetTag()
+	 * @sa GetTags()
 	 * @sa GetIDs()
 	 */
 	virtual std::optional<LC::TagId> GetID (const QString& tag) = 0;
@@ -128,38 +129,39 @@ public:
 		return result;
 	}
 
-	/** @brief Returns the tag with the given `id`.
+	/** @brief Returns the tags denoted by the given `id`.
 	 *
-	 * If there is no such tag, `std::nullopt` is returned. A sensible
+	 * If there is no such tag, an empty list is returned. A sensible
 	 * plugin would delete the given id from the list of assigned tags
 	 * for all the items with this id.
 	 *
-	 * @param[in] id The id of the tag.
-	 * @return The tag, or `std::nullopt` if there is no tag with the
+	 * @param[in] id The id of the tags.
+	 * @return The tags, or an empty list if there is no tag with the
 	 * given `id`.
 	 *
 	 * @sa GetID()
-	 * @sa GetTags()
+	 * @sa GetTags(const QList<LC::TagId>&)
 	 */
-	virtual std::optional<QString> GetTag (const LC::TagId& id) const = 0;
+	virtual QStringList GetTags (const LC::TagId& id) const = 0;
 
-	/** @brief Returns the tags with the given `ids`.
+	/** @brief Returns the tags denoted by the given `ids`.
 	 *
-	 * This convenience function invokes `GetTag()` for each tag ID in
-	 * `ids` and returns the list of the corresponding tags. The IDs
-	 * without a tag are skipped.
+	 * This convenience function invokes `GetTags()` for each tag ID in
+	 * `ids` and returns the union of the results, each tag once, in the
+	 * order of first occurrence.
 	 *
 	 * @param[in] ids The ids of the tags.
 	 * @return The tags corresponding to the `ids`.
 	 *
-	 * @sa GetTag()
+	 * @sa GetTags(const LC::TagId&)
 	 */
 	QStringList GetTags (const QList<LC::TagId>& ids) const
 	{
 		QStringList result;
+		result.reserve (ids.size ());
 		for (const auto& id : ids)
-			if (const auto& tag = GetTag (id))
-				result << *tag;
+			result += GetTags (id);
+		result.removeDuplicates ();
 		return result;
 	}
 
@@ -197,8 +199,8 @@ public:
 
 	/** @brief Joins the given tag IDs into one human-readable string.
 	 *
-	 * This function is essentially a combination of `GetTag()` and `Join()`.
-	 * First, it converts all given `tagIDs` into tag names using `GetTag()`
+	 * This function is essentially a combination of `GetTags()` and `Join()`.
+	 * First, it converts all given `tagIDs` into tag names using `GetTags()`
 	 * and then joins them using `Join()`. This function is provided for
 	 * convenience.
 	 *

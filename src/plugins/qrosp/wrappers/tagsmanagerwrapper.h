@@ -27,7 +27,7 @@ namespace Qrosp
 		TagsManagerWrapper (ITagsManager*);
 	public slots:
 		QString GetID (const QString& tag);
-		QString GetTag (const QString& id) const;
+		QStringList GetTags (const QString& id) const;
 		QStringList GetAllTags () const;
 		QStringList Split (const QString& string) const;
 		QString Join (const QStringList& tags) const;
