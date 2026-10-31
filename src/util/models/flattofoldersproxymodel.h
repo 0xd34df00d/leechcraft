@@ -20,14 +20,18 @@ namespace LC::Util
 	struct FlatTreeItem;
 	using FlatTreeItem_ptr = std::shared_ptr<FlatTreeItem>;
 
-	/** Groups the rows of a flat source model into folders by tag.
+	/** Groups the rows of a flat source model into folders by tag name.
 	 *
 	 * Tags are read from column 0 of each source row via `CustomDataRoles::Tags`
-	 * as a `QList<TagId>`, and the tags manager resolves them to the folder
-	 * titles. A folder reports its own tag under the same role. A row appears
-	 * under every tag it has, and rows without tags go into a single untagged
-	 * folder. Leaves expose the columns of their source rows and map back via
-	 * `MapToSource()`.
+	 * as a `QList<TagId>`, and the tags manager resolves them to names. A row
+	 * appears under the folder of every name its tags have, and rows whose
+	 * tags have no names go into a single untagged folder. A folder shows its
+	 * name as `Qt::DisplayRole`. Leaves expose the columns of their source
+	 * rows and map back via `MapToSource()`.
+	 *
+	 * A drop onto a folder reaches the source model's `dropMimeData()` with
+	 * the folder's name under the `x-leechcraft/tag` format, empty for the
+	 * untagged folder.
 	 *
 	 * The source must be flat, and its layout changes must move rows as units,
 	 * as every row sort does. Layout changes of the source are not forwarded,
@@ -82,9 +86,9 @@ namespace LC::Util
 		const FlatTreeItem& ToFlatOrRoot (const QModelIndex&) const;
 		QModelIndex IndexOf (const FlatTreeItem&, int column = 0) const;
 
-		FlatTreeItem_ptr FindFolder (const TagId&) const;
-		FlatTreeItem_ptr GetFolder (const TagId&);
-		void AddForTag (const TagId&, const QPersistentModelIndex&);
+		FlatTreeItem_ptr FindFolder (const QString&) const;
+		FlatTreeItem_ptr GetFolder (const QString&);
+		void AddForName (const QString&, const QPersistentModelIndex&);
 		void RemoveLeaf (const FlatTreeItem_ptr&);
 
 		void HandleDataChanged (const QModelIndex&, const QModelIndex&, const QList<int>&);

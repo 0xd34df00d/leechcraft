@@ -31,10 +31,12 @@ namespace LC::Util
 		constexpr int TagsRole = +CustomDataRoles::Tags;
 		constexpr auto TagMimeType = "x-leechcraft/tag";
 
+		// an id's names are joined by '+': "t1+" is a second id named t1, "x+y" has two names and "+" has none
 		struct TagsStub final : ITagsManager
 		{
 			std::optional<TagId> GetID (const QString& tag) override { return TagId { tag }; }
-			QStringList GetTags (const TagId& id) const override { return { id.Id_ }; }
+			using ITagsManager::GetTags;
+			QStringList GetTags (const TagId& id) const override { return id.Id_.split ('+', Qt::SkipEmptyParts); }
 			QStringList GetAllTags () const override { return {}; }
 			QStringList Split (const QString& string) const override { return string.split (';', Qt::SkipEmptyParts); }
 			QList<TagId> SplitToIDs (const QString& string) override { return TagId::FromStrings (Split (string)); }
@@ -148,17 +150,19 @@ namespace LC::Util
 			}
 		};
 
-		QStringList TagsOf (const QModelIndex& index)
+		const auto Untagged = QStringLiteral ("untagged");
+
+		QStringList NamesOf (const QModelIndex& index)
 		{
-			auto tags = TagId::ToStrings (index.data (TagsRole).value<QList<TagId>> ());
-			if (tags.isEmpty ())
-				tags << QString {};
-			return tags;
+			auto names = TagsStub {}.GetTags (index.data (TagsRole).value<QList<TagId>> ());
+			if (names.isEmpty ())
+				names << Untagged;
+			return names;
 		}
 
-		QString FolderTag (const QModelIndex& folder)
+		QString FolderName (const QModelIndex& folder)
 		{
-			return folder.data (TagsRole).value<QList<TagId>> ().value (0).Id_;
+			return folder.data ().toString ();
 		}
 
 		using Picture = QMap<QString, QSet<int>>;
@@ -169,8 +173,8 @@ namespace LC::Util
 			for (int row = 0; row < upstream.rowCount (); ++row)
 			{
 				const auto& index = upstream.index (row, 0);
-				for (const auto& tag : TagsOf (index))
-					result [tag] << index.data (IdRole).toInt ();
+				for (const auto& name : NamesOf (index))
+					result [name] << index.data (IdRole).toInt ();
 			}
 			return result;
 		}
@@ -185,7 +189,7 @@ namespace LC::Util
 				QStringList idStrings;
 				for (const auto id : sorted)
 					idStrings << QString::number (id);
-				folders << (tag.isEmpty () ? QStringLiteral ("<untagged>") : tag) + " {" + idStrings.join (' ') + '}';
+				folders << tag + " {" + idStrings.join (' ') + '}';
 			}
 			return folders.join ("; ");
 		}
@@ -199,7 +203,7 @@ namespace LC::Util
 				QStringList ids;
 				for (int l = 0; l < proxy.rowCount (folder); ++l)
 					ids << QString::number (proxy.index (l, 0, folder).data (IdRole).toInt ());
-				result << FolderTag (folder) + ": " + ids.join (' ');
+				result << FolderName (folder) + ": " + ids.join (' ');
 			}
 			return result;
 		}
@@ -218,7 +222,7 @@ namespace LC::Util
 				if (upstream.columnCount () > 1)
 					QCOMPARE (proxy.rowCount (folderIdx.siblingAtColumn (1)), 0);
 
-				const auto& tag = FolderTag (folderIdx);
+				const auto& tag = FolderName (folderIdx);
 				QVERIFY2 (!actual.contains (tag), qPrintable ("duplicate folder for tag " + tag));
 				QVERIFY2 (proxy.rowCount (folderIdx) > 0, qPrintable ("empty folder for tag " + tag));
 
@@ -234,7 +238,7 @@ namespace LC::Util
 					const auto& source = proxy.MapToSource (leafIdx);
 					QVERIFY (source.isValid ());
 					QCOMPARE (source.model (), &upstream);
-					QVERIFY (TagsOf (source).contains (tag));
+					QVERIFY (NamesOf (source).contains (tag));
 					QVERIFY (proxy.MapFromSource (source).contains (leafIdx));
 					for (int col = 0; col < upstream.columnCount (); ++col)
 						QCOMPARE (proxy.index (l, col, folderIdx).data (), source.siblingAtColumn (col).data ());
@@ -249,7 +253,7 @@ namespace LC::Util
 
 			int expectedLeaves = 0;
 			for (int row = 0; row < upstream.rowCount (); ++row)
-				expectedLeaves += TagsOf (upstream.index (row, 0)).size ();
+				expectedLeaves += NamesOf (upstream.index (row, 0)).size ();
 			QCOMPARE (leaves, expectedLeaves);
 		}
 
@@ -280,9 +284,30 @@ namespace LC::Util
 		f.Attach ();
 		CheckTree (f.Proxy_, f.Upstream_);
 
-		QCOMPARE (Dump (f.Proxy_), (QStringList { "t1: 1 2", "t2: 2", ": 3" }));
+		QCOMPARE (Dump (f.Proxy_), (QStringList { "t1: 1 2", "t2: 2", "untagged: 3" }));
 		QCOMPARE (f.Proxy_.headerData (0, Qt::Horizontal, Qt::DisplayRole), f.Upstream_.headerData (0, Qt::Horizontal, Qt::DisplayRole));
 		QCOMPARE (f.Proxy_.flags ({}), Qt::ItemIsDropEnabled);
+	}
+
+	void FlatToFoldersProxyModelTest::testFoldersFollowNames ()
+	{
+		QFETCH_GLOBAL (bool, viaFilter);
+		Fixture f { viaFilter };
+		f.Source_.Append (1, "a", { "t1" });
+		f.Source_.Append (2, "b", { "t1+" });
+		f.Source_.Append (3, "c", { "x+y" });
+		f.Source_.Append (4, "d", { "+" });
+		f.Source_.Append (5, "e", { "t1", "t1+" });
+		f.Attach ();
+		CheckTree (f.Proxy_, f.Upstream_);
+		QCOMPARE (Dump (f.Proxy_), (QStringList { "t1: 1 2 5", "x: 3", "y: 3", "untagged: 4" }));
+		Spies spies { f.Proxy_ };
+
+		f.Source_.SetTags (3, { "t1+" });
+		QCOMPARE (spies.Inserted_.size (), 1);
+		QCOMPARE (spies.Removed_.size (), 2);
+		CheckTree (f.Proxy_, f.Upstream_);
+		QCOMPARE (Dump (f.Proxy_), (QStringList { "t1: 1 2 5 4", "x: 3", "y: 3" }));
 	}
 
 	void FlatToFoldersProxyModelTest::testInsertCreatesFoldersOnDemand ()
@@ -318,7 +343,7 @@ namespace LC::Util
 		const auto& args = spies.Data_.first ();
 		const auto& topLeft = args.at (0).value<QModelIndex> ();
 		QCOMPARE (topLeft.data (IdRole).toInt (), 2);
-		QCOMPARE (FolderTag (topLeft.parent ()), QString { "t2" });
+		QCOMPARE (FolderName (topLeft.parent ()), QString { "t2" });
 		QCOMPARE (args.at (1).value<QModelIndex> ().column (), f.Upstream_.columnCount () - 1);
 		QCOMPARE (args.at (2).value<QList<int>> (), (QList<int> { TagsRole }));
 
@@ -478,7 +503,7 @@ namespace LC::Util
 
 		constexpr quint32 seed = 20261017;
 		QRandomGenerator gen { seed };
-		const QStringList pool { "t1", "t2", "t3", "t4" };
+		const QStringList pool { "t1", "t2", "t3", "t4", "t1+", "t3+t4" };
 		const auto randomTags = [&]
 		{
 			QStringList tags;

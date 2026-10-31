@@ -162,7 +162,8 @@ namespace Poshuku
 			return {};
 		}
 
-		if (const auto pos = FindItem (url); pos != Items_.end ())
+		if (const auto pos = FindItem (url);
+			pos != Items_.end ())
 			return index (std::distance (Items_.begin (), pos), 0);
 
 		const auto& tags = Core::Instance ().GetProxy ()->GetTagsManager ()->GetIDs (visibleTags);
@@ -239,11 +240,9 @@ namespace Poshuku
 		const auto& urls = data->urls ();
 
 		QStringList visibleTags;
-		if (data->hasFormat ("x-leechcraft/tag"))
-		{
-			auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
-			visibleTags = tm->GetTags (TagId { QString::fromLatin1 (data->data ("x-leechcraft/tag")) });
-		}
+		if (const auto& tag = QString::fromUtf8 (data->data ("x-leechcraft/tag"));
+			!tag.isEmpty ())
+			visibleTags << tag;
 
 		auto tryAddUrl = [&visibleTags, this] (const QString& title, const QUrl& url)
 		{
