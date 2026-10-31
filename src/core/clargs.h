@@ -42,6 +42,7 @@ namespace LC::CL
 
 		bool Restart_;
 		bool Autorestart_;
+		bool Supervised_;
 
 		QStringList Plugins_;
 	};

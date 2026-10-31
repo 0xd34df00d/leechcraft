@@ -45,6 +45,7 @@ namespace LC
 			EGeneralSocketError = 4,
 			EVersionRequested = 5,
 			EInvalidArguments = 6,
+			ERestartRequested = 7,
 		};
 
 		/** Constructs the Application, parses the command line,
@@ -74,12 +75,12 @@ namespace LC
 		 */
 		SplashScreen* GetSplashScreen () const;
 
-		/** Performs restart: starts a detached copy with '-restart'
-		 * switch and calls qApp->quit().
+		/** Restarts LeechCraft, via the supervisor if it was started
+		 * with --supervised.
 		 */
 		void InitiateRestart ();
 
-		void Quit ();
+		void Quit (int exitCode = 0);
 
 		/** Checks whether another instance of LeechCraft is running.
 		 */

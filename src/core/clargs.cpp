@@ -44,6 +44,7 @@ namespace LC::CL
 					{ "no-resource-caching"_qs, "disable caching of dynamic loadable resources (useful for stuff like Azoth themes development)"_qs },
 					{ "autorestart"_qs, "automatically restart LC if it's closed (not guaranteed to work everywhere, especially on Windows and Mac OS X)"_qs },
 					{ "desktop"_qs, "run LC as the desktop environment (used by leechcraft-session)"_qs },
+					{ "supervised"_qs, "LC gets restarted by the process that started it, as leechcraft-session does, instead of restarting itself"_qs },
 					{ "minimized"_qs, "start LC minimized to tray"_qs },
 					{ "no-splash-screen"_qs, "do not show the splash screen"_qs },
 					{ "restart"_qs, "restart the LC"_qs },
@@ -187,6 +188,7 @@ namespace LC::CL
 
 			.Restart_ = parser.isSet ("restart"_qs),
 			.Autorestart_ = parser.isSet ("autorestart"_qs),
+			.Supervised_ = parser.isSet ("supervised"_qs),
 
 			.Plugins_ = parser.values ("plugin"_qs),
 		};

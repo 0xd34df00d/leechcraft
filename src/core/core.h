@@ -51,7 +51,7 @@ namespace LC
 		Core ();
 	public:
 		static Core& Instance ();
-		void Release ();
+		void Release (int exitCode);
 
 		bool IsShuttingDown () const;
 

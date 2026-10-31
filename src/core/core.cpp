@@ -81,7 +81,7 @@ namespace LC
 		return core;
 	}
 
-	void Core::Release ()
+	void Core::Release (int exitCode)
 	{
 		if (IsShuttingDown_)
 			return;
@@ -91,7 +91,7 @@ namespace LC
 		RootWindowsManager_->Release ();
 
 		QTimer::singleShot (0, this,
-				[this]
+				[this, exitCode]
 				{
 					LocalSocketHandler_.reset ();
 					XmlSettingsManager::Instance ()->setProperty ("FirstStart", "false");
@@ -105,7 +105,7 @@ namespace LC
 
 					XmlSettingsManager::Instance ()->Release ();
 
-					qApp->quit ();
+					qApp->exit (exitCode);
 				});
 	}
 

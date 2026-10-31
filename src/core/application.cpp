@@ -240,6 +240,12 @@ namespace LC
 
 	void Application::InitiateRestart ()
 	{
+		if (CLArgs_->Supervised_)
+		{
+			Quit (ERestartRequested);
+			return;
+		}
+
 		QStringList arguments = Arguments_;
 		arguments << "--restart";
 		QProcess::startDetached (applicationFilePath (), arguments);
@@ -247,9 +253,9 @@ namespace LC
 		Quit ();
 	}
 
-	void Application::Quit ()
+	void Application::Quit (int exitCode)
 	{
-		Core::Instance ().Release ();
+		Core::Instance ().Release (exitCode);
 	}
 
 	bool Application::notify (QObject *obj, QEvent *event)
