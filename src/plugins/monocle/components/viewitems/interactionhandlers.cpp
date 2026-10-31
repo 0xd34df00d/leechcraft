@@ -14,6 +14,7 @@
 #include <QFileDialog>
 #include <QMenu>
 #include <QMouseEvent>
+#include <QTextBoundaryFinder>
 #include <interfaces/core/icoreproxy.h>
 #include <util/sll/qtutil.h>
 #include <util/xpc/stddatafiltermenucreator.h>
@@ -271,6 +272,18 @@ namespace LC::Monocle
 			return { 0, box.Text_.size () };
 		}
 
+		LetterRange WidenToGraphemes (const QString& text, LetterRange range)
+		{
+			QTextBoundaryFinder finder { QTextBoundaryFinder::Grapheme, text };
+			finder.setPosition (range.Begin_);
+			if (!finder.isAtBoundary ())
+				range.Begin_ = finder.toPreviousBoundary ();
+			finder.setPosition (range.End_);
+			if (!finder.isAtBoundary ())
+				range.End_ = finder.toNextBoundary ();
+			return range;
+		}
+
 		LetterRange SelectLetters (const TextBox& box, PageRelativePos startPos, PageRelativePos endPos,
 				TextSelectionInteraction::Granularity granularity)
 		{
@@ -282,7 +295,7 @@ namespace LC::Monocle
 			if (begin == letters.end ())
 				return WholeBox (box);
 
-			return { begin - letters.begin (), end - letters.begin () };
+			return WidenToGraphemes (box.Text_, { begin - letters.begin (), end - letters.begin () });
 		}
 
 		struct BoxPositionInfo
