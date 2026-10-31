@@ -8,11 +8,12 @@
 
 #pragma once
 
+#include <flat_set>
 #include <memory>
 #include <optional>
 #include <variant>
 #include <QAbstractItemModel>
-#include <QMap>
+#include <QHash>
 #include <QUuid>
 #include <QString>
 #include <QMetaType>
@@ -28,10 +29,9 @@ namespace LC
 	{
 		Q_OBJECT
 		Q_INTERFACES (ITagsManager)
-	public:
-		typedef QMap<QUuid, QString> TagsDictionary_t;
-	private:
-		TagsDictionary_t Tags_;
+
+		QHash<QUuid, std::flat_set<QString>> Names_;
+		QStringList Rows_;
 		std::unique_ptr<TagsStorage> Storage_;
 	public:
 		explicit TagsManager (std::unique_ptr<TagsStorage>);
@@ -55,22 +55,25 @@ namespace LC
 		QAbstractItemModel* GetModel () override;
 		QObject* GetQObject () override;
 
-		void RemoveTag (const QModelIndex&);
-
 		struct BlankTagName {};
 		struct DelimiterInTagName
 		{
 			QString Delimiter_;
 		};
-		struct TagNameTaken
-		{
-			QString Name_;
-		};
-		using RenameError = std::variant<BlankTagName, DelimiterInTagName, TagNameTaken>;
-		Util::Either<RenameError, Util::Void> RenameTag (const QModelIndex&, const QString&);
+		using InvalidTagName = std::variant<BlankTagName, DelimiterInTagName>;
+
+		/** @brief Replaces the name `old` with the trimmed `newNames` on
+		 * every tag having it.
+		 *
+		 * One new name renames the tag, several names split it, a name
+		 * that already exists merges it into that tag, and no names at all
+		 * remove it.
+		 */
+		Util::Either<InvalidTagName, Util::Void> ReplaceName (const QString& old, const QStringList& newNames);
 	private:
 		void MigrateStoredNames ();
 		TagId InsertTag (const QString&);
+		void SetRows (const QStringList&);
 	signals:
 		void tagsUpdated (const QStringList&);
 	};

@@ -23,41 +23,44 @@ TagsViewer::TagsViewer (QWidget *parent)
 
 void LC::TagsViewer::on_Rename__released ()
 {
-	QModelIndex index = Ui_.TagsView_->currentIndex ();
+	const auto& index = Ui_.TagsView_->currentIndex ();
 	if (!index.isValid ())
 		return;
 
-	QString original = TagsManager::Instance ()
-		.data (index, Qt::DisplayRole).toString ();
+	const auto& original = index.data ().toString ();
 
 	bool ok = false;
-
-	QString newTag = QInputDialog::getText (this,
+	const auto& newTag = QInputDialog::getText (this,
 			tr ("Rename"),
 			tr ("Enter new tag name"),
 			QLineEdit::Normal,
 			original,
-			&ok);
-
-	if (!ok)
+			&ok).trimmed ();
+	if (!ok || newTag == original)
 		return;
 
-	const auto& result = TagsManager::Instance ().RenameTag (index, newTag);
+	auto& tm = TagsManager::Instance ();
+	if (tm.GetAllTags ().contains (newTag) &&
+			QMessageBox::question (this,
+					tr ("Rename"),
+					tr ("There is already a tag named %1. Merge into it?").arg (newTag)) != QMessageBox::Yes)
+		return;
+
+	const auto& result = tm.ReplaceName (original, { newTag });
 	if (result.IsLeft ())
 		QMessageBox::warning (this,
 				tr ("Rename"),
 				Util::Visit (result.GetLeft (),
 						[] (TagsManager::BlankTagName) { return tr ("The tag name cannot be empty."); },
-						[] (const TagsManager::DelimiterInTagName& delimited) { return tr ("The tag name cannot contain \"%1\".").arg (delimited.Delimiter_); },
-						[] (const TagsManager::TagNameTaken& taken) { return tr ("There is already a tag named %1.").arg (taken.Name_); }));
+						[] (const TagsManager::DelimiterInTagName& delimited) { return tr ("The tag name cannot contain \"%1\".").arg (delimited.Delimiter_); }));
 }
 
 void TagsViewer::on_Remove__released ()
 {
-	QModelIndex index = Ui_.TagsView_->currentIndex ();
+	const auto& index = Ui_.TagsView_->currentIndex ();
 	if (!index.isValid ())
 		return;
 
-	TagsManager::Instance ().RemoveTag (index);
+	TagsManager::Instance ().ReplaceName (index.data ().toString (), {});
 }
 

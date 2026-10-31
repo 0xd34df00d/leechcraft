@@ -109,18 +109,29 @@ namespace LC
 		QCOMPARE (Sorted (storage.GetAllTags ()), Sorted ({ { A, "x"_qs }, { A, "y"_qs }, { B, "x"_qs } }));
 	}
 
-	void TagsStorageTest::testDeleteAndRename ()
+	void TagsStorageTest::testReplaceName ()
 	{
 		TagsStorage storage { ":memory:"_qs };
 		storage.AddTag (A, "x"_qs);
-		storage.AddTag (A, "y"_qs);
 		storage.AddTag (B, "x"_qs);
+		storage.AddTag (B, "y"_qs);
 
-		storage.SetTagName (B, "z"_qs);
-		QCOMPARE (Sorted (storage.GetAllTags ()), Sorted ({ { A, "x"_qs }, { A, "y"_qs }, { B, "z"_qs } }));
+		storage.ReplaceName ("x"_qs, { "p"_qs, "q"_qs });
+		QCOMPARE (Sorted (storage.GetAllTags ()),
+				Sorted ({ { A, "p"_qs }, { A, "q"_qs }, { B, "p"_qs }, { B, "q"_qs }, { B, "y"_qs } }));
 
-		storage.DeleteTag (A);
-		QCOMPARE (storage.GetAllTags (), (Rows { { B, "z"_qs } }));
+		storage.ReplaceName ("q"_qs, { "y"_qs });
+		QCOMPARE (Sorted (storage.GetAllTags ()),
+				Sorted ({ { A, "p"_qs }, { A, "y"_qs }, { B, "p"_qs }, { B, "y"_qs } }));
+
+		storage.ReplaceName ("y"_qs, { "y"_qs, "z"_qs });
+		QCOMPARE (Sorted (storage.GetAllTags ()),
+				Sorted ({ { A, "p"_qs }, { A, "y"_qs }, { A, "z"_qs }, { B, "p"_qs }, { B, "y"_qs }, { B, "z"_qs } }));
+
+		storage.ReplaceName ("p"_qs, {});
+		storage.ReplaceName ("nonexistent"_qs, { "w"_qs });
+		QCOMPARE (Sorted (storage.GetAllTags ()),
+				Sorted ({ { A, "y"_qs }, { A, "z"_qs }, { B, "y"_qs }, { B, "z"_qs } }));
 	}
 
 	void TagsStorageTest::testLegacyTableIsMigrated ()

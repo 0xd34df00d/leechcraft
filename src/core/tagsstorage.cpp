@@ -65,15 +65,19 @@ namespace LC
 		Record_->Insert ({ id.toByteArray (), name }, Util::oral::InsertAction::Ignore);
 	}
 
-	void TagsStorage::DeleteTag (const Id& id)
+	void TagsStorage::ReplaceName (const QString& old, const QStringList& newNames)
 	{
-		Record_->DeleteBy (sph::f<&Record::Id_> == id.toByteArray ());
-	}
+		Util::DBLock lock { DB_ };
+		lock.Init ();
 
-	void TagsStorage::SetTagName (const Id& id, const QString& newName)
-	{
-		Record_->Update (sph::f<&Record::Name_> = newName,
-				sph::f<&Record::Id_> == id.toByteArray ());
+		for (const auto& rec : Record_->Select (sph::f<&Record::Name_> == old))
+			for (const auto& name : newNames)
+				Record_->Insert ({ rec.Id_, name }, Util::oral::InsertAction::Ignore);
+
+		if (!newNames.contains (old))
+			Record_->DeleteBy (sph::f<&Record::Name_> == old);
+
+		lock.Good ();
 	}
 
 	QList<std::pair<TagsStorage::Id, QString>> TagsStorage::GetAllTags () const

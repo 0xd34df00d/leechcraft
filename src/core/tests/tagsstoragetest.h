@@ -17,7 +17,7 @@ namespace LC
 		Q_OBJECT
 	private slots:
 		void testIdHoldsSeveralNames ();
-		void testDeleteAndRename ();
+		void testReplaceName ();
 		void testLegacyTableIsMigrated ();
 	};
 }

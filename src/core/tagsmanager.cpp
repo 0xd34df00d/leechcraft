@@ -17,11 +17,32 @@
 
 using namespace LC;
 
+namespace
+{
+	std::optional<TagsManager::InvalidTagName> Validate (const QString& name)
+	{
+		if (const auto& delimiter = Util::GetTagsDelimiter (Util::GetDefaultTagsSeparator ()); name.contains (delimiter))
+			return TagsManager::DelimiterInTagName { delimiter };
+		if (name.isEmpty ())
+			return TagsManager::BlankTagName {};
+		return {};
+	}
+
+	QStringList DistinctNames (const QHash<QUuid, std::flat_set<QString>>& names)
+	{
+		std::flat_set<QString> all;
+		for (const auto& own : names)
+			all.insert (own.begin (), own.end ());
+		return QStringList (all.begin (), all.end ());
+	}
+}
+
 TagsManager::TagsManager (std::unique_ptr<TagsStorage> storage)
 : Storage_ { std::move (storage) }
 {
 	for (const auto& [id, name] : Storage_->GetAllTags ())
-		Tags_ [id] = name;
+		Names_ [id].insert (name);
+	Rows_ = DistinctNames (Names_);
 	MigrateStoredNames ();
 
 	GetID (tr ("untagged"));
@@ -43,60 +64,59 @@ QVariant TagsManager::data (const QModelIndex& index, int role) const
 {
 	if (!index.isValid () ||
 			role != Qt::DisplayRole)
-		return QVariant ();
+		return {};
 
-	TagsDictionary_t::const_iterator pos = Tags_.begin ();
-	std::advance (pos, index.row ());
-	return *pos;
+	return Rows_.value (index.row ());
 }
 
 QModelIndex TagsManager::index (int row, int column, const QModelIndex& parent) const
 {
 	if (!hasIndex (row, column, parent))
-		return QModelIndex ();
+		return {};
 
 	return createIndex (row, column);
 }
 
 QModelIndex TagsManager::parent (const QModelIndex&) const
 {
-	return QModelIndex ();
+	return {};
 }
 
 int TagsManager::rowCount (const QModelIndex& index) const
 {
-	return index.isValid () ? 0 : Tags_.size ();
+	return index.isValid () ? 0 : Rows_.size ();
 }
 
 std::optional<TagId> TagsManager::GetID (const QString& tag)
 {
 	const auto& name = tag.trimmed ();
-	if (name.isEmpty () || name.contains (Util::GetTagsDelimiter (Util::GetDefaultTagsSeparator ())))
+	if (Validate (name))
 	{
 		qWarning () << "invalid tag name" << tag;
 		return {};
 	}
 
-	const auto& ids = Tags_.keys (name);
-	if (ids.isEmpty ())
-		return InsertTag (name);
+	std::optional<QUuid> pure;
+	for (const auto& [id, names] : Names_.asKeyValueRange ())
+		if (names.size () == 1 && *names.begin () == name && (!pure || id < *pure))
+			pure = id;
 
-	if (ids.size () > 1)
-		qWarning () << ids.size () << "tags named" << name;
-	return TagId { ids.front ().toString () };
+	if (pure)
+		return TagId { pure->toString () };
+	return InsertTag (name);
 }
 
 QStringList TagsManager::GetTags (const TagId& id) const
 {
-	const auto pos = Tags_.find (QUuid { id.Id_ });
-	if (pos == Tags_.end ())
+	const auto pos = Names_.find (QUuid { id.Id_ });
+	if (pos == Names_.end ())
 		return {};
-	return { *pos };
+	return QStringList (pos->begin (), pos->end ());
 }
 
 QStringList TagsManager::GetAllTags () const
 {
-	return Tags_.values ();
+	return Rows_;
 }
 
 QStringList TagsManager::Split (const QString& string) const
@@ -119,67 +139,79 @@ QString TagsManager::JoinIDs (const QList<TagId>& tagIDs) const
 	return Join (GetTags (tagIDs));
 }
 
-TagId TagsManager::InsertTag (const QString& tag)
+TagId TagsManager::InsertTag (const QString& name)
 {
 	const auto& uuid = QUuid::createUuid ();
 
-	Storage_->AddTag (uuid, tag);
+	Storage_->AddTag (uuid, name);
+	Names_ [uuid] = { name };
+	SetRows (DistinctNames (Names_));
 
-	auto updated = Tags_;
-	auto pos = updated.insert (uuid, tag);
-	const auto dist = std::distance (updated.begin (), pos);
-
-	beginInsertRows ({}, dist, dist);
-	Tags_ = std::move (updated);
-	endInsertRows ();
-
-	emit tagsUpdated (GetAllTags ());
+	emit tagsUpdated (Rows_);
 
 	return TagId { uuid.toString () };
 }
 
-void TagsManager::RemoveTag (const QModelIndex& index)
+Util::Either<TagsManager::InvalidTagName, Util::Void> TagsManager::ReplaceName (const QString& old, const QStringList& newNames)
 {
-	if (!index.isValid ())
-		return;
+	std::flat_set<QString> names;
+	for (const auto& newName : newNames)
+	{
+		const auto& name = newName.trimmed ();
+		if (const auto& error = Validate (name))
+			return Util::Left { *error };
+		names.insert (name);
+	}
 
-	const auto pos = std::next (Tags_.begin (), index.row ());
+	bool changed = false;
+	for (auto pos = Names_.begin (); pos != Names_.end (); )
+	{
+		auto& own = *pos;
+		if (!own.contains (old))
+		{
+			++pos;
+			continue;
+		}
 
-	Storage_->DeleteTag (pos.key ());
+		if (!names.contains (old))
+		{
+			own.erase (old);
+			changed = true;
+		}
+		for (const auto& name : names)
+			changed |= own.insert (name).second;
 
-	beginRemoveRows (QModelIndex (), index.row (), index.row ());
-	Tags_.erase (pos);
-	endRemoveRows ();
+		pos = own.empty () ? Names_.erase (pos) : std::next (pos);
+	}
 
-	emit tagsUpdated (GetAllTags ());
-}
-
-Util::Either<TagsManager::RenameError, Util::Void> TagsManager::RenameTag (const QModelIndex& index, const QString& newName)
-{
-	if (!index.isValid ())
+	if (!changed)
 		return Util::Void {};
 
-	if (const auto& delimiter = Util::GetTagsDelimiter (Util::GetDefaultTagsSeparator ()); newName.contains (delimiter))
-		return Util::Left { DelimiterInTagName { delimiter } };
+	Storage_->ReplaceName (old, QStringList (names.begin (), names.end ()));
+	SetRows (DistinctNames (Names_));
 
-	const auto& name = newName.trimmed ();
-	if (name.isEmpty ())
-		return Util::Left { BlankTagName {} };
-
-	const auto pos = std::next (Tags_.begin (), index.row ());
-	if (*pos == name)
-		return Util::Void {};
-
-	if (!Tags_.key (name).isNull ())
-		return Util::Left { TagNameTaken { name } };
-
-	*pos = name;
-	Storage_->SetTagName (pos.key (), name);
-
-	emit dataChanged (index, index);
-	emit tagsUpdated (GetAllTags ());
+	emit tagsUpdated (Rows_);
 
 	return Util::Void {};
+}
+
+void TagsManager::SetRows (const QStringList& rows)
+{
+	for (qsizetype i = Rows_.size () - 1; i >= 0; --i)
+		if (!std::ranges::binary_search (rows, Rows_ [i]))
+		{
+			beginRemoveRows ({}, i, i);
+			Rows_.removeAt (i);
+			endRemoveRows ();
+		}
+
+	for (qsizetype i = 0; i < rows.size (); ++i)
+		if (i == Rows_.size () || Rows_ [i] != rows [i])
+		{
+			beginInsertRows ({}, i, i);
+			Rows_.insert (i, rows [i]);
+			endInsertRows ();
+		}
 }
 
 QAbstractItemModel* TagsManager::GetModel ()
@@ -196,20 +228,19 @@ QObject* TagsManager::GetQObject ()
 void TagsManager::MigrateStoredNames ()
 {
 	const auto& delimiter = Util::GetTagsDelimiter (Util::GetDefaultTagsSeparator ());
-	for (auto&& [id, name] : Tags_.asKeyValueRange ())
+	for (const auto& name : GetAllTags ())
 	{
 		const auto& repaired = auto { name }.replace (delimiter, " "_qs).trimmed ();
 		if (repaired == name)
 			continue;
 
-		if (repaired.isEmpty () || !Tags_.key (repaired).isNull ())
+		if (repaired.isEmpty ())
 		{
 			qWarning () << "cannot repair tag" << name << "to" << repaired;
 			continue;
 		}
 
 		qDebug () << "repairing tag" << name << "to" << repaired;
-		name = repaired;
-		Storage_->SetTagName (id, repaired);
+		ReplaceName (name, { repaired });
 	}
 }

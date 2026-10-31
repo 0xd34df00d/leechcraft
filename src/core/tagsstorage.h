@@ -31,8 +31,7 @@ namespace LC
 		using Id = QUuid;
 
 		void AddTag (const Id&, const QString&);
-		void DeleteTag (const Id&);
-		void SetTagName (const Id&, const QString&);
+		void ReplaceName (const QString&, const QStringList&);
 		QList<std::pair<Id, QString>> GetAllTags () const;
 	private:
 		void MigrateLegacyTags ();
