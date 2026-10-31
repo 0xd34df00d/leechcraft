@@ -1,7 +1,5 @@
 INSERT INTO TAGS (
-	TagLCId,
-	TagText
+	TagLCId
 ) VALUES (
-	:lcid,
-	:text
+	:lcid
 );

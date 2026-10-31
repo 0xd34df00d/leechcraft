@@ -228,15 +228,13 @@ namespace HistoryHolder
 				continue;
 			}
 
-			const auto& text = TM_->GetTag (tag);
-			if (!text)
+			if (!TM_->GetTag (tag))
 			{
 				qWarning () << "unknown tag" << tag.Id_;
 				continue;
 			}
 
 			InsertTags_.bindValue (":lcid", tag.Id_);
-			InsertTags_.bindValue (":text", *text);
 			Util::DBLock::Execute (InsertTags_);
 
 			const auto id = Util::GetLastId (InsertTags_);
