@@ -364,6 +364,9 @@ namespace Xoox
 
 			for (auto msgObj : base->GetUnreadMessages ())
 			{
+				if (msgObj->GetDirection () != IMessage::Direction::In)
+					continue;
+
 				QXmppMessage msg { {}, to, msgObj->GetNativeMessage ().body () };
 				msg.setStamp (msgObj->GetDateTime ());
 				msg.setXhtml (msgObj->GetRichBody ());
