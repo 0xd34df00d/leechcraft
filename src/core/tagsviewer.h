@@ -21,7 +21,7 @@ namespace LC
 	public:
 		TagsViewer (QWidget* = 0);
 	private slots:
-		void on_Rename__released ();
+		void on_Modify__released ();
 		void on_Remove__released ();
 	};
 };

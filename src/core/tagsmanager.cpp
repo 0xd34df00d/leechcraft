@@ -21,7 +21,8 @@ namespace
 {
 	std::optional<TagsManager::InvalidTagName> Validate (const QString& name)
 	{
-		if (const auto& delimiter = Util::GetTagsDelimiter (Util::GetDefaultTagsSeparator ()); name.contains (delimiter))
+		if (const auto& delimiter = Util::GetTagsDelimiter (Util::GetDefaultTagsSeparator ());
+			name.contains (delimiter))
 			return TagsManager::DelimiterInTagName { delimiter };
 		if (name.isEmpty ())
 			return TagsManager::BlankTagName {};

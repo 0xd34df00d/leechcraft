@@ -27,9 +27,9 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QPushButton" name="Rename_">
+      <widget class="QPushButton" name="Modify_">
        <property name="text">
-        <string>Rename...</string>
+        <string>Modify...</string>
        </property>
       </widget>
      </item>
