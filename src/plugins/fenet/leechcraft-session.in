@@ -13,4 +13,29 @@ if which dbus-launch >/dev/null && test -z "$DBUS_SESSION_BUS_ADDRESS"; then
     eval `dbus-launch --sh-syntax --exit-with-session`
 fi
 
-exec leechcraft@LC_LIBSUFFIX@ --autorestart --desktop "$@"
+# LeechCraft is the session: restart it after a crash or on its request instead of letting the session end
+quickCrashes=0
+while :; do
+    started=$(date +%s)
+    leechcraft@LC_LIBSUFFIX@ --desktop --supervised "$@"
+    status=$?
+
+    case $status in
+        0|129|130|143) exit $status ;;               # quit, or stopped by HUP, INT or TERM
+        7) quickCrashes=0; continue ;;               # restart requested by LeechCraft
+        254) exit $status ;;                         # AnHero: crashed while quitting
+        255) ;;                                      # AnHero: crashed
+        *) [ $status -gt 128 ] || exit $status ;;    # up to 128: refused to start, above: killed by a signal
+    esac
+
+    if [ $(( $(date +%s) - started )) -lt 60 ]; then
+        quickCrashes=$((quickCrashes + 1))
+    else
+        quickCrashes=0
+    fi
+    if [ $quickCrashes -ge 3 ]; then
+        echo "leechcraft-session: LeechCraft keeps crashing on startup, ending the session" >&2
+        exit $status
+    fi
+    echo "leechcraft-session: LeechCraft exited with $status, restarting it" >&2
+done
