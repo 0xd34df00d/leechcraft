@@ -116,7 +116,23 @@ namespace LC::Util
 	 */
 	UTIL_GUI_API QString FormatName (const QString& name);
 
+	/** @brief Joins `items` for use in a sentence.
+	 *
+	 * A single item is returned as is, and several are joined with commas
+	 * and a translatable conjunction before the last one, as in "a, b and c".
+	 */
 	UTIL_GUI_API QString FormatHumanReadableList (QStringList items);
+
+	/** @brief Builds a sentence about `items`, choosing its form by their count.
+	 *
+	 * A single item is substituted into `one` as `%1`, two or three items
+	 * are joined as via `FormatHumanReadableList(QStringList)` and
+	 * substituted into `few` as `%1`, and otherwise `many` is returned as
+	 * is, so it should come from `tr()` called with the count, as in
+	 * `tr ("%n items", nullptr, items.size ())`.
+	 */
+	UTIL_GUI_API QString FormatHumanReadableList (const QStringList& items,
+			const QString& one, const QString& few, const QString& many);
 
 	UTIL_GUI_API QPixmap DrawOverlayText (QPixmap px, const QString& text, QFont font, const QPen& pen, const QBrush& brush);
 

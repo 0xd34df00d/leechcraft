@@ -140,6 +140,21 @@ namespace LC::Util
 		}
 	}
 
+	QString FormatHumanReadableList (const QStringList& items,
+			const QString& one, const QString& few, const QString& many)
+	{
+		switch (items.size ())
+		{
+		case 1:
+			return one.arg (items.first ());
+		case 2:
+		case 3:
+			return few.arg (FormatHumanReadableList (items));
+		default:
+			return many;
+		}
+	}
+
 	QPixmap DrawOverlayText (QPixmap px,
 			const QString& text, QFont font, const QPen& pen, const QBrush& brush)
 	{

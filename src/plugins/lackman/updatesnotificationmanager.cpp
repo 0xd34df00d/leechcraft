@@ -8,6 +8,7 @@
 
 #include "updatesnotificationmanager.h"
 #include <QTimer>
+#include <util/gui/util.h>
 #include <util/xpc/util.h>
 #include <util/models/modeliterator.h>
 #include <util/xpc/notificationactionhandler.h>
@@ -104,7 +105,6 @@ namespace LackMan
 
 		emit hasUpgradablePackages (upgradableCount);
 
-		QString bodyText;
 		if (!upgradableCount)
 		{
 			auto cancel = Util::MakeANCancel ("org.LeechCraft.LackMan", "org.LeechCraft.LackMan");
@@ -113,27 +113,15 @@ namespace LackMan
 			return;
 		}
 
-		else if (upgradableCount <= 3)
-		{
-			QStringList names;
-			for (const auto id : UpgradablePackages_)
-				names << PM_->index (PM_->GetRow (id), 0).data (PackagesModel::PMRName).toString ();
-			names.sort ();
+		QStringList names;
+		for (const auto id : UpgradablePackages_)
+			names << "<em>" + PM_->index (PM_->GetRow (id), 0).data (PackagesModel::PMRName).toString () + "</em>";
+		names.sort ();
 
-			if (upgradableCount == 1)
-				bodyText = tr ("A new version of %1 is available.")
-						.arg ("<em>" + names.value (0) + "</em>");
-			else
-			{
-				const auto& lastName = names.takeLast ();
-				bodyText = tr ("New versions of %1 and %2 are available.")
-						.arg ("<em>" + names.join ("</em>, <em>") + "</em>")
-						.arg ("<em>" + lastName + "</em>");
-			}
-		}
-		else
-			bodyText = tr ("New versions are available for %n package(s).",
-					0, upgradableCount);
+		const auto& bodyText = Util::FormatHumanReadableList (names,
+				tr ("A new version of %1 is available."),
+				tr ("New versions of %1 are available."),
+				tr ("New versions are available for %n package(s).", 0, upgradableCount));
 
 		auto entity = Util::MakeAN ("Lackman",
 				bodyText,
