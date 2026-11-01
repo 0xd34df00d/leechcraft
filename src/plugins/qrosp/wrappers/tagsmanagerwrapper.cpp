@@ -8,6 +8,7 @@
 
 #include "tagsmanagerwrapper.h"
 #include <interfaces/core/itagsmanager.h>
+#include <util/tags/emitters/tagsmanager.h>
 
 namespace LC
 {
@@ -16,10 +17,10 @@ namespace Qrosp
 	TagsManagerWrapper::TagsManagerWrapper (ITagsManager *manager)
 	: Manager_ (manager)
 	{
-		connect (Manager_->GetQObject (),
-				SIGNAL (tagsUpdated (const QStringList&)),
+		connect (&Manager_->GetEmitter (),
+				&Util::Emitters::TagsManager::nameReplaced,
 				this,
-				SIGNAL (tagsUpdated (const QStringList&)));
+				&TagsManagerWrapper::nameReplaced);
 	}
 
 	QString TagsManagerWrapper::GetID (const QString& tag)
@@ -50,11 +51,6 @@ namespace Qrosp
 	QAbstractItemModel* TagsManagerWrapper::GetModel ()
 	{
 		return Manager_->GetModel ();
-	}
-
-	QObject* TagsManagerWrapper::GetQObject ()
-	{
-		return Manager_->GetQObject ();
 	}
 }
 }

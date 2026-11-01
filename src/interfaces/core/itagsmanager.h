@@ -14,6 +14,7 @@
 #include <QMetaType>
 #include <QObject>
 #include <QStringList>
+#include <util/tags/emitters/tagsmanager.h>
 
 class QAbstractItemModel;
 
@@ -83,15 +84,19 @@ Q_DECLARE_METATYPE (LC::TagId)
  * Tag names are trimmed and non-blank,
  * and they don't contain the delimiter (per `Util::GetTagsDelimiter()`)
  * the tags are split by. Tags are referred to by `LC::TagId`s, and an
- * id may denote several tags (say, after a tag was split).
- *
- * Object returned by the `GetQObject()` function emits these signals:
- * - `tagsUpdated(const QStringList& tags)` when the tags are updated.
+ * id may denote several tags (say, after a tag was split). Changes of
+ * the tags denoted by existing ids are announced by `GetEmitter()`.
  */
 class Q_DECL_EXPORT ITagsManager
 {
+protected:
+	LC::Util::Emitters::TagsManager Emitter_;
 public:
 	virtual ~ITagsManager () {}
+
+	/** @brief Returns the emitter of this manager's signals.
+	 */
+	const LC::Util::Emitters::TagsManager& GetEmitter () const { return Emitter_; }
 
 	/** @brief Returns the ID of the given `tag`.
 	 *
@@ -218,13 +223,6 @@ public:
 	 * @return The completion model suitable for usage in a QCompleter.
 	 */
 	virtual QAbstractItemModel* GetModel () = 0;
-
-	/** @brief Returns the tags manager as a QObject to get access to
-	 * all the meta-stuff.
-	 *
-	 * @return This object as a QObject.
-	 */
-	virtual QObject* GetQObject () = 0;
 };
 
 Q_DECLARE_INTERFACE (ITagsManager, "org.Deviant.LeechCraft.ITagsManager/1.0")

@@ -14,6 +14,7 @@
 #include <QTest>
 #include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
+#include <util/tags/emitters/tagsmanager.h>
 #include "tagsmanager.h"
 #include "tagsstorage.h"
 
@@ -116,7 +117,7 @@ namespace LC
 	void TagsManagerTest::testGetIdCreatesAndPersists ()
 	{
 		Fixture f;
-		QSignalSpy updated { &f.Manager_, &TagsManager::tagsUpdated };
+		QSignalSpy replaced { &f.Manager_.GetEmitter (), &Util::Emitters::TagsManager::nameReplaced };
 		QSignalSpy inserted { &f.Manager_, &QAbstractItemModel::rowsInserted };
 
 		const auto& id = f.Manager_.GetID (Work);
@@ -124,13 +125,12 @@ namespace LC
 		QCOMPARE (f.Manager_.GetTags (*id), QStringList { Work });
 		QCOMPARE (f.Manager_.rowCount ({}), 2);
 		QCOMPARE (inserted.size (), 1);
-		QCOMPARE (updated.size (), 1);
-		QCOMPARE (updated.first ().first ().toStringList (), f.Manager_.GetAllTags ());
+		QCOMPARE (replaced.size (), 0);
 		QVERIFY (f.Storage_.GetAllTags ().contains (std::pair { QUuid { id->Id_ }, Work }));
 
 		QVERIFY (f.Manager_.GetID (Work) == id);
 		QCOMPARE (f.Manager_.rowCount ({}), 2);
-		QCOMPARE (updated.size (), 1);
+		QCOMPARE (inserted.size (), 1);
 	}
 
 	void TagsManagerTest::testGetIdTrims ()
@@ -160,12 +160,12 @@ namespace LC
 		QFETCH (QString, name);
 
 		Fixture f;
-		QSignalSpy updated { &f.Manager_, &TagsManager::tagsUpdated };
+		QSignalSpy inserted { &f.Manager_, &QAbstractItemModel::rowsInserted };
 
 		QTest::ignoreMessage (QtWarningMsg, InvalidNameWarning);
 		QVERIFY (!f.Manager_.GetID (name));
 		QCOMPARE (f.Manager_.rowCount ({}), 1);
-		QCOMPARE (updated.size (), 0);
+		QCOMPARE (inserted.size (), 0);
 		QCOMPARE (StoredNames (f.Storage_), QStringList { Untagged });
 	}
 
@@ -283,7 +283,7 @@ namespace LC
 
 		Fixture f;
 		f.Manager_.GetID (Work);
-		QSignalSpy updated { &f.Manager_, &TagsManager::tagsUpdated };
+		QSignalSpy replaced { &f.Manager_.GetEmitter (), &Util::Emitters::TagsManager::nameReplaced };
 		QSignalSpy removed { &f.Manager_, &QAbstractItemModel::rowsRemoved };
 
 		const auto& result = f.Manager_.ReplaceName (Work, { "fine"_qs, newName });
@@ -291,7 +291,7 @@ namespace LC
 		QCOMPARE (Describe (result.GetLeft ()), error);
 		QCOMPARE (f.Manager_.GetAllTags (), (QStringList { Untagged, Work }));
 		QCOMPARE (StoredNames (f.Storage_), (QStringList { Untagged, Work }));
-		QCOMPARE (updated.size (), 0);
+		QCOMPARE (replaced.size (), 0);
 		QCOMPARE (removed.size (), 0);
 	}
 
@@ -299,12 +299,12 @@ namespace LC
 	{
 		Fixture f;
 		f.Manager_.GetID (Work);
-		QSignalSpy updated { &f.Manager_, &TagsManager::tagsUpdated };
+		QSignalSpy replaced { &f.Manager_.GetEmitter (), &Util::Emitters::TagsManager::nameReplaced };
 
 		QVERIFY (f.Manager_.ReplaceName (Work, { " work "_qs }).IsRight ());
 		QVERIFY (f.Manager_.ReplaceName ("nonexistent"_qs, { "whatever"_qs }).IsRight ());
 		QVERIFY (f.Manager_.ReplaceName ("nonexistent"_qs, {}).IsRight ());
-		QCOMPARE (updated.size (), 0);
+		QCOMPARE (replaced.size (), 0);
 		QCOMPARE (f.Manager_.GetAllTags (), (QStringList { Untagged, Work }));
 		QCOMPARE (StoredNames (f.Storage_), (QStringList { Untagged, Work }));
 	}
@@ -314,7 +314,7 @@ namespace LC
 		Fixture f;
 		const auto& id = f.Manager_.GetID (Work);
 		QVERIFY (id);
-		QSignalSpy updated { &f.Manager_, &TagsManager::tagsUpdated };
+		QSignalSpy replaced { &f.Manager_.GetEmitter (), &Util::Emitters::TagsManager::nameReplaced };
 		QSignalSpy removed { &f.Manager_, &QAbstractItemModel::rowsRemoved };
 		QSignalSpy inserted { &f.Manager_, &QAbstractItemModel::rowsInserted };
 
@@ -324,8 +324,8 @@ namespace LC
 		QCOMPARE (f.Manager_.GetAllTags (), (QStringList { "renamed"_qs, Untagged }));
 		QCOMPARE (removed.size (), 1);
 		QCOMPARE (inserted.size (), 1);
-		QCOMPARE (updated.size (), 1);
-		QCOMPARE (updated.first ().first ().toStringList (), f.Manager_.GetAllTags ());
+		QCOMPARE (replaced.size (), 1);
+		QCOMPARE (replaced.first (), (QVariantList { Work, QStringList { "renamed"_qs } }));
 		QCOMPARE (StoredNames (f.Storage_), (QStringList { "renamed"_qs, Untagged }));
 	}
 
@@ -334,6 +334,7 @@ namespace LC
 		Fixture f;
 		const auto& id = f.Manager_.GetID ("haskell hackage"_qs);
 		QVERIFY (id);
+		QSignalSpy replaced { &f.Manager_.GetEmitter (), &Util::Emitters::TagsManager::nameReplaced };
 		QSignalSpy removed { &f.Manager_, &QAbstractItemModel::rowsRemoved };
 		QSignalSpy inserted { &f.Manager_, &QAbstractItemModel::rowsInserted };
 
@@ -342,6 +343,9 @@ namespace LC
 		QCOMPARE (f.Manager_.GetAllTags (), (QStringList { "hackage"_qs, "haskell"_qs, Untagged }));
 		QCOMPARE (removed.size (), 1);
 		QCOMPARE (inserted.size (), 2);
+		QCOMPARE (replaced.size (), 1);
+		QCOMPARE (replaced.first ().at (0).toString (), "haskell hackage"_qs);
+		QCOMPARE (Sorted (replaced.first ().at (1).toStringList ()), (QStringList { "hackage"_qs, "haskell"_qs }));
 		QCOMPARE (StoredNames (f.Storage_), (QStringList { "hackage"_qs, "haskell"_qs, Untagged }));
 
 		const auto& half = f.Manager_.GetID ("haskell"_qs);
@@ -359,10 +363,13 @@ namespace LC
 	void TagsManagerTest::testMerge ()
 	{
 		Fixture f { Rows { { High, "a"_qs }, { Low, "b"_qs } } };
+		QSignalSpy replaced { &f.Manager_.GetEmitter (), &Util::Emitters::TagsManager::nameReplaced };
 		QSignalSpy removed { &f.Manager_, &QAbstractItemModel::rowsRemoved };
 		QSignalSpy inserted { &f.Manager_, &QAbstractItemModel::rowsInserted };
 
 		QVERIFY (f.Manager_.ReplaceName ("b"_qs, { "a"_qs }).IsRight ());
+		QCOMPARE (replaced.size (), 1);
+		QCOMPARE (replaced.first (), (QVariantList { "b"_qs, QStringList { "a"_qs } }));
 		QCOMPARE (f.Manager_.GetTags (TagId { Low.toString () }), QStringList { "a"_qs });
 		QCOMPARE (f.Manager_.GetTags (TagId { High.toString () }), QStringList { "a"_qs });
 		QCOMPARE (f.Manager_.GetAllTags (), (QStringList { "a"_qs, Untagged }));
@@ -393,14 +400,15 @@ namespace LC
 		Fixture f;
 		const auto& id = f.Manager_.GetID (Work);
 		QVERIFY (id);
-		QSignalSpy updated { &f.Manager_, &TagsManager::tagsUpdated };
+		QSignalSpy replaced { &f.Manager_.GetEmitter (), &Util::Emitters::TagsManager::nameReplaced };
 		QSignalSpy removed { &f.Manager_, &QAbstractItemModel::rowsRemoved };
 
 		QVERIFY (f.Manager_.ReplaceName (Work, {}).IsRight ());
 		QCOMPARE (f.Manager_.rowCount ({}), 1);
 		QVERIFY (f.Manager_.GetTags (*id).isEmpty ());
 		QCOMPARE (removed.size (), 1);
-		QCOMPARE (updated.size (), 1);
+		QCOMPARE (replaced.size (), 1);
+		QCOMPARE (replaced.first (), (QVariantList { Work, QStringList {} }));
 		QCOMPARE (StoredNames (f.Storage_), QStringList { Untagged });
 	}
 

@@ -148,8 +148,6 @@ TagId TagsManager::InsertTag (const QString& name)
 	Names_ [uuid] = { name };
 	SetRows (DistinctNames (Names_));
 
-	emit tagsUpdated (Rows_);
-
 	return TagId { uuid.toString () };
 }
 
@@ -188,10 +186,11 @@ Util::Either<TagsManager::InvalidTagName, Util::Void> TagsManager::ReplaceName (
 	if (!changed)
 		return Util::Void {};
 
-	Storage_->ReplaceName (old, QStringList (names.begin (), names.end ()));
+	const auto& replacement = QStringList (names.begin (), names.end ());
+	Storage_->ReplaceName (old, replacement);
 	SetRows (DistinctNames (Names_));
 
-	emit tagsUpdated (Rows_);
+	emit Emitter_.nameReplaced (old, replacement);
 
 	return Util::Void {};
 }
@@ -216,11 +215,6 @@ void TagsManager::SetRows (const QStringList& rows)
 }
 
 QAbstractItemModel* TagsManager::GetModel ()
-{
-	return this;
-}
-
-QObject* TagsManager::GetQObject ()
 {
 	return this;
 }

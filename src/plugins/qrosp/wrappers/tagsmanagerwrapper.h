@@ -32,9 +32,8 @@ namespace Qrosp
 		QStringList Split (const QString& string) const;
 		QString Join (const QStringList& tags) const;
 		QAbstractItemModel* GetModel ();
-		QObject* GetQObject ();
 	signals:
-		void tagsUpdated (const QStringList& tags);
+		void nameReplaced (const QString& old, const QStringList& newNames);
 	};
 }
 }

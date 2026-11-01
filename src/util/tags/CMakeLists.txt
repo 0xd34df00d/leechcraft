@@ -2,6 +2,7 @@ add_util_library (util-tags
 	SRCS
 		categoryselector.cpp
 		categoryselectorwindow.cpp
+		emitters/tagsmanager.cpp
 		tagschange.cpp
 		tagscompletionmodel.cpp
 		tagseditdelegate.cpp

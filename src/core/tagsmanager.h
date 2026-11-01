@@ -53,7 +53,6 @@ namespace LC
 		QString Join (const QStringList&) const override;
 		QString JoinIDs (const QList<TagId>&) const override;
 		QAbstractItemModel* GetModel () override;
-		QObject* GetQObject () override;
 
 		struct BlankTagName {};
 		struct DelimiterInTagName
@@ -74,7 +73,5 @@ namespace LC
 		void MigrateStoredNames ();
 		TagId InsertTag (const QString&);
 		void SetRows (const QStringList&);
-	signals:
-		void tagsUpdated (const QStringList&);
 	};
 }
