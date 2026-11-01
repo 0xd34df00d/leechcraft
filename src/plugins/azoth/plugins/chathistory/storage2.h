@@ -20,7 +20,7 @@ namespace LC::Azoth::ChatHistory
 	struct AccountInfo
 	{
 		qint64 Id_;
-		QByteArray AccountId_;
+		AccountId AccountId_;
 		QString AccountName_;
 	};
 
@@ -50,7 +50,7 @@ namespace LC::Azoth::ChatHistory
 		explicit Storage2 (QObject* = nullptr);
 		~Storage2 () override;
 
-		std::optional<QDateTime> GetLastTimestamp (const QByteArray& accountId) const;
+		std::optional<QDateTime> GetLastTimestamp (const AccountId&) const;
 
 		QList<AccountInfo> GetAccounts () const;
 		QList<Entry> GetEntries (qint64 accountId) const;
@@ -90,7 +90,7 @@ namespace LC::Azoth::ChatHistory
 		};
 		QList<HistoryMessage> GetMessages (const Entry& entry, const Pagination& pagination) const;
 		QList<HistoryMessage> GetMessagesDated (const Entry& entry, const QDate& date) const;
-		QList<HistoryMessage> GetLastMessages (const QByteArray& accountId, const EntryConventionalId& entryId, size_t count) const;
+		QList<HistoryMessage> GetLastMessages (const AccountId& accountId, const EntryConventionalId& entryId, size_t count) const;
 
 		QList<int> GetDaysWithHistory (const Entry& entry, int year, int month) const;
 

@@ -275,9 +275,9 @@ namespace Xoox
 		emit accountSettingsChanged ();
 	}
 
-	QByteArray GlooxAccount::GetAccountID () const
+	AccountId GlooxAccount::GetAccountID () const
 	{
-		return ParentProtocol_->GetProtocolID () + "_" + SettingsHolder_->GetJID ().toUtf8 ();
+		return AccountId::FromString (ParentProtocol_->GetProtocolID () + "_" + SettingsHolder_->GetJID ());
 	}
 
 	QList<QAction*> GlooxAccount::GetActions () const

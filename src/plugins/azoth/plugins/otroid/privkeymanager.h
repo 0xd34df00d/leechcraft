@@ -22,6 +22,7 @@ namespace LC
 {
 namespace Azoth
 {
+class AccountId;
 class IProxyObject;
 
 namespace OTRoid
@@ -59,7 +60,7 @@ namespace OTRoid
 		void customButtonPressed (const QString&, const QByteArray&, int);
 	signals:
 		void keysChanged ();
-		void keysGenerationRequested (const QString&, const QString&);
+		void keysGenerationRequested (const AccountId&, const QString&);
 	};
 }
 }

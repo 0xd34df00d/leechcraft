@@ -110,7 +110,7 @@ namespace Azoth
 				.Type_ = QMetaType::QString,
 				.EventTypes_ = havingSourceFields,
 				.AllowedValues_ = Util::Map (Core::Instance ().GetAccounts (),
-						[] (IAccount *acc) { return AN::FieldData::AllowedValue { acc->GetAccountID (), acc->GetAccountName () }; }),
+						[] (IAccount *acc) { return AN::FieldData::AllowedValue { acc->GetAccountID ().ToUtf8 (), acc->GetAccountName () }; }),
 			},
 			{
 				.ID_ = Fields::SourceHumanReadableAddress,
@@ -167,7 +167,7 @@ namespace Azoth
 		namespace Extract
 		{
 			QString Name (const ICLEntry& e) { return e.GetEntryName (); }
-			QString AccountID (const ICLEntry& e) { return QString::fromUtf8 (e.GetParentAccount ()->GetAccountID ()); }
+			QString AccountID (const ICLEntry& e) { return e.GetParentAccount ()->GetAccountID ().ToString (); }
 			QString HumanReadableAddress (const ICLEntry& e) { return e.GetHumanReadableAddress (); }
 			QStringList Groups (const ICLEntry& e) { return e.Groups (); }
 
@@ -308,7 +308,7 @@ namespace Azoth
 		{
 			if (auto& accountId = ident ["AccountID"];
 				accountId.toByteArray ().isEmpty ())
-				accountId = acc->GetAccountID ();
+				accountId = acc->GetAccountID ().ToUtf8 ();
 
 			const auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
 			const auto dia = new JoinConferenceDialog { { acc }, rootWM->GetPreferredWindow () };

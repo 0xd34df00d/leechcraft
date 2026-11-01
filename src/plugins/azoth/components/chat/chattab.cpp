@@ -370,7 +370,7 @@ namespace Azoth
 			stream << QByteArray ("muctab2")
 					<< entry->GetEntryID ()
 					<< GetEntry<IMUCEntry> ()->GetIdentifyingData ()
-					<< entry->GetParentAccount ()->GetAccountID ();
+					<< entry->GetParentAccount ()->GetAccountID ().ToUtf8 ();
 		else
 			stream << QByteArray ("chattab2")
 					<< entry->GetEntryID ()

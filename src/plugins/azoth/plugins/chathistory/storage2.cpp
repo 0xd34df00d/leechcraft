@@ -46,7 +46,7 @@ namespace LC::Azoth::ChatHistory
 	{
 		o::PKey<qint64> Id_ {};
 
-		o::Unique<o::NotNull<QByteArray>> AccountId_;
+		o::Unique<o::NotNull<AccountId>> AccountId_;
 		o::NotNull<QString> AccountName_;
 
 		AccountInfo ToInfo () const;
@@ -182,7 +182,7 @@ namespace LC::Azoth::ChatHistory
 
 	Storage2::~Storage2 () = default;
 
-	std::optional<QDateTime> Storage2::GetLastTimestamp (const QByteArray& accountId) const
+	std::optional<QDateTime> Storage2::GetLastTimestamp (const AccountId& accountId) const
 	{
 		return Messages_->Select (sph::max<&MessageRecord::TS_>,
 				sph::f<&MessageRecord::Entry_> == sph::f<&EntryRecord::Id_> &&
@@ -327,7 +327,7 @@ namespace LC::Azoth::ChatHistory
 		return Util::Map (std::move (records), &ToHistoryMessage);
 	}
 
-	QList<Storage2::HistoryMessage> Storage2::GetLastMessages (const QByteArray& accountId,
+	QList<Storage2::HistoryMessage> Storage2::GetLastMessages (const AccountId& accountId,
 			const EntryConventionalId& entryId, size_t count) const
 	{
 		const auto rowId = Entries_->SelectOne (sph::fields<&EntryRecord::Id_>,

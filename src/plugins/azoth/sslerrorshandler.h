@@ -10,6 +10,7 @@
 
 #include <variant>
 #include <QObject>
+#include <interfaces/azoth/azothcommon.h>
 #include <interfaces/azoth/icanhavesslerrors.h>
 
 namespace LC
@@ -24,7 +25,7 @@ namespace Azoth
 		struct AccountRegistration {};
 		struct Account
 		{
-			QByteArray ID_;
+			AccountId ID_;
 			QString Name_;
 		};
 

@@ -23,5 +23,7 @@ namespace LC::Azoth
 
 		void testMalformedStrings ();
 		void testMalformedBytes ();
+
+		void testVariantTypeMismatch ();
 	};
 }

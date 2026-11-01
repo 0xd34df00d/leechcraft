@@ -154,14 +154,14 @@ namespace LC::Azoth
 	void ProxyObject::SetPassword (const QString& password, QObject *accObj)
 	{
 		const auto acc = qobject_cast<IAccount*> (accObj);
-		const auto& key = "org.LeechCraft.Azoth.PassForAccount/" + acc->GetAccountID ();
+		const auto& key = "org.LeechCraft.Azoth.PassForAccount/" + acc->GetAccountID ().ToString ();
 		Util::SavePassword (password, key, Core::Instance ().GetProxy ());
 	}
 
 	QString ProxyObject::GetAccountPassword (QObject *accObj, bool useStored)
 	{
 		const auto acc = qobject_cast<IAccount*> (accObj);
-		const auto& key = "org.LeechCraft.Azoth.PassForAccount/" + acc->GetAccountID ();
+		const auto& key = "org.LeechCraft.Azoth.PassForAccount/" + acc->GetAccountID ().ToString ();
 		return Util::GetPassword (key,
 				tr ("Enter password for %1:")
 						.arg (acc->GetAccountName ()),
@@ -205,7 +205,7 @@ namespace LC::Azoth
 	QObject* ProxyObject::GetAccount (const QString& accID) const
 	{
 		for (const auto acc : Core::Instance ().GetAccounts ())
-			if (acc->GetAccountID () == accID)
+			if (acc->GetAccountID ().ToString () == accID)
 				return acc->GetQObject ();
 
 		return nullptr;

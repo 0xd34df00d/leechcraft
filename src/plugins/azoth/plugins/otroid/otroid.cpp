@@ -117,9 +117,9 @@ namespace OTRoid
 				OtrHandler_,
 				SLOT (writeKeys ()));
 		connect (PKManager_,
-				SIGNAL (keysGenerationRequested (QString, QString)),
+				&PrivKeyManager::keysGenerationRequested,
 				OtrHandler_,
-				SLOT (generateKeys (QString, QString)));
+				&OtrHandler::generateKeys);
 		connect (OtrHandler_,
 				&OtrHandler::privKeysChanged,
 				PKManager_,

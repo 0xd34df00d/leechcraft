@@ -47,7 +47,7 @@ namespace Azoth
 		QSettings settings (QCoreApplication::organizationName (),
 					QCoreApplication::applicationName () + "_Azoth");
 		settings.beginGroup ("CustomStyles");
-		settings.beginGroup (acc->GetAccountID ());
+		settings.beginGroup (acc->GetAccountID ().ToString ());
 
 		QString name;
 		switch (settable)
@@ -79,7 +79,7 @@ namespace Azoth
 		QSettings settings (QCoreApplication::organizationName (),
 					QCoreApplication::applicationName () + "_Azoth");
 		settings.beginGroup ("CustomStyles");
-		settings.beginGroup (acc->GetAccountID ());
+		settings.beginGroup (acc->GetAccountID ().ToString ());
 		const auto& style = settings.value (prefix + "Style").toString ();
 		const auto& variant = settings.value (prefix + "Variant").toString ();
 		settings.endGroup ();

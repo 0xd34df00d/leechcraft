@@ -12,6 +12,7 @@
 #include <utility>
 #include <QDataStream>
 #include <QIODevice>
+#include <QVariant>
 #include <QtDebug>
 #include <util/sll/logging.h>
 #include <util/sys/serialization.h>
@@ -81,7 +82,8 @@ namespace LC::Azoth
 		template<IdKind K>
 		QString ToSerializedString (const GlobalId<K>& id)
 		{
-			return QString::number (id.AccountId_.size ()) + ':' + id.AccountId_ + ':' + ToSerializedString (id.EntryId_);
+			const auto& accIdStr = id.AccountId_.ToString ();
+			return QString::number (accIdStr.size ()) + ':' + accIdStr + ':' + ToSerializedString (id.EntryId_);
 		}
 
 		template<template<IdKind> typename Id>
@@ -121,7 +123,7 @@ namespace LC::Azoth
 			if (!entryId)
 				return {};
 
-			return GlobalId<K> { str.sliced (accStart, accLen).toString (), *entryId };
+			return GlobalId<K> { AccountId::FromString (str.sliced (accStart, accLen).toString ()), *entryId };
 		}
 
 		template<template<IdKind> typename Id>
@@ -166,7 +168,7 @@ namespace LC::Azoth
 		template<IdKind K>
 		void ToStream (QDataStream& stream, const GlobalId<K>& id)
 		{
-			stream << GlobalIdVersion << id.AccountId_;
+			stream << GlobalIdVersion << id.AccountId_.ToString ();
 			ToStream (stream, id.EntryId_);
 		}
 
@@ -208,7 +210,7 @@ namespace LC::Azoth
 			if (!entryId)
 				return {};
 
-			return GlobalId<K> { *accountId, *entryId };
+			return GlobalId<K> { AccountId::FromString (*accountId), *entryId };
 		}
 
 		template<template<IdKind> typename Id>
@@ -289,6 +291,14 @@ namespace LC::Azoth
 		return result;
 	}
 
+	template<AnyId Id>
+	std::optional<Id> IdFromVariant (const QVariant& var)
+	{
+		if (const auto id = get_if<Id> (&var))
+			return *id;
+		return {};
+	}
+
 	template AZOTH_UTIL_API QByteArray SerializeBytes (const EntryPersistentId&);
 	template AZOTH_UTIL_API QByteArray SerializeBytes (const EntryConventionalId&);
 	template AZOTH_UTIL_API QByteArray SerializeBytes (const GlobalPersistentId&);
@@ -330,4 +340,12 @@ namespace LC::Azoth
 	template AZOTH_UTIL_API std::optional<GlobalConventionalId> Deserialize<GlobalConventionalId> (QDataStream&, std::source_location);
 	template AZOTH_UTIL_API std::optional<EntryStrongestId> Deserialize<EntryStrongestId> (QDataStream&, std::source_location);
 	template AZOTH_UTIL_API std::optional<GlobalStrongestId> Deserialize<GlobalStrongestId> (QDataStream&, std::source_location);
+
+	template AZOTH_UTIL_API std::optional<AccountId> IdFromVariant<AccountId> (const QVariant&);
+	template AZOTH_UTIL_API std::optional<EntryPersistentId> IdFromVariant<EntryPersistentId> (const QVariant&);
+	template AZOTH_UTIL_API std::optional<EntryConventionalId> IdFromVariant<EntryConventionalId> (const QVariant&);
+	template AZOTH_UTIL_API std::optional<GlobalPersistentId> IdFromVariant<GlobalPersistentId> (const QVariant&);
+	template AZOTH_UTIL_API std::optional<GlobalConventionalId> IdFromVariant<GlobalConventionalId> (const QVariant&);
+	template AZOTH_UTIL_API std::optional<EntryStrongestId> IdFromVariant<EntryStrongestId> (const QVariant&);
+	template AZOTH_UTIL_API std::optional<GlobalStrongestId> IdFromVariant<GlobalStrongestId> (const QVariant&);
 }

@@ -207,7 +207,7 @@ namespace Xoox
 		const auto acc = qobject_cast<GlooxAccount*> (entry->GetParentAccount ()->GetQObject ());
 
 		QVariantMap result;
-		result ["AccountID"] = acc->GetAccountID ();
+		result ["AccountID"] = acc->GetAccountID ().ToUtf8 ();
 		result ["Nick"] = acc->GetNick ();
 		result ["Password"] = text.section (' ', 1);
 
@@ -329,7 +329,7 @@ namespace Xoox
 			}
 			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 
-			ProxyObject_->OpenChat (entry->GetEntryID (), acc->GetAccountID (), body, variant);
+			ProxyObject_->OpenChat (entry->GetEntryID (), acc->GetAccountID ().ToUtf8 (), body, variant);
 		}
 		else
 			qWarning () << Q_FUNC_INFO

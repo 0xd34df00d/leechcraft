@@ -36,7 +36,7 @@
 
 namespace LC::Azoth::Sarin
 {
-	ToxAccount::ToxAccount (const QByteArray& uid, const QString& name, ToxProtocol *parent)
+	ToxAccount::ToxAccount (const AccountId& uid, const QString& name, ToxProtocol *parent)
 	: QObject { parent }
 	, Proto_ { parent }
 	, UID_ { uid }
@@ -58,7 +58,7 @@ namespace LC::Azoth::Sarin
 	}
 
 	ToxAccount::ToxAccount (const QString& name, ToxProtocol *parent)
-	: ToxAccount { QUuid::createUuid ().toByteArray (), name, parent }
+	: ToxAccount { AccountId::FromUtf8 (QUuid::createUuid ().toByteArray ()), name, parent }
 	{
 	}
 
@@ -67,7 +67,7 @@ namespace LC::Azoth::Sarin
 		QByteArray ba;
 		QDataStream str { &ba, QIODevice::WriteOnly };
 		str << static_cast<quint8> (2)
-				<< UID_
+				<< UID_.ToUtf8 ()
 				<< Name_
 				<< Nick_
 				<< ToxState_
@@ -94,7 +94,7 @@ namespace LC::Azoth::Sarin
 		str >> uid
 				>> name;
 
-		const auto acc = new ToxAccount { uid, name, proto };
+		const auto acc = new ToxAccount { AccountId::FromUtf8 (uid), name, proto };
 		str >> acc->Nick_
 				>> acc->ToxState_;
 
@@ -186,7 +186,7 @@ namespace LC::Azoth::Sarin
 		emit accountChanged (this);
 	}
 
-	QByteArray ToxAccount::GetAccountID () const
+	AccountId ToxAccount::GetAccountID () const
 	{
 		return UID_;
 	}

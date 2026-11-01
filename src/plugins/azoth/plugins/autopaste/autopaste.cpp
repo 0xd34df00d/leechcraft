@@ -266,7 +266,7 @@ namespace LC::Azoth::Autopaste
 	{
 		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 		const auto tab = AzothProxy_->FindOpenedChat (entry->GetEntryID (),
-				entry->GetParentAccount ()->GetAccountID ());
+				entry->GetParentAccount ()->GetAccountID ().ToUtf8 ());
 		if (!tab)
 		{
 			qWarning () << "no tab for" << entry << entry->GetGlobalStrongestID () << entry->GetHumanReadableAddress ();

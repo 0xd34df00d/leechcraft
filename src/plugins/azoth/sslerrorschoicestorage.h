@@ -17,6 +17,8 @@ namespace LC
 {
 namespace Azoth
 {
+	class AccountId;
+
 	class SslErrorsChoiceStorage
 	{
 	public:
@@ -35,8 +37,8 @@ namespace Azoth
 			Abort
 		};
 
-		std::optional<Action> GetAction (const QByteArray&, QSslError::SslError) const;
-		void SetAction (const QByteArray&, QSslError::SslError, Action);
+		std::optional<Action> GetAction (const AccountId&, QSslError::SslError) const;
+		void SetAction (const AccountId&, QSslError::SslError, Action);
 	};
 }
 }

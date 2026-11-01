@@ -107,9 +107,9 @@ namespace Azoth
 				QCoreApplication::applicationName () + "_Azoth" };
 		settings.beginGroup ("PrivateKeys");
 		if (key.isNull ())
-			settings.remove (acc->GetAccountID ());
+			settings.remove (acc->GetAccountID ().ToString ());
 		else
-			settings.setValue (acc->GetAccountID (), key.keyId ());
+			settings.setValue (acc->GetAccountID ().ToString (), key.keyId ());
 		settings.endGroup ();
 	}
 
@@ -122,7 +122,7 @@ namespace Azoth
 		QSettings settings { QCoreApplication::organizationName (),
 			QCoreApplication::applicationName () + "_Azoth" };
 		settings.beginGroup ("PrivateKeys");
-		const auto& keyId = settings.value (acc->GetAccountID ()).toString ();
+		const auto& keyId = settings.value (acc->GetAccountID ().ToString ()).toString ();
 		settings.endGroup ();
 
 		if (keyId.isEmpty ())

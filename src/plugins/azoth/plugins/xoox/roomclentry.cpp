@@ -309,7 +309,7 @@ namespace Xoox
 				.arg (GetNick ())
 				.arg (room)
 				.arg (server);
-		result ["AccountID"] = Account_->GetAccountID ();
+		result ["AccountID"] = Account_->GetAccountID ().ToUtf8 ();
 		result ["Nick"] = GetNick ();
 		result ["Room"] = room;
 		result ["Server"] = server;

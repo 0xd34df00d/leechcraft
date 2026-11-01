@@ -28,6 +28,8 @@ namespace LC::Azoth
 	AZOTH_UTIL_API void RejoinMuc (const IMUCEntry& entry);
 	AZOTH_UTIL_API void RejoinMuc (IAccount& acc, const QVariantMap& identiyfingData);
 
+	AZOTH_UTIL_API QDebug operator<< (QDebug, const AccountId&);
+
 	template<IdKind K>
 	QDebug operator<< (QDebug, const EntryId<K>&);
 

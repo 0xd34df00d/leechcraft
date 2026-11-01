@@ -75,7 +75,7 @@ namespace LC::Azoth::Acetamide
 
 		void RenameAccount (const QString&) override;
 
-		QByteArray GetAccountID () const override;
+		AccountId GetAccountID () const override;
 		void SetAccountID (const QString&);
 
 		QList<QAction*> GetActions () const override;

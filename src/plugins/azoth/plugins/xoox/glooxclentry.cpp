@@ -39,7 +39,7 @@ namespace LC::Azoth::Xoox
 
 	QString GlooxCLEntry::JIDFromID (GlooxAccount *acc, const QString& id)
 	{
-		const QString& pre = acc->GetAccountID () + ':';
+		const QString& pre = acc->GetAccountID ().ToString () + ':';
 		return id.startsWith (pre) ?
 				id.mid (pre.size ()) :
 				id;

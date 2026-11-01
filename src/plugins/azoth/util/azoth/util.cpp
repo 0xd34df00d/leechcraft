@@ -117,6 +117,13 @@ namespace LC::Azoth
 				});
 	}
 
+	QDebug operator<< (QDebug dbg, const AccountId& accId)
+	{
+		QDebugStateSaver saver { dbg };
+		dbg.nospace ().noquote () << "AccountId{" << accId.ToString () << '}';
+		return dbg;
+	}
+
 	namespace
 	{
 		constexpr char KindName (IdKind kind)
@@ -129,7 +136,7 @@ namespace LC::Azoth
 	QDebug operator<< (QDebug dbg, const EntryId<K>& id)
 	{
 		QDebugStateSaver saver { dbg };
-		dbg.nospace () << "EntryId<" << KindName (K) << ">{" << id.ToString () << '}';
+		dbg.nospace ().noquote () << "EntryId<" << KindName (K) << ">{" << id.ToString () << '}';
 		return dbg;
 	}
 
@@ -137,7 +144,7 @@ namespace LC::Azoth
 	QDebug operator<< (QDebug dbg, const GlobalId<K>& id)
 	{
 		QDebugStateSaver saver { dbg };
-		dbg.nospace () << "GlobalId<" << KindName (K) << ">{ " << id.AccountId_ << ", " << id.EntryId_.ToString () << " }";
+		dbg.nospace ().noquote () << "GlobalId<" << KindName (K) << ">{ " << id.AccountId_.ToString () << ", " << id.EntryId_.ToString () << " }";
 		return dbg;
 	}
 

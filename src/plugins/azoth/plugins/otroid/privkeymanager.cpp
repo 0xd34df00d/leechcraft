@@ -19,6 +19,8 @@ extern "C"
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/iprotocol.h>
+#include <util/azoth/entryidops.h>
+#include <util/azoth/util.h>
 #include "util.h"
 
 namespace LC
@@ -53,7 +55,9 @@ namespace OTRoid
 		if (!item)
 			return;
 
-		const auto& accId = item->data (RoleAccId).toString ();
+		const auto& accId = IdFromVariant<AccountId> (item->data (RoleAccId));
+		if (!accId)
+			return;
 		const auto& protoId = item->data (RoleProtoId).toString ();
 
 		if (!item->text ().isEmpty ())
@@ -64,7 +68,7 @@ namespace OTRoid
 						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 				return;
 
-		emit keysGenerationRequested (accId, protoId);
+		emit keysGenerationRequested (*accId, protoId);
 	}
 
 	void PrivKeyManager::Populate ()
@@ -87,7 +91,7 @@ namespace OTRoid
 			if (!acc)
 				continue;
 
-			const auto& hash = accId2key.value (acc->GetAccountID ());
+			const auto& hash = accId2key.value (acc->GetAccountID ().ToString ());
 
 			QList<QStandardItem*> row
 			{
@@ -100,7 +104,7 @@ namespace OTRoid
 			for (auto item : row)
 			{
 				item->setEditable (false);
-				item->setData (acc->GetAccountID (), RoleAccId);
+				item->setData (QVariant::fromValue (acc->GetAccountID ()), RoleAccId);
 				item->setData (proto->GetProtocolID (), RoleProtoId);
 			}
 
@@ -133,18 +137,17 @@ namespace OTRoid
 
 		for (const auto& index : indexes)
 		{
-			const auto& accId = index.data (RoleAccId).toString ();
+			const auto& accId = IdFromVariant<AccountId> (index.data (RoleAccId));
+			if (!accId)
+				continue;
 			const auto& protoId = index.data (RoleProtoId).toString ();
 
 			const auto pkey = otrl_privkey_find (UserState_,
-					accId.toUtf8 ().constData (),
+					accId->ToUtf8 ().constData (),
 					protoId.toUtf8 ().constData ());
 			if (!pkey)
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "cannot find private key for"
-						<< accId
-						<< protoId;
+				qWarning () << "cannot find private key for" << *accId << protoId;
 				continue;
 			}
 

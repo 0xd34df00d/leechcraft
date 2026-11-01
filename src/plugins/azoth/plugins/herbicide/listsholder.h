@@ -9,6 +9,7 @@
 #pragma once
 
 #include <functional>
+#include <optional>
 #include <QSet>
 #include <QRegularExpression>
 
@@ -18,7 +19,8 @@ namespace LC
 {
 namespace Azoth
 {
-class IAccount;
+	class AccountId;
+	class IAccount;
 
 namespace Herbicide
 {
@@ -32,7 +34,8 @@ namespace Herbicide
 			QSet<QRegularExpression> Black_;
 		};
 
-		QHash<QByteArray, ListInfo> Acc2ListInfo_;
+		std::optional<ListInfo> GeneralListInfo_;
+		QHash<AccountId, ListInfo> Acc2ListInfo_;
 	public:
 		ListsHolder (const std::function<QVariant (IAccount*, QByteArray)>&);
 

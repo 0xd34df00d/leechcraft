@@ -66,7 +66,7 @@ namespace LC::Azoth::Actions
 				status = EntryStatus { state, StatusChange::GetStatusText (state, text) };
 			else
 			{
-				SetStatusDialog ssd { acc->GetAccountID (), GetDialogParent () };
+				SetStatusDialog ssd { acc->GetAccountID ().ToString (), GetDialogParent () };
 				if (ssd.exec () != QDialog::Accepted)
 					return;
 

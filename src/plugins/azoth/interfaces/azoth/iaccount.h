@@ -149,7 +149,7 @@ namespace Azoth
 		 *
 		 * @return The unique and persistent account ID.
 		 */
-		virtual QByteArray GetAccountID () const = 0;
+		virtual AccountId GetAccountID () const = 0;
 
 		/** @brief Returns the list of actions for the account item.
 		 *

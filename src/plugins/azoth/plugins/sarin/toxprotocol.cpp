@@ -96,7 +96,7 @@ namespace LC::Azoth::Sarin
 		QSettings settings { QSettings::IniFormat, QSettings::UserScope,
 				QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_Sarin_Accounts" };
-		settings.remove (account->GetAccountID ());
+		settings.remove (account->GetAccountID ().ToString ());
 
 		Accounts_.removeOne (account);
 		emit accountRemoved (accObj);
@@ -143,6 +143,6 @@ namespace LC::Azoth::Sarin
 		QSettings settings { QSettings::IniFormat, QSettings::UserScope,
 				QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_Sarin_Accounts" };
-		settings.setValue (account->GetAccountID (), account->Serialize ());
+		settings.setValue (account->GetAccountID ().ToString (), account->Serialize ());
 	}
 }

@@ -33,7 +33,7 @@ namespace LC::Azoth::ChatHistory
 	, AccountsModel_ { { { Qt::DisplayRole, Util::FromField<&AccountInfo::AccountName_> } } }
 	, SortFilter_ (new QSortFilterProxyModel (this))
 	, Toolbar_ (new QToolBar (tr ("Chat history")))
-	, FocusEntry_ { entry ? std::optional<FocusEntry> { { .AccId_ = entry->GetParentAccount ()->GetAccountID (), .ConventionalId_ = entry->GetConventionalID () } } : std::nullopt }
+	, FocusEntry_ { entry ? std::optional { entry->GetGlobalConventionalID () } : std::nullopt }
 	, SearchHandler_ { std::make_unique<SearchHandler> (params.StorageThread_) }
 	{
 		Ui_.setupUi (this);
@@ -186,7 +186,7 @@ namespace LC::Azoth::ChatHistory
 	{
 		co_await Util::AddContext { CoroContext_ };
 
-		const auto& accToFocus = FocusEntry_.transform ([] (const FocusEntry& fe) { return fe.AccId_; }).value_or ({});
+		const auto& accToFocus = FocusEntry_.transform ([] (const auto& id) { return id.AccountId_; });
 
 		const auto accounts = co_await Params_.StorageThread_.Run (&Storage2::GetAccounts);
 
@@ -215,7 +215,7 @@ namespace LC::Azoth::ChatHistory
 		if (Ui_.AccountBox_->currentIndex () != idx)
 			co_return;
 
-		const auto& focusId = FocusEntry_.transform ([] (const FocusEntry& fe) { return fe.ConventionalId_; });
+		const auto& focusId = FocusEntry_.transform ([] (const auto& id) { return id.EntryId_; });
 		std::optional<int> focusIndex;
 
 		QList<DisplayEntry> displayEntries;

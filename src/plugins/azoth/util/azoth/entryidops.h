@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <concepts>
 #include <optional>
 #include <source_location>
 #include <QByteArray>
@@ -16,6 +17,7 @@
 #include "azothutilconfig.h"
 
 class QDataStream;
+class QVariant;
 
 namespace LC::Azoth
 {
@@ -33,6 +35,9 @@ namespace LC::Azoth
 
 	template<typename T>
 	concept AnyEntryId = IsEntryIdType<T>;
+
+	template<typename T>
+	concept AnyId = AnyEntryId<T> || std::same_as<T, AccountId>;
 
 	/** @brief Persistable, versioned, binary form of entry IDs.
 	 *
@@ -116,6 +121,9 @@ namespace LC::Azoth
 	template<AnyEntryId Id>
 	std::optional<Id> Deserialize (QDataStream&, std::source_location = std::source_location::current ());
 
+	template<AnyId Id>
+	std::optional<Id> IdFromVariant (const QVariant&);
+
 	extern template AZOTH_UTIL_API QByteArray SerializeBytes (const EntryPersistentId&);
 	extern template AZOTH_UTIL_API QByteArray SerializeBytes (const EntryConventionalId&);
 	extern template AZOTH_UTIL_API QByteArray SerializeBytes (const GlobalPersistentId&);
@@ -157,4 +165,12 @@ namespace LC::Azoth
 	extern template AZOTH_UTIL_API std::optional<GlobalConventionalId> Deserialize<GlobalConventionalId> (QDataStream&, std::source_location);
 	extern template AZOTH_UTIL_API std::optional<EntryStrongestId> Deserialize<EntryStrongestId> (QDataStream&, std::source_location);
 	extern template AZOTH_UTIL_API std::optional<GlobalStrongestId> Deserialize<GlobalStrongestId> (QDataStream&, std::source_location);
+
+	extern template AZOTH_UTIL_API std::optional<AccountId> IdFromVariant<AccountId> (const QVariant&);
+	extern template AZOTH_UTIL_API std::optional<EntryPersistentId> IdFromVariant<EntryPersistentId> (const QVariant&);
+	extern template AZOTH_UTIL_API std::optional<EntryConventionalId> IdFromVariant<EntryConventionalId> (const QVariant&);
+	extern template AZOTH_UTIL_API std::optional<GlobalPersistentId> IdFromVariant<GlobalPersistentId> (const QVariant&);
+	extern template AZOTH_UTIL_API std::optional<GlobalConventionalId> IdFromVariant<GlobalConventionalId> (const QVariant&);
+	extern template AZOTH_UTIL_API std::optional<EntryStrongestId> IdFromVariant<EntryStrongestId> (const QVariant&);
+	extern template AZOTH_UTIL_API std::optional<GlobalStrongestId> IdFromVariant<GlobalStrongestId> (const QVariant&);
 }

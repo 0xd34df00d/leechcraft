@@ -14,6 +14,15 @@
 
 namespace LC::Util::oral
 {
+	template<>
+	struct ConvertT<Azoth::AccountId>
+		: ConvertVia<
+			Azoth::AccountId,
+			QByteArray,
+			&Azoth::AccountId::ToUtf8,
+			&Azoth::AccountId::FromUtf8
+		> {};
+
 	template<Azoth::IdKind K>
 	struct ConvertT<Azoth::EntryId<K>>
 		: ConvertVia<

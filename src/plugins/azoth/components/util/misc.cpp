@@ -186,16 +186,7 @@ namespace LC::Azoth
 				return;
 			}
 
-		auto protoObj = acc->GetParentProtocol ();
-		auto proto = qobject_cast<IProtocol*> (protoObj);
-		if (!proto)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "parent protocol for"
-					<< acc->GetAccountID ()
-					<< "doesn't implement IProtocol";
-			return;
-		}
-		proto->RemoveAccount (acc->GetQObject ());
+		auto& proto = qobject_ref_cast<IProtocol> (acc->GetParentProtocol ());
+		proto.RemoveAccount (acc->GetQObject ());
 	}
 }

@@ -13,10 +13,26 @@
 #include <QMetaType>
 #include <interfaces/azoth/imessage.h>
 
-namespace LC
+namespace LC::Azoth
 {
-namespace Azoth
-{
+	class AccountId
+	{
+		QString Id_;
+
+		AccountId () = delete;
+		explicit AccountId (const QString& id) : Id_ { id } {}
+	public:
+		static AccountId FromString (const QString& str) { return AccountId { str }; }
+		static AccountId FromUtf8 (const QByteArray& utf8) { return AccountId { QString::fromUtf8 (utf8) }; }
+
+		[[nodiscard]] QString ToString () const { return Id_; }
+		[[nodiscard]] QByteArray ToUtf8 () const { return Id_.toUtf8 (); }
+
+		auto operator<=> (const AccountId&) const = default;
+
+		friend size_t qHash (const AccountId& id, size_t seed = 0) { return qHash (id.Id_, seed); }
+	};
+
 	enum class IdKind : std::uint8_t
 	{
 		Persistent,
@@ -46,14 +62,14 @@ namespace Azoth
 	template<IdKind K>
 	struct GlobalId
 	{
-		QString AccountId_;
+		AccountId AccountId_;
 		EntryId<K> EntryId_;
 
 		auto operator<=> (const GlobalId&) const = default;
 
 		friend size_t qHash (const GlobalId& id, size_t seed = 0) { return qHashMulti (seed, id.AccountId_, id.EntryId_); }
 
-		[[nodiscard]] QString ToString () const { return AccountId_ + ':' + EntryId_.ToString (); }
+		[[nodiscard]] QString ToString () const { return AccountId_.ToString () + ':' + EntryId_.ToString (); }
 	};
 
 	using GlobalPersistentId = GlobalId<IdKind::Persistent>;
@@ -87,13 +103,13 @@ namespace Azoth
 	using EntryStrongestId = StrongestId<EntryId>;
 	using GlobalStrongestId = StrongestId<GlobalId>;
 
-	inline GlobalStrongestId AsGlobalId (const QString& accountId, const EntryStrongestId& entryId)
+	inline GlobalStrongestId AsGlobalId (AccountId accountId, const EntryStrongestId& entryId)
 	{
-		return std::visit ([&accountId] (const auto& id) { return GlobalStrongestId { GlobalId { accountId, id } }; },
+		return std::visit ([&accountId] (const auto& id) { return GlobalStrongestId { GlobalId { std::move (accountId), id } }; },
 				entryId);
 	}
 
-	inline QString GetAccountId (const GlobalStrongestId& strongestId)
+	inline AccountId GetAccountId (const GlobalStrongestId& strongestId)
 	{
 		return std::visit ([] (const auto& id) { return id.AccountId_; }, strongestId.ToVariant ());
 	}
@@ -242,7 +258,6 @@ namespace Azoth
 
 		bool operator== (const EntryStatus& es2) const = default;
 	};
-}
 }
 
 Q_DECLARE_METATYPE (LC::Azoth::ChatPartState)

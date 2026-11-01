@@ -112,7 +112,7 @@ namespace Azoth
 	QByteArray TransferJobManager::GenerateTransferEventId (const OutgoingFileOffer& offer)
 	{
 		const auto accountId = offer.Entry_.GetParentAccount ()->GetAccountID ();
-		return "org.LC.Plugins.Azoth.OutgoingTransferTo/" + accountId + '/' + QByteArray::number (OutgoingJobId_++);
+		return "org.LC.Plugins.Azoth.OutgoingTransferTo/" + accountId.ToUtf8 () + '/' + QByteArray::number (OutgoingJobId_++);
 	}
 
 	void TransferJobManager::HandleJob (ITransferJob *job, const JobContext& context)
@@ -171,7 +171,7 @@ namespace Azoth
 		QByteArray GetTransferEventId (const IncomingOffer& offer)
 		{
 			const auto accountId = offer.Entry_->GetParentAccount ()->GetAccountID ();
-			return "org.LC.Plugins.Azoth.IncomingFileFrom/" + accountId + '/' + QByteArray::number (offer.JobId_);
+			return "org.LC.Plugins.Azoth.IncomingFileFrom/" + accountId.ToUtf8 () + '/' + QByteArray::number (offer.JobId_);
 		}
 	}
 

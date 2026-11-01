@@ -48,7 +48,7 @@ namespace LC::Azoth::History
 	template<EntryKind K>
 	struct Entry
 	{
-		QByteArray AccountId_;
+		AccountId AccountId_;
 		QString AccountName_;
 		EntryConventionalId ConventionalId_;
 

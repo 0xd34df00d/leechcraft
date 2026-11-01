@@ -77,12 +77,7 @@ namespace LC::Azoth::ChatHistory
 		QSortFilterProxyModel *SortFilter_;
 		QToolBar *Toolbar_;
 
-		struct FocusEntry
-		{
-			QByteArray AccId_;
-			EntryConventionalId ConventionalId_;
-		};
-		std::optional<FocusEntry> FocusEntry_;
+		std::optional<GlobalConventionalId> FocusEntry_;
 
 		ChatFindBox *FindBox_;
 		std::unique_ptr<SearchHandler> SearchHandler_;

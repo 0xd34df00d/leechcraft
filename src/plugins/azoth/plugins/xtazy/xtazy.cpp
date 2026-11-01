@@ -142,7 +142,7 @@ namespace Xtazy
 			const auto& eId = entry->GetEntryID ();
 			const auto& accId = entry->GetParentAccount ()->GetAccountID ();
 			QTimer::singleShot (0, this,
-					[this, eId, accId, songStr] { AzothProxy_->OpenChat (eId, accId, songStr); });
+					[this, eId, accId, songStr] { AzothProxy_->OpenChat (eId, accId.ToUtf8 (), songStr); });
 
 			return true;
 		}

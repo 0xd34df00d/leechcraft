@@ -104,7 +104,7 @@ namespace LC::Azoth::Acetamide
 		return
 		{
 			{ Lits::HumanReadableName, name },
-			{ Lits::AccountID, SelectedAccount_->GetAccountID () },
+			{ Lits::AccountID, SelectedAccount_->GetAccountID ().ToUtf8 () },
 			{ Lits::Nickname, GetNickname () },
 			{ Lits::Channel, GetChannel () },
 			{ Lits::ChannelPassword, GetChannelPassword () },

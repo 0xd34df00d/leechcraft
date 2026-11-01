@@ -163,7 +163,7 @@ namespace LC::Azoth::Acetamide
 		return
 		{
 			{ Lits::HumanReadableName, name },
-			{ Lits::AccountID, ISH_->GetAccount ()->GetAccountID () },
+			{ Lits::AccountID, ISH_->GetAccount ()->GetAccountID ().ToUtf8 () },
 			{ Lits::Nickname, ISH_->GetNickName () },
 			{ Lits::Server, ISH_->GetServerOptions ().ServerName_ },
 			{ Lits::Port, ISH_->GetServerOptions ().ServerPort_ },

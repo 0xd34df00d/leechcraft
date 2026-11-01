@@ -54,7 +54,7 @@ namespace OTRoid
 		{
 			const auto entryId = Deserialize<EntryStrongestId> (QString::fromUtf8 (recipient));
 			return entryId ?
-					static_cast<OtrHandler*> (opData)->IsLoggedIn (QString::fromUtf8 (accName), *entryId) :
+					static_cast<OtrHandler*> (opData)->IsLoggedIn (AccountId::FromUtf8 (accName), *entryId) :
 					UnknownUser;
 		}
 
@@ -66,7 +66,7 @@ namespace OTRoid
 			if (!entryId)
 				return;
 
-			if (const auto entry = plugin->GetEntry (QString::fromUtf8 (accName), *entryId))
+			if (const auto entry = plugin->GetEntry (AccountId::FromUtf8 (accName), *entryId))
 				entry->SendMessage ({
 							.Body_ = QString::fromUtf8 (msg),
 							.AllowServerArchival_ = false,
@@ -117,7 +117,7 @@ namespace OTRoid
 			if (!entryId)
 				return;
 
-			const auto& contact = plugin->GetVisibleEntryName (QString::fromUtf8 (context->accountname), *entryId);
+			const auto& contact = plugin->GetVisibleEntryName (AccountId::FromUtf8 (context->accountname), *entryId);
 
 			QString msg;
 			switch (event)
@@ -199,9 +199,10 @@ namespace OTRoid
 			if (!entryId)
 				return;
 
+			const auto& accountId = AccountId::FromUtf8 (accountname);
 			const auto& msg = OtrHandler::tr ("You have received a new fingerprint from %1: %2")
-					.arg (plugin->GetVisibleEntryName (QString::fromUtf8 (accountname), *entryId), hrHash);
-			plugin->NotifyConvFlow (QString::fromUtf8 (accountname), *entryId, msg);
+					.arg (plugin->GetVisibleEntryName (accountId, *entryId), hrHash);
+			plugin->NotifyConvFlow (accountId, *entryId, msg);
 		}
 
 		void HandleGoneSecure (void *opData, ConnContext *ctx)
@@ -245,7 +246,7 @@ namespace OTRoid
 		OtrOps_.account_name = [] (void *opData, const char *acc, const char*) -> const char*
 				{
 					const auto& name = static_cast<OtrHandler*> (opData)->
-							GetAccountName (QString::fromUtf8 (acc)).toUtf8 ();
+							GetAccountName (AccountId::FromUtf8 (acc)).toUtf8 ();
 
 					const char *orig = name.constData ();
 					char *result = static_cast<char*> (malloc (name.size () + 1));
@@ -292,7 +293,7 @@ namespace OTRoid
 		const auto err = otrl_message_sending (UserState_,
 				&OtrOps_,
 				this,
-				acc->GetAccountID ().constData (),
+				acc->GetAccountID ().ToUtf8 ().constData (),
 				proto->GetProtocolID ().constData (),
 				SerializeString (entry.GetStrongestID ()).toUtf8 ().constData (),
 				OTRL_INSTAG_BEST,
@@ -364,7 +365,7 @@ namespace OTRoid
 		char *newMsg = 0;
 		OtrlTLV *tlvs = 0;
 		int ignore = otrl_message_receiving (UserState_, &OtrOps_, this,
-				acc->GetAccountID ().constData (),
+				acc->GetAccountID ().ToUtf8 ().constData (),
 				proto->GetProtocolID ().constData (),
 				SerializeString (entry->GetStrongestID ()).toUtf8 ().constData (),
 				msg->GetBody ().toUtf8 ().constData (),
@@ -455,7 +456,7 @@ namespace OTRoid
 		return UserState_;
 	}
 
-	int OtrHandler::IsLoggedIn (const QString& accId, const EntryStrongestId& entryId)
+	int OtrHandler::IsLoggedIn (const AccountId& accId, const EntryStrongestId& entryId)
 	{
 		if (const auto entry = GetEntry (accId, entryId))
 			return entry->Variants ().isEmpty () ? 0 : 1;
@@ -465,10 +466,10 @@ namespace OTRoid
 	void OtrHandler::NotifyConvFlow (const ConnContext *ctx, const QString& msg)
 	{
 		if (const auto entryId = Deserialize<EntryStrongestId> (QString::fromUtf8 (ctx->username)))
-			NotifyConvFlow (QString::fromUtf8 (ctx->accountname), *entryId, msg);
+			NotifyConvFlow (AccountId::FromUtf8 (ctx->accountname), *entryId, msg);
 	}
 
-	void OtrHandler::NotifyConvFlow (const QString& accId, const EntryStrongestId& entryId, const QString& msg)
+	void OtrHandler::NotifyConvFlow (const AccountId& accId, const EntryStrongestId& entryId, const QString& msg)
 	{
 		if (const auto entry = GetEntry (accId, entryId))
 			NotifyConvFlow (*entry, msg);
@@ -490,9 +491,9 @@ namespace OTRoid
 		CoreProxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (title, text, prio));
 	}
 
-	QString OtrHandler::GetAccountName (const QString& accId)
+	QString OtrHandler::GetAccountName (const AccountId& accId)
 	{
-		QObject *accObj = AzothProxy_->GetAccount (accId);
+		QObject *accObj = AzothProxy_->GetAccount (accId.ToString ());
 		IAccount *acc = qobject_cast<IAccount*> (accObj);
 		if (!acc)
 		{
@@ -506,12 +507,12 @@ namespace OTRoid
 		return acc->GetAccountName ();
 	}
 
-	ICLEntry* OtrHandler::GetEntry (const QString& accId, const EntryStrongestId& entryId)
+	ICLEntry* OtrHandler::GetEntry (const AccountId& accId, const EntryStrongestId& entryId)
 	{
 		return AzothProxy_->GetEntry (AsGlobalId (accId, entryId));
 	}
 
-	QString OtrHandler::GetVisibleEntryName (const QString& accId, const EntryStrongestId& entryId)
+	QString OtrHandler::GetVisibleEntryName (const AccountId& accId, const EntryStrongestId& entryId)
 	{
 		const auto entry = GetEntry (accId, entryId);
 		if (!entry)
@@ -528,7 +529,7 @@ namespace OTRoid
 		if (IsGenerating_)
 			return;
 
-		const auto& hrAccName = GetAccountName (QString::fromUtf8 (accName));
+		const auto& hrAccName = GetAccountName (AccountId::FromUtf8 (accName));
 		if (confirm && QMessageBox::question (nullptr,
 				"Azoth OTRoid",
 				tr ("Private keys for account %1 need to be generated. This takes quite some "
@@ -604,7 +605,7 @@ namespace OTRoid
 		if (!entryId)
 			return;
 
-		const auto entry = GetEntry (QString::fromUtf8 (context->accountname), *entryId);
+		const auto entry = GetEntry (AccountId::FromUtf8 (context->accountname), *entryId);
 		if (!entry)
 		{
 			qWarning () << "no such entry" << entryId << context->accountname;
@@ -682,9 +683,9 @@ namespace OTRoid
 		WriteKeys (UserState_, GetOTRFilename ("privkey"));
 	}
 
-	void OtrHandler::generateKeys (const QString& acc, const QString& proto)
+	void OtrHandler::generateKeys (const AccountId& acc, const QString& proto)
 	{
-		CreatePrivkey (acc.toUtf8 ().constData (), proto.toUtf8 ().constData (), false);
+		CreatePrivkey (acc.ToUtf8 ().constData (), proto.toUtf8 ().constData (), false);
 	}
 
 	QByteArray OtrHandler::GetOTRFilename (const QString& fname) const
@@ -761,6 +762,7 @@ namespace OTRoid
 	{
 		const auto acc = entry->GetParentAccount ();
 		const auto& accId = acc->GetAccountID ();
+		const auto& accIdUtf8 = accId.ToUtf8 ();
 
 		auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 		const auto& protoId = proto->GetProtocolID ();
@@ -768,7 +770,7 @@ namespace OTRoid
 		if (!enable)
 		{
 			otrl_message_disconnect (UserState_, &OtrOps_, this,
-					accId.constData (), protoId.constData (),
+					accIdUtf8.constData (), protoId.constData (),
 					SerializeString (entry->GetStrongestID ()).toUtf8 ().constData (), OTRL_INSTAG_BEST);
 			NotifyConvFlow (*entry, tr ("Private conversation closed"));
 			return;
@@ -778,10 +780,10 @@ namespace OTRoid
 
 		char fingerprint [OTRL_PRIVKEY_FPRINT_HUMAN_LEN];
 		if (!otrl_privkey_fingerprint (UserState_, fingerprint,
-				accId.constData (), protoId.constData ()))
-			CreatePrivkey (accId.constData (), protoId.constData());
+				accIdUtf8.constData (), protoId.constData ()))
+			CreatePrivkey (accIdUtf8.constData (), protoId.constData());
 
-		std::shared_ptr<char> msg (otrl_proto_default_query_msg (accId.constData (),
+		std::shared_ptr<char> msg (otrl_proto_default_query_msg (accIdUtf8.constData (),
 					OTRL_POLICY_DEFAULT), free);
 		entry->SendMessage ({ .Body_ = QString::fromUtf8 (msg.get ()), .Hidden_ = true });
 	}
@@ -815,7 +817,7 @@ namespace OTRoid
 
 		const auto context = otrl_context_find (UserState_,
 				SerializeString (entry->GetStrongestID ()).toUtf8 ().constData (),
-				acc->GetAccountID ().constData (),
+				acc->GetAccountID ().ToUtf8 ().constData (),
 				proto->GetProtocolID ().constData (),
 				OTRL_INSTAG_BEST,
 				true,

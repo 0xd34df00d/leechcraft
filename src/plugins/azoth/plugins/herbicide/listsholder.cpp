@@ -23,16 +23,6 @@ namespace Herbicide
 		ReloadLists (nullptr);
 	}
 
-	namespace
-	{
-		QByteArray GetID (IAccount *acc)
-		{
-			return acc ?
-					acc->GetAccountID () :
-					QByteArray {};
-		}
-	}
-
 	QSet<QRegularExpression> ListsHolder::GetWhitelist (IAccount *acc)
 	{
 		return PreloadList (acc).White_;
@@ -63,19 +53,23 @@ namespace Herbicide
 
 	void ListsHolder::ReloadLists (IAccount *acc)
 	{
-		auto& listInfo = Acc2ListInfo_ [GetID (acc)];
-
+		auto& listInfo = acc ? Acc2ListInfo_ [acc->GetAccountID ()] : GeneralListInfo_.emplace ();
 		listInfo.White_ = GetRegexps (PropGetter_ (acc, "WhitelistRegexps"));
 		listInfo.Black_ = GetRegexps (PropGetter_ (acc, "BlacklistRegexps"));
 	}
 
 	ListsHolder::ListInfo& ListsHolder::PreloadList (IAccount *acc)
 	{
-		const auto& id = GetID (acc);
-		if (!Acc2ListInfo_.contains (id))
-			ReloadLists (acc);
+		if (!acc)
+		{
+			if (!GeneralListInfo_)
+				ReloadLists (nullptr);
+			return *GeneralListInfo_;
+		}
 
-		return Acc2ListInfo_ [id];
+		if (!Acc2ListInfo_.contains (acc->GetAccountID ()))
+			ReloadLists (acc);
+		return Acc2ListInfo_ [acc->GetAccountID ()];
 	}
 }
 }

@@ -9,6 +9,7 @@
 #include "entryidopstest.h"
 #include <QRegularExpression>
 #include <QTest>
+#include <QVariant>
 #include <util/azoth/entryidops.h>
 #include <util/azoth/util.h>
 
@@ -23,6 +24,14 @@ namespace LC::Azoth
 
 		static_assert (!DeserializableFromCString<EntryStrongestId>);
 
+		template<AnyId Id>
+		void CheckVariantRoundTrip (const Id& id)
+		{
+			const auto& fromVariant = IdFromVariant<Id> (QVariant::fromValue (id));
+			QVERIFY (fromVariant);
+			QCOMPARE (*fromVariant, id);
+		}
+
 		template<AnyEntryId Id>
 		void CheckRoundTrip (const Id& id)
 		{
@@ -33,6 +42,8 @@ namespace LC::Azoth
 			const auto& fromString = Deserialize<Id> (SerializeString (id));
 			QVERIFY (fromString);
 			QCOMPARE (*fromString, id);
+
+			CheckVariantRoundTrip (id);
 		}
 
 		template<AnyEntryId Id>
@@ -48,17 +59,19 @@ namespace LC::Azoth
 		QFETCH (QString, account);
 		QFETCH (QString, entry);
 
+		const auto accountId = AccountId::FromString (account);
 		const auto persistent = EntryPersistentId::FromString (entry);
 		const auto conventional = EntryConventionalId::FromString (entry);
 
+		CheckVariantRoundTrip (accountId);
 		CheckRoundTrip (persistent);
 		CheckRoundTrip (conventional);
-		CheckRoundTrip (GlobalPersistentId { account, persistent });
-		CheckRoundTrip (GlobalConventionalId { account, conventional });
+		CheckRoundTrip (GlobalPersistentId { accountId, persistent });
+		CheckRoundTrip (GlobalConventionalId { accountId, conventional });
 		CheckRoundTrip (EntryStrongestId { persistent });
 		CheckRoundTrip (EntryStrongestId { conventional });
-		CheckRoundTrip (GlobalStrongestId { GlobalPersistentId { account, persistent } });
-		CheckRoundTrip (GlobalStrongestId { GlobalConventionalId { account, conventional } });
+		CheckRoundTrip (GlobalStrongestId { GlobalPersistentId { accountId, persistent } });
+		CheckRoundTrip (GlobalStrongestId { GlobalConventionalId { accountId, conventional } });
 	}
 
 	void EntryIdOpsTest::testRoundTrip_data ()
@@ -89,14 +102,15 @@ namespace LC::Azoth
 
 	void EntryIdOpsTest::testPersistedStringFormat ()
 	{
+		const auto romeo = AccountId::FromString ("romeo");
 		const auto persistent = EntryPersistentId::FromString ("juliet@capulet.lit");
 		const auto conventional = EntryConventionalId::FromString ("juliet@capulet.lit");
 
 		QCOMPARE (SerializeString (persistent), "juliet@capulet.lit");
-		QCOMPARE (SerializeString (GlobalPersistentId { "romeo", persistent }), "5:romeo:juliet@capulet.lit");
+		QCOMPARE (SerializeString (GlobalPersistentId { romeo, persistent }), "5:romeo:juliet@capulet.lit");
 		QCOMPARE (SerializeString (EntryStrongestId { persistent }), "P:juliet@capulet.lit");
 		QCOMPARE (SerializeString (EntryStrongestId { conventional }), "C:juliet@capulet.lit");
-		QCOMPARE (SerializeString (GlobalStrongestId { GlobalPersistentId { "romeo", persistent } }), "P:5:romeo:juliet@capulet.lit");
+		QCOMPARE (SerializeString (GlobalStrongestId { GlobalPersistentId { romeo, persistent } }), "P:5:romeo:juliet@capulet.lit");
 	}
 
 	void EntryIdOpsTest::testMalformedStrings ()
@@ -118,7 +132,7 @@ namespace LC::Azoth
 
 	void EntryIdOpsTest::testMalformedBytes ()
 	{
-		const GlobalPersistentId globalId { "romeo", EntryPersistentId::FromString ("juliet@capulet.lit") };
+		const GlobalPersistentId globalId { AccountId::FromString ("romeo"), EntryPersistentId::FromString ("juliet@capulet.lit") };
 		const GlobalStrongestId id { globalId };
 
 		CheckRejected<GlobalStrongestId> (QByteArray {});
@@ -136,5 +150,18 @@ namespace LC::Azoth
 		auto badKind = nested;
 		badKind [nested.size () - inner.size () - 1] = 7;
 		CheckRejected<GlobalStrongestId> (badKind);
+	}
+
+	void EntryIdOpsTest::testVariantTypeMismatch ()
+	{
+		const auto romeo = AccountId::FromString ("romeo");
+		const auto persistent = EntryPersistentId::FromString ("juliet@capulet.lit");
+
+		QVERIFY (!IdFromVariant<EntryPersistentId> (QVariant {}));
+		QVERIFY (!IdFromVariant<EntryPersistentId> (QVariant { persistent.ToString () }));
+		QVERIFY (!IdFromVariant<EntryPersistentId> (QVariant { SerializeBytes (persistent) }));
+		QVERIFY (!IdFromVariant<EntryConventionalId> (QVariant::fromValue (persistent)));
+		QVERIFY (!IdFromVariant<EntryStrongestId> (QVariant::fromValue (persistent)));
+		QVERIFY (!IdFromVariant<AccountId> (QVariant { romeo.ToString () }));
 	}
 }

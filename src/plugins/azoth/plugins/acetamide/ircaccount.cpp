@@ -98,9 +98,9 @@ namespace LC::Azoth::Acetamide
 		emit accountSettingsChanged ();
 	}
 
-	QByteArray IrcAccount::GetAccountID () const
+	AccountId IrcAccount::GetAccountID () const
 	{
-		return AccountID_;
+		return AccountId::FromUtf8 (AccountID_);
 	}
 
 	void IrcAccount::SetAccountID (const QString& id)
@@ -216,7 +216,7 @@ namespace LC::Azoth::Acetamide
 					return QVariantMap
 					{
 						{ Lits::HumanReadableName, name },
-						{ Lits::AccountID, GetAccountID () },
+						{ Lits::AccountID, GetAccountID ().ToUtf8 () },
 						{ Lits::Server, channel.ServerName_ },
 						{ Lits::Port, channel.ServerPort_ },
 						{ Lits::ServerPassword, channel.ServerPassword_ },

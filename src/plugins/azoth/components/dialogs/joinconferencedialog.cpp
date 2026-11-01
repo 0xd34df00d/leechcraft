@@ -14,6 +14,7 @@
 #include "interfaces/azoth/imucjoinwidget.h"
 #include "interfaces/azoth/isupportbookmarks.h"
 #include "interfaces/azoth/imucprotocol.h"
+#include "util/azoth/util.h"
 #include "xmlsettingsmanager.h"
 
 namespace LC
@@ -41,11 +42,7 @@ namespace Azoth
 				const auto joiner = mucProto->GetMUCJoinWidget ();
 				if (!qobject_cast<IMUCJoinWidget*> (joiner))
 				{
-					qWarning () << Q_FUNC_INFO
-							<< "joiner widget for account"
-							<< acc->GetAccountID ()
-							<< "is not a IMUCJoinWidget"
-							<< joiner;
+					qWarning () << joiner << "of" << acc->GetAccountID () << "is not a IMUCJoinWidget";
 					continue;
 				}
 				Proto2Joiner_ [proto] = joiner;
@@ -72,7 +69,7 @@ namespace Azoth
 						.arg (proto->GetProtocolName ()),
 					QVariant::fromValue<QObject*> (acc->GetQObject ()));
 
-			const auto& key = "JoinHistory/" + acc->GetAccountID ();
+			const auto& key = "JoinHistory/" + acc->GetAccountID ().ToString ();
 			for (const auto& var : XmlSettingsManager::Instance ().GetRawValue (key).toList ())
 			{
 				const auto& map = var.toMap ();
@@ -129,9 +126,8 @@ namespace Azoth
 		const auto& data = imjw->GetIdentifyingData ();
 		if (const auto acc = qobject_cast<IAccount*> (accObj))
 		{
-			const auto& key = "JoinHistory/" + acc->GetAccountID ();
-			QVariantList list = XmlSettingsManager::Instance ()
-					.GetRawValue (key).toList ();
+			const auto& key = "JoinHistory/" + acc->GetAccountID ().ToString ();
+			QVariantList list = XmlSettingsManager::Instance ().GetRawValue (key).toList ();
 
 			// Using a range-based for loop over a container being modified is OK
 			// as the loop is terminated once the container is modified.
@@ -251,7 +247,7 @@ namespace Azoth
 
 	void JoinConferenceDialog::FillWidget (const QVariantMap& map)
 	{
-		const QByteArray& id = map ["AccountID"].toByteArray ();
+		const auto id = AccountId::FromUtf8 (map ["AccountID"].toByteArray ());
 
 		bool accFound = false;
 		for (int i = 0; i < Ui_.AccountBox_->count (); ++i)

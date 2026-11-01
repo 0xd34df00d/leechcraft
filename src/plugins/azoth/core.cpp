@@ -57,6 +57,7 @@
 #include "interfaces/azoth/ihistoryplugin.h"
 #include "interfaces/azoth/icanhavesslerrors.h"
 #include "interfaces/azoth/ichatstyleresourcesource.h"
+#include "util/azoth/entryidops.h"
 #include "util/azoth/util.h"
 
 #ifdef ENABLE_CRYPT
@@ -542,13 +543,14 @@ namespace LC::Azoth
 		return result;
 	}
 
+	// TODO change to AccountId
 	IAccount* Core::GetAccount (const QByteArray& id) const
 	{
 		for (const auto proto : GetProtocols ())
 			for (const auto accObj : proto->GetRegisteredAccounts ())
 			{
 				const auto acc = qobject_cast<IAccount*> (accObj);
-				if (acc && acc->GetAccountID () == id)
+				if (acc && acc->GetAccountID ().ToUtf8 () == id)
 					return acc;
 			}
 
@@ -1538,7 +1540,7 @@ namespace LC::Azoth
 
 	void Core::saveAccountVisibility (IAccount *account)
 	{
-		const auto& id = "ShowAccount_" + account->GetAccountID ();
+		const auto& id = "ShowAccount_" + account->GetAccountID ().ToUtf8 ();
 		XmlSettingsManager::Instance ().setProperty (id, account->IsShownInRoster ());
 	}
 
@@ -1566,7 +1568,7 @@ namespace LC::Azoth
 	{
 		std::optional<EntryStatus> LoadSavedStatus (IAccount *account)
 		{
-			const auto& var = XmlSettingsManager::Instance ().property (account->GetAccountID ());
+			const auto& var = XmlSettingsManager::Instance ().property (account->GetAccountID ().ToUtf8 ());
 			if (var.isNull () || !var.canConvert<QByteArray> ())
 				return {};
 
@@ -1600,7 +1602,7 @@ namespace LC::Azoth
 		const auto& accountId = account->GetAccountID ();
 		const auto& accountName = account->GetAccountName ();
 
-		const auto& showKey = "ShowAccount_" + accountId.toStdString ();
+		const auto& showKey = "ShowAccount_" + accountId.ToUtf8 ();
 		const bool show = XmlSettingsManager::Instance ().Property (showKey, true).toBool ();
 		account->SetShownInRoster (show);
 
@@ -1688,7 +1690,7 @@ namespace LC::Azoth
 						QDataStream stream (&serializedStatus, QIODevice::WriteOnly);
 						stream << status;
 					}
-					XmlSettingsManager::Instance ().setProperty (account->GetAccountID (), serializedStatus);
+					XmlSettingsManager::Instance ().setProperty (account->GetAccountID ().ToUtf8 (), serializedStatus);
 
 					if (const auto item = GetAccountItem (account))
 						ItemIconManager_->SetIcon (item, ResourcesManager::Instance ().GetIconPathForState (status.State_).get ());

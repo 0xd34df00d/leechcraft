@@ -44,7 +44,7 @@ namespace Herbicide
 				QCoreApplication::applicationName () + "_Azoth_Herbicide"
 			};
 
-			return settings.childGroups ().contains (acc->GetAccountID ());
+			return settings.childGroups ().contains (acc->GetAccountID ().ToString ());
 		}
 
 		QVariant GetAccountProperty (IAccount *acc, const QByteArray& name)
@@ -55,13 +55,11 @@ namespace Herbicide
 				QCoreApplication::applicationName () + "_Azoth_Herbicide"
 			};
 
-			const auto& accId = acc ?
-					acc->GetAccountID () :
-					QByteArray {};
-			if (!acc || !settings.childGroups ().contains (accId))
+			const QString accIdStr = acc ? acc->GetAccountID ().ToString () : QString {};
+			if (!acc || !settings.childGroups ().contains (accIdStr))
 				return settings.value (name);
 
-			settings.beginGroup (accId);
+			settings.beginGroup (accIdStr);
 			const auto& value = settings.value (name);
 			settings.endGroup ();
 
@@ -146,39 +144,30 @@ namespace Herbicide
 		QList<QAction*> result;
 
 		const auto configAction = new QAction { GetIcon (), tr ("Configure antispam settings..."), this };
-
-		new Util::SlotClosure<Util::NoDeletePolicy>
-		{
-			[this, acc] { ShowAccountAntispamConfig (acc); },
-			configAction,
-			SIGNAL (triggered ()),
-			configAction
-		};
+		connect (configAction,
+				&QAction::triggered,
+				this,
+				[this, acc] { ShowAccountAntispamConfig (acc); });
 
 		result << configAction;
 
 		if (HasSpecificSettings (acc))
 		{
 			const auto removeAction = new QAction { tr ("Remove account-specific antispam settings"), this };
-
-			new Util::SlotClosure<Util::NoDeletePolicy>
-			{
-				[this, acc]
-				{
-					QSettings settings
+			connect (removeAction,
+					&QAction::triggered,
+					this,
+					[this, acc]
 					{
-						QCoreApplication::organizationName (),
-						QCoreApplication::applicationName () + "_Azoth_Herbicide"
-					};
+						QSettings settings
+						{
+							QCoreApplication::organizationName (),
+							QCoreApplication::applicationName () + "_Azoth_Herbicide"
+						};
 
-					settings.remove (acc->GetAccountID ());
-					ListsHolder_->ReloadLists (acc);
-				},
-				removeAction,
-				SIGNAL (triggered ()),
-				removeAction
-			};
-
+						settings.remove (acc->GetAccountID ().ToString ());
+						ListsHolder_->ReloadLists (acc);
+					});
 			result << removeAction;
 		}
 
@@ -279,13 +268,13 @@ namespace Herbicide
 	{
 		class AccountSettingsManager : public Util::BaseSettingsManager
 		{
-			const QByteArray GroupName_;
+			const QString GroupName_;
 		public:
 			AccountSettingsManager (IAccount *acc, QObject *parent)
-			: Util::BaseSettingsManager { parent }
-			, GroupName_ { acc->GetAccountID () }
+			: BaseSettingsManager { parent }
+			, GroupName_ { acc->GetAccountID ().ToString () }
 			{
-				Util::BaseSettingsManager::Init ();
+				Init ();
 			}
 		protected:
 			QSettings_ptr MakeSettings () const override

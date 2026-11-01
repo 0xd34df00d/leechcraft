@@ -160,11 +160,11 @@ namespace Herbicide
 
 	void Logger::LogEvent (Logger::Event event, const ICLEntry *entry, const QString& descr)
 	{
-		const QString accId { entry->GetParentAccount ()->GetAccountID () };
+		const auto accId = entry->GetParentAccount ()->GetAccountID ();
 		const auto& entryId = entry->GetEntryID ();
 
 		const auto& maybeAccPKey = AdaptedAccount_->SelectOne (sph::fields<&AccountRecord::PKey_>,
-				sph::f<&AccountRecord::AccountID_> == accId);
+				sph::f<&AccountRecord::AccountID_> == accId.ToString ());
 		const auto accPKey = maybeAccPKey ?
 				*maybeAccPKey :
 				InsertAccount (entry->GetParentAccount ());
@@ -182,7 +182,7 @@ namespace Herbicide
 	{
 		return AdaptedAccount_->Insert ({
 				{},
-				QString { acc->GetAccountID () },
+				acc->GetAccountID ().ToString (),
 				acc->GetAccountName ()
 			});
 	}

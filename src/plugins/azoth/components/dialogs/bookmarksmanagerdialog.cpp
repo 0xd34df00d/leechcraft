@@ -180,11 +180,11 @@ namespace Azoth
 	{
 		BMModel_->clear ();
 		const auto supBms = qobject_cast<ISupportBookmarks*> (CurrentAccount_->GetQObject ());
-		const QByteArray& accId = CurrentAccount_->GetAccountID ();
+		const auto& accId = CurrentAccount_->GetAccountID ();
 		for (const auto& var : supBms->GetBookmarkedMUCs ())
 		{
 			const auto& map = var.toMap ();
-			if (map.value ("AccountID").toByteArray () != accId)
+			if (AccountId::FromUtf8 (map.value ("AccountID").toByteArray ()) != accId)
 				continue;
 
 			const auto& name = map.value ("HumanReadableName").toString ();

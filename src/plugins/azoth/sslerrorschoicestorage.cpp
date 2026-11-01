@@ -15,6 +15,7 @@
 #include <util/db/dblock.h>
 #include <util/db/oral/oral.h>
 #include <util/db/oral/migrate.h>
+#include "util/azoth/entryidoral.h"
 
 namespace LC
 {
@@ -22,7 +23,7 @@ namespace Azoth
 {
 	struct SslErrorsChoiceStorage::Record
 	{
-		QByteArray AccountID_;
+		AccountId AccountID_;
 		QSslError::SslError Error_;
 		SslErrorsChoiceStorage::Action Action_;
 
@@ -70,15 +71,13 @@ namespace Azoth
 
 	namespace sph = Util::oral::sph;
 
-	auto SslErrorsChoiceStorage::GetAction (const QByteArray& id,
-			QSslError::SslError err) const -> std::optional<Action>
+	auto SslErrorsChoiceStorage::GetAction (const AccountId& id, QSslError::SslError err) const -> std::optional<Action>
 	{
 		return AdaptedRecord_->SelectOne (sph::fields<&Record::Action_>,
 				sph::f<&Record::AccountID_> == id && sph::f<&Record::Error_> == err);
 	}
 
-	void SslErrorsChoiceStorage::SetAction (const QByteArray& id,
-			QSslError::SslError err, Action act)
+	void SslErrorsChoiceStorage::SetAction (const AccountId& id, QSslError::SslError err, Action act)
 	{
 		AdaptedRecord_->Insert ({ id, err, act },
 				Util::oral::InsertAction::Replace::Whole);

@@ -24,6 +24,7 @@ extern "C"
 #include <interfaces/azoth/iclentry.h>
 #include <util/models/lazyrootmixin.h>
 #include <util/azoth/entryidops.h>
+#include <util/azoth/util.h>
 #include "util.h"
 
 namespace LC
@@ -43,21 +44,21 @@ namespace OTRoid
 
 	namespace
 	{
-		QStandardItem* MakeAccountItem (IProxyObject *proxy, const QString& accId)
+		QStandardItem* MakeAccountItem (IProxyObject *proxy, const AccountId& accId)
 		{
-			const auto acc = qobject_cast<IAccount*> (proxy->GetAccount (accId));
+			const auto acc = qobject_cast<IAccount*> (proxy->GetAccount (accId.ToString ()));
 			if (!acc)
 				qWarning () << "no account for" << accId;
 
 			const auto& icon = acc ? GetAccountIcon (acc) : QIcon::fromTheme (QIcon::ThemeIcon::DialogWarning);
-			const auto item = new QStandardItem { icon, acc ? acc->GetAccountName () : accId };
+			const auto item = new QStandardItem { icon, acc ? acc->GetAccountName () : accId.ToString () };
 			item->setEditable (false);
 			item->setData (FPManager::TypeAcc, FPManager::RoleType);
 			return item;
 		}
 
 		QList<QStandardItem*> MakeEntryItems (IProxyObject *proxy,
-				const QString& accId, const QString& entryIdStr, const QString& protoId, const QIcon& defaultAvatar)
+				const AccountId& accId, const QString& entryIdStr, const QString& protoId, const QIcon& defaultAvatar)
 		{
 			const auto& entryId = Deserialize<EntryStrongestId> (entryIdStr);
 			const auto entry = entryId ? proxy->GetEntry (AsGlobalId (accId, *entryId)) : nullptr;
@@ -73,7 +74,7 @@ namespace OTRoid
 				item->setEditable (false);
 				item->setData (FPManager::TypeEntry, FPManager::RoleType);
 				item->setData (entryIdStr, FPManager::RoleEntryId);
-				item->setData (accId, FPManager::RoleAccId);
+				item->setData (QVariant::fromValue (accId), FPManager::RoleAccId);
 				item->setData (protoId, FPManager::RoleProtoId);
 			}
 
@@ -106,7 +107,7 @@ namespace OTRoid
 			if (context->their_instance != OTRL_INSTAG_MASTER)
 				continue;
 
-			const auto& accStr = QString::fromUtf8 (context->accountname);
+			const auto& accStr = AccountId::FromUtf8 (context->accountname);
 			const auto& entryIdStr = QString::fromUtf8 (context->username);
 			const auto& protoStr = QString::fromUtf8 (context->protocol);
 
@@ -212,12 +213,18 @@ namespace OTRoid
 
 			const auto parent = item->parent ();
 
+			const auto& accId = IdFromVariant<AccountId> (parent->data (RoleAccId));
+			if (!accId)
+			{
+				qWarning () << "no account ID for index' parent" << index;
+				continue;
+			}
+
 			const auto& entryId = parent->data (RoleEntryId).toString ().toUtf8 ();
-			const auto& accId = parent->data (RoleAccId).toString ().toUtf8 ();
 			const auto& protoId = parent->data (RoleProtoId).toString ().toUtf8 ();
 			const auto context = otrl_context_find (UserState_,
 					entryId.constData (),
-					accId.constData (),
+					accId->ToUtf8 ().constData (),
 					protoId.constData (),
 					OTRL_INSTAG_BEST,
 					false, nullptr, nullptr, nullptr);

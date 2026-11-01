@@ -48,7 +48,7 @@ namespace OTRoid
 			QStandardItem *AccItem_ = nullptr;
 			QHash<QString, EntryState> Entries_;
 		};
-		QHash<QString, AccState> Account2User2Fp_;
+		QHash<AccountId, AccState> Account2User2Fp_;
 
 		enum Column
 		{
