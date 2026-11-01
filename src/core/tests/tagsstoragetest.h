@@ -18,6 +18,7 @@ namespace LC
 	private slots:
 		void testIdHoldsSeveralNames ();
 		void testReplaceName ();
+		void testUnparsableIdsAreSkipped ();
 		void testLegacyTableIsMigrated ();
 	};
 }

@@ -11,7 +11,6 @@
 #include <util/db/oral/oral.h>
 #include <util/db/dblock.h>
 #include <util/db/util.h>
-#include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 
 namespace LC
@@ -82,8 +81,18 @@ namespace LC
 
 	QList<std::pair<TagsStorage::Id, QString>> TagsStorage::GetAllTags () const
 	{
-		return Util::Map (Record_->Select (),
-				[] (const Record& rec) { return std::pair { QUuid { QString::fromLatin1 (rec.Id_) }, *rec.Name_ }; });
+		QList<std::pair<Id, QString>> result;
+		for (const auto& rec : Record_->Select ())
+		{
+			const QUuid id { QString::fromLatin1 (rec.Id_) };
+			if (id.isNull ())
+			{
+				qWarning () << "skipping tag with an unparseable id" << *rec.Id_ << *rec.Name_;
+				continue;
+			}
+			result.emplaceBack (id, *rec.Name_);
+		}
+		return result;
 	}
 
 	// TODO drop this Nov 2027

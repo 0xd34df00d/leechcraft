@@ -134,6 +134,25 @@ namespace LC
 				Sorted ({ { A, "y"_qs }, { A, "z"_qs }, { B, "y"_qs }, { B, "z"_qs } }));
 	}
 
+	void TagsStorageTest::testUnparsableIdsAreSkipped ()
+	{
+		QTemporaryDir dir;
+		const auto& path = dir.filePath ("core.db"_qs);
+		{
+			TagsStorage storage { path };
+			storage.AddTag (A, "kept"_qs);
+		}
+		QVERIFY (WithConnection (path,
+				[] (const QSqlDatabase& db)
+				{
+					QSqlQuery query { db };
+					return query.exec ("INSERT INTO TagNames (Id, Name) VALUES ('garbage', 'lost')"_qs);
+				}));
+
+		TagsStorage reopened { path };
+		QCOMPARE (reopened.GetAllTags (), (Rows { { A, "kept"_qs } }));
+	}
+
 	void TagsStorageTest::testLegacyTableIsMigrated ()
 	{
 		QTemporaryDir dir;
