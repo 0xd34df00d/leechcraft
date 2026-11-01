@@ -215,7 +215,7 @@ namespace LC::Azoth::ChatHistory
 		if (Ui_.AccountBox_->currentIndex () != idx)
 			co_return;
 
-		const auto& focusId = FocusEntry_.transform ([] (const FocusEntry& fe) { return fe.ConventionalId_; }).value_or ({});
+		const auto& focusId = FocusEntry_.transform ([] (const FocusEntry& fe) { return fe.ConventionalId_; });
 		std::optional<int> focusIndex;
 
 		QList<DisplayEntry> displayEntries;

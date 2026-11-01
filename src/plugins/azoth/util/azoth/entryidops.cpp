@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "entryidops.h"
+#include <compare>
 #include <type_traits>
 #include <utility>
 #include <QDataStream>
@@ -17,6 +18,13 @@
 
 namespace LC::Azoth
 {
+	static_assert (std::three_way_comparable<EntryPersistentId, std::strong_ordering>);
+	static_assert (std::three_way_comparable<EntryConventionalId, std::strong_ordering>);
+	static_assert (std::three_way_comparable<GlobalPersistentId, std::strong_ordering>);
+	static_assert (std::three_way_comparable<GlobalConventionalId, std::strong_ordering>);
+	static_assert (std::three_way_comparable<EntryStrongestId, std::strong_ordering>);
+	static_assert (std::three_way_comparable<GlobalStrongestId, std::strong_ordering>);
+
 	namespace
 	{
 		constexpr quint8 EntryIdVersion = 1;

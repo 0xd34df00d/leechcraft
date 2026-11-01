@@ -104,17 +104,18 @@ namespace Tracolor
 
 	void Plugin::Handle (Entity e)
 	{
-		const auto& sourceId = e.Additional_ [Fields::Internal::SourceGlobalStrongestID].value<GlobalStrongestId> ();
+		const auto sourceIdVar = e.Additional_.value (Fields::Internal::SourceGlobalStrongestID);
+		const auto sourceIdPtr = get_if<GlobalStrongestId> (&sourceIdVar);
+		if (!sourceIdPtr)
+			return;
+		const auto& sourceId = *sourceIdPtr;
 		const auto& eventId = e.Additional_ [AN::EF::EventType].toString ();
 
 		EventsManager_->HandleEvent (sourceId, eventId.toUtf8 ());
 
 		if (const auto roomIdVar = e.Additional_.value (Fields::Internal::RoomGlobalStrongestID);
-			roomIdVar.isValid ())
-		{
-			const auto& roomId = roomIdVar.value<GlobalStrongestId> ();
-			EventsManager_->HandleEvent (roomId, eventId.toUtf8 ());
-		}
+			const auto roomIdPtr = get_if<GlobalStrongestId> (&roomIdVar))
+			EventsManager_->HandleEvent (*roomIdPtr, eventId.toUtf8 ());
 	}
 
 	void Plugin::initPlugin (QObject *proxyObj)

@@ -24,21 +24,20 @@ namespace Azoth
 	};
 
 	template<IdKind>
-	struct EntryId
+	class EntryId
 	{
 		QString Id_;
 
-		EntryId () = default;
-
+		EntryId () = delete;
+		explicit EntryId (const QString& id) : Id_ { id } {}
+	public:
 		static EntryId FromString (const QString& id) { return EntryId { id }; }
 
-		bool operator== (const EntryId&) const = default;
+		auto operator<=> (const EntryId&) const = default;
 
 		friend size_t qHash (const EntryId& id, size_t seed = 0) { return qHash (id.Id_, seed); }
 
 		[[nodiscard]] QString ToString () const { return Id_; }
-	private:
-		explicit EntryId (const QString& id) : Id_ { id } {}
 	};
 
 	using EntryPersistentId = EntryId<IdKind::Persistent>;
@@ -50,7 +49,7 @@ namespace Azoth
 		QString AccountId_;
 		EntryId<K> EntryId_;
 
-		bool operator== (const GlobalId&) const = default;
+		auto operator<=> (const GlobalId&) const = default;
 
 		friend size_t qHash (const GlobalId& id, size_t seed = 0) { return qHashMulti (seed, id.AccountId_, id.EntryId_); }
 
@@ -66,7 +65,7 @@ namespace Azoth
 		using Base = std::variant<Id<IdKind::Persistent>, Id<IdKind::Conventional>>;
 		using Base::Base;
 
-		bool operator== (const StrongestId&) const = default;
+		auto operator<=> (const StrongestId&) const = default;
 
 		friend size_t qHash (const StrongestId& strongestId, size_t seed = 0)
 		{
