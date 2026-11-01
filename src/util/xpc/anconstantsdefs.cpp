@@ -26,7 +26,7 @@ namespace LC::EF
 	const QString HandlingObject { QStringLiteral ("HandlingObject") };
 	const QString UserVisibleName { QStringLiteral ("UserVisibleName") };
 	const QString Text { QStringLiteral ("Text") };
-	const QString Tags { QStringLiteral (" Tags") };
+	const QString Tags { QStringLiteral ("Tags") };
 
 	namespace GlobalAction
 	{
