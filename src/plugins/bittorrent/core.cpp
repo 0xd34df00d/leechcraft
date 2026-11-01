@@ -28,6 +28,7 @@
 #include <libtorrent/version.hpp>
 #include <libtorrent/session.hpp>
 #include <libtorrent/write_resume_data.hpp>
+#include <interfaces/entityconstants.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
@@ -1366,7 +1367,7 @@ namespace BitTorrent
 		Entity e;
 		e.Parameters_ = IsDownloaded;
 		e.Location_ = name + ".torrent";
-		e.Additional_ [" Tags"] = QVariant::fromValue (torrent.Tags_);
+		e.Additional_ [EF::Tags] = QVariant::fromValue (torrent.Tags_);
 		e.Additional_ [IgnoreSelf] = true;
 
 		for (const auto& file : GetTorrentFiles (torrent.Handle_))

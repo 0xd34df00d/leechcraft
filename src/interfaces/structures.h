@@ -159,7 +159,7 @@ namespace LC
 		 *   A QString with some text that would make sense when showed
 		 *   to the user. For example, if the entity is binary, this could
 		 *   be used to describe the entity.
-		 * - " Tags"
+		 * - `LC::EF::Tags`
 		 *   `QList<LC::TagId>` with the IDs of the tags of the entity.
 		 */
 		QMap<QString, QVariant> Additional_;

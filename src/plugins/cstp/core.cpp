@@ -17,6 +17,7 @@
 #include <QtDebug>
 #include <QDesktopServices>
 #include <QToolBar>
+#include <interfaces/entityconstants.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -127,7 +128,7 @@ namespace CSTP
 	{
 		auto url = e.Entity_.toUrl ();
 		const auto& urlList = e.Entity_.value<QList<QUrl>> ();
-		const auto& tags = e.Additional_ [" Tags"].value<QList<TagId>> ();
+		const auto& tags = e.Additional_ [EF::Tags].value<QList<TagId>> ();
 
 		const QFileInfo fi (e.Location_);
 		const auto& dir = fi.isDir () ? e.Location_ : fi.dir ().path ();
@@ -600,7 +601,7 @@ namespace CSTP
 				auto e = Util::MakeEntity (QUrl::fromLocalFile (filename),
 						{},
 						tp);
-				e.Additional_ [" Tags"] = QVariant::fromValue (tags);
+				e.Additional_ [EF::Tags] = QVariant::fromValue (tags);
 				GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 			}
 		}

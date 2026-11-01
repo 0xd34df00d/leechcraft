@@ -12,6 +12,7 @@
 #include <QStringList>
 #include <QUrl>
 #include <QtDebug>
+#include <interfaces/entityconstants.h>
 #include <interfaces/structures.h>
 #include <util/sll/qtutil.h>
 #include <util/xpc/util.h>
@@ -67,7 +68,7 @@ namespace LC::CL
 					continue;
 				}
 
-				if (name == " Tags")
+				if (name == EF::Tags)
 				{
 					qWarning () << "ignoring" << name << "since tag IDs can't be given on the command line";
 					continue;

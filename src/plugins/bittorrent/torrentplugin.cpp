@@ -14,6 +14,7 @@
 #include <QTimer>
 #include <QUrlQuery>
 #include <QFileInfo>
+#include <interfaces/entityconstants.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
@@ -205,7 +206,7 @@ namespace LC::BitTorrent
 
 		const auto tagsMgr = GetProxyHolder ()->GetTagsManager ();
 
-		const auto& suggestedTags = e.Additional_ [" Tags"_qs].value<QList<TagId>> ();
+		const auto& suggestedTags = e.Additional_ [EF::Tags].value<QList<TagId>> ();
 		const auto& autoTags = XmlSettingsManager::Instance ().property ("AutomaticTags").toString ();
 		auto tagsIds = tagsMgr->SplitToIDs (autoTags) + suggestedTags;
 

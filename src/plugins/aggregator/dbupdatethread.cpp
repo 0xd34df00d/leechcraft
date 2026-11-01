@@ -8,6 +8,7 @@
 
 #include "dbupdatethread.h"
 #include <QtConcurrent>
+#include <interfaces/entityconstants.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
@@ -214,7 +215,7 @@ namespace LC::Aggregator
 				for (const auto& enc : enclosures)
 				{
 					auto de = Util::MakeEntity (QUrl { enc.URL_ }, targetPath, {}, enc.Type_);
-					de.Additional_ [" Tags"] = QVariant::fromValue (tags);
+					de.Additional_ [EF::Tags] = QVariant::fromValue (tags);
 					iem->HandleEntity (de);
 				}
 			}
