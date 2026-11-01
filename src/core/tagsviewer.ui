@@ -12,17 +12,7 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
-    <widget class="QTreeView" name="TagsView_">
-     <property name="rootIsDecorated">
-      <bool>false</bool>
-     </property>
-     <property name="itemsExpandable">
-      <bool>false</bool>
-     </property>
-     <attribute name="headerVisible">
-      <bool>false</bool>
-     </attribute>
-    </widget>
+    <widget class="QListView" name="TagsView_"/>
    </item>
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -31,6 +21,9 @@
        <property name="text">
         <string>Modify...</string>
        </property>
+       <property name="icon">
+        <iconset theme="tag-properties"/>
+       </property>
       </widget>
      </item>
      <item>
@@ -38,12 +31,15 @@
        <property name="text">
         <string>Remove</string>
        </property>
+       <property name="icon">
+        <iconset theme="tag-delete"/>
+       </property>
       </widget>
      </item>
      <item>
       <spacer name="verticalSpacer">
        <property name="orientation">
-        <enum>Qt::Vertical</enum>
+        <enum>Qt::Orientation::Vertical</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>

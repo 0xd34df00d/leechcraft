@@ -6,8 +6,8 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#ifndef TAGSVIEWER_H
-#define TAGSVIEWER_H
+#pragma once
+
 #include <QWidget>
 #include "ui_tagsviewer.h"
 
@@ -19,12 +19,9 @@ namespace LC
 
 		Ui::TagsViewer Ui_;
 	public:
-		TagsViewer (QWidget* = 0);
+		explicit TagsViewer (QWidget* = nullptr);
 	private slots:
 		void on_Modify__released ();
 		void on_Remove__released ();
 	};
-};
-
-#endif
-
+}

@@ -76,7 +76,7 @@ namespace
 	}
 }
 
-void LC::TagsViewer::on_Modify__released ()
+void TagsViewer::on_Modify__released ()
 {
 	const auto& index = Ui_.TagsView_->currentIndex ();
 	if (!index.isValid ())
