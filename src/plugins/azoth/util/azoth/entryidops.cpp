@@ -10,6 +10,7 @@
 #include <type_traits>
 #include <utility>
 #include <QDataStream>
+#include <QIODevice>
 #include <QtDebug>
 #include <util/sll/logging.h>
 #include <util/sys/serialization.h>
@@ -256,7 +257,13 @@ namespace LC::Azoth
 	std::optional<Id> Deserialize (const QByteArray& data, std::source_location loc)
 	{
 		QDataStream stream { data };
-		return Deserialize<Id> (stream, loc);
+		const auto result = Deserialize<Id> (stream, loc);
+		if (result && !stream.atEnd ())
+		{
+			Util::LogAt (loc).warning () << "trailing bytes after entry id:" << stream.device ()->bytesAvailable ();
+			return {};
+		}
+		return result;
 	}
 
 	template<AnyEntryId Id>

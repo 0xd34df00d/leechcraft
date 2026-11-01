@@ -73,6 +73,10 @@ namespace LC::Azoth
 
 	/** @brief Deserializes persistable binary form of entry IDs.
 	 *
+	 * The whole of the passed data must be the ID: trailing bytes make
+	 * it invalid. An ID embedded into a larger record is read with the
+	 * `QDataStream` overload instead.
+	 *
 	 * @sa SerializeBytes()
 	 * @sa SerializeString()
 	 */

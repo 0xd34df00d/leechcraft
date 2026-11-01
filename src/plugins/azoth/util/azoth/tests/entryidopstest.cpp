@@ -127,6 +127,8 @@ namespace LC::Azoth
 		truncated.chop (1);
 		CheckRejected<GlobalStrongestId> (truncated);
 
+		CheckRejected<GlobalStrongestId> (SerializeBytes (id) + "trailing");
+
 		const auto& nested = SerializeBytes (id);
 		const auto& inner = SerializeBytes (globalId);
 		QVERIFY (nested.endsWith (inner));
