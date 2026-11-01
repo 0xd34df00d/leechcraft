@@ -7,10 +7,16 @@
  **********************************************************************/
 
 #include "tagsmanagertest.h"
+#include <algorithm>
+#include <map>
 #include <memory>
+#include <optional>
+#include <random>
+#include <set>
+#include <QAbstractItemModelTester>
 #include <QDataStream>
-#include <QRegularExpression>
 #include <QSignalSpy>
+#include <QSortFilterProxyModel>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QTest>
@@ -30,8 +36,6 @@ namespace LC
 		const QUuid High { "{00000000-0000-0000-0000-000000000002}"_qs };
 
 		const auto Work = "work"_qs;
-
-		const QRegularExpression InvalidNameWarning { "^invalid tag name "_qs };
 
 		using Rows = QList<std::pair<QUuid, QString>>;
 
@@ -89,13 +93,53 @@ namespace LC
 			return false;
 		}
 
-		void IgnoreQueryFailure (const QString& kind)
+		struct NameOrder
 		{
-			QTest::ignoreMessage (QtCriticalMsg, QRegularExpression { '^' + kind + " query execution failed$"_qs });
-			QTest::ignoreMessage (QtCriticalMsg, QRegularExpression { "^query: "_qs });
-			QTest::ignoreMessage (QtCriticalMsg, QRegularExpression { "."_qs });
-			QTest::ignoreMessage (QtCriticalMsg, QRegularExpression { "^bound keys: "_qs });
-			QTest::ignoreMessage (QtCriticalMsg, QRegularExpression { "^bound values: "_qs });
+			bool operator() (const QString& left, const QString& right) const
+			{
+				if (const auto folded = QString::compare (left, right, Qt::CaseInsensitive))
+					return folded < 0;
+				return left < right;
+			}
+		};
+
+		using Reference = std::map<QUuid, std::set<QString, NameOrder>>;
+
+		QStringList SortedByName (QStringList list)
+		{
+			std::ranges::sort (list, NameOrder {});
+			return list;
+		}
+
+		QStringList ModelRows (const QAbstractItemModel& model)
+		{
+			QStringList result;
+			for (int i = 0; i < model.rowCount (); ++i)
+				result << model.index (i, 0).data ().toString ();
+			return result;
+		}
+
+		void CompareWithReference (const Fixture& f, const QAbstractItemModel& proxy, const Reference& reference)
+		{
+			std::set<QString, NameOrder> all;
+			Rows stored;
+			for (const auto& [id, names] : reference)
+			{
+				all.insert (names.begin (), names.end ());
+				QCOMPARE (f.Manager_.GetTags (TagId { id.toString () }), QStringList (names.begin (), names.end ()));
+				for (const auto& name : names)
+					stored.emplaceBack (id, name);
+			}
+
+			const QStringList names (all.begin (), all.end ());
+			QCOMPARE (f.Manager_.GetAllTags (), names);
+			QCOMPARE (ModelRows (f.Manager_), names);
+			QCOMPARE (SortedByName (ModelRows (proxy)), names);
+
+			auto actualStored = f.Storage_.GetAllTags ();
+			std::ranges::sort (actualStored);
+			std::ranges::sort (stored);
+			QCOMPARE (actualStored, stored);
 		}
 	}
 
@@ -161,7 +205,6 @@ namespace LC
 		Fixture f;
 		QSignalSpy inserted { &f.Manager_, &QAbstractItemModel::rowsInserted };
 
-		QTest::ignoreMessage (QtWarningMsg, InvalidNameWarning);
 		QVERIFY (!f.Manager_.GetID (name));
 		QCOMPARE (f.Manager_.rowCount ({}), 0);
 		QCOMPARE (inserted.size (), 0);
@@ -172,8 +215,6 @@ namespace LC
 	{
 		Fixture f;
 
-		QTest::ignoreMessage (QtWarningMsg, InvalidNameWarning);
-		QTest::ignoreMessage (QtWarningMsg, InvalidNameWarning);
 		const auto& ids = f.Manager_.GetIDs ({ "a"_qs, " "_qs, "b;c"_qs, "d"_qs });
 		QCOMPARE (ids.size (), 2);
 		QCOMPARE (f.Manager_.GetTags (ids), (QStringList { "a"_qs, "d"_qs }));
@@ -258,7 +299,6 @@ namespace LC
 
 	void TagsManagerTest::testBlankAfterRepairIsKept ()
 	{
-		QTest::ignoreMessage (QtWarningMsg, "cannot repair tag \";\" to \"\"");
 		Fixture f { Rows { { Low, ";"_qs } } };
 
 		QCOMPARE (f.Manager_.GetAllTags (), QStringList { ";"_qs });
@@ -421,11 +461,8 @@ namespace LC
 		QSignalSpy inserted { &f.Manager_, &QAbstractItemModel::rowsInserted };
 		QSignalSpy replaced { &f.Manager_.GetEmitter (), &Util::Emitters::TagsManager::nameReplaced };
 
-		IgnoreQueryFailure ("insert"_qs);
 		QVERIFY_THROWS_EXCEPTION (std::exception, f.Manager_.ReplaceName (Work, { "renamed"_qs }));
-		IgnoreQueryFailure ("delete"_qs);
 		QVERIFY_THROWS_EXCEPTION (std::exception, f.Manager_.ReplaceName (Work, {}));
-		IgnoreQueryFailure ("insert"_qs);
 		QVERIFY_THROWS_EXCEPTION (std::exception, f.Manager_.GetID ("fresh"_qs));
 
 		QCOMPARE (f.Manager_.GetTags (TagId { Low.toString () }), QStringList { Work });
@@ -470,6 +507,75 @@ namespace LC
 		QCOMPARE (removed.size (), 0);
 		QCOMPARE (inserted.size (), 1);
 		QCOMPARE (inserted.first ().at (1).toInt (), 1);
+	}
+
+	void TagsManagerTest::testRandomEditsStayConsistent ()
+	{
+		Fixture f { Rows { { Low, "alpha"_qs }, { High, "mid"_qs } } };
+		QAbstractItemModelTester tester { &f.Manager_, QAbstractItemModelTester::FailureReportingMode::QtTest };
+		QSortFilterProxyModel proxy;
+		proxy.setSourceModel (&f.Manager_);
+		proxy.sort (0);
+
+		Reference reference;
+		for (const auto& [id, name] : f.Storage_.GetAllTags ())
+			reference [id].insert (name);
+
+		std::mt19937 rng { 20261101 };
+		const QStringList pool { "a"_qs, "b"_qs, "c"_qs, "A"_qs, "B"_qs, "ab"_qs, "abc"_qs, "mid"_qs, "x y"_qs, "zz"_qs };
+		const auto pick = [&rng] (const QStringList& from) { return from [rng () % from.size ()]; };
+
+		for (int step = 0; step < 500; ++step)
+		{
+			const auto& existing = f.Manager_.GetAllTags ();
+			const auto op = existing.isEmpty () ? 0 : rng () % 4;
+			if (op == 0)
+			{
+				const auto& name = pick (pool);
+				const auto& id = f.Manager_.GetID (name);
+				QVERIFY (id);
+				const QUuid uuid { id->Id_ };
+
+				std::optional<QUuid> pure;
+				for (const auto& [refId, names] : reference)
+					if (names.size () == 1 && *names.begin () == name && (!pure || refId < *pure))
+						pure = refId;
+				if (pure)
+					QCOMPARE (uuid, *pure);
+				else
+				{
+					QVERIFY (!reference.contains (uuid));
+					reference [uuid] = { name };
+				}
+			}
+			else
+			{
+				const auto& old = pick (existing);
+				QStringList names;
+				for (auto count = op == 1 ? 1 : op == 2 ? 2 + rng () % 2 : 0; count > 0; --count)
+					names << pick (pool);
+				QVERIFY (f.Manager_.ReplaceName (old, names).IsRight ());
+
+				const std::set<QString, NameOrder> replacement (names.begin (), names.end ());
+				for (auto pos = reference.begin (); pos != reference.end (); )
+				{
+					auto& own = pos->second;
+					if (!own.contains (old))
+					{
+						++pos;
+						continue;
+					}
+
+					if (!replacement.contains (old))
+						own.erase (old);
+					own.insert (replacement.begin (), replacement.end ());
+					pos = own.empty () ? reference.erase (pos) : std::next (pos);
+				}
+			}
+
+			CompareWithReference (f, proxy, reference);
+			QVERIFY2 (!QTest::currentTestFailed (), qPrintable ("after step "_qs + QString::number (step)));
+		}
 	}
 
 	void TagsManagerTest::testJoinAndSplit ()

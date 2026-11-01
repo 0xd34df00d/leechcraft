@@ -40,6 +40,7 @@ namespace LC
 		void testStorageFailureLeavesTheManagerUntouched ();
 		void testModelRowsFollowGetAllTags ();
 		void testRowsAreOrderedCaseInsensitively ();
+		void testRandomEditsStayConsistent ();
 		void testJoinAndSplit ();
 		void testTagIdListIsARegisteredMetaType ();
 	};

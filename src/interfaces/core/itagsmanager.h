@@ -214,13 +214,13 @@ public:
 	 */
 	virtual QString JoinIDs (const QList<LC::TagId>& tagIDs) const = 0;
 
-	/** @brief Returns the completion model for this tags manager.
+	/** @brief Returns the model listing the tag names.
 	 *
-	 * The returned completion model can be used in a QCompleter class.
-	 * It uses the tags from this tags manager to provide completions as
-	 * the user types.
+	 * The model has one column and a row per distinct tag name, holding
+	 * the name in both `Qt::DisplayRole` and `Qt::EditRole`, and follows
+	 * the changes made through this manager. It is owned by the manager.
 	 *
-	 * @return The completion model suitable for usage in a QCompleter.
+	 * @return The tag names model.
 	 */
 	virtual QAbstractItemModel* GetModel () = 0;
 };
