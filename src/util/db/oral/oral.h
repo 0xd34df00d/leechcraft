@@ -1634,7 +1634,7 @@ namespace LC::Util::oral
 			}
 
 			template<ExprType Type, typename L, typename R>
-			void operator() (const ExprTree<Type, L, R>& tree) const noexcept
+			void operator() (const ExprTree<Type, L, R>& tree) const
 			{
 				constexpr auto where = ExprTreeToSql<"", T, ExprTree<Type, L, R>> ();
 
@@ -1643,7 +1643,12 @@ namespace LC::Util::oral
 				QSqlQuery query { DB_ };
 				query.prepare (ToString<selectAll> ());
 				BindExprTree<"", T> (tree, query);
-				query.exec ();
+				if (!query.exec ())
+				{
+					qCritical () << "delete query execution failed";
+					DBLock::DumpError (query);
+					throw QueryException ("delete query execution failed");
+				}
 			}
 		};
 
