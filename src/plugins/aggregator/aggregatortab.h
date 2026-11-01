@@ -50,6 +50,8 @@ namespace LC::Aggregator
 		ChannelsFilterModel * const ChannelsFilterModel_;
 
 		const std::unique_ptr<ItemsWidget> ItemsWidget_;
+
+		bool ShowSelectedChannelsScheduled_ = false;
 	public:
 		struct InitParams
 		{
@@ -76,7 +78,8 @@ namespace LC::Aggregator
 		void NavigateChannel (ChannelDirection);
 
 		void HandleFeedsContextMenuRequested (const QPoint&);
-		void CurrentChannelChanged ();
+		void HandleFolderRowsChanged (const QModelIndex&);
+		void ShowSelectedChannels ();
 	signals:
 		void tabRecoverDataChanged () override;
 		void removeTab () override;

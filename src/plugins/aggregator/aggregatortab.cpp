@@ -10,6 +10,7 @@
 #include <unordered_set>
 #include <QKeyEvent>
 #include <QMenu>
+#include <QTimer>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include <util/gui/statesaver.h>
@@ -63,7 +64,7 @@ namespace LC::Aggregator
 		connect (Ui_.Feeds_->selectionModel (),
 				&QItemSelectionModel::selectionChanged,
 				this,
-				&AggregatorTab::CurrentChannelChanged);
+				&AggregatorTab::ShowSelectedChannels);
 		Ui_.Feeds_->expandAll ();
 
 		connect (Ui_.Feeds_,
@@ -89,6 +90,14 @@ namespace LC::Aggregator
 				&QAbstractItemModel::modelReset,
 				Ui_.Feeds_,
 				&QTreeView::expandAll);
+		connect (FlatToFolders_.get (),
+				&QAbstractItemModel::rowsInserted,
+				this,
+				&AggregatorTab::HandleFolderRowsChanged);
+		connect (FlatToFolders_.get (),
+				&QAbstractItemModel::rowsRemoved,
+				this,
+				&AggregatorTab::HandleFolderRowsChanged);
 
 		ItemsWidget_->ConstructBrowser ();
 
@@ -226,7 +235,22 @@ namespace LC::Aggregator
 		menu.exec (Ui_.Feeds_->viewport ()->mapToGlobal (pos));
 	}
 
-	void AggregatorTab::CurrentChannelChanged ()
+	void AggregatorTab::HandleFolderRowsChanged (const QModelIndex& folder)
+	{
+		if (!Ui_.Feeds_->selectionModel ()->isSelected (folder) ||
+				std::exchange (ShowSelectedChannelsScheduled_, true))
+			return;
+
+		// the rows arrive one signal at a time, and every update resets the items list
+		QTimer::singleShot (0, this,
+				[this]
+				{
+					ShowSelectedChannelsScheduled_ = false;
+					ShowSelectedChannels ();
+				});
+	}
+
+	void AggregatorTab::ShowSelectedChannels ()
 	{
 		QList<IDType_t> channels;
 
