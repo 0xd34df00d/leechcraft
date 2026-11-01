@@ -33,6 +33,9 @@ namespace LC::Util
 	 * the folder's key under the `Config::DropFormat_` format, empty for the
 	 * unkeyed folder.
 	 *
+	 * When the keys of the rows change without the source announcing it,
+	 * `ReplaceKey()` moves the rows along.
+	 *
 	 * The source must be flat, and its layout changes must move rows as units,
 	 * as every row sort does. Layout changes of the source are not forwarded,
 	 * and a source rearranging cells independently of each other is not
@@ -92,6 +95,16 @@ namespace LC::Util
 				result.push_back (var.value<T> ());
 			return result;
 		}
+
+		/** @brief Updates the folders after the key `old` was replaced with
+		 * `newKeys` on every row that had it, the other keys of the rows
+		 * being unchanged.
+		 *
+		 * A single new key without a folder yet renames the folder of `old`
+		 * in place, keeping its rows; otherwise the rows move to the folders
+		 * of `newKeys`.
+		 */
+		void ReplaceKey (const QString& old, const QStringList& newKeys);
 	private:
 		QStringList KeysOf (const QModelIndex&) const;
 		const FlatTreeItem& ToFlatOrRoot (const QModelIndex&) const;
@@ -101,6 +114,8 @@ namespace LC::Util
 		FlatTreeItem_ptr GetFolder (const QString&);
 		void AddForKey (const QString&, const QPersistentModelIndex&);
 		void RemoveLeaf (const FlatTreeItem_ptr&);
+		void UpdateLeaves (const QPersistentModelIndex&, const QList<int>& roles);
+		void RenameFolder (FlatTreeItem&, const QString&);
 
 		void HandleDataChanged (const QModelIndex&, const QModelIndex&, const QList<int>&);
 		void HandleModelReset ();

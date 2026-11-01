@@ -22,7 +22,8 @@ namespace LC::Util
 	 * appears under the folder of every name its tags have, and the rows
 	 * whose tags have no names go into the untagged folder. A drop onto a
 	 * folder carries the folder's name under the `x-leechcraft/tag` format,
-	 * empty for the untagged folder.
+	 * empty for the untagged folder. The folders follow the name replacements
+	 * the tags manager announces.
 	 *
 	 * The tags manager shall outlive the model.
 	 *

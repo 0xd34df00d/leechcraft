@@ -8,9 +8,7 @@
 
 #include "flattofoldersproxymodel.h"
 #include <algorithm>
-#include <QSet>
 #include <QMimeData>
-#include <util/sll/containerconversions.h>
 #include "modelsanitizer.h"
 
 namespace LC::Util
@@ -389,21 +387,49 @@ namespace LC::Util
 		endRemoveRows ();
 	}
 
+	void FlatToFoldersProxyModel::UpdateLeaves (const QPersistentModelIndex& pidx, const QList<int>& roles)
+	{
+		auto keys = KeysOf (pidx);
+		for (const auto& leaf : Items_.values (pidx))
+			if (keys.removeOne (leaf->Key_))
+				emit dataChanged (IndexOf (*leaf), IndexOf (*leaf, columnCount () - 1), roles);
+			else
+				RemoveLeaf (leaf);
+
+		for (const auto& key : keys)
+			AddForKey (key, pidx);
+	}
+
+	void FlatToFoldersProxyModel::RenameFolder (FlatTreeItem& folder, const QString& key)
+	{
+		folder.Key_ = key;
+		for (const auto& leaf : folder.C_)
+			leaf->Key_ = key;
+
+		const auto& index = IndexOf (folder);
+		emit dataChanged (index, index, { Qt::DisplayRole });
+	}
+
+	void FlatToFoldersProxyModel::ReplaceKey (const QString& old, const QStringList& newKeys)
+	{
+		const auto& folder = FindFolder (old);
+		if (!folder)
+			return;
+
+		if (newKeys.size () == 1 && !FindFolder (newKeys.first ()))
+		{
+			RenameFolder (*folder, newKeys.first ());
+			return;
+		}
+
+		for (const auto& leaf : auto { folder->C_ })
+			UpdateLeaves (leaf->Index_, {});
+	}
+
 	void FlatToFoldersProxyModel::HandleDataChanged (const QModelIndex& topLeft, const QModelIndex& bottomRight, const QList<int>& roles)
 	{
 		for (int row = topLeft.row (); row <= bottomRight.row (); ++row)
-		{
-			const QPersistentModelIndex pidx { topLeft.sibling (row, 0) };
-			auto keys = AsSet (KeysOf (pidx));
-			for (const auto& leaf : Items_.values (pidx))
-				if (keys.remove (leaf->Key_))
-					emit dataChanged (IndexOf (*leaf), IndexOf (*leaf, columnCount () - 1), roles);
-				else
-					RemoveLeaf (leaf);
-
-			for (const auto& key : keys)
-				AddForKey (key, pidx);
-		}
+			UpdateLeaves (topLeft.sibling (row, 0), roles);
 	}
 
 	void FlatToFoldersProxyModel::HandleModelReset ()

@@ -10,6 +10,7 @@
 #include <util/sll/qtutil.h>
 #include <interfaces/structures.h>
 #include <interfaces/core/itagsmanager.h>
+#include "emitters/tagsmanager.h"
 
 namespace LC::Util
 {
@@ -32,5 +33,9 @@ namespace LC::Util
 	TagsFoldersProxyModel::TagsFoldersProxyModel (const ITagsManager& tm, QObject *parent)
 	: FlatToFoldersProxyModel { MakeConfig (tm), parent }
 	{
+		connect (&tm.GetEmitter (),
+				&Emitters::TagsManager::nameReplaced,
+				this,
+				&FlatToFoldersProxyModel::ReplaceKey);
 	}
 }

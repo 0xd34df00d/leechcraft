@@ -30,6 +30,12 @@ namespace LC::Util
 		void testAttachAndDetach ();
 		void testDragAndDropMapThroughFolders ();
 		void testReleasesUpstreamIndexes ();
+		void testRenameKeepsTheFolder ();
+		void testRenameOntoAnExistingKeyMerges ();
+		void testSplitSpreadsTheRows ();
+		void testRemovedKeyMovesRowsToUnkeyed ();
+		void testKeepingTheOldKeyAddsFolders ();
+		void testUnknownKeyChangesNothing ();
 		void testRandomWalk ();
 	};
 }

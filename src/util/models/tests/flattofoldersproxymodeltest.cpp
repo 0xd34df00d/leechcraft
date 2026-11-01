@@ -11,6 +11,7 @@
 #include <memory>
 #include <optional>
 #include <QAbstractItemModelTester>
+#include <QHash>
 #include <QMimeData>
 #include <QRandomGenerator>
 #include <QSignalSpy>
@@ -29,16 +30,6 @@ namespace LC::Util
 		constexpr int KeysRole = Qt::UserRole + 2;
 		const auto DropFormat = QStringLiteral ("x-test/folder");
 		const auto Unkeyed = QStringLiteral ("unkeyed");
-
-		FlatToFoldersProxyModel::Config MakeConfig ()
-		{
-			return
-			{
-				.KeysOf_ = [] (const QModelIndex& index) { return index.data (KeysRole).toStringList (); },
-				.UnkeyedLabel_ = Unkeyed,
-				.DropFormat_ = DropFormat,
-			};
-		}
 
 		struct Source : QStandardItemModel
 		{
@@ -83,8 +74,11 @@ namespace LC::Util
 			using QSortFilterProxyModel::persistentIndexList;
 		};
 
+		// the keys stored in the source rows map to themselves unless Aliases_ says otherwise,
+		// which is how a key gets replaced behind the source's back
 		struct Fixture
 		{
+			QHash<QString, QStringList> Aliases_;
 			Source Source_;
 			Filter Filter_;
 			QAbstractItemModel& Upstream_;
@@ -97,6 +91,24 @@ namespace LC::Util
 				Filter_.setSourceModel (&Source_);
 			}
 
+			FlatToFoldersProxyModel::Config MakeConfig () const
+			{
+				return
+				{
+					.KeysOf_ = [this] (const QModelIndex& index) { return KeysOf (index); },
+					.UnkeyedLabel_ = Unkeyed,
+					.DropFormat_ = DropFormat,
+				};
+			}
+
+			QStringList KeysOf (const QModelIndex& index) const
+			{
+				QStringList keys;
+				for (const auto& stored : index.data (KeysRole).toStringList ())
+					keys += Aliases_.value (stored, { stored });
+				return keys;
+			}
+
 			void FillDefault ()
 			{
 				Source_.Append (1, "a", { "t1" });
@@ -107,6 +119,24 @@ namespace LC::Util
 			void Attach ()
 			{
 				Proxy_.SetSourceModel (&Upstream_);
+			}
+
+			void ReplaceKey (const QString& old, const QStringList& newKeys)
+			{
+				for (int row = 0; row < Source_.rowCount (); ++row)
+					for (const auto& stored : Source_.index (row, 0).data (KeysRole).toStringList ())
+					{
+						auto keys = Aliases_.value (stored, { stored });
+						if (!keys.contains (old))
+							continue;
+
+						keys.removeAll (old);
+						for (const auto& key : newKeys)
+							if (!keys.contains (key))
+								keys << key;
+						Aliases_ [stored] = keys;
+					}
+				Proxy_.ReplaceKey (old, newKeys);
 			}
 
 			int UpstreamPersistentCount () const
@@ -138,9 +168,9 @@ namespace LC::Util
 			}
 		};
 
-		QStringList KeysOf (const QModelIndex& index)
+		QStringList ExpectedKeysOf (const Fixture& fixture, const QModelIndex& index)
 		{
-			auto keys = index.data (KeysRole).toStringList ();
+			auto keys = fixture.KeysOf (index);
 			keys.removeDuplicates ();
 			if (keys.isEmpty ())
 				keys << Unkeyed;
@@ -154,13 +184,13 @@ namespace LC::Util
 
 		using Picture = QMap<QString, QSet<int>>;
 
-		Picture Expected (const QAbstractItemModel& upstream)
+		Picture Expected (const Fixture& fixture)
 		{
 			Picture result;
-			for (int row = 0; row < upstream.rowCount (); ++row)
+			for (int row = 0; row < fixture.Upstream_.rowCount (); ++row)
 			{
-				const auto& index = upstream.index (row, 0);
-				for (const auto& key : KeysOf (index))
+				const auto& index = fixture.Upstream_.index (row, 0);
+				for (const auto& key : ExpectedKeysOf (fixture, index))
 					result [key] << index.data (IdRole).toInt ();
 			}
 			return result;
@@ -195,8 +225,10 @@ namespace LC::Util
 			return result;
 		}
 
-		void CheckTree (const FlatToFoldersProxyModel& proxy, const QAbstractItemModel& upstream)
+		void CheckTree (const Fixture& fixture)
 		{
+			const auto& proxy = fixture.Proxy_;
+			const auto& upstream = fixture.Upstream_;
 			QCOMPARE (proxy.columnCount (), upstream.columnCount ());
 
 			Picture actual;
@@ -225,7 +257,7 @@ namespace LC::Util
 					const auto& source = proxy.MapToSource (leafIdx);
 					QVERIFY (source.isValid ());
 					QCOMPARE (source.model (), &upstream);
-					QVERIFY (KeysOf (source).contains (key));
+					QVERIFY (ExpectedKeysOf (fixture, source).contains (key));
 					QVERIFY (proxy.MapFromSource (source).contains (leafIdx));
 					for (int col = 0; col < upstream.columnCount (); ++col)
 						QCOMPARE (proxy.index (l, col, folderIdx).data (), source.siblingAtColumn (col).data ());
@@ -234,13 +266,13 @@ namespace LC::Util
 				}
 			}
 
-			const auto& expected = Expected (upstream);
+			const auto& expected = Expected (fixture);
 			QVERIFY2 (actual == expected,
 					qPrintable ("tree is " + Describe (actual) + ", source says " + Describe (expected)));
 
 			int expectedLeaves = 0;
 			for (int row = 0; row < upstream.rowCount (); ++row)
-				expectedLeaves += KeysOf (upstream.index (row, 0)).size ();
+				expectedLeaves += ExpectedKeysOf (fixture, upstream.index (row, 0)).size ();
 			QCOMPARE (leaves, expectedLeaves);
 		}
 
@@ -269,7 +301,7 @@ namespace LC::Util
 		Fixture f { viaFilter };
 		f.FillDefault ();
 		f.Attach ();
-		CheckTree (f.Proxy_, f.Upstream_);
+		CheckTree (f);
 
 		QCOMPARE (Dump (f.Proxy_), (QStringList { "t1: 1 2", "t2: 2", "unkeyed: 3" }));
 		QCOMPARE (f.Proxy_.headerData (0, Qt::Horizontal, Qt::DisplayRole), f.Upstream_.headerData (0, Qt::Horizontal, Qt::DisplayRole));
@@ -286,14 +318,14 @@ namespace LC::Util
 		f.Source_.Append (4, "d", {});
 		f.Source_.Append (5, "e", { "t1", "t1" });
 		f.Attach ();
-		CheckTree (f.Proxy_, f.Upstream_);
+		CheckTree (f);
 		QCOMPARE (Dump (f.Proxy_), (QStringList { "t1: 1 2 5", "x: 3", "y: 3", "unkeyed: 4" }));
 		Spies spies { f.Proxy_ };
 
 		f.Source_.SetKeys (3, { "t1" });
 		QCOMPARE (spies.Inserted_.size (), 1);
 		QCOMPARE (spies.Removed_.size (), 2);
-		CheckTree (f.Proxy_, f.Upstream_);
+		CheckTree (f);
 		QCOMPARE (Dump (f.Proxy_), (QStringList { "t1: 1 2 5 4", "x: 3", "y: 3" }));
 	}
 
@@ -313,7 +345,7 @@ namespace LC::Util
 		f.Source_.Append (5, "e", { "t1" });
 		QCOMPARE (spies.Inserted_.size (), 3);
 		QCOMPARE (spies.Structural (), 3);
-		CheckTree (f.Proxy_, f.Upstream_);
+		CheckTree (f);
 	}
 
 	void FlatToFoldersProxyModelTest::testRekeyKeepsTheSurvivingLeaf ()
@@ -336,7 +368,7 @@ namespace LC::Util
 
 		QCOMPARE (spies.Removed_.size (), 1);
 		QCOMPARE (spies.Inserted_.size (), 2);
-		CheckTree (f.Proxy_, f.Upstream_);
+		CheckTree (f);
 	}
 
 	void FlatToFoldersProxyModelTest::testRemovingTheLastLeafRemovesTheFolder ()
@@ -353,7 +385,7 @@ namespace LC::Util
 		QVERIFY (Parent (spies.Removed_.at (0)).isValid ());
 		QCOMPARE (Parent (spies.Removed_.at (1)), QModelIndex {});
 		QCOMPARE (f.Proxy_.rowCount (), 2);
-		CheckTree (f.Proxy_, f.Upstream_);
+		CheckTree (f);
 	}
 
 	void FlatToFoldersProxyModelTest::testRemovalFollowsOwnBookkeeping ()
@@ -369,7 +401,7 @@ namespace LC::Util
 		f.Source_.removeRow (2);
 
 		QCOMPARE (f.Proxy_.rowCount (), 2);
-		CheckTree (f.Proxy_, f.Upstream_);
+		CheckTree (f);
 	}
 
 	void FlatToFoldersProxyModelTest::testSourceSortLeavesTheTreeAlone ()
@@ -386,7 +418,7 @@ namespace LC::Util
 		QCOMPARE (spies.Layout_.size (), 0);
 		QCOMPARE (spies.Structural (), 0);
 		QCOMPARE (Dump (f.Proxy_), before);
-		CheckTree (f.Proxy_, f.Upstream_);
+		CheckTree (f);
 	}
 
 	void FlatToFoldersProxyModelTest::testSourceResetIsOneReset ()
@@ -404,7 +436,7 @@ namespace LC::Util
 
 		f.Source_.Append (4, "d", { "t1", "t2" });
 		QCOMPARE (spies.Inserted_.size (), 4);
-		CheckTree (f.Proxy_, f.Upstream_);
+		CheckTree (f);
 	}
 
 	void FlatToFoldersProxyModelTest::testAttachAndDetach ()
@@ -418,7 +450,7 @@ namespace LC::Util
 		QCOMPARE (spies.Reset_.size (), 1);
 		QCOMPARE (spies.Structural (), 1);
 		QCOMPARE (f.Proxy_.rowCount (), 3);
-		CheckTree (f.Proxy_, f.Upstream_);
+		CheckTree (f);
 
 		f.Proxy_.SetSourceModel (nullptr);
 		QCOMPARE (spies.Reset_.size (), 2);
@@ -471,7 +503,7 @@ namespace LC::Util
 		Source other;
 		other.Append (7, "x", { "t1" });
 		{
-			FlatToFoldersProxyModel proxy { MakeConfig () };
+			FlatToFoldersProxyModel proxy { f.MakeConfig () };
 			QAbstractItemModelTester tester { &proxy, QAbstractItemModelTester::FailureReportingMode::QtTest };
 
 			proxy.SetSourceModel (&f.Upstream_);
@@ -486,6 +518,96 @@ namespace LC::Util
 		QCOMPARE (f.UpstreamPersistentCount (), baseline);
 	}
 
+	void FlatToFoldersProxyModelTest::testRenameKeepsTheFolder ()
+	{
+		QFETCH_GLOBAL (bool, viaFilter);
+		Fixture f { viaFilter };
+		f.FillDefault ();
+		f.Attach ();
+		Spies spies { f.Proxy_ };
+
+		f.ReplaceKey ("t1", { "renamed" });
+
+		QCOMPARE (spies.Structural (), 0);
+		QCOMPARE (spies.Data_.size (), 1);
+		const auto& args = spies.Data_.first ();
+		QCOMPARE (args.at (0).value<QModelIndex> (), f.Proxy_.index (0, 0));
+		QCOMPARE (args.at (1).value<QModelIndex> (), f.Proxy_.index (0, 0));
+		QCOMPARE (args.at (2).value<QList<int>> (), (QList<int> { Qt::DisplayRole }));
+		QCOMPARE (Dump (f.Proxy_), (QStringList { "renamed: 1 2", "t2: 2", "unkeyed: 3" }));
+		CheckTree (f);
+	}
+
+	void FlatToFoldersProxyModelTest::testRenameOntoAnExistingKeyMerges ()
+	{
+		QFETCH_GLOBAL (bool, viaFilter);
+		Fixture f { viaFilter };
+		f.FillDefault ();
+		f.Attach ();
+		Spies spies { f.Proxy_ };
+
+		f.ReplaceKey ("t1", { "t2" });
+
+		QCOMPARE (spies.Inserted_.size (), 1);
+		QCOMPARE (spies.Removed_.size (), 3);
+		QCOMPARE (Dump (f.Proxy_), (QStringList { "t2: 2 1", "unkeyed: 3" }));
+		CheckTree (f);
+	}
+
+	void FlatToFoldersProxyModelTest::testSplitSpreadsTheRows ()
+	{
+		QFETCH_GLOBAL (bool, viaFilter);
+		Fixture f { viaFilter };
+		f.FillDefault ();
+		f.Attach ();
+
+		f.ReplaceKey ("t1", { "x", "y" });
+
+		QCOMPARE (Dump (f.Proxy_), (QStringList { "t2: 2", "unkeyed: 3", "x: 1 2", "y: 1 2" }));
+		CheckTree (f);
+	}
+
+	void FlatToFoldersProxyModelTest::testRemovedKeyMovesRowsToUnkeyed ()
+	{
+		QFETCH_GLOBAL (bool, viaFilter);
+		Fixture f { viaFilter };
+		f.FillDefault ();
+		f.Attach ();
+
+		f.ReplaceKey ("t1", {});
+
+		QCOMPARE (Dump (f.Proxy_), (QStringList { "t2: 2", "unkeyed: 3 1" }));
+		CheckTree (f);
+	}
+
+	void FlatToFoldersProxyModelTest::testKeepingTheOldKeyAddsFolders ()
+	{
+		QFETCH_GLOBAL (bool, viaFilter);
+		Fixture f { viaFilter };
+		f.FillDefault ();
+		f.Attach ();
+
+		f.ReplaceKey ("t2", { "t2", "t3" });
+
+		QCOMPARE (Dump (f.Proxy_), (QStringList { "t1: 1 2", "t2: 2", "unkeyed: 3", "t3: 2" }));
+		CheckTree (f);
+	}
+
+	void FlatToFoldersProxyModelTest::testUnknownKeyChangesNothing ()
+	{
+		QFETCH_GLOBAL (bool, viaFilter);
+		Fixture f { viaFilter };
+		f.FillDefault ();
+		f.Attach ();
+		Spies spies { f.Proxy_ };
+
+		f.ReplaceKey ("nope", { "t1" });
+
+		QCOMPARE (spies.Structural (), 0);
+		QCOMPARE (spies.Data_.size (), 0);
+		QCOMPARE (Dump (f.Proxy_), (QStringList { "t1: 1 2", "t2: 2", "unkeyed: 3" }));
+	}
+
 	void FlatToFoldersProxyModelTest::testRandomWalk ()
 	{
 		QFETCH_GLOBAL (bool, viaFilter);
@@ -495,6 +617,7 @@ namespace LC::Util
 		constexpr quint32 seed = 20261017;
 		QRandomGenerator gen { seed };
 		const QStringList pool { "t1", "t2", "t3", "t4" };
+		QStringList known { "t1", "t2", "t3", "t4" };
 		const auto randomKeys = [&]
 		{
 			QStringList keys;
@@ -511,7 +634,7 @@ namespace LC::Util
 		for (int step = 0; step < 400; ++step)
 		{
 			const auto rows = f.Source_.rowCount ();
-			switch (rows ? gen.bounded (6) : 0)
+			switch (rows ? gen.bounded (7) : 0)
 			{
 			case 0:
 				f.Source_.Append (nextId++, randomText (), randomKeys ());
@@ -535,12 +658,24 @@ namespace LC::Util
 				if (!gen.bounded (20))
 					f.Source_.clear ();
 				break;
+			case 6:
+			{
+				const auto old = known [gen.bounded (static_cast<int> (known.size ()))];
+				QStringList newKeys;
+				for (const auto& key : known)
+					if (!gen.bounded (3))
+						newKeys << key;
+				if (gen.bounded (2))
+					newKeys << known.emplaceBack ("r" + QString::number (step));
+				f.ReplaceKey (old, newKeys);
+				break;
+			}
 			}
 
-			CheckTree (f.Proxy_, f.Upstream_);
+			CheckTree (f);
 			if (QTest::currentTestFailed ())
 			{
-				qWarning () << "random walk failed at step" << step << "with seed" << seed << "upstream:" << Describe (Expected (f.Upstream_));
+				qWarning () << "random walk failed at step" << step << "with seed" << seed << "upstream:" << Describe (Expected (f));
 				return;
 			}
 		}
