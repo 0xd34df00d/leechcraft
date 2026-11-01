@@ -7,7 +7,6 @@
  **********************************************************************/
 
 #include "entryidopstest.h"
-#include <QDataStream>
 #include <QRegularExpression>
 #include <QTest>
 #include <util/azoth/entryidops.h>
@@ -41,15 +40,6 @@ namespace LC::Azoth
 		{
 			QTest::ignoreMessage (QtWarningMsg, QRegularExpression { ".*" });
 			QVERIFY (!Deserialize<Id> (serialized));
-		}
-
-		template<AnyEntryId Id>
-		QByteArray SerializeBytesAs (quint8 version, const Id& id)
-		{
-			QByteArray result;
-			QDataStream stream { &result, QDataStream::WriteOnly };
-			stream << version << id;
-			return result;
 		}
 	}
 
@@ -128,14 +118,21 @@ namespace LC::Azoth
 
 	void EntryIdOpsTest::testMalformedBytes ()
 	{
-		const GlobalStrongestId id { GlobalPersistentId { "romeo", EntryPersistentId::FromString ("juliet@capulet.lit") } };
+		const GlobalPersistentId globalId { "romeo", EntryPersistentId::FromString ("juliet@capulet.lit") };
+		const GlobalStrongestId id { globalId };
 
 		CheckRejected<GlobalStrongestId> (QByteArray {});
-		CheckRejected<GlobalStrongestId> (SerializeBytesAs (0, id));
-		CheckRejected<GlobalStrongestId> (SerializeBytesAs (2, id));
 
 		auto truncated = SerializeBytes (id);
 		truncated.chop (1);
 		CheckRejected<GlobalStrongestId> (truncated);
+
+		const auto& nested = SerializeBytes (id);
+		const auto& inner = SerializeBytes (globalId);
+		QVERIFY (nested.endsWith (inner));
+
+		auto badKind = nested;
+		badKind [nested.size () - inner.size () - 1] = 7;
+		CheckRejected<GlobalStrongestId> (badKind);
 	}
 }

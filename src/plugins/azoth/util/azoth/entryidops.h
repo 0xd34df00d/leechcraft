@@ -15,6 +15,8 @@
 #include <interfaces/azoth/azothcommon.h>
 #include "azothutilconfig.h"
 
+class QDataStream;
+
 namespace LC::Azoth
 {
 	template<typename>
@@ -41,13 +43,16 @@ namespace LC::Azoth
 	 * null-terminated while possibly containing `NULL`s within the string,
 	 * so you might want to avoid using it as a C string with C APIs.
 	 *
+	 * The result is exactly what `Serialize()` writes into a stream.
+	 *
 	 * @sa Deserialize()
+	 * @sa Serialize()
 	 * @sa SerializeString()
 	 */
 	template<AnyEntryId Id>
 	QByteArray SerializeBytes (const Id&);
 
-	/** @brief Persistable, versioned, string-based form of entry IDs.
+	/** @brief Persistable, string-based form of entry IDs.
 	 *
 	 * Unlike `ToString()`, it survives a round trip: the kind of a
 	 * `StrongestId` and the account/entry boundary of a `GlobalId` are kept.
@@ -55,6 +60,10 @@ namespace LC::Azoth
 	 * Unlike `SerializeBytes()`, the resulting value is a proper string
 	 * and can be used with APIs that expect a string.
 	 * On the other hand, this form is slower.
+	 *
+	 * Unlike the binary form, this one is not versioned: its grammar is
+	 * stable, as the resulting strings serve as persistent keys in stores
+	 * outside of Azoth's control.
 	 *
 	 * @sa Deserialize()
 	 * @sa SerializeBytes()
@@ -80,6 +89,28 @@ namespace LC::Azoth
 
 	template<AnyEntryId Id>
 	std::optional<Id> Deserialize (const char*) = delete ("a C string has no encoding: wrap it in QString::fromUtf8 () or QByteArray first");
+
+	/** @brief Writes the binary form of an entry ID into a stream.
+	 *
+	 * This allows embedding an entry ID into a larger stream-based record.
+	 * The written bytes are exactly those `SerializeBytes()` returns.
+	 *
+	 * @sa Deserialize()
+	 * @sa SerializeBytes()
+	 */
+	template<AnyEntryId Id>
+	void Serialize (QDataStream&, const Id&);
+
+	/** @brief Reads an entry ID written by `Serialize()` from a stream.
+	 *
+	 * On success, exactly the bytes written by `Serialize()` are consumed.
+	 * On failure, the stream status is set accordingly, and the stream
+	 * position is unspecified.
+	 *
+	 * @sa Serialize()
+	 */
+	template<AnyEntryId Id>
+	std::optional<Id> Deserialize (QDataStream&, std::source_location = std::source_location::current ());
 
 	extern template AZOTH_UTIL_API QByteArray SerializeBytes (const EntryPersistentId&);
 	extern template AZOTH_UTIL_API QByteArray SerializeBytes (const EntryConventionalId&);
@@ -108,4 +139,18 @@ namespace LC::Azoth
 	extern template AZOTH_UTIL_API std::optional<GlobalConventionalId> Deserialize<GlobalConventionalId> (QStringView, std::source_location);
 	extern template AZOTH_UTIL_API std::optional<EntryStrongestId> Deserialize<EntryStrongestId> (QStringView, std::source_location);
 	extern template AZOTH_UTIL_API std::optional<GlobalStrongestId> Deserialize<GlobalStrongestId> (QStringView, std::source_location);
+
+	extern template AZOTH_UTIL_API void Serialize (QDataStream&, const EntryPersistentId&);
+	extern template AZOTH_UTIL_API void Serialize (QDataStream&, const EntryConventionalId&);
+	extern template AZOTH_UTIL_API void Serialize (QDataStream&, const GlobalPersistentId&);
+	extern template AZOTH_UTIL_API void Serialize (QDataStream&, const GlobalConventionalId&);
+	extern template AZOTH_UTIL_API void Serialize (QDataStream&, const EntryStrongestId&);
+	extern template AZOTH_UTIL_API void Serialize (QDataStream&, const GlobalStrongestId&);
+
+	extern template AZOTH_UTIL_API std::optional<EntryPersistentId> Deserialize<EntryPersistentId> (QDataStream&, std::source_location);
+	extern template AZOTH_UTIL_API std::optional<EntryConventionalId> Deserialize<EntryConventionalId> (QDataStream&, std::source_location);
+	extern template AZOTH_UTIL_API std::optional<GlobalPersistentId> Deserialize<GlobalPersistentId> (QDataStream&, std::source_location);
+	extern template AZOTH_UTIL_API std::optional<GlobalConventionalId> Deserialize<GlobalConventionalId> (QDataStream&, std::source_location);
+	extern template AZOTH_UTIL_API std::optional<EntryStrongestId> Deserialize<EntryStrongestId> (QDataStream&, std::source_location);
+	extern template AZOTH_UTIL_API std::optional<GlobalStrongestId> Deserialize<GlobalStrongestId> (QDataStream&, std::source_location);
 }

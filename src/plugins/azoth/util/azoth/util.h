@@ -12,7 +12,6 @@
 #include <interfaces/azoth/azothcommon.h>
 
 class QDebug;
-class QDataStream;
 
 namespace LC::Azoth
 {
@@ -46,37 +45,4 @@ namespace LC::Azoth
 
 	extern template AZOTH_UTIL_API QDebug operator<< (QDebug, const StrongestId<EntryId>&);
 	extern template AZOTH_UTIL_API QDebug operator<< (QDebug, const StrongestId<GlobalId>&);
-
-	template<IdKind K>
-	QDataStream& operator<< (QDataStream&, const EntryId<K>&);
-
-	template<IdKind K>
-	QDataStream& operator>> (QDataStream&, EntryId<K>&);
-
-	template<IdKind K>
-	QDataStream& operator<< (QDataStream&, const GlobalId<K>&);
-
-	template<IdKind K>
-	QDataStream& operator>> (QDataStream&, GlobalId<K>&);
-
-	template<template<IdKind> typename Id>
-	QDataStream& operator<< (QDataStream&, const StrongestId<Id>&);
-
-	template<template<IdKind> typename Id>
-	QDataStream& operator>> (QDataStream&, StrongestId<Id>&);
-
-	extern template AZOTH_UTIL_API QDataStream& operator<< (QDataStream&, const EntryId<IdKind::Persistent>&);
-	extern template AZOTH_UTIL_API QDataStream& operator<< (QDataStream&, const EntryId<IdKind::Conventional>&);
-	extern template AZOTH_UTIL_API QDataStream& operator>> (QDataStream&, EntryId<IdKind::Persistent>&);
-	extern template AZOTH_UTIL_API QDataStream& operator>> (QDataStream&, EntryId<IdKind::Conventional>&);
-
-	extern template AZOTH_UTIL_API QDataStream& operator<< (QDataStream&, const GlobalId<IdKind::Persistent>&);
-	extern template AZOTH_UTIL_API QDataStream& operator<< (QDataStream&, const GlobalId<IdKind::Conventional>&);
-	extern template AZOTH_UTIL_API QDataStream& operator>> (QDataStream&, GlobalId<IdKind::Persistent>&);
-	extern template AZOTH_UTIL_API QDataStream& operator>> (QDataStream&, GlobalId<IdKind::Conventional>&);
-
-	extern template AZOTH_UTIL_API QDataStream& operator<< (QDataStream&, const StrongestId<EntryId>&);
-	extern template AZOTH_UTIL_API QDataStream& operator<< (QDataStream&, const StrongestId<GlobalId>&);
-	extern template AZOTH_UTIL_API QDataStream& operator>> (QDataStream&, StrongestId<EntryId>&);
-	extern template AZOTH_UTIL_API QDataStream& operator>> (QDataStream&, StrongestId<GlobalId>&);
 }

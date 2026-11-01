@@ -7,7 +7,6 @@
  **********************************************************************/
 
 #include "util.h"
-#include <QDataStream>
 #include <QDebug>
 #include <QTimer>
 #include <QWidget>
@@ -130,7 +129,7 @@ namespace LC::Azoth
 	QDebug operator<< (QDebug dbg, const EntryId<K>& id)
 	{
 		QDebugStateSaver saver { dbg };
-		dbg.nospace () << "EntryId<" << KindName (K) << ">{" << id.Id_ << '}';
+		dbg.nospace () << "EntryId<" << KindName (K) << ">{" << id.ToString () << '}';
 		return dbg;
 	}
 
@@ -138,7 +137,7 @@ namespace LC::Azoth
 	QDebug operator<< (QDebug dbg, const GlobalId<K>& id)
 	{
 		QDebugStateSaver saver { dbg };
-		dbg.nospace () << "GlobalId<" << KindName (K) << ">{ " << id.AccountId_ << ", " << id.EntryId_.Id_ << " }";
+		dbg.nospace () << "GlobalId<" << KindName (K) << ">{ " << id.AccountId_ << ", " << id.EntryId_.ToString () << " }";
 		return dbg;
 	}
 
@@ -147,82 +146,6 @@ namespace LC::Azoth
 	template AZOTH_UTIL_API QDebug operator<< (QDebug, const GlobalId<IdKind::Persistent>&);
 	template AZOTH_UTIL_API QDebug operator<< (QDebug, const GlobalId<IdKind::Conventional>&);
 
-	template<IdKind K>
-	QDataStream& operator<< (QDataStream& stream, const EntryId<K>& id)
-	{
-		return stream << id.Id_;
-	}
-
-	template<IdKind K>
-	QDataStream& operator>> (QDataStream& stream, EntryId<K>& id)
-	{
-		return stream >> id.Id_;
-	}
-
-	template<IdKind K>
-	QDataStream& operator<< (QDataStream& stream, const GlobalId<K>& id)
-	{
-		return stream << id.AccountId_ << id.EntryId_;
-	}
-
-	template<IdKind K>
-	QDataStream& operator>> (QDataStream& stream, GlobalId<K>& id)
-	{
-		return stream >> id.AccountId_ >> id.EntryId_;
-	}
-
-	template AZOTH_UTIL_API QDataStream& operator<< (QDataStream&, const EntryId<IdKind::Persistent>&);
-	template AZOTH_UTIL_API QDataStream& operator<< (QDataStream&, const EntryId<IdKind::Conventional>&);
-	template AZOTH_UTIL_API QDataStream& operator>> (QDataStream&, EntryId<IdKind::Persistent>&);
-	template AZOTH_UTIL_API QDataStream& operator>> (QDataStream&, EntryId<IdKind::Conventional>&);
-
-	template AZOTH_UTIL_API QDataStream& operator<< (QDataStream&, const GlobalId<IdKind::Persistent>&);
-	template AZOTH_UTIL_API QDataStream& operator<< (QDataStream&, const GlobalId<IdKind::Conventional>&);
-	template AZOTH_UTIL_API QDataStream& operator>> (QDataStream&, GlobalId<IdKind::Persistent>&);
-	template AZOTH_UTIL_API QDataStream& operator>> (QDataStream&, GlobalId<IdKind::Conventional>&);
-
-	namespace
-	{
-		template<typename Variant, typename Reader>
-		QDataStream& ReadStrongest (QDataStream& stream, Variant& id, Reader&& reader)
-		{
-			quint8 kindByte;
-			stream >> kindByte;
-			switch (static_cast<IdKind> (kindByte))
-			{
-			case IdKind::Persistent:
-				id = reader (std::integral_constant<IdKind, IdKind::Persistent> {});
-				break;
-			case IdKind::Conventional:
-				id = reader (std::integral_constant<IdKind, IdKind::Conventional> {});
-				break;
-			default:
-				stream.setStatus (QDataStream::ReadCorruptData);
-			}
-			return stream;
-		}
-	}
-
-	template<template<IdKind> typename Id>
-	QDataStream& operator<< (QDataStream& stream, const StrongestId<Id>& id)
-	{
-		std::visit ([&]<IdKind K> (const Id<K>& concrete) { stream << static_cast<quint8> (K) << concrete; },
-				id.ToVariant ());
-		return stream;
-	}
-
-	template<template<IdKind> typename Id>
-	QDataStream& operator>> (QDataStream& stream, StrongestId<Id>& id)
-	{
-		return ReadStrongest (stream, id,
-				[&]<IdKind K> (std::integral_constant<IdKind, K>) -> StrongestId<Id>
-				{
-					Id<K> concrete;
-					stream >> concrete;
-					return concrete;
-				});
-	}
-
 	template<template<IdKind> typename Id>
 	QDebug operator<< (QDebug dbg, const StrongestId<Id>& id)
 	{
@@ -230,10 +153,6 @@ namespace LC::Azoth
 		return dbg;
 	}
 
-	template AZOTH_UTIL_API QDataStream& operator<< (QDataStream&, const StrongestId<EntryId>&);
-	template AZOTH_UTIL_API QDataStream& operator<< (QDataStream&, const StrongestId<GlobalId>&);
-	template AZOTH_UTIL_API QDataStream& operator>> (QDataStream&, StrongestId<EntryId>&);
-	template AZOTH_UTIL_API QDataStream& operator>> (QDataStream&, StrongestId<GlobalId>&);
 	template AZOTH_UTIL_API QDebug operator<< (QDebug, const StrongestId<EntryId>&);
 	template AZOTH_UTIL_API QDebug operator<< (QDebug, const StrongestId<GlobalId>&);
 }

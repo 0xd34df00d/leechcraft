@@ -7,10 +7,11 @@
  **********************************************************************/
 
 #include "dnd.h"
+#include <QDataStream>
 #include <QString>
 #include <QMimeData>
 #include <util/sll/qtutil.h>
-#include "util/azoth/util.h"
+#include "util/azoth/entryidops.h"
 #include "interfaces/azoth/iclentry.h"
 #include "../../core.h"
 
@@ -28,7 +29,10 @@ namespace LC::Azoth::DndUtil
 		QByteArray encoded;
 		QDataStream stream (&encoded, QIODevice::WriteOnly);
 		for (const auto& info : entries)
-			stream << info.Entry_->GetGlobalStrongestID () << info.Group_;
+		{
+			Serialize (stream, info.Entry_->GetGlobalStrongestID ());
+			stream << info.Group_;
+		}
 
 		if (data)
 			data->setData (CLEntryFormat, encoded);
@@ -39,10 +43,8 @@ namespace LC::Azoth::DndUtil
 	ICLEntry* DecodeEntryObj (const QMimeData *mime)
 	{
 		QDataStream stream (mime->data (CLEntryFormat));
-		GlobalStrongestId sid;
-		stream >> sid;
-
-		return Core::Instance ().GetEntryOrNull (sid);
+		const auto id = Deserialize<GlobalStrongestId> (stream);
+		return id ? Core::Instance ().GetEntryOrNull (*id) : nullptr;
 	}
 
 	QList<ICLEntry*> DecodeEntryObjs (const QMimeData *mime)
@@ -60,11 +62,14 @@ namespace LC::Azoth::DndUtil
 		QDataStream stream (mime->data (CLEntryFormat));
 		while (!stream.atEnd ())
 		{
-			GlobalStrongestId id;
-			QString group;
-			stream >> id >> group;
+			const auto id = Deserialize<GlobalStrongestId> (stream);
+			if (!id)
+				break;
 
-			if (const auto entry = Core::Instance ().GetEntryOrNull (id))
+			QString group;
+			stream >> group;
+
+			if (const auto entry = Core::Instance ().GetEntryOrNull (*id))
 				result.append ({ entry, group });
 		}
 
