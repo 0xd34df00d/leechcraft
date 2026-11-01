@@ -161,8 +161,9 @@ Util::Either<TagsManager::InvalidTagName, Util::Void> TagsManager::ReplaceName (
 		names.insert (name);
 	}
 
+	auto updated = Names_;
 	bool changed = false;
-	for (auto pos = Names_.begin (); pos != Names_.end (); )
+	for (auto pos = updated.begin (); pos != updated.end (); )
 	{
 		auto& own = *pos;
 		if (!own.contains (old))
@@ -179,7 +180,7 @@ Util::Either<TagsManager::InvalidTagName, Util::Void> TagsManager::ReplaceName (
 		for (const auto& name : names)
 			changed |= own.insert (name).second;
 
-		pos = own.empty () ? Names_.erase (pos) : std::next (pos);
+		pos = own.empty () ? updated.erase (pos) : std::next (pos);
 	}
 
 	if (!changed)
@@ -187,6 +188,7 @@ Util::Either<TagsManager::InvalidTagName, Util::Void> TagsManager::ReplaceName (
 
 	const auto& replacement = QStringList (names.begin (), names.end ());
 	Storage_->ReplaceName (old, replacement);
+	Names_ = std::move (updated);
 	SetRows (DistinctNames (Names_));
 
 	emit Emitter_.nameReplaced (old, replacement);

@@ -37,6 +37,7 @@ namespace LC
 		void testMerge ();
 		void testReplaceNameKeepingTheOldName ();
 		void testRemove ();
+		void testStorageFailureLeavesTheManagerUntouched ();
 		void testModelRowsFollowGetAllTags ();
 		void testJoinAndSplit ();
 		void testTagIdListIsARegisteredMetaType ();

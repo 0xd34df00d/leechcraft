@@ -11,6 +11,8 @@
 #include <QDataStream>
 #include <QRegularExpression>
 #include <QSignalSpy>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 #include <QTest>
 #include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
@@ -77,6 +79,23 @@ namespace LC
 			return Util::Visit (error,
 					[] (TagsManager::BlankTagName) { return "blank"_qs; },
 					[] (const TagsManager::DelimiterInTagName& e) { return "delimiter " + e.Delimiter_; });
+		}
+
+		bool MakeReadOnly (const QStringList& otherConnections)
+		{
+			for (const auto& name : QSqlDatabase::connectionNames ())
+				if (!otherConnections.contains (name))
+					return QSqlQuery { QSqlDatabase::database (name) }.exec ("PRAGMA query_only = 1"_qs);
+			return false;
+		}
+
+		void IgnoreQueryFailure (const QString& kind)
+		{
+			QTest::ignoreMessage (QtCriticalMsg, QRegularExpression { '^' + kind + " query execution failed$"_qs });
+			QTest::ignoreMessage (QtCriticalMsg, QRegularExpression { "^query: "_qs });
+			QTest::ignoreMessage (QtCriticalMsg, QRegularExpression { "."_qs });
+			QTest::ignoreMessage (QtCriticalMsg, QRegularExpression { "^bound keys: "_qs });
+			QTest::ignoreMessage (QtCriticalMsg, QRegularExpression { "^bound values: "_qs });
 		}
 	}
 
@@ -390,6 +409,31 @@ namespace LC
 		QCOMPARE (replaced.size (), 1);
 		QCOMPARE (replaced.first (), (QVariantList { Work, QStringList {} }));
 		QVERIFY (StoredNames (f.Storage_).isEmpty ());
+	}
+
+	void TagsManagerTest::testStorageFailureLeavesTheManagerUntouched ()
+	{
+		const auto& connections = QSqlDatabase::connectionNames ();
+		Fixture f { Rows { { Low, Work } } };
+		QVERIFY (MakeReadOnly (connections));
+
+		QSignalSpy removed { &f.Manager_, &QAbstractItemModel::rowsRemoved };
+		QSignalSpy inserted { &f.Manager_, &QAbstractItemModel::rowsInserted };
+		QSignalSpy replaced { &f.Manager_.GetEmitter (), &Util::Emitters::TagsManager::nameReplaced };
+
+		IgnoreQueryFailure ("insert"_qs);
+		QVERIFY_THROWS_EXCEPTION (std::exception, f.Manager_.ReplaceName (Work, { "renamed"_qs }));
+		IgnoreQueryFailure ("delete"_qs);
+		QVERIFY_THROWS_EXCEPTION (std::exception, f.Manager_.ReplaceName (Work, {}));
+		IgnoreQueryFailure ("insert"_qs);
+		QVERIFY_THROWS_EXCEPTION (std::exception, f.Manager_.GetID ("fresh"_qs));
+
+		QCOMPARE (f.Manager_.GetTags (TagId { Low.toString () }), QStringList { Work });
+		QCOMPARE (f.Manager_.GetAllTags (), QStringList { Work });
+		QCOMPARE (removed.size (), 0);
+		QCOMPARE (inserted.size (), 0);
+		QCOMPARE (replaced.size (), 0);
+		QCOMPARE (StoredNames (f.Storage_), QStringList { Work });
 	}
 
 	void TagsManagerTest::testModelRowsFollowGetAllTags ()
