@@ -23,7 +23,7 @@ namespace LC::Util::Emitters
 		Q_OBJECT
 	public:
 		using QObject::QObject;
-	signals:
+	Q_SIGNALS:
 		/** @brief Emitted after the name `old` was replaced with `newNames`
 		 * on every tag that had it.
 		 *
