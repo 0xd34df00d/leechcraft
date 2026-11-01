@@ -41,6 +41,7 @@
 #include <util/xpc/notificationactionhandler.h>
 #include <util/xpc/stddatafiltermenucreator.h>
 #include <util/shortcuts/shortcutmanager.h>
+#include <interfaces/entityconstants.h>
 #include <interfaces/an/entityfields.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -1223,12 +1224,12 @@ namespace Poshuku
 					LC::Entity e;
 					if (hasAtom)
 					{
-						e.Additional_ ["UserVisibleName"] = "Atom";
+						e.Additional_ [EF::UserVisibleName] = "Atom";
 						e.Mime_ = "application/atom+xml";
 					}
 					else
 					{
-						e.Additional_ ["UserVisibleName"] = "RSS";
+						e.Additional_ [EF::UserVisibleName] = "RSS";
 						e.Mime_ = "application/rss+xml";
 					}
 

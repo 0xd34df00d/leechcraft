@@ -14,6 +14,7 @@
 #include <QUrl>
 #include "util/sll/exceptions.h"
 #include "util/util.h"
+#include "interfaces/entityconstants.h"
 #include "interfaces/structures.h"
 #include "interfaces/idownload.h"
 #include "interfaces/ientityhandler.h"
@@ -131,9 +132,9 @@ namespace LC
 		QString GetUserText (const Entity& p)
 		{
 			QString string = QObject::tr ("Too long to show");
-			if (p.Additional_.contains ("UserVisibleName") &&
-					p.Additional_ ["UserVisibleName"].canConvert<QString> ())
-				string = p.Additional_ ["UserVisibleName"].toString ();
+			if (p.Additional_.contains (EF::UserVisibleName) &&
+					p.Additional_ [EF::UserVisibleName].canConvert<QString> ())
+				string = p.Additional_ [EF::UserVisibleName].toString ();
 			else if (p.Entity_.canConvert<QByteArray> ())
 			{
 				const auto& entity = p.Entity_.toByteArray ();

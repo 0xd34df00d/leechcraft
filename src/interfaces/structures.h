@@ -155,7 +155,7 @@ namespace LC
 		/** @brief Additional parameters.
 		 *
 		 * Some predefined or commonly used ones:
-		 * - "UserVisibleName"
+		 * - `LC::EF::UserVisibleName`
 		 *   A QString with some text that would make sense when showed
 		 *   to the user. For example, if the entity is binary, this could
 		 *   be used to describe the entity.

@@ -176,9 +176,9 @@ namespace HistoryHolder
 		QString GetTitle (const Entity& e)
 		{
 			QString stren;
-			if (e.Additional_.contains ("UserVisibleName") &&
-					e.Additional_ ["UserVisibleName"].canConvert<QString> ())
-				stren = e.Additional_ ["UserVisibleName"].toString ();
+			if (e.Additional_.contains (EF::UserVisibleName) &&
+					e.Additional_ [EF::UserVisibleName].canConvert<QString> ())
+				stren = e.Additional_ [EF::UserVisibleName].toString ();
 			else if (e.Entity_.canConvert<QUrl> ())
 				stren = e.Entity_.toUrl ().toString ();
 			else if (e.Entity_.canConvert<QByteArray> ())

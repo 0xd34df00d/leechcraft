@@ -10,6 +10,7 @@
 #include <QToolButton>
 #include <QMenu>
 #include <util/sll/slotclosure.h>
+#include <interfaces/entityconstants.h>
 #include <interfaces/an/entityfields.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -159,7 +160,7 @@ namespace Poshuku
 						e.Additional_ ["SourceURL"] = entityUrl;
 						e.Parameters_ = FromUserInitiated |
 										OnlyHandle;
-						e.Additional_ ["UserVisibleName"] = entity;
+						e.Additional_ [EF::UserVisibleName] = entity;
 						e.Additional_ ["LinkRel"] = rel;
 						e.Additional_ [IgnoreSelf] = true;
 
