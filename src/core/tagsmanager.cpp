@@ -11,6 +11,7 @@
 #include <QDir>
 #include <QStringList>
 #include <QtDebug>
+#include <util/models/modelsanitizer.h>
 #include <util/sll/qtutil.h>
 #include <util/sys/paths.h>
 #include <util/tags/util.h>
@@ -54,6 +55,7 @@ TagsManager::TagsManager (std::unique_ptr<TagsStorage> storage)
 	MigrateStoredNames ();
 
 	qRegisterMetaType<QList<TagId>> ();
+	Util::InstallModelSanitizer (*this);
 }
 
 TagsManager& TagsManager::Instance ()
