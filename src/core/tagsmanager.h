@@ -12,7 +12,7 @@
 #include <memory>
 #include <optional>
 #include <variant>
-#include <QAbstractItemModel>
+#include <QAbstractListModel>
 #include <QHash>
 #include <QUuid>
 #include <QString>
@@ -24,7 +24,7 @@
 
 namespace LC
 {
-	class TagsManager final : public QAbstractItemModel
+	class TagsManager final : public QAbstractListModel
 							, public ITagsManager
 	{
 		Q_OBJECT
@@ -38,10 +38,7 @@ namespace LC
 
 		static TagsManager& Instance ();
 
-		int columnCount (const QModelIndex&) const override;
 		QVariant data (const QModelIndex&, int) const override;
-		QModelIndex index (int, int, const QModelIndex&) const override;
-		QModelIndex parent (const QModelIndex&) const override;
 		int rowCount (const QModelIndex&) const override;
 
 		std::optional<TagId> GetID (const QString&) override;

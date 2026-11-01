@@ -439,16 +439,16 @@ namespace LC
 	void TagsManagerTest::testModelRowsFollowGetAllTags ()
 	{
 		Fixture f { Rows { { High, "a"_qs }, { Low, "b"_qs } } };
-		const auto& tm = f.Manager_;
+		const QAbstractItemModel& tm = f.Manager_;
 
-		const auto& names = tm.GetAllTags ();
+		const auto& names = f.Manager_.GetAllTags ();
 		QCOMPARE (tm.rowCount ({}), names.size ());
 		QCOMPARE (tm.columnCount ({}), 1);
 		for (int i = 0; i < names.size (); ++i)
 		{
 			const auto& idx = tm.index (i, 0, {});
 			QCOMPARE (idx.data ().toString (), names [i]);
-			QVERIFY (!idx.data (Qt::EditRole).isValid ());
+			QCOMPARE (idx.data (Qt::EditRole).toString (), names [i]);
 			QVERIFY (!idx.parent ().isValid ());
 			QCOMPARE (tm.rowCount (idx), 0);
 			QVERIFY (!tm.index (0, 0, idx).isValid ());

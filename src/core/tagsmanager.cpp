@@ -55,31 +55,13 @@ TagsManager& TagsManager::Instance ()
 	return tm;
 }
 
-int TagsManager::columnCount (const QModelIndex&) const
-{
-	return 1;
-}
-
 QVariant TagsManager::data (const QModelIndex& index, int role) const
 {
 	if (!index.isValid () ||
-			role != Qt::DisplayRole)
+			(role != Qt::DisplayRole && role != Qt::EditRole))
 		return {};
 
 	return Rows_.value (index.row ());
-}
-
-QModelIndex TagsManager::index (int row, int column, const QModelIndex& parent) const
-{
-	if (!hasIndex (row, column, parent))
-		return {};
-
-	return createIndex (row, column);
-}
-
-QModelIndex TagsManager::parent (const QModelIndex&) const
-{
-	return {};
 }
 
 int TagsManager::rowCount (const QModelIndex& index) const
