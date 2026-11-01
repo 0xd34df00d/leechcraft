@@ -134,7 +134,7 @@ namespace LC
 				Sorted ({ { A, "y"_qs }, { A, "z"_qs }, { B, "y"_qs }, { B, "z"_qs } }));
 	}
 
-	void TagsStorageTest::testUnparsableIdsAreSkipped ()
+	void TagsStorageTest::testUnparseableIdsAreSkipped ()
 	{
 		QTemporaryDir dir;
 		const auto& path = dir.filePath ("core.db"_qs);

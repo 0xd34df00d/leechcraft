@@ -31,6 +31,7 @@ namespace LC::Util
 		void testCompletionReplacesTheTokenUnderCursor ();
 		void testEnterAcceptsTheCompletion ();
 		void testCursorMoveRefreshesCompletion ();
+		void testCompletionIgnoresCase ();
 		void testInnerWhitespaceIsKept ();
 		void testSelectorFollowsTheTagsModel ();
 		void testSelectorButtonBindsAPopup ();

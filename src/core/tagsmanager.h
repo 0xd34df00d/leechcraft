@@ -30,7 +30,13 @@ namespace LC
 		Q_OBJECT
 		Q_INTERFACES (ITagsManager)
 
-		QHash<QUuid, std::flat_set<QString>> Names_;
+		struct NameOrder
+		{
+			bool operator() (const QString&, const QString&) const;
+		};
+		using NameSet = std::flat_set<QString, NameOrder>;
+
+		QHash<QUuid, NameSet> Names_;
 		QStringList Rows_;
 		std::unique_ptr<TagsStorage> Storage_;
 	public:
@@ -67,6 +73,7 @@ namespace LC
 		 */
 		Util::Either<InvalidTagName, Util::Void> ReplaceName (const QString& old, const QStringList& newNames);
 	private:
+		static QStringList DistinctNames (const QHash<QUuid, NameSet>&);
 		void MigrateStoredNames ();
 		TagId InsertTag (const QString&);
 		void SetRows (const QStringList&);

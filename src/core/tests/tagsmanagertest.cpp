@@ -457,6 +457,21 @@ namespace LC
 		QVERIFY (!tm.index (0, 1, {}).isValid ());
 	}
 
+	void TagsManagerTest::testRowsAreOrderedCaseInsensitively ()
+	{
+		Fixture f { Rows { { Low, "Zeta"_qs }, { Low, "alpha"_qs }, { High, "mid"_qs }, { High, "Mid"_qs } } };
+		QCOMPARE (f.Manager_.GetAllTags (), (QStringList { "alpha"_qs, "Mid"_qs, "mid"_qs, "Zeta"_qs }));
+		QCOMPARE (f.Manager_.GetTags (TagId { Low.toString () }), (QStringList { "alpha"_qs, "Zeta"_qs }));
+
+		QSignalSpy removed { &f.Manager_, &QAbstractItemModel::rowsRemoved };
+		QSignalSpy inserted { &f.Manager_, &QAbstractItemModel::rowsInserted };
+		QVERIFY (f.Manager_.GetID ("Beta"_qs));
+		QCOMPARE (f.Manager_.GetAllTags (), (QStringList { "alpha"_qs, "Beta"_qs, "Mid"_qs, "mid"_qs, "Zeta"_qs }));
+		QCOMPARE (removed.size (), 0);
+		QCOMPARE (inserted.size (), 1);
+		QCOMPARE (inserted.first ().at (1).toInt (), 1);
+	}
+
 	void TagsManagerTest::testJoinAndSplit ()
 	{
 		Fixture f;

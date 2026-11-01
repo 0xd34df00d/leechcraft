@@ -28,14 +28,21 @@ namespace
 			return TagsManager::BlankTagName {};
 		return {};
 	}
+}
 
-	QStringList DistinctNames (const QHash<QUuid, std::flat_set<QString>>& names)
-	{
-		std::flat_set<QString> all;
-		for (const auto& own : names)
-			all.insert (own.begin (), own.end ());
-		return QStringList (all.begin (), all.end ());
-	}
+bool TagsManager::NameOrder::operator() (const QString& left, const QString& right) const
+{
+	if (const auto folded = QString::compare (left, right, Qt::CaseInsensitive))
+		return folded < 0;
+	return left < right;
+}
+
+QStringList TagsManager::DistinctNames (const QHash<QUuid, NameSet>& names)
+{
+	NameSet all;
+	for (const auto& own : names)
+		all.insert (own.begin (), own.end ());
+	return QStringList (all.begin (), all.end ());
 }
 
 TagsManager::TagsManager (std::unique_ptr<TagsStorage> storage)
@@ -134,7 +141,7 @@ TagId TagsManager::InsertTag (const QString& name)
 
 Util::Either<TagsManager::InvalidTagName, Util::Void> TagsManager::ReplaceName (const QString& old, const QStringList& newNames)
 {
-	std::flat_set<QString> names;
+	NameSet names;
 	for (const auto& newName : newNames)
 	{
 		const auto& name = newName.trimmed ();
@@ -181,7 +188,7 @@ Util::Either<TagsManager::InvalidTagName, Util::Void> TagsManager::ReplaceName (
 void TagsManager::SetRows (const QStringList& rows)
 {
 	for (qsizetype i = Rows_.size () - 1; i >= 0; --i)
-		if (!std::ranges::binary_search (rows, Rows_ [i]))
+		if (!std::ranges::binary_search (rows, Rows_ [i], NameOrder {}))
 		{
 			beginRemoveRows ({}, i, i);
 			Rows_.removeAt (i);

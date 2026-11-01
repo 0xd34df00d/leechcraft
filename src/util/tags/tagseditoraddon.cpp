@@ -35,6 +35,7 @@ namespace LC::Util
 	, Separator_ { GetDefaultTagsSeparator () }
 	{
 		Completer_.setCompletionRole (Qt::DisplayRole);
+		Completer_.setCaseSensitivity (Qt::CaseInsensitive);
 		Completer_.setCompletionMode (QCompleter::PopupCompletion);
 		Completer_.setWidget (&Edit_);
 

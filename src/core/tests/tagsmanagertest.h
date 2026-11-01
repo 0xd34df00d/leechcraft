@@ -39,6 +39,7 @@ namespace LC
 		void testRemove ();
 		void testStorageFailureLeavesTheManagerUntouched ();
 		void testModelRowsFollowGetAllTags ();
+		void testRowsAreOrderedCaseInsensitively ();
 		void testJoinAndSplit ();
 		void testTagIdListIsARegisteredMetaType ();
 	};

@@ -326,6 +326,29 @@ namespace LC::Util
 		QCOMPARE (f.Edit_.text (), "b; c"_qs);
 	}
 
+	void TagsEditorAddonTest::testCompletionIgnoresCase ()
+	{
+		const auto work = "Work"_qs;
+
+		Fixture f;
+		f.TagsModel_.appendRow (new QStandardItem { work });
+		f.Edit_.show ();
+
+		QTest::keyClicks (&f.Edit_, "wo"_qs);
+		const auto popup = f.Completer ().popup ();
+		QVERIFY (popup->isVisible ());
+		QCOMPARE (popup->currentIndex ().data ().toString (), work);
+		QTest::keyClick (popup, Qt::Key_Return);
+		QCOMPARE (f.Edit_.text (), work);
+		QCOMPARE (f.Edits_.last ().After_, QStringList { work });
+
+		QTest::keyClicks (&f.Edit_, "; B"_qs);
+		QVERIFY (popup->isVisible ());
+		QCOMPARE (popup->currentIndex ().data ().toString (), B);
+		QTest::keyClick (popup, Qt::Key_Return);
+		QCOMPARE (f.Edit_.text (), "Work; b"_qs);
+	}
+
 	void TagsEditorAddonTest::testInnerWhitespaceIsKept ()
 	{
 		const auto group = "Work  friends"_qs;
