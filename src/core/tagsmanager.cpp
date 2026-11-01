@@ -46,7 +46,6 @@ TagsManager::TagsManager (std::unique_ptr<TagsStorage> storage)
 	Rows_ = DistinctNames (Names_);
 	MigrateStoredNames ();
 
-	GetID (tr ("untagged"));
 	qRegisterMetaType<QList<TagId>> ();
 }
 

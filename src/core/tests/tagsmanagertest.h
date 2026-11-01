@@ -16,8 +16,6 @@ namespace LC
 	{
 		Q_OBJECT
 	private slots:
-		void testFreshStorageGetsUntagged ();
-		void testStoredUntaggedIsReused ();
 		void testIdsAreBracedUuidStrings ();
 		void testGetIdCreatesAndPersists ();
 		void testGetIdTrims ();
