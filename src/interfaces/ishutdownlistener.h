@@ -10,6 +10,23 @@
 
 #include <QObject>
 
+namespace LC
+{
+	/** @brief Why LeechCraft is shutting down.
+	 */
+	enum class ShutdownReason
+	{
+		/** @brief LeechCraft is quitting.
+		 */
+		Quit,
+
+		/** @brief LeechCraft is restarting: a new instance starts after
+		 * this one exits.
+		 */
+		Restart,
+	};
+}
+
 /** @brief Interface for plugins wishing to get notifications about the
  * shutdown process.
  */
@@ -20,8 +37,10 @@ public:
 
 	/** @brief This function is called by the LeechCraft Core to notify
 	 * the plugin that LeechCraft is shutting down.
+	 *
+	 * @param[in] reason Whether LeechCraft is quitting or restarting.
 	 */
-	virtual void HandleShutdownInitiated () = 0;
+	virtual void HandleShutdownInitiated (LC::ShutdownReason reason) = 0;
 };
 
 Q_DECLARE_INTERFACE (IShutdownListener, "org.Deviant.LeechCraft.IShutdownListener/1.0")

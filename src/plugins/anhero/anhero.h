@@ -31,6 +31,6 @@ namespace LC::AnHero
 		QString GetInfo () const override;
 		QIcon GetIcon () const override;
 
-		void HandleShutdownInitiated () override;
+		void HandleShutdownInitiated (ShutdownReason) override;
 	};
 }

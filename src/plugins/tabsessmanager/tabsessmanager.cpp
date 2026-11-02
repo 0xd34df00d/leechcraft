@@ -108,7 +108,7 @@ namespace LC::TabSessManager
 		}
 	}
 
-	void Plugin::HandleShutdownInitiated ()
+	void Plugin::HandleShutdownInitiated (ShutdownReason)
 	{
 		Mgrs_.reset ();
 	}

@@ -48,7 +48,7 @@ namespace LC::TabSessManager
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const override;
 
-		void HandleShutdownInitiated () override;
+		void HandleShutdownInitiated (ShutdownReason) override;
 	public slots:
 		void hookTabIsRemoving (const LC::IHookProxy_ptr& proxy,
 				int index,

@@ -81,7 +81,7 @@ namespace LC
 		return core;
 	}
 
-	void Core::Release (int exitCode)
+	void Core::Release (ShutdownReason reason, int exitCode)
 	{
 		if (IsShuttingDown_)
 			return;
@@ -91,12 +91,12 @@ namespace LC
 		RootWindowsManager_->Release ();
 
 		QTimer::singleShot (0, this,
-				[this, exitCode]
+				[this, reason, exitCode]
 				{
 					LocalSocketHandler_.reset ();
 					XmlSettingsManager::Instance ()->setProperty ("FirstStart", "false");
 
-					PluginManager_->Release ();
+					PluginManager_->Release (reason);
 					delete PluginManager_;
 
 					CoreInstanceObject_.reset ();

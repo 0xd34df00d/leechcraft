@@ -24,6 +24,8 @@ namespace LC
 	class MainWindow;
 	class PluginTreeBuilder;
 
+	enum class ShutdownReason;
+
 	class PluginManager : public QAbstractItemModel
 						, public IPluginsManager
 	{
@@ -88,7 +90,7 @@ namespace LC
 
 		Size_t GetSize () const;
 		void Init (bool safeMode);
-		void Release ();
+		void Release (ShutdownReason);
 		QString Name (const Size_t& pos) const;
 		QString Info (const Size_t& pos) const;
 

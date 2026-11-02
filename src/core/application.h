@@ -80,7 +80,7 @@ namespace LC
 		 */
 		void InitiateRestart ();
 
-		void Quit (int exitCode = 0);
+		void Quit ();
 
 		/** Checks whether another instance of LeechCraft is running.
 		 */

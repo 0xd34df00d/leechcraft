@@ -206,7 +206,7 @@ namespace LC::AnHero
 		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
-	void Plugin::HandleShutdownInitiated ()
+	void Plugin::HandleShutdownInitiated (ShutdownReason)
 	{
 		IsShuttingDown_ = true;
 	}

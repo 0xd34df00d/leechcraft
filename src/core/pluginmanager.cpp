@@ -532,14 +532,14 @@ namespace LC
 		TryUnload (failed);
 	}
 
-	void PluginManager::Release ()
+	void PluginManager::Release (ShutdownReason reason)
 	{
 		auto ordered = PluginTreeBuilder_->GetResult ();
 		std::reverse (ordered.begin (), ordered.end ());
 
 		for (const auto obj : ordered)
 			if (const auto isl = qobject_cast<IShutdownListener*> (obj))
-				isl->HandleShutdownInitiated ();
+				isl->HandleShutdownInitiated (reason);
 
 		for (const auto obj : ordered)
 		{

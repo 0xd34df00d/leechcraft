@@ -32,6 +32,8 @@ namespace LC
 	class CoreInstanceObject;
 	class DockManager;
 
+	enum class ShutdownReason;
+
 	/** Contains all the plugins' models, maps from end-user's tree view
 	 * to plugins' models and much more.
 	 */
@@ -51,7 +53,7 @@ namespace LC
 		Core ();
 	public:
 		static Core& Instance ();
-		void Release (int exitCode);
+		void Release (ShutdownReason, int exitCode = 0);
 
 		bool IsShuttingDown () const;
 

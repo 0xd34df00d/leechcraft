@@ -39,6 +39,7 @@
 #endif
 
 #include <interfaces/ihaveshortcuts.h>
+#include <interfaces/ishutdownlistener.h>
 #include <util/util.h>
 #include <util/structuresops.h>
 #include <util/sll/exceptions.h>
@@ -242,7 +243,7 @@ namespace LC
 	{
 		if (CLArgs_->Supervised_)
 		{
-			Quit (ERestartRequested);
+			Core::Instance ().Release (ShutdownReason::Restart, ERestartRequested);
 			return;
 		}
 
@@ -250,12 +251,12 @@ namespace LC
 		arguments << "--restart";
 		QProcess::startDetached (applicationFilePath (), arguments);
 
-		Quit ();
+		Core::Instance ().Release (ShutdownReason::Restart);
 	}
 
-	void Application::Quit (int exitCode)
+	void Application::Quit ()
 	{
-		Core::Instance ().Release (exitCode);
+		Core::Instance ().Release (ShutdownReason::Quit);
 	}
 
 	bool Application::notify (QObject *obj, QEvent *event)
