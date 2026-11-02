@@ -10,6 +10,12 @@
 #include <QString>
 #include <QImageWriter>
 
+#ifdef Q_OS_LINUX
+#include <sys/prctl.h>
+#elifdef Q_OS_FREEBSD
+#include <sys/procctl.h>
+#endif
+
 namespace LC::Util
 {
 	bool HasSupportedImageExtension (const QString& filename)
@@ -28,6 +34,17 @@ namespace LC::Util
 	{
 #if defined (Q_OS_MAC) && !defined (USE_UNIX_LAYOUT)
 		return qgetenv ("LC_BUNDLE_DIRECT_LOAD") != "1";
+#else
+		return false;
+#endif
+	}
+
+	bool SetParentDeathSignal ([[maybe_unused]] int signum)
+	{
+#ifdef Q_OS_LINUX
+		return prctl (PR_SET_PDEATHSIG, signum) == 0;
+#elifdef Q_OS_FREEBSD
+		return procctl (P_PID, 0, PROC_PDEATHSIG_CTL, &signum) == 0;
 #else
 		return false;
 #endif

@@ -25,4 +25,23 @@ namespace LC::Util
 	UTIL_SYS_API bool HasSupportedImageExtension (const QString& filename);
 
 	UTIL_SYS_API bool IsOSXLoadFromBundle ();
+
+	/** @brief Makes the system send a signal to the calling process once
+	 * its parent exits.
+	 *
+	 * On Linux, the parent is the thread that started the calling
+	 * process, so the signal also arrives once just that thread exits.
+	 * The processes the calling process starts don't inherit the
+	 * setting, and executing a set-user-ID or set-group-ID program
+	 * clears it, as does executing a program with file capabilities on
+	 * Linux.
+	 *
+	 * This function is async-signal-safe, so a QProcess child process
+	 * modifier may call it.
+	 *
+	 * @param[in] signum The signal to send, like SIGTERM.
+	 * @return Whether the signal is set up, which only Linux and FreeBSD
+	 * support.
+	 */
+	UTIL_SYS_API bool SetParentDeathSignal (int signum);
 }
