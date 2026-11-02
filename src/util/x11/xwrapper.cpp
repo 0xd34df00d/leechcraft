@@ -723,6 +723,16 @@ namespace LC::Util
 		return atom;
 	}
 
+	Atom XWrapper::GetManagerSelection (std::string_view manager)
+	{
+		return GetAtom (std::string { manager } + "_S" + std::to_string (DefaultScreen (Display_)));
+	}
+
+	Window XWrapper::GetSelectionOwner (Atom selection) const
+	{
+		return XGetSelectionOwner (Display_, selection);
+	}
+
 	bool XWrapper::GetWinProp (Window win, Atom property,
 			ulong *length, unsigned char **result, Atom req) const
 	{

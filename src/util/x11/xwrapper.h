@@ -115,6 +115,25 @@ namespace LC::Util
 		 * @return An X11 Atom.
 		 */
 		Atom GetAtom (std::string_view str);
+
+		/** @brief Returns the atom of an ICCCM manager selection on the
+		 * default screen.
+		 *
+		 * @param[in] manager The selection name without the screen
+		 * suffix, like `WM` for window managers, `_NET_WM_CM` for
+		 * compositing managers or `_NET_SYSTEM_TRAY` for system trays.
+		 * @return The atom of the selection, like the one of `WM_S0` for
+		 * window managers on screen 0.
+		 */
+		Atom GetManagerSelection (std::string_view manager);
+
+		/** @brief Returns the owner of the given selection.
+		 *
+		 * @param[in] selection The atom of the selection.
+		 * @return The window owning the selection, or None if nobody
+		 * holds it.
+		 */
+		Window GetSelectionOwner (Atom selection) const;
 	private:
 		template<typename T>
 		void HandlePropNotify (T);
