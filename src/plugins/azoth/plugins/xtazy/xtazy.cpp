@@ -137,15 +137,10 @@ namespace Xtazy
 			text = songStr;
 			return false;
 		}
-		else
-		{
-			const auto& eId = entry->GetEntryID ();
-			const auto& accId = entry->GetParentAccount ()->GetAccountID ();
-			QTimer::singleShot (0, this,
-					[this, eId, accId, songStr] { AzothProxy_->OpenChat (eId, accId.ToUtf8 (), songStr); });
 
-			return true;
-		}
+		const auto& eId = entry->GetGlobalStrongestID ();
+		QTimer::singleShot (0, this, [this, eId, songStr] { AzothProxy_->OpenChat (eId, songStr); });
+		return true;
 	}
 
 	bool Plugin::HandleShare (ICLEntry *entry, QString& text)

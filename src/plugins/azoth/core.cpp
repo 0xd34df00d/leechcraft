@@ -161,9 +161,9 @@ namespace LC::Azoth
 	, FontsWidget_ { new Util::WkFontsWidget { &XmlSettingsManager::Instance () } }
 	, TooltipManager_ (new CLTooltipManager (AvatarsManager_.get (), Entry2Items_))
 	, CLModel_ (new CLModel (TooltipManager_, this))
-	, ChatTabsManager_ (new ChatTabsManager (AvatarsManager_.get (), FontsWidget_, this))
+	, ChatTabsManager_ (new ChatTabsManager (AvatarsManager_.get (), FontsWidget_, EntriesManager_, this))
 	, CoreCommandsManager_ (new CoreCommandsManager (this))
-	, NotificationsManager_ (new NotificationsManager (AvatarsManager_.get ()))
+	, NotificationsManager_ (new NotificationsManager (AvatarsManager_.get (), EntriesManager_))
 	, ActionsManager_ (new ActionsManager (*NotificationsManager_, *AvatarsManager_, this))
 	, ItemIconManager_ (new AnimatedIconManager<QStandardItem*> ([] (QStandardItem *it, const QIcon& ic)
 						{ it->setIcon (ic); }))
@@ -1276,7 +1276,7 @@ namespace LC::Azoth
 
 		TooltipManager_->AddEntry (entry);
 
-		ChatTabsManager_->UpdateEntryMapping (entry->GetEntryID ());
+		ChatTabsManager_->UpdateEntryMapping (entry->GetGlobalStrongestID ());
 
 		proxy = std::make_shared<Util::DefaultHookProxy> ();
 		emit hookAddingCLEntryEnd (proxy, entryObj);
@@ -1596,6 +1596,8 @@ namespace LC::Azoth
 					<< sender ();
 			return;
 		}
+
+		EntriesManager_.AddAccount (*account);
 
 		HistorySyncer_->AddAccount (account);
 

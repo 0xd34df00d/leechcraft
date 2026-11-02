@@ -328,7 +328,7 @@ namespace Xoox
 			}
 			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 
-			ProxyObject_->OpenChat (entry->GetEntryID (), acc->GetAccountID ().ToUtf8 (), body, variant);
+			ProxyObject_->OpenChat (entry->GetGlobalStrongestID (), body, variant);
 		}
 		else
 			qWarning () << Q_FUNC_INFO

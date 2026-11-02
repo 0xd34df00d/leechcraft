@@ -25,6 +25,7 @@ namespace Util
 namespace Azoth
 {
 	class ICLEntry;
+	class EntriesManager;
 	class AvatarsManager;
 
 	class ChatTabsManager : public QObject
@@ -36,8 +37,8 @@ namespace Azoth
 		QWebEngineProfile * const Profile_;
 
 		QSet<QString> StyleParams_;
-		QHash<QString, ChatTab_ptr> Entry2Tab_;
-		QSet<QString> EverOpened_;
+		QHash<GlobalStrongestId, ChatTab_ptr> Entry2Tab_;
+		QSet<GlobalStrongestId> EverOpened_;
 
 		QPointer<ChatTab> LastCurrentTab_;
 	public:
@@ -51,7 +52,7 @@ namespace Azoth
 	private:
 		QHash<QString, RestoreChatInfo> RestoreInfo_;
 	public:
-		ChatTabsManager (AvatarsManager*, Util::WkFontsWidget*, QObject* = nullptr);
+		ChatTabsManager (AvatarsManager*, Util::WkFontsWidget*, EntriesManager&, QObject* = nullptr);
 
 		QWidget* OpenChat (const QModelIndex&);
 		ChatTab* OpenChat (const ICLEntry&, bool fromUser, const DynPropertiesList_t& = {});
@@ -59,11 +60,11 @@ namespace Azoth
 		void CloseChat (const ICLEntry&, bool fromUser);
 
 		bool IsActiveChat (const ICLEntry*) const;
-		bool IsOpenedChat (const QString&) const;
+		bool IsOpenedChat (const GlobalStrongestId&) const;
 		ChatTab* GetActiveChatTab () const;
-		ChatTab* GetChatTab (const QString& entryId) const;
+		ChatTab* GetChatTab (const GlobalStrongestId& entryId) const;
 
-		void UpdateEntryMapping (const QString&);
+		void UpdateEntryMapping (const GlobalStrongestId&);
 
 		void HandleInMessage (IMessage*);
 

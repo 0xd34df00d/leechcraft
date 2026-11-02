@@ -13,7 +13,9 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/sll/qobjectrefcast.h>
 #include <util/xpc/sessionprops.h>
+#include "util/azoth/util.h"
 #include "interfaces/azoth/iclentry.h"
+#include "components/managers/entriesmanager.h"
 #include "core.h"
 #include "roles.h"
 #include "xmlsettingsmanager.h"
@@ -21,7 +23,7 @@
 
 namespace LC::Azoth
 {
-	ChatTabsManager::ChatTabsManager (AvatarsManager *am, Util::WkFontsWidget *fontsWidget, QObject *parent)
+	ChatTabsManager::ChatTabsManager (AvatarsManager *am, Util::WkFontsWidget *fontsWidget, EntriesManager& entries, QObject *parent)
 	: QObject { parent }
 	, AvatarsManager_ { am }
 	, FontsWidget_ { fontsWidget }
@@ -39,6 +41,23 @@ namespace LC::Azoth
 		};
 		regStyle ("ChatWindowStyle");
 		regStyle ("MUCWindowStyle");
+
+		connect (&entries,
+				&EntriesManager::conventionalIdChanged,
+				this,
+				[this] (const GlobalConventionalId& oldId, const GlobalConventionalId& newId)
+				{
+					if (const auto oldTab = Entry2Tab_.take (oldId))
+					{
+						auto& newTab = Entry2Tab_ [newId];
+						if (newTab)
+							qWarning () << "target tab already exists for" << oldId << "↦" << newId;
+						newTab = oldTab;
+					}
+
+					if (EverOpened_.remove (oldId))
+						EverOpened_ << newId;
+				});
 	}
 
 	QWidget* ChatTabsManager::OpenChat (const QModelIndex& ti)
@@ -49,7 +68,7 @@ namespace LC::Azoth
 
 	ChatTab* ChatTabsManager::OpenChat (const ICLEntry& entry, bool fromUser, const DynPropertiesList_t& props)
 	{
-		const auto& id = entry.GetEntryID ();
+		const auto& id = entry.GetGlobalStrongestID ();
 		if (Entry2Tab_.contains (id))
 		{
 			auto tab = Entry2Tab_ [id];
@@ -59,7 +78,7 @@ namespace LC::Azoth
 
 		EverOpened_ << id;
 
-		QPointer<ChatTab> tab (new ChatTab (entry, entry.GetParentAccount (), AvatarsManager_, FontsWidget_, Profile_));
+		QPointer tab (new ChatTab (entry, entry.GetParentAccount (), AvatarsManager_, FontsWidget_, Profile_));
 		tab->installEventFilter (this);
 		Entry2Tab_ [id] = tab;
 
@@ -94,21 +113,21 @@ namespace LC::Azoth
 
 	void ChatTabsManager::CloseChat (const ICLEntry& entry, bool fromUser)
 	{
-		if (const auto& id = entry.GetEntryID ();
-			Entry2Tab_.contains (id))
-			CloseChatTab (Entry2Tab_ [id], fromUser);
+		if (const auto& id = entry.GetGlobalStrongestID ();
+			const auto tab = Entry2Tab_.value (id))
+			CloseChatTab (tab, fromUser);
 	}
 
 	bool ChatTabsManager::IsActiveChat (const ICLEntry *entry) const
 	{
-		if (!Entry2Tab_.contains (entry->GetEntryID ()))
+		const auto tab = Entry2Tab_.value (entry->GetGlobalStrongestID ());
+		if (!tab)
 			return false;
 
-		return Entry2Tab_ [entry->GetEntryID ()]->isVisible () &&
-			Entry2Tab_ [entry->GetEntryID ()]->isActiveWindow ();
+		return tab->isVisible () && tab->isActiveWindow ();
 	}
 
-	bool ChatTabsManager::IsOpenedChat (const QString& id) const
+	bool ChatTabsManager::IsOpenedChat (const GlobalStrongestId& id) const
 	{
 		return EverOpened_.contains (id);
 	}
@@ -118,12 +137,12 @@ namespace LC::Azoth
 		return LastCurrentTab_;
 	}
 
-	ChatTab* ChatTabsManager::GetChatTab (const QString& entryId) const
+	ChatTab* ChatTabsManager::GetChatTab (const GlobalStrongestId& entryId) const
 	{
 		return Entry2Tab_ [entryId];
 	}
 
-	void ChatTabsManager::UpdateEntryMapping (const QString& id)
+	void ChatTabsManager::UpdateEntryMapping (const GlobalStrongestId& id)
 	{
 		if (const auto tab = Entry2Tab_.value (id))
 			tab->ReinitEntry ();
@@ -139,7 +158,7 @@ namespace LC::Azoth
 					Core::Instance ().IsHighlightMessage (msg)))
 		{
 			auto entry = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
-			if (!Entry2Tab_.contains (entry->GetEntryID ()))
+			if (!Entry2Tab_.contains (entry->GetGlobalStrongestID ()))
 				OpenChat (*entry, false);
 		}
 	}
@@ -172,7 +191,7 @@ namespace LC::Azoth
 
 	std::optional<QString> ChatTabsManager::GetActiveVariant (ICLEntry *entry) const
 	{
-		ChatTab_ptr tab = Entry2Tab_ [entry->GetEntryID ()];
+		const auto tab = Entry2Tab_ [entry->GetGlobalStrongestID ()];
 		if (!tab)
 			return {};
 
@@ -205,8 +224,7 @@ namespace LC::Azoth
 	{
 		emit tab->removeTab ();
 
-		const auto& entry = Entry2Tab_.key (tab);
-		Entry2Tab_.remove (entry);
+		Entry2Tab_.removeIf ([tab] (const auto& it) { return it.value () == tab; });
 
 		tab->deleteLater ();
 
@@ -221,9 +239,7 @@ namespace LC::Azoth
 	void ChatTabsManager::updateCurrentTab (QObject *entryObj)
 	{
 		auto entry = qobject_cast<ICLEntry*> (entryObj);
-		LastCurrentTab_ = entry ?
-				Entry2Tab_.value (entry->GetEntryID ()) :
-				0;
+		LastCurrentTab_ = entry ? Entry2Tab_.value (entry->GetGlobalStrongestID ()) : nullptr;
 	}
 
 	void ChatTabsManager::handleAddingCLEntryEnd (IHookProxy_ptr, QObject *entryObj)

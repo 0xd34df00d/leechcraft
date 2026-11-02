@@ -270,8 +270,7 @@ namespace Azoth
 
 		bool Clear (ICLEntry *entry, const QString&)
 		{
-			const auto tab = Core::Instance ().GetChatTabsManager ()->
-					GetChatTab (entry->GetEntryID ());
+			const auto tab = Core::Instance ().GetChatTabsManager ()->GetChatTab (entry->GetGlobalStrongestID ());
 			if (tab)
 				tab->clearChat ();
 

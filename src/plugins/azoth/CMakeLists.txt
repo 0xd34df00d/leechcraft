@@ -96,6 +96,7 @@ LC_DEFINE_PLUGIN (
 		components/roster/keyboardrosterfixer.cpp
 		components/roster/mainwidget.cpp
 		components/roster/sortfilterproxymodel.cpp
+		components/managers/entriesmanager.cpp
 		components/transfers/pendinguploadpaster.cpp
 		components/transfers/representationhandler.cpp
 		components/transfers/transferjobmanager.cpp

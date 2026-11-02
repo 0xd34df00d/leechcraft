@@ -115,7 +115,7 @@ namespace LC::Azoth
 		e.Additional_ [AN::EF::VisualPath] = QStringList (info.Conversation_.GetEntryName ());
 
 		int win = 0;
-		const auto tab = Core::Instance ().GetChatTabsManager ()->GetChatTab (info.Conversation_.GetEntryID ());
+		const auto tab = Core::Instance ().GetChatTabsManager ()->GetChatTab (info.Conversation_.GetGlobalStrongestID ());
 
 		const auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 		if (tab)

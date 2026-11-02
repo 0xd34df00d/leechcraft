@@ -57,8 +57,8 @@ namespace Azoth
 		QObject* GetAccount (const QString&) const override;
 		QList<QObject*> GetAllAccounts () const override;
 		ICLEntry* GetEntry (const GlobalStrongestId&) const override;
-		void OpenChat (const QString&, const QString&, const QString&, const QString&) const override;
-		QWidget* FindOpenedChat (const QString&, const QByteArray&) const override;
+		void OpenChat (const GlobalStrongestId&, const QString&, const QString&) const override;
+		QWidget* FindOpenedChat (const GlobalStrongestId&) const override;
 		Util::ResourceLoader* GetResourceLoader (PublicResourceLoader) const override;
 		QIcon GetIconForState (State) const override;
 

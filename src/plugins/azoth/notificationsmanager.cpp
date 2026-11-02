@@ -39,6 +39,7 @@
 #include "components/dialogs/activitydialog.h"
 #include "components/dialogs/joinconferencedialog.h"
 #include "components/dialogs/mooddialog.h"
+#include "components/managers/entriesmanager.h"
 #include "components/util/entries.h"
 #include "components/util/misc.h"
 #include "xmlsettingsmanager.h"
@@ -228,11 +229,19 @@ namespace Azoth
 				Room::Internal::GlobalStrongestID);
 	}
 
-	NotificationsManager::NotificationsManager (AvatarsManager *am, QObject *parent)
+	NotificationsManager::NotificationsManager (AvatarsManager *am, EntriesManager& entries, QObject *parent)
 	: QObject { parent }
 	, EntityMgr_ { *GetProxyHolder ()->GetEntityManager () }
 	, AvatarsMgr_ { am }
 	{
+		connect (&entries,
+				&EntriesManager::conventionalIdChanged,
+				this,
+				[this] (const GlobalConventionalId& oldId, const GlobalConventionalId& newId)
+				{
+					if (ShouldNotifyNextTyping_.contains (oldId))
+						ShouldNotifyNextTyping_ [newId] = ShouldNotifyNextTyping_.take (oldId);
+				});
 	}
 
 	namespace
@@ -890,7 +899,7 @@ namespace Azoth
 		if (state != CPSComposing)
 			return;
 
-		const auto& id = entry->GetEntryID ();
+		const auto& id = entry->GetGlobalStrongestID ();
 		if (!ShouldNotifyNextTyping_.value (id, true))
 			return;
 
@@ -919,7 +928,7 @@ namespace Azoth
 	void NotificationsManager::handleEntryMadeCurrent (QObject *entryObj)
 	{
 		if (entryObj)
-			ShouldNotifyNextTyping_ [qobject_ref_cast<ICLEntry> (entryObj).GetEntryID ()] = true;
+			ShouldNotifyNextTyping_ [qobject_ref_cast<ICLEntry> (entryObj).GetGlobalStrongestID ()] = true;
 	}
 }
 }

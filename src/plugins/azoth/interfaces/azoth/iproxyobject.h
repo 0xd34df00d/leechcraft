@@ -239,21 +239,17 @@ namespace Azoth
 
 		/** @brief Opens the chat with the given entry.
 		 *
-		 * This function allows one to open a chat with the given entry
-		 * identified by entryID for the given account identified by
-		 * accId.
+		 * Does nothing if no such entry exists.
 		 *
 		 * @param[in] entryID The ID of the entry to open chat with.
-		 * @param[in] accID The ID of the account where entryID belongs.
 		 * @param[in] message Prepare this text in the message editor.
 		 * @param[in] variant Select this variant, if available.
 		 */
-		virtual void OpenChat (const QString& entryID,
-				const QString& accID,
+		virtual void OpenChat (const GlobalStrongestId& entryID,
 				const QString& message = QString (),
 				const QString& variant = QString ()) const = 0;
 
-		virtual QWidget* FindOpenedChat (const QString& entryID, const QByteArray& accID) const = 0;
+		virtual QWidget* FindOpenedChat (const GlobalStrongestId& entryID) const = 0;
 
 		virtual Util::ResourceLoader* GetResourceLoader (PublicResourceLoader loader) const = 0;
 

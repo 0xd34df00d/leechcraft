@@ -18,6 +18,7 @@
 #include <util/sll/regexp.h>
 #include <util/sll/visitor.h>
 #include <util/sll/unreachable.h>
+#include "util/azoth/util.h"
 #include "interfaces/azoth/iaccount.h"
 #include "components/util/gui.h"
 #include "core.h"
@@ -221,7 +222,7 @@ namespace LC::Azoth
 		return Core::Instance ().GetEntryOrNull<ICLEntry> (entryID);
 	}
 
-	void ProxyObject::OpenChat (const QString& entryID, const QString&, const QString& message, const QString& variant) const
+	void ProxyObject::OpenChat (const GlobalStrongestId& entryID, const QString& message, const QString& variant) const
 	{
 		const auto entry = Core::Instance ().GetEntryOrNull (entryID);
 		if (!entry)
@@ -237,7 +238,7 @@ namespace LC::Azoth
 		chat->selectVariant (variant);
 	}
 
-	QWidget* ProxyObject::FindOpenedChat (const QString& entryID, const QByteArray&) const
+	QWidget* ProxyObject::FindOpenedChat (const GlobalStrongestId& entryID) const
 	{
 		const auto mgr = Core::Instance ().GetChatTabsManager ();
 		return mgr->GetChatTab (entryID);

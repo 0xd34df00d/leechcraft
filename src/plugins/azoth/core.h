@@ -19,6 +19,7 @@
 #include "interfaces/azoth/imucentry.h"
 #include "interfaces/azoth/iprotocol.h"
 #include "interfaces/azoth/isupportriex.h"
+#include "components/managers/entriesmanager.h"
 #include "util/azoth/globalstrongestidmap.h"
 #include "sourcetrackingmodel.h"
 #include "animatediconmanager.h"
@@ -71,6 +72,7 @@ namespace LC::Azoth
 		QObjectList ProtocolPlugins_;
 		QList<QAction*> AccountCreatorActions_;
 
+		EntriesManager EntriesManager_;
 		std::shared_ptr<AvatarsManager> AvatarsManager_;
 		Util::WkFontsWidget * const FontsWidget_;
 		CLTooltipManager * const TooltipManager_;
