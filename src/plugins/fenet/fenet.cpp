@@ -27,6 +27,7 @@ namespace LC::Fenet
 		QProcess* MakeProcess (QObject *parent)
 		{
 			const auto process = new QProcess { parent };
+			process->setProcessChannelMode (QProcess::ForwardedChannels);
 
 			const auto leechcraft = getpid ();
 			process->setChildProcessModifier ([leechcraft]
