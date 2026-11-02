@@ -9,6 +9,7 @@
 #include "application.h"
 #include <cstring>
 #include <cstdlib>
+#include <csignal>
 #include <boost/scoped_array.hpp>
 #include <QCommandLineParser>
 #include <QEvent>
@@ -45,6 +46,7 @@
 #include <util/sll/exceptions.h>
 #include <util/sll/qtutil.h>
 #include <util/sys/paths.h>
+#include <util/sys/util.h>
 #include <util/qml/tooltipitem.h>
 #include <util/threads/concurrentexception.h>
 
@@ -104,6 +106,10 @@ namespace LC
 					"LeechCraft %1 (https://leechcraft.org)\n%2\n"_qs.arg (QString::fromLatin1 (Version), catPower),
 					EVersionRequested);
 		}
+
+		// no signal comes for a supervisor that exited before this call, but then the X session normally ends too
+		if (CLArgs_->Supervised_ && !Util::SetParentDeathSignal (SIGTERM))
+			qWarning () << "unable to bind the lifetime to the supervisor";
 
 		if (CLArgs_->ClearSocket_)
 			QLocalServer::removeServer (GetSocketName ());
