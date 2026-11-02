@@ -51,6 +51,7 @@ function (CreateTrs Target)
 		OPTIONS -silent
 		)
 	add_dependencies (${Target} ${Target}_lrelease)
+	set_property (TARGET ${Target}_lrelease release_translations PROPERTY FOLDER Translations)
 
 	install (FILES ${QM_RESULTS} DESTINATION ${LC_TRANSLATIONS_DEST})
 endfunction ()
