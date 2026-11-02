@@ -13,6 +13,7 @@
 #include <QTranslator>
 #include <charconv>
 #include <csignal>
+#include <optional>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/resource.h>
@@ -33,7 +34,7 @@ namespace LC::AnHero
 		QByteArray AppVersion_;
 		QByteArray AppArgs_;
 		QByteArray TsFile_;
-		bool IsShuttingDown_ = false;
+		std::optional<ShutdownReason> ShutdownReason_;
 		bool IsSupervised_ = false;
 
 		void CloseFiles ()
@@ -111,7 +112,7 @@ namespace LC::AnHero
 				"--tsfile",
 				TsFile_.constData (),
 				"--suggest_restart",
-				IsShuttingDown_ ? "0" : "1",
+				ShutdownReason_ ? "0" : "1",
 				"--supervised",
 				IsSupervised_ ? "1" : "0",
 				nullptr
@@ -121,7 +122,7 @@ namespace LC::AnHero
 			// supervisors like leechcraft-session restart LeechCraft after the latter but not after the former
 			const auto crashWhileQuittingExitCode = 254;
 			const auto crashExitCode = 255;
-			_exit (IsShuttingDown_ ? crashWhileQuittingExitCode : crashExitCode);
+			_exit (ShutdownReason_ == ShutdownReason::Quit ? crashWhileQuittingExitCode : crashExitCode);
 		}
 
 		void SetCrashHandler (void (*handler) (int))
@@ -206,9 +207,9 @@ namespace LC::AnHero
 		return GetProxyHolder ()->GetIconThemeManager ()->GetPluginIcon ();
 	}
 
-	void Plugin::HandleShutdownInitiated (ShutdownReason)
+	void Plugin::HandleShutdownInitiated (ShutdownReason reason)
 	{
-		IsShuttingDown_ = true;
+		ShutdownReason_ = reason;
 	}
 }
 
