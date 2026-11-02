@@ -7,9 +7,12 @@
  **********************************************************************/
 
 #include "fenet.h"
+#include <csignal>
+#include <unistd.h>
 #include <QIcon>
 #include <QApplication>
 #include <QProcess>
+#include <util/sys/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "wmfinder.h"
 #include "xmlsettingsmanager.h"
@@ -19,6 +22,25 @@
 
 namespace LC::Fenet
 {
+	namespace
+	{
+		QProcess* MakeProcess (QObject *parent)
+		{
+			const auto process = new QProcess { parent };
+
+			const auto leechcraft = getpid ();
+			process->setChildProcessModifier ([leechcraft]
+					{
+						Util::SetParentDeathSignal (SIGTERM);
+						// LeechCraft might have exited before the line above
+						if (getppid () != leechcraft)
+							_exit (1);
+					});
+
+			return process;
+		}
+	}
+
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Finder_ = new WMFinder;
@@ -34,13 +56,13 @@ namespace LC::Fenet
 		if (!QApplication::arguments ().contains ("--desktop"))
 			return;
 
-		Process_ = new QProcess (this);
+		Process_ = MakeProcess (this);
 		connect (Process_,
 				SIGNAL (error (QProcess::ProcessError)),
 				this,
 				SLOT (handleProcessError ()));
 
-		CompProcess_ = new QProcess (this);
+		CompProcess_ = MakeProcess (this);
 		connect (CompProcess_,
 				SIGNAL (error (QProcess::ProcessError)),
 				this,
