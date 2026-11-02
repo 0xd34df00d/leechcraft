@@ -12,6 +12,7 @@
 #include <QIcon>
 #include <QApplication>
 #include <QProcess>
+#include <QSignalBlocker>
 #include <util/sys/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "wmfinder.h"
@@ -24,7 +25,7 @@ namespace LC::Fenet
 {
 	namespace
 	{
-		QProcess* MakeProcess (QObject *parent)
+		QProcess* MakeProcess (const char *name, QObject *parent)
 		{
 			const auto process = new QProcess { parent };
 			process->setProcessChannelMode (QProcess::ForwardedChannels);
@@ -38,7 +39,37 @@ namespace LC::Fenet
 							_exit (1);
 					});
 
+			QObject::connect (process,
+					&QProcess::errorOccurred,
+					process,
+					[process, name] (QProcess::ProcessError error)
+					{
+						qWarning () << name << process->program () << "error:" << error << process->errorString ();
+					});
+			QObject::connect (process,
+					&QProcess::finished,
+					process,
+					[process, name] (int exitCode, QProcess::ExitStatus status)
+					{
+						if (status == QProcess::NormalExit)
+							qWarning () << name << process->program () << "exited with code" << exitCode;
+					});
+
 			return process;
+		}
+
+		void Stop (QProcess *process)
+		{
+			if (!process)
+				return;
+
+			const QSignalBlocker expectedExit { process };
+			process->terminate ();
+			if (process->state () != QProcess::NotRunning && !process->waitForFinished (3000))
+			{
+				process->kill ();
+				process->waitForFinished (1000);
+			}
 		}
 	}
 
@@ -57,17 +88,8 @@ namespace LC::Fenet
 		if (!QApplication::arguments ().contains ("--desktop"))
 			return;
 
-		Process_ = MakeProcess (this);
-		connect (Process_,
-				SIGNAL (error (QProcess::ProcessError)),
-				this,
-				SLOT (handleProcessError ()));
-
-		CompProcess_ = MakeProcess (this);
-		connect (CompProcess_,
-				SIGNAL (error (QProcess::ProcessError)),
-				this,
-				SLOT (handleCompProcessError ()));
+		Process_ = MakeProcess ("window manager", this);
+		CompProcess_ = MakeProcess ("compositor", this);
 
 		StartWM ();
 		XmlSettingsManager::Instance ().RegisterObject ("SelectedWM", this, "restartWM");
@@ -112,8 +134,8 @@ namespace LC::Fenet
 
 	void Plugin::Release ()
 	{
-		KillComp ();
-		KillWM ();
+		Stop (CompProcess_);
+		Stop (Process_);
 	}
 
 	QString Plugin::GetName () const
@@ -159,16 +181,6 @@ namespace LC::Fenet
 		Process_->start (session, QStringList {});
 	}
 
-	void Plugin::KillWM ()
-	{
-		if (!Process_)
-			return;
-
-		Process_->terminate ();
-		if (Process_->state () != QProcess::NotRunning && !Process_->waitForFinished (3000))
-			Process_->kill ();
-	}
-
 	CompInfo Plugin::GetCompInfo (const QString& selected) const
 	{
 		const auto& found = CompFinder_->GetFound ();
@@ -204,51 +216,21 @@ namespace LC::Fenet
 		CompProcess_->start (executable, params);
 	}
 
-	void Plugin::KillComp ()
-	{
-		if (!CompProcess_)
-			return;
-
-		CompProcess_->terminate ();
-		if (CompProcess_->state () != QProcess::NotRunning && !CompProcess_->waitForFinished (3000))
-			CompProcess_->kill ();
-	}
-
 	void Plugin::restartWM ()
 	{
-		KillWM ();
+		Stop (Process_);
 		StartWM ();
 	}
 
 	void Plugin::restartComp ()
 	{
-		KillComp ();
+		Stop (CompProcess_);
 		StartComp ();
 	}
 
 	void Plugin::updateCompParamsManager (const QString& name)
 	{
 		CompParamsManager_->SetCompInfo (GetCompInfo (name));
-	}
-
-	void Plugin::handleProcessError ()
-	{
-		qWarning () << Q_FUNC_INFO
-				<< "process error:"
-				<< Process_->error ()
-				<< Process_->errorString ()
-				<< Process_->exitCode ()
-				<< Process_->exitStatus ();
-	}
-
-	void Plugin::handleCompProcessError ()
-	{
-		qWarning () << Q_FUNC_INFO
-				<< "compositor process error:"
-				<< CompProcess_->error ()
-				<< CompProcess_->errorString ()
-				<< CompProcess_->exitCode ()
-				<< CompProcess_->exitStatus ();
 	}
 }
 
