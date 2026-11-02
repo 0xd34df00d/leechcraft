@@ -60,7 +60,7 @@ namespace Azoth
 								.arg (name)
 								.arg (acc->GetAccountName ())
 								.arg (proto->GetProtocolName ()),
-							map);
+							QVariant::fromValue (JoinSource { acc, map }));
 				}
 
 			Ui_.AccountBox_->addItem (tr ("%1 (%2, %3)")
@@ -81,7 +81,7 @@ namespace Azoth
 							.arg (name)
 							.arg (acc->GetAccountName ())
 							.arg (proto->GetProtocolName ()),
-						map);
+						QVariant::fromValue (JoinSource { acc, map }));
 			}
 		}
 
@@ -94,9 +94,9 @@ namespace Azoth
 		qDeleteAll (Proto2Joiner_);
 	}
 
-	void JoinConferenceDialog::SetIdentifyingData (const QVariantMap& ident)
+	void JoinConferenceDialog::SetJoinSource (const JoinSource& source)
 	{
-		FillWidget (ident);
+		FillWidget (source);
 	}
 
 	void JoinConferenceDialog::accept ()
@@ -230,14 +230,12 @@ namespace Azoth
 
 	void JoinConferenceDialog::on_BookmarksBox__activated (int idx)
 	{
-		const QVariantMap& map = Ui_.BookmarksBox_->itemData (idx).toMap ();
-		FillWidget (map);
+		FillWidget (Ui_.BookmarksBox_->itemData (idx).value<JoinSource> ());
 	}
 
 	void JoinConferenceDialog::on_HistoryBox__activated (int idx)
 	{
-		const QVariantMap& map = Ui_.HistoryBox_->itemData (idx).toMap ();
-		FillWidget (map);
+		FillWidget (Ui_.HistoryBox_->itemData (idx).value<JoinSource> ());
 	}
 
 	void JoinConferenceDialog::handleValidityChanged (bool isValid)
@@ -245,43 +243,24 @@ namespace Azoth
 		Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (isValid);
 	}
 
-	void JoinConferenceDialog::FillWidget (const QVariantMap& map)
+	void JoinConferenceDialog::FillWidget (const JoinSource& source)
 	{
-		const auto id = AccountId::FromUtf8 (map ["AccountID"].toByteArray ());
-
-		bool accFound = false;
-		for (int i = 0; i < Ui_.AccountBox_->count (); ++i)
+		const auto pos = Ui_.AccountBox_->findData (QVariant::fromValue (source.Account_->GetQObject ()));
+		if (pos < 0)
 		{
-			QObject *accObj = Ui_.AccountBox_->itemData (i).value<QObject*> ();
-			IAccount *acc = qobject_cast<IAccount*> (accObj);
-			if (acc->GetAccountID () != id)
-				continue;
-
-			Ui_.AccountBox_->setCurrentIndex (i);
-
-			const auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
-			if (!Proto2Joiner_.contains (proto))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "Proto2Joiner_ doesn't contain protocol for account"
-						<< accObj;
-				return;
-			}
-			qobject_cast<IMUCJoinWidget*> (Proto2Joiner_ [proto])->
-					SetIdentifyingData (map);
-
-			accFound = true;
-			break;
-		}
-		if (!accFound)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "could not find account with ID"
-					<< id
-					<< "; full map follows:"
-					<< map;
+			qWarning () << "account" << source.Account_->GetAccountID () << "not found in account box";
 			return;
 		}
+
+		Ui_.AccountBox_->setCurrentIndex (pos);
+
+		const auto proto = qobject_cast<IProtocol*> (source.Account_->GetParentProtocol ());
+		if (!Proto2Joiner_.contains (proto))
+		{
+			qWarning () << "Proto2Joiner_ doesn't contain protocol for account" << source.Account_->GetAccountID ();
+			return;
+		}
+		qobject_cast<IMUCJoinWidget*> (Proto2Joiner_ [proto])->SetIdentifyingData (source.Data_);
 	}
 }
 }

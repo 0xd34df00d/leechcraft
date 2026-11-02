@@ -9,6 +9,7 @@
 #ifndef PLUGINS_AZOTH_JOINCONFERENCEDIALOG_H
 #define PLUGINS_AZOTH_JOINCONFERENCEDIALOG_H
 #include <QDialog>
+#include <util/sll/trackingpointer.h>
 #include "interfaces/azoth/iaccount.h"
 #include "ui_joinconferencedialog.h"
 
@@ -23,10 +24,16 @@ namespace Azoth
 		Ui::JoinConferenceDialog Ui_;
 		QHash<IProtocol*, QWidget*> Proto2Joiner_;
 	public:
+		struct JoinSource
+		{
+			Util::TrackingPointer<IAccount> Account_;
+			QVariantMap Data_;
+		};
+
 		JoinConferenceDialog (const QList<IAccount*>&, QWidget* = 0);
 		virtual ~JoinConferenceDialog ();
-		
-		void SetIdentifyingData (const QVariantMap&);
+
+		void SetJoinSource (const JoinSource&);
 	public slots:
 		virtual void accept ();
 		virtual void reject ();
@@ -36,7 +43,7 @@ namespace Azoth
 		void on_HistoryBox__activated (int);
 		void handleValidityChanged (bool);
 	private:
-		void FillWidget (const QVariantMap&);
+		void FillWidget (const JoinSource&);
 	};
 }
 }

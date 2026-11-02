@@ -207,7 +207,7 @@ namespace LC::Azoth::Acetamide
 	QVariantList IrcAccount::GetBookmarkedMUCs () const
 	{
 		return Util::Map (GetBookmarks (),
-				[this] (const IrcBookmark& channel) -> QVariant
+				[] (const IrcBookmark& channel) -> QVariant
 				{
 					const auto& name = u"%1@%2 (%3)"_qsv
 							.arg (channel.ChannelName_ ,
@@ -216,7 +216,6 @@ namespace LC::Azoth::Acetamide
 					return QVariantMap
 					{
 						{ Lits::HumanReadableName, name },
-						{ Lits::AccountID, GetAccountID ().ToUtf8 () },
 						{ Lits::Server, channel.ServerName_ },
 						{ Lits::Port, channel.ServerPort_ },
 						{ Lits::ServerPassword, channel.ServerPassword_ },

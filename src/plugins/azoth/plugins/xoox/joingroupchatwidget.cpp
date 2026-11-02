@@ -100,7 +100,6 @@ namespace Xoox
 				.arg (GetNickname ())
 				.arg (GetRoom ())
 				.arg (GetServer ());
-		result ["AccountID"] = SelectedAccount_->GetAccountID ().ToUtf8 ();
 		result ["Nick"] = GetNickname ();
 		result ["Room"] = GetRoom ();
 		result ["Server"] = GetServer ();

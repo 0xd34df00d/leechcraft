@@ -62,7 +62,6 @@ namespace LC::Azoth::Xoox
 			cm ["HumanReadableName"] = QString ("%1 (%2)")
 					.arg (conf.jid ())
 					.arg (conf.nickName ());
-			cm ["AccountID"] = Acc_.GetAccountID ().ToUtf8 ();
 			cm ["Nick"] = conf.nickName ();
 			cm ["Room"] = split.at (0);
 			cm ["Server"] = split.at (1);

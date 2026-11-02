@@ -985,7 +985,6 @@ namespace Xoox
 		identifying ["HumanReadableName"] = QString ("%2 (%1)")
 				.arg (Account_->GetOurNick ())
 				.arg (room);
-		identifying ["AccountID"] = Account_->GetAccountID ().ToUtf8 ();
 		identifying ["Nick"] = Account_->GetOurNick ();
 		identifying ["Room"] = split.value (0);
 		identifying ["Server"] = split.value (1);

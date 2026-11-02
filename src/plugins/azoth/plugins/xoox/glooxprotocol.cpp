@@ -207,7 +207,6 @@ namespace Xoox
 		const auto acc = qobject_cast<GlooxAccount*> (entry->GetParentAccount ()->GetQObject ());
 
 		QVariantMap result;
-		result ["AccountID"] = acc->GetAccountID ().ToUtf8 ();
 		result ["Nick"] = acc->GetNick ();
 		result ["Password"] = text.section (' ', 1);
 

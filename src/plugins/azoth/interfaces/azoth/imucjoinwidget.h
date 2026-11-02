@@ -61,12 +61,9 @@ namespace Azoth
 		 * were saved to history, and the user decides to pick a recent
 		 * join from the history.
 		 *
-		 * The returned map should have two mandatory fields. First is
-		 * HumanReadableName, its value should be a human-readable
-		 * QString, it is used to visually represent this item to the
-		 * user. Second field is AccountID, the corresponding value
-		 * should be a QByteArray with the ID of the selected account
-		 * (IAccount::GetAccountID()).
+		 * The returned map should have a `HumanReadableName` field,
+		 * and its value should be a human-readable `QString`, used
+		 * to label this item for the user.
 		 *
 		 * Of course, all the data in the map should be serializable,
 		 * since it would be stored in QSettings.

@@ -306,13 +306,9 @@ namespace Azoth
 
 		void SuggestJoiningMUC (IAccount *acc, QVariantMap ident)
 		{
-			if (auto& accountId = ident ["AccountID"];
-				accountId.toByteArray ().isEmpty ())
-				accountId = acc->GetAccountID ().ToUtf8 ();
-
 			const auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
 			const auto dia = new JoinConferenceDialog { { acc }, rootWM->GetPreferredWindow () };
-			dia->SetIdentifyingData (ident);
+			dia->SetJoinSource ({ acc, ident });
 			dia->show ();
 		}
 

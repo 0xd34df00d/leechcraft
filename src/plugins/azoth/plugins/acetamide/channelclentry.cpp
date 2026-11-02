@@ -286,7 +286,6 @@ namespace LC::Azoth::Acetamide
 		return
 		{
 			{ Lits::HumanReadableName, name },
-			{ Lits::AccountID, ICH_->GetChannelsManager ()->GetAccount ()->GetAccountID ().ToUtf8 () },
 			{ Lits::Nickname, GetNick () },
 			{ Lits::Channel, channelOpts.ChannelName_ },
 			{ Lits::Server, channelOpts.ServerName_ },
