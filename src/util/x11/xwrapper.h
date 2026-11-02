@@ -111,11 +111,8 @@ namespace LC::Util
 
 		/** @brief Returns the atom denoting the given string.
 		 *
-		 * @param[in] string A view to a (null-terminated) string with the name of the atom.
+		 * @param[in] str The name of the atom.
 		 * @return An X11 Atom.
-		 *
-		 * @note The string pointed by str should be null-terminated — that is, <code>std::strlen(str.data())</code>
-		 * should be equal to <code>str.size()</code>.
 		 */
 		Atom GetAtom (std::string_view str);
 	private:

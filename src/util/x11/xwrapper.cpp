@@ -717,8 +717,9 @@ namespace LC::Util
 		if (pos != Atoms_.end ())
 			return *pos;
 
-		auto atom = XInternAtom (Display_, name.data (), false);
-		Atoms_ [ToByteArray (name)] = atom;
+		const auto& nullTerminatedName = ToByteArray (name);
+		auto atom = XInternAtom (Display_, nullTerminatedName.constData (), false);
+		Atoms_ [nullTerminatedName] = atom;
 		return atom;
 	}
 
