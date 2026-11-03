@@ -14,6 +14,10 @@
 #include <QProcess>
 #include <QSignalBlocker>
 #include <util/sys/util.h>
+#include <util/threads/coro/context.h>
+#include <util/threads/coro/task.h>
+#include <util/threads/coro/timer.h>
+#include <util/x11/xwrapper.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "wmfinder.h"
 #include "xmlsettingsmanager.h"
@@ -70,6 +74,33 @@ namespace LC::Fenet
 				process->kill ();
 				process->waitForFinished (1000);
 			}
+		}
+
+		// the previous manager might still be exiting, like the one of a crashed LeechCraft handling its death signal
+		Util::ContextTask<void> StartWhenSelectionFree (QProcess *process, const char *manager, auto start)
+		{
+			co_await Util::AddContext { Util::CoroContext::Of (*process) };
+
+			if (const auto xwrapper = Util::XWrapper::Instance ())
+			{
+				using namespace std::chrono_literals;
+
+				const auto selection = xwrapper->GetManagerSelection (manager);
+				for (int waits = 0; xwrapper->GetSelectionOwner (selection); ++waits)
+				{
+					if (waits == 50)
+					{
+						qWarning () << "the" << manager << "manager selection is still taken, starting anyway";
+						break;
+					}
+
+					co_await 100ms;
+				}
+			}
+
+			// another pending start might have run already
+			if (process->state () == QProcess::NotRunning)
+				start ();
 		}
 	}
 
@@ -160,6 +191,11 @@ namespace LC::Fenet
 
 	void Plugin::StartWM ()
 	{
+		StartWhenSelectionFree (Process_, "WM", [this] { RunSelectedWM (); });
+	}
+
+	void Plugin::RunSelectedWM ()
+	{
 		const auto& found = Finder_->GetFound ();
 		if (found.isEmpty ())
 		{
@@ -200,6 +236,11 @@ namespace LC::Fenet
 	}
 
 	void Plugin::StartComp ()
+	{
+		StartWhenSelectionFree (CompProcess_, "_NET_WM_CM", [this] { RunSelectedComp (); });
+	}
+
+	void Plugin::RunSelectedComp ()
 	{
 		if (!XmlSettingsManager::Instance ().property ("UseCompositor").toBool ())
 			return;

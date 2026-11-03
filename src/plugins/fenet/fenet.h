@@ -51,10 +51,12 @@ namespace LC::Fenet
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 	private:
 		void StartWM ();
+		void RunSelectedWM ();
 
 		CompInfo GetCompInfo (const QString&) const;
 
 		void StartComp ();
+		void RunSelectedComp ();
 	private slots:
 		void restartWM ();
 		void restartComp ();
