@@ -55,12 +55,12 @@ namespace Xoox
 		Dir_ = Direction::Unspecified;
 		if (!q.after ().isNull ())
 		{
-			ItemId_ = q.after ().toLatin1 ();
+			ItemId_ = q.after ();
 			Dir_ = Direction::After;
 		}
 		else if (!q.before ().isNull ())
 		{
-			ItemId_ = q.before ().toLatin1 ();
+			ItemId_ = q.before ();
 			Dir_ = Direction::Before;
 		}
 	}
