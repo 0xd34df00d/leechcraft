@@ -20,6 +20,8 @@
 // of the agent dedicated to it, since its build times are not the measurement; the quick profile does not, so
 // that its build time stays comparable from build to build. A cell that fails to configure, to build, or a test fails the run;
 // the message names which, since on a rolling distro a configure failure almost always means a dependency moved.
+// The build's mail quotes why each cell failed, as tools/ci/quotefailure.py picks it from the cell's log, or, for a cell
+// that did not fail, the new warnings that made it unstable.
 
 import groovy.transform.Field
 
@@ -32,6 +34,7 @@ import groovy.transform.Field
 @Field final Map<String, Integer> MINIMUM = [gcc: 16, clang: 23]
 @Field final Map PRIMARY = [distro: 'opensuse_factory', compiler: 'clang']
 @Field final Map NEW_WARNINGS_GATE = [threshold: 1, type: 'NEW', criticality: 'UNSTABLE']
+@Field final int QUOTED_NEW_ISSUES = 20
 
 String cellName(Map cell) {
     cell.tidy ? "tidy-${cell.distro}" : "${cell.distro}-${cell.compiler}"
@@ -118,6 +121,8 @@ void publishTests(String name) {
 // directory it spots in CMake's output, which does not exist outside the container.
 // opts: `historical` keeps the id and parser of the matrix job the quick job replaced, `cached` compiles through ccache,
 // `gated` applies NEW_WARNINGS_GATE.
+// The outcome's `quote` is for the mail: why the cell failed, else, when gated, the new warnings. A failed cell's errors
+// are new issues as well, since the reference is never a failed build, so they are quoted once, from the log.
 Map runCell(Map opts, Map cell) {
     String name = cellName(cell)
     String log = "${name}.log"
@@ -157,18 +162,46 @@ tools/docker/runci.sh ${cell.distro} ${cell.compiler} ${cell.tidy ? 'tidy' : 'bu
     // deprecating a function and so flagging every caller, does not keep the job unstable until the last caller is gone.
     if (opts.gated)
         publish += [qualityGates: [NEW_WARNINGS_GATE], ignoreQualityGate: true]
-    publishIssues(publish)
-    [name: name, rc: rc, report: report]
+    def published = publishIssues(publish)
+    String quote = ''
+    if (rc != 0)
+        quote = quoteFailure(name, rc, log)
+    else if (opts.gated)
+        quote = quoteNewIssues(published.result)
+    [name: name, rc: rc, report: report, quote: quote]
+}
+
+// A quote that cannot be made must not turn into the build's failure in place of the cell's own.
+String quoteFailure(String name, int rc, String log) {
+    String excerpt = sh(returnStdout: true, label: "quote the failure of ${name}",
+                        script: "tools/ci/quotefailure.py ${rc} ${log} --strip '${env.WORKSPACE}/' || true")
+    "${name}: ${failureOf(rc)}\n\n${excerpt}\n"
+}
+
+// The new issues behind the gate, for the mail, since they are what made the build unstable. An issue's own string
+// is the file's base name, the position, the category and the compiler's message with its snippet: the sandbox lets
+// that through, where the issue's getters would each need a script approval. The link has the full paths.
+String quoteNewIssues(def result) {
+    int count = result.newSize
+    if (count == 0)
+        return ''
+    String quote = "New warnings (${count}), ${env.BUILD_URL}${result.id}/new/:\n\n" +
+                   result.newIssues.take(QUOTED_NEW_ISSUES).join('\n\n') + '\n\n'
+    if (count > QUOTED_NEW_ISSUES)
+        quote += "and ${count - QUOTED_NEW_ISSUES} more\n\n"
+    quote
+}
+
+String failureOf(int rc) {
+    rc == 2 ? 'configure failed, most likely a missing dependency'
+        : rc == 1 ? 'build failed'
+        : rc == 3 ? 'tests failed'
+        : "runner failed with status ${rc}, probably a tool missing from the image"
 }
 
 void grade(Map outcome) {
-    if (outcome.rc == 0)
-        return
-    String what = outcome.rc == 2 ? 'configure failed, most likely a missing dependency'
-                : outcome.rc == 1 ? 'build failed'
-                : outcome.rc == 3 ? 'tests failed'
-                : "runner failed with status ${outcome.rc}, probably a tool missing from the image"
-    error("${outcome.name}: ${what}")
+    if (outcome.rc != 0)
+        error("${outcome.name}: ${failureOf(outcome.rc)}")
 }
 
 // The paths the build's changes touched: empty for a first build and for one started by hand.
@@ -191,7 +224,8 @@ List<String> staleDistros(List<String> paths) {
 
 // The quick job mails on every failure and every unstable build, since each one is a push that broke the build or added
 // a warning; the full job mails only when its status changes, since a distro that stays broken for a week is one piece of
-// news, not seven.
+// news, not seven. The cells' quotes go through the environment, since email-ext expands tokens in the body but not in
+// a token's value, and a compiler's message may well have a `$` in it.
 void notifyIfNeeded(boolean everyProblem) {
     String now = currentBuild.currentResult
     String previous = currentBuild.previousCompletedBuild?.result ?: 'SUCCESS'
@@ -200,7 +234,7 @@ void notifyIfNeeded(boolean everyProblem) {
         return
     emailext(to: params.NOTIFY, recipientProviders: [culprits(), requestor()],
              subject: '$PROJECT_NAME - Build #$BUILD_NUMBER - $BUILD_STATUS',
-             body: '$PROJECT_NAME - Build #$BUILD_NUMBER - $BUILD_STATUS\n\n$BUILD_URL\n\nChanges:\n$CHANGES')
+             body: '$PROJECT_NAME - Build #$BUILD_NUMBER - $BUILD_STATUS\n\n$BUILD_URL\n\n${ENV, var="QUOTES"}Changes:\n$CHANGES')
 }
 
 String profile = params.PROFILE ?: 'quick'
@@ -229,7 +263,9 @@ timeout(time: 6, unit: 'HOURS') {
                 }
                 stage(cellName(PRIMARY)) {
                     discoverReferenceBuild(requiredResult: 'UNSTABLE')
-                    grade(runCell(PRIMARY, historical: true, gated: true))
+                    Map outcome = runCell(PRIMARY, historical: true, gated: true)
+                    env.QUOTES = outcome.quote
+                    grade(outcome)
                 }
             }
             if (stale == null && params.DOWNSTREAM && currentBuild.currentResult in ['SUCCESS', 'UNSTABLE']) {
@@ -261,6 +297,7 @@ timeout(time: 6, unit: 'HOURS') {
                         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                             Map outcome = runCell(cell, cached: true)
                             reports[name] = outcome.report
+                            env.QUOTES = (env.QUOTES ?: '') + outcome.quote
                             badges[name].setStatus(outcome.rc == 0 ? 'passing' : 'failing')
                             badges[name].setColor(outcome.rc == 0 ? 'brightgreen' : 'red')
                             grade(outcome)
