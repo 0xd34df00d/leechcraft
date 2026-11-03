@@ -73,18 +73,12 @@ namespace Azoth
 		GlobalStrongestIdTracker EntryID_;
 
 		QList<QString> MsgHistory_;
-		int CurrentHistoryPosition_ = -1;
-
-		bool HadHighlight_ = false;
-		int NumUnreadMsgs_ = 0;
-		int ScrollbackPos_ = 0;
 
 		QList<IMessage*> HistoryMessages_;
 		QDateTime LastDateTime_;
 		QList<CoreMessage*> CoreMessages_;
 
 		QIcon TabIcon_;
-		bool IsMUC_ = false;
 
 		ContactDropFilter *CDF_;
 		MsgFormatterWidget *MsgFormatter_ = nullptr;
@@ -93,11 +87,17 @@ namespace Azoth
 
 		Util::FindNotificationWE *ChatFinder_;
 
-		bool IsCurrent_ = false;
-
 		QImage LastAvatar_;
 
 		Util::DefaultScopeGuard AvatarChangeSubscription_;
+
+		int CurrentHistoryPosition_ = -1;
+
+		int NumUnreadMsgs_ = 0;
+		int ScrollbackPos_ = 0;
+		bool HadHighlight_ = false;
+		bool IsMUC_ = false;
+		bool IsCurrent_ = false;
 	public:
 		static void SetParentMultiTabs (QObject*);
 		static void SetChatTabClassInfo (const TabClassInfo&);
