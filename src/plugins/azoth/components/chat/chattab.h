@@ -156,6 +156,8 @@ namespace Azoth
 
 		void ReinitEntry ();
 
+		void ResyncLogs ();
+
 		bool eventFilter (QObject*, QEvent*);
 
 		template<typename T>

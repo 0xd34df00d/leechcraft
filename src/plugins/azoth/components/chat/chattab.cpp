@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "chattab.h"
+#include <algorithm>
 #include <cmath>
 #include <QWebEngineSettings>
 #include <QBuffer>
@@ -755,13 +756,7 @@ namespace Azoth
 	void ChatTab::handleHistoryBack ()
 	{
 		ScrollbackPos_ += 50;
-		qDeleteAll (HistoryMessages_);
-		HistoryMessages_.clear ();
-		qDeleteAll (CoreMessages_);
-		CoreMessages_.clear ();
-		DummyMsgManager::Instance ().ClearMessages (GetEntry<QObject> ());
-		LastDateTime_ = QDateTime ();
-		RequestLogs (ScrollbackPos_);
+		ResyncLogs ();
 	}
 
 	void ChatTab::handleRichTextToggled ()
@@ -1279,6 +1274,20 @@ namespace Azoth
 				&QObject::destroyed,
 				this,
 				[this] { SetEnabled (false); });
+	}
+
+	void ChatTab::ResyncLogs ()
+	{
+		qDeleteAll (HistoryMessages_);
+		HistoryMessages_.clear ();
+		qDeleteAll (CoreMessages_);
+		CoreMessages_.clear ();
+		DummyMsgManager::Instance ().ClearMessages (GetEntry<QObject> ());
+		LastDateTime_ = QDateTime ();
+
+		const auto autoNum = XmlSettingsManager::Instance ().property ("ShowLastNMessages").toInt ();
+		if (const auto num = std::max (ScrollbackPos_, autoNum))
+			RequestLogs (num);
 	}
 
 	void ChatTab::ReinitAvatar ()

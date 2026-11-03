@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "chattabsmanager.h"
+#include <QTextDocument>
 #include <QWebEngineProfile>
 #include <QtDebug>
 #include <interfaces/core/icoreproxy.h>
@@ -47,13 +48,10 @@ namespace LC::Azoth
 				this,
 				[this] (const GlobalConventionalId& oldId, const GlobalConventionalId& newId)
 				{
-					if (const auto oldTab = Entry2Tab_.take (oldId))
-					{
-						auto& newTab = Entry2Tab_ [newId];
-						if (newTab)
-							qWarning () << "target tab already exists for" << oldId << "↦" << newId;
-						newTab = oldTab;
-					}
+					if (const auto liveTab = Entry2Tab_.take (oldId))
+						// the target of the rename is not in the roster, hence its tab is stale
+						if (const auto staleTab = std::exchange (Entry2Tab_ [newId], liveTab))
+							MergeTabs (*staleTab, *liveTab);
 
 					if (EverOpened_.remove (oldId))
 						EverOpened_ << newId;
@@ -234,6 +232,20 @@ namespace LC::Azoth
 			if (const auto muc = tab->GetEntry<IMUCEntry> ())
 				muc->Leave ();
 		}
+	}
+
+	void ChatTabsManager::MergeTabs (ChatTab& from, ChatTab& to)
+	{
+		const auto fromDoc = from.getMsgEdit ()->document ();
+		const auto toEdit = to.getMsgEdit ();
+		if (!fromDoc->isEmpty () && toEdit->document ()->isEmpty ())
+			toEdit->setHtml (fromDoc->toHtml ());
+
+		to.ResyncLogs ();
+
+		if (from.isActiveWindow () && from.isVisible ())
+			emit to.raiseTab ();
+		CloseChatTab (&from, false);
 	}
 
 	void ChatTabsManager::updateCurrentTab (QObject *entryObj)

@@ -78,6 +78,7 @@ namespace Azoth
 	private:
 		void RestoreChat (const RestoreChatInfo&, ICLEntry&);
 		void CloseChatTab (ChatTab*, bool fromUser);
+		void MergeTabs (ChatTab& from, ChatTab& to);
 	private slots:
 		void updateCurrentTab (QObject*);
 		void handleAddingCLEntryEnd (LC::IHookProxy_ptr proxy,
