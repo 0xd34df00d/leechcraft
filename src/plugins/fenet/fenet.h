@@ -8,9 +8,11 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
+#include <util/threads/coro/corocontext.h>
 
 class QProcess;
 
@@ -39,6 +41,9 @@ namespace LC::Fenet
 
 		QProcess *Process_ = nullptr;
 		QProcess *CompProcess_ = nullptr;
+
+		std::unique_ptr<Util::CoroContext> PendingWMStart_;
+		std::unique_ptr<Util::CoroContext> PendingCompStart_;
 	public:
 		void Init (ICoreProxy_ptr) override;
 		void SecondInit () override;

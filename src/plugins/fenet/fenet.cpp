@@ -77,9 +77,9 @@ namespace LC::Fenet
 		}
 
 		// the previous manager might still be exiting, like the one of a crashed LeechCraft handling its death signal
-		Util::ContextTask<void> StartWhenSelectionFree (QProcess *process, const char *manager, auto start)
+		Util::ContextTask<void> StartWhenSelectionFree (Util::CoroContext *request, const char *manager, auto start)
 		{
-			co_await Util::AddContext { Util::CoroContext::Of (*process) };
+			co_await Util::AddContext { *request };
 
 			if (const auto xwrapper = Util::XWrapper::Instance ())
 			{
@@ -98,9 +98,7 @@ namespace LC::Fenet
 				}
 			}
 
-			// another pending start might have run already
-			if (process->state () == QProcess::NotRunning)
-				start ();
+			start ();
 		}
 	}
 
@@ -165,6 +163,8 @@ namespace LC::Fenet
 
 	void Plugin::Release ()
 	{
+		PendingCompStart_.reset ();
+		PendingWMStart_.reset ();
 		Stop (CompProcess_);
 		Stop (Process_);
 	}
@@ -191,7 +191,8 @@ namespace LC::Fenet
 
 	void Plugin::StartWM ()
 	{
-		StartWhenSelectionFree (Process_, "WM", [this] { RunSelectedWM (); });
+		PendingWMStart_ = std::make_unique<Util::CoroContext> ();
+		StartWhenSelectionFree (PendingWMStart_.get (), "WM", [this] { RunSelectedWM (); });
 	}
 
 	void Plugin::RunSelectedWM ()
@@ -237,14 +238,18 @@ namespace LC::Fenet
 
 	void Plugin::StartComp ()
 	{
-		StartWhenSelectionFree (CompProcess_, "_NET_WM_CM", [this] { RunSelectedComp (); });
+		if (!XmlSettingsManager::Instance ().property ("UseCompositor").toBool ())
+		{
+			PendingCompStart_.reset ();
+			return;
+		}
+
+		PendingCompStart_ = std::make_unique<Util::CoroContext> ();
+		StartWhenSelectionFree (PendingCompStart_.get (), "_NET_WM_CM", [this] { RunSelectedComp (); });
 	}
 
 	void Plugin::RunSelectedComp ()
 	{
-		if (!XmlSettingsManager::Instance ().property ("UseCompositor").toBool ())
-			return;
-
 		auto selected = XmlSettingsManager::Instance ()
 				.property ("SelectedCompositor").toString ();
 		const auto& info = GetCompInfo (selected);
