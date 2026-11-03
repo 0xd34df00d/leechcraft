@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <QIcon>
 #include <QApplication>
+#include <QDeadlineTimer>
 #include <QProcess>
 #include <QSignalBlocker>
 #include <util/sys/util.h>
@@ -86,15 +87,17 @@ namespace LC::Fenet
 				using namespace std::chrono_literals;
 
 				const auto selection = xwrapper->GetManagerSelection (manager);
-				for (int waits = 0; xwrapper->GetSelectionOwner (selection); ++waits)
-				{
-					if (waits == 50)
-					{
-						qWarning () << "the" << manager << "manager selection is still taken, starting anyway";
-						break;
-					}
+				const auto owner = [&] { return xwrapper->GetSelectionOwner (selection); };
 
+				const QDeadlineTimer warnAt { 5s };
+				while (owner () && !warnAt.hasExpired ())
 					co_await 100ms;
+
+				if (owner ())
+				{
+					qWarning () << "the" << manager << "manager selection is still taken, starting once it is free";
+					while (owner ())
+						co_await 1s;
 				}
 			}
 
