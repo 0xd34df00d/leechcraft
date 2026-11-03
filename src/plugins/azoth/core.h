@@ -20,7 +20,6 @@
 #include "interfaces/azoth/iprotocol.h"
 #include "interfaces/azoth/isupportriex.h"
 #include "components/managers/entriesmanager.h"
-#include "util/azoth/globalstrongestidmap.h"
 #include "sourcetrackingmodel.h"
 #include "animatediconmanager.h"
 
@@ -93,7 +92,6 @@ namespace LC::Azoth
 		ActionsManager *ActionsManager_;
 
 		QHash<QString, ICLEntry*> ID2Entry_;
-		//GlobalStrongestIdMap ID2Entry_;
 
 		typedef QCache<ICLEntry*, QImage> Entry2SmoothAvatarCache_t;
 		Entry2SmoothAvatarCache_t Entry2SmoothAvatarCache_ { 5 * 1024 * 1024 };

@@ -42,8 +42,6 @@ add_util_library (azoth-util
 		util/azoth/emitters/transfermanager.cpp
 		util/azoth/anconstants.cpp
 		util/azoth/entryidops.cpp
-		util/azoth/globalstrongestidmap.cpp
-		util/azoth/globalstrongestidtracker.cpp
 		util/azoth/hooks.cpp
 		util/azoth/util.cpp
 	USES Widgets
