@@ -1,9 +1,0 @@
-{
-	"name": "KWin",
-	"comment": "Use the KWin window manager with LeechCraft",
-	"supportsReplace": true,
-	"execNames": [ "kwin" ],
-	"compositing": false
-}
-
-
