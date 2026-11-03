@@ -30,7 +30,7 @@ namespace Util
 
 	UrlOperator& UrlOperator::operator() (const QString& key, const QString& value)
 	{
-		Query_.addQueryItem (key, value);
+		Query_.addQueryItem (QUrl::toPercentEncoding (key), QUrl::toPercentEncoding (value));
 		return *this;
 	}
 
@@ -51,7 +51,7 @@ namespace Util
 
 	UrlOperator& UrlOperator::operator-= (const QString& key)
 	{
-		Query_.removeQueryItem (key);
+		Query_.removeQueryItem (QUrl::toPercentEncoding (key));
 		return *this;
 	}
 

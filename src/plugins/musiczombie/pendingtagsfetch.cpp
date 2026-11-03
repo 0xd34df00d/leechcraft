@@ -70,7 +70,7 @@ namespace MusicZombie
 				("client", ApiKey)
 				("duration", QString::number (duration))
 				("fingerprint", QString::fromLatin1 (fp))
-				("meta", "recordings+releasegroups+releases+tracks+sources+usermeta")
+				("meta", "recordings releasegroups releases tracks sources usermeta")
 				("format", "xml");
 
 		auto reply = NAM_->get (QNetworkRequest (url));
