@@ -1213,9 +1213,8 @@ namespace Azoth
 			Ui_.MUCEventsButton_->hide ();
 			TabIcon_ = ResourcesManager::Instance ().GetIconForState (entry->GetStatus ().State_);
 
-			const int autoNum = XmlSettingsManager::Instance ().property ("ShowLastNMessages").toInt ();
-			if (entry->GetAllMessages ().size () <= 100 && autoNum)
-				RequestLogs (autoNum);
+			if (entry->GetAllMessages ().size () <= 100)
+				ResyncLogs ();
 		}
 	}
 
