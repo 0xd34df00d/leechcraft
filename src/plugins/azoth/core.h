@@ -147,7 +147,7 @@ namespace LC::Azoth
 		ChatTabsManager* GetChatTabsManager () const;
 		QList<IAccount*> GetAccounts () const;
 		QList<IProtocol*> GetProtocols () const;
-		IAccount* GetAccount (const QByteArray&) const;
+		IAccount* GetAccount (const AccountId&) const;
 
 		void UpdateItem (ICLEntry*);
 

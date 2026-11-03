@@ -189,7 +189,7 @@ namespace LC::Azoth
 			if (entryObj)
 				RestoreChat (info, *entryObj);
 			else
-				RestoreInfo_ [info.EntryID_] = info;
+				RestoreInfo_.emplace (info.EntryID_, info);
 		}
 	}
 
@@ -262,12 +262,15 @@ namespace LC::Azoth
 
 	void ChatTabsManager::handleAddingCLEntryEnd (IHookProxy_ptr, QObject *entryObj)
 	{
-		auto entry = qobject_cast<ICLEntry*> (entryObj);
-		const auto& id = entry->GetEntryID ();
-		if (!RestoreInfo_.contains (id))
-			return;
-
-		RestoreChat (RestoreInfo_.take (id), *entry);
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
+		const auto& id = entry->GetGlobalStrongestID ();
+		if (const auto pos = RestoreInfo_.find (id);
+			pos != RestoreInfo_.end ())
+		{
+			const auto info = *pos;
+			RestoreInfo_.erase (pos);
+			RestoreChat (info, *entry);
+		}
 	}
 
 	void ChatTabsManager::chatWindowStyleChanged ()

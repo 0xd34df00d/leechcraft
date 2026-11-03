@@ -44,13 +44,13 @@ namespace Azoth
 	public:
 		struct RestoreChatInfo
 		{
-			QString EntryID_;
-			QString Variant_;
-			QString MsgText_;
+			GlobalStrongestId EntryID_;
+			QString Variant_ {};
+			QString MsgText_ {};
 			DynPropertiesList_t Props_;
 		};
 	private:
-		QHash<QString, RestoreChatInfo> RestoreInfo_;
+		QHash<GlobalStrongestId, RestoreChatInfo> RestoreInfo_;
 	public:
 		ChatTabsManager (AvatarsManager*, Util::WkFontsWidget*, EntriesManager&, QObject* = nullptr);
 

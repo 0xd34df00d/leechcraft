@@ -54,6 +54,7 @@
 #ifdef ENABLE_CRYPT
 #include "interfaces/azoth/isupportpgp.h"
 #endif
+#include "util/azoth/entryidops.h"
 #include "util/azoth/util.h"
 #include "components/dialogs/bookmarksmanagerdialog.h"
 #include "components/dialogs/userslistwidget.h"
@@ -366,17 +367,13 @@ namespace Azoth
 		TabSaveInfo info { .Name_ = tr ("Chat with %1.").arg (entry->GetEntryName ()), .Icon_ = QPixmap::fromImage (LastAvatar_) };
 
 		QDataStream stream (&info.Data_, QIODevice::WriteOnly);
-		if (entry->GetEntryType () == ICLEntry::EntryType::MUC &&
-				GetEntry<IMUCEntry> ())
-			stream << QByteArray ("muctab2")
-					<< entry->GetEntryID ()
-					<< GetEntry<IMUCEntry> ()->GetIdentifyingData ()
-					<< entry->GetParentAccount ()->GetAccountID ().ToUtf8 ();
+		const auto muc = entry->GetEntryType () == ICLEntry::EntryType::MUC ? GetEntry<IMUCEntry> () : nullptr;
+		stream << (muc ? "muctab3"_qba : "chattab3"_qba);
+		Serialize (stream, entry->GetGlobalStrongestID ());
+		if (muc)
+			stream << GetEntry<IMUCEntry> ()->GetIdentifyingData ();
 		else
-			stream << QByteArray ("chattab2")
-					<< entry->GetEntryID ()
-					<< GetSelectedVariant ().value_or ({});
-
+			stream << GetSelectedVariant ().value_or ({});
 		stream << Ui_.MsgEdit_->toPlainText ();
 
 		return info;

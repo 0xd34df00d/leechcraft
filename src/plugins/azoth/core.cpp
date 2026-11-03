@@ -543,14 +543,13 @@ namespace LC::Azoth
 		return result;
 	}
 
-	// TODO change to AccountId
-	IAccount* Core::GetAccount (const QByteArray& id) const
+	IAccount* Core::GetAccount (const AccountId& id) const
 	{
 		for (const auto proto : GetProtocols ())
 			for (const auto accObj : proto->GetRegisteredAccounts ())
 			{
 				const auto acc = qobject_cast<IAccount*> (accObj);
-				if (acc && acc->GetAccountID ().ToUtf8 () == id)
+				if (acc && acc->GetAccountID () == id)
 					return acc;
 			}
 

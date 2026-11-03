@@ -25,12 +25,15 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <util/sll/visitor.h>
 #include <util/sys/resourceloader.h>
 #include <util/xpc/util.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/xsd/wkfontswidget.h>
 #include "interfaces/azoth/imucjoinwidget.h"
 #include "interfaces/azoth/imucprotocol.h"
+#include "util/azoth/entryidops.h"
+#include "util/azoth/util.h"
 #include "components/chat/chattab.h"
 #include "components/roster/mainwidget.h"
 #include "components/transfers/representationhandler.h"
@@ -208,74 +211,106 @@ namespace Azoth
 			GetProxyHolder ()->GetRootWindowsManager ()->AddTab (new SearchWidget { Core::Instance ().GetAvatarsManager () });
 	}
 
-	void Plugin::RecoverTabs (const QList<TabRecoverInfo>& infos)
+	namespace
 	{
-		for (const auto& recInfo : infos)
+		struct ChatTabRestore { ChatTabsManager::RestoreChatInfo Info_; };
+		struct MucTabRestore { ChatTabsManager::RestoreChatInfo Info_; QVariantMap JoinData_; };
+		using TabRestore = std::variant<ChatTabRestore, MucTabRestore>;
+
+		std::optional<ChatTabRestore> DeserializeChatTabRestore (QDataStream& str, const DynPropertiesList_t& dynProps)
 		{
-			QDataStream str (recInfo.Data_);
+			const auto entryId = Deserialize<GlobalStrongestId> (str);
+			if (!entryId)
+				return {};
+
+			ChatTabsManager::RestoreChatInfo info { .EntryID_ = *entryId, .Props_ = dynProps };
+			str >> info.Variant_ >> info.MsgText_;
+			return ChatTabRestore { info };
+		}
+
+		std::optional<MucTabRestore> DeserializeMucTabRestore (QDataStream& str, const DynPropertiesList_t& dynProps)
+		{
+			const auto entryId = Deserialize<GlobalStrongestId> (str);
+			if (!entryId)
+				return {};
+
+			QVariantMap data;
+			ChatTabsManager::RestoreChatInfo info { .EntryID_ = *entryId, .Props_ = dynProps };
+			str >> data >> info.MsgText_;
+			return MucTabRestore { info, data };
+		}
+
+		std::optional<TabRestore> DeserializeTabRestore (const TabRecoverInfo& recInfo)
+		{
+			QDataStream str { recInfo.Data_ };
 			QByteArray context;
 			str >> context;
 
-			if (context == "chattab" || context == "chattab2")
+			if (context == "chattab2" || context == "muctab2")
 			{
-				ChatTabsManager::RestoreChatInfo info;
-				info.Props_ = recInfo.DynProperties_;
-				str >> info.EntryID_
-					>> info.Variant_;
-
-				if (context == "chattab2")
-					str >> info.MsgText_;
-
-				Core::Instance ().GetChatTabsManager ()->EnqueueRestoreInfos ({ info });
+				qWarning () << "dropping unsupported legacy context" << context;
+				return {};
 			}
-			else if (context == "muctab2")
-			{
-				QString entryId;
-				QVariantMap data;
-				QByteArray accountId;
-				QString text;
-				str >> entryId
-					>> data
-					>> accountId
-					>> text;
 
-				ChatTabsManager::RestoreChatInfo info;
-				info.Props_ = recInfo.DynProperties_;
-				info.EntryID_ = entryId;
-				info.MsgText_ = text;
+			if (context == "chattab3")
+				return DeserializeChatTabRestore (str, recInfo.DynProperties_);
+			if (context == "muctab3")
+				return DeserializeMucTabRestore (str, recInfo.DynProperties_);
 
-				Core::Instance ().GetChatTabsManager ()->EnqueueRestoreInfos ({ info });
-
-				if (!Core::Instance ().GetEntryOrNull (entryId))
-				{
-					auto acc = Core::Instance ().GetAccount (accountId);
-					if (!acc)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "no account for ID"
-								<< accountId;
-						continue;
-					}
-
-					auto proto = qobject_cast<IMUCProtocol*> (acc->GetParentProtocol ());
-					if (!proto)
-						continue;
-
-					auto widgetObj = proto->GetMUCJoinWidget ();
-					auto widget = qobject_cast<IMUCJoinWidget*> (widgetObj);
-					if (!widget)
-						continue;
-
-					widget->SetIdentifyingData (data);
-					widget->Join (acc->GetQObject ());
-					widgetObj->deleteLater ();
-				}
-			}
-			else
-				qWarning () << Q_FUNC_INFO
-						<< "unknown context"
-						<< context;
+			qWarning () << "unknown context" << context;
+			return {};
 		}
+
+		void JoinRoomIfNeeded (const MucTabRestore& restore)
+		{
+			if (Core::Instance ().GetEntryOrNull (restore.Info_.EntryID_))
+				return;
+
+			const auto& accountId = GetAccountId (restore.Info_.EntryID_);
+			auto acc = Core::Instance ().GetAccount (accountId);
+			if (!acc)
+			{
+				qWarning () << "no account for ID" << accountId;
+				return;
+			}
+
+			auto proto = qobject_cast<IMUCProtocol*> (acc->GetParentProtocol ());
+			if (!proto)
+				return;
+
+			auto widgetObj = proto->GetMUCJoinWidget ();
+			auto widget = qobject_cast<IMUCJoinWidget*> (widgetObj);
+			if (!widget)
+				return;
+
+			widget->SetIdentifyingData (restore.JoinData_);
+			widget->Join (acc->GetQObject ());
+			widgetObj->deleteLater ();
+		}
+	}
+
+	void Plugin::RecoverTabs (const QList<TabRecoverInfo>& tabInfos)
+	{
+		QList<ChatTabsManager::RestoreChatInfo> chatInfos;
+		chatInfos.reserve (tabInfos.size ());
+		QList<MucTabRestore> mucRestores;
+		for (const auto& recInfo : tabInfos)
+		{
+			const auto& deserialized = DeserializeTabRestore (recInfo);
+			if (!deserialized)
+				continue;
+
+			Util::Visit (*deserialized,
+					[&] (const auto& tabRestore) { chatInfos << tabRestore.Info_; });
+
+			Util::Visit (*deserialized,
+					[] (const ChatTabRestore&) {},
+					[&] (const MucTabRestore& restore) { mucRestores << restore; });
+		}
+
+		Core::Instance ().GetChatTabsManager ()->EnqueueRestoreInfos (chatInfos);
+		for (const auto& restore : mucRestores)
+			JoinRoomIfNeeded (restore);
 	}
 
 	bool Plugin::HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const
