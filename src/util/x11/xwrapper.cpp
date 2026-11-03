@@ -199,21 +199,18 @@ namespace LC::Util
 		if (name.isEmpty () && GetWinProp (wid, GetAtom ("_NET_WM_NAME"), &length, data.Get (), utf8Str))
 			name = QString::fromUtf8 (data.GetAs<char*> (false));
 
-		if (name.isEmpty () && GetWinProp (wid, GetAtom ("XA_WM_NAME"), &length, data.Get (), XA_STRING))
-			name = QString::fromUtf8 (data.GetAs<char*> (false));
-
-		if (name.isEmpty ())
-		{
-			XFetchName (Display_, wid, data.GetAs<char**> ());
-			name = QString (data.GetAs<char*> (false));
-		}
-
 		if (name.isEmpty ())
 		{
 			XTextProperty prop;
 			if (XGetWMName (Display_, wid, &prop))
 			{
-				name = QString::fromUtf8 (reinterpret_cast<char*> (prop.value));
+				char **list = nullptr;
+				int count = 0;
+				// converts by the property's type itself, be it a Latin-1 STRING, COMPOUND_TEXT or UTF8_STRING
+				if (Xutf8TextPropertyToTextList (Display_, &prop, &list, &count) >= Success && count > 0)
+					name = QString::fromUtf8 (*list);
+				if (list)
+					XFreeStringList (list);
 				XFree (prop.value);
 			}
 		}
