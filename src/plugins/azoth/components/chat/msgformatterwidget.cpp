@@ -93,9 +93,9 @@ namespace LC::Azoth
 		};
 	}
 
-	MsgFormatterWidget::MsgFormatterWidget (const GlobalStrongestId& entryId, QTextEdit& edit)
+	MsgFormatterWidget::MsgFormatterWidget (GlobalStrongestId entryId, QTextEdit& edit)
 	: QWidget { &edit }
-	, EntryId_ { entryId }
+	, EntryId_ { std::move (entryId) }
 	, Edit_ { edit }
 	, SmilesTooltip_ { new SmilesTooltip { this } }
 	{
@@ -219,6 +219,11 @@ namespace LC::Azoth
 				[this] (const QString& emoPack) { HandleEmoPackChanged (emoPack); });
 	}
 
+	void MsgFormatterWidget::UpdateEntryId (std::optional<GlobalStrongestId> entryId)
+	{
+		EntryId_ = std::move (entryId);
+	}
+
 	QAction& MsgFormatterWidget::GetToggle () const
 	{
 		return *Toggle_;
@@ -237,7 +242,8 @@ namespace LC::Azoth
 		static const auto settingsGroup = "RichTextEditorStates"_qs;
 		static const auto settingsName = "ShowRichTextEditor"_qba;
 
-		const bool isEnabled = CheckWithDefaultValue (EntryId_, settingsGroup, settingsName);
+		// SetupToggle() is only called from ctor, where `EntryId_` is guaranteed to be set
+		const bool isEnabled = CheckWithDefaultValue (*EntryId_, settingsGroup, settingsName);
 
 		Toggle_ = new QAction (tr ("Enable rich text editor"), this);
 		Toggle_->setProperty ("ActionIcon", "accessories-text-editor");
@@ -248,7 +254,8 @@ namespace LC::Azoth
 				this,
 				[this] (bool toggled)
 				{
-					UpdateWithDefaultValue (toggled, EntryId_, settingsGroup, settingsName);
+					if (EntryId_)
+						UpdateWithDefaultValue (toggled, *EntryId_, settingsGroup, settingsName);
 					setVisible (toggled);
 				});
 		setVisible (isEnabled);

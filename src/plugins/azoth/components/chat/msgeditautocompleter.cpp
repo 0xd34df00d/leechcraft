@@ -20,9 +20,9 @@
 
 namespace LC::Azoth
 {
-	MsgEditAutocompleter::MsgEditAutocompleter (const ICLEntry& entry, QTextEdit& edit)
+	MsgEditAutocompleter::MsgEditAutocompleter (GlobalStrongestId entryId, QTextEdit& edit)
 	: QObject { &edit }
-	, EntryId_ { entry }
+	, EntryId_ { std::move (entryId) }
 	, Edit_ { edit }
 	{
 		Edit_.installEventFilter (this);
@@ -40,6 +40,11 @@ namespace LC::Azoth
 				&QTextEdit::cursorPositionChanged,
 				this,
 				reset);
+	}
+
+	void MsgEditAutocompleter::UpdateEntryId (std::optional<GlobalStrongestId> id)
+	{
+		EntryId_ = std::move (id);
 	}
 
 	bool MsgEditAutocompleter::eventFilter (QObject *, QEvent *event)
@@ -149,17 +154,19 @@ namespace LC::Azoth
 
 	void MsgEditAutocompleter::Complete (Direction dir)
 	{
-		auto& entry = Core::Instance ().GetEntry (EntryId_.GetId ());
+		const auto entry = EntryId_ ? Core::Instance ().GetEntryOrNull (*EntryId_) : nullptr;
+		if (!entry)
+			return;
 
 		InsertingCompletion_ = true;
 		const auto guard = Util::MakeScopeGuard ([this] { InsertingCompletion_ = false; });
 		State_ = Util::Visit (State_,
-				[this, &entry, dir] (Idle) -> State
+				[this, entry, dir] (Idle) -> State
 				{
 					const auto& trigger = GetCompTrigger (Edit_);
 					if (!trigger)
 						return NoCompletions {};
-					const auto& comps = GetCompletions (*trigger, entry);
+					const auto& comps = GetCompletions (*trigger, *entry);
 					if (comps.isEmpty ())
 						return NoCompletions {};
 					return OfferCompletion (Completing { trigger->StartPos_, comps, -DirectionDelta (dir), trigger->Word_.size () }, dir);

@@ -21,7 +21,7 @@ namespace LC::Azoth
 	{
 		Q_DECLARE_TR_FUNCTIONS (LC::Aztoh::MsgFormatterWidget)
 
-		const GlobalStrongestId EntryId_;
+		std::optional<GlobalStrongestId> EntryId_;
 		QTextEdit& Edit_;
 
 		QAction *Toggle_;
@@ -35,7 +35,9 @@ namespace LC::Azoth
 
 		QWidget *SmilesTooltip_;
 	public:
-		explicit MsgFormatterWidget (const GlobalStrongestId& entryId, QTextEdit&);
+		explicit MsgFormatterWidget (GlobalStrongestId entryId, QTextEdit&);
+
+		void UpdateEntryId (std::optional<GlobalStrongestId> entryId);
 
 		QAction& GetToggle () const;
 

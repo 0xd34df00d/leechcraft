@@ -33,16 +33,19 @@ namespace Util
 namespace Azoth
 {
 	struct EntryStatus;
-	class CoreMessage;
-	class ICLEntry;
-	class IMUCEntry;
+
 	class IAccount;
+	class ICLEntry;
 	class IMessage;
-	class ITransferManager;
+	class IMUCEntry;
 	class ISupportPGP;
-	class ContactDropFilter;
-	class MsgFormatterWidget;
+	class ITransferManager;
+
 	class AvatarsManager;
+	class ContactDropFilter;
+	class CoreMessage;
+	class MsgEditAutocompleter;
+	class MsgFormatterWidget;
 
 	class ChatTab : public QWidget
 				  , public ITabWidget
@@ -81,6 +84,7 @@ namespace Azoth
 
 		ContactDropFilter *CDF_;
 		MsgFormatterWidget *MsgFormatter_ = nullptr;
+		MsgEditAutocompleter *MsgEditAutocompleter_ = nullptr;
 
 		QString LastLink_;
 

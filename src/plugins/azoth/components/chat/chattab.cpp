@@ -487,6 +487,8 @@ namespace Azoth
 			qCritical () << "updating a persistent entry ID from" << *EntryID_ << "to" << id;
 
 		EntryID_ = id;
+		MsgEditAutocompleter_->UpdateEntryId (id);
+		MsgFormatter_->UpdateEntryId (id);
 	}
 
 	std::optional<QString> ChatTab::GetSelectedVariant () const
@@ -1468,7 +1470,7 @@ namespace Azoth
 					emit tabRecoverDataChanged ();
 				});
 
-		new MsgEditAutocompleter (entry, *Ui_.MsgEdit_);
+		MsgEditAutocompleter_ = new MsgEditAutocompleter (entry.GetGlobalStrongestID (), *Ui_.MsgEdit_);
 
 		MsgFormatter_ = new MsgFormatterWidget { entry.GetGlobalStrongestID (), *Ui_.MsgEdit_ };
 		XmlSettingsManager::Instance ().RegisterObject ("RichFormatterPosition", this,
