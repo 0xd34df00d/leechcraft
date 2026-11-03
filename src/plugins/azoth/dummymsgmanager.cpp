@@ -36,6 +36,9 @@ namespace Azoth
 
 	void DummyMsgManager::ClearMessages (QObject *entry)
 	{
+		if (!entry)
+			return;
+
 		qDeleteAll (Messages_.take (entry));
 		disconnect (entry,
 				&QObject::destroyed,

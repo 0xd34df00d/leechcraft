@@ -98,6 +98,11 @@ namespace LC::Azoth
 		{
 			return *this;
 		}
+
+		IdKind GetKind () const
+		{
+			return std::visit ([]<IdKind K> (const Id<K>&) { return K; }, *this);
+		}
 	};
 
 	using EntryStrongestId = StrongestId<EntryId>;

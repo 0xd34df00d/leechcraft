@@ -125,9 +125,9 @@ namespace Azoth
 	, Account_ (account)
 	, TabToolbar_ (new QToolBar (tr ("Azoth chat window"), this))
 	, MUCEventLog_ (new QTextBrowser ())
-	, EntryID_ (entry)
-	, NumUnreadMsgs_ (Core::Instance ().GetUnreadCount (GetEntry<ICLEntry> ()))
+	, EntryID_ (entry.GetGlobalStrongestID ())
 	, CDF_ (new ContactDropFilter (*Core::Instance ().GetTransferJobManager (), *this))
+	, NumUnreadMsgs_ (Core::Instance ().GetUnreadCount (GetEntry<ICLEntry> ()))
 	{
 		Ui_.setupUi (this);
 		Ui_.View_->InitializePage (profile);
@@ -476,9 +476,17 @@ namespace Azoth
 			AddManagedActions (false);
 	}
 
-	GlobalStrongestId ChatTab::GetEntryID () const
+	std::optional<GlobalStrongestId> ChatTab::GetEntryID () const
 	{
-		return EntryID_.GetId ();
+		return EntryID_;
+	}
+
+	void ChatTab::UpdateEntryID (const std::optional<GlobalStrongestId>& id)
+	{
+		if (EntryID_ && EntryID_->GetKind () == IdKind::Persistent)
+			qCritical () << "updating a persistent entry ID from" << *EntryID_ << "to" << id;
+
+		EntryID_ = id;
 	}
 
 	std::optional<QString> ChatTab::GetSelectedVariant () const
@@ -696,7 +704,7 @@ namespace Azoth
 			return;
 		}
 
-		if (call->GetEntry ().GetGlobalStrongestID () != EntryID_.GetId ())
+		if (call->GetEntry ().GetGlobalStrongestID () != EntryID_)
 			return;
 
 		CallChatWidget *widget = new CallChatWidget (callObj);
@@ -762,8 +770,9 @@ namespace Azoth
 	void ChatTab::handleRichTextToggled ()
 	{
 		PrepareTheme ();
-		UpdateWithDefaultValue (ToggleRichText_->isChecked (),
-				EntryID_, "RichTextStates", "ShowRichTextMessageBody");
+		if (EntryID_)
+			UpdateWithDefaultValue (ToggleRichText_->isChecked (),
+					*EntryID_, "RichTextStates", "ShowRichTextMessageBody");
 	}
 
 	void ChatTab::handleQuoteSelection ()
@@ -1006,22 +1015,23 @@ namespace Azoth
 			const auto& nick = QUrlQuery { url }.queryItemValue ("nick", QUrl::FullyDecoded);
 			InsertNick (nick);
 
-			Util::Visit (EntryID_.GetId (),
-					[&] (const GlobalPersistentId& id)
-					{
-						if (!GetMucParticipants (id).contains (nick))
+			if (EntryID_)
+				Util::Visit (*EntryID_,
+						[&] (const GlobalPersistentId& id)
 						{
-							const auto& e = Util::MakeNotification ("Azoth",
-									tr ("%1 isn't present in this conference at the moment.")
-										.arg ("<em>" + nick + "</em>"),
-									Priority::Warning);
-							GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
-						}
-					},
-					[&] (const GlobalConventionalId&)
-					{
-						qWarning () << "inserting nick into a MUC with no persistent ID:" << EntryID_;
-					});
+							if (!GetMucParticipants (id).contains (nick))
+							{
+								const auto& e = Util::MakeNotification ("Azoth",
+										tr ("%1 isn't present in this conference at the moment.")
+											.arg ("<em>" + nick + "</em>"),
+										Priority::Warning);
+								GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+							}
+						},
+						[&] (const GlobalConventionalId&)
+						{
+							qWarning () << "inserting nick into a MUC with no persistent ID:" << EntryID_;
+						});
 		}
 	}
 
@@ -1122,7 +1132,7 @@ namespace Azoth
 	template<typename T>
 	T* ChatTab::GetEntry () const
 	{
-		return Core::Instance ().GetEntryOrNull<T> (EntryID_);
+		return EntryID_ ? Core::Instance ().GetEntryOrNull<T> (*EntryID_) : nullptr;
 	}
 
 	void ChatTab::BuildBasicActions ()
@@ -1159,7 +1169,8 @@ namespace Azoth
 		ToggleRichText_ = new QAction (tr ("Enable rich text"), this);
 		ToggleRichText_->setProperty ("ActionIcon", "text-enriched");
 		ToggleRichText_->setCheckable (true);
-		ToggleRichText_->setChecked (CheckWithDefaultValue (EntryID_, "RichTextStates", "ShowRichTextMessageBody"));
+		if (EntryID_)
+			ToggleRichText_->setChecked (CheckWithDefaultValue (*EntryID_, "RichTextStates", "ShowRichTextMessageBody"));
 		connect (ToggleRichText_,
 				SIGNAL (toggled (bool)),
 				this,

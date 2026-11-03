@@ -49,9 +49,15 @@ namespace LC::Azoth
 				[this] (const GlobalConventionalId& oldId, const GlobalConventionalId& newId)
 				{
 					if (const auto liveTab = Entry2Tab_.take (oldId))
+					{
+						liveTab->UpdateEntryID (newId);
 						// the target of the rename is not in the roster, hence its tab is stale
 						if (const auto staleTab = std::exchange (Entry2Tab_ [newId], liveTab))
+						{
+							staleTab->UpdateEntryID ({});
 							MergeTabs (*staleTab, *liveTab);
+						}
+					}
 
 					if (EverOpened_.remove (oldId))
 						EverOpened_ << newId;

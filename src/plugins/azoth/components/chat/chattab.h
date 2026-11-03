@@ -19,7 +19,6 @@
 #include <interfaces/iwkfontssettable.h>
 #include "interfaces/azoth/azothcommon.h"
 #include "ui_chattab.h"
-#include "util/azoth/globalstrongestidtracker.h"
 
 class QTextBrowser;
 
@@ -70,7 +69,7 @@ namespace Azoth
 		QAction *EnableEncryption_ = nullptr;
 #endif
 
-		GlobalStrongestIdTracker EntryID_;
+		std::optional<GlobalStrongestId> EntryID_;
 
 		QList<QString> MsgHistory_;
 
@@ -149,7 +148,9 @@ namespace Azoth
 
 		void SetEnabled (bool);
 
-		GlobalStrongestId GetEntryID () const;
+		std::optional<GlobalStrongestId> GetEntryID () const;
+		void UpdateEntryID (const std::optional<GlobalStrongestId>& id);
+
 		std::optional<QString> GetSelectedVariant () const;
 
 		QString ReformatTitle ();
