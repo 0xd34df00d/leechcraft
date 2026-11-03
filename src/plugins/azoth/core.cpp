@@ -800,7 +800,10 @@ namespace LC::Azoth
 				Util::UrlOperator op { url };
 				op ("nick", nick);
 				if (const auto other = qobject_cast<ICLEntry*> (msg->OtherPart ()))
-					op ("entryId", other->GetEntryID ());
+				{
+					const auto& entryIdStr = SerializeString (other->GetGlobalStrongestID ());
+					op ("entryId", QUrl::toPercentEncoding (entryIdStr));
+				}
 			}
 
 			string.append ("<span class='nickname'><a href=\"");

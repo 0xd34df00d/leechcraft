@@ -21,6 +21,7 @@
 #include <interfaces/idatafilter.h>
 #include <interfaces/core/icoreproxy.h>
 #include "interfaces/azoth/iclentry.h"
+#include "util/azoth/entryidops.h"
 #include "../../actionsmanager.h"
 #include "../../core.h"
 
@@ -122,12 +123,16 @@ namespace LC::Azoth
 
 	void ChatTabWebView::HandleNick (QMenu *menu, const QUrl& nickUrl)
 	{
-		const auto& entryIdValue = QUrlQuery { nickUrl }.queryItemValue (QStringLiteral ("entryId"));
-		const auto& entryId = QUrl::fromPercentEncoding (entryIdValue.toUtf8 ());
-		if (entryId.isEmpty ())
+		const auto& entryIdValue = QUrlQuery { nickUrl }.queryItemValue ("entryId"_qs, QUrl::FullyDecoded);
+		const auto& entryId = Deserialize<GlobalStrongestId> (entryIdValue);
+		if (!entryId)
+		{
+			if (!entryIdValue.isEmpty ())
+				qWarning () << "invalid entry id" << entryIdValue;
 			return;
+		}
 
-		const auto entry = Core::Instance ().GetEntryOrNull (entryId);
+		const auto entry = Core::Instance ().GetEntryOrNull (*entryId);
 		if (!entry)
 			return;
 
