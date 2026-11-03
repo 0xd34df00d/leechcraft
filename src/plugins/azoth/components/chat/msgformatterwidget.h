@@ -19,7 +19,7 @@ namespace LC::Azoth
 {
 	class MsgFormatterWidget : public QWidget
 	{
-		Q_DECLARE_TR_FUNCTIONS (LC::Aztoh::MsgFormatterWidget)
+		Q_DECLARE_TR_FUNCTIONS (LC::Azoth::MsgFormatterWidget)
 
 		std::optional<GlobalStrongestId> EntryId_;
 		QTextEdit& Edit_;
