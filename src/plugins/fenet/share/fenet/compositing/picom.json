@@ -1,7 +1,7 @@
 {
-	"name": "compton",
-	"comment": "Use compton, the fork of xcompmgr-dana, for compositing",
-	"execNames": [ "compton" ],
+	"name": "picom",
+	"comment": "Use picom for compositing",
+	"execNames": [ "picom" ],
 	"params": [
 		{
 			"param": "-r",
@@ -46,18 +46,11 @@
 			"max": 0.2
 		},
 		{
-			"param": "-O",
+			"param": "-D",
 			"desc": "The time between steps in a fade in milliseconds.",
 			"default": 10,
 			"min": 1,
 			"max": 1000
-		},
-		{
-			"param": "-m",
-			"desc": "The opacity for menus.",
-			"default": 1,
-			"min": 0.1,
-			"max": 1
 		},
 		{
 			"param": "-i",
@@ -100,20 +93,6 @@
 			"default": 0,
 			"min": 0,
 			"max": 1
-		},
-		{
-			"param": "--refresh-rate",
-			"desc": "Specify refresh rate of the screen. If 0, compton will try detecting this with X RandR extension.",
-			"default": 0,
-			"min": 0,
-			"max": 240
-		},
-		{
-			"param": "--alpha-step",
-			"desc": "Step for pregenerating alpha pictures.",
-			"default": 0.03,
-			"min": 0.01,
-			"max": 1
 		}
 	],
 	"flags": [
@@ -122,20 +101,8 @@
 			"desc": "Enable client-side shadows on windows."
 		},
 		{
-			"param": "-C",
-			"desc": "Avoid drawing shadows on dock/panel windows."
-		},
-		{
-			"param": "-z",
-			"desc": "Zero the part of the shadow's mask behind the window (experimental)."
-		},
-		{
 			"param": "-f",
 			"desc": "Fade windows in/out when opening/closing and when opacity changes, unless --no-fading-openclose is used."
-		},
-		{
-			"param": "-G",
-			"desc": "Don't draw shadows on DND windows."
 		},
 		{
 			"param": "--inactive-opacity-override",
@@ -164,22 +131,6 @@
 		{
 			"param": "--detect-client-opacity",
 			"desc": "Detect _NET_WM_OPACITY on client windows, useful for window managers not passing _NET_WM_OPACITY of client windows to frame windows."
-		},
-		{
-			"param": "--dbe",
-			"desc": "Enable DBE painting mode, intended to use with VSync to (hopefully) eliminate tearing."
-		},
-		{
-			"param": "--paint-on-overlay",
-			"desc": "Painting on X Composite overlay window."
-		},
-		{
-			"param": "--sw-opti",
-			"desc": "Limit compton to repaint at most once every 1 / refresh_rate second to boost performance. Experimental."
-		},
-		{
-			"param": "--vsync-aggressive",
-			"desc": "Attempt to send painting request before VBlank and do XFlush() during VBlank."
 		},
 		{
 			"param": "--use-ewmh-active-win",
