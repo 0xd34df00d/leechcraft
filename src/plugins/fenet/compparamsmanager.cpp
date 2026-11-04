@@ -15,6 +15,15 @@
 
 namespace LC::Fenet
 {
+	namespace
+	{
+		QString GetChoiceValue (const QSettings& settings, const Choice& choice)
+		{
+			const auto& value = settings.value (choice.Name_).toString ();
+			return choice.Values_.contains (value) ? value : choice.Default_;
+		}
+	}
+
 	CompParamsManager::CompParamsManager (QObject *parent)
 	: QObject (parent)
 	, ParamsModel_ (new QStandardItemModel (this))
@@ -38,6 +47,20 @@ namespace LC::Fenet
 
 		CurrentInfo_ = info;
 		auto settings = GetSettings ();
+
+		for (const auto& choice : CurrentInfo_.Choices_)
+		{
+			auto descItem = new QStandardItem (choice.Desc_);
+			descItem->setEditable (false);
+
+			const auto valueItem = new QStandardItem (GetChoiceValue (*settings, choice));
+			valueItem->setData (QVariant::fromValue (choice), Role::Description);
+
+			auto nameItem = new QStandardItem (choice.Name_);
+			nameItem->setEditable (false);
+
+			ParamsModel_->appendRow ({ descItem, valueItem, nameItem });
+		}
 
 		for (const auto& param : CurrentInfo_.Params_)
 		{
@@ -81,6 +104,9 @@ namespace LC::Fenet
 		auto settings = GetSettings (info.Name_);
 
 		QStringList result;
+
+		for (const auto& choice : info.Choices_)
+			result << choice.Name_ << GetChoiceValue (*settings, choice);
 
 		const auto& enabledFlags = settings->value ("__Flags").toStringList ();
 		for (const auto& flag : info.Flags_)
@@ -129,6 +155,11 @@ namespace LC::Fenet
 			const double value = item->data (Qt::EditRole).toDouble ();
 
 			ChangedParams_ [CurrentInfo_.Name_] [param.Name_] = value;
+		}
+		else if (var.canConvert<Choice> ())
+		{
+			const auto& choice = var.value<Choice> ();
+			ChangedParams_ [CurrentInfo_.Name_] [choice.Name_] = item->text ();
 		}
 		else
 			qWarning () << Q_FUNC_INFO

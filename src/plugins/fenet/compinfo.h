@@ -30,10 +30,20 @@ namespace LC::Fenet
 		QString Desc_;
 	};
 
+	struct Choice
+	{
+		QString Name_;
+		QString Desc_;
+
+		QStringList Values_;
+		QString Default_;
+	};
+
 	struct CompInfo
 	{
 		QList<Param> Params_;
 		QList<Flag> Flags_;
+		QList<Choice> Choices_;
 
 		QString Name_;
 		QString Comment_;
@@ -46,4 +56,5 @@ namespace LC::Fenet
 
 Q_DECLARE_METATYPE (LC::Fenet::Param)
 Q_DECLARE_METATYPE (LC::Fenet::Flag)
+Q_DECLARE_METATYPE (LC::Fenet::Choice)
 Q_DECLARE_METATYPE (LC::Fenet::CompInfo)

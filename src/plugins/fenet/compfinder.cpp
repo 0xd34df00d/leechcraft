@@ -22,6 +22,7 @@ namespace LC::Fenet
 		{
 			{},
 			{},
+			{},
 			map ["name"].toString (),
 			map ["comment"].toString (),
 			execs
@@ -44,6 +45,18 @@ namespace LC::Fenet
 
 					pMap.value ("min", 0).toDouble (),
 					pMap.value ("max", 0).toDouble ()
+				});
+		}
+
+		for (const auto& item : map ["choices"].toList ())
+		{
+			const auto& cMap = item.toMap ();
+			info.Choices_.append ({
+					cMap ["param"].toString (),
+					cMap ["desc"].toString (),
+
+					cMap ["values"].toStringList (),
+					cMap ["default"].toString ()
 				});
 		}
 

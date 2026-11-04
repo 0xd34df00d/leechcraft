@@ -8,6 +8,7 @@
 
 #include "compparamswidget.h"
 #include <QStyledItemDelegate>
+#include <QComboBox>
 #include <QDoubleSpinBox>
 #include <QtDebug>
 #include "compparamsmanager.h"
@@ -30,6 +31,13 @@ namespace LC::Fenet
 				const QStyleOptionViewItem& option, const QModelIndex& index) const
 		{
 			const auto& var = index.data (CompParamsManager::Role::Description);
+			if (var.canConvert<Choice> ())
+			{
+				const auto box = new QComboBox (parent);
+				box->addItems (var.value<Choice> ().Values_);
+				return box;
+			}
+
 			if (!var.canConvert<Param> ())
 				return QStyledItemDelegate::createEditor (parent, option, index);
 
@@ -39,6 +47,12 @@ namespace LC::Fenet
 		void EditDelegate::setEditorData (QWidget *editor, const QModelIndex& index) const
 		{
 			const auto& var = index.data (CompParamsManager::Role::Description);
+			if (var.canConvert<Choice> ())
+			{
+				qobject_cast<QComboBox*> (editor)->setCurrentText (index.data (Qt::EditRole).toString ());
+				return;
+			}
+
 			if (!var.canConvert<Param> ())
 				return QStyledItemDelegate::setEditorData (editor, index);
 
@@ -53,6 +67,12 @@ namespace LC::Fenet
 		void EditDelegate::setModelData (QWidget *editor, QAbstractItemModel *model, const QModelIndex& index) const
 		{
 			const auto& var = index.data (CompParamsManager::Role::Description);
+			if (var.canConvert<Choice> ())
+			{
+				model->setData (index, qobject_cast<QComboBox*> (editor)->currentText ());
+				return;
+			}
+
 			if (!var.canConvert<Param> ())
 				return QStyledItemDelegate::setModelData (editor, model, index);
 
