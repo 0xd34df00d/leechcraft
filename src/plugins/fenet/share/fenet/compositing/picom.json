@@ -2,6 +2,14 @@
 	"name": "picom",
 	"comment": "Use picom for compositing",
 	"execNames": [ "picom" ],
+	"choices": [
+		{
+			"param": "--backend",
+			"desc": "The rendering backend: xrender works everywhere, glx and egl need OpenGL.",
+			"values": [ "xrender", "glx", "egl" ],
+			"default": "xrender"
+		}
+	],
 	"params": [
 		{
 			"param": "-r",
