@@ -134,7 +134,7 @@ namespace LC::Azoth
 		return result;
 	}
 
-	ProxyObject::ProxyObject (IAvatarsManager *am, QObject* parent)
+	ProxyObject::ProxyObject (IAvatarsManager *am, const EntriesManager& entries, QObject* parent)
 	: QObject { parent }
 	, SerializedStr2AuthStatus_
 		{
@@ -144,6 +144,7 @@ namespace LC::Azoth
 			{ "Both", ASBoth },
 		}
 	, AvatarsManager_ { am }
+	, Entries_ { entries }
 	{
 	}
 
@@ -219,12 +220,12 @@ namespace LC::Azoth
 
 	ICLEntry* ProxyObject::GetEntry (const GlobalStrongestId& entryID) const
 	{
-		return Core::Instance ().GetEntryOrNull<ICLEntry> (entryID);
+		return Entries_.GetEntryOrNull (entryID);
 	}
 
 	void ProxyObject::OpenChat (const GlobalStrongestId& entryID, const QString& message, const QString& variant) const
 	{
-		const auto entry = Core::Instance ().GetEntryOrNull (entryID);
+		const auto entry = Entries_.GetEntryOrNull (entryID);
 		if (!entry)
 		{
 			qWarning () << "unknown entry ID" << entryID;

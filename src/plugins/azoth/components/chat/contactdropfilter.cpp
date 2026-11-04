@@ -24,6 +24,7 @@
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/imucentry.h"
+#include "components/managers/entriesmanager.h"
 #include "components/transfers/transferjobmanager.h"
 #include "components/util/dnd.h"
 #include "components/util/misc.h"
@@ -31,10 +32,11 @@
 
 namespace LC::Azoth
 {
-	ContactDropFilter::ContactDropFilter (TransferJobManager& tjm, ChatTab& tab)
+	ContactDropFilter::ContactDropFilter (const EntriesManager& entries, TransferJobManager& tjm, ChatTab& tab)
 	: QObject { &tab }
 	, Transfers_ { tjm }
 	, ChatTab_ { tab }
+	, Entries_ { entries }
 	{
 	}
 
@@ -195,7 +197,7 @@ namespace LC::Azoth
 		const auto thisEntry = ChatTab_.GetEntry<ICLEntry> ();
 		const bool isMuc = thisEntry->GetEntryType () == ICLEntry::EntryType::MUC;
 
-		auto entries = DndUtil::DecodeEntryObjs (data);
+		auto entries = DndUtil::DecodeEntryObjs (Entries_, data);
 		entries.removeIf ([thisEntry] (ICLEntry *entry) { return !CanEntryBeInvited (thisEntry, entry); });
 
 		if (entries.isEmpty ())

@@ -261,9 +261,9 @@ namespace Azoth
 			return {};
 		}
 
-		void JoinRoomIfNeeded (const MucTabRestore& restore)
+		void JoinRoomIfNeeded (const EntriesManager& entries, const MucTabRestore& restore)
 		{
-			if (Core::Instance ().GetEntryOrNull (restore.Info_.EntryID_))
+			if (entries.GetEntryOrNull (restore.Info_.EntryID_))
 				return;
 
 			const auto& accountId = GetAccountId (restore.Info_.EntryID_);
@@ -310,7 +310,7 @@ namespace Azoth
 
 		Core::Instance ().GetChatTabsManager ()->EnqueueRestoreInfos (chatInfos);
 		for (const auto& restore : mucRestores)
-			JoinRoomIfNeeded (restore);
+			JoinRoomIfNeeded (Core::Instance ().GetEntriesManager (), restore);
 	}
 
 	bool Plugin::HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const

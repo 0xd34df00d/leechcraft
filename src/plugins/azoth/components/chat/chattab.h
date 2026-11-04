@@ -61,6 +61,7 @@ namespace Azoth
 		static TabClassInfo S_MUCTabClass_;
 
 		AvatarsManager * const AvatarsManager_;
+		const EntriesManager& Entries_;
 		IAccount * const Account_;
 
 		Ui::ChatTab Ui_;
@@ -112,6 +113,7 @@ namespace Azoth
 		ChatTab (const ICLEntry&,
 				IAccount*,
 				AvatarsManager*,
+				const EntriesManager&,
 				Util::WkFontsWidget*,
 				QWebEngineProfile*,
 				QWidget* = nullptr);

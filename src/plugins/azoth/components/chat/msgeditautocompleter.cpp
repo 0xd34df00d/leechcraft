@@ -13,6 +13,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/azoth/iprovidecommands.h>
+#include "components/managers/entriesmanager.h"
 #include "components/util/entries.h"
 #include "../../core.h"
 #include "../../xmlsettingsmanager.h"
@@ -20,10 +21,11 @@
 
 namespace LC::Azoth
 {
-	MsgEditAutocompleter::MsgEditAutocompleter (GlobalStrongestId entryId, QTextEdit& edit)
+	MsgEditAutocompleter::MsgEditAutocompleter (GlobalStrongestId entryId, QTextEdit& edit, const EntriesManager& entries)
 	: QObject { &edit }
 	, EntryId_ { std::move (entryId) }
 	, Edit_ { edit }
+	, Entries_ { entries }
 	{
 		Edit_.installEventFilter (this);
 
@@ -116,7 +118,7 @@ namespace LC::Azoth
 			return result;
 		}
 
-		QStringList GetNickCompletions (ICLEntry& entry, const CompTrigger& trigger)
+		QStringList GetNickCompletions (const EntriesManager& entries, ICLEntry& entry, const CompTrigger& trigger)
 		{
 			const auto mucEntry = qobject_cast<IMUCEntry*> (entry.GetQObject ());
 			if (!mucEntry)
@@ -126,7 +128,7 @@ namespace LC::Azoth
 			if (!mucEntryId)
 				return {};
 
-			auto nicks = GetMucParticipants (*mucEntryId);
+			auto nicks = GetMucParticipants (entries, *mucEntryId);
 			nicks.removeAll (mucEntry->GetNick ());
 			nicks.removeIf (trigger.ToWordRemovalPred ());
 			std::ranges::sort (nicks,
@@ -146,15 +148,15 @@ namespace LC::Azoth
 			return nicks;
 		}
 
-		QStringList GetCompletions (const CompTrigger& trigger, ICLEntry& entry)
+		QStringList GetCompletions (const EntriesManager& entries, const CompTrigger& trigger, ICLEntry& entry)
 		{
-			return GetNickCompletions (entry, trigger) + GetCommandCompletions (entry, trigger);
+			return GetNickCompletions (entries, entry, trigger) + GetCommandCompletions (entry, trigger);
 		}
 	}
 
 	void MsgEditAutocompleter::Complete (Direction dir)
 	{
-		const auto entry = EntryId_ ? Core::Instance ().GetEntryOrNull (*EntryId_) : nullptr;
+		const auto entry = Entries_.GetEntryOrNull (EntryId_);
 		if (!entry)
 			return;
 
@@ -166,7 +168,7 @@ namespace LC::Azoth
 					const auto& trigger = GetCompTrigger (Edit_);
 					if (!trigger)
 						return NoCompletions {};
-					const auto& comps = GetCompletions (*trigger, *entry);
+					const auto& comps = GetCompletions (Entries_, *trigger, *entry);
 					if (comps.isEmpty ())
 						return NoCompletions {};
 					return OfferCompletion (Completing { trigger->StartPos_, comps, -DirectionDelta (dir), trigger->Word_.size () }, dir);

@@ -8,12 +8,13 @@
 
 #include "dnd.h"
 #include <QDataStream>
-#include <QString>
+#include <QIODevice>
 #include <QMimeData>
+#include <QString>
 #include <util/sll/qtutil.h>
 #include "util/azoth/entryidops.h"
 #include "interfaces/azoth/iclentry.h"
-#include "../../core.h"
+#include "components/managers/entriesmanager.h"
 
 namespace LC::Azoth::DndUtil
 {
@@ -40,22 +41,22 @@ namespace LC::Azoth::DndUtil
 		return encoded;
 	}
 
-	ICLEntry* DecodeEntryObj (const QMimeData *mime)
+	ICLEntry* DecodeEntryObj (const EntriesManager& entries, const QMimeData *mime)
 	{
 		QDataStream stream (mime->data (CLEntryFormat));
 		const auto id = Deserialize<GlobalStrongestId> (stream);
-		return id ? Core::Instance ().GetEntryOrNull (*id) : nullptr;
+		return entries.GetEntryOrNull (id);
 	}
 
-	QList<ICLEntry*> DecodeEntryObjs (const QMimeData *mime)
+	QList<ICLEntry*> DecodeEntryObjs (const EntriesManager& entries, const QMimeData *mime)
 	{
 		QList<ICLEntry*> result;
-		for (const auto& info : DecodeMimeInfos (mime))
+		for (const auto& info : DecodeMimeInfos (entries, mime))
 			result << info.Entry_;
 		return result;
 	}
 
-	QList<MimeContactInfo> DecodeMimeInfos (const QMimeData *mime)
+	QList<MimeContactInfo> DecodeMimeInfos (const EntriesManager& entries, const QMimeData *mime)
 	{
 		QList<MimeContactInfo> result;
 
@@ -68,8 +69,7 @@ namespace LC::Azoth::DndUtil
 
 			QString group;
 			stream >> group;
-
-			if (const auto entry = Core::Instance ().GetEntryOrNull (*id))
+			if (const auto entry = entries.GetEntryOrNull (id))
 				result.append ({ entry, group });
 		}
 

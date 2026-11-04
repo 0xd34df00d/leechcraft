@@ -24,11 +24,12 @@
 
 namespace LC::Azoth
 {
-	ChatTabsManager::ChatTabsManager (AvatarsManager *am, Util::WkFontsWidget *fontsWidget, EntriesManager& entries, QObject *parent)
+	ChatTabsManager::ChatTabsManager (AvatarsManager *am, Util::WkFontsWidget *fontsWidget, const EntriesManager& entries, QObject *parent)
 	: QObject { parent }
 	, AvatarsManager_ { am }
 	, FontsWidget_ { fontsWidget }
 	, Profile_ { new QWebEngineProfile { this } }
+	, Entries_ { entries }
 	{
 		XmlSettingsManager::Instance ().RegisterObject ("CustomMUCStyle",
 				this, "chatWindowStyleChanged");
@@ -82,7 +83,7 @@ namespace LC::Azoth
 
 		EverOpened_ << id;
 
-		QPointer tab (new ChatTab (entry, entry.GetParentAccount (), AvatarsManager_, FontsWidget_, Profile_));
+		QPointer tab (new ChatTab (entry, entry.GetParentAccount (), AvatarsManager_, Entries_, FontsWidget_, Profile_));
 		tab->installEventFilter (this);
 		Entry2Tab_ [id] = tab;
 
@@ -184,7 +185,7 @@ namespace LC::Azoth
 	{
 		for (const RestoreChatInfo& info : infos)
 		{
-			const auto entryObj = Core::Instance ().GetEntryOrNull (info.EntryID_);
+			const auto entryObj = Entries_.GetEntryOrNull (info.EntryID_);
 			qDebug () << info.EntryID_ << entryObj;
 			if (entryObj)
 				RestoreChat (info, *entryObj);

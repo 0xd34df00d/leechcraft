@@ -101,9 +101,9 @@ namespace LC::Azoth
 #endif
 	}
 
-	QStringList GetMucParticipants (const GlobalPersistentId& entryId)
+	QStringList GetMucParticipants (const EntriesManager& entries, const GlobalPersistentId& entryId)
 	{
-		auto& entry = Core::Instance ().GetEntry<IMUCEntry> (entryId);
+		auto& entry = entries.GetEntry<IMUCEntry> (entryId);
 		return Util::Map (entry.GetParticipants (), &ICLEntry::GetEntryName);
 	}
 }

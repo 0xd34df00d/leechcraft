@@ -229,7 +229,7 @@ namespace Azoth
 				Room::Internal::GlobalStrongestID);
 	}
 
-	NotificationsManager::NotificationsManager (AvatarsManager *am, EntriesManager& entries, QObject *parent)
+	NotificationsManager::NotificationsManager (AvatarsManager *am, const EntriesManager& entries, QObject *parent)
 	: QObject { parent }
 	, EntityMgr_ { *GetProxyHolder ()->GetEntityManager () }
 	, AvatarsMgr_ { am }

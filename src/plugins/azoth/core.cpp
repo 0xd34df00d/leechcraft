@@ -160,17 +160,17 @@ namespace LC::Azoth
 	, AvatarsManager_ (std::make_shared<AvatarsManager> ())
 	, FontsWidget_ { new Util::WkFontsWidget { &XmlSettingsManager::Instance () } }
 	, TooltipManager_ (new CLTooltipManager (AvatarsManager_.get (), Entry2Items_))
-	, CLModel_ (new CLModel (TooltipManager_, this))
-	, ChatTabsManager_ (new ChatTabsManager (AvatarsManager_.get (), FontsWidget_, EntriesManager_, this))
+	, CLModel_ (new CLModel (TooltipManager_, Entries_, this))
+	, ChatTabsManager_ (new ChatTabsManager (AvatarsManager_.get (), FontsWidget_, Entries_, this))
 	, CoreCommandsManager_ (new CoreCommandsManager (this))
-	, NotificationsManager_ (new NotificationsManager (AvatarsManager_.get (), EntriesManager_))
+	, NotificationsManager_ (new NotificationsManager (AvatarsManager_.get (), Entries_))
 	, ActionsManager_ (new ActionsManager (*NotificationsManager_, *AvatarsManager_, this))
 	, ItemIconManager_ (new AnimatedIconManager<QStandardItem*> ([] (QStandardItem *it, const QIcon& ic)
 						{ it->setIcon (ic); }))
 	, SmilesOptionsModel_ (new SourceTrackingModel<IEmoticonResourceSource> ({ tr ("Smile pack") }))
 	, ChatStylesOptionsModel_ (new SourceTrackingModel<IChatStyleResourceSource> ({ tr ("Chat style") }))
 	, PluginManager_ (new PluginManager)
-	, PluginProxyObject_ (new ProxyObject (AvatarsManager_.get ()))
+	, PluginProxyObject_ (new ProxyObject (AvatarsManager_.get (), Entries_))
 	, XferJobManager_ (new TransferJobManager { AvatarsManager_.get () })
 	, CallManager_ (new CallManager)
 	, UnreadQueueManager_ (new UnreadQueueManager)
@@ -577,50 +577,9 @@ namespace LC::Azoth
 		return result.values ();
 	}
 
-	template<typename T>
-	[[deprecated("Use GetEntry(GlobalStrongestId) instead")]]
-	T& Core::GetEntry (const QString& id) const
+	const EntriesManager& Core::GetEntriesManager () const
 	{
-		const auto entry = ID2Entry_.value (id);
-		if (!entry)
-			throw std::runtime_error { "no entry for ID " + id.toStdString () };
-
-		if constexpr (std::is_same_v<T, ICLEntry>)
-			return *entry;
-		else if constexpr (std::is_same_v<T, QObject>)
-			return *entry->GetQObject ();
-		else
-			return qobject_ref_cast<T> (entry->GetQObject ());
-	}
-
-	template<typename T>
-	T& Core::GetEntry (const GlobalStrongestId& id) const
-	{
-		//return ID2Entry_.GetEntry (id);
-		return GetEntry<T> (id.ToString ());
-	}
-
-	template<typename T>
-	[[deprecated("Use GetEntryOrNull(GlobalStrongestId) instead")]]
-	T* Core::GetEntryOrNull (const QString& id) const
-	{
-		const auto entry = ID2Entry_.value (id);
-		if (!entry)
-			return nullptr;
-
-		if constexpr (std::is_same_v<T, ICLEntry>)
-			return entry;
-		else if constexpr (std::is_same_v<T, QObject>)
-			return entry->GetQObject ();
-		else
-			return qobject_cast<T*> (entry->GetQObject ());
-	}
-
-	template<typename T>
-	T* Core::GetEntryOrNull (const GlobalStrongestId& id) const
-	{
-		//return ID2Entry_.GetEntry (id);
-		return GetEntryOrNull<T> (id.ToString ());
+		return Entries_;
 	}
 
 	TransferJobManager* Core::GetTransferJobManager () const
@@ -1257,9 +1216,6 @@ namespace LC::Azoth
 		CryptoManager::Instance ().AddEntry (entry);
 #endif
 
-		ID2Entry_ [entry->GetEntryID ()] = entry;
-		//ID2Entry_.AddEntry (*entry);
-
 		const auto& groups = GetDisplayGroups (entry);
 		for (const auto catItem : GetCategoriesItems (groups, accItem))
 		{
@@ -1596,7 +1552,7 @@ namespace LC::Azoth
 			return;
 		}
 
-		EntriesManager_.AddAccount (*account);
+		Entries_.AddAccount (*account);
 
 		HistorySyncer_->AddAccount (account);
 
@@ -1675,7 +1631,6 @@ namespace LC::Azoth
 
 						Entry2Items_.remove (entry);
 						ActionsManager_->HandleEntryRemoved (entry);
-						ID2Entry_.remove (entry->GetEntryID ());
 						Entry2SmoothAvatarCache_.remove (entry);
 						ResourcesManager::Instance ().HandleRemoved (entry);
 					}
@@ -1907,18 +1862,4 @@ namespace LC::Azoth
 	{
 		RIEX::HandleRIEXItemsSuggested (items, from, message);
 	}
-
-	template QObject& Core::GetEntry<QObject> (const QString&) const;
-	template ICLEntry& Core::GetEntry<ICLEntry> (const QString&) const;
-	template IMUCEntry& Core::GetEntry<IMUCEntry> (const QString&) const;
-	template QObject& Core::GetEntry<QObject> (const GlobalStrongestId&) const;
-	template ICLEntry& Core::GetEntry<ICLEntry> (const GlobalStrongestId&) const;
-	template IMUCEntry& Core::GetEntry<IMUCEntry> (const GlobalStrongestId&) const;
-
-	template QObject* Core::GetEntryOrNull<QObject> (const QString&) const;
-	template ICLEntry* Core::GetEntryOrNull<ICLEntry> (const QString&) const;
-	template IMUCEntry* Core::GetEntryOrNull<IMUCEntry> (const QString&) const;
-	template QObject* Core::GetEntryOrNull<QObject> (const GlobalStrongestId&) const;
-	template ICLEntry* Core::GetEntryOrNull<ICLEntry> (const GlobalStrongestId&) const;
-	template IMUCEntry* Core::GetEntryOrNull<IMUCEntry> (const GlobalStrongestId&) const;
 }

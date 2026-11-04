@@ -19,6 +19,7 @@ class QUrl;
 namespace LC::Azoth
 {
 	class ChatTab;
+	class EntriesManager;
 	class TransferJobManager;
 
 	class ContactDropFilter : public QObject
@@ -27,8 +28,9 @@ namespace LC::Azoth
 
 		TransferJobManager& Transfers_;
 		ChatTab& ChatTab_;
+		const EntriesManager& Entries_;
 	public:
-		ContactDropFilter (TransferJobManager&, ChatTab&);
+		ContactDropFilter (const EntriesManager&, TransferJobManager&, ChatTab&);
 
 		bool eventFilter (QObject*, QEvent*) override;
 

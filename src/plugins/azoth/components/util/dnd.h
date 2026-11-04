@@ -18,6 +18,8 @@ class QMimeData;
 namespace LC::Azoth
 {
 	class ICLEntry;
+
+	class EntriesManager;
 }
 
 namespace LC::Azoth::DndUtil
@@ -31,9 +33,9 @@ namespace LC::Azoth::DndUtil
 	};
 
 	QByteArray Encode (const QList<MimeContactInfo>&, QMimeData*);
-	ICLEntry* DecodeEntryObj (const QMimeData*);
-	QList<ICLEntry*> DecodeEntryObjs (const QMimeData*);
-	QList<MimeContactInfo> DecodeMimeInfos (const QMimeData*);
+	ICLEntry* DecodeEntryObj (const EntriesManager&, const QMimeData*);
+	QList<ICLEntry*> DecodeEntryObjs (const EntriesManager&, const QMimeData*);
+	QList<MimeContactInfo> DecodeMimeInfos (const EntriesManager&, const QMimeData*);
 
 	bool HasContacts (const QMimeData*);
 }

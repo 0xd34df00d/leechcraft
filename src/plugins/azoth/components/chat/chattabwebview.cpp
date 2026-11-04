@@ -47,15 +47,12 @@ namespace LC::Azoth
 		}
 	};
 
-	ChatTabWebView::ChatTabWebView (QWidget *parent)
-	: QWebEngineView (parent)
-	{
-	}
-
-	void ChatTabWebView::InitializePage (QWebEngineProfile *profile)
+	void ChatTabWebView::InitializePage (QWebEngineProfile *profile, const EntriesManager& entries)
 	{
 		setPage (new ChatTabWebPage { profile, this });
 		page ()->setBackgroundColor (palette ().color (QPalette::Window));
+
+		Entries_ = &entries;
 	}
 
 	void ChatTabWebView::SetQuoteAction (QAction *act)
@@ -125,14 +122,10 @@ namespace LC::Azoth
 	{
 		const auto& entryIdValue = QUrlQuery { nickUrl }.queryItemValue ("entryId"_qs, QUrl::FullyDecoded);
 		const auto& entryId = Deserialize<GlobalStrongestId> (entryIdValue);
-		if (!entryId)
-		{
-			if (!entryIdValue.isEmpty ())
-				qWarning () << "invalid entry id" << entryIdValue;
-			return;
-		}
+		if (!entryId && !entryIdValue.isEmpty ())
+			qWarning () << "invalid entry id" << entryIdValue;
 
-		const auto entry = Core::Instance ().GetEntryOrNull (*entryId);
+		const auto entry = Entries_->GetEntryOrNull (entryId);
 		if (!entry)
 			return;
 

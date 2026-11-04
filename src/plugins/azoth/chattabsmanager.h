@@ -35,6 +35,7 @@ namespace Azoth
 		AvatarsManager * const AvatarsManager_;
 		Util::WkFontsWidget * const FontsWidget_;
 		QWebEngineProfile * const Profile_;
+		const EntriesManager& Entries_;
 
 		QSet<QString> StyleParams_;
 		QHash<GlobalStrongestId, ChatTab_ptr> Entry2Tab_;
@@ -52,7 +53,7 @@ namespace Azoth
 	private:
 		QHash<GlobalStrongestId, RestoreChatInfo> RestoreInfo_;
 	public:
-		ChatTabsManager (AvatarsManager*, Util::WkFontsWidget*, EntriesManager&, QObject* = nullptr);
+		ChatTabsManager (AvatarsManager*, Util::WkFontsWidget*, const EntriesManager&, QObject* = nullptr);
 
 		QWidget* OpenChat (const QModelIndex&);
 		ChatTab* OpenChat (const ICLEntry&, bool fromUser, const DynPropertiesList_t& = {});

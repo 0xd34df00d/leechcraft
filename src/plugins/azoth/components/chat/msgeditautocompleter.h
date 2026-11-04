@@ -16,10 +16,13 @@ class QTextEdit;
 
 namespace LC::Azoth
 {
+	class EntriesManager;
+
 	class MsgEditAutocompleter : public QObject
 	{
 		std::optional<GlobalStrongestId> EntryId_;
 		QTextEdit& Edit_;
+		const EntriesManager& Entries_;
 
 		struct Idle {};
 		struct Completing
@@ -36,7 +39,7 @@ namespace LC::Azoth
 
 		bool InsertingCompletion_ = false;
 	public:
-		explicit MsgEditAutocompleter (GlobalStrongestId entryId, QTextEdit& msgEdit);
+		explicit MsgEditAutocompleter (GlobalStrongestId entryId, QTextEdit& msgEdit, const EntriesManager&);
 
 		void UpdateEntryId (std::optional<GlobalStrongestId>);
 	private:

@@ -118,20 +118,22 @@ namespace Azoth
 	ChatTab::ChatTab (const ICLEntry& entry,
 			IAccount *account,
 			AvatarsManager *am,
+			const EntriesManager& entries,
 			Util::WkFontsWidget *fontsWidget,
 			QWebEngineProfile *profile,
 			QWidget *parent)
 	: QWidget (parent)
 	, AvatarsManager_ (am)
+	, Entries_ (entries)
 	, Account_ (account)
 	, TabToolbar_ (new QToolBar (tr ("Azoth chat window"), this))
 	, MUCEventLog_ (new QTextBrowser ())
 	, EntryID_ (entry.GetGlobalStrongestID ())
-	, CDF_ (new ContactDropFilter (*Core::Instance ().GetTransferJobManager (), *this))
+	, CDF_ (new ContactDropFilter (entries, *Core::Instance ().GetTransferJobManager (), *this))
 	, NumUnreadMsgs_ (Core::Instance ().GetUnreadCount (GetEntry<ICLEntry> ()))
 	{
 		Ui_.setupUi (this);
-		Ui_.View_->InitializePage (profile);
+		Ui_.View_->InitializePage (profile, entries);
 
 		Ui_.MsgEdit_->SetShortcutManager (*Core::Instance ().GetShortcutManager ());
 		Ui_.MsgEdit_->ForceUpdateVisibleLines ();
@@ -1018,7 +1020,7 @@ namespace Azoth
 				Util::Visit (*EntryID_,
 						[&] (const GlobalPersistentId& id)
 						{
-							if (!GetMucParticipants (id).contains (nick))
+							if (!GetMucParticipants (Entries_, id).contains (nick))
 							{
 								const auto& e = Util::MakeNotification ("Azoth",
 										tr ("%1 isn't present in this conference at the moment.")
@@ -1131,7 +1133,7 @@ namespace Azoth
 	template<typename T>
 	T* ChatTab::GetEntry () const
 	{
-		return EntryID_ ? Core::Instance ().GetEntryOrNull<T> (*EntryID_) : nullptr;
+		return Entries_.GetEntryOrNull<T> (EntryID_);
 	}
 
 	void ChatTab::BuildBasicActions ()
@@ -1209,7 +1211,7 @@ namespace Azoth
 			Ui_.AvatarLabel_->hide ();
 
 			const int height = Util::AvailableGeometry (QCursor::pos ()).height ();
-			MUCEventLog_->setWindowTitle (tr ("MUC log for %1").arg (FormatNameWithAddress (*GetEntry<ICLEntry> ())));
+			MUCEventLog_->setWindowTitle (tr ("MUC log for %1").arg (FormatNameWithAddress (*entry)));
 			MUCEventLog_->setStyleSheet ("background-color: rgb(0, 0, 0);");
 			MUCEventLog_->resize (600, height * 2 / 3);
 
@@ -1467,7 +1469,7 @@ namespace Azoth
 					emit tabRecoverDataChanged ();
 				});
 
-		MsgEditAutocompleter_ = new MsgEditAutocompleter (entry.GetGlobalStrongestID (), *Ui_.MsgEdit_);
+		MsgEditAutocompleter_ = new MsgEditAutocompleter (entry.GetGlobalStrongestID (), *Ui_.MsgEdit_, Entries_);
 
 		MsgFormatter_ = new MsgFormatterWidget { entry.GetGlobalStrongestID (), *Ui_.MsgEdit_ };
 		XmlSettingsManager::Instance ().RegisterObject ("RichFormatterPosition", this,

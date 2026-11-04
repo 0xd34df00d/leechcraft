@@ -12,15 +12,18 @@
 
 namespace LC::Azoth
 {
+	class EntriesManager;
+
 	class ChatTabWebView : public QWebEngineView
 	{
 		Q_OBJECT
 
 		QAction *QuoteAct_ = nullptr;
+		const EntriesManager *Entries_ = nullptr;
 	public:
-		explicit ChatTabWebView (QWidget* = nullptr);
+		using QWebEngineView::QWebEngineView;
 
-		void InitializePage (QWebEngineProfile*);
+		void InitializePage (QWebEngineProfile*, const EntriesManager&);
 		void SetQuoteAction (QAction*);
 	protected:
 		void contextMenuEvent (QContextMenuEvent*) override;

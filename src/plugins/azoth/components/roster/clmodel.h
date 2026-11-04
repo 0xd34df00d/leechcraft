@@ -13,14 +13,16 @@
 namespace LC::Azoth
 {
 	class CLTooltipManager;
+	class EntriesManager;
 
 	class CLModel : public QStandardItemModel
 	{
 		Q_OBJECT
 
 		CLTooltipManager * const TooltipManager_;
+		const EntriesManager& Entries_;
 	public:
-		explicit CLModel (CLTooltipManager*, QObject* = nullptr);
+		CLModel (CLTooltipManager*, const EntriesManager&, QObject* = nullptr);
 
 		QVariant data (const QModelIndex&, int) const override;
 

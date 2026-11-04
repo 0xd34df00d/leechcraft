@@ -48,7 +48,7 @@ namespace Azoth
 		static QVariantMap SourceFields (const ICLEntry&);
 		static QVariantMap RoomFields (const IMUCEntry&);
 
-		NotificationsManager (AvatarsManager*, EntriesManager&, QObject* = nullptr);
+		NotificationsManager (AvatarsManager*, const EntriesManager&, QObject* = nullptr);
 
 		void AddAccount (QObject*);
 		void RemoveAccount (QObject*);

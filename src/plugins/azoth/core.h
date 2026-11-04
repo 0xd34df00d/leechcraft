@@ -71,7 +71,7 @@ namespace LC::Azoth
 		QObjectList ProtocolPlugins_;
 		QList<QAction*> AccountCreatorActions_;
 
-		EntriesManager EntriesManager_;
+		EntriesManager Entries_;
 		std::shared_ptr<AvatarsManager> AvatarsManager_;
 		Util::WkFontsWidget * const FontsWidget_;
 		CLTooltipManager * const TooltipManager_;
@@ -90,8 +90,6 @@ namespace LC::Azoth
 
 		std::shared_ptr<NotificationsManager> NotificationsManager_;
 		ActionsManager *ActionsManager_;
-
-		QHash<QString, ICLEntry*> ID2Entry_;
 
 		typedef QCache<ICLEntry*, QImage> Entry2SmoothAvatarCache_t;
 		Entry2SmoothAvatarCache_t Entry2SmoothAvatarCache_ { 5 * 1024 * 1024 };
@@ -155,19 +153,7 @@ namespace LC::Azoth
 		 */
 		QStringList GetChatGroups () const;
 
-		template<typename T = ICLEntry>
-		[[deprecated("Use GetEntry(GlobalStrongestId) instead")]]
-		T& GetEntry (const QString& id) const;
-
-		template<typename T = ICLEntry>
-		T& GetEntry (const GlobalStrongestId& id) const;
-
-		template<typename T = ICLEntry>
-		[[deprecated("Use GetEntryOrNull(GlobalStrongestId) instead")]]
-		T* GetEntryOrNull (const QString& id) const;
-
-		template<typename T = ICLEntry>
-		T* GetEntryOrNull (const GlobalStrongestId& id) const;
+		const EntriesManager& GetEntriesManager () const;
 
 		TransferJobManager* GetTransferJobManager () const;
 

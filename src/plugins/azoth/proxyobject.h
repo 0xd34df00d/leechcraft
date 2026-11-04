@@ -20,6 +20,8 @@ namespace LC
 {
 namespace Azoth
 {
+	class EntriesManager;
+
 	class FormatterProxyObject : public IFormatterProxyObject
 	{
 		QRegularExpression LinkRegexp_;
@@ -45,8 +47,9 @@ namespace Azoth
 
 		FormatterProxyObject Formatter_;
 		IAvatarsManager * const AvatarsManager_;
+		const EntriesManager& Entries_;
 	public:
-		ProxyObject (IAvatarsManager*, QObject* = nullptr);
+		ProxyObject (IAvatarsManager*, const EntriesManager&, QObject* = nullptr);
 	public slots:
 		QObject* GetSettingsManager () override;
 		void SetPassword (const QString&, QObject*) override;

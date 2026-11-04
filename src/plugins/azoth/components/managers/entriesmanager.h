@@ -19,10 +19,27 @@ namespace LC::Azoth
 	class EntriesManager : public QObject
 	{
 		Q_OBJECT
+
+		QHash<GlobalStrongestId, ICLEntry*> ID2Entry_;
 	public:
 		using QObject::QObject;
 
 		void AddAccount (IAccount&);
+
+		template<typename T = ICLEntry>
+		T& GetEntry (const GlobalStrongestId&) const;
+
+		template<typename T = ICLEntry>
+		T* GetEntryOrNull (const GlobalStrongestId&) const;
+
+		template<typename T = ICLEntry>
+		T* GetEntryOrNull (const std::optional<GlobalStrongestId>& id) const
+		{
+			return id ? GetEntryOrNull<T> (*id) : nullptr;
+		}
+	private:
+		void AddCLEntries (const QList<ICLEntry*>&);
+		void RemoveCLEntries (const QList<ICLEntry*>&);
 	signals:
 		void conventionalIdChanged (const GlobalConventionalId& oldId, const GlobalConventionalId& newId, const ICLEntry& entry);
 	};

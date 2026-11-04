@@ -22,9 +22,10 @@
 
 namespace LC::Azoth
 {
-	CLModel::CLModel (CLTooltipManager *manager, QObject *parent)
+	CLModel::CLModel (CLTooltipManager *manager, const EntriesManager& entries, QObject *parent)
 	: QStandardItemModel { parent }
 	, TooltipManager_ { manager }
+	, Entries_ { entries }
 	{
 		connect (manager,
 				&CLTooltipManager::rebuiltTooltip,
@@ -123,7 +124,7 @@ namespace LC::Azoth
 
 		bool accepted = false;
 
-		for (const auto& serializedEntry : DndUtil::DecodeEntryObjs (mime))
+		for (const auto& serializedEntry : DndUtil::DecodeEntryObjs (Entries_, mime))
 		{
 			const auto serializedMuc = qobject_cast<IMUCEntry*> (serializedEntry->GetQObject ());
 			if (static_cast<bool> (targetMuc) == static_cast<bool> (serializedMuc))
@@ -157,7 +158,7 @@ namespace LC::Azoth
 
 		const auto& newGrp = index (row, 0, parent).data (CLREntryCategory).toString ();
 
-		for (const auto& info : DndUtil::DecodeMimeInfos (mime))
+		for (const auto& info : DndUtil::DecodeMimeInfos (Entries_, mime))
 		{
 			const auto entry = info.Entry_;
 			const auto& oldGroup = info.Group_;
