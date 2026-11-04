@@ -170,6 +170,7 @@ namespace LC::Azoth::ChatHistory
 				case ICLEntry::EntryType::PrivateChat:
 					return nick2part.value (message.DisplayName_, &entry);
 				}
+				std::unreachable ();
 			} ();
 			const auto variant = message.Variant_.value_or ({});
 

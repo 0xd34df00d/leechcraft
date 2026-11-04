@@ -30,6 +30,7 @@ namespace LC::Summary
 			case ProcessKind::Generic:
 				return pattern.arg (done).arg (total);
 			}
+			std::unreachable ();
 		} ();
 		return absValuesSubstitued.arg (percentage, 0, 'f', 1);
 	}

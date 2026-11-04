@@ -324,6 +324,7 @@ namespace LC::Azoth
 		}
 
 		qFatal () << "unknown entry type:" << static_cast<int> (entry.GetEntryType ());
+		std::unreachable ();
 	}
 
 	void ChatEventsAdapter::EmitStatusEventImpl (const QString& displayName, const EntryStatus& status)
