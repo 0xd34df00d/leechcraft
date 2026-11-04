@@ -40,10 +40,17 @@ namespace LC::Util
 		};
 		new QTreeWidgetItem { item, { QObject::tr ("Effective date:"), cer.effectiveDate ().toString () } };
 		new QTreeWidgetItem { item, { QObject::tr ("Expiry date:"), cer.expiryDate ().toString () } };
-		new QTreeWidgetItem { item, { QObject::tr ("Version:"), cer.version () } };
-		new QTreeWidgetItem { item, { QObject::tr ("Serial number:"), cer.serialNumber () } };
-		new QTreeWidgetItem { item, { QObject::tr ("MD5 digest:"), cer.digest ().toHex () } };
-		new QTreeWidgetItem { item, { QObject::tr ("SHA1 digest:"), cer.digest (QCryptographicHash::Sha1).toHex () } };
+		new QTreeWidgetItem { item, { QObject::tr ("Version:"), QString::fromLatin1 (cer.version ()) } };
+		new QTreeWidgetItem { item, { QObject::tr ("Serial number:"), QString::fromLatin1 (cer.serialNumber ()) } };
+		new QTreeWidgetItem { item, { QObject::tr ("MD5 digest:"), QString::fromLatin1 (cer.digest ().toHex ()) } };
+		new QTreeWidgetItem
+		{
+			item,
+			{
+				QObject::tr ("SHA1 digest:"),
+				QString::fromLatin1 (cer.digest (QCryptographicHash::Sha1).toHex ())
+			}
+		};
 
 		auto cvt = [] (const QStringList& list) { return list.join ("; "_ql); };
 

@@ -80,7 +80,7 @@ namespace FileScheme
 				buf.buffer ().clear ();
 				pix.save (&buf, "PNG");
 			}
-			return buf.buffer ().toBase64 ();
+			return QString::fromLatin1 (buf.buffer ().toBase64 ());
 		}
 	};
 

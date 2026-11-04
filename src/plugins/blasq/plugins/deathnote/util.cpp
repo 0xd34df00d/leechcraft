@@ -19,10 +19,11 @@ namespace Blasq
 {
 namespace DeathNote
 {
-	QByteArray GetHashedChallenge (const QString& password, const QString& challenge)
+	QString GetHashedChallenge (const QString& password, const QString& challenge)
 	{
 		const auto& hash = QCryptographicHash::hash (password.toUtf8 (), QCryptographicHash::Md5).toHex ();
-		return QCryptographicHash::hash ((challenge + hash).toUtf8 (), QCryptographicHash::Md5).toHex ();
+		return QString::fromLatin1 (QCryptographicHash::hash (challenge.toUtf8 () + hash,
+				QCryptographicHash::Md5).toHex ());
 	}
 
 	QString GetAccountPassword (const QByteArray& accId, const QString& accName, const ICoreProxy_ptr& proxy)

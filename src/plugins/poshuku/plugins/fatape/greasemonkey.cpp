@@ -121,7 +121,7 @@ namespace FatApe
 		return resource.open (QFile::ReadOnly) ?
 			QString ("data:%1;base64,%2")
 				.arg (mimeType)
-				.arg (QString (resource.readAll ().toBase64 ())
+				.arg (QString::fromLatin1 (resource.readAll ().toBase64 ())
 						//The result is a base64 encoded URI, which is then also URI encoded,
 						//as suggested by Wikipedia(http://en.wikipedia.org/wiki/Base64#URL_applications),
 						//because of "+" and "/" characters in the base64 alphabet.

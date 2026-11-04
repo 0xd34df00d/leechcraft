@@ -108,7 +108,7 @@ namespace LackMan
 
 			QUrl r = baseUrl;
 			r.setPath (r.path () + urlStr);
-			return r.toEncoded ();
+			return r.toString (QUrl::FullyEncoded);
 		}
 	}
 

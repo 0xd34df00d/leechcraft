@@ -28,7 +28,7 @@ namespace LC::Poshuku::SpeedDial
 		QString MakeThumbUrl (const QUrl& siteUrl)
 		{
 			QUrl url { ThumbUrlBase };
-			url.setQuery (QUrlQuery { { { ThumbUrlKey, siteUrl.toEncoded () } } });
+			url.setQuery (QUrlQuery { { { ThumbUrlKey, siteUrl.toString (QUrl::FullyEncoded) } } });
 			return url.toString ();
 		}
 
@@ -103,7 +103,7 @@ namespace LC::Poshuku::SpeedDial
 				Tag
 				{
 					.Name_ = "a"_qba,
-					.Attrs_ = { { "href"_qba, url.toEncoded () } },
+					.Attrs_ = { { "href"_qba, url.toString (QUrl::FullyEncoded) } },
 					.Children_
 					{
 						Tags::Image (MakeThumbUrl (url), cache.GetThumbSize ())

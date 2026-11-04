@@ -60,7 +60,7 @@ namespace LC::LMP
 		{
 			auto joined = artist + "_-_"_qs + album;
 			joined.replace (' ', '_');
-			return QUrl::toPercentEncoding (joined, QByteArray (), "~") + ".png";
+			return QString::fromLatin1 (QUrl::toPercentEncoding (joined, QByteArray (), "~") + ".png");
 		}
 
 		std::optional<QString> GetAlbumDirCoverPath (const Collection::Album& album, const QString& artist)

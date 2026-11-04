@@ -250,7 +250,8 @@ namespace LC
 
 			QString contents;
 			if (!newPass.isEmpty ())
-				contents = QCryptographicHash::hash (newPass.toUtf8 (), QCryptographicHash::Sha1).toHex ();
+				contents = QString::fromLatin1 (QCryptographicHash::hash (newPass.toUtf8 (),
+						QCryptographicHash::Sha1).toHex ());
 			XmlSettingsManager::Instance ()->setProperty ("StartupPassword", contents);
 		}
 	}

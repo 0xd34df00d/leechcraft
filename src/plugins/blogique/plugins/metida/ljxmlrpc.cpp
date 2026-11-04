@@ -340,8 +340,8 @@ namespace Metida
 		{
 			const QByteArray passwordHash = QCryptographicHash::hash (password.toUtf8 (),
 					QCryptographicHash::Md5).toHex ();
-			return QCryptographicHash::hash ((challenge + passwordHash).toUtf8 (),
-					QCryptographicHash::Md5).toHex ();
+			return QString::fromLatin1 (QCryptographicHash::hash (challenge.toUtf8 () + passwordHash,
+					QCryptographicHash::Md5).toHex ());
 		}
 
 		QDomElement FillServicePart (QDomElement parentElement,

@@ -46,7 +46,7 @@ namespace Xoox
 		QXmppElement data;
 		data.setTagName ("data");
 		data.setAttribute ("xmlns", NsAvatarDataNode);
-		data.setValue (Saved_.toBase64 ());
+		data.setValue (QString::fromLatin1 (Saved_.toBase64 ()));
 
 		item.appendChild (data);
 

@@ -186,7 +186,7 @@ namespace Metida
 		const QByteArray filename = acc->GetAccountID ().toBase64 ().replace ('/', '_');
 		const QDir& avatarDir = Util::GetUserDir (Util::UserDir::Cache, "blogique/metida/avatars");
 
-		const QString& path = avatarDir.absoluteFilePath (filename);
+		const QString& path = avatarDir.absoluteFilePath (QString::fromLatin1 (filename));
 		QFile file (path);
 		if (file.open (QIODevice::WriteOnly))
 			file.write (reply->readAll ());
@@ -209,7 +209,7 @@ namespace Metida
 				.toBase64 ().replace ('/', '_');
 		const QDir& avatarDir = Util::GetUserDir (Util::UserDir::Cache, "blogique/metida/avatars");
 
-		const QString& path = avatarDir.absoluteFilePath (filename);
+		const QString& path = avatarDir.absoluteFilePath (QString::fromLatin1 (filename));
 		QFile file (path);
 		if (file.open (QIODevice::WriteOnly))
 			file.write (reply->readAll ());

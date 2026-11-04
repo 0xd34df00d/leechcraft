@@ -234,7 +234,7 @@ namespace Xtazy
 		if (!PendingUploads_.contains (filename))
 			return;
 
-		const auto& encoded = url.toEncoded ();
+		const auto& encoded = url.toString (QUrl::FullyEncoded);
 
 		for (const auto& [entryObj, variant] : PendingUploads_.take (filename))
 			if (const auto entry = qobject_cast<ICLEntry*> (entryObj))

@@ -41,7 +41,7 @@ namespace Xoox
 			if (val.typeId () == QMetaType::QDateTime)
 				elem.setValue (val.toDateTime ().toString (Qt::ISODate));
 			else if (val.typeId () == QMetaType::QUrl)
-				elem.setValue (val.toUrl ().toEncoded ());
+				elem.setValue (val.toUrl ().toString (QUrl::FullyEncoded));
 			else
 				elem.setValue (val.toString ());
 

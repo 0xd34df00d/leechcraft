@@ -158,7 +158,7 @@ namespace Metida
 		Ui_.JournalName_->setText (data.FullName_);
 		IAccount *acc = qobject_cast<IAccount*> (Profile_->GetParentAccount ());
 		const QString& path = Util::GetUserDir (Util::UserDir::Cache, "blogique/metida/avatars")
-				.absoluteFilePath (acc->GetAccountID ().toBase64 ().replace ('/', '_'));
+				.absoluteFilePath (QString::fromLatin1 (acc->GetAccountID ().toBase64 ().replace ('/', '_')));
 		Ui_.JournalPic_->setPixmap (QPixmap (path));
 		ReFillModels ();
 	}

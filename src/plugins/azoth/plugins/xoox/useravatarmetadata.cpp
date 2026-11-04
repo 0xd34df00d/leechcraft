@@ -63,7 +63,7 @@ namespace Xoox
 			info.setAttribute ("id", Id_);
 
 			if (URL_.isValid ())
-				info.setAttribute ("url", URL_.toEncoded ());
+				info.setAttribute ("url", URL_.toString (QUrl::FullyEncoded));
 
 			md.appendChild (info);
 		}

@@ -32,7 +32,7 @@ namespace LC::Util
 		buf.open (QIODevice::ReadWrite);
 		const auto compression = 100;
 		pix.save (&buf, "PNG", compression);
-		return QStringLiteral ("data:image/png;base64,") + buf.buffer ().toBase64 ();
+		return QStringLiteral ("data:image/png;base64,") + QString::fromLatin1 (buf.buffer ().toBase64 ());
 	}
 
 	namespace

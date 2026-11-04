@@ -1080,7 +1080,7 @@ namespace LC::Azoth
 
 			const auto& smileStr = img
 					.arg (str)
-					.arg (QString ("data:image/png;base64," + rawData));
+					.arg (QString::fromLatin1 ("data:image/png;base64," + rawData));
 
 			body.replace (pair.first, escaped.size (), smileStr);
 		}

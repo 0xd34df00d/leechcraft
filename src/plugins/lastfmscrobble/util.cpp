@@ -34,7 +34,7 @@ namespace Lastfmscrobble
 			str += lastfm::ws::SharedSecret;
 			const auto& sig = QCryptographicHash::hash (str.toUtf8 (), QCryptographicHash::Md5).toHex ();
 
-			params.append ({ "api_sig", sig });
+			params.append ({ "api_sig", QString::fromLatin1 (sig) });
 		}
 
 		QByteArray Params2PostData (ParamsList_t params)

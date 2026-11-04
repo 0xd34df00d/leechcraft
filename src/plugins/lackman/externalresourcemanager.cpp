@@ -26,7 +26,7 @@ namespace LackMan
 	{
 		QString URLToFileName (const QUrl& url)
 		{
-			return QString (url.toEncoded ().toBase64 ().replace ('/', '_'));
+			return QString::fromLatin1 (url.toEncoded ().toBase64 ().replace ('/', '_'));
 		}
 	}
 

@@ -98,7 +98,8 @@ namespace LC::Azoth
 		void SendLink (const QUrl& url, const ChatTab& chatTab)
 		{
 			if (const auto entry = chatTab.GetEntry<ICLEntry> ())
-				SendMessage (*entry, { .Variant_ = chatTab.GetSelectedVariant (), .Body_ = url.toEncoded () });
+				SendMessage (*entry,
+						{ .Variant_ = chatTab.GetSelectedVariant (), .Body_ = url.toString (QUrl::FullyEncoded) });
 		}
 
 		struct Action
@@ -132,7 +133,7 @@ namespace LC::Azoth
 							{
 								if (const auto& url = var.toUrl ();
 									!url.isEmpty ())
-									tab.insertMessageText (url.toEncoded ());
+									tab.insertMessageText (url.toString (QUrl::FullyEncoded));
 							});
 
 					const auto& label = verb + ": "_qs + variant.Name_;

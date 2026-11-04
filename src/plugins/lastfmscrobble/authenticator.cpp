@@ -27,10 +27,10 @@ namespace Lastfmscrobble
 
 		QString AuthToken (const QString& username, const QString& password)
 		{
-			const QString& passHash = QCryptographicHash::hash (password.toLatin1 (),
+			const auto& passHash = QCryptographicHash::hash (password.toLatin1 (),
 					QCryptographicHash::Md5).toHex ();
-			return QCryptographicHash::hash ((username + passHash).toLatin1 (),
-					QCryptographicHash::Md5).toHex ();
+			return QString::fromLatin1 (QCryptographicHash::hash (username.toLatin1 () + passHash,
+					QCryptographicHash::Md5).toHex ());
 		}
 
 		QString ApiSig (const QString& api_key, const QString& authToken,
@@ -43,8 +43,8 @@ namespace Lastfmscrobble
 					.arg (method)
 					.arg (username)
 					.arg (secret);
-			return QCryptographicHash::hash (str.toLatin1 (),
-					QCryptographicHash::Md5).toHex ();
+			return QString::fromLatin1 (QCryptographicHash::hash (str.toLatin1 (),
+					QCryptographicHash::Md5).toHex ());
 		}
 	}
 

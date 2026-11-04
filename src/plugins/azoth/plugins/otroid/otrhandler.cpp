@@ -192,7 +192,7 @@ namespace OTRoid
 		{
 			char fpHash [OTRL_PRIVKEY_FPRINT_HUMAN_LEN];
 			otrl_privkey_hash_to_human (fpHash, fingerprint);
-			QString hrHash (fpHash); // human readable fingerprint
+			const auto hrHash = QString::fromLatin1 (fpHash); // human readable fingerprint
 
 			const auto plugin = static_cast<OtrHandler*> (opData);
 			const auto entryId = Deserialize<EntryStrongestId> (QString::fromUtf8 (username));

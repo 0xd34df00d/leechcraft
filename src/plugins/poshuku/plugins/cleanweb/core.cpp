@@ -586,7 +586,7 @@ namespace CleanWeb
 		void RemoveElements (IWebView *view, const QList<QUrl>& urls, Cont&& cont)
 		{
 			const auto& preparedUrls = Util::Map (urls,
-					[] (const QUrl& url) { return QString { '"' + url.toEncoded () + '"' }; });
+					[] (const QUrl& url) { return '"' + url.toString (QUrl::FullyEncoded) + '"'; });
 
 			QString js = R"(
 					(function(){

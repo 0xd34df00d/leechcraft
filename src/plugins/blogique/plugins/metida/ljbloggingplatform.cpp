@@ -305,7 +305,7 @@ namespace Metida
 
 				questions.append (question);
 			}
-			elem.setAttribute ("ljPollQuestions", QString (questions.toUtf8 ().toBase64 ()));
+			elem.setAttribute ("ljPollQuestions", QString::fromLatin1 (questions.toUtf8 ().toBase64 ()));
 			while (!children.isEmpty ())
 				elem.removeChild (children.at (0));
 			auto textElem = elem.ownerDocument ().createTextNode (tr ("Poll: %1").arg (name));

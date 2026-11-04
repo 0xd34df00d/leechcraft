@@ -48,7 +48,7 @@ namespace Xoox
 		appendTxt ("source", Source_);
 		appendTxt ("title", Title_);
 		appendTxt ("track", Track_);
-		appendTxt ("uri", URI_.toEncoded ());
+		appendTxt ("uri", URI_.toString (QUrl::FullyEncoded));
 		if (Length_)
 			appendTxt ("length", QString::number (Length_));
 		if (Rating_)
