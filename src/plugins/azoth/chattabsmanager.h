@@ -56,7 +56,7 @@ namespace Azoth
 		ChatTabsManager (AvatarsManager*, Util::WkFontsWidget*, const EntriesManager&, QObject* = nullptr);
 
 		QWidget* OpenChat (const QModelIndex&);
-		ChatTab* OpenChat (const ICLEntry&, bool fromUser, const DynPropertiesList_t& = {});
+		ChatTab* OpenChat (const ICLEntry&, bool fromUser);
 
 		void CloseChat (const ICLEntry&, bool fromUser);
 
@@ -64,8 +64,6 @@ namespace Azoth
 		bool IsOpenedChat (const GlobalStrongestId&) const;
 		ChatTab* GetActiveChatTab () const;
 		ChatTab* GetChatTab (const GlobalStrongestId& entryId) const;
-
-		void UpdateEntryMapping (const GlobalStrongestId&);
 
 		void HandleInMessage (IMessage*);
 
@@ -77,13 +75,10 @@ namespace Azoth
 	protected:
 		bool eventFilter (QObject*, QEvent*);
 	private:
-		void RestoreChat (const RestoreChatInfo&, ICLEntry&);
 		void CloseChatTab (ChatTab*, bool fromUser);
 		void MergeTabs (ChatTab& from, ChatTab& to);
 	private slots:
 		void updateCurrentTab (QObject*);
-		void handleAddingCLEntryEnd (LC::IHookProxy_ptr proxy,
-				QObject *entry);
 		void chatWindowStyleChanged ();
 	signals:
 		void entryMadeCurrent (QObject*);

@@ -44,10 +44,8 @@ namespace Azoth
 		CLTooltipManager (AvatarsManager*, Entry2Items_t&);
 
 		void AddEntry (ICLEntry*);
-		void RemoveEntry (ICLEntry*);
 
 		QString MakeTooltipString (ICLEntry*);
-
 		void RebuildTooltip (ICLEntry *entry);
 	private:
 		QString MakeTooltipString (ICLEntry*, QString);

@@ -38,9 +38,12 @@ namespace LC::Azoth
 			return id ? GetEntryOrNull<T> (*id) : nullptr;
 		}
 	private:
-		void AddCLEntries (const QList<ICLEntry*>&);
-		void RemoveCLEntries (const QList<ICLEntry*>&);
+		void AddCLEntries (const QList<ICLEntry*>&, IAccount&);
+		void RemoveCLEntries (const QList<ICLEntry*>&, IAccount&);
 	signals:
+		void added (const QList<ICLEntry*>&, IAccount&);
+		void aboutToBeRemoved (const QList<ICLEntry*>&, IAccount&);
+
 		void conventionalIdChanged (const GlobalConventionalId& oldId, const GlobalConventionalId& newId, const ICLEntry& entry);
 	};
 }

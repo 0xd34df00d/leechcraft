@@ -9,11 +9,13 @@
 #include "avatarsmanager.h"
 #include <util/threads/futures.h>
 #include <util/sll/util.h>
+#include <util/sll/qobjectrefcast.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/unreachable.h>
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iextselfinfoaccount.h"
+#include "components/managers/entriesmanager.h"
 #include "avatarsstorage.h"
 #include "resourcesmanager.h"
 #include "xmlsettingsmanager.h"
@@ -22,13 +24,27 @@ namespace LC
 {
 namespace Azoth
 {
-	AvatarsManager::AvatarsManager (QObject *parent)
+	AvatarsManager::AvatarsManager (const EntriesManager& entries, QObject *parent)
 	: QObject { parent }
+	, Entries_ { entries }
 	, Storage_ { new AvatarsStorage { this } }
 	{
 		handleCacheSizeChanged ();
 		XmlSettingsManager::Instance ().RegisterObject ("AvatarsCacheSize",
 				this, "handleCacheSizeChanged");
+
+		connect (&Entries_,
+				&EntriesManager::added,
+				this,
+				[this] (const QList<ICLEntry*>& entries)
+				{
+					for (const auto entry : entries)
+						if (qobject_cast<IHaveAvatars*> (entry->GetQObject ()))
+							connect (entry->GetQObject (),
+									SIGNAL (avatarChanged (QObject*)),
+									this,
+									SLOT (invalidateAvatar (QObject*)));
+				});
 	}
 
 	namespace
@@ -170,25 +186,8 @@ namespace Azoth
 
 	void AvatarsManager::handleAccount (QObject *accObj)
 	{
-		const auto handleEntries = [this] (const QList<ICLEntry*>& entries)
-		{
-			for (const auto entry : entries)
-				if (qobject_cast<IHaveAvatars*> (entry->GetQObject ()))
-					connect (entry->GetQObject (),
-							SIGNAL (avatarChanged (QObject*)),
-							this,
-							SLOT (invalidateAvatar (QObject*)));
-		};
-		const auto acc = qobject_cast<IAccount*> (accObj);
-		connect (&acc->GetAccountEmitter (),
-				&Emitters::Account::gotCLItems,
-				this,
-				handleEntries);
-
-		handleEntries (acc->GetCLEntries ());
-
 		if (const auto iesia = qobject_cast<IExtSelfInfoAccount*> (accObj))
-			SelfInfo2Account_ [iesia->GetSelfContact ()] = acc;
+			SelfInfo2Account_ [iesia->GetSelfContact ()] = &qobject_ref_cast<IAccount> (accObj);
 	}
 
 	void AvatarsManager::invalidateAvatar (QObject *that)

@@ -475,11 +475,6 @@ namespace Azoth
 			AddManagedActions (false);
 	}
 
-	std::optional<GlobalStrongestId> ChatTab::GetEntryID () const
-	{
-		return EntryID_;
-	}
-
 	void ChatTab::UpdateEntryID (const std::optional<GlobalStrongestId>& id)
 	{
 		if (EntryID_ && EntryID_->GetKind () == IdKind::Persistent)

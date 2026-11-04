@@ -154,7 +154,6 @@ namespace Azoth
 
 		void SetEnabled (bool);
 
-		std::optional<GlobalStrongestId> GetEntryID () const;
 		void UpdateEntryID (const std::optional<GlobalStrongestId>& id);
 
 		std::optional<QString> GetSelectedVariant () const;

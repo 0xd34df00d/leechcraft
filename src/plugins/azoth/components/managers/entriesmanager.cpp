@@ -16,17 +16,17 @@ namespace LC::Azoth
 {
 	void EntriesManager::AddAccount (IAccount& account)
 	{
-		AddCLEntries (account.GetCLEntries ());
+		AddCLEntries (account.GetCLEntries (), account);
 
 		auto& emitter = account.GetAccountEmitter ();
 		connect (&emitter,
 				&Emitters::Account::gotCLItems,
 				this,
-				&EntriesManager::AddCLEntries);
+				[this, &account] (const auto& entries) { AddCLEntries (entries, account); });
 		connect (&emitter,
 				&Emitters::Account::removedCLItems,
 				this,
-				&EntriesManager::RemoveCLEntries);
+				[this, &account] (const auto& entries) { RemoveCLEntries (entries, account); });
 		connect (&emitter,
 				&Emitters::Account::conventionalIdChanged,
 				this,
@@ -65,19 +65,35 @@ namespace LC::Azoth
 			return qobject_cast<T*> (entry->GetQObject ());
 	}
 
-	void EntriesManager::AddCLEntries (const QList<ICLEntry*>& entries)
+	void EntriesManager::AddCLEntries (const QList<ICLEntry*>& entries, IAccount& account)
 	{
+		QList<ICLEntry*> addedEntries;
+		addedEntries.reserve (entries.size ());
+
 		for (const auto entry : entries)
 		{
 			auto& existing = ID2Entry_ [entry->GetGlobalStrongestID ()];
 			if (existing && existing != entry)
 				qCritical () << "duplicate entry:" << entry->GetGlobalStrongestID ();
-			existing = entry;
+
+			if (!existing)
+			{
+				addedEntries << entry;
+				existing = entry;
+			}
 		}
+
+		if (!addedEntries.isEmpty ())
+			emit added (addedEntries, account);
 	}
 
-	void EntriesManager::RemoveCLEntries (const QList<ICLEntry*>& entries)
+	void EntriesManager::RemoveCLEntries (const QList<ICLEntry*>& entries, IAccount& account)
 	{
+		if (entries.isEmpty ())
+			return;
+
+		emit aboutToBeRemoved (entries, account);
+
 		for (const auto entry : entries)
 			if (!ID2Entry_.remove (entry->GetGlobalStrongestID ()))
 				qCritical () << "removing non-existing entry:" << entry->GetGlobalStrongestID ();

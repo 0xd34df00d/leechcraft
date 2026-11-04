@@ -410,11 +410,6 @@ namespace Azoth
 				});
 	}
 
-	void NotificationsManager::RemoveAccount (QObject *accObject)
-	{
-		qobject_ref_cast<IAccount> (accObject).GetAccountEmitter ().disconnect (this);
-	}
-
 	void NotificationsManager::AddCLEntry (QObject *entryObj)
 	{
 		auto& entry = qobject_ref_cast<ICLEntry> (entryObj);

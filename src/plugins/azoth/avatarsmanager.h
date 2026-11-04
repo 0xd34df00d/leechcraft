@@ -18,18 +18,19 @@
 template<typename>
 class QFuture;
 
-namespace LC
+namespace LC::Azoth
 {
-namespace Azoth
-{
-	class AvatarsStorage;
 	class IAccount;
+
+	class AvatarsStorage;
+	class EntriesManager;
 
 	class AvatarsManager : public QObject
 						 , public IAvatarsManager
 	{
 		Q_OBJECT
 
+		const EntriesManager& Entries_;
 		AvatarsStorage * const Storage_;
 
 		QHash<QObject*, QHash<IHaveAvatars::Size, QFuture<QImage>>> PendingRequests_;
@@ -41,7 +42,7 @@ namespace Azoth
 
 		QHash<QObject*, const IAccount*> SelfInfo2Account_;
 	public:
-		explicit AvatarsManager (QObject* = nullptr);
+		explicit AvatarsManager (const EntriesManager&, QObject* = nullptr);
 
 		QFuture<QImage> GetAvatar (QObject*, IHaveAvatars::Size) override;
 		QFuture<std::optional<QByteArray>> GetStoredAvatarData (const QString&, IHaveAvatars::Size) override;
@@ -61,5 +62,4 @@ namespace Azoth
 		void avatarInvalidated (QObject*);
 		void accountAvatarInvalidated (const IAccount*);
 	};
-}
 }

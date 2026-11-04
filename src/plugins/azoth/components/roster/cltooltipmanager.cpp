@@ -72,6 +72,14 @@ namespace Azoth
 	void CLTooltipManager::AddEntry (ICLEntry *entry)
 	{
 		DirtyTooltips_ << entry;
+		connect (entry->GetQObject (),
+				&QObject::destroyed,
+				this,
+				[this, entry]
+				{
+					DirtyTooltips_.remove (entry);
+					Avatar2TooltipSrcCache_.remove (entry);
+				});
 
 		const auto invalidate = [this, entry] { InvalidateTooltip (entry); };
 
@@ -140,11 +148,6 @@ namespace Azoth
 					SIGNAL (activityChanged (const QString&)),
 					this,
 					SLOT (remakeTooltipForSender ()));
-	}
-
-	void CLTooltipManager::RemoveEntry (ICLEntry *entry)
-	{
-		DirtyTooltips_.remove (entry);
 	}
 
 	namespace

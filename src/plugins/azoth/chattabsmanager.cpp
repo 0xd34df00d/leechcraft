@@ -24,6 +24,20 @@
 
 namespace LC::Azoth
 {
+	namespace
+	{
+		bool ShouldOpenMucJoin (ICLEntry& entry)
+		{
+			if (entry.GetEntryType () != ICLEntry::EntryType::MUC)
+				return false;
+
+			if (!qobject_ref_cast<IMUCEntry> (entry.GetQObject ()).IsAutojoined ())
+				return true;
+
+			return XmlSettingsManager::Instance ().property ("OpenTabsForAutojoin").toBool ();
+		}
+	}
+
 	ChatTabsManager::ChatTabsManager (AvatarsManager *am, Util::WkFontsWidget *fontsWidget, const EntriesManager& entries, QObject *parent)
 	: QObject { parent }
 	, AvatarsManager_ { am }
@@ -63,6 +77,33 @@ namespace LC::Azoth
 					if (EverOpened_.remove (oldId))
 						EverOpened_ << newId;
 				});
+
+		connect (&entries,
+				&EntriesManager::added,
+				this,
+				[this] (const QList<ICLEntry*>& entries)
+				{
+					for (const auto entry : entries)
+					{
+						const auto& id = entry->GetGlobalStrongestID ();
+						if (const auto tab = Entry2Tab_.value (id))
+							tab->ReinitEntry ();
+
+						if (RestoreInfo_.contains (id) || ShouldOpenMucJoin (*entry))
+							OpenChat (*entry, false);
+					}
+				});
+
+		connect (&entries,
+				&EntriesManager::aboutToBeRemoved,
+				this,
+				[this] (const QList<ICLEntry*>& entries)
+				{
+					if (XmlSettingsManager::Instance ().property ("CloseConfOnLeave").toBool ())
+						for (const auto entry : entries)
+							if (entry->GetEntryType () == ICLEntry::EntryType::MUC)
+								CloseChat (*entry, false);
+				});
 	}
 
 	QWidget* ChatTabsManager::OpenChat (const QModelIndex& ti)
@@ -71,12 +112,28 @@ namespace LC::Azoth
 		return OpenChat (qobject_ref_cast<ICLEntry> (entryObj), true);
 	}
 
-	ChatTab* ChatTabsManager::OpenChat (const ICLEntry& entry, bool fromUser, const DynPropertiesList_t& props)
+	ChatTab* ChatTabsManager::OpenChat (const ICLEntry& entry, bool fromUser)
 	{
 		const auto& id = entry.GetGlobalStrongestID ();
+
+		std::move_only_function<void (ChatTab&)> restorer = [] (ChatTab&) {};
+		if (const auto pos = RestoreInfo_.find (id);
+			pos != RestoreInfo_.end ())
+		{
+			restorer = [info = std::move (*pos)] (ChatTab& tab)
+			{
+				Util::SetSessionProps (tab, info.Props_);
+				if (!info.Variant_.isEmpty ())
+					tab.selectVariant (info.Variant_);
+				tab.prepareMessageText (info.MsgText_);
+			};
+			RestoreInfo_.erase (pos);
+		}
+
 		if (Entry2Tab_.contains (id))
 		{
 			auto tab = Entry2Tab_ [id];
+			restorer (*tab);
 			emit tab->raiseTab ();
 			return tab;
 		}
@@ -84,10 +141,9 @@ namespace LC::Azoth
 		EverOpened_ << id;
 
 		QPointer tab (new ChatTab (entry, entry.GetParentAccount (), AvatarsManager_, Entries_, FontsWidget_, Profile_));
+		restorer (*tab);
 		tab->installEventFilter (this);
 		Entry2Tab_ [id] = tab;
-
-		Util::SetSessionProps (*tab, props);
 
 		connect (tab,
 				&ChatTab::needToClose,
@@ -147,12 +203,6 @@ namespace LC::Azoth
 		return Entry2Tab_ [entryId];
 	}
 
-	void ChatTabsManager::UpdateEntryMapping (const GlobalStrongestId& id)
-	{
-		if (const auto tab = Entry2Tab_.value (id))
-			tab->ReinitEntry ();
-	}
-
 	void ChatTabsManager::HandleInMessage (IMessage *msg)
 	{
 		if (!XmlSettingsManager::Instance ().property ("OpenTabOnNewMsg").toBool ())
@@ -186,11 +236,9 @@ namespace LC::Azoth
 		for (const RestoreChatInfo& info : infos)
 		{
 			const auto entryObj = Entries_.GetEntryOrNull (info.EntryID_);
-			qDebug () << info.EntryID_ << entryObj;
+			RestoreInfo_.emplace (info.EntryID_, info);
 			if (entryObj)
-				RestoreChat (info, *entryObj);
-			else
-				RestoreInfo_.emplace (info.EntryID_, info);
+				OpenChat (*entryObj, false);
 		}
 	}
 
@@ -215,14 +263,6 @@ namespace LC::Azoth
 
 		tab->TabMadeCurrent ();
 		return false;
-	}
-
-	void ChatTabsManager::RestoreChat (const RestoreChatInfo& info, ICLEntry& entry)
-	{
-		auto tab = qobject_cast<ChatTab*> (OpenChat (entry, false, info.Props_));
-		if (!info.Variant_.isEmpty ())
-			tab->selectVariant (info.Variant_);
-		tab->prepareMessageText (info.MsgText_);
 	}
 
 	void ChatTabsManager::CloseChatTab (ChatTab *tab, bool fromUser)
@@ -259,19 +299,6 @@ namespace LC::Azoth
 	{
 		auto entry = qobject_cast<ICLEntry*> (entryObj);
 		LastCurrentTab_ = entry ? Entry2Tab_.value (entry->GetGlobalStrongestID ()) : nullptr;
-	}
-
-	void ChatTabsManager::handleAddingCLEntryEnd (IHookProxy_ptr, QObject *entryObj)
-	{
-		const auto entry = qobject_cast<ICLEntry*> (entryObj);
-		const auto& id = entry->GetGlobalStrongestID ();
-		if (const auto pos = RestoreInfo_.find (id);
-			pos != RestoreInfo_.end ())
-		{
-			const auto info = *pos;
-			RestoreInfo_.erase (pos);
-			RestoreChat (info, *entry);
-		}
 	}
 
 	void ChatTabsManager::chatWindowStyleChanged ()

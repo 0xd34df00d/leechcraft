@@ -51,7 +51,6 @@ namespace Azoth
 		NotificationsManager (AvatarsManager*, const EntriesManager&, QObject* = nullptr);
 
 		void AddAccount (QObject*);
-		void RemoveAccount (QObject*);
 
 		void AddCLEntry (QObject*);
 

@@ -157,7 +157,7 @@ namespace LC::Azoth
 
 	Core::Core ()
 	: Proxy_ (nullptr)
-	, AvatarsManager_ (std::make_shared<AvatarsManager> ())
+	, AvatarsManager_ (std::make_shared<AvatarsManager> (Entries_))
 	, FontsWidget_ { new Util::WkFontsWidget { &XmlSettingsManager::Instance () } }
 	, TooltipManager_ (new CLTooltipManager (AvatarsManager_.get (), Entry2Items_))
 	, CLModel_ (new CLModel (TooltipManager_, Entries_, this))
@@ -177,10 +177,6 @@ namespace LC::Azoth
 	, CustomChatStyleManager_ (new CustomChatStyleManager)
 	, HistorySyncer_ (std::make_shared<HistorySyncer> ())
 	{
-		connect (this,
-				SIGNAL (hookAddingCLEntryEnd (LC::IHookProxy_ptr, QObject*)),
-				ChatTabsManager_,
-				SLOT (handleAddingCLEntryEnd (LC::IHookProxy_ptr, QObject*)));
 		connect (ChatTabsManager_,
 				SIGNAL (entryMadeCurrent (QObject*)),
 				UnreadQueueManager_.get (),
@@ -190,6 +186,34 @@ namespace LC::Azoth
 				SIGNAL (messagesCleared (QObject*)),
 				this,
 				SLOT (handleClearUnreadMsgCount (QObject*)));
+
+		connect (&Entries_,
+				&EntriesManager::added,
+				this,
+				[this] (const QList<ICLEntry*>& entries, const IAccount& account)
+				{
+					const auto accountItem = GetAccountItem (&account);
+					if (!accountItem)
+						return;
+					for (const auto entry : entries)
+						AddCLEntry (entry, accountItem);
+				});
+		connect (&Entries_,
+				&EntriesManager::aboutToBeRemoved,
+				this,
+				[this] (const QList<ICLEntry*>& entries)
+				{
+					for (const auto entry : entries)
+					{
+						for (auto clItem : Entry2Items_.value (entry))
+							RemoveCLItem (clItem);
+
+						Entry2Items_.remove (entry);
+						ActionsManager_->HandleEntryRemoved (entry);
+						Entry2SmoothAvatarCache_.remove (entry);
+						ResourcesManager::Instance ().HandleRemoved (entry);
+					}
+				});
 
 		connect (AvatarsManager_.get (),
 				&AvatarsManager::avatarInvalidated,
@@ -1231,8 +1255,6 @@ namespace LC::Azoth
 
 		TooltipManager_->AddEntry (entry);
 
-		ChatTabsManager_->UpdateEntryMapping (entry->GetGlobalStrongestID ());
-
 		proxy = std::make_shared<Util::DefaultHookProxy> ();
 		emit hookAddingCLEntryEnd (proxy, entryObj);
 	}
@@ -1540,8 +1562,6 @@ namespace LC::Azoth
 
 	void Core::addAccount (QObject *accObject)
 	{
-		AvatarsManager_->handleAccount (accObject);
-
 		IAccount *account = qobject_cast<IAccount*> (accObject);
 		if (!account)
 		{
@@ -1552,10 +1572,6 @@ namespace LC::Azoth
 			return;
 		}
 
-		Entries_.AddAccount (*account);
-
-		HistorySyncer_->AddAccount (account);
-
 		const auto& accountId = account->GetAccountID ();
 		const auto& accountName = account->GetAccountName ();
 
@@ -1563,79 +1579,30 @@ namespace LC::Azoth
 		const bool show = XmlSettingsManager::Instance ().Property (showKey, true).toBool ();
 		account->SetShownInRoster (show);
 
+		AvatarsManager_->handleAccount (accObject);
+
+		QStandardItem *accItem = new QStandardItem (accountName);
+		accItem->setData (QVariant::fromValue<IAccount*> (account), CLRAccountObject);
+		accItem->setData (QVariant::fromValue<CLEntryType> (CLETAccount), CLREntryType);
+		const auto accState = account->GetState ().State_;
+		ItemIconManager_->SetIcon (accItem, ResourcesManager::Instance ().GetIconPathForState (accState).get ());
+		CLModel_->appendRow (accItem);
+
+		accItem->setEditable (false);
+
+		Entries_.AddAccount (*account);
+
+		HistorySyncer_->AddAccount (account);
+
 		emit accountAdded (account);
 
 #ifdef ENABLE_CRYPT
 		CryptoManager::Instance ().AddAccount (account);
 #endif
 
-		QStandardItem *accItem = new QStandardItem (accountName);
-		accItem->setData (QVariant::fromValue<IAccount*> (account), CLRAccountObject);
-		accItem->setData (QVariant::fromValue<CLEntryType> (CLETAccount), CLREntryType);
-		const auto accState = account->GetState ().State_;
-		ItemIconManager_->SetIcon (accItem,
-				ResourcesManager::Instance ().GetIconPathForState (accState).get ());
-
-		CLModel_->appendRow (accItem);
-
-		accItem->setEditable (false);
-
-		for (const auto entry : account->GetCLEntries ())
-			AddCLEntry (entry, accItem);
-
 		NotificationsManager_->AddAccount (accObject);
 
 		auto& emitter = account->GetAccountEmitter ();
-		connect (&emitter,
-				&Emitters::Account::gotCLItems,
-				this,
-				[this, account] (const QList<ICLEntry*>& entries)
-				{
-					if (entries.isEmpty ())
-						return;
-
-					const auto accountItem = GetAccountItem (account);
-					if (!accountItem)
-						return;
-
-					for (const auto entry : entries)
-					{
-						if (Entry2Items_.contains (entry))
-							continue;
-
-						AddCLEntry (entry, accountItem);
-
-						if (entry->GetEntryType () == ICLEntry::EntryType::MUC)
-						{
-							const bool open = XmlSettingsManager::Instance ().property ("OpenTabsForAutojoin").toBool ();
-							if (open || !qobject_ref_cast<IMUCEntry> (entry->GetQObject ()).IsAutojoined ())
-								ChatTabsManager_->OpenChat (*entry, false);
-						}
-					}
-				});
-		connect (&emitter,
-				&Emitters::Account::removedCLItems,
-				this,
-				[this] (const QList<ICLEntry*>& entries)
-				{
-					for (const auto entry : entries)
-					{
-						if (entry->GetEntryType () == ICLEntry::EntryType::MUC &&
-								XmlSettingsManager::Instance ().property ("CloseConfOnLeave").toBool ())
-							GetChatTabsManager ()->CloseChat (*entry, false);
-
-						TooltipManager_->RemoveEntry (entry);
-
-						for (auto clItem : Entry2Items_.value (entry))
-							RemoveCLItem (clItem);
-
-						Entry2Items_.remove (entry);
-						ActionsManager_->HandleEntryRemoved (entry);
-						Entry2SmoothAvatarCache_.remove (entry);
-						ResourcesManager::Instance ().HandleRemoved (entry);
-					}
-				});
-
 		connect (&emitter,
 				&Emitters::Account::statusChanged,
 				this,
@@ -1703,11 +1670,6 @@ namespace LC::Azoth
 		for (auto entry : Entry2Items_.keys ())
 			if (entry->GetParentAccount () == &account)
 				Entry2Items_.remove (entry);
-
-		NotificationsManager_->RemoveAccount (accObj);
-
-		account.GetAccountEmitter ().disconnect (this);
-		accObj->disconnect (this);
 	}
 
 	void Core::handleEntryGroupsChanged (ICLEntry *entry, QStringList newGroups)
