@@ -62,7 +62,7 @@ namespace Azoth
 	void ConsoleWidget::handleConsolePacket (QByteArray data,
 			IHaveConsole::PacketDirection direction, const QString& entryId)
 	{
-		const QString& filter = Ui_.EntryIDFilter_->text ();
+		const QString& filter = Ui_.EntryIdFilter_->text ();
 		if (!filter.isEmpty () && !entryId.contains (filter, Qt::CaseInsensitive))
 			return;
 

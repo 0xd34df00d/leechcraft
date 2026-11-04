@@ -85,8 +85,8 @@ namespace Xoox
 
 		std::unique_ptr<ClientConnectionExtensionsManager> ExtsMgr_;
 
-		QString OurJID_;
-		QString OurBareJID_;
+		QString OurJid_;
+		QString OurBareJid_;
 		QString OurResource_;
 
 		SelfContact *SelfContact_;
@@ -95,7 +95,7 @@ namespace Xoox
 
 		ServerInfoStorage *ServerInfoStorage_;
 
-		QHash<QString, GlooxCLEntry*> JID2CLEntry_;
+		QHash<QString, GlooxCLEntry*> Jid2CLEntry_;
 
 		bool IsConnected_ = false;
 		bool FirstTimeConnect_ = true;
@@ -127,8 +127,8 @@ namespace Xoox
 
 		void SetPassword (const QString&);
 
-		QString GetOurJID () const;
-		void SetOurJID (const QString&);
+		QString GetOurJid () const;
+		void SetOurJid (const QString&);
 
 		QString GetOurResource () const;
 

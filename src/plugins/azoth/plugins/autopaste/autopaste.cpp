@@ -160,7 +160,7 @@ namespace LC::Azoth::Autopaste
 			QSettings settings (QCoreApplication::organizationName (),
 					QCoreApplication::applicationName () + "_Azoth_Autopaste");
 			settings.beginGroup ("SavedChoices");
-			settings.beginGroup (other->GetGlobalStrongestID ().ToString ());
+			settings.beginGroup (other->GetGlobalStrongestId ().ToString ());
 			const auto guard = Util::MakeScopeGuard ([&settings]
 					{
 						settings.endGroup ();
@@ -265,10 +265,10 @@ namespace LC::Azoth::Autopaste
 	void Plugin::handlePasteRequested (QObject *entryObj)
 	{
 		const auto entry = qobject_cast<ICLEntry*> (entryObj);
-		const auto tab = AzothProxy_->FindOpenedChat (entry->GetGlobalStrongestID ());
+		const auto tab = AzothProxy_->FindOpenedChat (entry->GetGlobalStrongestId ());
 		if (!tab)
 		{
-			qWarning () << "no tab for" << entry << entry->GetGlobalStrongestID () << entry->GetHumanReadableAddress ();
+			qWarning () << "no tab for" << entry << entry->GetGlobalStrongestId () << entry->GetHumanReadableAddress ();
 			return;
 		}
 

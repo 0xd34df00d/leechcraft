@@ -22,14 +22,14 @@ namespace Xoox
 		SetFTMethods (QXmppTransferJob::AnyMethod);
 	}
 
-	QString GlooxAccountConfigurationWidget::GetJID () const
+	QString GlooxAccountConfigurationWidget::GetJid () const
 	{
-		return Ui_.JID_->text ();
+		return Ui_.Jid_->text ();
 	}
 
-	void GlooxAccountConfigurationWidget::SetJID (const QString& jid)
+	void GlooxAccountConfigurationWidget::SetJid (const QString& jid)
 	{
-		Ui_.JID_->setText (jid);
+		Ui_.Jid_->setText (jid);
 	}
 
 	QString GlooxAccountConfigurationWidget::GetNick () const

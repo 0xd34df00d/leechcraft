@@ -52,7 +52,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QLineEdit" name="EntryIDFilter_">
+    <widget class="QLineEdit" name="EntryIdFilter_">
      <property name="placeholderText">
       <string>Filter by entry ID...</string>
      </property>

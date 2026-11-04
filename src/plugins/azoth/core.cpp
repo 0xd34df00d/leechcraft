@@ -573,7 +573,7 @@ namespace LC::Azoth
 			for (const auto accObj : proto->GetRegisteredAccounts ())
 			{
 				const auto acc = qobject_cast<IAccount*> (accObj);
-				if (acc && acc->GetAccountID () == id)
+				if (acc && acc->GetAccountId () == id)
 					return acc;
 			}
 
@@ -783,7 +783,7 @@ namespace LC::Azoth
 				Util::UrlOperator op { url };
 				op ("nick", nick);
 				if (const auto other = qobject_cast<ICLEntry*> (msg->OtherPart ()))
-					op ("entryId", SerializeString (other->GetGlobalStrongestID ()));
+					op ("entryId", SerializeString (other->GetGlobalStrongestId ()));
 			}
 
 			string.append ("<span class='nickname'><a href=\"");
@@ -1517,7 +1517,7 @@ namespace LC::Azoth
 
 	void Core::saveAccountVisibility (IAccount *account)
 	{
-		const auto& id = "ShowAccount_" + account->GetAccountID ().ToUtf8 ();
+		const auto& id = "ShowAccount_" + account->GetAccountId ().ToUtf8 ();
 		XmlSettingsManager::Instance ().setProperty (id, account->IsShownInRoster ());
 	}
 
@@ -1545,7 +1545,7 @@ namespace LC::Azoth
 	{
 		std::optional<EntryStatus> LoadSavedStatus (IAccount *account)
 		{
-			const auto& var = XmlSettingsManager::Instance ().property (account->GetAccountID ().ToUtf8 ());
+			const auto& var = XmlSettingsManager::Instance ().property (account->GetAccountId ().ToUtf8 ());
 			if (var.isNull () || !var.canConvert<QByteArray> ())
 				return {};
 
@@ -1572,7 +1572,7 @@ namespace LC::Azoth
 			return;
 		}
 
-		const auto& accountId = account->GetAccountID ();
+		const auto& accountId = account->GetAccountId ();
 		const auto& accountName = account->GetAccountName ();
 
 		const auto& showKey = "ShowAccount_" + accountId.ToUtf8 ();
@@ -1613,7 +1613,7 @@ namespace LC::Azoth
 						QDataStream stream (&serializedStatus, QIODevice::WriteOnly);
 						stream << status;
 					}
-					XmlSettingsManager::Instance ().setProperty (account->GetAccountID ().ToUtf8 (), serializedStatus);
+					XmlSettingsManager::Instance ().setProperty (account->GetAccountId ().ToUtf8 (), serializedStatus);
 
 					if (const auto item = GetAccountItem (account))
 						ItemIconManager_->SetIcon (item, ResourcesManager::Instance ().GetIconPathForState (status.State_).get ());

@@ -48,7 +48,7 @@ namespace LC::Azoth::Acetamide
 
 		void SetConsoleEnabled (bool);
 
-		void ClosePrivateChat (const QString& serverID, const QString& nick);
+		void ClosePrivateChat (const QString& serverId, const QString& nick);
 
 		void FetchVCard (const QString& serverId, const QString& nick);
 

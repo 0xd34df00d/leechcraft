@@ -223,7 +223,7 @@ namespace Azoth
 			if (!entryId)
 				return {};
 
-			ChatTabsManager::RestoreChatInfo info { .EntryID_ = *entryId, .Props_ = dynProps };
+			ChatTabsManager::RestoreChatInfo info { .EntryId_ = *entryId, .Props_ = dynProps };
 			str >> info.Variant_ >> info.MsgText_;
 			return ChatTabRestore { info };
 		}
@@ -235,7 +235,7 @@ namespace Azoth
 				return {};
 
 			QVariantMap data;
-			ChatTabsManager::RestoreChatInfo info { .EntryID_ = *entryId, .Props_ = dynProps };
+			ChatTabsManager::RestoreChatInfo info { .EntryId_ = *entryId, .Props_ = dynProps };
 			str >> data >> info.MsgText_;
 			return MucTabRestore { info, data };
 		}
@@ -263,10 +263,10 @@ namespace Azoth
 
 		void JoinRoomIfNeeded (const EntriesManager& entries, const MucTabRestore& restore)
 		{
-			if (entries.GetEntryOrNull (restore.Info_.EntryID_))
+			if (entries.GetEntryOrNull (restore.Info_.EntryId_))
 				return;
 
-			const auto& accountId = GetAccountId (restore.Info_.EntryID_);
+			const auto& accountId = GetAccountId (restore.Info_.EntryId_);
 			auto acc = Core::Instance ().GetAccount (accountId);
 			if (!acc)
 			{

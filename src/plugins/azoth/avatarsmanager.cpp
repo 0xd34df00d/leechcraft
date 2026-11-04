@@ -97,7 +97,7 @@ namespace Azoth
 		if (sizes.contains (size))
 			return sizes.value (size);
 
-		const auto entryId = entry->GetEntryID ();
+		const auto entryId = entry->GetEntryId ();
 		auto future = Util::Sequence (entryObj, Storage_->GetAvatar (entry, size))
 				.DestructionValue (defaultAvatarGetter) >>
 				[=, this] (const MaybeImage& image)
@@ -148,7 +148,7 @@ namespace Azoth
 	Util::DefaultScopeGuard AvatarsManager::Subscribe (QObject *obj,
 			IHaveAvatars::Size size, const AvatarHandler_f& handler)
 	{
-		const auto id = ++SubscriptionID_;
+		const auto id = ++SubscriptionId_;
 		Subscriptions_ [obj] [size] [id] = handler;
 
 		return Util::MakeScopeGuard ([=, this]
@@ -202,7 +202,7 @@ namespace Azoth
 			return;
 		}
 
-		Storage_->DeleteAvatars (entry->GetEntryID ());
+		Storage_->DeleteAvatars (entry->GetEntryId ());
 
 		emit avatarInvalidated (that);
 

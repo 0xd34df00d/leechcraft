@@ -42,12 +42,12 @@
         <string>Contact ID:</string>
        </property>
        <property name="buddy">
-        <cstring>ContactID_</cstring>
+        <cstring>ContactId_</cstring>
        </property>
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QLineEdit" name="ContactID_"/>
+      <widget class="QLineEdit" name="ContactId_"/>
      </item>
      <item row="3" column="0">
       <widget class="QLabel" name="label_3">
@@ -140,7 +140,7 @@
  <tabstops>
   <tabstop>Protocol_</tabstop>
   <tabstop>Account_</tabstop>
-  <tabstop>ContactID_</tabstop>
+  <tabstop>ContactId_</tabstop>
   <tabstop>Nick_</tabstop>
   <tabstop>ResolveButton_</tabstop>
   <tabstop>Groups_</tabstop>

@@ -74,7 +74,7 @@ namespace LC::Azoth::Acetamide
 		if (!VCardDialog_)
 			VCardDialog_ = new VCardDialog ();
 
-		Account_->GetClientConnection ()->FetchVCard (entry->GetServerID (),
+		Account_->GetClientConnection ()->FetchVCard (entry->GetServerId (),
 				entry->GetEntryName());
 		VCardDialog_->show ();
 	}

@@ -152,7 +152,7 @@ namespace Xoox
 		QString GetAccountName () const override;
 		QString GetOurNick () const override;
 		void RenameAccount (const QString&) override;
-		AccountId GetAccountID () const override;
+		AccountId GetAccountId () const override;
 		QList<QAction*> GetActions () const override;
 		void OpenConfigurationDialog () override;
 		EntryStatus GetState () const override;

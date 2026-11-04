@@ -23,7 +23,7 @@ namespace ChatHistory
 {
 	class LoggingStateKeeper
 	{
-		QSet<QString> DisabledIDs_;
+		QSet<QString> DisabledIds_;
 	public:
 		LoggingStateKeeper ();
 

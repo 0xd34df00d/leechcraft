@@ -29,8 +29,8 @@ namespace Xoox
 	public:
 		GlooxAccountConfigurationWidget (QWidget* = 0);
 
-		QString GetJID () const;
-		void SetJID (const QString&);
+		QString GetJid () const;
+		void SetJid (const QString&);
 		QString GetNick () const;
 		void SetNick (const QString&);
 		QString GetResource () const;

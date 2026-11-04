@@ -111,7 +111,7 @@ namespace Azoth
 		if (FirstMsgCount_ == -1)
 			FirstMsgCount_ = messages.size ();
 
-		CurrentID_ = startId;
+		CurrentId_ = startId;
 
 		Ui_.MessagesView_->clear ();
 
@@ -147,15 +147,15 @@ namespace Azoth
 			Ui_.MessagesView_->append (html);
 		}
 
-		MaxID_ = messages.value (0).ID_;
+		MaxId_ = messages.value (0).Id_;
 	}
 
 	void ServerHistoryWidget::on_ContactsView__clicked (const QModelIndex& index)
 	{
-		CurrentID_ = "-1";
-		MaxID_ = "-1";
+		CurrentId_ = "-1";
+		MaxId_ = "-1";
 		FirstMsgCount_ = -1;
-		IHSH_->FetchServerHistory (ContactsFilter_->mapToSource (index), CurrentID_, MaxMsgCount);
+		IHSH_->FetchServerHistory (ContactsFilter_->mapToSource (index), CurrentId_, MaxMsgCount);
 	}
 
 	void ServerHistoryWidget::on_MessagesView__anchorClicked (const QUrl& url)
@@ -169,13 +169,13 @@ namespace Azoth
 	void ServerHistoryWidget::navigatePrevious ()
 	{
 		const auto& index = ContactsFilter_->mapToSource (Ui_.ContactsView_->currentIndex ());
-		IHSH_->FetchServerHistory (index, MaxID_, GetReqMsgCount ());
+		IHSH_->FetchServerHistory (index, MaxId_, GetReqMsgCount ());
 	}
 
 	void ServerHistoryWidget::navigateNext ()
 	{
 		const auto& index = ContactsFilter_->mapToSource (Ui_.ContactsView_->currentIndex ());
-		IHSH_->FetchServerHistory (index, CurrentID_, -GetReqMsgCount ());
+		IHSH_->FetchServerHistory (index, CurrentId_, -GetReqMsgCount ());
 	}
 }
 }

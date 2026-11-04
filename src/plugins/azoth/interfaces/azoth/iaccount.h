@@ -149,7 +149,7 @@ namespace Azoth
 		 *
 		 * @return The unique and persistent account ID.
 		 */
-		virtual AccountId GetAccountID () const = 0;
+		virtual AccountId GetAccountId () const = 0;
 
 		/** @brief Returns the list of actions for the account item.
 		 *
@@ -198,7 +198,7 @@ namespace Azoth
 		/** @brief Requests authorization from the given entry.
 		 *
 		 * entry is a human-readable identifier of the remote, as
-		 * returned by ICLEntry::GetHumanReadableID().
+		 * returned by ICLEntry::GetHumanReadableId().
 		 *
 		 * If applicable and msg is a non-empty string, the msg should
 		 * be sent to the entry as the message sent along with the

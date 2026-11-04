@@ -22,7 +22,7 @@ namespace LC::Azoth::Xoox
 	{
 		QFile::remove (Util::CreateIfNotExists ("azoth").filePath ("qxmpp.log"));
 
-		auto [jid, bare] = ClientConnection::Split (settings.GetFullJID ());
+		auto [jid, bare] = ClientConnection::Split (settings.GetFullJid ());
 		QString logName = jid + ".qxmpp.log";
 		logName.replace ('@', '_');
 		const QString& path = Util::CreateIfNotExists ("azoth/xoox/logs").filePath (logName);

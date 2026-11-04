@@ -21,7 +21,7 @@ namespace LastSeen
 {
 	struct OnDiskStorage::Record
 	{
-		Util::oral::PKey<QString, Util::oral::NoAutogen> EntryID_;
+		Util::oral::PKey<QString, Util::oral::NoAutogen> EntryId_;
 		QDateTime Available_;
 		QDateTime Online_;
 		QDateTime StatusChange_;
@@ -30,7 +30,7 @@ namespace LastSeen
 		{
 			return
 			{
-				.EntryID_ = entryId,
+				.EntryId_ = entryId,
 				.Available_ = stats.Available_,
 				.Online_ = stats.Online_,
 				.StatusChange_ = stats.StatusChange_
@@ -51,7 +51,7 @@ namespace LastSeen
 using StatsRecord = LC::Azoth::LastSeen::OnDiskStorage::Record;
 
 ORAL_ADAPT_STRUCT (StatsRecord,
-		EntryID_,
+		EntryId_,
 		Available_,
 		Online_,
 		StatusChange_)
@@ -90,7 +90,7 @@ namespace LastSeen
 
 	std::optional<EntryStats> OnDiskStorage::GetEntryStats (const QString& entryId)
 	{
-		return AdaptedRecord_->SelectOne (sph::f<&Record::EntryID_> == entryId).transform (&Record::ToEntryStats);
+		return AdaptedRecord_->SelectOne (sph::f<&Record::EntryId_> == entryId).transform (&Record::ToEntryStats);
 	}
 
 	void OnDiskStorage::SetEntryStats (const QString& entryId, const EntryStats& stats)

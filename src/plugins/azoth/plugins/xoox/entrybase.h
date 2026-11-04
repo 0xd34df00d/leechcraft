@@ -186,7 +186,7 @@ namespace Xoox
 
 		const QByteArray& GetVCardPhotoHash () const;
 
-		virtual QString GetJID () const = 0;
+		virtual QString GetJid () const = 0;
 
 		virtual void HandlePresence (const QXmppPresence&, const QString&);
 

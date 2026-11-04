@@ -46,12 +46,12 @@ namespace XooxUtil
 
 	struct StaticClientInfo
 	{
-		QString ID_;
+		QString Id_;
 		QString HumanReadableName_;
 
 		bool IsEmpty () const
 		{
-			return ID_.isEmpty () || HumanReadableName_.isEmpty ();
+			return Id_.isEmpty () || HumanReadableName_.isEmpty ();
 		}
 	};
 	StaticClientInfo GetStaticClientInfo (const QString&);
@@ -70,7 +70,7 @@ namespace XooxUtil
 
 	QXmppPresence StatusToPresence (State, const QString&, int);
 
-	QString GetBareJID (const QString& entryId, GlooxAccount *acc);
+	QString GetBareJid (const QString& entryId, GlooxAccount *acc);
 }
 }
 }

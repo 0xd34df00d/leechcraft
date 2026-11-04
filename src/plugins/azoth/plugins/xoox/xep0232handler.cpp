@@ -57,7 +57,7 @@ namespace LC::Azoth::Xoox::XEP0232Handler
 						si.IconType_ = source.contentType ();
 					}
 					else if (uri.scheme () == "cid")
-						si.IconCID_ = uri.toEncoded ();
+						si.IconCid_ = uri.toEncoded ();
 				}
 			}
 			else if (var == "os")
@@ -94,8 +94,8 @@ namespace LC::Azoth::Xoox::XEP0232Handler
 			iconField.setMediaSize (si.IconSize_);
 
 			QVector<QXmppDataForm::MediaSource> sources;
-			if (!si.IconCID_.isEmpty ())
-				sources.append ({ QUrl::fromEncoded (si.IconCID_), si.IconType_ });
+			if (!si.IconCid_.isEmpty ())
+				sources.append ({ QUrl::fromEncoded (si.IconCid_), si.IconType_ });
 			sources.append ({ si.IconURL_, si.IconType_ });
 			iconField.setMediaSources (sources);
 			iconField.setValue (si.IconURL_.toEncoded ());

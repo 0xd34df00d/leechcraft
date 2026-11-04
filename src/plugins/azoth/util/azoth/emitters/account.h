@@ -103,14 +103,14 @@ namespace LC::Azoth::Emitters
 		/** @brief This signal should be emitted when a non-roster item
 		 * has just unsubscribed from us.
 		 *
-		 * @param[out] entryID The ID of just unsubscribed entry.
+		 * @param[out] entryId The ID of just unsubscribed entry.
 		 * @param[out] message An optional reason message.
 		 *
 		 * @sa Authorize(), DenyAuth(), RequestAuth(),
 		 * authorizationRequested(), itemSubscribed(),
 		 * itemCancelledSubscription(), itemGrantedSubscription()
 		 */
-		void itemUnsubscribed (const QString& entryID, const QString& message);
+		void itemUnsubscribed (const QString& entryId, const QString& message);
 
 		/** @brief This signal should be emitted when a roster item
 		 * cancels (or denies) our subscription.
@@ -164,7 +164,7 @@ namespace LC::Azoth::Emitters
 		 * In this case, nick changes result in conventional ID changes,
 		 * and this signal shall be emitted.
 		 *
-		 * @sa ICLEntry::GetConventionalID()
+		 * @sa ICLEntry::GetConventionalId()
 		 */
 		void conventionalIdChanged (const GlobalConventionalId& oldId,
 				const GlobalConventionalId& newId,

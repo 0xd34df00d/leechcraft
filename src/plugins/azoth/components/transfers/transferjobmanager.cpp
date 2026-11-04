@@ -111,7 +111,7 @@ namespace Azoth
 
 	QByteArray TransferJobManager::GenerateTransferEventId (const OutgoingFileOffer& offer)
 	{
-		const auto accountId = offer.Entry_.GetParentAccount ()->GetAccountID ();
+		const auto accountId = offer.Entry_.GetParentAccount ()->GetAccountId ();
 		return "org.LC.Plugins.Azoth.OutgoingTransferTo/" + accountId.ToUtf8 () + '/' + QByteArray::number (OutgoingJobId_++);
 	}
 
@@ -170,7 +170,7 @@ namespace Azoth
 
 		QByteArray GetTransferEventId (const IncomingOffer& offer)
 		{
-			const auto accountId = offer.Entry_->GetParentAccount ()->GetAccountID ();
+			const auto accountId = offer.Entry_->GetParentAccount ()->GetAccountId ();
 			return "org.LC.Plugins.Azoth.IncomingFileFrom/" + accountId.ToUtf8 () + '/' + QByteArray::number (offer.JobId_);
 		}
 	}
@@ -229,14 +229,14 @@ namespace Azoth
 		const auto mgr = qobject_cast<ITransferManager*> (acc->GetTransferManager ());
 		if (!mgr)
 		{
-			qWarning () << offer.Entry_.GetGlobalStrongestID () << "does not support transfers";
+			qWarning () << offer.Entry_.GetGlobalStrongestId () << "does not support transfers";
 			return false;
 		}
 
 		const auto job = mgr->SendFile (offer.Entry_, offer.Variant_, offer.FilePath_, offer.Comment_);
 		if (!job)
 		{
-			qWarning () << offer.Entry_.GetGlobalStrongestID () << "unable to create job";
+			qWarning () << offer.Entry_.GetGlobalStrongestId () << "unable to create job";
 			return false;
 		}
 

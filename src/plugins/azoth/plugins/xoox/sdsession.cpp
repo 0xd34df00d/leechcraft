@@ -34,11 +34,11 @@ namespace Xoox
 	: Model_ (new SDModel (this))
 	, Account_ (account)
 	{
-		ID2Action_ ["view-vcard"] = [this] (const ItemInfo& ii) { ViewVCard (ii); };
-		ID2Action_ ["add-to-roster"] = [this] (const ItemInfo& ii) { AddToRoster (ii); };
-		ID2Action_ ["register"] = [this] (const ItemInfo& ii) { Register (ii); };
-		ID2Action_ ["execute-ad-hoc"] = [this] (const ItemInfo& ii) { ExecuteAdHoc (ii); };
-		ID2Action_ ["join-conference"] = [this] (const ItemInfo& ii) { JoinConference (ii); };
+		Id2Action_ ["view-vcard"] = [this] (const ItemInfo& ii) { ViewVCard (ii); };
+		Id2Action_ ["add-to-roster"] = [this] (const ItemInfo& ii) { AddToRoster (ii); };
+		Id2Action_ ["register"] = [this] (const ItemInfo& ii) { Register (ii); };
+		Id2Action_ ["execute-ad-hoc"] = [this] (const ItemInfo& ii) { ExecuteAdHoc (ii); };
+		Id2Action_ ["join-conference"] = [this] (const ItemInfo& ii) { JoinConference (ii); };
 	}
 
 	namespace
@@ -56,7 +56,7 @@ namespace Xoox
 				items << item;
 				item->setEditable (false);
 			}
-			items.at (0)->setData (jid, SDSession::DRJID);
+			items.at (0)->setData (jid, SDSession::DRJid);
 			items.at (0)->setData (node, SDSession::DRNode);
 			parent->appendRow (items);
 			return items;
@@ -74,7 +74,7 @@ namespace Xoox
 				{ query, query, "" },
 				query,
 				"");
-		JID2Node2Item_ [query] [""] = items.at (0);
+		Jid2Node2Item_ [query] [""] = items.at (0);
 
 		items.at (0)->setData (true, DRFetchedMore);
 
@@ -115,9 +115,9 @@ namespace Xoox
 
 		QList<std::pair<QByteArray, QString>> result;
 		if (info.Caps_.contains ("vcard-temp") &&
-				!info.JID_.isEmpty ())
+				!info.Jid_.isEmpty ())
 			result.append ({ "view-vcard", tr ("View VCard...") });
-		if (!info.JID_.isEmpty ())
+		if (!info.Jid_.isEmpty ())
 			result.append ({ "add-to-roster", tr ("Add to roster...") });
 		if (info.Caps_.contains (XooxUtil::NsRegister))
 			result.append ({ "register", tr ("Register...") });
@@ -151,7 +151,7 @@ namespace Xoox
 		const auto item = Model_->itemFromIndex (sibling);
 		const ItemInfo& info = Item2Info_ [item];
 
-		if (!ID2Action_.contains (id))
+		if (!Id2Action_.contains (id))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown ID"
@@ -159,7 +159,7 @@ namespace Xoox
 			return;
 		}
 
-		ID2Action_ [id] (info);
+		Id2Action_ [id] (info);
 	}
 
 	namespace
@@ -178,7 +178,7 @@ namespace Xoox
 
 	void SDSession::HandleInfo (const QXmppDiscoveryIq& iq)
 	{
-		QStandardItem *item = JID2Node2Item_ [iq.from ()] [iq.queryNode ()];
+		QStandardItem *item = Jid2Node2Item_ [iq.from ()] [iq.queryNode ()];
 		if (!item)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -283,7 +283,7 @@ namespace Xoox
 
 	void SDSession::HandleItems (const QXmppDiscoveryIq& iq)
 	{
-		auto parentItem = JID2Node2Item_ [iq.from ()] [iq.queryNode ()];
+		auto parentItem = Jid2Node2Item_ [iq.from ()] [iq.queryNode ()];
 		if (!parentItem)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -300,7 +300,7 @@ namespace Xoox
 					{ item.name (), item.jid (), item.node () },
 					item.jid (),
 					item.node ());
-			JID2Node2Item_ [item.jid ()] [item.node ()] = items.at (0);
+			Jid2Node2Item_ [item.jid ()] [item.node ()] = items.at (0);
 		}
 
 		[=] (this auto self, qsizetype start)
@@ -333,7 +333,7 @@ namespace Xoox
 		item->setData (true, DRFetchedMore);
 
 		QPointer<SDSession> ptr (this);
-		const auto& jid = item->data (DRJID).toString ();
+		const auto& jid = item->data (DRJid).toString ();
 		const auto& node = item->data (DRNode).toString ();
 		Account_->GetClientConnection ()->GetDiscoManagerWrapper ()->RequestItems (jid,
 				[ptr] (const QXmppDiscoveryIq& iq) { if (ptr) ptr->HandleItems (iq); },
@@ -343,7 +343,7 @@ namespace Xoox
 
 	void SDSession::ViewVCard (const SDSession::ItemInfo& info)
 	{
-		const auto& jid = info.JID_;
+		const auto& jid = info.Jid_;
 		if (jid.isEmpty ())
 			return;
 
@@ -357,7 +357,7 @@ namespace Xoox
 
 	void SDSession::AddToRoster (const SDSession::ItemInfo& info)
 	{
-		const QString& jid = info.JID_;
+		const QString& jid = info.Jid_;
 		if (jid.isEmpty ())
 			return;
 
@@ -366,7 +366,7 @@ namespace Xoox
 
 	void SDSession::Register (const SDSession::ItemInfo& info)
 	{
-		const QString& jid = info.JID_;
+		const QString& jid = info.Jid_;
 		if (jid.isEmpty ())
 			return;
 
@@ -388,7 +388,7 @@ namespace Xoox
 
 	void SDSession::ExecuteAdHoc (const SDSession::ItemInfo& info)
 	{
-		const auto& jid = info.JID_;
+		const auto& jid = info.Jid_;
 		if (jid.isEmpty ())
 			return;
 
@@ -404,7 +404,7 @@ namespace Xoox
 
 	void SDSession::JoinConference (const SDSession::ItemInfo& info)
 	{
-		const QString& jid = info.JID_;
+		const QString& jid = info.Jid_;
 		if (jid.isEmpty ())
 			return;
 

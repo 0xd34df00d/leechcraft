@@ -28,7 +28,7 @@ namespace LC::Azoth::Xoox
 		if (newPass.isEmpty ())
 			return;
 
-		const auto& jid = Acc_.GetSettings ()->GetJID ();
+		const auto& jid = Acc_.GetSettings ()->GetJid ();
 		const auto aPos = jid.indexOf ('@');
 
 		XmppElementDescription queryDescr

@@ -21,7 +21,7 @@ namespace LC::Azoth
 
 	AZOTH_UTIL_API bool IsOnline (State);
 	AZOTH_UTIL_API QString StateToString (State);
-	AZOTH_UTIL_API QString StateToID (State);
+	AZOTH_UTIL_API QString StateToId (State);
 
 	AZOTH_UTIL_API QString FormatNameWithAddress (const ICLEntry&);
 

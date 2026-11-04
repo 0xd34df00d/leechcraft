@@ -39,7 +39,7 @@ namespace LC::Azoth::Sarin
 		Q_INTERFACES (LC::Azoth::IAccount LC::Azoth::ISupportMediaCalls)
 
 		ToxProtocol * const Proto_;
-		const AccountId UID_;
+		const AccountId Uid_;
 
 		QString Name_;
 		QString Nick_;
@@ -85,7 +85,7 @@ namespace LC::Azoth::Sarin
 		QString GetAccountName () const override;
 		QString GetOurNick () const override;
 		void RenameAccount (const QString& name) override;
-		AccountId GetAccountID () const override;
+		AccountId GetAccountId () const override;
 
 		QList<QAction*> GetActions () const override;
 		void OpenConfigurationDialog () override;

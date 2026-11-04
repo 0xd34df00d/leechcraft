@@ -156,14 +156,14 @@ namespace LC::Azoth
 	void ProxyObject::SetPassword (const QString& password, QObject *accObj)
 	{
 		const auto acc = qobject_cast<IAccount*> (accObj);
-		const auto& key = "org.LeechCraft.Azoth.PassForAccount/" + acc->GetAccountID ().ToString ();
+		const auto& key = "org.LeechCraft.Azoth.PassForAccount/" + acc->GetAccountId ().ToString ();
 		Util::SavePassword (password, key, Core::Instance ().GetProxy ());
 	}
 
 	QString ProxyObject::GetAccountPassword (QObject *accObj, bool useStored)
 	{
 		const auto acc = qobject_cast<IAccount*> (accObj);
-		const auto& key = "org.LeechCraft.Azoth.PassForAccount/" + acc->GetAccountID ().ToString ();
+		const auto& key = "org.LeechCraft.Azoth.PassForAccount/" + acc->GetAccountId ().ToString ();
 		return Util::GetPassword (key,
 				tr ("Enter password for %1:")
 						.arg (acc->GetAccountName ()),
@@ -204,10 +204,10 @@ namespace LC::Azoth
 		return SerializedStr2AuthStatus_.value (str, ASNone);
 	}
 
-	QObject* ProxyObject::GetAccount (const QString& accID) const
+	QObject* ProxyObject::GetAccount (const QString& accId) const
 	{
 		for (const auto acc : Core::Instance ().GetAccounts ())
-			if (acc->GetAccountID ().ToString () == accID)
+			if (acc->GetAccountId ().ToString () == accId)
 				return acc->GetQObject ();
 
 		return nullptr;
@@ -218,17 +218,17 @@ namespace LC::Azoth
 		return Util::Map (Core::Instance ().GetAccounts (), &IAccount::GetQObject);
 	}
 
-	ICLEntry* ProxyObject::GetEntry (const GlobalStrongestId& entryID) const
+	ICLEntry* ProxyObject::GetEntry (const GlobalStrongestId& entryId) const
 	{
-		return Entries_.GetEntryOrNull (entryID);
+		return Entries_.GetEntryOrNull (entryId);
 	}
 
-	void ProxyObject::OpenChat (const GlobalStrongestId& entryID, const QString& message, const QString& variant) const
+	void ProxyObject::OpenChat (const GlobalStrongestId& entryId, const QString& message, const QString& variant) const
 	{
-		const auto entry = Entries_.GetEntryOrNull (entryID);
+		const auto entry = Entries_.GetEntryOrNull (entryId);
 		if (!entry)
 		{
-			qWarning () << "unknown entry ID" << entryID;
+			qWarning () << "unknown entry ID" << entryId;
 			return;
 		}
 
@@ -239,10 +239,10 @@ namespace LC::Azoth
 		chat->selectVariant (variant);
 	}
 
-	QWidget* ProxyObject::FindOpenedChat (const GlobalStrongestId& entryID) const
+	QWidget* ProxyObject::FindOpenedChat (const GlobalStrongestId& entryId) const
 	{
 		const auto mgr = Core::Instance ().GetChatTabsManager ();
-		return mgr->GetChatTab (entryID);
+		return mgr->GetChatTab (entryId);
 	}
 
 	Util::ResourceLoader* ProxyObject::GetResourceLoader (IProxyObject::PublicResourceLoader loader) const

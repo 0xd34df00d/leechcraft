@@ -63,7 +63,7 @@ namespace LC::Azoth::Sarin
 		return {};
 	}
 
-	QByteArray ToxProtocol::GetProtocolID () const
+	QByteArray ToxProtocol::GetProtocolId () const
 	{
 		return "org.LeechCraft.Azoth.Tox";
 	}
@@ -96,7 +96,7 @@ namespace LC::Azoth::Sarin
 		QSettings settings { QSettings::IniFormat, QSettings::UserScope,
 				QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_Sarin_Accounts" };
-		settings.remove (account->GetAccountID ().ToString ());
+		settings.remove (account->GetAccountId ().ToString ());
 
 		Accounts_.removeOne (account);
 		emit accountRemoved (accObj);
@@ -143,6 +143,6 @@ namespace LC::Azoth::Sarin
 		QSettings settings { QSettings::IniFormat, QSettings::UserScope,
 				QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_Sarin_Accounts" };
-		settings.setValue (account->GetAccountID ().ToString (), account->Serialize ());
+		settings.setValue (account->GetAccountId ().ToString (), account->Serialize ());
 	}
 }

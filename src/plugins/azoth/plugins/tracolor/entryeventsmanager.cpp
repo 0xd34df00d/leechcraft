@@ -39,7 +39,7 @@ namespace Tracolor
 
 	void EntryEventsManager::RemoveEntry (QObject *entryObj)
 	{
-		EntryEvents_.remove (qobject_ref_cast<ICLEntry> (entryObj).GetGlobalStrongestID ());
+		EntryEvents_.remove (qobject_ref_cast<ICLEntry> (entryObj).GetGlobalStrongestId ());
 	}
 
 	void EntryEventsManager::HandleEvent (const GlobalStrongestId& entryId, const QByteArray& eventId)

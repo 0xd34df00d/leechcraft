@@ -24,7 +24,7 @@ namespace Xoox
 		int Width_;
 		int Height_;
 		QString Type_;
-		QByteArray ID_;
+		QByteArray Id_;
 		QUrl URL_;
 	public:
 		UserAvatarMetadata (const QImage& = QImage ());
@@ -40,7 +40,7 @@ namespace Xoox
 		bool IsNull () const;
 
 		QUrl GetURL () const;
-		QByteArray GetID () const;
+		QByteArray GetId () const;
 	};
 }
 }

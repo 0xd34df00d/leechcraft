@@ -22,7 +22,7 @@ namespace Xoox
 {
 	class PEPMicroblog : public PEPEventBase
 	{
-		QString EventID_;
+		QString EventId_;
 
 		QString AuthorName_;
 		QString AuthorURI_;
@@ -64,7 +64,7 @@ namespace Xoox
 
 		operator Post () const;
 
-		QString GetEventID () const override;
+		QString GetEventId () const override;
 
 		QString GetAuthorName () const;
 		void SetAuthorName (const QString&);

@@ -73,7 +73,7 @@ namespace Azoth
 		QAction *EnableEncryption_ = nullptr;
 #endif
 
-		std::optional<GlobalStrongestId> EntryID_;
+		std::optional<GlobalStrongestId> EntryId_;
 
 		QList<QString> MsgHistory_;
 
@@ -154,7 +154,7 @@ namespace Azoth
 
 		void SetEnabled (bool);
 
-		void UpdateEntryID (const std::optional<GlobalStrongestId>& id);
+		void UpdateEntryId (const std::optional<GlobalStrongestId>& id);
 
 		std::optional<QString> GetSelectedVariant () const;
 

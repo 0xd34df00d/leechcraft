@@ -39,7 +39,7 @@ namespace LC::Azoth::Sarin
 	ToxAccount::ToxAccount (const AccountId& uid, const QString& name, ToxProtocol *parent)
 	: QObject { parent }
 	, Proto_ { parent }
-	, UID_ { uid }
+	, Uid_ { uid }
 	, Name_ { name }
 	, ActionGetToxId_ { new QAction { tr ("Get Tox ID"), this } }
 	, MsgsMgr_ { new MessagesManager { *this } }
@@ -67,7 +67,7 @@ namespace LC::Azoth::Sarin
 		QByteArray ba;
 		QDataStream str { &ba, QIODevice::WriteOnly };
 		str << static_cast<quint8> (2)
-				<< UID_.ToUtf8 ()
+				<< Uid_.ToUtf8 ()
 				<< Name_
 				<< Nick_
 				<< ToxState_
@@ -186,9 +186,9 @@ namespace LC::Azoth::Sarin
 		emit accountChanged (this);
 	}
 
-	AccountId ToxAccount::GetAccountID () const
+	AccountId ToxAccount::GetAccountId () const
 	{
-		return UID_;
+		return Uid_;
 	}
 
 	QList<QAction*> ToxAccount::GetActions () const

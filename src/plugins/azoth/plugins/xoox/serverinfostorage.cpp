@@ -43,12 +43,12 @@ namespace Xoox
 
 	bool ServerInfoStorage::HasSelfFeatures () const
 	{
-		return !SelfJIDFeatures_.isEmpty ();
+		return !SelfJidFeatures_.isEmpty ();
 	}
 
 	QStringList ServerInfoStorage::GetSelfFeatures () const
 	{
-		return SelfJIDFeatures_;
+		return SelfJidFeatures_;
 	}
 
 	QString ServerInfoStorage::GetBytestreamsProxy () const
@@ -82,7 +82,7 @@ namespace Xoox
 
 	void ServerInfoStorage::handleConnected ()
 	{
-		if (Settings_->GetJID () == PreviousJID_)
+		if (Settings_->GetJid () == PreviousJid_)
 			return;
 
 		ServerFeatures_.clear ();
@@ -90,8 +90,8 @@ namespace Xoox
 		BytestreamsProxy_.clear ();
 		emit bytestreamsProxyChanged (QString ());
 
-		PreviousJID_ = Settings_->GetJID ();
-		Server_ = PreviousJID_.mid (PreviousJID_.indexOf ('@') + 1);
+		PreviousJid_ = Settings_->GetJid ();
+		Server_ = PreviousJid_.mid (PreviousJid_.indexOf ('@') + 1);
 		if (Server_.isEmpty ())
 			return;
 
@@ -101,8 +101,8 @@ namespace Xoox
 		Conn_->GetDiscoManagerWrapper ()->RequestItems (Server_,
 				[this] (const QXmppDiscoveryIq& iq) { HandleItems (iq); },
 				false);
-		Conn_->GetDiscoManagerWrapper ()->RequestInfo (Settings_->GetJID (),
-				[this] (const QXmppDiscoveryIq& iq) { SelfJIDFeatures_ = iq.features (); },
+		Conn_->GetDiscoManagerWrapper ()->RequestInfo (Settings_->GetJid (),
+				[this] (const QXmppDiscoveryIq& iq) { SelfJidFeatures_ = iq.features (); },
 				false);
 	}
 }

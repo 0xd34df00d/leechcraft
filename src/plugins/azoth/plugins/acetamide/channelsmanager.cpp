@@ -33,9 +33,9 @@ namespace LC::Azoth::Acetamide
 		return ISH_->GetNickName ();
 	}
 
-	QString ChannelsManager::GetServerID () const
+	QString ChannelsManager::GetServerId () const
 	{
-		return ISH_->GetServerID ();
+		return ISH_->GetServerId ();
 	}
 
 	ServerOptions ChannelsManager::GetServerOptions () const

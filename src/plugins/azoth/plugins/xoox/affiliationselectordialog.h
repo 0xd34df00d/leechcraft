@@ -26,8 +26,8 @@ namespace Xoox
 	public:
 		AffiliationSelectorDialog (QWidget* = 0);
 
-		QString GetJID () const;
-		void SetJID (const QString&);
+		QString GetJid () const;
+		void SetJid (const QString&);
 
 		QXmppMucItem::Affiliation GetAffiliation () const;
 		void SetAffiliation (QXmppMucItem::Affiliation);

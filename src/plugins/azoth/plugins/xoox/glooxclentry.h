@@ -42,16 +42,16 @@ namespace LC::Azoth::Xoox
 		};
 		QList<MessageQueueItem> MessageQueue_;
 
-		const QString JID_;
+		const QString Jid_;
 
 		bool AuthRequested_ = false;
 		bool IsRosterEntry_ = false;
 
 		mutable QList<QAction*> GWActions_;
 	public:
-		GlooxCLEntry (const QString& bareJID, GlooxAccount*);
+		GlooxCLEntry (const QString& bareJid, GlooxAccount*);
 
-		static QString JIDFromID (GlooxAccount*, const QString&);
+		static QString JidFromId (GlooxAccount*, const QString&);
 
 		bool IsRosterEntry () const;
 		void PromoteToRosterEntry ();
@@ -64,8 +64,8 @@ namespace LC::Azoth::Xoox
 		EntryType GetEntryType () const override;
 		QString GetEntryName () const override;
 		void SetEntryName (const QString&) override;
-		std::optional<EntryPersistentId> GetPersistentID () const override;
-		EntryConventionalId GetConventionalID () const override;
+		std::optional<EntryPersistentId> GetPersistentId () const override;
+		EntryConventionalId GetConventionalId () const override;
 		QStringList Groups () const override;
 		void SetGroups (const QStringList&) override;
 		QStringList Variants () const override;
@@ -80,7 +80,7 @@ namespace LC::Azoth::Xoox
 		void Unsubscribe (const QString&) override;
 		void RerequestAuth (const QString&) override;
 
-		QString GetJID () const override;
+		QString GetJid () const override;
 
 		bool IsGateway (QString* = 0) const;
 

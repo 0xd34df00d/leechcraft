@@ -56,7 +56,7 @@ namespace Xoox
 	class AdHocResult
 	{
 		QString Node_;
-		QString SessionID_;
+		QString SessionId_;
 
 		QXmppDataForm Form_;
 
@@ -67,8 +67,8 @@ namespace Xoox
 		QString GetNode () const;
 		void SetNode (const QString&);
 
-		QString GetSessionID () const;
-		void SetSessionID (const QString&);
+		QString GetSessionId () const;
+		void SetSessionId (const QString&);
 
 		QXmppDataForm GetDataForm () const;
 		void SetDataForm (const QXmppDataForm&);

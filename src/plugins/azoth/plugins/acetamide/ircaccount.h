@@ -42,7 +42,7 @@ namespace LC::Azoth::Acetamide
 
 		QString AccountName_;
 		IrcProtocol *ParentProtocol_;
-		QByteArray AccountID_;
+		QByteArray AccountId_;
 
 		QString RealName_;
 		QString UserName_;
@@ -75,8 +75,8 @@ namespace LC::Azoth::Acetamide
 
 		void RenameAccount (const QString&) override;
 
-		AccountId GetAccountID () const override;
-		void SetAccountID (const QString&);
+		AccountId GetAccountId () const override;
+		void SetAccountId (const QString&);
 
 		QList<QAction*> GetActions () const override;
 

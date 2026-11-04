@@ -52,7 +52,7 @@ namespace LC::Azoth::Acetamide
 
 		Actions_ = QList { infoMenu->menuAction (), ctcpMenu->menuAction () };
 
-		ServerID_ = ICH_->GetParentID ();
+		ServerId_ = ICH_->GetParentId ();
 	}
 
 	ICLEntry* ChannelParticipantEntry::GetParentCLEntry () const
@@ -60,19 +60,19 @@ namespace LC::Azoth::Acetamide
 		return ICH_->GetCLEntry ();
 	}
 
-	std::optional<EntryPersistentId> ChannelParticipantEntry::GetPersistentID () const
+	std::optional<EntryPersistentId> ChannelParticipantEntry::GetPersistentId () const
 	{
 		return {};
 	}
 
-	EntryConventionalId ChannelParticipantEntry::GetConventionalID () const
+	EntryConventionalId ChannelParticipantEntry::GetConventionalId () const
 	{
-		return EntryConventionalId::FromString (Nick_ + '@' + ServerID_ + '/' + ICH_->GetChannelID ());
+		return EntryConventionalId::FromString (Nick_ + '@' + ServerId_ + '/' + ICH_->GetChannelId ());
 	}
 
 	QStringList ChannelParticipantEntry::Groups () const
 	{
-		return { ICH_->GetChannelID () };
+		return { ICH_->GetChannelId () };
 	}
 
 	void ChannelParticipantEntry::SetGroups (const QStringList&)
@@ -81,7 +81,7 @@ namespace LC::Azoth::Acetamide
 
 	void ChannelParticipantEntry::SendMessage (const OutgoingMessage& message)
 	{
-		HandleMessage (new IrcMessage { message, ServerID_, Nick_, Account_->GetClientConnection ().get () });
+		HandleMessage (new IrcMessage { message, ServerId_, Nick_, Account_->GetClientConnection ().get () });
 	}
 
 	QList<ChannelRole> ChannelParticipantEntry::Roles () const

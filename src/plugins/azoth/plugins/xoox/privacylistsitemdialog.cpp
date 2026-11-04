@@ -36,7 +36,7 @@ namespace Xoox
 
 		switch (Ui_.Type_->currentIndex ())
 		{
-		case TNJID:
+		case TNJid:
 			result.SetType (PrivacyListItem::Type::Jid);
 			break;
 		case TNGroup:
@@ -71,11 +71,11 @@ namespace Xoox
 					ANAllow :
 					ANDeny);
 
-		TypeNum index = TNJID;
+		TypeNum index = TNJid;
 		switch (item.GetType ())
 		{
 		case PrivacyListItem::Type::Jid:
-			index = TNJID;
+			index = TNJid;
 			break;
 		case PrivacyListItem::Type::Group:
 			index = TNGroup;

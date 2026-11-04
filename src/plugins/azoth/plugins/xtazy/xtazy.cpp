@@ -138,7 +138,7 @@ namespace Xtazy
 			return false;
 		}
 
-		const auto& eId = entry->GetGlobalStrongestID ();
+		const auto& eId = entry->GetGlobalStrongestId ();
 		QTimer::singleShot (0, this, [this, eId, songStr] { AzothProxy_->OpenChat (eId, songStr); });
 		return true;
 	}

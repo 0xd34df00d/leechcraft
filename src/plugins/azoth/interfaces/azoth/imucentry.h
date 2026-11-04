@@ -177,7 +177,7 @@ namespace Azoth
 		 * the real JID.
 		 * @return The real ID of a participant.
 		 */
-		virtual QString GetRealID (const ICLEntry& participant) const = 0;
+		virtual QString GetRealId (const ICLEntry& participant) const = 0;
 
 		/** @brief Returns the data identifying this room.
 		 *
@@ -197,7 +197,7 @@ namespace Azoth
 		 * if not.
 		 *
 		 * User is identified by its protocol-specific ID, as returned
-		 * by ICLEntry::GetHumanReadableID().
+		 * by ICLEntry::GetHumanReadableId().
 		 *
 		 * The invitation may contain an optional message.
 		 *
@@ -206,7 +206,7 @@ namespace Azoth
 		 * @param[in] msg The optional message to send along with the
 		 * invite.
 		 *
-		 * @sa ICLEntry::GetHumanReadableID()
+		 * @sa ICLEntry::GetHumanReadableId()
 		 */
 		virtual void InviteToMUC (const QString& userId, const QString& msg) = 0;	// TODO replace with ConventionalId?
 	};

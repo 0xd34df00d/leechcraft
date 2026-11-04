@@ -110,12 +110,12 @@ namespace LC::Azoth
 	{
 		e.Additional_ [AN::EF::SenderID] = "org.LeechCraft.Azoth";
 		e.Additional_ [AN::EF::EventCategory] = AN::CatIM;
-		e.Additional_ [AN::EF::EventID] = "org.LC.Plugins.Azoth." + info.EventId_ + '/' + info.Conversation_.GetEntryID ();
+		e.Additional_ [AN::EF::EventID] = "org.LC.Plugins.Azoth." + info.EventId_ + '/' + info.Conversation_.GetEntryId ();
 
 		e.Additional_ [AN::EF::VisualPath] = QStringList (info.Conversation_.GetEntryName ());
 
 		int win = 0;
-		const auto tab = Core::Instance ().GetChatTabsManager ()->GetChatTab (info.Conversation_.GetGlobalStrongestID ());
+		const auto tab = Core::Instance ().GetChatTabsManager ()->GetChatTab (info.Conversation_.GetGlobalStrongestId ());
 
 		const auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 		if (tab)

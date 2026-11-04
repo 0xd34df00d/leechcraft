@@ -137,7 +137,7 @@ namespace Xoox
 			return;
 
 		QXmppMessage msg;
-		msg.setTo (GetJID () + (variant.isEmpty () ?
+		msg.setTo (GetJid () + (variant.isEmpty () ?
 						QString () :
 						('/' + variant)));
 		msg.setState (static_cast<QXmppMessage::State> (state));
@@ -182,7 +182,7 @@ namespace Xoox
 		}
 
 		const auto& ptr = VCardDialog_;
-		Account_->GetClientConnection ()->FetchVCard (GetJID (),
+		Account_->GetClientConnection ()->FetchVCard (GetJid (),
 				[ptr] (const QXmppVCardIq& iq)
 				{
 					if (ptr)
@@ -245,8 +245,8 @@ namespace Xoox
 	void EntryBase::DrawAttention (const QString& text, const QString& variant)
 	{
 		const QString& to = variant.isEmpty () ?
-				GetJID () :
-				GetJID () + '/' + variant;
+				GetJid () :
+				GetJid () + '/' + variant;
 		QXmppMessage msg;
 		msg.setBody (text);
 		msg.setTo (to);
@@ -272,7 +272,7 @@ namespace Xoox
 
 	QList<std::pair<QString, QVariant>> EntryBase::GetVCardRepresentation () const
 	{
-		Account_->GetClientConnection ()->FetchVCard (GetJID ());
+		Account_->GetClientConnection ()->FetchVCard (GetJid ());
 
 		const auto vcard = GetVCard ();
 
@@ -387,7 +387,7 @@ namespace Xoox
 		auto pres = XooxUtil::StatusToPresence (state.State_,
 				state.StatusString_, conn->GetLastState ().Priority_);
 
-		QString to = GetJID ();
+		QString to = GetJid ();
 		if (!variant.isEmpty ())
 			to += '/' + variant;
 		pres.setTo (to);
@@ -416,7 +416,7 @@ namespace Xoox
 
 	QFuture<QImage> EntryBase::RefreshAvatar (Size)
 	{
-		const auto maybeVCard = Account_->GetParentProtocol ()->GetVCardStorage ()->GetVCard (GetConventionalID ());
+		const auto maybeVCard = Account_->GetParentProtocol ()->GetVCardStorage ()->GetVCard (GetConventionalId ());
 		if (maybeVCard && GetVCardPhotoHash () == ComputeVCardPhotoHash (*maybeVCard))
 			return Util::MakeReadyFuture (QImage::fromData (maybeVCard->photo ()));
 
@@ -440,7 +440,7 @@ namespace Xoox
 					cancelTimer->deleteLater ();
 				});
 
-		Account_->GetClientConnection ()->FetchVCard (GetJID (),
+		Account_->GetClientConnection ()->FetchVCard (GetJid (),
 				[iface, cancelTimer] (const QXmppVCardIq& iq) mutable
 				{
 					if (iface.isFinished ())
@@ -498,7 +498,7 @@ namespace Xoox
 
 		LastEntityTimeRequest_ = now;
 
-		auto jid = GetJID ();
+		auto jid = GetJid ();
 
 		if (jid.contains ('/'))
 		{
@@ -513,7 +513,7 @@ namespace Xoox
 
 	QObject* EntryBase::Ping (const QString& variant)
 	{
-		auto jid = GetJID ();
+		auto jid = GetJid ();
 		if (!variant.isEmpty ())
 			jid += '/' + variant;
 
@@ -525,7 +525,7 @@ namespace Xoox
 
 	QObject* EntryBase::QueryVersion (const QString& variant)
 	{
-		auto jid = GetJID ();
+		auto jid = GetJid ();
 		if (!variant.isEmpty ())
 			jid += '/' + variant;
 
@@ -540,7 +540,7 @@ namespace Xoox
 		if (!VCardPhotoHash_)
 		{
 			const auto storage = Account_->GetParentProtocol ()->GetVCardStorage ();
-			VCardPhotoHash_ = storage->GetVCardPhotoHash (GetConventionalID ()).value_or (QByteArray {});
+			VCardPhotoHash_ = storage->GetVCardPhotoHash (GetConventionalId ()).value_or (QByteArray {});
 		}
 		return *VCardPhotoHash_;
 	}
@@ -599,7 +599,7 @@ namespace Xoox
 		if (dynamic_cast<UserAvatarData*> (event) || dynamic_cast<UserAvatarMetadata*> (event))
 			return;
 
-		qWarning () << "unhandled PEP event from" << GetJID () << event->Node ();
+		qWarning () << "unhandled PEP event from" << GetJid () << event->Node ();
 	}
 
 	void EntryBase::HandleAttentionMessage (const QXmppMessage& msg)
@@ -680,9 +680,9 @@ namespace Xoox
 			if (conn->GetInfoReqPolicyManager ()->IsRequestAllowed (InfoRequest::Version, this))
 			{
 				if (!variant.isEmpty ())
-					conn->FetchVersion (GetJID () + '/' + variant);
+					conn->FetchVersion (GetJid () + '/' + variant);
 				else
-					conn->FetchVersion (GetJID ());
+					conn->FetchVersion (GetJid ());
 			}
 		}
 
@@ -702,7 +702,7 @@ namespace Xoox
 	QXmppVCardIq EntryBase::GetVCard () const
 	{
 		const auto storage = Account_->GetParentProtocol ()->GetVCardStorage ();
-		return storage->GetVCard (GetConventionalID ()).value_or (QXmppVCardIq {});
+		return storage->GetVCard (GetConventionalId ()).value_or (QXmppVCardIq {});
 	}
 
 	void EntryBase::SetVCard (const QXmppVCardIq& vcard)
@@ -710,7 +710,7 @@ namespace Xoox
 		if (VCardDialog_)
 			VCardDialog_->UpdateInfo (vcard);
 
-		Account_->GetParentProtocol ()->GetVCardStorage ()->SetVCard (GetConventionalID (), vcard);
+		Account_->GetParentProtocol ()->GetVCardStorage ()->SetVCard (GetConventionalId (), vcard);
 		if (const auto& newPhotoHash = ComputeVCardPhotoHash (vcard);
 			newPhotoHash != GetVCardPhotoHash ())
 		{
@@ -743,13 +743,13 @@ namespace Xoox
 			if (staticClientInfo.IsEmpty () && !node.isEmpty ())
 				qWarning () << "unknown client for" << node;
 
-			varInfo.ClientInfo_ ["client_type"] = staticClientInfo.ID_;
+			varInfo.ClientInfo_ ["client_type"] = staticClientInfo.Id_;
 			varInfo.ClientInfo_ ["client_name"] = staticClientInfo.HumanReadableName_;
 			varInfo.ClientInfo_ ["raw_client_name"] = staticClientInfo.HumanReadableName_;
 
 			varInfo.VerString_ = ver;
 
-			QString reqJid = GetJID ();
+			QString reqJid = GetJid ();
 			QString reqVar = "";
 			if (GetEntryType () == EntryType::Chat)
 			{
@@ -946,7 +946,7 @@ namespace Xoox
 	void EntryBase::WriteDownPhotoHash () const
 	{
 		const auto vcardStorage = Account_->GetParentProtocol ()->GetVCardStorage ();
-		vcardStorage->SetVCardPhotoHash (GetConventionalID (), GetVCardPhotoHash ());
+		vcardStorage->SetVCardPhotoHash (GetConventionalId (), GetVCardPhotoHash ());
 	}
 
 	QString EntryBase::GetVariantOrHighest (const QString& var) const
@@ -969,7 +969,7 @@ namespace Xoox
 	void EntryBase::handleTimeReceived (const QXmppEntityTimeIq& iq)
 	{
 		const auto& from = iq.from ();
-		if (!from.startsWith (GetJID ()))
+		if (!from.startsWith (GetJid ()))
 			return;
 
 		const auto& thatTime = iq.utc ();
@@ -992,7 +992,7 @@ namespace Xoox
 
 	void EntryBase::handleCommands ()
 	{
-		auto jid = GetJID ();
+		auto jid = GetJid ();
 		if (GetEntryType () != EntryType::PrivateChat)
 		{
 			QStringList commandable;
@@ -1037,7 +1037,7 @@ namespace Xoox
 	void EntryBase::handleDetectNick ()
 	{
 		QPointer<EntryBase> ptr (this);
-		Account_->GetClientConnection ()->FetchVCard (GetJID (),
+		Account_->GetClientConnection ()->FetchVCard (GetJid (),
 				[ptr] (const QXmppVCardIq& iq) { if (ptr) ptr->SetNickFromVCard (iq); });
 	}
 }

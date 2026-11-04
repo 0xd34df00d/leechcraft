@@ -26,7 +26,7 @@ namespace LC::Azoth::Acetamide
 				[this]
 				{
 					IsPrivateChat_ = false;
-					Account_->GetClientConnection ()->ClosePrivateChat (ServerID_, Nick_);
+					Account_->GetClientConnection ()->ClosePrivateChat (ServerId_, Nick_);
 				});
 
 		Actions_ << closePrivate;
@@ -54,7 +54,7 @@ namespace LC::Azoth::Acetamide
 
 	void IrcParticipantEntry::SetEntryName (const QString& name)
 	{
-		const auto& oldGlobalId = GetGlobalConventionalID ();
+		const auto& oldGlobalId = GetGlobalConventionalId ();
 
 		Nick_ = name;
 		emit Emitter_.nameChanged (Nick_);
@@ -73,7 +73,7 @@ namespace LC::Azoth::Acetamide
 			msg->SetOtherVariant (name);
 		}
 
-		emit GetParentAccount ()->GetAccountEmitter ().conventionalIdChanged (oldGlobalId, GetGlobalConventionalID (), *this);
+		emit GetParentAccount ()->GetAccountEmitter ().conventionalIdChanged (oldGlobalId, GetGlobalConventionalId (), *this);
 	}
 
 	QStringList IrcParticipantEntry::Variants () const
@@ -111,9 +111,9 @@ namespace LC::Azoth::Acetamide
 		RealName_ = realName;
 	}
 
-	QString IrcParticipantEntry::GetServerID () const
+	QString IrcParticipantEntry::GetServerId () const
 	{
-		return ServerID_;
+		return ServerId_;
 	}
 
 	bool IrcParticipantEntry::IsPrivateChat () const

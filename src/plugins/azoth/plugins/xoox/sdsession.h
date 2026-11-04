@@ -37,31 +37,31 @@ namespace Xoox
 
 		SDModel * const Model_;
 		GlooxAccount * const Account_;
-		QHash<QString, QHash<QString, QStandardItem*>> JID2Node2Item_;
+		QHash<QString, QHash<QString, QStandardItem*>> Jid2Node2Item_;
 
 		struct ItemInfo
 		{
 			QStringList Caps_;
 			QList<QXmppDiscoIdentity> Identities_;
-			QString JID_;
+			QString Jid_;
 			QString Node_;
 		};
 		QHash<QStandardItem*, ItemInfo> Item2Info_;
 
 		using ItemAction_t = std::function<void (ItemInfo)>;
-		QHash<QByteArray, ItemAction_t> ID2Action_;
+		QHash<QByteArray, ItemAction_t> Id2Action_;
 
 		enum Columns
 		{
 			CName,
-			CJID,
+			CJid,
 			CNode
 		};
 	public:
 		enum DataRoles
 		{
 			DRFetchedMore = Qt::UserRole + 1,
-			DRJID,
+			DRJid,
 			DRNode
 		};
 

@@ -27,7 +27,7 @@ namespace Azoth
 	struct SrvHistMessage
 	{
 		IMessage::Direction Dir_;
-		QByteArray ID_;
+		QByteArray Id_;
 		QString Nick_;
 		QString Body_;
 		QDateTime TS_;

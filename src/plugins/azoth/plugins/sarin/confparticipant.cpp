@@ -62,12 +62,12 @@ namespace LC::Azoth::Sarin
 		qWarning () << "renaming isn't supported";
 	}
 
-	std::optional<EntryPersistentId> ConfParticipant::GetPersistentID () const
+	std::optional<EntryPersistentId> ConfParticipant::GetPersistentId () const
 	{
 		return EntryPersistentId::FromString (PkeyHR_);
 	}
 
-	EntryConventionalId ConfParticipant::GetConventionalID () const
+	EntryConventionalId ConfParticipant::GetConventionalId () const
 	{
 		return EntryConventionalId::FromString (PkeyHR_);
 	}

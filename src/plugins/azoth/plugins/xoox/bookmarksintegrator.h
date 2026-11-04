@@ -29,7 +29,7 @@ namespace LC::Azoth::Xoox
 		struct JoinQueueItem
 		{
 			bool AsAutojoin_;
-			QString RoomJID_;
+			QString RoomJid_;
 			QString Nickname_;
 		};
 		QList<JoinQueueItem> JoinQueue_;

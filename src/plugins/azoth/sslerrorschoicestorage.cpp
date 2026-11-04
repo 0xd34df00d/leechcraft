@@ -23,12 +23,12 @@ namespace Azoth
 {
 	struct SslErrorsChoiceStorage::Record
 	{
-		AccountId AccountID_;
+		AccountId AccountId_;
 		QSslError::SslError Error_;
 		SslErrorsChoiceStorage::Action Action_;
 
 		using Constraints = Util::oral::Constraints<
-				Util::oral::PrimaryKey<&Record::AccountID_, &Record::Error_>
+				Util::oral::PrimaryKey<&Record::AccountId_, &Record::Error_>
 			>;
 
 		constexpr static auto ClassName = "SslErrors"_ct;
@@ -37,7 +37,7 @@ namespace Azoth
 }
 
 ORAL_ADAPT_STRUCT (LC::Azoth::SslErrorsChoiceStorage::Record,
-		AccountID_,
+		AccountId_,
 		Error_,
 		Action_)
 
@@ -74,7 +74,7 @@ namespace Azoth
 	auto SslErrorsChoiceStorage::GetAction (const AccountId& id, QSslError::SslError err) const -> std::optional<Action>
 	{
 		return AdaptedRecord_->SelectOne (sph::fields<&Record::Action_>,
-				sph::f<&Record::AccountID_> == id && sph::f<&Record::Error_> == err);
+				sph::f<&Record::AccountId_> == id && sph::f<&Record::Error_> == err);
 	}
 
 	void SslErrorsChoiceStorage::SetAction (const AccountId& id, QSslError::SslError err, Action act)

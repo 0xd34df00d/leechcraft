@@ -61,7 +61,7 @@ namespace Xoox
 		QObject* GetParentProtocolPlugin () const;
 		QString GetProtocolName () const;
 		QIcon GetProtocolIcon () const;
-		QByteArray GetProtocolID () const;
+		QByteArray GetProtocolId () const;
 		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions);
 		void RegisterAccount (const QString&, const QList<QWidget*>&);
 		void RemoveAccount (QObject*);

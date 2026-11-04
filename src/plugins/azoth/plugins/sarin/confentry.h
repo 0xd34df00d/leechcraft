@@ -55,8 +55,8 @@ namespace LC::Azoth::Sarin
 		QString GetEntryName () const override;
 		void SetEntryName (const QString&) override;
 
-		std::optional<EntryPersistentId> GetPersistentID () const override;
-		EntryConventionalId GetConventionalID () const override;
+		std::optional<EntryPersistentId> GetPersistentId () const override;
+		EntryConventionalId GetConventionalId () const override;
 
 		QStringList Groups () const override;
 		void SetGroups (const QStringList&) override;
@@ -88,7 +88,7 @@ namespace LC::Azoth::Sarin
 		QString GetNick () const override;
 		void SetNick (const QString& nick) override;
 		QString GetGroupName () const override;
-		QString GetRealID (const ICLEntry& participant) const override;
+		QString GetRealId (const ICLEntry& participant) const override;
 		QVariantMap GetIdentifyingData () const override;
 		void InviteToMUC (const QString& userId, const QString& msg) override;
 

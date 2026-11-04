@@ -63,12 +63,12 @@ namespace LC::Azoth::Sarin
 		emit Emitter_.nameChanged (GetEntryName ());
 	}
 
-	std::optional<EntryPersistentId> ToxContact::GetPersistentID () const
+	std::optional<EntryPersistentId> ToxContact::GetPersistentId () const
 	{
 		return EntryPersistentId::FromString (PubkeyHR_);
 	}
 
-	EntryConventionalId ToxContact::GetConventionalID () const
+	EntryConventionalId ToxContact::GetConventionalId () const
 	{
 		return EntryConventionalId::FromString (PubkeyHR_);
 	}

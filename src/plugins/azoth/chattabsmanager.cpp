@@ -65,11 +65,11 @@ namespace LC::Azoth
 				{
 					if (const auto liveTab = Entry2Tab_.take (oldId))
 					{
-						liveTab->UpdateEntryID (newId);
+						liveTab->UpdateEntryId (newId);
 						// the target of the rename is not in the roster, hence its tab is stale
 						if (const auto staleTab = std::exchange (Entry2Tab_ [newId], liveTab))
 						{
-							staleTab->UpdateEntryID ({});
+							staleTab->UpdateEntryId ({});
 							MergeTabs (*staleTab, *liveTab);
 						}
 					}
@@ -85,7 +85,7 @@ namespace LC::Azoth
 				{
 					for (const auto entry : entries)
 					{
-						const auto& id = entry->GetGlobalStrongestID ();
+						const auto& id = entry->GetGlobalStrongestId ();
 						if (const auto tab = Entry2Tab_.value (id))
 							tab->ReinitEntry ();
 
@@ -114,7 +114,7 @@ namespace LC::Azoth
 
 	ChatTab* ChatTabsManager::OpenChat (const ICLEntry& entry, bool fromUser)
 	{
-		const auto& id = entry.GetGlobalStrongestID ();
+		const auto& id = entry.GetGlobalStrongestId ();
 
 		std::move_only_function<void (ChatTab&)> restorer = [] (ChatTab&) {};
 		if (const auto pos = RestoreInfo_.find (id);
@@ -174,14 +174,14 @@ namespace LC::Azoth
 
 	void ChatTabsManager::CloseChat (const ICLEntry& entry, bool fromUser)
 	{
-		if (const auto& id = entry.GetGlobalStrongestID ();
+		if (const auto& id = entry.GetGlobalStrongestId ();
 			const auto tab = Entry2Tab_.value (id))
 			CloseChatTab (tab, fromUser);
 	}
 
 	bool ChatTabsManager::IsActiveChat (const ICLEntry *entry) const
 	{
-		const auto tab = Entry2Tab_.value (entry->GetGlobalStrongestID ());
+		const auto tab = Entry2Tab_.value (entry->GetGlobalStrongestId ());
 		if (!tab)
 			return false;
 
@@ -213,7 +213,7 @@ namespace LC::Azoth
 					Core::Instance ().IsHighlightMessage (msg)))
 		{
 			auto entry = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
-			if (!Entry2Tab_.contains (entry->GetGlobalStrongestID ()))
+			if (!Entry2Tab_.contains (entry->GetGlobalStrongestId ()))
 				OpenChat (*entry, false);
 		}
 	}
@@ -235,8 +235,8 @@ namespace LC::Azoth
 	{
 		for (const RestoreChatInfo& info : infos)
 		{
-			const auto entryObj = Entries_.GetEntryOrNull (info.EntryID_);
-			RestoreInfo_.emplace (info.EntryID_, info);
+			const auto entryObj = Entries_.GetEntryOrNull (info.EntryId_);
+			RestoreInfo_.emplace (info.EntryId_, info);
 			if (entryObj)
 				OpenChat (*entryObj, false);
 		}
@@ -244,7 +244,7 @@ namespace LC::Azoth
 
 	std::optional<QString> ChatTabsManager::GetActiveVariant (ICLEntry *entry) const
 	{
-		const auto tab = Entry2Tab_ [entry->GetGlobalStrongestID ()];
+		const auto tab = Entry2Tab_ [entry->GetGlobalStrongestId ()];
 		if (!tab)
 			return {};
 
@@ -298,7 +298,7 @@ namespace LC::Azoth
 	void ChatTabsManager::updateCurrentTab (QObject *entryObj)
 	{
 		auto entry = qobject_cast<ICLEntry*> (entryObj);
-		LastCurrentTab_ = entry ? Entry2Tab_.value (entry->GetGlobalStrongestID ()) : nullptr;
+		LastCurrentTab_ = entry ? Entry2Tab_.value (entry->GetGlobalStrongestId ()) : nullptr;
 	}
 
 	void ChatTabsManager::chatWindowStyleChanged ()

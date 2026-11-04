@@ -293,9 +293,9 @@ namespace OTRoid
 		const auto err = otrl_message_sending (UserState_,
 				&OtrOps_,
 				this,
-				acc->GetAccountID ().ToUtf8 ().constData (),
-				proto->GetProtocolID ().constData (),
-				SerializeString (entry.GetStrongestID ()).toUtf8 ().constData (),
+				acc->GetAccountId ().ToUtf8 ().constData (),
+				proto->GetProtocolId ().constData (),
+				SerializeString (entry.GetStrongestId ()).toUtf8 ().constData (),
 				OTRL_INSTAG_BEST,
 				msg.Body_.toUtf8 ().constData (),
 				nullptr,
@@ -365,9 +365,9 @@ namespace OTRoid
 		char *newMsg = 0;
 		OtrlTLV *tlvs = 0;
 		int ignore = otrl_message_receiving (UserState_, &OtrOps_, this,
-				acc->GetAccountID ().ToUtf8 ().constData (),
-				proto->GetProtocolID ().constData (),
-				SerializeString (entry->GetStrongestID ()).toUtf8 ().constData (),
+				acc->GetAccountId ().ToUtf8 ().constData (),
+				proto->GetProtocolId ().constData (),
+				SerializeString (entry->GetStrongestId ()).toUtf8 ().constData (),
 				msg->GetBody ().toUtf8 ().constData (),
 				&newMsg,
 				&tlvs,
@@ -761,17 +761,17 @@ namespace OTRoid
 	void OtrHandler::SetOtrState (ICLEntry *entry, bool enable)
 	{
 		const auto acc = entry->GetParentAccount ();
-		const auto& accId = acc->GetAccountID ();
+		const auto& accId = acc->GetAccountId ();
 		const auto& accIdUtf8 = accId.ToUtf8 ();
 
 		auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
-		const auto& protoId = proto->GetProtocolID ();
+		const auto& protoId = proto->GetProtocolId ();
 
 		if (!enable)
 		{
 			otrl_message_disconnect (UserState_, &OtrOps_, this,
 					accIdUtf8.constData (), protoId.constData (),
-					SerializeString (entry->GetStrongestID ()).toUtf8 ().constData (), OTRL_INSTAG_BEST);
+					SerializeString (entry->GetStrongestId ()).toUtf8 ().constData (), OTRL_INSTAG_BEST);
 			NotifyConvFlow (*entry, tr ("Private conversation closed"));
 			return;
 		}
@@ -816,9 +816,9 @@ namespace OTRoid
 		const auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 
 		const auto context = otrl_context_find (UserState_,
-				SerializeString (entry->GetStrongestID ()).toUtf8 ().constData (),
-				acc->GetAccountID ().ToUtf8 ().constData (),
-				proto->GetProtocolID ().constData (),
+				SerializeString (entry->GetStrongestId ()).toUtf8 ().constData (),
+				acc->GetAccountId ().ToUtf8 ().constData (),
+				proto->GetProtocolId ().constData (),
 				OTRL_INSTAG_BEST,
 				true,
 				nullptr, nullptr, nullptr);

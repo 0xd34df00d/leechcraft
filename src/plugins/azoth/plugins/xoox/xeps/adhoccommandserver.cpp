@@ -40,7 +40,7 @@ namespace Xoox
 	AdHocCommandServer::AdHocCommandServer (ClientConnection *conn)
 	: Conn_ { conn }
 	{
-		const QString& jid = Conn_->GetOurJID ();
+		const QString& jid = Conn_->GetOurJid ();
 
 		const QXmppDiscoItem changeStatus { jid, tr ("Change status"), NodeChangeStatus };
 		XEP0146Items_ [changeStatus.node ()] = changeStatus;
@@ -90,7 +90,7 @@ namespace Xoox
 
 		auto [from, resource] = ClientConnection::Split (receivedIq.from ());
 
-		if (Conn_->GetOurJID ().startsWith (from))
+		if (Conn_->GetOurJid ().startsWith (from))
 		{
 			QXmppDiscoveryIq result;
 			result.setId (receivedIq.id ());
@@ -125,7 +125,7 @@ namespace Xoox
 			return false;
 
 		auto [from, resource] = ClientConnection::Split (elem.attribute ("from"));
-		const bool isUs = Conn_->GetOurJID ().startsWith (from);
+		const bool isUs = Conn_->GetOurJid ().startsWith (from);
 
 		const QString& node = cmdElem.attribute ("node");
 
@@ -169,12 +169,12 @@ namespace Xoox
 	void AdHocCommandServer::Send (const QXmppDataForm& form,
 			const QDomElement& sourceElem, const QString& node)
 	{
-		auto genSessID = [] (const QString& base)
+		auto genSessId = [] (const QString& base)
 		{
 			return base + ":" + QDateTime::currentDateTime ().toString (Qt::ISODate);
 		};
 
-		const QString& sessionId = genSessID (sourceElem.attribute ("id"));
+		const QString& sessionId = genSessId (sourceElem.attribute ("id"));
 		PendingSessions_ [node] << sessionId;
 
 		QXmppElement elem;
@@ -217,7 +217,7 @@ namespace Xoox
 			{
 				QList states { SChat, SOnline, SAway, SXA, SDND, SInvisible, SOffline };
 				std::ranges::sort (states, &IsLess);
-				return Util::Map (states, [] (State st) { return std::pair { StateToID (st), st }; });
+				return Util::Map (states, [] (State st) { return std::pair { StateToId (st), st }; });
 			} ();
 			return pairs;
 		}
@@ -315,7 +315,7 @@ namespace Xoox
 			options << std::pair
 			{
 				entry->GetHumanReadableAddress () + "/" + entry->GetNick (),
-				entry->GetEntryID ()
+				entry->GetEntryId ()
 			};
 
 		QXmppDataForm::Field gcs (QXmppDataForm::Field::ListMultiField);
@@ -343,7 +343,7 @@ namespace Xoox
 
 			const QStringList& ids = field.value ().toStringList ();
 			for (const auto entry : Conn_->GetRoomCLEntries ())
-				if (ids.contains (entry->GetEntryID ()))
+				if (ids.contains (entry->GetEntryId ()))
 					entry->Leave (tr ("leaving as the result of the remote command"));
 
 			break;

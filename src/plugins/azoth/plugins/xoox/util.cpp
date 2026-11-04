@@ -309,9 +309,9 @@ namespace XooxUtil
 		return pres;
 	}
 
-	QString GetBareJID (const QString& entryId, GlooxAccount *acc)
+	QString GetBareJid (const QString& entryId, GlooxAccount *acc)
 	{
-		const auto underscoreCount = acc->GetAccountID ().ToString ().count ('_') + 1;
+		const auto underscoreCount = acc->GetAccountId ().ToString ().count ('_') + 1;
 		return entryId.section ('_', underscoreCount);
 	}
 

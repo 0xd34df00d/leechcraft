@@ -44,7 +44,7 @@ namespace Herbicide
 				QCoreApplication::applicationName () + "_Azoth_Herbicide"
 			};
 
-			return settings.childGroups ().contains (acc->GetAccountID ().ToString ());
+			return settings.childGroups ().contains (acc->GetAccountId ().ToString ());
 		}
 
 		QVariant GetAccountProperty (IAccount *acc, const QByteArray& name)
@@ -55,7 +55,7 @@ namespace Herbicide
 				QCoreApplication::applicationName () + "_Azoth_Herbicide"
 			};
 
-			const QString accIdStr = acc ? acc->GetAccountID ().ToString () : QString {};
+			const QString accIdStr = acc ? acc->GetAccountId ().ToString () : QString {};
 			if (!acc || !settings.childGroups ().contains (accIdStr))
 				return settings.value (name);
 
@@ -165,7 +165,7 @@ namespace Herbicide
 							QCoreApplication::applicationName () + "_Azoth_Herbicide"
 						};
 
-						settings.remove (acc->GetAccountID ().ToString ());
+						settings.remove (acc->GetAccountId ().ToString ());
 						ListsHolder_->ReloadLists (acc);
 					});
 			result << removeAction;
@@ -272,7 +272,7 @@ namespace Herbicide
 		public:
 			AccountSettingsManager (IAccount *acc, QObject *parent)
 			: BaseSettingsManager { parent }
-			, GroupName_ { acc->GetAccountID ().ToString () }
+			, GroupName_ { acc->GetAccountId ().ToString () }
 			{
 				Init ();
 			}

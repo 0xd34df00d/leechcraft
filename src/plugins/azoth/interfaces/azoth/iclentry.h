@@ -148,16 +148,16 @@ namespace LC::Azoth
 		 */
 		virtual void SetEntryName (const QString& name) = 0;
 
-		[[deprecated("Use GetGlobalPersistentID() or GetGlobalStrongestID()")]]
-		QString GetEntryID () const
+		[[deprecated("Use GetGlobalPersistentId() or GetGlobalStrongestId()")]]
+		QString GetEntryId () const
 		{
-			return GetGlobalStrongestID ().ToString ();
+			return GetGlobalStrongestId ().ToString ();
 		}
 
-		[[deprecated("Use GetConventionalID()")]]
-		QString GetHumanReadableID () const
+		[[deprecated("Use GetConventionalId()")]]
+		QString GetHumanReadableId () const
 		{
-			return GetConventionalID ().ToString ();
+			return GetConventionalId ().ToString ();
 		}
 
 		/** @brief Returns the global persistent ID of this entry.
@@ -175,21 +175,21 @@ namespace LC::Azoth
 		 * rooms, where the persistent ID is not available, and the
 		 * conventional ID depends on the nick.
 		 *
-		 * @sa GetGlobalPersistentID()
-		 * @sa GetConventionalID()
+		 * @sa GetGlobalPersistentId()
+		 * @sa GetConventionalId()
 		 */
-		virtual std::optional<EntryPersistentId> GetPersistentID () const = 0;
+		virtual std::optional<EntryPersistentId> GetPersistentId () const = 0;
 
-		std::optional<GlobalPersistentId> GetGlobalPersistentID () const
+		std::optional<GlobalPersistentId> GetGlobalPersistentId () const
 		{
-			if (const auto persistentId = GetPersistentID ())
-				return GlobalId { GetParentAccount ()->GetAccountID (), *persistentId };
+			if (const auto persistentId = GetPersistentId ())
+				return GlobalId { GetParentAccount ()->GetAccountId (), *persistentId };
 			return {};
 		}
 
 		/** @brief Returns the conventional human-readable ID of this entry.
 		 *
-		 * Unlike GetPersistentID(), the conventional ID is not guaranteed to
+		 * Unlike GetPersistentId(), the conventional ID is not guaranteed to
 		 * be stable throughout the lifetime of the entry,
 		 * and it may change over time (in which case the parent account's
 		 * Emitters::Account::conventionalIdChanged() will be emitted for this entry).
@@ -202,32 +202,32 @@ namespace LC::Azoth
 		 *
 		 * @return Conventional ID of this entry.
 		 *
-		 * @sa GetPersistentID()
+		 * @sa GetPersistentId()
 		 */
-		virtual EntryConventionalId GetConventionalID () const = 0;
+		virtual EntryConventionalId GetConventionalId () const = 0;
 
-		GlobalConventionalId GetGlobalConventionalID () const
+		GlobalConventionalId GetGlobalConventionalId () const
 		{
-			return GlobalId { GetParentAccount ()->GetAccountID (), GetConventionalID () };
+			return GlobalId { GetParentAccount ()->GetAccountId (), GetConventionalId () };
 		}
 
-		EntryStrongestId GetStrongestID () const
+		EntryStrongestId GetStrongestId () const
 		{
-			if (const auto persistentId = GetPersistentID ())
+			if (const auto persistentId = GetPersistentId ())
 				return *persistentId;
-			return GetConventionalID ();
+			return GetConventionalId ();
 		}
 
-		GlobalStrongestId GetGlobalStrongestID () const
+		GlobalStrongestId GetGlobalStrongestId () const
 		{
-			if (const auto persistentId = GetGlobalPersistentID ())
+			if (const auto persistentId = GetGlobalPersistentId ())
 				return *persistentId;
-			return GetGlobalConventionalID ();
+			return GetGlobalConventionalId ();
 		}
 
 		virtual QString GetHumanReadableAddress () const
 		{
-			return GetConventionalID ().ToString ();
+			return GetConventionalId ().ToString ();
 		}
 
 		/** @brief Returns the list of human-readable names of the

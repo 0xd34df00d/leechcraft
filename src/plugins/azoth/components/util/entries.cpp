@@ -33,10 +33,10 @@ namespace LC::Azoth
 	{
 		const auto account = entry->GetParentAccount ();
 		account->Authorize (entry->GetQObject ());
-		account->RequestAuth (entry->GetConventionalID ().ToString ());
+		account->RequestAuth (entry->GetConventionalId ().ToString ());
 
 		const auto& e = Util::MakeANCancel ("org.LeechCraft.Azoth",
-				"org.LC.Plugins.Azoth.AuthRequestFrom/" + entry->GetEntryID ());
+				"org.LC.Plugins.Azoth.AuthRequestFrom/" + entry->GetEntryId ());
 		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
@@ -46,7 +46,7 @@ namespace LC::Azoth
 		account->DenyAuth (entry->GetQObject ());
 
 		const auto& e = Util::MakeANCancel ("org.LeechCraft.Azoth",
-				"org.LC.Plugins.Azoth.AuthRequestFrom/" + entry->GetEntryID ());
+				"org.LC.Plugins.Azoth.AuthRequestFrom/" + entry->GetEntryId ());
 		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
@@ -56,7 +56,7 @@ namespace LC::Azoth
 		const auto pos = std::ranges::find_if (allEntries,
 				[&hrId] (ICLEntry *entry)
 				{
-					return entry->GetConventionalID ().ToString () == hrId;
+					return entry->GetConventionalId ().ToString () == hrId;
 				});
 		return pos == allEntries.end () ? nullptr : *pos;
 	}
@@ -64,7 +64,7 @@ namespace LC::Azoth
 	bool ChoosePGPKey (ISupportPGP *pgp, ICLEntry *entry)
 	{
 #ifdef ENABLE_CRYPT
-		const auto persistentId = entry->GetGlobalPersistentID ();
+		const auto persistentId = entry->GetGlobalPersistentId ();
 		if (!persistentId)
 		{
 			QMessageBox::critical (nullptr,

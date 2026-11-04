@@ -169,7 +169,7 @@ namespace Azoth
 		 * \em permClass on the user identified by the given \em userId.
 		 * The user may or may not be present in the room at the moment.
 		 * The \em userId should be the same as would be returned by
-		 * ICLEntry::GetHumanReadableID() if the user was present in the
+		 * ICLEntry::GetHumanReadableId() if the user was present in the
 		 * room.
 		 *
 		 * It is OK for the function to do nothing.

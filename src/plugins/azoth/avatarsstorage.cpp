@@ -60,7 +60,7 @@ namespace Azoth
 
 	QFuture<MaybeImage> AvatarsStorage::GetAvatar (const ICLEntry *entry, IHaveAvatars::Size size)
 	{
-		const auto& entryId = entry->GetEntryID ();
+		const auto& entryId = entry->GetEntryId ();
 		if (const auto value = Cache_ [{ entryId, size }])
 		{
 			auto image = Util::Visit (*value,
@@ -83,7 +83,7 @@ namespace Azoth
 			return Util::MakeReadyFuture<MaybeImage> (std::move (image));
 		}
 
-		const auto& hrId = entry->GetHumanReadableID ();
+		const auto& hrId = entry->GetHumanReadableId ();
 
 		return Util::Sequence (this, StorageThread_->GetAvatar (entryId, size)) >>
 				[=] (const MaybeByteArray& data)

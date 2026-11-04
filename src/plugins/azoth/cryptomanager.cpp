@@ -107,9 +107,9 @@ namespace Azoth
 				QCoreApplication::applicationName () + "_Azoth" };
 		settings.beginGroup ("PrivateKeys");
 		if (key.isNull ())
-			settings.remove (acc->GetAccountID ().ToString ());
+			settings.remove (acc->GetAccountId ().ToString ());
 		else
-			settings.setValue (acc->GetAccountID ().ToString (), key.keyId ());
+			settings.setValue (acc->GetAccountId ().ToString (), key.keyId ());
 		settings.endGroup ();
 	}
 
@@ -122,7 +122,7 @@ namespace Azoth
 		QSettings settings { QCoreApplication::organizationName (),
 			QCoreApplication::applicationName () + "_Azoth" };
 		settings.beginGroup ("PrivateKeys");
-		const auto& keyId = settings.value (acc->GetAccountID ().ToString ()).toString ();
+		const auto& keyId = settings.value (acc->GetAccountId ().ToString ()).toString ();
 		settings.endGroup ();
 
 		if (keyId.isEmpty ())
@@ -138,7 +138,7 @@ namespace Azoth
 
 	void CryptoManager::RestoreKeyForEntry (ICLEntry *clEntry)
 	{
-		const auto& persistentId = clEntry->GetGlobalPersistentID ();
+		const auto& persistentId = clEntry->GetGlobalPersistentId ();
 		if (!persistentId || !StoredPublicKeys_.contains (persistentId->ToString ()))
 			return;
 

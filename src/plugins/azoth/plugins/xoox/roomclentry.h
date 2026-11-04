@@ -69,8 +69,8 @@ namespace Xoox
 		EntryType GetEntryType () const override;
 		QString GetEntryName () const override;
 		void SetEntryName (const QString&) override;
-		std::optional<EntryPersistentId> GetPersistentID () const override;
-		EntryConventionalId GetConventionalID () const override;
+		std::optional<EntryPersistentId> GetPersistentId () const override;
+		EntryConventionalId GetConventionalId () const override;
 		QStringList Groups () const override;
 		void SetGroups (const QStringList&) override;
 		QStringList Variants () const override;
@@ -99,7 +99,7 @@ namespace Xoox
 		void SetNick (const QString&) override;
 		QString GetGroupName () const override;
 		QVariantMap GetIdentifyingData () const override;
-		QString GetRealID (const ICLEntry&) const override;
+		QString GetRealId (const ICLEntry&) const override;
 		void InviteToMUC (const QString&, const QString&) override;
 
 		// IMUCPerms

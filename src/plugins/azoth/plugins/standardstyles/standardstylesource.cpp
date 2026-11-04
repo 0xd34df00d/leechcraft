@@ -121,7 +121,7 @@ namespace LC::Azoth::StandardStyles
 			return pre + part.toHtmlEscaped () + "</span>";
 		}
 
-		QString GetMessageID (QObject *msgObj)
+		QString GetMessageId (QObject *msgObj)
 		{
 			return QString::number (std::bit_cast<uintptr_t> (msgObj));
 		}
@@ -143,7 +143,7 @@ namespace LC::Azoth::StandardStyles
 
 		auto& formatter = Proxy_->GetFormatterProxy ();
 
-		const QString& msgId = GetMessageID (msgObj);
+		const QString& msgId = GetMessageId (msgObj);
 
 		const auto msg = qobject_cast<IMessage*> (msgObj);
 		const auto other = qobject_cast<ICLEntry*> (msg->OtherPart ());
@@ -433,7 +433,7 @@ namespace LC::Azoth::StandardStyles
 		if (!frame)
 			return;
 
-		const auto& msgId = GetMessageID (sender ());
+		const auto& msgId = GetMessageId (sender ());
 		static const auto js = QStringLiteral (R"(
 				(() => {
 					let img = document.querySelector("img[id='%1']");

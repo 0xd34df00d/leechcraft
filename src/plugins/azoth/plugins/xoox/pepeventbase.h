@@ -29,7 +29,7 @@ namespace Xoox
 
 		virtual PEPEventBase* Clone () const = 0;
 
-		virtual QString GetEventID () const;
+		virtual QString GetEventId () const;
 	};
 
 	template<typename T>

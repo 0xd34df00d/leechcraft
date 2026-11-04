@@ -80,8 +80,8 @@ namespace Xoox
 	{
 		StateLabel_->setText (tr ("Registration completed successfully. "
 				"You may now further configure account properties."));
-		const QString& jid = SecondPage_->GetJID ();
-		ConfWidget_->SetJID (jid);
+		const QString& jid = SecondPage_->GetJid ();
+		ConfWidget_->SetJid (jid);
 		ConfWidget_->SetNick (jid.split ('@', Qt::SkipEmptyParts).value (0));
 		SetState (RSSuccess);
 	}

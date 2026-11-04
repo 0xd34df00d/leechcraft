@@ -35,7 +35,7 @@ namespace LC::Azoth::Acetamide
 		const Type Type_;
 		const SubType SubType_;
 		const Direction Direction_;
-		const QString ID_;
+		const QString Id_;
 		QString NickName_;
 		Message Message_;
 		ClientConnection * const Connection_;
@@ -52,7 +52,7 @@ namespace LC::Azoth::Acetamide
 		SubType GetMessageSubType () const override;
 		QObject* OtherPart () const override;
 		void SetOtherPart (QObject *entry);
-		QString GetID () const;
+		QString GetId () const;
 		QString GetOtherVariant () const override;
 		void SetOtherVariant (const QString&);
 		QString GetBody () const override;

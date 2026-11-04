@@ -141,24 +141,24 @@ namespace Xoox
 	{
 		const auto& bmManager = Account_->GetClientConnection ()->Exts ().Get<QXmppBookmarkManager> ();
 		for (const auto& bm : bmManager.bookmarks ().conferences ())
-			if (bm.jid () == RH_->GetRoomJID () && !bm.name ().isEmpty ())
+			if (bm.jid () == RH_->GetRoomJid () && !bm.name ().isEmpty ())
 				return bm.name ();
 
-		return RH_->GetRoomJID ();
+		return RH_->GetRoomJid ();
 	}
 
 	void RoomCLEntry::SetEntryName (const QString&)
 	{
 	}
 
-	std::optional<EntryPersistentId> RoomCLEntry::GetPersistentID () const
+	std::optional<EntryPersistentId> RoomCLEntry::GetPersistentId () const
 	{
-		return EntryPersistentId::FromString (RH_->GetRoomJID ());
+		return EntryPersistentId::FromString (RH_->GetRoomJid ());
 	}
 
-	EntryConventionalId RoomCLEntry::GetConventionalID () const
+	EntryConventionalId RoomCLEntry::GetConventionalId () const
 	{
-		return EntryConventionalId::FromString (RH_->GetRoomJID ());
+		return EntryConventionalId::FromString (RH_->GetRoomJid ());
 	}
 
 	QStringList RoomCLEntry::Groups () const
@@ -296,13 +296,13 @@ namespace Xoox
 
 	QString RoomCLEntry::GetGroupName () const
 	{
-		return tr ("%1 participants").arg (RH_->GetRoomJID ());
+		return tr ("%1 participants").arg (RH_->GetRoomJid ());
 	}
 
 	QVariantMap RoomCLEntry::GetIdentifyingData () const
 	{
 		QVariantMap result;
-		const QStringList& list = RH_->GetRoomJID ().split ('@', Qt::SkipEmptyParts);
+		const QStringList& list = RH_->GetRoomJid ().split ('@', Qt::SkipEmptyParts);
 		const QString& room = list.at (0);
 		const QString& server = list.value (1);
 		result ["HumanReadableName"] = QString ("%2@%3 (%1)")
@@ -315,10 +315,10 @@ namespace Xoox
 		return result;
 	}
 
-	QString RoomCLEntry::GetRealID (const ICLEntry& obj) const
+	QString RoomCLEntry::GetRealId (const ICLEntry& obj) const
 	{
 		const auto& entry = dynamic_cast<const RoomParticipantEntry&> (obj);
-		return ClientConnection::Split (entry.GetRealJID ()).Bare_;
+		return ClientConnection::Split (entry.GetRealJid ()).Bare_;
 	}
 
 	void RoomCLEntry::InviteToMUC (const QString& id, const QString& msg)
@@ -452,7 +452,7 @@ namespace Xoox
 		item.setJid (userId);
 		item.setReason (reason);
 
-		Account_->GetClientConnection ()->Update (item, RH_->GetRoomJID ());
+		Account_->GetClientConnection ()->Update (item, RH_->GetRoomJid ());
 	}
 
 	bool RoomCLEntry::IsLessByPerm (const ICLEntry& p1, const ICLEntry& p2) const
@@ -504,7 +504,7 @@ namespace Xoox
 		auto pres = XooxUtil::StatusToPresence (state.State_,
 				state.StatusString_, conn->GetLastState ().Priority_);
 
-		pres.setTo (RH_->GetRoomJID ());
+		pres.setTo (RH_->GetRoomJid ());
 
 		const auto discoMgr = conn->GetClient ()->findExtension<QXmppDiscoveryManager> ();
 		pres.setCapabilityHash ("sha-1");
@@ -532,7 +532,7 @@ namespace Xoox
 	void RoomCLEntry::handleBookmarks (const QXmppBookmarkSet& set)
 	{
 		for (const auto& bm : set.conferences ())
-			if (bm.jid () == RH_->GetRoomJID () && !bm.name ().isEmpty ())
+			if (bm.jid () == RH_->GetRoomJid () && !bm.name ().isEmpty ())
 			{
 				emit Emitter_.nameChanged (bm.name ());
 				break;

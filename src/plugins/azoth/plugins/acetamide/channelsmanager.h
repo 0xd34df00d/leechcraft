@@ -47,7 +47,7 @@ namespace LC::Azoth::Acetamide
 
 		QString GetOurNick () const;
 
-		QString GetServerID () const;
+		QString GetServerId () const;
 
 		ServerOptions GetServerOptions () const;
 

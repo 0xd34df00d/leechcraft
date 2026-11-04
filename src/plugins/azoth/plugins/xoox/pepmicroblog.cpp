@@ -28,12 +28,12 @@ namespace Xoox
 	}
 
 	PEPMicroblog::PEPMicroblog ()
-	: EventID_ (QUuid::createUuid ().toString ().remove ('{').remove ('}'))
+	: EventId_ (QUuid::createUuid ().toString ().remove ('{').remove ('}'))
 	{
 	}
 
 	PEPMicroblog::PEPMicroblog (const Post& post)
-	: EventID_ (QUuid::createUuid ().toString ().remove ('{').remove ('}'))
+	: EventId_ (QUuid::createUuid ().toString ().remove ('{').remove ('}'))
 	, AuthorName_ (post.Author_.Name_)
 	, AuthorURI_ (post.Author_.URI_)
 	, Contents_ (post.Contents_)
@@ -71,7 +71,7 @@ namespace Xoox
 
 		QXmppElement id;
 		id.setTagName ("id");
-		id.setValue (EventID_);
+		id.setValue (EventId_);
 		entry.appendChild (id);
 
 		QXmppElement source;
@@ -128,14 +128,14 @@ namespace Xoox
 
 		QXmppElement result;
 		result.setTagName ("item");
-		result.setAttribute ("id", EventID_);
+		result.setAttribute ("id", EventId_);
 		result.appendChild (entry);
 		return result;
 	}
 
 	void PEPMicroblog::Parse (const QDomElement& elem)
 	{
-		EventID_ = elem.attribute ("id");
+		EventId_ = elem.attribute ("id");
 
 		const QDomElement& entry = elem.firstChildElement ("entry");
 		if (entry.namespaceURI () != NsAtom)
@@ -203,7 +203,7 @@ namespace Xoox
 	{
 		const Post p =
 		{
-			GetEventID (),
+			GetEventId (),
 			Contents_,
 			Published_,
 			Updated_,
@@ -212,9 +212,9 @@ namespace Xoox
 		return p;
 	}
 
-	QString PEPMicroblog::GetEventID () const
+	QString PEPMicroblog::GetEventId () const
 	{
-		return EventID_;
+		return EventId_;
 	}
 
 	QString PEPMicroblog::GetAuthorName () const

@@ -27,7 +27,7 @@ namespace Xoox
 				[this] (const QList<XMPPAnnotationsIq::NoteItem>& notes)
 				{
 					for (const auto& item : notes)
-						JID2Note_ [item.GetJid ()] = item;
+						Jid2Note_ [item.GetJid ()] = item;
 				});
 
 		connect (&conn,
@@ -35,20 +35,20 @@ namespace Xoox
 				this,
 				[this]
 				{
-					JID2Note_.clear ();
+					Jid2Note_.clear ();
 					XMPPAnnManager_.RequestNotes ();
 				});
 	}
 
 	XMPPAnnotationsIq::NoteItem AnnotationsManager::GetNote (const QString& jid) const
 	{
-		return JID2Note_ [jid];
+		return Jid2Note_ [jid];
 	}
 
 	void AnnotationsManager::SetNote (const QString& jid, const XMPPAnnotationsIq::NoteItem& note)
 	{
-		JID2Note_ [jid] = note;
-		XMPPAnnManager_.SetNotes (JID2Note_.values ());
+		Jid2Note_ [jid] = note;
+		XMPPAnnManager_.SetNotes (Jid2Note_.values ());
 	}
 }
 }

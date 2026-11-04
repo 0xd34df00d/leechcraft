@@ -31,7 +31,7 @@ namespace Xoox
 
 		GlooxAccount *Account_;
 
-		QString JID_;
+		QString Jid_;
 		QString Nick_;
 		QString Resource_;
 		QString Host_;
@@ -67,8 +67,8 @@ namespace Xoox
 		void OpenConfigDialog ();
 		void FillSettings (GlooxAccountConfigurationWidget*);
 
-		QString GetJID () const;
-		void SetJID (const QString&);
+		QString GetJid () const;
+		void SetJid (const QString&);
 
 		QString GetNick () const;
 		void SetNick (const QString&);
@@ -76,7 +76,7 @@ namespace Xoox
 		QString GetResource () const;
 		void SetResource (const QString&);
 
-		QString GetFullJID () const;
+		QString GetFullJid () const;
 
 		QString GetHost () const;
 		void SetHost (const QString&);

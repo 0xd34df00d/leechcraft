@@ -167,7 +167,7 @@ namespace SHX
 #endif
 
 		const auto entry = qobject_cast<ICLEntry*> (entryObj);
-		AzothProxy_->OpenChat (entry->GetGlobalStrongestID (), out);
+		AzothProxy_->OpenChat (entry->GetGlobalStrongestId (), out);
 	}
 }
 }

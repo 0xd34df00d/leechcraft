@@ -27,7 +27,7 @@ namespace Xoox
 			ClientConnection *conn)
 	: Type_ (type)
 	, Direction_ (dir)
-	, BareJID_ (jid)
+	, BareJid_ (jid)
 	, Variant_ (variant)
 	, Connection_ (conn)
 	{
@@ -39,13 +39,13 @@ namespace Xoox
 			QObject *object = Connection_->GetCLEntry (jid, variant);
 			Variant_ = qobject_cast<ICLEntry*> (object)->Variants ().value (0);
 		}
-		Message_.setTo (dir == Direction::In ? conn->GetOurJID () : remoteJid);
+		Message_.setTo (dir == Direction::In ? conn->GetOurJid () : remoteJid);
 	}
 
 	GlooxMessage::GlooxMessage (const OutgoingMessage& msg, const QString& jid, ClientConnection *conn)
 	: Type_ { Type::ChatMessage }
 	, Direction_ { Direction::Out }
-	, BareJID_ { jid }
+	, BareJid_ { jid }
 	, Variant_ { msg.Variant_.value_or ({}) }
 	, Connection_ { conn }
 	{
@@ -66,7 +66,7 @@ namespace Xoox
 	, Message_ (message)
 	, Connection_ (conn)
 	{
-		std::tie (BareJID_, Variant_) = ClientConnection::Split (message.from ());
+		std::tie (BareJid_, Variant_) = ClientConnection::Split (message.from ());
 
 		if (!Message_.stamp ().isValid ())
 			Message_.setStamp (QDateTime::currentDateTime ());
@@ -107,7 +107,7 @@ namespace Xoox
 
 	QObject* GlooxMessage::OtherPart () const
 	{
-		return Connection_->GetCLEntry (BareJID_, Variant_);
+		return Connection_->GetCLEntry (BareJid_, Variant_);
 	}
 
 	QString GlooxMessage::GetOtherVariant () const
@@ -173,8 +173,8 @@ namespace Xoox
 
 		if (Direction_ == Direction::In)
 			Message_.setFrom (Variant_.isEmpty () ?
-					BareJID_ :
-					(BareJID_ + '/' + Variant_));
+					BareJid_ :
+					(BareJid_ + '/' + Variant_));
 	}
 
 	const QXmppMessage& GlooxMessage::GetNativeMessage () const

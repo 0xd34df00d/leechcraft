@@ -36,7 +36,7 @@ namespace Xoox
 
 		GlooxAccount *Account_;
 		QXmppMucManager *MUCManager_;
-		const QString RoomJID_;
+		const QString RoomJid_;
 		QXmppMucRoom *Room_;
 		RoomCLEntry *CLEntry_;
 
@@ -50,10 +50,10 @@ namespace Xoox
 
 		bool VoluntaryLeave_ = false;
 	public:
-		RoomHandler (const QString& roomJID, const QString& ourNick,
+		RoomHandler (const QString& roomJid, const QString& ourNick,
 				bool asAutojoin, GlooxAccount*);
 
-		QString GetRoomJID () const;
+		QString GetRoomJid () const;
 		RoomCLEntry* GetCLEntry ();
 
 		void SetPresence (QXmppPresence);

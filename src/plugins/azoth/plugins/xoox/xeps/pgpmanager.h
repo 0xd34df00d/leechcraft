@@ -28,7 +28,7 @@ namespace Xoox
 		// private key, used for decrypting messages
 		QCA::PGPKey PrivateKey_;
 
-		// map of userIDs and corresponding public keys
+		// map of userIds and corresponding public keys
 		// each user ID is a completely arbitrary value, one can use JIDs for this purpose
 		QMap<QString, QCA::PGPKey> PublicKeys_;
 	public:

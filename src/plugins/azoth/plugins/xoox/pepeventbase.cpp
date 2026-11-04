@@ -19,7 +19,7 @@ namespace Xoox
 	{
 	}
 
-	QString PEPEventBase::GetEventID () const
+	QString PEPEventBase::GetEventId () const
 	{
 		return QString ();
 	}

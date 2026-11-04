@@ -102,7 +102,7 @@ namespace Xoox
 			QueryLists,
 			GetList
 		};
-		QMap<QString, QueryType> ID2Type_;
+		QMap<QString, QueryType> Id2Type_;
 	public:
 		using QueryListsCont_f = Util::EitherCont<void (QXmppIq), void (QStringList, QString, QString)>;
 		using QueryListCont_f = Util::EitherCont<void (QXmppIq), void (PrivacyList)>;

@@ -44,18 +44,18 @@ namespace LC::Azoth::Xoox
 	VCardDialog::VCardDialog (EntryBase *entry, QWidget *parent)
 	: QDialog (parent)
 	, Account_ (entry->GetParentAccount ())
-	, JID_ (entry->GetJID ())
+	, Jid_ (entry->GetJid ())
 	{
 		Ui_.setupUi (this);
-		Ui_.EditJID_->setText (JID_);
+		Ui_.EditJid_->setText (Jid_);
 		connect (this,
 				SIGNAL (accepted ()),
 				this,
 				SLOT (setNote ()));
 
-		UpdateNote (Account_, JID_);
+		UpdateNote (Account_, Jid_);
 
-		if (JID_ == Account_->GetSettings ()->GetJID ())
+		if (Jid_ == Account_->GetSettings ()->GetJid ())
 			EnableEditableMode ();
 		else
 		{
@@ -82,7 +82,7 @@ namespace LC::Azoth::Xoox
 				vcard.nickName ();
 		setWindowTitle (tr ("VCard for %1").arg (forString));
 
-		Ui_.EditJID_->setText (vcard.from ());
+		Ui_.EditJid_->setText (vcard.from ());
 		Ui_.EditRealName_->setText (vcard.fullName ());
 		Ui_.EditNick_->setText (vcard.nickName ());
 		const QDate& date = vcard.birthday ();
@@ -115,7 +115,7 @@ namespace LC::Azoth::Xoox
 		{
 			auto label = Util::ShowPixmapLabel (ShownPixmap_,
 					static_cast<QMouseEvent*> (event)->globalPosition ().toPoint ());
-			label->setWindowTitle (tr ("%1's avatar").arg (JID_));
+			label->setWindowTitle (tr ("%1's avatar").arg (Jid_));
 		}
 
 		return false;
@@ -264,7 +264,7 @@ namespace LC::Azoth::Xoox
 		if (!Account_)
 			return;
 
-		auto entry = qobject_cast<EntryBase*> (Account_->GetClientConnection ()->GetCLEntry (JID_));
+		auto entry = qobject_cast<EntryBase*> (Account_->GetClientConnection ()->GetCLEntry (Jid_));
 		if (!entry)
 			return;
 
@@ -304,11 +304,11 @@ namespace LC::Azoth::Xoox
 		if (!Account_)
 			return;
 
-		Note_.SetJid (JID_);
+		Note_.SetJid (Jid_);
 		Note_.SetNote (Ui_.NotesEdit_->toPlainText ());
 		Note_.SetMDate (QDateTime::currentDateTime ());
 		Account_->GetClientConnection ()->
-				GetAnnotationsManager ()->SetNote (JID_, Note_);
+				GetAnnotationsManager ()->SetNote (Jid_, Note_);
 	}
 
 	void VCardDialog::publishVCard ()

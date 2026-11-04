@@ -30,7 +30,7 @@ namespace LC::Azoth::Acetamide
 		ChannelsManager *CM_;
 		std::shared_ptr<ChannelCLEntry> ChannelCLEntry_;
 
-		QString ChannelID_;
+		QString ChannelId_;
 
 		ChannelOptions ChannelOptions_;
 
@@ -44,12 +44,12 @@ namespace LC::Azoth::Acetamide
 	public:
 		ChannelHandler (const ChannelOptions& options, ChannelsManager *manager);
 
-		QString GetChannelID () const;
+		QString GetChannelId () const;
 		ChannelCLEntry* GetCLEntry () const;
 
 		ChannelsManager* GetChannelsManager () const;
 
-		QString GetParentID () const;
+		QString GetParentId () const;
 
 		ChannelOptions GetChannelOptions () const;
 		QList<ICLEntry*> GetParticipants () const;

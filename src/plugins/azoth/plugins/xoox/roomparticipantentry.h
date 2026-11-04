@@ -44,15 +44,15 @@ namespace Xoox
 		EntryType GetEntryType () const override;
 		QString GetEntryName () const override;
 		void SetEntryName (const QString&) override;
-		std::optional<EntryPersistentId> GetPersistentID () const override;
-		EntryConventionalId GetConventionalID () const override;
+		std::optional<EntryPersistentId> GetPersistentId () const override;
+		EntryConventionalId GetConventionalId () const override;
 		QStringList Groups () const override;
 		void SetGroups (const QStringList&) override;
 		QStringList Variants () const override;
 		void SendMessage (const OutgoingMessage&) override;
 
-		QString GetJID () const override;
-		QString GetRealJID () const;
+		QString GetJid () const override;
+		QString GetRealJid () const;
 		QString GetNick () const;
 
 		void StealMessagesFrom (RoomParticipantEntry*);

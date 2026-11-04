@@ -32,10 +32,10 @@ namespace LC::Azoth
 				this,
 				[this] (const GlobalConventionalId& oldId, const GlobalConventionalId& newId, const ICLEntry& entry)
 				{
-					const auto taken = ID2Entry_.take (oldId);
+					const auto taken = Id2Entry_.take (oldId);
 					if (taken != &entry)
 						qCritical () << "updating" << oldId << "->" << newId << "— the entry wasn't under oldId";
-					if (std::exchange (ID2Entry_ [newId], taken))
+					if (std::exchange (Id2Entry_ [newId], taken))
 						qCritical () << "updating" << oldId << "->" << newId << "— another entry already is under newId";
 					emit conventionalIdChanged (oldId, newId, entry);
 				});
@@ -53,7 +53,7 @@ namespace LC::Azoth
 	template<typename T>
 	T* EntriesManager::GetEntryOrNull (const GlobalStrongestId& id) const
 	{
-		const auto entry = ID2Entry_.value (id);
+		const auto entry = Id2Entry_.value (id);
 		if (!entry)
 			return nullptr;
 
@@ -72,9 +72,9 @@ namespace LC::Azoth
 
 		for (const auto entry : entries)
 		{
-			auto& existing = ID2Entry_ [entry->GetGlobalStrongestID ()];
+			auto& existing = Id2Entry_ [entry->GetGlobalStrongestId ()];
 			if (existing && existing != entry)
-				qCritical () << "duplicate entry:" << entry->GetGlobalStrongestID ();
+				qCritical () << "duplicate entry:" << entry->GetGlobalStrongestId ();
 
 			if (!existing)
 			{
@@ -95,8 +95,8 @@ namespace LC::Azoth
 		emit aboutToBeRemoved (entries, account);
 
 		for (const auto entry : entries)
-			if (!ID2Entry_.remove (entry->GetGlobalStrongestID ()))
-				qCritical () << "removing non-existing entry:" << entry->GetGlobalStrongestID ();
+			if (!Id2Entry_.remove (entry->GetGlobalStrongestId ()))
+				qCritical () << "removing non-existing entry:" << entry->GetGlobalStrongestId ();
 	}
 
 	template QObject& EntriesManager::GetEntry<QObject> (const GlobalStrongestId&) const;

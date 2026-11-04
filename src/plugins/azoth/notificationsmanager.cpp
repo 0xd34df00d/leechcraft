@@ -105,13 +105,13 @@ namespace Azoth
 				.EventTypes_ = havingSourceFields,
 			},
 			{
-				.ID_ = Fields::SourceAccountID,
+				.ID_ = Fields::SourceAccountId,
 				.Name_ = tr ("Sender account"),
 				.Description_ = tr ("The account to which the sender belongs."),
 				.Type_ = QMetaType::QString,
 				.EventTypes_ = havingSourceFields,
 				.AllowedValues_ = Util::Map (Core::Instance ().GetAccounts (),
-						[] (IAccount *acc) { return AN::FieldData::AllowedValue { acc->GetAccountID ().ToUtf8 (), acc->GetAccountName () }; }),
+						[] (IAccount *acc) { return AN::FieldData::AllowedValue { acc->GetAccountId ().ToUtf8 (), acc->GetAccountName () }; }),
 			},
 			{
 				.ID_ = Fields::SourceHumanReadableAddress,
@@ -148,7 +148,7 @@ namespace Azoth
 				.Type_ = QMetaType::QString,
 				.EventTypes_ = { AN::TypeIMStatusChange },
 				.AllowedValues_ = Util::Map (QList { SOnline, SChat, SAway, SDND, SXA, SOffline },
-						[] (State st) { return AN::FieldData::AllowedValue { StateToID (st).toUtf8 (), StateToString (st) }; }),
+						[] (State st) { return AN::FieldData::AllowedValue { StateToId (st).toUtf8 (), StateToString (st) }; }),
 			}
 		};
 	}
@@ -168,23 +168,23 @@ namespace Azoth
 		namespace Extract
 		{
 			QString Name (const ICLEntry& e) { return e.GetEntryName (); }
-			QString AccountID (const ICLEntry& e) { return e.GetParentAccount ()->GetAccountID ().ToString (); }
+			QString AccountId (const ICLEntry& e) { return e.GetParentAccount ()->GetAccountId ().ToString (); }
 			QString HumanReadableAddress (const ICLEntry& e) { return e.GetHumanReadableAddress (); }
 			QStringList Groups (const ICLEntry& e) { return e.Groups (); }
 
-			GlobalStrongestId GlobalStrongestID (const ICLEntry& e) { return e.GetGlobalStrongestID (); }
+			GlobalStrongestId GlobalStrongestId (const ICLEntry& e) { return e.GetGlobalStrongestId (); }
 		}
 
 		namespace Source
 		{
 			constexpr EntryField Name { Fields::SourceName, &Extract::Name };
-			constexpr EntryField AccountID { Fields::SourceAccountID, &Extract::AccountID };
+			constexpr EntryField AccountId { Fields::SourceAccountId, &Extract::AccountId };
 			constexpr EntryField HumanReadableAddress { Fields::SourceHumanReadableAddress, &Extract::HumanReadableAddress };
 			constexpr EntryField Groups { Fields::SourceGroups, &Extract::Groups };
 
 			namespace Internal
 			{
-				constexpr EntryField GlobalStrongestID { Fields::Internal::SourceGlobalStrongestID, &Extract::GlobalStrongestID };
+				constexpr EntryField GlobalStrongestId { Fields::Internal::SourceGlobalStrongestId, &Extract::GlobalStrongestId };
 			}
 		}
 
@@ -195,7 +195,7 @@ namespace Azoth
 
 			namespace Internal
 			{
-				constexpr EntryField GlobalStrongestID { Fields::Internal::RoomGlobalStrongestID, &Extract::GlobalStrongestID };
+				constexpr EntryField GlobalStrongestId { Fields::Internal::RoomGlobalStrongestId, &Extract::GlobalStrongestId };
 			}
 		}
 
@@ -215,10 +215,10 @@ namespace Azoth
 	{
 		return FieldsOf (entry,
 				Source::Name,
-				Source::AccountID,
+				Source::AccountId,
 				Source::HumanReadableAddress,
 				Source::Groups,
-				Source::Internal::GlobalStrongestID);
+				Source::Internal::GlobalStrongestId);
 	}
 
 	QVariantMap NotificationsManager::RoomFields (const IMUCEntry& room)
@@ -226,7 +226,7 @@ namespace Azoth
 		return FieldsOf (room.AsCLEntry (),
 				Room::Name,
 				Room::HumanReadableAddress,
-				Room::Internal::GlobalStrongestID);
+				Room::Internal::GlobalStrongestId);
 	}
 
 	NotificationsManager::NotificationsManager (AvatarsManager *am, const EntriesManager& entries, QObject *parent)
@@ -465,7 +465,7 @@ namespace Azoth
 		{
 			QList result
 			{
-				MatcherFor (Source::AccountID, entry),
+				MatcherFor (Source::AccountId, entry),
 				MatcherFor (Source::HumanReadableAddress, entry),
 			};
 			result.append ({ extra });
@@ -493,7 +493,7 @@ namespace Azoth
 				{ AN::TypeIMStatusChange },
 				AN::NotifyPersistent | AN::NotifyTransient | AN::NotifySingleShot,
 				false,
-				WithEntryIdent (entry, { { Fields::NewStatus, AN::StringValueMatcher { StateToID (SOnline) } } }));
+				WithEntryIdent (entry, { { Fields::NewStatus, AN::StringValueMatcher { StateToId (SOnline) } } }));
 		EntityMgr_.HandleEntity (e);
 	}
 
@@ -509,7 +509,7 @@ namespace Azoth
 				false,
 				{
 					{ Fields::SourceName, AN::StringValueMatcher { nick } },
-					MatcherFor (Source::AccountID, mucCLEntry),
+					MatcherFor (Source::AccountId, mucCLEntry),
 					MatcherFor (Room::HumanReadableAddress, mucCLEntry),
 				});
 		EntityMgr_.HandleEntity (e);
@@ -644,7 +644,7 @@ namespace Azoth
 		e.Additional_ [AN::EF::ExtendedText] = text;
 		e.Additional_ [AN::EF::Count] = 1;
 		e.Additional_ [Fields::Msg] = entrySt.StatusString_;
-		e.Additional_ [Fields::NewStatus] = StateToID (entrySt.State_);
+		e.Additional_ [Fields::NewStatus] = StateToId (entrySt.State_);
 
 		BuildAndSendNotification (e, { .Avatars_ = *AvatarsMgr_, .Conversation_ = *entry, .EventId_ = "StatusChangeEvent"_qs });
 	}
@@ -655,12 +655,12 @@ namespace Azoth
 		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 		UnreadCounts_.remove (entry);
 
-		const auto& entryID = entry->GetEntryID ();
+		const auto& entryId = entry->GetEntryId ();
 
 		EntityMgr_.HandleEntity (Util::MakeANCancel ("org.LeechCraft.Azoth",
-				"org.LC.Plugins.Azoth.IncomingMessageFrom/" + entryID));
+				"org.LC.Plugins.Azoth.IncomingMessageFrom/" + entryId));
 		EntityMgr_.HandleEntity (Util::MakeANCancel ("org.LeechCraft.Azoth",
-				"org.LC.Plugins.Azoth.AttentionDrawnBy/" + entryID));
+				"org.LC.Plugins.Azoth.AttentionDrawnBy/" + entryId));
 	}
 
 	namespace
@@ -894,7 +894,7 @@ namespace Azoth
 		if (state != CPSComposing)
 			return;
 
-		const auto& id = entry->GetGlobalStrongestID ();
+		const auto& id = entry->GetGlobalStrongestId ();
 		if (!ShouldNotifyNextTyping_.value (id, true))
 			return;
 
@@ -923,7 +923,7 @@ namespace Azoth
 	void NotificationsManager::handleEntryMadeCurrent (QObject *entryObj)
 	{
 		if (entryObj)
-			ShouldNotifyNextTyping_ [qobject_ref_cast<ICLEntry> (entryObj).GetGlobalStrongestID ()] = true;
+			ShouldNotifyNextTyping_ [qobject_ref_cast<ICLEntry> (entryObj).GetGlobalStrongestId ()] = true;
 	}
 }
 }

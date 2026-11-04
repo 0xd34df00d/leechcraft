@@ -86,8 +86,8 @@ namespace Xoox
 			QXmppElement itElem;
 			itElem.setTagName ("item");
 
-			if (!item.ID_.isEmpty ())
-				itElem.setAttribute ("jid", item.ID_);
+			if (!item.Id_.isEmpty ())
+				itElem.setAttribute ("jid", item.Id_);
 
 			if (!item.Nick_.isEmpty ())
 				itElem.setAttribute ("name", item.Nick_);
@@ -135,7 +135,7 @@ namespace Xoox
 		if (!suppRes.isEmpty ())
 		{
 			QXmppIq iq (QXmppIq::Set);
-			iq.setTo (to->GetJID () + '/' + suppRes);
+			iq.setTo (to->GetJid () + '/' + suppRes);
 			iq.setExtensions (QXmppElementList () << x);
 			client ()->sendPacket (iq);
 		}

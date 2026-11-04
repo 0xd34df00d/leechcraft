@@ -22,7 +22,7 @@ namespace LC::Azoth::Acetamide
 			ChannelsManager *cm)
 	: CM_ { cm }
 	, ChannelCLEntry_ { std::make_shared<ChannelCLEntry> (this) }
-	, ChannelID_ { channel.ChannelName_ + "@" + channel.ServerName_ }
+	, ChannelId_ { channel.ChannelName_ + "@" + channel.ServerName_ }
 	, ChannelOptions_ { channel }
 	, SubjectTracker_ { new ChannelSubjectTracker { ChannelCLEntry_->GetMUCEntryEmitter (), this } }
 	{
@@ -32,9 +32,9 @@ namespace LC::Azoth::Acetamide
 				&ChannelCLEntry::gotNewChannelModes);
 	}
 
-	QString ChannelHandler::GetChannelID () const
+	QString ChannelHandler::GetChannelId () const
 	{
-		return ChannelID_;
+		return ChannelId_;
 	}
 
 	ChannelCLEntry* ChannelHandler::GetCLEntry () const
@@ -47,9 +47,9 @@ namespace LC::Azoth::Acetamide
 		return CM_;
 	}
 
-	QString ChannelHandler::GetParentID () const
+	QString ChannelHandler::GetParentId () const
 	{
-		return CM_->GetServerID ();
+		return CM_->GetServerId ();
 	}
 
 	ChannelOptions ChannelHandler::GetChannelOptions () const

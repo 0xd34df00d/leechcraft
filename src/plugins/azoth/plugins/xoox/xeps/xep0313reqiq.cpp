@@ -22,10 +22,10 @@ namespace Xoox
 	Xep0313ReqIq::Xep0313ReqIq (const QString& jid, const QString& startId,
 			int count, Direction dir, const QString& queryId)
 	: QXmppIq { QXmppIq::Set }
-	, JID_ { jid }
+	, Jid_ { jid }
 	, ItemId_ { startId }
 	, Count_ { count }
-	, QueryID_ { queryId }
+	, QueryId_ { queryId }
 	, Dir_ { dir }
 	{
 	}
@@ -45,7 +45,7 @@ namespace Xoox
 		if (!form.isNull ())
 			for (const auto& field : form.fields ())
 				if (field.key () == "with")
-					JID_ = field.value ().toString ();
+					Jid_ = field.value ().toString ();
 
 		QXmppResultSetQuery q;
 		q.parse (queryElem.firstChildElement ("set"));
@@ -74,13 +74,13 @@ namespace Xoox
 
 		writer->writeAttribute ("xmlns", Xep0313Manager::GetNsUri ());
 
-		if (!QueryID_.isEmpty ())
-			writer->writeAttribute ("queryid", QueryID_);
+		if (!QueryId_.isEmpty ())
+			writer->writeAttribute ("queryid", QueryId_);
 
-		if (JID_.isEmpty () && !Count_ && ItemId_.isEmpty ())
+		if (Jid_.isEmpty () && !Count_ && ItemId_.isEmpty ())
 			return;
 
-		if (!JID_.isEmpty ())
+		if (!Jid_.isEmpty ())
 		{
 			QXmppDataForm::Field formTypeField { QXmppDataForm::Field::HiddenField };
 			formTypeField.setKey ("FORM_TYPE");
@@ -88,7 +88,7 @@ namespace Xoox
 
 			QXmppDataForm::Field jidField { QXmppDataForm::Field::JidSingleField };
 			jidField.setKey ("with");
-			jidField.setValue (JID_);
+			jidField.setValue (Jid_);
 
 			QXmppDataForm form { QXmppDataForm::Form };
 			form.setFields ({ formTypeField, jidField });

@@ -23,7 +23,7 @@ namespace Xoox
 	SelfContact::SelfContact (const QString& fullJid, GlooxAccount *acc)
 	: EntryBase (acc)
 	{
-		UpdateJID (fullJid);
+		UpdateJid (fullJid);
 
 		connect (this,
 				&EntryBase::avatarChanged,
@@ -52,14 +52,14 @@ namespace Xoox
 				<< "can't set name of self contact";
 	}
 
-	std::optional<EntryPersistentId> SelfContact::GetPersistentID () const
+	std::optional<EntryPersistentId> SelfContact::GetPersistentId () const
 	{
 		return EntryPersistentId::FromString ("self");
 	}
 
-	EntryConventionalId SelfContact::GetConventionalID () const
+	EntryConventionalId SelfContact::GetConventionalId () const
 	{
-		return EntryConventionalId::FromString (BareJID_);
+		return EntryConventionalId::FromString (BareJid_);
 	}
 
 	QStringList SelfContact::Groups () const
@@ -92,7 +92,7 @@ namespace Xoox
 
 	void SelfContact::SendMessage (const OutgoingMessage& message)
 	{
-		const auto msg = new GlooxMessage (message, GetJID (), Account_->GetClientConnection ().get ());
+		const auto msg = new GlooxMessage (message, GetJid (), Account_->GetClientConnection ().get ());
 		AllMessages_ << msg;
 		Account_->SendMessage (*msg);
 		emit Emitter_.gotMessage (msg);
@@ -134,21 +134,21 @@ namespace Xoox
 				QXmppPresence (QXmppPresence::Unavailable));
 	}
 
-	QString SelfContact::GetJID () const
+	QString SelfContact::GetJid () const
 	{
-		return BareJID_;
+		return BareJid_;
 	}
 
-	void SelfContact::UpdateJID (const QString& fullJid)
+	void SelfContact::UpdateJid (const QString& fullJid)
 	{
 		std::optional<GlobalConventionalId> oldId;
-		if (!BareJID_.isEmpty ())
-			oldId = GetGlobalConventionalID ();
+		if (!BareJid_.isEmpty ())
+			oldId = GetGlobalConventionalId ();
 
-		std::tie (BareJID_, Resource_) = ClientConnection::Split (fullJid);
+		std::tie (BareJid_, Resource_) = ClientConnection::Split (fullJid);
 		emit Emitter_.availableVariantsChanged (Variants ());
 
-		if (const auto& newId = GetGlobalConventionalID ();
+		if (const auto& newId = GetGlobalConventionalId ();
 			oldId && *oldId != newId)
 			emit Account_->GetAccountEmitter ().conventionalIdChanged (*oldId, newId, *this);
 	}

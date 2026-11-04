@@ -17,23 +17,23 @@ namespace LC::Azoth
 {
 	struct AvatarsStorageOnDisk::Record
 	{
-		Util::oral::PKey<int> ID_;
+		Util::oral::PKey<int> Id_;
 
-		QByteArray EntryID_;
+		QByteArray EntryId_;
 		IHaveAvatars::Size Size_;
 		QByteArray ImageData_;
 
 		constexpr static auto ClassName = "Record"_ct;
 
 		using Constraints = Util::oral::Constraints<
-				Util::oral::UniqueSubset<&Record::EntryID_, &Record::Size_>
+				Util::oral::UniqueSubset<&Record::EntryId_, &Record::Size_>
 			>;
 	};
 }
 
 ORAL_ADAPT_STRUCT (LC::Azoth::AvatarsStorageOnDisk::Record,
-		ID_,
-		EntryID_,
+		Id_,
+		EntryId_,
 		Size_,
 		ImageData_)
 
@@ -102,12 +102,12 @@ namespace Azoth
 	std::optional<QByteArray> AvatarsStorageOnDisk::GetAvatar (const QString& entryId, IHaveAvatars::Size size) const
 	{
 		return AdaptedRecord_->SelectOne (sph::fields<&Record::ImageData_>,
-				sph::f<&Record::EntryID_> == entryId.toUtf8 () && sph::f<&Record::Size_> == size);
+				sph::f<&Record::EntryId_> == entryId.toUtf8 () && sph::f<&Record::Size_> == size);
 	}
 
 	void AvatarsStorageOnDisk::DeleteAvatars (const QString& entryId) const
 	{
-		AdaptedRecord_->DeleteBy (sph::f<&Record::EntryID_> == entryId.toUtf8 ());
+		AdaptedRecord_->DeleteBy (sph::f<&Record::EntryId_> == entryId.toUtf8 ());
 	}
 }
 }

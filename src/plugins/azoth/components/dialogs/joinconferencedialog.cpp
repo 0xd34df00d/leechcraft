@@ -42,7 +42,7 @@ namespace Azoth
 				const auto joiner = mucProto->GetMUCJoinWidget ();
 				if (!qobject_cast<IMUCJoinWidget*> (joiner))
 				{
-					qWarning () << joiner << "of" << acc->GetAccountID () << "is not a IMUCJoinWidget";
+					qWarning () << joiner << "of" << acc->GetAccountId () << "is not a IMUCJoinWidget";
 					continue;
 				}
 				Proto2Joiner_ [proto] = joiner;
@@ -69,7 +69,7 @@ namespace Azoth
 						.arg (proto->GetProtocolName ()),
 					QVariant::fromValue<QObject*> (acc->GetQObject ()));
 
-			const auto& key = "JoinHistory/" + acc->GetAccountID ().ToString ();
+			const auto& key = "JoinHistory/" + acc->GetAccountId ().ToString ();
 			for (const auto& var : XmlSettingsManager::Instance ().GetRawValue (key).toList ())
 			{
 				const auto& map = var.toMap ();
@@ -126,7 +126,7 @@ namespace Azoth
 		const auto& data = imjw->GetIdentifyingData ();
 		if (const auto acc = qobject_cast<IAccount*> (accObj))
 		{
-			const auto& key = "JoinHistory/" + acc->GetAccountID ().ToString ();
+			const auto& key = "JoinHistory/" + acc->GetAccountId ().ToString ();
 			QVariantList list = XmlSettingsManager::Instance ().GetRawValue (key).toList ();
 
 			// Using a range-based for loop over a container being modified is OK
@@ -248,7 +248,7 @@ namespace Azoth
 		const auto pos = Ui_.AccountBox_->findData (QVariant::fromValue (source.Account_->GetQObject ()));
 		if (pos < 0)
 		{
-			qWarning () << "account" << source.Account_->GetAccountID () << "not found in account box";
+			qWarning () << "account" << source.Account_->GetAccountId () << "not found in account box";
 			return;
 		}
 
@@ -257,7 +257,7 @@ namespace Azoth
 		const auto proto = qobject_cast<IProtocol*> (source.Account_->GetParentProtocol ());
 		if (!Proto2Joiner_.contains (proto))
 		{
-			qWarning () << "Proto2Joiner_ doesn't contain protocol for account" << source.Account_->GetAccountID ();
+			qWarning () << "Proto2Joiner_ doesn't contain protocol for account" << source.Account_->GetAccountId ();
 			return;
 		}
 		qobject_cast<IMUCJoinWidget*> (Proto2Joiner_ [proto])->SetIdentifyingData (source.Data_);

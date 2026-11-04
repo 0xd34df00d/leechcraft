@@ -175,7 +175,7 @@ namespace LastSeen
 			return;
 
 		const auto entry = qobject_cast<ICLEntry*> (entryObj);
-		const auto& id = entry->GetEntryID ();
+		const auto& id = entry->GetEntryId ();
 		const auto& status = entry->GetStatus ();
 
 		if (!LastState_.contains (id))
@@ -220,7 +220,7 @@ namespace LastSeen
 			return;
 
 		const auto entry = qobject_cast<ICLEntry*> (entryObj);
-		const auto& id = entry->GetEntryID ();
+		const auto& id = entry->GetEntryId ();
 
 		const auto& maybeStats = Storage_->GetEntryStats (id);
 		if (!maybeStats)

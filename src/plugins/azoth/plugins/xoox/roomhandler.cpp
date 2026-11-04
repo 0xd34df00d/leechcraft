@@ -77,7 +77,7 @@ namespace Xoox
 			GlooxAccount* account)
 	: Account_ (account)
 	, MUCManager_ (Account_->GetClientConnection ()->GetMUCManager ())
-	, RoomJID_ (jid)
+	, RoomJid_ (jid)
 	, Room_ (MUCManager_->addRoom (jid))
 	, CLEntry_ (new RoomCLEntry (this, asAutojoin, Account_))
 	, HadRequestedPassword_ (false)
@@ -122,9 +122,9 @@ namespace Xoox
 		QTimer::singleShot (0, this, [this] { Room_->join (); });
 	}
 
-	QString RoomHandler::GetRoomJID () const
+	QString RoomHandler::GetRoomJid () const
 	{
-		return RoomJID_;
+		return RoomJid_;
 	}
 
 	RoomCLEntry* RoomHandler::GetCLEntry ()
@@ -266,15 +266,15 @@ namespace Xoox
 			return {};
 
 		const auto& split = ClientConnection::Split (actorId);
-		if (split.Bare_ == RoomJID_)
+		if (split.Bare_ == RoomJid_)
 			return Nick2Entry_.value (split.Resource_);
 
-		if (const auto fullMatch = std::ranges::find (Nick2Entry_, actorId, [] (const auto& entry) { return entry->GetRealJID (); });
+		if (const auto fullMatch = std::ranges::find (Nick2Entry_, actorId, [] (const auto& entry) { return entry->GetRealJid (); });
 			fullMatch != Nick2Entry_.end ())
 			return *fullMatch;
 
 		const auto pos = std::ranges::find (Nick2Entry_, split.Bare_,
-				[] (const auto& entry) { return ClientConnection::Split (entry->GetRealJID ()).Bare_; });
+				[] (const auto& entry) { return ClientConnection::Split (entry->GetRealJid ()).Bare_; });
 		return pos == Nick2Entry_.end () ? RoomParticipantEntry_ptr {} : *pos;
 	}
 
@@ -616,7 +616,7 @@ namespace Xoox
 		}
 		else if (!VoluntaryLeave_)
 		{
-			qWarning () << "detected involuntary leave, rejoining" << RoomJID_;
+			qWarning () << "detected involuntary leave, rejoining" << RoomJid_;
 			RemoveThis ();
 			const auto& data = CLEntry_->GetIdentifyingData ();
 			QTimer::singleShot (5000, Account_, [data, acc = Account_] { RejoinMuc (*acc, data); });

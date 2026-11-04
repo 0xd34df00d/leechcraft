@@ -27,7 +27,7 @@ namespace Xoox
 	{
 		EntryConventionalId MakeParticipantId (const RoomHandler& rh, const QString& nick)
 		{
-			return EntryConventionalId::FromString (rh.GetRoomJID () + '/' + nick);
+			return EntryConventionalId::FromString (rh.GetRoomJid () + '/' + nick);
 		}
 	}
 
@@ -62,21 +62,21 @@ namespace Xoox
 
 	void RoomParticipantEntry::SetEntryName (const QString& nick)
 	{
-		const auto oldId = GetGlobalConventionalID ();
+		const auto oldId = GetGlobalConventionalId ();
 
 		Nick_ = nick;
 		ConventionalId_ = MakeParticipantId (*RoomHandler_, nick);
 		emit Emitter_.nameChanged (Nick_);
 
-		emit Account_->GetAccountEmitter ().conventionalIdChanged (oldId, GetGlobalConventionalID (), *this);
+		emit Account_->GetAccountEmitter ().conventionalIdChanged (oldId, GetGlobalConventionalId (), *this);
 	}
 
-	std::optional<EntryPersistentId> RoomParticipantEntry::GetPersistentID () const
+	std::optional<EntryPersistentId> RoomParticipantEntry::GetPersistentId () const
 	{
 		return {};
 	}
 
-	EntryConventionalId RoomParticipantEntry::GetConventionalID () const
+	EntryConventionalId RoomParticipantEntry::GetConventionalId () const
 	{
 		return ConventionalId_;
 	}
@@ -99,21 +99,21 @@ namespace Xoox
 	{
 		auto withNick = message;
 		withNick.Variant_ = Nick_;
-		const auto obj = new GlooxMessage (withNick, RoomHandler_->GetRoomJID (), Account_->GetClientConnection ().get ());
+		const auto obj = new GlooxMessage (withNick, RoomHandler_->GetRoomJid (), Account_->GetClientConnection ().get ());
 		AllMessages_ << obj;
 		Account_->SendMessage (*obj);
 		emit Emitter_.gotMessage (obj);
 	}
 
-	QString RoomParticipantEntry::GetJID () const
+	QString RoomParticipantEntry::GetJid () const
 	{
-		return RoomHandler_->GetRoomJID () + "/" + Nick_;
+		return RoomHandler_->GetRoomJid () + "/" + Nick_;
 	}
 
-	QString RoomParticipantEntry::GetRealJID () const
+	QString RoomParticipantEntry::GetRealJid () const
 	{
 		return RoomHandler_->GetRoom ()->
-				participantPresence (GetJID ()).mucItem ().jid ();
+				participantPresence (GetJid ()).mucItem ().jid ();
 	}
 
 	QString RoomParticipantEntry::GetNick () const

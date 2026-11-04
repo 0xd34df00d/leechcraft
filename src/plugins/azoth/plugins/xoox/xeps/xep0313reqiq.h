@@ -18,11 +18,11 @@ namespace Xoox
 {
 	class Xep0313ReqIq : public QXmppIq
 	{
-		QString JID_;
+		QString Jid_;
 		QString ItemId_;
 		int Count_;
 
-		QString QueryID_;
+		QString QueryId_;
 	public:
 		enum class Direction
 		{

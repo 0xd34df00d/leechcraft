@@ -53,7 +53,7 @@ namespace Herbicide
 
 	void ListsHolder::ReloadLists (IAccount *acc)
 	{
-		auto& listInfo = acc ? Acc2ListInfo_ [acc->GetAccountID ()] : GeneralListInfo_.emplace ();
+		auto& listInfo = acc ? Acc2ListInfo_ [acc->GetAccountId ()] : GeneralListInfo_.emplace ();
 		listInfo.White_ = GetRegexps (PropGetter_ (acc, "WhitelistRegexps"));
 		listInfo.Black_ = GetRegexps (PropGetter_ (acc, "BlacklistRegexps"));
 	}
@@ -67,9 +67,9 @@ namespace Herbicide
 			return *GeneralListInfo_;
 		}
 
-		if (!Acc2ListInfo_.contains (acc->GetAccountID ()))
+		if (!Acc2ListInfo_.contains (acc->GetAccountId ()))
 			ReloadLists (acc);
-		return Acc2ListInfo_ [acc->GetAccountID ()];
+		return Acc2ListInfo_ [acc->GetAccountId ()];
 	}
 }
 }

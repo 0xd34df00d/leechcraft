@@ -260,7 +260,7 @@ namespace Xoox
 		iq.setExtensions ({ query });
 
 		const auto& id = iq.id ();
-		ID2Type_ [id] = QueryType::QueryLists;
+		Id2Type_ [id] = QueryType::QueryLists;
 		QueryLists2Handler_ [id] = cont;
 
 		client ()->sendPacket (iq);
@@ -290,7 +290,7 @@ namespace Xoox
 		iq.setExtensions ({ query });
 
 		const auto& id = iq.id ();
-		ID2Type_ [id] = QueryType::GetList;
+		Id2Type_ [id] = QueryType::GetList;
 		QueryList2Handler_ [id] = cont;
 
 		client ()->sendPacket (iq);
@@ -360,10 +360,10 @@ namespace Xoox
 			return true;
 		}
 
-		if (!ID2Type_.contains (elem.attribute ("id")))
+		if (!Id2Type_.contains (elem.attribute ("id")))
 			return false;
 
-		switch (ID2Type_.take (elem.attribute ("id")))
+		switch (Id2Type_.take (elem.attribute ("id")))
 		{
 		case QueryType::QueryLists:
 			HandleListQueryResult (elem);

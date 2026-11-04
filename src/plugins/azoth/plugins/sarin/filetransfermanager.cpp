@@ -98,7 +98,7 @@ namespace LC::Azoth::Sarin
 		const auto contact = qobject_cast<ToxContact*> (entry.GetQObject ());
 		if (!contact)
 		{
-			qWarning () << entry.GetConventionalID () << "is not a ToxContact";
+			qWarning () << entry.GetConventionalId () << "is not a ToxContact";
 			return nullptr;
 		}
 

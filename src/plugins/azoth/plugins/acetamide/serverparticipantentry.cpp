@@ -21,7 +21,7 @@ namespace LC::Azoth::Acetamide
 	: IrcParticipantEntry { std::move (nick), acc }
 	, ISH_ { ish }
 	{
-		ServerID_ = ish->GetServerID ();
+		ServerId_ = ish->GetServerId ();
 	}
 
 	ICLEntry* ServerParticipantEntry::GetParentCLEntry () const
@@ -29,14 +29,14 @@ namespace LC::Azoth::Acetamide
 		return ISH_->GetCLEntry ();
 	}
 
-	std::optional<EntryPersistentId> ServerParticipantEntry::GetPersistentID () const
+	std::optional<EntryPersistentId> ServerParticipantEntry::GetPersistentId () const
 	{
 		return {};
 	}
 
-	EntryConventionalId ServerParticipantEntry::GetConventionalID () const
+	EntryConventionalId ServerParticipantEntry::GetConventionalId () const
 	{
-		return EntryConventionalId::FromString (Nick_ + '@' + ISH_->GetServerID ());
+		return EntryConventionalId::FromString (Nick_ + '@' + ISH_->GetServerId ());
 	}
 
 	QStringList ServerParticipantEntry::Groups () const
@@ -50,6 +50,6 @@ namespace LC::Azoth::Acetamide
 
 	void ServerParticipantEntry::SendMessage (const OutgoingMessage& message)
 	{
-		HandleMessage (new IrcMessage { message, ISH_->GetServerID (), Nick_, Account_->GetClientConnection ().get () });
+		HandleMessage (new IrcMessage { message, ISH_->GetServerId (), Nick_, Account_->GetClientConnection ().get () });
 	}
 }

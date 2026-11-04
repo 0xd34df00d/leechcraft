@@ -419,7 +419,7 @@ namespace MuCommands
 					Q_ARG (QObject*, sessionObj));
 		};
 
-		PerformAction ([requestSD] (ICLEntry *target, const QString&) { requestSD (target->GetConventionalID ().ToString ()); },
+		PerformAction ([requestSD] (ICLEntry *target, const QString&) { requestSD (target->GetConventionalId ().ToString ()); },
 				[requestSD] (const QString& name) { requestSD (name); },
 				entry, text);
 
@@ -945,7 +945,7 @@ namespace MuCommands
 		{
 			const auto invitee = ResolveEntry (id, {}, entry->GetParentAccount (), entry);
 			const auto& inviteeId = invitee ?
-					invitee->GetHumanReadableID () :
+					invitee->GetHumanReadableId () :
 					id;
 
 			const auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ());
@@ -973,7 +973,7 @@ namespace MuCommands
 				return true;
 			}
 
-			mucIface->InviteToMUC (entry->GetHumanReadableID (), reason);
+			mucIface->InviteToMUC (entry->GetHumanReadableId (), reason);
 			InjectMessage (azothProxy, entry, QObject::tr ("Invited %1 to %2.")
 					.arg (entry->GetEntryName ())
 					.arg (mucEntry->GetEntryName ()));
@@ -1003,7 +1003,7 @@ namespace MuCommands
 
 			const auto& nick = part->GetEntryName ();
 
-			const auto& rid = mucEntry->GetRealID (*part);
+			const auto& rid = mucEntry->GetRealId (*part);
 			if (rid.isEmpty ())
 				InjectMessage (azothProxy, showEntry,
 						QObject::tr ("Unable to get real ID of %1.")

@@ -129,21 +129,21 @@ namespace LC::Azoth::Acetamide
 
 	QString ChannelCLEntry::GetEntryName () const
 	{
-		return ICH_->GetChannelID ();
+		return ICH_->GetChannelId ();
 	}
 
 	void ChannelCLEntry::SetEntryName (const QString&)
 	{
 	}
 
-	std::optional<EntryPersistentId> ChannelCLEntry::GetPersistentID () const
+	std::optional<EntryPersistentId> ChannelCLEntry::GetPersistentId () const
 	{
-		return EntryPersistentId::FromString (ICH_->GetChannelsManager ()->GetServerID () + '/' + ICH_->GetChannelID ());
+		return EntryPersistentId::FromString (ICH_->GetChannelsManager ()->GetServerId () + '/' + ICH_->GetChannelId ());
 	}
 
-	EntryConventionalId ChannelCLEntry::GetConventionalID () const
+	EntryConventionalId ChannelCLEntry::GetConventionalId () const
 	{
-		return EntryConventionalId::FromString (ICH_->GetChannelsManager ()->GetServerID () + '/' + ICH_->GetChannelID ());
+		return EntryConventionalId::FromString (ICH_->GetChannelsManager ()->GetServerId () + '/' + ICH_->GetChannelId ());
 	}
 
 	QStringList ChannelCLEntry::Groups () const
@@ -198,7 +198,7 @@ namespace LC::Azoth::Acetamide
 	{
 	}
 
-	QString ChannelCLEntry::GetRealID (const ICLEntry&) const
+	QString ChannelCLEntry::GetRealId (const ICLEntry&) const
 	{
 		return {};
 	}
@@ -271,7 +271,7 @@ namespace LC::Azoth::Acetamide
 
 	QString ChannelCLEntry::GetGroupName () const
 	{
-		return ICH_->GetChannelID ();
+		return ICH_->GetChannelId ();
 	}
 
 	QVariantMap ChannelCLEntry::GetIdentifyingData () const

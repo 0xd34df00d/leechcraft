@@ -33,7 +33,7 @@ namespace LC::Azoth::ChatHistory
 	, AccountsModel_ { { { Qt::DisplayRole, Util::FromField<&AccountInfo::AccountName_> } } }
 	, SortFilter_ (new QSortFilterProxyModel (this))
 	, Toolbar_ (new QToolBar (tr ("Chat history")))
-	, FocusEntry_ { entry ? std::optional { entry->GetGlobalConventionalID () } : std::nullopt }
+	, FocusEntry_ { entry ? std::optional { entry->GetGlobalConventionalId () } : std::nullopt }
 	, SearchHandler_ { std::make_unique<SearchHandler> (params.StorageThread_) }
 	{
 		Ui_.setupUi (this);

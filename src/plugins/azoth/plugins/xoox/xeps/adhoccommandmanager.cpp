@@ -68,7 +68,7 @@ namespace Xoox
 		command.setTagName ("command");
 		command.setAttribute ("xmlns", NsAdHoc);
 		command.setAttribute ("node", state.GetNode ());
-		command.setAttribute ("sessionid", state.GetSessionID ());
+		command.setAttribute ("sessionid", state.GetSessionId ());
 		command.setAttribute ("action", action);
 
 		QDomDocument formElem;
@@ -168,7 +168,7 @@ namespace Xoox
 			return false;
 
 		AdHocResult result;
-		result.SetSessionID (command.attribute ("sessionid"));
+		result.SetSessionId (command.attribute ("sessionid"));
 		result.SetNode (command.attribute ("node"));
 
 		if (!ParseActions (result, command.firstChildElement ("actions")) &&

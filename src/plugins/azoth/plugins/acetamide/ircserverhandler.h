@@ -54,7 +54,7 @@ namespace Acetamide
 
 		ConnectionState ServerConnectionState_ = NotConnected;
 		bool IsConsoleEnabled_ = false;
-		QString ServerID_;
+		QString ServerId_;
 		QString NickName_;
 		ServerOptions ServerOptions_;
 		std::unique_ptr<InviteChannelsDialog> InviteChannelsDialog_;
@@ -75,7 +75,7 @@ namespace Acetamide
 		IrcParser* GetParser () const;
 		ChannelsManager* GetChannelManager () const;
 		QString GetNickName () const;
-		QString GetServerID () const;
+		QString GetServerId () const;
 		ServerOptions GetServerOptions () const;
 		QList<ICLEntry*> GetCLEntries () const;
 

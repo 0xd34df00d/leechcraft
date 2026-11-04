@@ -26,7 +26,7 @@ namespace RIEX
 			const auto end = std::remove_if (items.begin (), items.end (),
 					[&clEntries] (const RIEXItem& item)
 					{
-						const auto entry = clEntries.value (item.ID_);
+						const auto entry = clEntries.value (item.Id_);
 
 						switch (item.Action_)
 						{
@@ -53,13 +53,13 @@ namespace RIEX
 
 		void AddRIEX (const RIEXItem& item, const QHash<QString, ICLEntry*> entries, IAccount *acc)
 		{
-			if (!entries.contains (item.ID_))
+			if (!entries.contains (item.Id_))
 			{
-				acc->RequestAuth (item.ID_, QString (), item.Nick_, item.Groups_);
+				acc->RequestAuth (item.Id_, QString (), item.Nick_, item.Groups_);
 				return;
 			}
 
-			ICLEntry *entry = entries [item.ID_];
+			ICLEntry *entry = entries [item.Id_];
 
 			const auto allGroups = std::all_of (item.Groups_.begin (), item.Groups_.end (),
 					[entry] (const QString& group) { return entry->Groups ().contains (group); });
@@ -74,22 +74,22 @@ namespace RIEX
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "skipping already-existing"
-						<< item.ID_;
+						<< item.Id_;
 				return;
 			}
 		}
 
 		void ModifyRIEX (const RIEXItem& item, const QHash<QString, ICLEntry*> entries, IAccount*)
 		{
-			if (!entries.contains (item.ID_))
+			if (!entries.contains (item.Id_))
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "skipping non-existent"
-						<< item.ID_;
+						<< item.Id_;
 				return;
 			}
 
-			ICLEntry *entry = entries [item.ID_];
+			ICLEntry *entry = entries [item.Id_];
 
 			if (!item.Groups_.isEmpty ())
 				entry->SetGroups (item.Groups_);
@@ -100,15 +100,15 @@ namespace RIEX
 
 		void DeleteRIEX (const RIEXItem& item, const QHash<QString, ICLEntry*> entries, IAccount *acc)
 		{
-			if (!entries.contains (item.ID_))
+			if (!entries.contains (item.Id_))
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "skipping non-existent"
-						<< item.ID_;
+						<< item.Id_;
 				return;
 			}
 
-			const auto entry = entries [item.ID_];
+			const auto entry = entries [item.Id_];
 			if (item.Groups_.isEmpty ())
 				acc->RemoveEntry (entry->GetQObject ());
 			else
@@ -172,7 +172,7 @@ namespace RIEX
 						<< "unknown action"
 						<< item.Action_
 						<< "for item"
-						<< item.ID_
+						<< item.Id_
 						<< item.Nick_
 						<< item.Groups_;
 				break;

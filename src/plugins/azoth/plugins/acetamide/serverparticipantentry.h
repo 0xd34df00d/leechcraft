@@ -28,8 +28,8 @@ namespace LC::Azoth::Acetamide
 
 		ICLEntry* GetParentCLEntry () const override;
 
-		std::optional<EntryPersistentId> GetPersistentID () const override;
-		EntryConventionalId GetConventionalID () const override;
+		std::optional<EntryPersistentId> GetPersistentId () const override;
+		EntryConventionalId GetConventionalId () const override;
 
 		QStringList Groups () const override;
 		void SetGroups (const QStringList&) override;

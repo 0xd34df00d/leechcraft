@@ -37,7 +37,7 @@ namespace LC::Azoth
 	public:
 		using AvatarHandler_f = std::function<void (QImage)>;
 	private:
-		uint64_t SubscriptionID_ = 0;
+		uint64_t SubscriptionId_ = 0;
 		QHash<QObject*, QHash<IHaveAvatars::Size, QHash<uint64_t, AvatarHandler_f>>> Subscriptions_;
 
 		QHash<QObject*, const IAccount*> SelfInfo2Account_;

@@ -88,7 +88,7 @@ namespace Xoox
 		RegForm_->Register ();
 	}
 
-	QString InBandAccountRegSecondPage::GetJID () const
+	QString InBandAccountRegSecondPage::GetJid () const
 	{
 		return RegForm_->GetUser () + '@' + FirstPage_->GetServerName ();
 	}

@@ -37,7 +37,7 @@ namespace Xoox
 
 		void Register ();
 
-		QString GetJID () const;
+		QString GetJid () const;
 		QString GetPassword () const;
 
 		QObject* GetQObject () override;

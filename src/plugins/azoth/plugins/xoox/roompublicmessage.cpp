@@ -53,7 +53,7 @@ namespace Xoox
 
 		QXmppMessage msg;
 		msg.setBody (Message_);
-		msg.setTo (ParentEntry_->GetRoomHandler ()->GetRoomJID ());
+		msg.setTo (ParentEntry_->GetRoomHandler ()->GetRoomJid ());
 		msg.setType (QXmppMessage::GroupChat);
 		if (XHTML_)
 			msg.setXhtml (*XHTML_);
@@ -73,7 +73,7 @@ namespace Xoox
 	, SubType_ (SubType::Other)
 	, XHTML_ (msg.xhtml ())
 	{
-		std::tie (FromJID_, FromVariant_) = ClientConnection::Split (msg.from ());
+		std::tie (FromJid_, FromVariant_) = ClientConnection::Split (msg.from ());
 	}
 
 	void RoomPublicMessage::SetParticipantEntry (const RoomParticipantEntry_ptr& entry)

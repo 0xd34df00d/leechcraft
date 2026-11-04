@@ -47,14 +47,14 @@ namespace Azoth
 		 * This field must be non-empty.
 		 *
 		 * This is semantically equivalent to the return value of the
-		 * ICLEntry::GetHumanReadableID(). The same semantics apply:
+		 * ICLEntry::GetHumanReadableId(). The same semantics apply:
 		 * basically, this ID must uniquely identify the target user
 		 * in the protocol, but there is no need to make it unique
 		 * LeechCraft-wide.
 		 *
-		 * @sa ICLEntry::GetHumanReadableID().
+		 * @sa ICLEntry::GetHumanReadableId().
 		 */
-		QString ID_;
+		QString Id_;
 
 		/** @brief The suggested nickname of the entry.
 		 *
@@ -75,7 +75,7 @@ namespace Azoth
 	inline bool operator== (const RIEXItem& r1, const RIEXItem& r2)
 	{
 		return r1.Action_ == r2.Action_ &&
-			r1.ID_ == r2.ID_ &&
+			r1.Id_ == r2.Id_ &&
 			r1.Nick_ == r2.Nick_ &&
 			r1.Groups_ == r2.Groups_;
 	}

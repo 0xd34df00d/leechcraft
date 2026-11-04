@@ -35,9 +35,9 @@ namespace Xoox
 
 		QWidget *Widget_ = nullptr;
 
-		QString LastStanzaID_;
+		QString LastStanzaId_;
 
-		QString ReqJID_;
+		QString ReqJid_;
 	public:
 		enum class State
 		{

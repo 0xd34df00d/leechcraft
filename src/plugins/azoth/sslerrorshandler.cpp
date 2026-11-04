@@ -42,7 +42,7 @@ namespace Azoth
 					[&] (const SslErrorsHandler::Account& acc)
 					{
 						const auto choices = Util::Map (errors,
-								[&] (QSslError err) { return storage.GetAction (acc.ID_, err.error ()); });
+								[&] (QSslError err) { return storage.GetAction (acc.Id_, err.error ()); });
 
 						if (std::any_of (choices.begin (), choices.end (),
 								[] (const auto& choice) { return choice == SslErrorsChoiceStorage::Action::Abort; }))
@@ -81,7 +81,7 @@ namespace Azoth
 					[&] (const SslErrorsHandler::Account& acc)
 					{
 						for (const auto& error : errors)
-							storage->SetAction (acc.ID_, error.error (), action);
+							storage->SetAction (acc.Id_, error.error (), action);
 					});
 		};
 

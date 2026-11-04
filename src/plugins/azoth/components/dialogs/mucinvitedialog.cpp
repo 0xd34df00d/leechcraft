@@ -40,11 +40,11 @@ namespace Azoth
 				continue;
 
 			Ui_.Invitee_->addItem (FormatNameWithAddress (*entry),
-					entry->GetConventionalID ().ToString ());
+					entry->GetConventionalId ().ToString ());
 		}
 	}
 
-	QString MUCInviteDialog::GetID () const
+	QString MUCInviteDialog::GetId () const
 	{
 		const int idx = Ui_.Invitee_->currentIndex ();
 		return (idx >= 0 && !ManualMode_) ?
@@ -52,7 +52,7 @@ namespace Azoth
 				Ui_.Invitee_->currentText ();
 	}
 
-	void MUCInviteDialog::SetID (const QString& id)
+	void MUCInviteDialog::SetId (const QString& id)
 	{
 		for (int i = 0; i < Ui_.Invitee_->count (); ++i)
 			if (Ui_.Invitee_->itemData (i).toString () == id)

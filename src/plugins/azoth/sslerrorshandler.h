@@ -25,7 +25,7 @@ namespace Azoth
 		struct AccountRegistration {};
 		struct Account
 		{
-			AccountId ID_;
+			AccountId Id_;
 			QString Name_;
 		};
 

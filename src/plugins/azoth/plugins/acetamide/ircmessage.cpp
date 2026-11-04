@@ -20,7 +20,7 @@ namespace LC::Azoth::Acetamide
 	: Type_ { Type::ChatMessage }
 	, SubType_ { SubType::Other }
 	, Direction_ { Direction::Out }
-	, ID_ { std::move (id) }
+	, Id_ { std::move (id) }
 	, NickName_ { std::move (nickname) }
 	, Connection_ { conn }
 	{
@@ -28,7 +28,7 @@ namespace LC::Azoth::Acetamide
 		Message_.Body_ = message.Body_;
 		Message_.Nickname_ = NickName_;
 
-		const auto handler = Connection_->GetIrcServerHandler (ID_);
+		const auto handler = Connection_->GetIrcServerHandler (Id_);
 		handler->SendPrivateMessage (Message_.Body_, NickName_);
 		handler->GetChannelManager ()->SetPrivateChat (GetOtherVariant ());
 	}
@@ -37,7 +37,7 @@ namespace LC::Azoth::Acetamide
 	: Type_ { msg.Type_ }
 	, SubType_ { SubType::Other }
 	, Direction_ { Direction::In }
-	, ID_ { std::move (id) }
+	, Id_ { std::move (id) }
 	, Message_ { std::move (msg) }
 	, Connection_ { conn }
 	{
@@ -52,7 +52,7 @@ namespace LC::Azoth::Acetamide
 
 	void IrcMessage::Store ()
 	{
-		const auto entry = Connection_->GetIrcServerHandler (ID_)->GetParticipantEntry (GetOtherVariant ());
+		const auto entry = Connection_->GetIrcServerHandler (Id_)->GetParticipantEntry (GetOtherVariant ());
 		entry->HandleMessage (this);
 	}
 
@@ -81,9 +81,9 @@ namespace LC::Azoth::Acetamide
 		OtherPart_ = entry;
 	}
 
-	QString IrcMessage::GetID () const
+	QString IrcMessage::GetId () const
 	{
-		return ID_;
+		return Id_;
 	}
 
 	QString IrcMessage::GetOtherVariant () const

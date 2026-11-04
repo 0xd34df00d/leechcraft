@@ -62,10 +62,10 @@ namespace LC::Azoth::Xoox
 	{
 #ifdef ENABLE_CRYPT
 		EntryBase *entry = qobject_cast<EntryBase*> (msgObj->OtherPart ());
-		if (!entry || !Entries2Crypt_.contains (entry->GetJID ()))
+		if (!entry || !Entries2Crypt_.contains (entry->GetJid ()))
 			return;
 
-		const auto& key = PGPManager_->PublicKey (entry->GetJID ());
+		const auto& key = PGPManager_->PublicKey (entry->GetJid ());
 
 		if (key.isNull ())
 			return;

@@ -59,7 +59,7 @@ namespace Xoox
 
 	void AccountSettingsHolder::Serialize (QDataStream& ostr) const
 	{
-		ostr << JID_
+		ostr << Jid_
 			<< Nick_
 			<< Resource_
 			<< Priority_
@@ -83,7 +83,7 @@ namespace Xoox
 
 	void AccountSettingsHolder::Deserialize (QDataStream& in, quint16 version)
 	{
-		in >> JID_
+		in >> Jid_
 			>> Nick_
 			>> Resource_
 			>> Priority_;
@@ -132,8 +132,8 @@ namespace Xoox
 	void AccountSettingsHolder::OpenConfigDialog ()
 	{
 		GlooxAccountConfigurationDialog dia;
-		if (!JID_.isEmpty ())
-			dia.W ()->SetJID (JID_);
+		if (!Jid_.isEmpty ())
+			dia.W ()->SetJid (Jid_);
 		if (!Nick_.isEmpty ())
 			dia.W ()->SetNick (Nick_);
 		if (!Resource_.isEmpty ())
@@ -169,7 +169,7 @@ namespace Xoox
 
 	void AccountSettingsHolder::FillSettings (GlooxAccountConfigurationWidget *w)
 	{
-		SetJID (w->GetJID ());
+		SetJid (w->GetJid ());
 		SetNick (w->GetNick ());
 		SetResource (w->GetResource ());
 		SetPriority (w->GetPriority ());
@@ -193,23 +193,23 @@ namespace Xoox
 		emit accountSettingsChanged ();
 	}
 
-	QString AccountSettingsHolder::GetJID () const
+	QString AccountSettingsHolder::GetJid () const
 	{
-		return JID_;
+		return Jid_;
 	}
 
-	void AccountSettingsHolder::SetJID (const QString& jid)
+	void AccountSettingsHolder::SetJid (const QString& jid)
 	{
-		if (jid == JID_)
+		if (jid == Jid_)
 			return;
 
-		JID_ = jid;
-		emit jidChanged (JID_);
+		Jid_ = jid;
+		emit jidChanged (Jid_);
 	}
 
 	QString AccountSettingsHolder::GetNick () const
 	{
-		return Nick_.isEmpty () ? JID_ : Nick_;
+		return Nick_.isEmpty () ? Jid_ : Nick_;
 	}
 
 	void AccountSettingsHolder::SetNick (const QString& nick)
@@ -235,9 +235,9 @@ namespace Xoox
 		emit resourceChanged (Resource_);
 	}
 
-	QString AccountSettingsHolder::GetFullJID () const
+	QString AccountSettingsHolder::GetFullJid () const
 	{
-		return JID_ + "/" + Resource_;
+		return Jid_ + "/" + Resource_;
 	}
 
 	QString AccountSettingsHolder::GetHost () const
@@ -474,7 +474,7 @@ namespace Xoox
 
 		const auto state = conn->GetLastState ();
 		Account_->ChangeState (EntryStatus (SOffline, Account_->GetState ().StatusString_));
-		conn->SetOurJID (GetFullJID ());
+		conn->SetOurJid (GetFullJid ());
 		new AccStatusRestorer (state, conn);
 	}
 }

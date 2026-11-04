@@ -151,11 +151,11 @@ namespace Azoth
 			entry->GetParentAccount ()->RemoveEntry (entry->GetQObject ());
 		}
 
-		QString GetMUCRealID (ICLEntry *entry)
+		QString GetMUCRealId (ICLEntry *entry)
 		{
 			const auto parentObj = entry->GetParentCLEntryObject ();
 			const auto mucEntry = qobject_cast<IMUCEntry*> (parentObj);
-			return mucEntry ? mucEntry->GetRealID (*entry) : QString ();
+			return mucEntry ? mucEntry->GetRealId (*entry) : QString ();
 		}
 
 		void SendDirectedStatus (QList<ICLEntry*> entries)
@@ -205,20 +205,20 @@ namespace Azoth
 			const auto& nick = entry->GetEntryName ();
 
 			AddContactDialog dia { entry->GetParentAccount () };
-			dia.SetContactID (GetMUCRealID (entry));
+			dia.SetContactId (GetMUCRealId (entry));
 			dia.SetNick (nick);
 			if (dia.exec () != QDialog::Accepted)
 				return;
 
-			dia.GetSelectedAccount ()->RequestAuth (dia.GetContactID (),
+			dia.GetSelectedAccount ()->RequestAuth (dia.GetContactId (),
 						dia.GetReason (),
 						dia.GetNick (),
 						dia.GetGroups ());
 		}
 
-		void CopyMUCParticipantID (ICLEntry *entry)
+		void CopyMUCParticipantId (ICLEntry *entry)
 		{
-			const auto& id = GetMUCRealID (entry);
+			const auto& id = GetMUCRealId (entry);
 			QApplication::clipboard ()->setText (id, QClipboard::Clipboard);
 			QApplication::clipboard ()->setText (id, QClipboard::Selection);
 		}
@@ -283,7 +283,7 @@ namespace Azoth
 						return RIEXItem
 						{
 							.Action_ = RIEXItem::AAdd,
-							.ID_ = toShare->GetHumanReadableAddress (),
+							.Id_ = toShare->GetHumanReadableAddress (),
 							.Nick_ = toShare->GetEntryName (),
 							.Groups_ = shareGroups ? toShare->Groups () : QStringList {},
 						};
@@ -316,16 +316,16 @@ namespace Azoth
 			if (dia.exec () != QDialog::Accepted)
 				return;
 
-			const auto mucEntryBase = FindByHRId (account, dia.GetID ());
+			const auto mucEntryBase = FindByHRId (account, dia.GetId ());
 			const auto mucEntry = qobject_cast<IMUCEntry*> (mucEntryBase ? mucEntryBase->GetQObject () : nullptr);
 			if (!mucEntry)
 			{
-				qWarning () << "no MUC for" << dia.GetID ();
+				qWarning () << "no MUC for" << dia.GetId ();
 				return;
 			}
 
 			const auto& msg = dia.GetInviteMessage ();
-			mucEntry->InviteToMUC (entry->GetHumanReadableID (), msg);
+			mucEntry->InviteToMUC (entry->GetHumanReadableId (), msg);
 		}
 
 		void Invite (ICLEntry *entry)
@@ -336,7 +336,7 @@ namespace Azoth
 			if (dia.exec () != QDialog::Accepted)
 				return;
 
-			const QString& id = dia.GetID ();
+			const QString& id = dia.GetId ();
 			const QString& msg = dia.GetInviteMessage ();
 			if (id.isEmpty ())
 				return;
@@ -426,11 +426,11 @@ namespace Azoth
 			}
 
 			const auto acc = entry.GetParentAccount ();
-			const auto& realID = muc->GetRealID (entry);
+			const auto& realId = muc->GetRealId (entry);
 
 			mucPerms->SetPerm (entry, permClass, perm, text);
 
-			if (!global || realID.isEmpty ())
+			if (!global || realId.isEmpty ())
 				return;
 
 			for (auto item : acc->GetCLEntries ())
@@ -446,7 +446,7 @@ namespace Azoth
 				bool found = false;
 				for (auto part : otherMuc->GetParticipants ())
 				{
-					if (otherMuc->GetRealID (*part) != realID)
+					if (otherMuc->GetRealId (*part) != realId)
 						continue;
 
 					found = true;
@@ -459,14 +459,14 @@ namespace Azoth
 
 					const auto& body = ActionsManager::tr ("Failed to change %1 for %2 in %3 due to insufficient permissions.")
 							.arg (perms->GetUserString (permClass))
-							.arg ("<em>" + realID + "</em>")
+							.arg ("<em>" + realId + "</em>")
 							.arg (item->GetEntryName ());
 					const auto& e = Util::MakeNotification ("Azoth", body, Priority::Warning);
 					Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
 				}
 
 				if (!found)
-					perms->TrySetPerm (realID, permClass, perm, text);
+					perms->TrySetPerm (realId, permClass, perm, text);
 			}
 		}
 
@@ -528,7 +528,7 @@ namespace Azoth
 		{
 			{ "sep_afterroles", {} },
 			{ "add_contact", SingleEntryActor_f (AddContactFromMUC) },
-			{ "copy_muc_id", SingleEntryActor_f (CopyMUCParticipantID) },
+			{ "copy_muc_id", SingleEntryActor_f (CopyMUCParticipantId) },
 			{ "sep_afterjid", {} },
 			{ "view_server_history", SingleEntryActor_f (ViewServerHistory) },
 #ifdef ENABLE_CRYPT
@@ -1378,7 +1378,7 @@ namespace Azoth
 					UpdatePermChangeState (Entry2Actions_ [entry] [permClass]->menu (), mucPerms, *entry, permClass);
 			}
 
-			const QString& realJid = GetMUCRealID (entry);
+			const QString& realJid = GetMUCRealId (entry);
 			Entry2Actions_ [entry] ["add_contact"]->setEnabled (!realJid.isEmpty ());
 			Entry2Actions_ [entry] ["copy_muc_id"]->setEnabled (!realJid.isEmpty ());
 		}

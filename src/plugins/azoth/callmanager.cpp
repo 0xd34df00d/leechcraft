@@ -69,12 +69,12 @@ namespace Azoth
 			return nullptr;
 		}
 
-		const auto callObj = ismc->Call (entry->GetEntryID (), variant);
+		const auto callObj = ismc->Call (entry->GetEntryId (), variant);
 		if (!callObj)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "got null call obj for"
-					<< entry->GetEntryID ()
+					<< entry->GetEntryId ()
 					<< variant;
 			return nullptr;
 		}
@@ -138,7 +138,7 @@ namespace Azoth
 		auto& calls = Entry2Calls_ [&entry];
 		if (calls.contains (obj))
 		{
-			qWarning () << "double-adding" << obj << "from" << entry.GetGlobalStrongestID ();
+			qWarning () << "double-adding" << obj << "from" << entry.GetGlobalStrongestId ();
 			return;
 		}
 

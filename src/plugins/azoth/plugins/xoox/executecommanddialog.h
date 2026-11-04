@@ -28,7 +28,7 @@ namespace Xoox
 		Ui::ExecuteCommandDialog Ui_;
 		GlooxAccount *Account_;
 		AdHocCommandManager& Manager_;
-		QString JID_;
+		QString Jid_;
 
 		struct Tag {};
 		ExecuteCommandDialog (const QString&, GlooxAccount*, QWidget*, Tag);

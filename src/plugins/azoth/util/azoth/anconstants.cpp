@@ -14,7 +14,7 @@ namespace LC::Azoth::Fields
 	const QString Msg = "org.LC.Plugins.Azoth.Msg"_qs;
 	const QString NewStatus = "org.LC.Plugins.Azoth.NewStatus"_qs;
 	const QString SourceName = "org.LC.Plugins.Azoth.SourceName"_qs;
-	const QString SourceAccountID = "org.LC.Plugins.Azoth.SourceAccountID"_qs;
+	const QString SourceAccountId = "org.LC.Plugins.Azoth.SourceAccountID"_qs;
 	const QString SourceHumanReadableAddress = "org.LC.Plugins.Azoth.SourceHumanReadableAddress"_qs;
 	const QString SourceGroups = "org.LC.Plugins.Azoth.SourceGroups"_qs;
 	const QString RoomName = "org.LC.Plugins.Azoth.RoomName"_qs;
@@ -23,6 +23,6 @@ namespace LC::Azoth::Fields
 
 namespace LC::Azoth::Fields::Internal
 {
-	const QString SourceGlobalStrongestID = "org.LC.Plugins.Azoth.Internal.SourceGlobalStrongestID"_qs;
-	const QString RoomGlobalStrongestID = "org.LC.Plugins.Azoth.Internal.RoomGlobalStrongestID"_qs;
+	const QString SourceGlobalStrongestId = "org.LC.Plugins.Azoth.Internal.SourceGlobalStrongestID"_qs;
+	const QString RoomGlobalStrongestId = "org.LC.Plugins.Azoth.Internal.RoomGlobalStrongestID"_qs;
 }

@@ -38,7 +38,7 @@ namespace Xoox
 		QString Message_;
 		QDateTime Datetime_ = QDateTime::currentDateTime ();
 		Direction Direction_;
-		QString FromJID_;
+		QString FromJid_;
 		QString FromVariant_;
 		Type Type_;
 		SubType SubType_;

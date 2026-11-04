@@ -104,7 +104,7 @@ namespace Xoox
 				this,
 				[this]
 				{
-					const auto& jid = SettingsHolder_->GetJID ();
+					const auto& jid = SettingsHolder_->GetJid ();
 					if (auto entry = qobject_cast<EntryBase*> (ClientConnection_->GetCLEntry (jid)))
 						entry->ShowInfo ();
 				});
@@ -275,9 +275,9 @@ namespace Xoox
 		emit accountSettingsChanged ();
 	}
 
-	AccountId GlooxAccount::GetAccountID () const
+	AccountId GlooxAccount::GetAccountId () const
 	{
-		return AccountId::FromString (ParentProtocol_->GetProtocolID () + "_" + SettingsHolder_->GetJID ());
+		return AccountId::FromString (ParentProtocol_->GetProtocolId () + "_" + SettingsHolder_->GetJid ());
 	}
 
 	QList<QAction*> GlooxAccount::GetActions () const
@@ -348,11 +348,11 @@ namespace Xoox
 
 		if (entry->IsGateway ())
 		{
-			const auto& gwJid = entry->GetJID ();
+			const auto& gwJid = entry->GetJid ();
 
 			QList<GlooxCLEntry*> subs;
 			for (auto otherEntry : ClientConnection_->GetRosterEntries ())
-				if (otherEntry != entry && otherEntry->GetJID ().endsWith (gwJid))
+				if (otherEntry != entry && otherEntry->GetJid ().endsWith (gwJid))
 					subs << otherEntry;
 
 			if (!subs.isEmpty ())
@@ -380,7 +380,7 @@ namespace Xoox
 	QObject* GlooxAccount::GetSelfContact () const
 	{
 		return ClientConnection_ ?
-				ClientConnection_->GetCLEntry (SettingsHolder_->GetJID (), QString ()) :
+				ClientConnection_->GetCLEntry (SettingsHolder_->GetJid (), QString ()) :
 				0;
 	}
 
@@ -698,9 +698,9 @@ namespace Xoox
 
 		if (!glEntry)
 			return GPGExceptions::General { "Null entry" };
-		if (enabled && pgpManager->PublicKey (glEntry->GetJID ()).isNull ())
+		if (enabled && pgpManager->PublicKey (glEntry->GetJid ()).isNull ())
 			return GPGExceptions::NullPubkey {};
-		if (!cryptHandler->SetEncryptionEnabled (glEntry->GetJID (), enabled))
+		if (!cryptHandler->SetEncryptionEnabled (glEntry->GetJid (), enabled))
 			return GPGExceptions::General { "Cannot change encryption state. "};
 		beenChanged = true;
 		return {};
@@ -712,7 +712,7 @@ namespace Xoox
 		if (!glEntry)
 			return false;
 
-		return ClientConnection_->GetCryptHandler ()->IsEncryptionEnabled (glEntry->GetJID ());
+		return ClientConnection_->GetCryptHandler ()->IsEncryptionEnabled (glEntry->GetJid ());
 	}
 #endif
 
@@ -844,7 +844,7 @@ namespace Xoox
 
 	QString GlooxAccount::GetDefaultReqHost () const
 	{
-		const auto& second = SettingsHolder_->GetJID ().split ('@', Qt::SkipEmptyParts).value (1);
+		const auto& second = SettingsHolder_->GetJid ().split ('@', Qt::SkipEmptyParts).value (1);
 		const int slIdx = second.indexOf ('/');
 		return slIdx >= 0 ? second.left (slIdx) : second;
 	}

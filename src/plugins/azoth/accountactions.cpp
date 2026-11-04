@@ -66,7 +66,7 @@ namespace LC::Azoth::Actions
 				status = EntryStatus { state, StatusChange::GetStatusText (state, text) };
 			else
 			{
-				SetStatusDialog ssd { acc->GetAccountID ().ToString (), GetDialogParent () };
+				SetStatusDialog ssd { acc->GetAccountId ().ToString (), GetDialogParent () };
 				if (ssd.exec () != QDialog::Accepted)
 					return;
 
@@ -151,7 +151,7 @@ namespace LC::Azoth::Actions
 		{
 			AddContactDialog dia { account, GetDialogParent () };
 			if (dia.exec () == QDialog::Accepted)
-				dia.GetSelectedAccount ()->RequestAuth (dia.GetContactID (),
+				dia.GetSelectedAccount ()->RequestAuth (dia.GetContactId (),
 						dia.GetReason (), dia.GetNick (), dia.GetGroups ());
 		}
 

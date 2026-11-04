@@ -96,14 +96,14 @@ namespace Xoox
 		Node_ = node;
 	}
 
-	QString AdHocResult::GetSessionID () const
+	QString AdHocResult::GetSessionId () const
 	{
-		return SessionID_;
+		return SessionId_;
 	}
 
-	void AdHocResult::SetSessionID (const QString& sid)
+	void AdHocResult::SetSessionId (const QString& sid)
 	{
-		SessionID_ = sid;
+		SessionId_ = sid;
 	}
 
 	QXmppDataForm AdHocResult::GetDataForm () const

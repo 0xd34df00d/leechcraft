@@ -155,7 +155,7 @@ namespace Xoox
 	: QWizard { parent }
 	, Account_ { account }
 	, Manager_ { account->GetClientConnection ()->Exts ().Get<AdHocCommandManager> () }
-	, JID_ { jid }
+	, Jid_ { jid }
 	{
 		Ui_.setupUi (this);
 		setAttribute (Qt::WA_DeleteOnClose);
@@ -210,7 +210,7 @@ namespace Xoox
 				this,
 				SLOT (handleGotCommands (QString, QList<AdHocCommand>)),
 				Qt::UniqueConnection);
-		Manager_.QueryCommands (JID_);
+		Manager_.QueryCommands (Jid_);
 	}
 
 	void ExecuteCommandDialog::ExecuteCommand (const AdHocCommand& command)
@@ -220,7 +220,7 @@ namespace Xoox
 				this,
 				SLOT (handleGotResult (QString, AdHocResult)),
 				Qt::UniqueConnection);
-		Manager_.ExecuteCommand (JID_, command);
+		Manager_.ExecuteCommand (Jid_, command);
 	}
 
 	void ExecuteCommandDialog::ProceedExecuting (const AdHocResult& result, const QString& action)
@@ -230,7 +230,7 @@ namespace Xoox
 				this,
 				SLOT (handleGotResult (QString, AdHocResult)),
 				Qt::UniqueConnection);
-		Manager_.ProceedExecuting (JID_, result, action);
+		Manager_.ProceedExecuting (Jid_, result, action);
 	}
 
 	void ExecuteCommandDialog::handleCurrentChanged (int id)
@@ -267,7 +267,7 @@ namespace Xoox
 
 	void ExecuteCommandDialog::handleGotCommands (const QString& jid, const QList<AdHocCommand>& commands)
 	{
-		if (jid != JID_)
+		if (jid != Jid_)
 			return;
 
 		disconnect (&Manager_,
@@ -283,7 +283,7 @@ namespace Xoox
 
 	void ExecuteCommandDialog::handleGotResult (const QString& jid, const AdHocResult& result)
 	{
-		if (jid != JID_)
+		if (jid != Jid_)
 			return;
 
 		disconnect (&Manager_,
@@ -310,7 +310,7 @@ namespace Xoox
 	{
 		deleteLater ();
 
-		const auto dia = new ExecuteCommandDialog { JID_, Account_, parentWidget () };
+		const auto dia = new ExecuteCommandDialog { Jid_, Account_, parentWidget () };
 		dia->show ();
 	}
 }

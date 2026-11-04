@@ -69,12 +69,12 @@ namespace LC::Azoth::Sarin
 	{
 	}
 
-	std::optional<EntryPersistentId> ConfEntry::GetPersistentID () const
+	std::optional<EntryPersistentId> ConfEntry::GetPersistentId () const
 	{
 		return EntryPersistentId::FromString (ConfIdHR_);
 	}
 
-	EntryConventionalId ConfEntry::GetConventionalID () const
+	EntryConventionalId ConfEntry::GetConventionalId () const
 	{
 		return EntryConventionalId::FromString (ConfIdHR_);
 	}
@@ -182,7 +182,7 @@ namespace LC::Azoth::Sarin
 		return {};
 	}
 
-	QString ConfEntry::GetRealID (const ICLEntry&) const
+	QString ConfEntry::GetRealId (const ICLEntry&) const
 	{
 		qWarning () << "real IDs are unsupported";
 		return {};

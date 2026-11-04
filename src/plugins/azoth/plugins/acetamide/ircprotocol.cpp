@@ -87,7 +87,7 @@ namespace LC::Azoth::Acetamide
 		return icon;
 	}
 
-	QByteArray IrcProtocol::GetProtocolID () const
+	QByteArray IrcProtocol::GetProtocolId () const
 	{
 		return "Acetamide.IRC";
 	}
@@ -111,7 +111,7 @@ namespace LC::Azoth::Acetamide
 
 		const auto account = new IrcAccount (name, this);
 		account->FillSettings (w);
-		account->SetAccountID (GetProtocolID () + "." + QString::number (QDateTime::currentSecsSinceEpoch ()));
+		account->SetAccountId (GetProtocolId () + "." + QString::number (QDateTime::currentSecsSinceEpoch ()));
 		IrcAccounts_ << account;
 		saveAccounts ();
 		emit accountAdded (account);

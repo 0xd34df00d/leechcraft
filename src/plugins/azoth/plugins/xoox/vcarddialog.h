@@ -28,7 +28,7 @@ namespace LC::Azoth::Xoox
 
 		Ui::VCardDialog Ui_;
 		GlooxAccount *Account_;
-		QString JID_;
+		QString Jid_;
 		XMPPAnnotationsIq::NoteItem Note_;
 
 		QXmppVCardIq VCard_;

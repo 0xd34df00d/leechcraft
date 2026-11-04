@@ -98,14 +98,14 @@ namespace LC::Azoth::Acetamide
 		emit accountSettingsChanged ();
 	}
 
-	AccountId IrcAccount::GetAccountID () const
+	AccountId IrcAccount::GetAccountId () const
 	{
-		return AccountId::FromUtf8 (AccountID_);
+		return AccountId::FromUtf8 (AccountId_);
 	}
 
-	void IrcAccount::SetAccountID (const QString& id)
+	void IrcAccount::SetAccountId (const QString& id)
 	{
-		AccountID_ = id.toUtf8 ();
+		AccountId_ = id.toUtf8 ();
 	}
 
 	QList<QAction*> IrcAccount::GetActions () const
@@ -372,7 +372,7 @@ namespace LC::Azoth::Acetamide
 			QDataStream ostr (&result, QIODevice::WriteOnly);
 			ostr << version
 					<< AccountName_
-					<< AccountID_
+					<< AccountId_
 					<< RealName_
 					<< UserName_
 					<< NickNames_
@@ -404,7 +404,7 @@ namespace LC::Azoth::Acetamide
 		QString name;
 		in >> name;
 		const auto result = new IrcAccount (name, parent);
-		in >> result->AccountID_
+		in >> result->AccountId_
 				>> result->RealName_
 				>> result->UserName_
 				>> result->NickNames_

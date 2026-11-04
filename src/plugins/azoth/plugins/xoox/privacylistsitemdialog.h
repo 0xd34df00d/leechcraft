@@ -27,7 +27,7 @@ namespace Xoox
 		
 		enum TypeNum
 		{
-			TNJID,
+			TNJid,
 			TNSubscription,
 			TNGroup
 		};

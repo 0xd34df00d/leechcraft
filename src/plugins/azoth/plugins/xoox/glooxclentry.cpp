@@ -33,13 +33,13 @@ namespace LC::Azoth::Xoox
 {
 	GlooxCLEntry::GlooxCLEntry (const QString& jid, GlooxAccount *parent)
 	: EntryBase { parent }
-	, JID_ { jid }
+	, Jid_ { jid }
 	{
 	}
 
-	QString GlooxCLEntry::JIDFromID (GlooxAccount *acc, const QString& id)
+	QString GlooxCLEntry::JidFromId (GlooxAccount *acc, const QString& id)
 	{
-		const QString& pre = acc->GetAccountID ().ToString () + ':';
+		const QString& pre = acc->GetAccountId ().ToString () + ':';
 		return id.startsWith (pre) ?
 				id.mid (pre.size ()) :
 				id;
@@ -64,7 +64,7 @@ namespace LC::Azoth::Xoox
 
 	QXmppRosterIq::Item GlooxCLEntry::GetRI () const
 	{
-		return Account_->GetClientConnection ()->Exts ().Get<QXmppRosterManager> ().getRosterEntry (JID_);
+		return Account_->GetClientConnection ()->Exts ().Get<QXmppRosterManager> ().getRosterEntry (Jid_);
 	}
 
 	ICLEntry::Features GlooxCLEntry::GetEntryFeatures () const
@@ -85,7 +85,7 @@ namespace LC::Azoth::Xoox
 	{
 		auto name = GetRI ().name ();
 		if (name.isEmpty ())
-			return JID_;
+			return Jid_;
 		return name;
 	}
 
@@ -99,14 +99,14 @@ namespace LC::Azoth::Xoox
 		emit Emitter_.nameChanged (name);
 	}
 
-	std::optional<EntryPersistentId> GlooxCLEntry::GetPersistentID () const
+	std::optional<EntryPersistentId> GlooxCLEntry::GetPersistentId () const
 	{
-		return EntryPersistentId::FromString (JID_);
+		return EntryPersistentId::FromString (Jid_);
 	}
 
-	EntryConventionalId GlooxCLEntry::GetConventionalID () const
+	EntryConventionalId GlooxCLEntry::GetConventionalId () const
 	{
-		return EntryConventionalId::FromString (JID_);
+		return EntryConventionalId::FromString (Jid_);
 	}
 
 	QStringList GlooxCLEntry::Groups () const
@@ -142,7 +142,7 @@ namespace LC::Azoth::Xoox
 
 	void GlooxCLEntry::SendMessage (const OutgoingMessage& message)
 	{
-		const auto msg = new GlooxMessage (message, GetJID (), Account_->GetClientConnection ().get ());
+		const auto msg = new GlooxMessage (message, GetJid (), Account_->GetClientConnection ().get ());
 		AllMessages_ << msg;
 		Account_->SendMessage (*msg);
 		emit Emitter_.gotMessage (msg);
@@ -216,31 +216,31 @@ namespace LC::Azoth::Xoox
 	{
 		SetAuthRequested (false);
 		RerequestAuth (QString ());
-		Account_->GetClientConnection ()->GrantSubscription (GetJID (), reason);
+		Account_->GetClientConnection ()->GrantSubscription (GetJid (), reason);
 	}
 
 	void GlooxCLEntry::RevokeAuth (const QString& reason)
 	{
 		SetAuthRequested (false);
-		Account_->GetClientConnection ()->RevokeSubscription (GetJID (), reason);
+		Account_->GetClientConnection ()->RevokeSubscription (GetJid (), reason);
 	}
 
 	void GlooxCLEntry::Unsubscribe (const QString& reason)
 	{
-		Account_->GetClientConnection ()->Unsubscribe (GetJID (), reason);;
+		Account_->GetClientConnection ()->Unsubscribe (GetJid (), reason);;
 	}
 
 	void GlooxCLEntry::RerequestAuth (const QString& reason)
 	{
-		Account_->GetClientConnection ()->Subscribe (GetJID (),
+		Account_->GetClientConnection ()->Subscribe (GetJid (),
 				reason,
 				GetEntryName (),
 				Groups ());
 	}
 
-	QString GlooxCLEntry::GetJID () const
+	QString GlooxCLEntry::GetJid () const
 	{
-		return JID_;
+		return Jid_;
 	}
 
 	void GlooxCLEntry::SetAuthRequested (bool auth)
@@ -253,7 +253,7 @@ namespace LC::Azoth::Xoox
 	void GlooxCLEntry::SendGWPresence (QXmppPresence::Type type)
 	{
 		const auto& variant = sender ()->property ("Azoth/Xoox/Variant").toString ();
-		QString jid = GetJID ();
+		QString jid = GetJid ();
 		if (!variant.isEmpty ())
 			jid += '/' + variant;
 
@@ -274,7 +274,7 @@ namespace LC::Azoth::Xoox
 
 	void GlooxCLEntry::handleGWEdit ()
 	{
-		auto dia = new GWOptionsDialog (Account_->GetClientConnection ()->GetClient (), GetJID ());
+		auto dia = new GWOptionsDialog (Account_->GetClientConnection ()->GetClient (), GetJid ());
 		dia->setAttribute (Qt::WA_DeleteOnClose);
 		dia->show ();
 	}

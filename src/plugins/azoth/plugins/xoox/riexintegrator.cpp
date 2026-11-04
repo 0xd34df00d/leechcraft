@@ -52,20 +52,20 @@ namespace LC::Azoth::Xoox
 			switch (item.Action_)
 			{
 			case RIEXItem::AAdd:
-				add << RIEXItem { RIEXItem::AAdd, item.ID_, item.Nick_, item.Groups_ };
+				add << RIEXItem { RIEXItem::AAdd, item.Id_, item.Nick_, item.Groups_ };
 				break;
 			case RIEXItem::ADelete:
-				del << RIEXItem { RIEXItem::ADelete, item.ID_, item.Nick_, item.Groups_ };
+				del << RIEXItem { RIEXItem::ADelete, item.Id_, item.Nick_, item.Groups_ };
 				break;
 			case RIEXItem::AModify:
-				modify << RIEXItem { RIEXItem::AModify, item.ID_, item.Nick_, item.Groups_ };
+				modify << RIEXItem { RIEXItem::AModify, item.Id_, item.Nick_, item.Groups_ };
 				break;
 			default:
 				qWarning () << Q_FUNC_INFO
 						<< "unknown action"
 						<< item.Action_
 						<< "for item"
-						<< item.ID_;
+						<< item.Id_;
 				break;
 			}
 		}

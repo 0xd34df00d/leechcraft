@@ -32,7 +32,7 @@ namespace Xoox
 			image.save (&buffer, "PNG", 0);
 		}
 
-		ID_ = QCryptographicHash::hash (ba, QCryptographicHash::Sha1).toHex ();
+		Id_ = QCryptographicHash::hash (ba, QCryptographicHash::Sha1).toHex ();
 
 		Size_ = ba.size ();
 	}
@@ -46,7 +46,7 @@ namespace Xoox
 	{
 		QXmppElement item;
 		item.setTagName ("item");
-		item.setAttribute ("id", ID_);
+		item.setAttribute ("id", Id_);
 
 		QXmppElement md;
 		md.setTagName ("metadata");
@@ -60,7 +60,7 @@ namespace Xoox
 			info.setAttribute ("width", QString::number (Width_));
 			info.setAttribute ("height", QString::number (Height_));
 			info.setAttribute ("type", Type_);
-			info.setAttribute ("id", ID_);
+			info.setAttribute ("id", Id_);
 
 			if (URL_.isValid ())
 				info.setAttribute ("url", URL_.toEncoded ());
@@ -84,7 +84,7 @@ namespace Xoox
 			Width_ = 0;
 			Height_ = 0;
 			Type_ = QString ();
-			ID_ = QByteArray ();
+			Id_ = QByteArray ();
 			URL_ = QUrl ();
 		}
 		else
@@ -93,7 +93,7 @@ namespace Xoox
 			Width_ = info.attribute ("width").toInt ();
 			Height_ = info.attribute ("height").toInt ();
 			Type_ = info.attribute ("type");
-			ID_ = info.attribute ("id").toLatin1 ();
+			Id_ = info.attribute ("id").toLatin1 ();
 			URL_ = QUrl::fromEncoded (info.attribute ("url").toLatin1 ());
 		}
 	}
@@ -118,9 +118,9 @@ namespace Xoox
 		return URL_;
 	}
 
-	QByteArray UserAvatarMetadata::GetID () const
+	QByteArray UserAvatarMetadata::GetId () const
 	{
-		return ID_;
+		return Id_;
 	}
 }
 }

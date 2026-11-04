@@ -40,7 +40,7 @@ namespace Xoox
 
 		std::optional<FormBuilder> FB_;
 		RoomCLEntry *Room_;
-		QString JID_;
+		QString Jid_;
 		QXmppMucRoom * const RoomHandler_;
 
 		QStandardItemModel *PermsModel_;

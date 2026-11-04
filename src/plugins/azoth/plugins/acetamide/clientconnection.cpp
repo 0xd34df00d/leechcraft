@@ -238,9 +238,9 @@ namespace LC::Azoth::Acetamide
 		}
 	}
 
-	void ClientConnection::ClosePrivateChat (const QString& serverID, const QString& nick)
+	void ClientConnection::ClosePrivateChat (const QString& serverId, const QString& nick)
 	{
-		if (const auto ish = ServerHandlers_.value (serverID))
+		if (const auto ish = ServerHandlers_.value (serverId))
 			ish->ClosePrivateChat (nick);
 	}
 

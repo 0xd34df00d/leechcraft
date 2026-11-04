@@ -112,7 +112,7 @@ namespace Xoox
 		return icon;
 	}
 
-	QByteArray GlooxProtocol::GetProtocolID () const
+	QByteArray GlooxProtocol::GetProtocolId () const
 	{
 		return "Xoox.Gloox.XMPP";
 	}
@@ -226,19 +226,19 @@ namespace Xoox
 			case ICLEntry::EntryType::MUC:
 			{
 				const auto rh = qobject_cast<RoomCLEntry*> (entryObj)->GetRoomHandler ();
-				server = rh->GetRoomJID ().section ('@', 1);
+				server = rh->GetRoomJid ().section ('@', 1);
 				break;
 			}
 			case ICLEntry::EntryType::PrivateChat:
 			{
 				const auto roomEntry = entry->GetParentCLEntryObject ();
 				const auto rh = qobject_cast<RoomCLEntry*> (roomEntry)->GetRoomHandler ();
-				server = rh->GetRoomJID ().section ('@', 1);
+				server = rh->GetRoomJid ().section ('@', 1);
 				break;
 			}
 			default:
 			{
-				const auto& serverStr = acc->GetSettings ()->GetJID ().section ('@', 1);
+				const auto& serverStr = acc->GetSettings ()->GetJid ().section ('@', 1);
 				server = "conference." + serverStr;
 			}
 			}
@@ -328,7 +328,7 @@ namespace Xoox
 			}
 			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 
-			ProxyObject_->OpenChat (entry->GetGlobalStrongestID (), body, variant);
+			ProxyObject_->OpenChat (entry->GetGlobalStrongestId (), body, variant);
 		}
 		else
 			qWarning () << Q_FUNC_INFO

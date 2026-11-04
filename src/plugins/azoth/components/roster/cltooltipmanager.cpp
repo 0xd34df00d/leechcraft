@@ -314,7 +314,7 @@ namespace Azoth
 
 		if (auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetParentCLEntryObject ()))
 		{
-			const QString& jid = mucEntry->GetRealID (*entry);
+			const QString& jid = mucEntry->GetRealId (*entry);
 			tip += "<br />" + tr ("Real ID:") + ' ';
 			tip += jid.isEmpty () ? tr ("unknown") : jid.toHtmlEscaped ();
 		}

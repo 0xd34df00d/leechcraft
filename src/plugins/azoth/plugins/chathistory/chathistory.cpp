@@ -146,8 +146,8 @@ namespace LC::Azoth::ChatHistory
 	Util::ContextTask<void> Plugin::RequestLastMessages (ICLEntry& entry, int count)
 	{
 		const auto account = entry.GetParentAccount ();
-		const auto accId = account->GetAccountID ();
-		const auto entryId = entry.GetConventionalID ();
+		const auto accId = account->GetAccountId ();
+		const auto entryId = entry.GetConventionalId ();
 
 		co_await Util::AddContext { CoroContext_ };
 		co_await Util::AddContext { Util::CoroContext::Of (*entry.GetQObject ()) };
@@ -189,7 +189,7 @@ namespace LC::Azoth::ChatHistory
 
 	Util::ContextTask<std::optional<QDateTime>> Plugin::RequestMaxTimestamp (IAccount& acc)
 	{
-		return StorageThread_->Run (&Storage2::GetLastTimestamp, acc.GetAccountID ());
+		return StorageThread_->Run (&Storage2::GetLastTimestamp, acc.GetAccountId ());
 	}
 
 	void Plugin::AddMessages (const History::SomeEntryWithMessages& messages)
@@ -376,9 +376,9 @@ namespace LC::Azoth::ChatHistory
 						{
 							History::Entry
 							{
-								.AccountId_ = acc->GetAccountID (),
+								.AccountId_ = acc->GetAccountId (),
 								.AccountName_ = acc->GetAccountName (),
-								.ConventionalId_ = entry.GetConventionalID (),
+								.ConventionalId_ = entry.GetConventionalId (),
 								.Description_ = descrWithEndpoint.Description_,
 							},
 							{

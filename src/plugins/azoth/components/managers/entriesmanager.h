@@ -20,7 +20,7 @@ namespace LC::Azoth
 	{
 		Q_OBJECT
 
-		QHash<GlobalStrongestId, ICLEntry*> ID2Entry_;
+		QHash<GlobalStrongestId, ICLEntry*> Id2Entry_;
 	public:
 		using QObject::QObject;
 

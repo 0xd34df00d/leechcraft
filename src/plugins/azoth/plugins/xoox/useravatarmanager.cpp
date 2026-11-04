@@ -56,15 +56,15 @@ namespace Xoox
 		if (!entry)
 			return;
 
-		if (mdEvent->GetID ().isEmpty ())
+		if (mdEvent->GetId ().isEmpty ())
 		{
 			emit avatarUpdated (from);
 			return;
 		}
 
-		const auto& id = mdEvent->GetID ();
+		const auto& id = mdEvent->GetId ();
 
-		Util::Sequence (this, AvatarsMgr_->GetStoredAvatarData (entry->GetEntryID (), IHaveAvatars::Size::Full)) >>
+		Util::Sequence (this, AvatarsMgr_->GetStoredAvatarData (entry->GetEntryId (), IHaveAvatars::Size::Full)) >>
 				[this, id, from] (const std::optional<QByteArray>& data)
 				{
 					if (!data || data->isEmpty ())

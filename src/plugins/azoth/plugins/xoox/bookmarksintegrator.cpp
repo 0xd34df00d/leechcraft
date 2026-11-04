@@ -142,7 +142,7 @@ namespace LC::Azoth::Xoox
 			return;
 
 		const auto& it = JoinQueue_.takeFirst ();
-		if (const auto roomItem = Conn_.JoinRoom (it.RoomJID_, it.Nickname_, it.AsAutojoin_))
+		if (const auto roomItem = Conn_.JoinRoom (it.RoomJid_, it.Nickname_, it.AsAutojoin_))
 			emit Acc_.GetAccountEmitter ().gotCLItems ({ roomItem });
 
 		if (!JoinQueue_.isEmpty ())

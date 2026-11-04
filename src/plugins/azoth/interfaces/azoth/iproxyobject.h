@@ -216,12 +216,12 @@ namespace Azoth
 		 *
 		 * If there is no such account, NULL is returned.
 		 *
-		 * @param[in] accID The unique account ID.
+		 * @param[in] accId The unique account ID.
 		 *
 		 * @return Account object implementing IAccount, or NULL if no
 		 * such account exists.
 		 */
-		virtual QObject* GetAccount (const QString& accID) const = 0;
+		virtual QObject* GetAccount (const QString& accId) const = 0;
 
 		/** @brief Returns all the accounts registered in Azoth.
 		 *
@@ -231,25 +231,25 @@ namespace Azoth
 
 		/** @brief Returns the entry for the given entry ID.
 		 *
-		 * @param[in] entryID The entry ID.
+		 * @param[in] entryId The entry ID.
 		 *
 		 * @return Entry, or `nullptr` if no such entry exists.
 		 */
-		virtual ICLEntry* GetEntry (const GlobalStrongestId& entryID) const = 0;
+		virtual ICLEntry* GetEntry (const GlobalStrongestId& entryId) const = 0;
 
 		/** @brief Opens the chat with the given entry.
 		 *
 		 * Does nothing if no such entry exists.
 		 *
-		 * @param[in] entryID The ID of the entry to open chat with.
+		 * @param[in] entryId The ID of the entry to open chat with.
 		 * @param[in] message Prepare this text in the message editor.
 		 * @param[in] variant Select this variant, if available.
 		 */
-		virtual void OpenChat (const GlobalStrongestId& entryID,
+		virtual void OpenChat (const GlobalStrongestId& entryId,
 				const QString& message = QString (),
 				const QString& variant = QString ()) const = 0;
 
-		virtual QWidget* FindOpenedChat (const GlobalStrongestId& entryID) const = 0;
+		virtual QWidget* FindOpenedChat (const GlobalStrongestId& entryId) const = 0;
 
 		virtual Util::ResourceLoader* GetResourceLoader (PublicResourceLoader loader) const = 0;
 

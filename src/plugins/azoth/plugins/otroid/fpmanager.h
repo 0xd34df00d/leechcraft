@@ -53,7 +53,7 @@ namespace OTRoid
 		enum Column
 		{
 			ColumnEntryName,
-			ColumnEntryID,
+			ColumnEntryId,
 			ColumnKeysCount
 		};
 	public:

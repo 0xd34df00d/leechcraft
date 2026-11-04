@@ -21,7 +21,7 @@ namespace LC::Azoth::Xoox
 {
 	struct VCardStorage::VCardRecord
 	{
-		Util::oral::PKey<EntryConventionalId, Util::oral::NoAutogen> JID_;
+		Util::oral::PKey<EntryConventionalId, Util::oral::NoAutogen> Jid_;
 		QString VCardIq_;
 
 		constexpr static auto ClassName = "VCards"_ct;
@@ -29,7 +29,7 @@ namespace LC::Azoth::Xoox
 
 	struct VCardStorage::PhotoHashRecord
 	{
-		Util::oral::PKey<EntryConventionalId, Util::oral::NoAutogen> JID_;
+		Util::oral::PKey<EntryConventionalId, Util::oral::NoAutogen> Jid_;
 		QByteArray Hash_;
 
 		constexpr static auto ClassName = "PhotoHashes"_ct;
@@ -37,11 +37,11 @@ namespace LC::Azoth::Xoox
 }
 
 ORAL_ADAPT_STRUCT (LC::Azoth::Xoox::VCardStorage::VCardRecord,
-		JID_,
+		Jid_,
 		VCardIq_)
 
 ORAL_ADAPT_STRUCT (LC::Azoth::Xoox::VCardStorage::PhotoHashRecord,
-		JID_,
+		Jid_,
 		Hash_)
 
 namespace LC::Azoth::Xoox
@@ -116,11 +116,11 @@ namespace LC::Azoth::Xoox
 
 	std::optional<QByteArray> VCardStorage::GetVCardPhotoHash (const EntryConventionalId& id) const
 	{
-		return AdaptedPhotoHashes_->SelectOne (sph::fields<&PhotoHashRecord::Hash_>, sph::f<&PhotoHashRecord::JID_> == id);
+		return AdaptedPhotoHashes_->SelectOne (sph::fields<&PhotoHashRecord::Hash_>, sph::f<&PhotoHashRecord::Jid_> == id);
 	}
 
 	std::optional<QString> VCardStorage::GetVCardString (const EntryConventionalId& id) const
 	{
-		return AdaptedVCards_->SelectOne (sph::fields<&VCardRecord::VCardIq_>, sph::f<&VCardRecord::JID_> == id);
+		return AdaptedVCards_->SelectOne (sph::fields<&VCardRecord::VCardIq_>, sph::f<&VCardRecord::Jid_> == id);
 	}
 }

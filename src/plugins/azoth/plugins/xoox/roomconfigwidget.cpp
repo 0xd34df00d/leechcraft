@@ -28,8 +28,8 @@ namespace Xoox
 	RoomConfigWidget::RoomConfigWidget (RoomCLEntry *room, QWidget *widget)
 	: QWidget (widget)
 	, Room_ (room)
-	, JID_ (room->GetRoomHandler ()->GetRoomJID ())
-	, RoomHandler_ (room->GetParentAccount ()->GetClientConnection ()->GetMUCManager ()->addRoom (JID_))
+	, Jid_ (room->GetRoomHandler ()->GetRoomJid ())
+	, RoomHandler_ (room->GetParentAccount ()->GetClientConnection ()->GetMUCManager ()->addRoom (Jid_))
 	, PermsModel_ (new QStandardItemModel (this))
 	, Aff2Cat_ (InitModel ())
 	{
@@ -72,7 +72,7 @@ namespace Xoox
 	void RoomConfigWidget::SendItem (const QXmppMucItem& item)
 	{
 		QXmppMucAdminIq iq;
-		iq.setTo (JID_);
+		iq.setTo (Jid_);
 		iq.setType (QXmppIq::Set);
 		iq.setItems ({ item });
 
@@ -107,7 +107,7 @@ namespace Xoox
 		if (dia->exec () != QDialog::Accepted)
 			return;
 
-		const QString& jid = dia->GetJID ();
+		const QString& jid = dia->GetJid ();
 		if (jid.isEmpty ())
 			return;
 
@@ -142,13 +142,13 @@ namespace Xoox
 
 		const QPointer<AffiliationSelectorDialog> dia { new AffiliationSelectorDialog { this } };
 		const auto deleteGuard = Util::MakeScopeGuard ([dia] { delete dia.data (); });
-		dia->SetJID (jid);
+		dia->SetJid (jid);
 		dia->SetAffiliation (aff);
 		dia->SetReason (stdItem->data (ItemRoles::Reason).toString ());
 		if (dia->exec () != QDialog::Accepted)
 			return;
 
-		const QString& newJid = dia->GetJID ();
+		const QString& newJid = dia->GetJid ();
 		if (newJid.isEmpty ())
 			return;
 

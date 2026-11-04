@@ -96,7 +96,7 @@ namespace Tracolor
 	{
 		const bool can = e.Mime_.startsWith ("x-leechcraft/notification") &&
 				e.Additional_ [AN::EF::EventCategory].toString () != AN::CatEventCancel &&
-				e.Additional_.contains (Fields::Internal::SourceGlobalStrongestID);
+				e.Additional_.contains (Fields::Internal::SourceGlobalStrongestId);
 		return can ?
 				EntityTestHandleResult { EntityTestHandleResult::PIdeal } :
 				EntityTestHandleResult {};
@@ -104,7 +104,7 @@ namespace Tracolor
 
 	void Plugin::Handle (Entity e)
 	{
-		const auto sourceIdVar = e.Additional_.value (Fields::Internal::SourceGlobalStrongestID);
+		const auto sourceIdVar = e.Additional_.value (Fields::Internal::SourceGlobalStrongestId);
 		const auto sourceIdPtr = get_if<GlobalStrongestId> (&sourceIdVar);
 		if (!sourceIdPtr)
 			return;
@@ -113,7 +113,7 @@ namespace Tracolor
 
 		EventsManager_->HandleEvent (sourceId, eventId.toUtf8 ());
 
-		if (const auto roomIdVar = e.Additional_.value (Fields::Internal::RoomGlobalStrongestID);
+		if (const auto roomIdVar = e.Additional_.value (Fields::Internal::RoomGlobalStrongestId);
 			const auto roomIdPtr = get_if<GlobalStrongestId> (&roomIdVar))
 			EventsManager_->HandleEvent (*roomIdPtr, eventId.toUtf8 ());
 	}
@@ -129,7 +129,7 @@ namespace Tracolor
 			return;
 
 		const auto& entry = qobject_ref_cast<ICLEntry> (entryObj);
-		if (const auto& newIcons = IconsManager_->GetIcons (entry.GetGlobalStrongestID ());
+		if (const auto& newIcons = IconsManager_->GetIcons (entry.GetGlobalStrongestId ());
 			!newIcons.isEmpty ())
 			icons = newIcons + icons;
 	}

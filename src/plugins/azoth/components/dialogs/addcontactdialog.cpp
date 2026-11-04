@@ -31,15 +31,15 @@ namespace Azoth
 			FocusAccount (focusAcc);
 
 		checkComplete ();
-		connect (Ui_.ContactID_,
+		connect (Ui_.ContactId_,
 				SIGNAL (textChanged (const QString&)),
 				this,
 				SLOT (checkComplete ()));
 	}
 
-	void AddContactDialog::SetContactID (const QString& id)
+	void AddContactDialog::SetContactId (const QString& id)
 	{
-		Ui_.ContactID_->setText (id);
+		Ui_.ContactId_->setText (id);
 	}
 
 	void AddContactDialog::SetNick (const QString& nick)
@@ -55,9 +55,9 @@ namespace Azoth
 			0;
 	}
 
-	QString AddContactDialog::GetContactID () const
+	QString AddContactDialog::GetContactId () const
 	{
-		return Ui_.ContactID_->text ();
+		return Ui_.ContactId_->text ();
 	}
 
 	QString AddContactDialog::GetNick () const
@@ -142,7 +142,7 @@ namespace Azoth
 	void AddContactDialog::checkComplete ()
 	{
 		const bool isComplete = GetSelectedAccount () &&
-				!Ui_.ContactID_->text ().isEmpty ();
+				!Ui_.ContactId_->text ().isEmpty ();
 		Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (isComplete);
 	}
 }

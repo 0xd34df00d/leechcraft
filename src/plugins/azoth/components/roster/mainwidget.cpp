@@ -418,7 +418,7 @@ namespace Azoth
 		if (!dia.GetSelectedAccount ())
 			return;
 
-		dia.GetSelectedAccount ()->RequestAuth (dia.GetContactID (),
+		dia.GetSelectedAccount ()->RequestAuth (dia.GetContactId (),
 					dia.GetReason (),
 					dia.GetNick (),
 					dia.GetGroups ());

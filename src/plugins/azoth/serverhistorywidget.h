@@ -30,8 +30,8 @@ namespace Azoth
 
 		IHaveServerHistory * const IHSH_;
 
-		QByteArray CurrentID_;
-		QByteArray MaxID_;
+		QByteArray CurrentId_;
+		QByteArray MaxId_;
 		int FirstMsgCount_ = -1;
 
 		QSortFilterProxyModel * const ContactsFilter_;

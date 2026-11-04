@@ -21,14 +21,14 @@ namespace Xoox
 		Ui_.setupUi (this);
 	}
 
-	QString AffiliationSelectorDialog::GetJID () const
+	QString AffiliationSelectorDialog::GetJid () const
 	{
-		return Ui_.JIDEdit_->text ();
+		return Ui_.JidEdit_->text ();
 	}
 
-	void AffiliationSelectorDialog::SetJID (const QString& jid)
+	void AffiliationSelectorDialog::SetJid (const QString& jid)
 	{
-		Ui_.JIDEdit_->setText (jid);
+		Ui_.JidEdit_->setText (jid);
 	}
 
 	QXmppMucItem::Affiliation AffiliationSelectorDialog::GetAffiliation () const

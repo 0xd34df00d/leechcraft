@@ -56,7 +56,7 @@ namespace Azoth
 		/** @brief Tries to call a contact list entry.
 		 *
 		 * The entry is identified by its \em id, which is the ID returned
-		 * by ICLEntry::GetEntryID().
+		 * by ICLEntry::GetEntryId().
 		 *
 		 * If the corresponding protocol supports multiple variants per
 		 * entry, the \em variant parameter specifies which variant (from
@@ -69,7 +69,7 @@ namespace Azoth
 		 * @note If this method returns a valid IMediaCall object, it
 		 * should also be advertised via the called() signal.
 		 *
-		 * @param[in] id The ID of the entry to call (as in ICLEntry::GetEntryID()).
+		 * @param[in] id The ID of the entry to call (as in ICLEntry::GetEntryId()).
 		 * @param[in] variant The variant of the entry to call to.
 		 * @return The call object implementing IMediaCall, or a nullptr
 		 * if it is impossible to make the call.

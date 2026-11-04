@@ -45,7 +45,7 @@ namespace Azoth
 	public:
 		struct RestoreChatInfo
 		{
-			GlobalStrongestId EntryID_;
+			GlobalStrongestId EntryId_;
 			QString Variant_ {};
 			QString MsgText_ {};
 			DynPropertiesList_t Props_;

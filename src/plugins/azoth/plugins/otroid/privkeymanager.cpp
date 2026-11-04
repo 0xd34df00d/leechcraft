@@ -91,7 +91,7 @@ namespace OTRoid
 			if (!acc)
 				continue;
 
-			const auto& hash = accId2key.value (acc->GetAccountID ().ToString ());
+			const auto& hash = accId2key.value (acc->GetAccountId ().ToString ());
 
 			QList<QStandardItem*> row
 			{
@@ -104,8 +104,8 @@ namespace OTRoid
 			for (auto item : row)
 			{
 				item->setEditable (false);
-				item->setData (QVariant::fromValue (acc->GetAccountID ()), RoleAccId);
-				item->setData (proto->GetProtocolID (), RoleProtoId);
+				item->setData (QVariant::fromValue (acc->GetAccountId ()), RoleAccId);
+				item->setData (proto->GetProtocolId (), RoleProtoId);
 			}
 
 			row.value (ColumnKey)->setFont (QFont { "Monospace" });

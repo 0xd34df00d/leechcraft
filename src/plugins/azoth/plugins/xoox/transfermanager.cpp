@@ -94,7 +94,7 @@ namespace Xoox
 		if (var.isEmpty ())
 			var = entry.Variants ().value (0);
 
-		auto target = entry.GetConventionalID ().ToString ();
+		auto target = entry.GetConventionalId ().ToString ();
 		if (!var.isEmpty ())
 			target += '/' + var;
 		return new TransferJob { std::unique_ptr<QXmppTransferJob> { Manager_.sendFile (target, name, comment) } };

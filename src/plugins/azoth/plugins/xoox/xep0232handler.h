@@ -20,7 +20,7 @@ namespace LC::Azoth::Xoox::XEP0232Handler
 	{
 		QSize IconSize_;
 		QUrl IconURL_;
-		QByteArray IconCID_;
+		QByteArray IconCid_;
 		QMimeType IconType_;
 
 		QString OS_;

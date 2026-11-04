@@ -232,11 +232,11 @@ namespace LC::Azoth
 		{
 			const auto muc = qobject_cast<IMUCEntry*> (thisEntry->GetQObject ());
 			for (const auto& entry : entries)
-				muc->InviteToMUC (entry->GetHumanReadableID (), reason);
+				muc->InviteToMUC (entry->GetHumanReadableId (), reason);
 		}
 		else
 		{
-			const auto thisId = thisEntry->GetHumanReadableID ();
+			const auto thisId = thisEntry->GetHumanReadableId ();
 			for (const auto& entry : entries)
 			{
 				const auto muc = qobject_cast<IMUCEntry*> (entry->GetQObject ());

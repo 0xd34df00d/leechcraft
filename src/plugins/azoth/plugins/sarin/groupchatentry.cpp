@@ -51,12 +51,12 @@ namespace LC::Azoth::Sarin
 	{
 	}
 
-	std::optional<EntryPersistentId> GroupChatEntry::GetPersistentID () const
+	std::optional<EntryPersistentId> GroupChatEntry::GetPersistentId () const
 	{
 		return EntryPersistentId::FromString (GroupId_);
 	}
 
-	EntryConventionalId GroupChatEntry::GetConventionalID () const
+	EntryConventionalId GroupChatEntry::GetConventionalId () const
 	{
 		return EntryConventionalId::FromString (GroupId_);
 	}
@@ -168,7 +168,7 @@ namespace LC::Azoth::Sarin
 		return {};
 	}
 
-	QString GroupChatEntry::GetRealID (const ICLEntry& participant) const
+	QString GroupChatEntry::GetRealId (const ICLEntry& participant) const
 	{
 		return {};
 	}

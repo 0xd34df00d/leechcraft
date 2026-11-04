@@ -124,7 +124,7 @@ namespace LC::Azoth
 			if (!mucEntry)
 				return {};
 
-			const auto mucEntryId = entry.GetGlobalPersistentID ();
+			const auto mucEntryId = entry.GetGlobalPersistentId ();
 			if (!mucEntryId)
 				return {};
 

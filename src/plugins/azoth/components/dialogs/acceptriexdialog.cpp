@@ -52,7 +52,7 @@ namespace Azoth
 			action->setData (QVariant::fromValue<RIEXItem> (item));
 
 			row << action;
-			row << new QStandardItem (item.ID_);
+			row << new QStandardItem (item.Id_);
 			row << new QStandardItem (item.Nick_);
 			row << new QStandardItem (item.Groups_.join ("; "));
 

@@ -27,16 +27,16 @@ namespace ChatHistory
 
 	bool LoggingStateKeeper::IsLoggingEnabled (ICLEntry *entry) const
 	{
-		return !DisabledIDs_.contains (entry->GetEntryID ());
+		return !DisabledIds_.contains (entry->GetEntryId ());
 	}
 
 	void LoggingStateKeeper::SetLoggingEnabled (ICLEntry *entry, bool enable)
 	{
-		const auto& id = entry->GetEntryID ();
+		const auto& id = entry->GetEntryId ();
 		if (enable)
-			DisabledIDs_.remove (id);
+			DisabledIds_.remove (id);
 		else
-			DisabledIDs_ << id;
+			DisabledIds_ << id;
 
 		SaveDisabled ();
 	}
@@ -45,14 +45,14 @@ namespace ChatHistory
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_ChatHistory");
-		DisabledIDs_ = Util::AsSet (settings.value ("DisabledIDs").toStringList ());
+		DisabledIds_ = Util::AsSet (settings.value ("DisabledIDs").toStringList ());
 	}
 
 	void LoggingStateKeeper::SaveDisabled ()
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_ChatHistory");
-		settings.setValue ("DisabledIDs", QStringList (DisabledIDs_.values ()));
+		settings.setValue ("DisabledIDs", QStringList (DisabledIds_.values ()));
 	}
 }
 }

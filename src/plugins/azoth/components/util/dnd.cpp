@@ -31,7 +31,7 @@ namespace LC::Azoth::DndUtil
 		QDataStream stream (&encoded, QIODevice::WriteOnly);
 		for (const auto& info : entries)
 		{
-			Serialize (stream, info.Entry_->GetGlobalStrongestID ());
+			Serialize (stream, info.Entry_->GetGlobalStrongestId ());
 			stream << info.Group_;
 		}
 

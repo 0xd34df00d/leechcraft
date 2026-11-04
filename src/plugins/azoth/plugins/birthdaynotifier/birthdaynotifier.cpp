@@ -104,7 +104,7 @@ namespace BirthdayNotifier
 
 		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = GetUniqueID ();
 		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = AN::CatOrganizer;
-		e.Additional_ ["org.LC.AdvNotifications.EventID"] = "org.LC.Plugins.Azoth.BirthdayNotifier.Birthday/" + entry->GetEntryID ();
+		e.Additional_ ["org.LC.AdvNotifications.EventID"] = "org.LC.Plugins.Azoth.BirthdayNotifier.Birthday/" + entry->GetEntryId ();
 		e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList (hrId);
 
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeOrganizerEventDue;

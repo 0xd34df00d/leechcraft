@@ -26,7 +26,7 @@ namespace Azoth
 
 	struct Post
 	{
-		QString ID_;
+		QString Id_;
 		QMap<QString, QString> Contents_;
 
 		QDateTime Published_;

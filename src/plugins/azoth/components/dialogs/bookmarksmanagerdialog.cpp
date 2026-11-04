@@ -45,7 +45,7 @@ namespace Azoth
 							<< "unable to cast"
 							<< accObj
 							<< "to IAccount for protocol"
-							<< proto->GetProtocolID ();
+							<< proto->GetProtocolId ();
 					continue;
 				}
 
@@ -111,7 +111,7 @@ namespace Azoth
 
 		if (!found)
 		{
-			qWarning () << "unable to find parent protocol for entry" << entryObj << entry->GetGlobalStrongestID ();
+			qWarning () << "unable to find parent protocol for entry" << entryObj << entry->GetGlobalStrongestId ();
 			return;
 		}
 

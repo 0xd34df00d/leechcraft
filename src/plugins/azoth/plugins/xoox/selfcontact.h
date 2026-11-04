@@ -20,7 +20,7 @@ namespace Xoox
 	{
 		Q_OBJECT
 
-		QString BareJID_;
+		QString BareJid_;
 		QString Resource_;
 
 		QMap<QString, int> Status2Prio_;
@@ -31,8 +31,8 @@ namespace Xoox
 		EntryType GetEntryType () const override;
 		QString GetEntryName () const override;
 		void SetEntryName (const QString&) override;
-		std::optional<EntryPersistentId> GetPersistentID () const override;
-		EntryConventionalId GetConventionalID () const override;
+		std::optional<EntryPersistentId> GetPersistentId () const override;
+		EntryConventionalId GetConventionalId () const override;
 		QStringList Groups () const override;
 		void SetGroups (const QStringList&) override;
 		QStringList Variants () const override;
@@ -43,8 +43,8 @@ namespace Xoox
 		void HandlePresence (const QXmppPresence&, const QString&) override;
 
 		void RemoveVariant (const QString&, bool);
-		QString GetJID () const override;
-		void UpdateJID (const QString&);
+		QString GetJid () const override;
+		void UpdateJid (const QString&);
 	private:
 		void UpdatePriority (const QString&, int);
 	};

@@ -257,7 +257,7 @@ namespace Xoox
 		}
 
 		const Entity& e = Util::MakeNotification ("Azoth",
-				tr ("Account %1:").arg (ClientConn_->GetOurJID ()) +
+				tr ("Account %1:").arg (ClientConn_->GetOurJid ()) +
 					' ' + str,
 				Priority::Critical);
 		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);

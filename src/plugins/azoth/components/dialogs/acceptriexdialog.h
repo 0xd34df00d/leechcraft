@@ -27,7 +27,7 @@ namespace Azoth
 		enum Column
 		{
 			Action,
-			ID,
+			Id,
 			Name,
 			Groups
 		};

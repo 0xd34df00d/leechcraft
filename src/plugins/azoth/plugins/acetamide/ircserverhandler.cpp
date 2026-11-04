@@ -44,7 +44,7 @@ namespace LC::Azoth::Acetamide
 	, CmdManager_ { this, IrcParser_ }
 	, ServerResponseManager_ { this }
 	, ChannelsManager_ { new ChannelsManager { this } }
-	, ServerID_ { server.ServerName_ + ":" + QString::number (server.ServerPort_) }
+	, ServerId_ { server.ServerName_ + ":" + QString::number (server.ServerPort_) }
 	, NickName_ { server.ServerNickName_ }
 	, ServerOptions_ { server }
 	, AutoWhoTimer_ { new QTimer { this } }
@@ -89,9 +89,9 @@ namespace LC::Azoth::Acetamide
 		return NickName_;
 	}
 
-	QString IrcServerHandler::GetServerID () const
+	QString IrcServerHandler::GetServerId () const
 	{
-		return ServerID_;
+		return ServerId_;
 	}
 
 	ServerOptions IrcServerHandler::GetServerOptions () const
@@ -232,7 +232,7 @@ namespace LC::Azoth::Acetamide
 		{
 			//TODO Work only for exists entries
 			const auto message = new IrcMessage (Message { .Body_ = msg, .Nickname_ = nick },
-					ServerID_,
+					ServerId_,
 					Account_->GetClientConnection ().get ());
 
 			for (const auto entryObj : ChannelsManager_->GetParticipantsByNick (nick))
@@ -431,7 +431,7 @@ namespace LC::Azoth::Acetamide
 						.property ("ServerDuplicateCommandAnswer").toBool ())
 			ServerCLEntry_->HandleMessage (new IrcMessage {
 						Message { .Body_ = msg, .Nickname_ = {}, .Type_ = type },
-						ServerID_,
+						ServerId_,
 						Account_->GetClientConnection ().get ()
 					});
 	}
@@ -726,7 +726,7 @@ namespace LC::Azoth::Acetamide
 				[this]
 				{
 					ServerConnectionState_ = Connected;
-					Account_->GetClientConnection ()->serverConnected (ServerID_);
+					Account_->GetClientConnection ()->serverConnected (ServerId_);
 					ServerCLEntry_->SetStatus (EntryStatus (SOnline, QString ()));
 					IrcParser_->AuthCommand ();
 
@@ -741,7 +741,7 @@ namespace LC::Azoth::Acetamide
 					ServerConnectionState_ = NotConnected;
 					ServerCLEntry_->SetStatus (EntryStatus (SOffline, QString ()));
 					socket->Close ();
-					Account_->GetClientConnection ()->serverDisconnected (ServerID_);
+					Account_->GetClientConnection ()->serverDisconnected (ServerId_);
 				});
 
 		connect (Socket_.get (),

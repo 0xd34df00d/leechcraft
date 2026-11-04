@@ -26,7 +26,7 @@ namespace Herbicide
 	{
 		Util::oral::PKey<int> PKey_;
 
-		Util::oral::Unique<QString> AccountID_;
+		Util::oral::Unique<QString> AccountId_;
 		QString AccountName_;
 
 		constexpr static auto ClassName = "AccountRecord"_ct;
@@ -35,9 +35,9 @@ namespace Herbicide
 	struct Logger::EntryRecord
 	{
 		Util::oral::PKey<int> PKey_;
-		Util::oral::References<&AccountRecord::PKey_> AccountID_;
+		Util::oral::References<&AccountRecord::PKey_> AccountId_;
 
-		Util::oral::Unique<QString> EntryID_;
+		Util::oral::Unique<QString> EntryId_;
 		QString EntryHumanReadableId_;
 		QString EntryName_;
 
@@ -47,7 +47,7 @@ namespace Herbicide
 	struct Logger::EventRecord
 	{
 		Util::oral::PKey<int> PKey_;
-		Util::oral::References<&EntryRecord::PKey_> EntryID_;
+		Util::oral::References<&EntryRecord::PKey_> EntryId_;
 
 		Logger::Event Event_;
 		QString Reason_;
@@ -60,19 +60,19 @@ namespace Herbicide
 
 ORAL_ADAPT_STRUCT (LC::Azoth::Herbicide::Logger::AccountRecord,
 		PKey_,
-		AccountID_,
+		AccountId_,
 		AccountName_)
 
 ORAL_ADAPT_STRUCT (LC::Azoth::Herbicide::Logger::EntryRecord,
 		PKey_,
-		AccountID_,
-		EntryID_,
+		AccountId_,
+		EntryId_,
 		EntryHumanReadableId_,
 		EntryName_)
 
 ORAL_ADAPT_STRUCT (LC::Azoth::Herbicide::Logger::EventRecord,
 		PKey_,
-		EntryID_,
+		EntryId_,
 		Event_,
 		Reason_)
 
@@ -160,17 +160,17 @@ namespace Herbicide
 
 	void Logger::LogEvent (Logger::Event event, const ICLEntry *entry, const QString& descr)
 	{
-		const auto accId = entry->GetParentAccount ()->GetAccountID ();
-		const auto& entryId = entry->GetEntryID ();
+		const auto accId = entry->GetParentAccount ()->GetAccountId ();
+		const auto& entryId = entry->GetEntryId ();
 
 		const auto& maybeAccPKey = AdaptedAccount_->SelectOne (sph::fields<&AccountRecord::PKey_>,
-				sph::f<&AccountRecord::AccountID_> == accId.ToString ());
+				sph::f<&AccountRecord::AccountId_> == accId.ToString ());
 		const auto accPKey = maybeAccPKey ?
 				*maybeAccPKey :
 				InsertAccount (entry->GetParentAccount ());
 
 		const auto maybeEntryPKey = AdaptedEntry_->SelectOne (sph::fields<&EntryRecord::PKey_>,
-				sph::f<&AccountRecord::AccountID_> == entryId);
+				sph::f<&AccountRecord::AccountId_> == entryId);
 		const auto entryPKey = maybeEntryPKey ?
 				*maybeEntryPKey :
 				InsertEntry (accPKey, entry);
@@ -182,7 +182,7 @@ namespace Herbicide
 	{
 		return AdaptedAccount_->Insert ({
 				{},
-				acc->GetAccountID ().ToString (),
+				acc->GetAccountId ().ToString (),
 				acc->GetAccountName ()
 			});
 	}
@@ -192,7 +192,7 @@ namespace Herbicide
 		return AdaptedEntry_->Insert ({
 				{},
 				accPKey,
-				entry->GetEntryID (),
+				entry->GetEntryId (),
 				entry->GetHumanReadableAddress (),
 				entry->GetEntryName ()
 			},

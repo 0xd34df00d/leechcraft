@@ -32,8 +32,8 @@ namespace Azoth
 
 		MUCInviteDialog (IAccount*, ListType = ListType::ListEntries, QWidget* = 0);
 
-		QString GetID () const;
-		void SetID (const QString&);
+		QString GetId () const;
+		void SetId (const QString&);
 
 		QString GetInviteMessage () const;
 	private slots:

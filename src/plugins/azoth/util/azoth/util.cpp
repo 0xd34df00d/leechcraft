@@ -55,7 +55,7 @@ namespace LC::Azoth
 		}
 	}
 
-	QString StateToID (State st)
+	QString StateToId (State st)
 	{
 		switch (st)
 		{

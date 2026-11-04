@@ -26,11 +26,11 @@ namespace Xoox
 
 		ClientConnection *Conn_;
 		AccountSettingsHolder *Settings_;
-		QString PreviousJID_;
+		QString PreviousJid_;
 		QString Server_;
 
 		QStringList ServerFeatures_;
-		QStringList SelfJIDFeatures_;
+		QStringList SelfJidFeatures_;
 
 		QString BytestreamsProxy_;
 	public:

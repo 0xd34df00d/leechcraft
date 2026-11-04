@@ -61,7 +61,7 @@ namespace LC::Azoth::Xoox
 	QObject* CallsHandler::Call (const QString& id, const QString& variant)
 	{
 #ifdef ENABLE_MEDIACALLS
-		if (id == qobject_cast<ICLEntry*> (Acc_.GetSelfContact ())->GetEntryID ())
+		if (id == qobject_cast<ICLEntry*> (Acc_.GetSelfContact ())->GetEntryId ())
 		{
 			Core::Instance ().SendEntity (Util::MakeNotification ("LeechCraft",
 					tr ("Why would you call yourself?"),
@@ -69,7 +69,7 @@ namespace LC::Azoth::Xoox
 			return nullptr;
 		}
 
-		auto target = GlooxCLEntry::JIDFromID (&Acc_, id);
+		auto target = GlooxCLEntry::JidFromId (&Acc_, id);
 
 		auto resultingVar = variant;
 		if (resultingVar.isEmpty ())

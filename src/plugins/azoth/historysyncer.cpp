@@ -53,7 +53,7 @@ namespace Azoth
 
 	Util::ContextTask<void> HistorySyncer::SyncAccount (IAccount *acc)
 	{
-		qDebug () << Q_FUNC_INFO << acc->GetAccountID ();
+		qDebug () << Q_FUNC_INFO << acc->GetAccountId ();
 
 		if (Storages_.isEmpty ())
 		{
@@ -74,7 +74,7 @@ namespace Azoth
 
 	Util::ContextTask<void> HistorySyncer::RequestAccountFrom (IAccount *acc, const std::optional<QDateTime>& from)
 	{
-		qDebug () << acc->GetAccountID () << from;
+		qDebug () << acc->GetAccountId () << from;
 		co_await Util::AddContext { CoroContext_ };
 
 		const auto ihsh = qobject_cast<IHaveServerHistory*> (acc->GetQObject ());

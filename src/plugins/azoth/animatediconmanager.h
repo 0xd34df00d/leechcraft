@@ -29,7 +29,7 @@ namespace Azoth
 		{
 			int CurrentFrame_;
 			QList<QImage> Images_;
-			int TimerID_;
+			int TimerId_;
 		};
 		QHash<T, IconInfo> Object2Icon_;
 		QHash<int, T> Timer2Object_;
@@ -126,7 +126,7 @@ namespace Azoth
 			Setter_ (t, QIcon (QPixmap::fromImage (images.first ())));
 
 			Object2Icon_ [t] = info;
-			Timer2Object_ [info.TimerID_] = t;
+			Timer2Object_ [info.TimerId_] = t;
 		}
 
 		void Cancel (const T& t)
@@ -134,7 +134,7 @@ namespace Azoth
 			if (!Object2Icon_.contains (t))
 				return;
 
-			const int timerId = Object2Icon_.take (t).TimerID_;
+			const int timerId = Object2Icon_.take (t).TimerId_;
 			killTimer (timerId);
 			Timer2Object_.remove (timerId);
 		}

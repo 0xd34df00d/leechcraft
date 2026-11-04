@@ -23,7 +23,7 @@ namespace LC::Azoth::Acetamide
 		QString UserName_;
 		QString HostName_;
 		QString RealName_;
-		QString ServerID_;
+		QString ServerId_;
 		bool IsPrivateChat_ = false;
 	public:
 		explicit IrcParticipantEntry (QString, IrcAccount* = nullptr);
@@ -47,7 +47,7 @@ namespace LC::Azoth::Acetamide
 		QString GetRealName () const;
 		void SetRealName (const QString& realName);
 
-		QString GetServerID () const;
+		QString GetServerId () const;
 
 		bool IsPrivateChat () const;
 		void SetPrivateChat (bool isPrivate);

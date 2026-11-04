@@ -25,11 +25,11 @@ namespace Azoth
 	public:
 		AddContactDialog (IAccount *focusAcc = 0, QWidget* = 0);
 
-		void SetContactID (const QString&);
+		void SetContactId (const QString&);
 		void SetNick (const QString&);
 
 		IAccount* GetSelectedAccount () const;
-		QString GetContactID () const;
+		QString GetContactId () const;
 		QString GetNick () const;
 		QString GetReason () const;
 		QStringList GetGroups () const;

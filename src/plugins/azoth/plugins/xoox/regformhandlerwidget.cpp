@@ -88,7 +88,7 @@ namespace Xoox
 	{
 		ShowMessage ("Fetching registration form...");
 
-		ReqJID_ = jid;
+		ReqJid_ = jid;
 
 		QXmppElement queryElem;
 		queryElem.setTagName ("query");
@@ -99,7 +99,7 @@ namespace Xoox
 		if (!jid.isEmpty ())
 			iq.setTo (jid);
 		Client_->sendPacket (iq);
-		LastStanzaID_ = iq.id ();
+		LastStanzaId_ = iq.id ();
 
 		SetState (State::FetchingForm);
 	}
@@ -130,11 +130,11 @@ namespace Xoox
 				});
 
 		QXmppIq iq (QXmppIq::Set);
-		if (!ReqJID_.isEmpty ())
-			iq.setTo (ReqJID_);
+		if (!ReqJid_.isEmpty ())
+			iq.setTo (ReqJid_);
 		iq.setExtensions ({ queryElem });
 		Client_->sendPacket (iq);
-		LastStanzaID_ = iq.id ();
+		LastStanzaId_ = iq.id ();
 
 		SetState (State::AwaitingRegistrationResult);
 	}
@@ -283,7 +283,7 @@ namespace Xoox
 
 	void RegFormHandlerWidget::handleIqReceived (const QXmppIq& iq)
 	{
-		if (iq.id () != LastStanzaID_)
+		if (iq.id () != LastStanzaId_)
 			return;
 
 		switch (State_)
