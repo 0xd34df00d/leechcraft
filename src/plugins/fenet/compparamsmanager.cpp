@@ -76,18 +76,21 @@ namespace LC::Fenet
 		}
 	}
 
-	QStringList CompParamsManager::GetCompParams (const QString& compName) const
+	QStringList CompParamsManager::GetCompParams (const CompInfo& info) const
 	{
-		auto settings = GetSettings (compName);
+		auto settings = GetSettings (info.Name_);
 
-		auto result = settings->value ("__Flags").toStringList ();
-		for (const auto& key : settings->childKeys ())
-		{
-			if (key == "__Flags")
-				continue;
+		QStringList result;
 
-			result << key << QString::number (settings->value (key).toDouble ());
-		}
+		const auto& enabledFlags = settings->value ("__Flags").toStringList ();
+		for (const auto& flag : info.Flags_)
+			if (enabledFlags.contains (flag.Name_))
+				result << flag.Name_;
+
+		for (const auto& param : info.Params_)
+			if (settings->contains (param.Name_))
+				result << param.Name_ << QString::number (settings->value (param.Name_).toDouble ());
+
 		return result;
 	}
 

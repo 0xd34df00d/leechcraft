@@ -259,7 +259,7 @@ namespace LC::Fenet
 		if (info.ExecNames_.isEmpty ())
 			return;
 
-		const auto& params = CompParamsManager_->GetCompParams (info.Name_);
+		const auto& params = CompParamsManager_->GetCompParams (info);
 		const auto& executable = info.ExecNames_.value (0);
 		qDebug () << Q_FUNC_INFO << "starting" << executable << params;
 		CompProcess_->start (executable, params);

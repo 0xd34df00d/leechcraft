@@ -44,7 +44,7 @@ namespace LC::Fenet
 
 		void SetCompInfo (const CompInfo&);
 
-		QStringList GetCompParams (const QString&) const;
+		QStringList GetCompParams (const CompInfo&) const;
 	private:
 		std::shared_ptr<QSettings> GetSettings (QString compName = QString ()) const;
 	public slots:
