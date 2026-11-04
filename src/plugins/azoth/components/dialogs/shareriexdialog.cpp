@@ -14,8 +14,6 @@
 #include "interfaces/azoth/iprotocol.h"
 #include "util/azoth/util.h"
 
-Q_DECLARE_METATYPE (LC::Azoth::ICLEntry*);
-
 namespace LC
 {
 namespace Azoth

@@ -351,5 +351,3 @@ namespace LC::Azoth
 				QObject *message);
 	};
 }
-
-Q_DECLARE_METATYPE (LC::Azoth::ICLEntry*)
