@@ -59,6 +59,11 @@ namespace LC::Util
 			return Ptr_;
 		}
 
+		T* GetOrNull () const
+		{
+			return Guard_ ? Ptr_ : nullptr;
+		}
+
 		T* operator-> () const
 		{
 			if (!Guard_)
