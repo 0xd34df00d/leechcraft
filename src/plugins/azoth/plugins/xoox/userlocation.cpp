@@ -109,9 +109,10 @@ namespace Xoox
 
 			ParseElem operator() (const char *elemName)
 			{
-				const QDomElement& child = R_.firstChildElement (elemName);
+				const auto& name = QString::fromUtf8 (elemName);
+				const QDomElement& child = R_.firstChildElement (name);
 				if (!child.isNull ())
-					I_ [elemName] = Converter<T> () (child.text ());
+					I_ [name] = Converter<T> () (child.text ());
 				return *this;
 			}
 

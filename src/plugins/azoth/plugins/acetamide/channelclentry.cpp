@@ -543,6 +543,6 @@ namespace LC::Azoth::Acetamide
 
 	QString ChannelCLEntry::Role2String (ChannelRole role) const
 	{
-		return Role2Str [role];
+		return QString::fromUtf8 (Role2Str [role]);
 	}
 }

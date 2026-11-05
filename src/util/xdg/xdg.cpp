@@ -19,22 +19,23 @@ namespace LC::Util::XDG
 
 	QPixmap GetAppPixmap (const QString& name)
 	{
-		static const auto prefixes =
+		static const QStringList prefixes
 		{
 			"/usr/share/pixmaps/",
 			"/usr/local/share/pixmaps/"
 		};
 
-		static const auto sizes = { "192", "128", "96", "72", "64", "48", "36", "32" };
+		static const QStringList sizes { "192", "128", "96", "72", "64", "48", "36", "32" };
+		static const QStringList extensions { ".png", ".svg", ".xpm", ".jpg", "" };
 		static const QStringList themes
 		{
 			QStringLiteral ("/usr/local/share/icons/hicolor/"),
 			QStringLiteral ("/usr/share/icons/hicolor/")
 		};
 
-		for (auto ext : { ".png", ".svg", ".xpm", ".jpg", "" })
+		for (const auto& ext : extensions)
 		{
-			for (auto prefix : prefixes)
+			for (const auto& prefix : prefixes)
 				if (const auto& str = prefix + name + ext;
 					QFile::exists (str))
 					return { str };

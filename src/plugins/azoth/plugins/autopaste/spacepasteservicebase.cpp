@@ -18,7 +18,7 @@ namespace LC::Azoth::Autopaste
 		if (!baseUrl.endsWith ('/'))
 			baseUrl += '/';
 
-		QNetworkRequest req { QUrl { baseUrl } };
+		QNetworkRequest req { QUrl::fromEncoded (baseUrl) };
 		req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 		req.setRawHeader ("Origin", baseUrl);
 		req.setRawHeader ("Referer", baseUrl);

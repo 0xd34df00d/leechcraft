@@ -156,11 +156,11 @@ namespace Azoth
 			QMap<QString, std::pair<QVariant, QIcon>> list;
 			for (uint i = 0; i < sizeof (moodStr) / sizeof (moodStr [0]); ++i)
 			{
-				QString name (moodStr [i]);
+				auto name = QString::fromUtf8 (moodStr [i]);
 				name [0] = name.at (0).toUpper ();
 				QIcon icon (rl->GetIconPath (theme + name));
 
-				list [tr (moodStr [i])] = { QString (moodStr [i]), icon };
+				list [tr (moodStr [i])] = { QString::fromUtf8 (moodStr [i]), icon };
 			}
 			return list;
 		} ();

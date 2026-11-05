@@ -148,7 +148,7 @@ namespace MuCommands
 									QString {} :
 									"<ul><li>"_qba + list.join ("</li><li>"_ql) + "</li></ul>"_qba;
 						},
-						[&] { return "unhandled data type "_qs + value.typeName (); });
+						[&] { return "unhandled data type "_qs + QString::fromUtf8 (value.typeName ()); });
 
 				if (!descr.isEmpty ())
 					strings << "<strong>"_qba  + field + ":</strong> "_qba + descr;

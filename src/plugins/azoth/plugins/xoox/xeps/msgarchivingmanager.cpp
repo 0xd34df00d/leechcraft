@@ -207,7 +207,7 @@ namespace Xoox
 	void MsgArchivingManager::SetArchSetting (const MsgArchSetting& setting, const QString& jid)
 	{
 		QXmppElement def;
-		def.setTagName (jid.isEmpty () ? "default" : "item");
+		def.setTagName (jid.isEmpty () ? "default"_qs : "item"_qs);
 		def.setAttribute ("otr", OTRConverter (setting.OTR_));
 		def.setAttribute ("save", SaveConverter (setting.Save_));
 		if (setting.Expire_ > 0)

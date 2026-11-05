@@ -129,17 +129,19 @@ namespace Azoth
 			{
 				SpecificList_t specifics;
 
-				const auto& iconPrefix = theme + genAct [pos] + '_';
+				const auto& genName = QString::fromUtf8 (genAct [pos]);
+				const auto& iconPrefix = theme + genName + '_';
 				for (int j = 0; j < sizes [pos]; ++j, ++i)
 				{
-					QIcon icon { rl->GetIconPath (iconPrefix + specAct [i]) };
-					specifics [tr (specAct [i])] = { icon, specAct [i], {} };
+					const auto& specName = QString::fromUtf8 (specAct [i]);
+					QIcon icon { rl->GetIconPath (iconPrefix + specName) };
+					specifics [tr (specAct [i])] = { icon, specName, {} };
 				}
 
 				infos [tr (genAct [pos])] =
 				{
-					QIcon { rl->GetIconPath (theme + genAct [pos]) },
-					genAct [pos],
+					QIcon { rl->GetIconPath (theme + genName) },
+					genName,
 					std::move (specifics)
 				};
 			}

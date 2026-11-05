@@ -125,12 +125,12 @@ namespace Xoox
 		}
 		
 		QXmppElement generalElem;
-		generalElem.setTagName (activity_general [General_]);
+		generalElem.setTagName (QString::fromUtf8 (activity_general [General_]));
 		
 		if (Specific_ != SpecificEmpty)
 		{
 			QXmppElement specific;
-			specific.setTagName (activity_specific [Specific_]);
+			specific.setTagName (QString::fromUtf8 (activity_specific [Specific_]));
 			generalElem.appendChild (specific);
 		}
 		
@@ -208,7 +208,7 @@ namespace Xoox
 	{
 		return General_ == GeneralEmpty ?
 				QString () :
-				activity_general [General_];
+				QString::fromUtf8 (activity_general [General_]);
 	}
 	
 	void UserActivity::SetGeneralStr (const QString& str)
@@ -249,7 +249,7 @@ namespace Xoox
 	{
 		return Specific_ == SpecificEmpty ?
 				QString () :
-				activity_specific [Specific_];
+				QString::fromUtf8 (activity_specific [Specific_]);
 	}
 	
 	QString UserActivity::GetText () const

@@ -16,7 +16,7 @@ namespace LC::Azoth::Acetamide
 {
 	auto Decode (const char *str)
 	{
-		return DecodeUrl (QUrl::fromUserInput (str));
+		return DecodeUrl (QUrl::fromUserInput (QString::fromUtf8 (str)));
 	}
 
 	void UrlDecoderTest::testDefaultServer ()

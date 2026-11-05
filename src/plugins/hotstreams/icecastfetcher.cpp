@@ -160,7 +160,7 @@ namespace HotStreams
 					break;
 				}
 				case QXmlStreamReader::EndElement:
-					if (reader.qualifiedName () == "entry")
+					if (reader.qualifiedName () == "entry"_ql)
 						return info;
 				default:
 					break;
@@ -180,7 +180,7 @@ namespace HotStreams
 				switch (reader.readNext ())
 				{
 				case QXmlStreamReader::StartElement:
-					if (reader.qualifiedName () == "entry")
+					if (reader.qualifiedName () == "entry"_ql)
 					{
 						const auto& info = ParseStationEntry (reader);
 						const auto& genre = info.Genre_;

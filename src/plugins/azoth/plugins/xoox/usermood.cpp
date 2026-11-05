@@ -122,7 +122,7 @@ namespace Xoox
 		if (Mood_ != MoodEmpty)
 		{
 			QXmppElement elem;
-			elem.setTagName (MoodStr [Mood_]);
+			elem.setTagName (QString::fromUtf8 (MoodStr [Mood_]));
 			mood.appendChild (elem);
 
 			if (!Text_.isEmpty ())
@@ -186,7 +186,7 @@ namespace Xoox
 	{
 		return Mood_ == MoodEmpty ?
 				QString () :
-				MoodStr [Mood_];
+				QString::fromUtf8 (MoodStr [Mood_]);
 	}
 
 	void UserMood::SetMoodStr (const QString& str)

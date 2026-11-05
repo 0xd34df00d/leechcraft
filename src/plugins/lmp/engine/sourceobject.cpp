@@ -470,7 +470,7 @@ namespace LMP
 			qDebug () << Q_FUNC_INFO
 					<< "user-agent property not found for"
 					<< CurrentSource_.ToUrl ()
-					<< (QString ("|") + G_OBJECT_TYPE_NAME (src) + "|")
+					<< (QString ("|") + QString::fromUtf8 (G_OBJECT_TYPE_NAME (src)) + "|")
 					<< "soup rank:"
 					<< GetRank ("souphttpsrc")
 					<< "webkit rank:"

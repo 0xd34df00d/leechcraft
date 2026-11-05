@@ -26,7 +26,7 @@ namespace LC::Azoth::Acetamide
 
 		QString Fixup (const QByteArray& pat)
 		{
-			return QString { pat }.remove ('\n').remove ('\t').remove (' ');
+			return QString::fromUtf8 (pat).remove ('\n').remove ('\t').remove (' ');
 		}
 
 		const auto host = With (R"( {subdomain}(\.{subdomain})* )", { { "{subdomain}", R"( [a-zA-Z][-\w]+ )" } });

@@ -22,6 +22,7 @@
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/sll/either.h>
+#include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
 #include <util/threads/futures.h>
 #include "interfaces/netstoremanager/istorageaccount.h"
@@ -413,8 +414,8 @@ namespace NetStoreManager
 									Id2Item_ [item.ID_] = item;
 
 								const auto iconName = GetTrashedFiles ().isEmpty () ?
-									"user-trash-full" :
-									"user-trash";
+									"user-trash-full"_qs :
+									"user-trash"_qs;
 								Trash_->setIcon (Proxy_->GetIconThemeManager ()->GetIcon (iconName));
 								ClearModel ();
 								FillListModel ();

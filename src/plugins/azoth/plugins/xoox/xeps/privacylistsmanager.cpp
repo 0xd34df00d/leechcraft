@@ -11,6 +11,7 @@
 #include <QXmppClient.h>
 #include <util/sll/prelude.h>
 #include <util/sll/functional.h>
+#include <util/sll/qtutil.h>
 #include "clientconnectionerrormgr.h"
 #include "clientconnection.h"
 #include "serverinfostorage.h"
@@ -83,7 +84,7 @@ namespace Xoox
 			break;
 		}
 
-		item.setAttribute ("action", Action_ == Action::Deny ? "deny" : "allow");
+		item.setAttribute ("action", Action_ == Action::Deny ? "deny"_qs : "allow"_qs);
 
 		if (!Value_.isEmpty ())
 			item.setAttribute ("value", Value_);
@@ -299,7 +300,7 @@ namespace Xoox
 	void PrivacyListsManager::ActivateList (const QString& name, ListType type)
 	{
 		QXmppElement list;
-		list.setTagName (type == ListType::Active ? "active" : "default");
+		list.setTagName (type == ListType::Active ? "active"_qs : "default"_qs);
 		if (!name.isEmpty ())
 			list.setAttribute ("name", name);
 

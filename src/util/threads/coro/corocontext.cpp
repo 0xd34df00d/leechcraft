@@ -26,7 +26,9 @@ namespace LC::Util
 	}
 
 	CoroContext::CoroContext (const QObject& obj)
-	: CoroContext { obj.objectName ().isEmpty () ? obj.metaObject ()->className () : obj.objectName () }
+	: CoroContext { obj.objectName ().isEmpty () ?
+			QString::fromUtf8 (obj.metaObject ()->className ()) :
+			obj.objectName () }
 	{
 	}
 

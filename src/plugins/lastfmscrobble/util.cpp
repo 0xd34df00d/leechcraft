@@ -102,7 +102,7 @@ namespace Lastfmscrobble
 	QNetworkReply* Request (const QString& method, QNetworkAccessManager *nam, ParamsList_t params)
 	{
 		params.push_back ({ "method", method });
-		params.push_back ({ "api_key", lastfm::ws::ApiKey });
+		params.push_back ({ "api_key", QString::fromUtf8 (lastfm::ws::ApiKey) });
 
 		if (!lastfm::ws::SessionKey.isEmpty ())
 			params.push_back ({ "sk", lastfm::ws::SessionKey });

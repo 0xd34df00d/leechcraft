@@ -823,7 +823,7 @@ namespace LC::Util
 			const auto theInt = co_await Either<QString, int> { "meh" };
 			co_return theInt > 420;
 		} ();
-		QCOMPARE (GetTaskResult (immediatelyFailing), Result_t { Left { "meh" } });
+		QCOMPARE (GetTaskResult (immediatelyFailing), Result_t { Left { "meh"_qs } });
 
 		auto earlyFailing = [] () -> Task<Result_t>
 		{
@@ -831,7 +831,7 @@ namespace LC::Util
 			co_await 10ms;
 			co_return theInt > 420;
 		} ();
-		QCOMPARE (GetTaskResult (earlyFailing), Result_t { Left { "meh" } });
+		QCOMPARE (GetTaskResult (earlyFailing), Result_t { Left { "meh"_qs } });
 
 		auto successful = [] () -> Task<Result_t>
 		{
@@ -1241,7 +1241,7 @@ namespace LC::Util
 				testName += ':' + QString::fromLatin1 (tag);
 
 			auto env = QProcessEnvironment::systemEnvironment ();
-			env.insert (DeathChildEnvVar, "1"_qs);
+			env.insert (QString::fromUtf8 (DeathChildEnvVar), "1"_qs);
 
 			QProcess child;
 			child.setProcessEnvironment (env);

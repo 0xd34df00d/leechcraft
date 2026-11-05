@@ -143,7 +143,7 @@ namespace LC
 
 		// Things are sane, prepare
 		QCoreApplication::setApplicationName ("Leechcraft");
-		QCoreApplication::setApplicationVersion (Version);
+		QCoreApplication::setApplicationVersion (QString::fromUtf8 (Version));
 		QCoreApplication::setOrganizationName ("Deviant");
 
 		Util::InstallTranslator ("");

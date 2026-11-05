@@ -199,7 +199,7 @@ namespace LC::AnHero::CrashProcess
 		Ui_.TraceDisplay_->append ("App path: " + Info_.Path_);
 		Ui_.TraceDisplay_->append ("App version: " + Info_.Version_);
 		Ui_.TraceDisplay_->append ("Qt version (build-time): " + QStringLiteral (QT_VERSION_STR));
-		Ui_.TraceDisplay_->append ("Qt version (runtime): " + QString (qVersion ()));
+		Ui_.TraceDisplay_->append ("Qt version (runtime): " + QString::fromUtf8 (qVersion ()));
 
 		const auto& osInfo = Util::SysInfo::GetOSInfo ();
 		Ui_.TraceDisplay_->append ("OS: " + osInfo.Name_);

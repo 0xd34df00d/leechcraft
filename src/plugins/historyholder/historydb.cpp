@@ -145,7 +145,7 @@ namespace HistoryHolder
 
 	void HistoryDB::InitQueries ()
 	{
-		auto loadQuery = std::bind (&Util::LoadQuery, "historyholder", std::placeholders::_1);
+		auto loadQuery = [] (const QString& query) { return Util::LoadQuery ("historyholder", query); };
 
 		InsertHistory_ = QSqlQuery { DB_ };
 		InsertHistory_.prepare (loadQuery ("insert_history"));

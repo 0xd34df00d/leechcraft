@@ -130,7 +130,7 @@ namespace LC
 
 	QString CoreProxy::GetVersion () const
 	{
-		return Version;
+		return QString::fromUtf8 (Version);
 	}
 
 	void CoreProxy::RegisterSkinnable (QAction *act)

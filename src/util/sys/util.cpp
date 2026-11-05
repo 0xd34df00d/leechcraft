@@ -27,7 +27,7 @@ namespace LC::Util
 		const auto& formats = QImageWriter::supportedImageFormats ();
 		return std::any_of (formats.begin (), formats.end (),
 				[&ext] (const QByteArray& format)
-					{ return !QString::compare (ext, format, Qt::CaseInsensitive); });
+					{ return !QString::compare (ext, QString::fromUtf8 (format), Qt::CaseInsensitive); });
 	}
 
 	bool IsOSXLoadFromBundle ()
