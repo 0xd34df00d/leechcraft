@@ -235,7 +235,7 @@ namespace Azoth
 	, AvatarsMgr_ { am }
 	{
 		connect (&entries,
-				&EntriesManager::conventionalIdChanged,
+				&EntriesManager::strongestIdChanged,
 				this,
 				[this] (const GlobalConventionalId& oldId, const GlobalConventionalId& newId)
 				{

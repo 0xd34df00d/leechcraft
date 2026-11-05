@@ -164,6 +164,9 @@ namespace LC::Azoth::Emitters
 		 * In this case, nick changes result in conventional ID changes,
 		 * and this signal shall be emitted.
 		 *
+		 * When this signal is emitted, the entry shall return the new ID
+		 * from the corresponding getters.
+		 *
 		 * @sa ICLEntry::GetConventionalId()
 		 */
 		void conventionalIdChanged (const GlobalConventionalId& oldId,

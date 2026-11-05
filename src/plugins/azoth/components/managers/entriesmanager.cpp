@@ -32,12 +32,20 @@ namespace LC::Azoth
 				this,
 				[this] (const GlobalConventionalId& oldId, const GlobalConventionalId& newId, const ICLEntry& entry)
 				{
-					const auto taken = Id2Entry_.take (oldId);
-					if (taken != &entry)
+					if (entry.GetGlobalStrongestId () != newId)
+						return;
+
+					if (const auto pos = Id2Entry_.find (oldId);
+						pos != Id2Entry_.end () && *pos == &entry)
+					{
+						const auto taken = *pos;
+						Id2Entry_.erase (pos);
+						if (std::exchange (Id2Entry_ [newId], taken))
+							qCritical () << "updating" << oldId << "->" << newId << "— another entry already is under newId";
+					}
+					else
 						qCritical () << "updating" << oldId << "->" << newId << "— the entry wasn't under oldId";
-					if (std::exchange (Id2Entry_ [newId], taken))
-						qCritical () << "updating" << oldId << "->" << newId << "— another entry already is under newId";
-					emit conventionalIdChanged (oldId, newId, entry);
+					emit strongestIdChanged (oldId, newId, entry);
 				});
 	}
 

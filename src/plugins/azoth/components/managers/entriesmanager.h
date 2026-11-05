@@ -44,6 +44,6 @@ namespace LC::Azoth
 		void added (const QList<ICLEntry*>&, IAccount&);
 		void aboutToBeRemoved (const QList<ICLEntry*>&, IAccount&);
 
-		void conventionalIdChanged (const GlobalConventionalId& oldId, const GlobalConventionalId& newId, const ICLEntry& entry);
+		void strongestIdChanged (const GlobalConventionalId& oldId, const GlobalConventionalId& newId, const ICLEntry& entry);
 	};
 }

@@ -59,7 +59,7 @@ namespace LC::Azoth
 		regStyle ("MUCWindowStyle");
 
 		connect (&entries,
-				&EntriesManager::conventionalIdChanged,
+				&EntriesManager::strongestIdChanged,
 				this,
 				[this] (const GlobalConventionalId& oldId, const GlobalConventionalId& newId)
 				{
