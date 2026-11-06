@@ -60,13 +60,13 @@ namespace Poshuku
 		Ui_.DomainEdit_->setEnabled (true);
 		Ui_.DomainEdit_->setText (cookie.domain ());
 		Ui_.NameEdit_->setEnabled (true);
-		Ui_.NameEdit_->setText (cookie.name ());
+		Ui_.NameEdit_->setText (QString::fromUtf8 (cookie.name ()));
 		Ui_.ExpirationEdit_->setEnabled (true);
 		Ui_.ExpirationEdit_->setDateTime (cookie.expirationDate ());
 		Ui_.PathEdit_->setEnabled (true);
 		Ui_.PathEdit_->setText (cookie.path ());
 		Ui_.ValueEdit_->setEnabled (true);
-		Ui_.ValueEdit_->setText (cookie.value ());
+		Ui_.ValueEdit_->setText (QString::fromUtf8 (cookie.value ()));
 		Ui_.SecureEdit_->setEnabled (true);
 		Ui_.SecureEdit_->setCheckState (cookie.isSecure () ?
 				Qt::Checked : Qt::Unchecked);

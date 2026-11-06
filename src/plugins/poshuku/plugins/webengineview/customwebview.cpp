@@ -218,7 +218,7 @@ namespace LC::Poshuku::WebEngineView
 							return;
 						}
 
-						page->runJavaScript (file.readAll ());
+						page->runJavaScript (QString::fromUtf8 (file.readAll ()));
 					}
 
 					channel->registerObject (id, object);

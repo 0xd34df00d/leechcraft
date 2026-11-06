@@ -125,8 +125,8 @@ namespace FileScheme
 			return;
 		}
 
-		QString html = basetplFile.readAll ();
-		QString row = rowtplFile.readAll ();
+		QString html = QString::fromUtf8 (basetplFile.readAll ());
+		QString row = QString::fromUtf8 (rowtplFile.readAll ());
 		QString link = "<a href=\"%1\">%2</a>";
 
 		QString rows;

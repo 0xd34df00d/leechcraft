@@ -518,7 +518,7 @@ namespace Poshuku
 			auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
 			QMessageBox::critical (rootWM->GetPreferredWindow (),
 					"LeechCraft",
-					e.what ());
+					QString::fromUtf8 (e.what ()));
 		}
 	}
 

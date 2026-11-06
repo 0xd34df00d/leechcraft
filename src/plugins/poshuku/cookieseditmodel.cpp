@@ -52,7 +52,7 @@ namespace Poshuku
 			}
 			else
 				parent = foundItems.back ();
-			QStandardItem *item = new QStandardItem (QString (Cookies_ [i].name ()));
+			QStandardItem *item = new QStandardItem (QString::fromUtf8 (Cookies_ [i].name ()));
 			item->setData (i);
 			item->setEditable (false);
 			parent->appendRow (item);
@@ -136,7 +136,7 @@ namespace Poshuku
 		}
 		else
 			parent = foundItems.back ();
-		QStandardItem *item = new QStandardItem (QString (Cookies_ [i].name ()));
+		QStandardItem *item = new QStandardItem (QString::fromUtf8 (Cookies_ [i].name ()));
 		item->setData (i);
 		item->setEditable (false);
 		parent->appendRow (item);

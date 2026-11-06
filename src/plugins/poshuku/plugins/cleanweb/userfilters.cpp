@@ -120,7 +120,7 @@ namespace CleanWeb
 			return;
 		}
 
-		AddMulti (Model_, file.readAll ());
+		AddMulti (Model_, QString::fromUtf8 (file.readAll ()));
 	}
 
 	void UserFilters::accept ()
