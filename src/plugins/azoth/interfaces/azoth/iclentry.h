@@ -84,6 +84,15 @@ namespace LC::Azoth
 		 */
 		virtual QObject* GetQObject () = 0;
 
+		/** Returns the entry as a `const QObject`.
+		 *
+		 * @return Contact list entry as `const QObject`.
+		 */
+		const QObject* GetQObject () const
+		{
+			return const_cast<ICLEntry*> (this)->GetQObject ();
+		}
+
 		/** Returns the pointer to the parent account that this entry
 		 * belongs to.
 		 *
