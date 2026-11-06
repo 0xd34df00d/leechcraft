@@ -71,6 +71,6 @@ namespace LC::SB2
 			else
 				TryDouble (val) || TryInt (val);
 		}
-		Ctx_->setContextProperty (name.toUtf8 ().constData (), val);
+		Ctx_->setContextProperty (name, val);
 	}
 }

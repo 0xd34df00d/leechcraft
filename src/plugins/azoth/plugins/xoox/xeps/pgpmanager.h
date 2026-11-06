@@ -42,8 +42,8 @@ namespace Xoox
 		QByteArray SignMessage (const QByteArray&);
 		QByteArray SignPresence (const QByteArray&);
 
-		QByteArray DecryptBody (const QByteArray&);
-		bool IsValidSignature (const QCA::PGPKey&, const QByteArray&, const QByteArray&);
+		QByteArray DecryptBody (const QString&);
+		bool IsValidSignature (const QCA::PGPKey&, const QByteArray&, const QString&);
 
 		bool handleStanza (const QDomElement&);
 	signals:

@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "qtutiltest.h"
+#include <type_traits>
 #include <QTest>
 #include <qtutil.h>
 
@@ -79,7 +80,7 @@ namespace LC::Util
 			const auto v = HandleQVariant ("foo"_qs,
 					[] (int n) { return QString::number (n); },
 					[] (const QString& s) { return s; },
-					[] (const QByteArray& ba) { return ba; },
+					[] (const QByteArray& ba) { return QString::fromUtf8 (ba); },
 					[] { return "default"_qs; });
 			QCOMPARE (v, "foo"_qs);
 		}
@@ -88,7 +89,7 @@ namespace LC::Util
 			const auto v = HandleQVariant (42,
 					[] (int n) { return QString::number (n); },
 					[] (const QString& s) { return s; },
-					[] (const QByteArray& ba) { return ba; },
+					[] (const QByteArray& ba) { return QString::fromUtf8 (ba); },
 					[] { return "default"_qs; });
 			QCOMPARE (v, "42"_qs);
 		}
@@ -97,9 +98,18 @@ namespace LC::Util
 			const auto v = HandleQVariant (42ULL,
 					[] (int n) { return QString::number (n); },
 					[] (const QString& s) { return s; },
-					[] (const QByteArray& ba) { return ba; },
+					[] (const QByteArray& ba) { return QString::fromUtf8 (ba); },
 					[] { return "default"_qs; });
 			QCOMPARE (v, "default"_qs);
+		}
+
+		{
+			const auto v = HandleQVariant (42,
+					[] (int n) { return n; },
+					[] (double d) { return d; },
+					[] { return 0.5; });
+			static_assert (std::is_same_v<decltype (v), const double>);
+			QCOMPARE (v, 42.0);
 		}
 	}
 }

@@ -199,7 +199,7 @@ namespace Xoox
 		}
 	}
 
-	QByteArray PgpManager::DecryptBody (const QByteArray& encrypted)
+	QByteArray PgpManager::DecryptBody (const QString& encrypted)
 	{
 		QCA::OpenPGP pgp;
 		QCA::SecureMessage msg (&pgp);
@@ -219,7 +219,7 @@ namespace Xoox
 	}
 
 	bool PgpManager::IsValidSignature (const QCA::PGPKey& pubkey,
-			const QByteArray& message, const QByteArray& signature)
+			const QByteArray& message, const QString& signature)
 	{
 		if (pubkey.isNull ())
 		{
@@ -265,7 +265,7 @@ namespace Xoox
 
 			const QCA::PGPKey key = PublicKey (from);
 
-			if (!IsValidSignature (key, message.toUtf8 (), signature.toLatin1 ()))
+			if (!IsValidSignature (key, message.toUtf8 (), signature))
 				emit invalidSignatureReceived (from);
 			else if (tagName == "message")
 				emit signedMessageReceived (from);
@@ -276,9 +276,7 @@ namespace Xoox
 		// Case 2: encrypted message
 		if (x_element.namespaceURI () == NsEncrypted)
 		{
-			const auto& encryptedBodyStr = x_element.text ();
-			const auto& encryptedBody = encryptedBodyStr.toLatin1 ();
-			const auto& decryptedBody = DecryptBody (encryptedBody);
+			const auto& decryptedBody = DecryptBody (x_element.text ());
 			if (!decryptedBody.isEmpty ())
 				emit encryptedMessageReceived (from, QString::fromUtf8 (decryptedBody));
 		}

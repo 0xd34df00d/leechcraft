@@ -232,7 +232,7 @@ namespace LC::BitTorrent
 		{
 			QTemporaryFile tmpFile { "lctemporarybittorrentfile.XXXXXX"_qs };
 			tmpFile.write (e.Entity_.toByteArray ());
-			suggestedFname = tmpFile.fileName ().toUtf8 ();
+			suggestedFname = tmpFile.fileName ();
 			tmpFile.setAutoRemove (false);
 		}
 

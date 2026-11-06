@@ -933,7 +933,7 @@ const findParent = (item, name) => {
 
 			HTMLDirty_ = false;
 			const auto& str = ExpandCustomTags (Ui_.HTML_->toPlainText ());
-			Ui_.View_->setHtml (str.toUtf8 ());
+			Ui_.View_->setHtml (str);
 
 			Ui_.View_->page ()->runJavaScript (QStringLiteral (R"(document.querySelectorAll("html > body").length)"),
 					[str, blocker, pThis = QPointer { this }] (const QVariant& result)

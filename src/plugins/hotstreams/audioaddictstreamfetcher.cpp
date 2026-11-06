@@ -55,7 +55,7 @@ namespace HotStreams
 				map ["name"].toString (),
 				map ["description"].toString (),
 				QStringList (),
-				QUrl (map ["playlist"].toByteArray ()),
+				QUrl (map ["playlist"].toString ()),
 				QString (),
 				"pls"
 			};

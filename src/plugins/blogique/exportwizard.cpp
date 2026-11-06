@@ -409,7 +409,7 @@ namespace Blogique
 				emphasis.appendChild (sectionTitleDate);
 
 				QTextDocument converter;
-				converter.setHtml (entry.Content_.toUtf8 ());
+				converter.setHtml (entry.Content_);
 
 				QDomElement p3 = doc.createElement ("p");
 				section.appendChild (p3);

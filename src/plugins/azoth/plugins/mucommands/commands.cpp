@@ -147,18 +147,18 @@ namespace MuCommands
 						{
 							return list.isEmpty () ?
 									QString {} :
-									"<ul><li>"_qba + list.join ("</li><li>"_ql) + "</li></ul>"_qba;
+									"<ul><li>"_qs + list.join ("</li><li>"_ql) + "</li></ul>"_qs;
 						},
 						[&] { return "unhandled data type "_qs + QString::fromUtf8 (value.typeName ()); });
 
 				if (!descr.isEmpty ())
-					strings << "<strong>"_qba  + field + ":</strong> "_qba + descr;
+					strings << "<strong>"_qs + field + ":</strong> "_qs + descr;
 			}
 
 			if (strings.isEmpty ())
 				return {};
 
-			return "<ul><li>"_qba + strings.join ("</li><li>"_ql) + "</li></ul>"_qba;
+			return "<ul><li>"_qs + strings.join ("</li><li>"_ql) + "</li></ul>"_qs;
 		}
 
 		template<typename T, typename F>
