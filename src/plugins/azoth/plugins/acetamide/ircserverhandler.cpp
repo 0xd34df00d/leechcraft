@@ -420,7 +420,7 @@ namespace LC::Azoth::Acetamide
 		InviteChannelsDialog_->show ();
 	}
 
-	void IrcServerHandler::ShowAnswer (const QByteArray& cmd,
+	void IrcServerHandler::ShowAnswer (const QString& cmd,
 			const QString& answer, bool /*isEndOf*/, IMessage::Type type)
 	{
 		auto msg = "[" + cmd.toUpper () + "] " + answer;

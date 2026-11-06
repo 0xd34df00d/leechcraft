@@ -30,7 +30,7 @@ namespace LC::Azoth::Acetamide
 		void HandleSpecial (QHash<QByteArray, QVariant>&);
 
 		void SetPrefix (const QByteArray&);
-		void SetTargMax (const QByteArray&);
+		void SetTargMax (const QString&);
 	public slots:
 		void accept ();
 	signals:

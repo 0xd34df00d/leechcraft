@@ -74,7 +74,7 @@ namespace LC::Azoth::Acetamide
 				continue;
 
 			widget->setToolTip (Translate (Util::AsStringView (key)));
-			Ui_.BaseParamsLayout_->addRow (key, widget);
+			Ui_.BaseParamsLayout_->addRow (QString::fromUtf8 (key), widget);
 		}
 	}
 
@@ -82,12 +82,12 @@ namespace LC::Azoth::Acetamide
 	{
 		if (auto chantypes = supports.take ("CHANTYPES");
 			!chantypes.isNull ())
-			Ui_.ChanTypes_->setText (chantypes.toString ());
+			Ui_.ChanTypes_->setText (QString::fromUtf8 (chantypes.toByteArray ()));
 
 		if (auto chanmodes = supports.take ("CHANMODES");
 			!chanmodes.isNull ())
 		{
-			const auto& split = chanmodes.toByteArray ().split (',');
+			const auto& split = QString::fromUtf8 (chanmodes.toByteArray ()).split (',');
 			Ui_.ChanModesA_->setText (split.value (0));
 			Ui_.ChanModesB_->setText (split.value (1));
 			Ui_.ChanModesC_->setText (split.value (2));
@@ -100,7 +100,7 @@ namespace LC::Azoth::Acetamide
 
 		if (auto targmax = supports.take ("TARGMAX");
 			!targmax.isNull ())
-			SetTargMax (targmax.toByteArray ());
+			SetTargMax (QString::fromUtf8 (targmax.toByteArray ()));
 	}
 
 	void ServerInfoWidget::SetPrefix (const QByteArray& str)
@@ -122,7 +122,7 @@ namespace LC::Azoth::Acetamide
 		}
 	}
 
-	void ServerInfoWidget::SetTargMax (const QByteArray& str)
+	void ServerInfoWidget::SetTargMax (const QString& str)
 	{
 		const auto& list = str.split (',');
 
@@ -132,8 +132,8 @@ namespace LC::Azoth::Acetamide
 		for (const auto& param : list)
 		{
 			const int index = param.indexOf (':');
-			Ui_.TargetMax_->setItem (row, 0, new QTableWidgetItem (QString { param.mid (0, index) }));
-			Ui_.TargetMax_->setItem (row, 1, new QTableWidgetItem (QString { param.mid (index + 1) }));
+			Ui_.TargetMax_->setItem (row, 0, new QTableWidgetItem (param.mid (0, index)));
+			Ui_.TargetMax_->setItem (row, 1, new QTableWidgetItem (param.mid (index + 1)));
 			++row;
 		}
 	}

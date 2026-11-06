@@ -128,7 +128,7 @@ namespace Acetamide
 		void KickParticipant (const QString&, const QString&,
 				const QString&);
 		void GotInvitation (const QString&, const QString&);
-		void ShowAnswer (const QByteArray& cmd,
+		void ShowAnswer (const QString& cmd,
 				const QString& answer, bool isEndOf = false,
 				IMessage::Type type = IMessage::Type::EventMessage);
 

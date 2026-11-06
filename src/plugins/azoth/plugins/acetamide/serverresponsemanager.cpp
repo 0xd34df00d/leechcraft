@@ -220,7 +220,7 @@ namespace LC::Azoth::Acetamide
 		else if (const auto actor = ISHHash (Util::AsStringView (cmdUtf8)))
 			(ISH_->*actor) (opts);
 		else
-			ISH_->ShowAnswer (opts.Command_.toUtf8 (), opts.Message_);
+			ISH_->ShowAnswer (opts.Command_, opts.Message_);
 	}
 
 	void ServerResponseManager::GotJoin (const IrcMessageOptions& opts)
@@ -350,7 +350,7 @@ namespace LC::Azoth::Acetamide
 		const auto sendReply = [&] (const QString& body)
 		{
 			ISH_->CTCPReply (opts.Nick_,
-					'\001' + command + ' ' + body + '\001',
+					'\001' + QString::fromUtf8 (command) + ' ' + body + '\001',
 					tr ("Received request %1 from %2, sending response")
 							.arg (command, opts.Nick_));
 		};

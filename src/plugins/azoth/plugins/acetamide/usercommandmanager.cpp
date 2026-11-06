@@ -80,7 +80,7 @@ namespace LC::Azoth::Acetamide
 	{
 	}
 
-	QByteArray UserCommandManager::VerifyMessage (const QString& msg, const QString& channelName) const
+	QString UserCommandManager::VerifyMessage (const QString& msg, const QString& channelName) const
 	{
 		const int pos = msg.indexOf (' ');
 		auto cmd = (msg.startsWith ('/') ? QStringView { msg }.mid (1, pos) : QStringView { msg }.left (pos))
@@ -130,7 +130,7 @@ namespace LC::Azoth::Acetamide
 		else if (cmd == "away")
 		{
 			ISH_->SetAway (messageList.join (' '));
-			return cmd;
+			return QString::fromUtf8 (cmd);
 		}
 // 		else if (cmd == "kick" && !message.isEmpty ())
 // 		{
@@ -144,6 +144,6 @@ namespace LC::Azoth::Acetamide
 			(Parser_->*parserCommand) (messageList);
 		else if (serverCommand)
 			(ISH_->*serverCommand) (messageList);
-		return cmd;
+		return QString::fromUtf8 (cmd);
 	}
 }

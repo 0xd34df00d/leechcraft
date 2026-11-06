@@ -23,7 +23,7 @@ namespace LC::Azoth::Acetamide
 	public:
 		UserCommandManager (IrcServerHandler*, IrcParser*);
 
-		QByteArray VerifyMessage (const QString&, const QString&) const;
+		QString VerifyMessage (const QString&, const QString&) const;
 	};
 }
 
