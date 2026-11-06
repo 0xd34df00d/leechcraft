@@ -414,8 +414,8 @@ namespace NetStoreManager
 									Id2Item_ [item.ID_] = item;
 
 								const auto iconName = GetTrashedFiles ().isEmpty () ?
-									"user-trash-full"_qs :
-									"user-trash"_qs;
+									"user-trash"_qs :
+									"user-trash-full"_qs;
 								Trash_->setIcon (Proxy_->GetIconThemeManager ()->GetIcon (iconName));
 								ClearModel ();
 								FillListModel ();
