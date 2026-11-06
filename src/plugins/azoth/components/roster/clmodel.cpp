@@ -63,13 +63,9 @@ namespace LC::Azoth
 			const auto& thisGroup = index.parent ().data (CLREntryCategory).toString ();
 
 			entries.append ({ entry, thisGroup });
+			names << FormatNameWithAddress (*entry);
 			if (const auto url = entry->GetEntryUrl ())
-			{
-				names << entry->GetEntryName ();
 				urls << *url;
-			}
-			else
-				names << FormatNameWithAddress (*entry);
 		}
 
 		DndUtil::Encode (entries, result);
