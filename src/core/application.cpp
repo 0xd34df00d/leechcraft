@@ -92,7 +92,7 @@ namespace LC
 
 		if (CLArgs_->HelpRequested_)
 			QCommandLineParser::showMessageAndExit (QCommandLineParser::MessageType::Information,
-					"LeechCraft %1 (https://leechcraft.org)\n\n%2"_qs.arg (QString::fromLatin1 (Version), CL::GetHelp ()),
+					"LeechCraft %1 (https://leechcraft.org)\n\n%2"_qs.arg (QString::fromUtf8 (Version), CL::GetHelp ()),
 					EHelpRequested);
 
 		if (CLArgs_->VersionRequested_)
@@ -103,7 +103,7 @@ namespace LC
 			const auto& catPower = u" this version has the UNLIMITED CAT POWER :3 ε:"_qs;
 #endif
 			QCommandLineParser::showMessageAndExit (QCommandLineParser::MessageType::Information,
-					"LeechCraft %1 (https://leechcraft.org)\n%2\n"_qs.arg (QString::fromLatin1 (Version), catPower),
+					"LeechCraft %1 (https://leechcraft.org)\n%2\n"_qs.arg (QString::fromUtf8 (Version), catPower),
 					EVersionRequested);
 		}
 
