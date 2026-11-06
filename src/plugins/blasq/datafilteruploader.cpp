@@ -127,10 +127,9 @@ namespace Blasq
 		if (item.FilePath_ != UploadFileName_)
 			return;
 
+		deleteLater ();
 		if (const auto cb = Entity_.Additional_ ["DataFilterCallback"].value<DataFilterCallback_f> ())
 			cb (url);
-
-		deleteLater ();
 	}
 }
 }

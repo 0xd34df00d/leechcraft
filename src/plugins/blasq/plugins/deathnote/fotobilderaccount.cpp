@@ -848,6 +848,8 @@ namespace DeathNote
 		if (IsErrorReply (content))
 			return;
 
+		auto nextGuard = Util::MakeScopeGuard ([this] { CallNextFunctionFromQueue (); });
+
 		const auto& item = Reply2UploadItem_.take (reply);
 
 		auto pic = ParseUploadedPictureResponse (document);
@@ -856,7 +858,6 @@ namespace DeathNote
 		emit doneUpdating ();
 
 		emit itemUploaded (item, pic.Url_);
-		CallNextFunctionFromQueue ();
 	}
 }
 }
