@@ -392,11 +392,11 @@ namespace Azoth
 
 	void ChatTab::FillMimeData (QMimeData *data)
 	{
-		if (auto entry = GetEntry<ICLEntry> ())
+		if (const auto entry = GetEntry<ICLEntry> ())
 		{
-			const auto& id = entry->GetHumanReadableId ();
-			data->setText (id);
-			data->setUrls ({ QUrl { id } });
+			data->setText (FormatNameWithAddress (*entry));
+			if (const auto url = entry->GetEntryUrl ())
+				data->setUrls ({ *url });
 		}
 	}
 

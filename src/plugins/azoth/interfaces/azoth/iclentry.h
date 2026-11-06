@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include <QHashFunctions>
 #include <QFlags>
 #include <QMetaType>
+#include <QUrl>
 #include <util/azoth/emitters/clentry.h>
 #include "azothcommon.h"
 #include "iaccount.h"
@@ -228,6 +228,13 @@ namespace LC::Azoth
 		virtual QString GetHumanReadableAddress () const
 		{
 			return GetConventionalId ().ToString ();
+		}
+
+		/** @brief Returns an URL identifying the entity this entry represents.
+		 */
+		virtual std::optional<QUrl> GetEntryUrl () const
+		{
+			return {};
 		}
 
 		/** @brief Returns the list of human-readable names of the

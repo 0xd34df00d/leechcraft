@@ -12,6 +12,7 @@
 #include <util/sll/qtutil.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
+#include "util/azoth/util.h"
 #include "components/transfers/transferjobmanager.h"
 #include "components/util/dnd.h"
 #include "core.h"
@@ -62,13 +63,19 @@ namespace LC::Azoth
 			const auto& thisGroup = index.parent ().data (CLREntryCategory).toString ();
 
 			entries.append ({ entry, thisGroup });
-			names << entry->GetEntryName ();
-			urls << QUrl (entry->GetHumanReadableId ());		// TODO add a QUrl-shaped getter to ICLEntry?
+			if (const auto url = entry->GetEntryUrl ())
+			{
+				names << entry->GetEntryName ();
+				urls << *url;
+			}
+			else
+				names << FormatNameWithAddress (*entry);
 		}
 
 		DndUtil::Encode (entries, result);
 		result->setText (names.join ("; "));
-		result->setUrls (urls);
+		if (!urls.isEmpty ())
+			result->setUrls (urls);
 
 		return result;
 	}
