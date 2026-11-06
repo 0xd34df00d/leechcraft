@@ -137,6 +137,7 @@ namespace Xoox
 		QObject* GetQObject ();
 		GlooxAccount* GetParentAccount () const;
 		QList<IMessage*> GetAllMessages () const;
+		std::optional<QUrl> GetEntryUrl () const;
 		void PurgeMessages (const QDateTime&);
 		void SetChatPartState (ChatPartState, const QString&);
 		EntryStatus GetStatus (const QString&) const;

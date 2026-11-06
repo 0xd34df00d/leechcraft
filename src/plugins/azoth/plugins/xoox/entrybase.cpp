@@ -23,6 +23,7 @@
 #include <QXmppGlobal.h>
 #include <QXmppEntityTimeIq.h>
 #include <QXmppEntityTimeManager.h>
+#include <QXmppUri.h>
 #include <QXmppVersionManager.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
@@ -113,6 +114,13 @@ namespace Xoox
 		QList<IMessage*> result;
 		std::copy (AllMessages_.begin (), AllMessages_.end (), std::back_inserter (result));
 		return result;
+	}
+
+	std::optional<QUrl> EntryBase::GetEntryUrl () const
+	{
+		QXmppUri uri;
+		uri.setJid (GetJid ());
+		return QUrl { uri.toString (), QUrl::StrictMode };
 	}
 
 	void EntryBase::PurgeMessages (const QDateTime& before)

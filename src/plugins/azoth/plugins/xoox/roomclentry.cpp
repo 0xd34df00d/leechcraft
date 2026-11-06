@@ -12,6 +12,7 @@
 #include <QXmppMucManager.h>
 #include <QXmppBookmarkManager.h>
 #include <QXmppDiscoveryManager.h>
+#include <QXmppUri.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/azothutil.h>
 #include <util/azoth/util.h>
@@ -158,6 +159,14 @@ namespace Xoox
 	EntryConventionalId RoomCLEntry::GetConventionalId () const
 	{
 		return EntryConventionalId::FromString (RH_->GetRoomJid ());
+	}
+
+	std::optional<QUrl> RoomCLEntry::GetEntryUrl () const
+	{
+		QXmppUri uri;
+		uri.setJid (RH_->GetRoomJid ());
+		uri.setQuery (QXmpp::Uri::Join {});
+		return QUrl { uri.toString (), QUrl::StrictMode };
 	}
 
 	QStringList RoomCLEntry::Groups () const

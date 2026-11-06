@@ -71,6 +71,7 @@ namespace Xoox
 		void SetEntryName (const QString&) override;
 		std::optional<EntryPersistentId> GetPersistentId () const override;
 		EntryConventionalId GetConventionalId () const override;
+		std::optional<QUrl> GetEntryUrl () const override;
 		QStringList Groups () const override;
 		void SetGroups (const QStringList&) override;
 		QStringList Variants () const override;
