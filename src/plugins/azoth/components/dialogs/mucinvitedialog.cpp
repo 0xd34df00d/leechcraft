@@ -8,26 +8,41 @@
 
 #include "mucinvitedialog.h"
 #include <QtDebug>
+#include <util/sll/qobjectrefcast.h>
 #include <util/sll/trackingpointer.h>
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/iclentry.h"
+#include "interfaces/azoth/imucentry.h"
 #include "util/azoth/util.h"
 
 namespace LC::Azoth
 {
+	namespace
+	{
+		bool IsMuc (const ICLEntry& entry)
+		{
+			return entry.GetEntryType () == ICLEntry::EntryType::MUC;
+		}
+
+		bool IsInvitableMuc (ICLEntry& entry)
+		{
+			return IsMuc (entry) &&
+					qobject_ref_cast<IMUCEntry> (entry.GetQObject ()).GetMUCFeatures ().testFlag (IMUCEntry::MUCFCanInvite);
+		}
+	}
+
 	MUCInviteDialogBase::MUCInviteDialogBase (const ICLEntry& source, QWidget *parent)
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
 		Ui_.Invitee_->setInsertPolicy (QComboBox::NoInsert);
 
-		const bool sourceIsMuc = source.GetEntryType () == ICLEntry::EntryType::MUC;
-		const bool listMucs = !sourceIsMuc;
-		if (listMucs)
+		const bool sourceIsMuc = IsMuc (source);
+		if (!sourceIsMuc)
 			Ui_.InviteeLabel_->setText (tr ("Conferences:"));
 
 		for (const auto entry : source.GetParentAccount ()->GetCLEntries ())
-			if ((entry->GetEntryType () == ICLEntry::EntryType::MUC) == listMucs)
+			if (sourceIsMuc ? !IsMuc (*entry) : IsInvitableMuc (*entry))
 				Ui_.Invitee_->addItem (FormatNameWithAddress (*entry), QVariant::fromValue (Util::TrackingPointer { entry }));
 	}
 

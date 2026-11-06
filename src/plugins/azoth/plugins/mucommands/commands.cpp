@@ -937,6 +937,19 @@ namespace MuCommands
 		return true;
 	}
 
+	namespace
+	{
+		bool CheckCanInvite (IProxyObject *azothProxy, ICLEntry *entry, const IMUCEntry& muc)
+		{
+			if (muc.GetMUCFeatures ().testFlag (IMUCEntry::MUCFCanInvite))
+				return true;
+
+			InjectMessage (azothProxy, entry,
+					QObject::tr ("%1 does not support invitations.").arg (FormatNameWithAddress (muc.AsCLEntry ())));
+			return false;
+		}
+	}
+
 	bool Invite (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
 	{
 		const auto& id = text.section (' ', 1, 1);
@@ -945,6 +958,8 @@ namespace MuCommands
 		if (entry->GetEntryType () == ICLEntry::EntryType::MUC)
 		{
 			const auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ());
+			if (!CheckCanInvite (azothProxy, entry, *mucEntry))
+				return true;
 
 			if (const auto invitee = ResolveEntry (id, {}, entry->GetParentAccount (), entry))
 			{
@@ -979,6 +994,9 @@ namespace MuCommands
 						QObject::tr ("%1 is not a multiuser chat.").arg (id));
 				return true;
 			}
+
+			if (!CheckCanInvite (azothProxy, entry, *mucIface))
+				return true;
 
 			mucIface->InviteToMUC (*entry, reason);
 			InjectMessage (azothProxy, entry, QObject::tr ("Invited %1 to %2.")

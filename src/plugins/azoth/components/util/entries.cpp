@@ -127,13 +127,24 @@ namespace LC::Azoth
 			const auto muc = entryMuc ? entryMuc : targetMuc;
 			const auto invitee = entryMuc ? target : entry;
 
-			const bool sameAccount = target->GetParentAccount () == entry->GetParentAccount ();
-			if (!sameAccount && !(muc->GetMUCFeatures () & IMUCEntry::MUCFeature::MUCFCanInviteByAddress))
+			const auto refuse = [&] (const QString& reason)
 			{
 				QMessageBox::warning (parent,
 						Trs::tr ("Conference invitation"),
-						Trs::tr ("Cannot invite %1 to %2 because they belong to different accounts and the conference can't invite by address.")
-								.arg (FormatNameWithAddress (*invitee), FormatNameWithAddress (muc->AsCLEntry ())));
+						reason.arg (FormatNameWithAddress (*invitee), FormatNameWithAddress (muc->AsCLEntry ())));
+			};
+
+			const auto features = muc->GetMUCFeatures ();
+			if (!(features & IMUCEntry::MUCFeature::MUCFCanInvite))
+			{
+				refuse (Trs::tr ("Cannot invite %1 to %2 because the conference doesn't support invitations."));
+				continue;
+			}
+
+			const bool sameAccount = target->GetParentAccount () == entry->GetParentAccount ();
+			if (!sameAccount && !(features & IMUCEntry::MUCFeature::MUCFCanInviteByAddress))
+			{
+				refuse (Trs::tr ("Cannot invite %1 to %2 because they belong to different accounts and the conference can't invite by address."));
 				continue;
 			}
 
