@@ -264,7 +264,7 @@ namespace Xoox
 		}
 
 		QMap<QString, QString> queryItems;
-		const auto& queryParts = url.query (QUrl::FullyEncoded).split (';');
+		const auto& queryParts = url.query (QUrl::FullyEncoded).split (';', Qt::SkipEmptyParts);
 		for (const auto& part : queryParts)
 		{
 			const auto& split = part.split ('=');
@@ -302,9 +302,9 @@ namespace Xoox
 			if (queryItems.contains ("subscribe"))
 				acc->RequestAuth (path, QString (), name, groups);
 		}
-		else if (queryItems.contains ("message"))
+		else if (queryItems.contains ("message") || queryItems.isEmpty ())
 		{
-			const QString& body = queryItems ["body"];
+			const auto& body = queryItems.value ("body");
 
 			auto [jid, variant] = ClientConnection::Split (path);
 			if (jid.isEmpty ())
