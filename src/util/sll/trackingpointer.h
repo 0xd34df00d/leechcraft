@@ -24,7 +24,16 @@ namespace LC::Util
 	[[noreturn, gnu::cold]]
 	UTIL_SLL_API void ReportBadAccess ();
 
-	template<typename T, auto QObjectGetter = &T::GetQObject>
+	namespace detail
+	{
+		template<typename T>
+		auto GetQObjectOf (T *ptr)
+		{
+			return ptr->GetQObject ();
+		}
+	}
+
+	template<typename T, auto QObjectGetter = &detail::GetQObjectOf<T>>
 	class TrackingPointer
 	{
 		T *Ptr_ = nullptr;
