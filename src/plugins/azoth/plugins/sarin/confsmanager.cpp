@@ -8,16 +8,14 @@
 
 #include "confsmanager.h"
 #include <tox/toxav.h>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/core/ientitymanager.h>
 #include <util/sll/qtutil.h>
 #include <util/threads/coro.h>
-#include <util/xpc/util.h>
 #include "confentry.h"
 #include "groupjoinwidget.h"
 #include "toxaccount.h"
 #include "toxcontact.h"
 #include "toxthread.h"
+#include "util.h"
 
 namespace LC::Azoth::Sarin
 {
@@ -39,12 +37,6 @@ namespace LC::Azoth::Sarin
 
 	namespace
 	{
-		void ReportError (const QString& text)
-		{
-			const auto& e = Util::MakeNotification ("Azoth Sarin"_qs, text, Priority::Critical);
-			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
-		}
-
 		Util::Task<std::optional<uint32_t>> JoinTextConf (std::shared_ptr<ToxRunner> tox, QByteArray cookie, uint32_t friendNum)
 		{
 			constexpr auto maxRetries = 10;

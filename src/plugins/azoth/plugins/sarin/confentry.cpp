@@ -146,7 +146,7 @@ namespace LC::Azoth::Sarin
 
 	IMUCEntry::MUCFeatures ConfEntry::GetMUCFeatures () const
 	{
-		return MUCFCanHaveSubject;
+		return MUCFCanHaveSubject | MUCFCanInvite;
 	}
 
 	QString ConfEntry::GetMUCSubject () const
@@ -194,8 +194,29 @@ namespace LC::Azoth::Sarin
 		return {};
 	}
 
-	void ConfEntry::InviteToMUC (ICLEntry& entry, const QString& msg)
+	void ConfEntry::InviteToMUC (ICLEntry& entry, const QString&)
 	{
+		RunInvite (GetEntryPubkey (entry), entry.GetEntryName ());
+	}
+
+	Util::ContextTask<void> ConfEntry::RunInvite (Pubkey pubkey, QString name)
+	{
+		co_await Util::AddContext { CoroContext_ };
+
+		const auto tox = Mgr_.GetAccount ().GetTox ();
+		if (!tox)
+			co_return;
+
+		const auto friendNum = co_await tox->Run ([pubkey] (ToxW& tox) { return tox.ResolveFriendNum (pubkey); });
+		if (!friendNum)
+		{
+			ReportError (tr ("Unable to invite %1 to %2: not a friend.").arg (name, GetEntryName ()));
+			co_return;
+		}
+
+		const auto result = co_await tox->RunWithError (&tox_conference_invite, *friendNum, ConfNum_);
+		if (result.IsLeft ())
+			ReportError (tr ("Unable to invite %1 to %2: %3.").arg (name, GetEntryName (), ToUserString (result.GetLeft ())));
 	}
 
 	Util::ContextTask<void> ConfEntry::RunLeave ()

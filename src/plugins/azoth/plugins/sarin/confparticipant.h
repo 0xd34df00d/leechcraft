@@ -46,6 +46,8 @@ namespace LC::Azoth::Sarin
 	public:
 		explicit ConfParticipant (Pubkey pkey, QString nick, State state, ConfEntry& conf, QObject* = nullptr);
 
+		Pubkey GetPubKey () const;
+
 		QObject* GetQObject () override;
 		IAccount* GetParentAccount () const override;
 		ConfEntry* GetParentCLEntry () const override;

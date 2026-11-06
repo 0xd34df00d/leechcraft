@@ -10,6 +10,7 @@
 #include "groupsmanager.h"
 #include "toxaccount.h"
 #include "toxthread.h"
+#include "util.h"
 
 namespace LC::Azoth::Sarin
 {
@@ -129,7 +130,7 @@ namespace LC::Azoth::Sarin
 
 	IMUCEntry::MUCFeatures GroupChatEntry::GetMUCFeatures () const
 	{
-		return MUCFCanHaveSubject;
+		return MUCFCanHaveSubject | MUCFCanInvite;
 	}
 
 	QString GroupChatEntry::GetMUCSubject () const
@@ -179,8 +180,29 @@ namespace LC::Azoth::Sarin
 		return {};
 	}
 
-	void GroupChatEntry::InviteToMUC (ICLEntry& entry, const QString& msg)
+	void GroupChatEntry::InviteToMUC (ICLEntry& entry, const QString&)
 	{
+		RunInvite (GetEntryPubkey (entry), entry.GetEntryName ());
+	}
+
+	Util::ContextTask<void> GroupChatEntry::RunInvite (Pubkey pubkey, QString name)
+	{
+		co_await Util::AddContext { CoroContext_ };
+
+		const auto tox = Mgr_.GetAccount ().GetTox ();
+		if (!tox)
+			co_return;
+
+		const auto friendNum = co_await tox->Run ([pubkey] (ToxW& tox) { return tox.ResolveFriendNum (pubkey); });
+		if (!friendNum)
+		{
+			ReportError (tr ("Unable to invite %1 to %2: not a friend.").arg (name, GetEntryName ()));
+			co_return;
+		}
+
+		const auto result = co_await tox->RunWithError (&tox_group_invite_friend, GroupNum_, *friendNum);
+		if (result.IsLeft ())
+			ReportError (tr ("Unable to invite %1 to %2: %3.").arg (name, GetEntryName (), ToUserString (result.GetLeft ())));
 	}
 
 	void GroupChatEntry::HandlePeerJoined (uint32_t peerId)

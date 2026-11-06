@@ -17,6 +17,11 @@
 #include <util/threads/coro/eithercoro.h>
 #include "types.h"
 
+namespace LC::Azoth
+{
+	class ICLEntry;
+}
+
 namespace LC::Azoth::Sarin
 {
 	std::optional<uint32_t> GetFriendId (const Tox *tox, Pubkey pubkey);
@@ -63,6 +68,12 @@ namespace LC::Azoth::Sarin
 
 	QString ToUserString (AddFriendError);
 	QString ToUserString (FriendQueryError);
+	QString ToUserString (Tox_Err_Conference_Invite);
+	QString ToUserString (Tox_Err_Group_Invite_Friend);
+
+	void ReportError (const QString& text);
+
+	Pubkey GetEntryPubkey (ICLEntry& entry);
 
 	InitError MapErrorCode (TOX_ERR_BOOTSTRAP error);
 	FileControlError MapErrorCode (TOX_ERR_FILE_CONTROL error);

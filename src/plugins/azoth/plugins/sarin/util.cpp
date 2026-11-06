@@ -10,7 +10,15 @@
 #include <QByteArray>
 #include <QCoreApplication>
 #include <QtDebug>
+#include <interfaces/azoth/iclentry.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
+#include <util/sll/qobjectrefcast.h>
+#include <util/sll/qtutil.h>
 #include <util/threads/coro/eithercoro.h>
+#include <util/xpc/util.h>
+#include "confparticipant.h"
+#include "toxcontact.h"
 
 namespace LC::Azoth::Sarin
 {
@@ -165,6 +173,56 @@ namespace LC::Azoth::Sarin
 		}
 
 		std::unreachable ();
+	}
+
+	QString ToUserString (Tox_Err_Conference_Invite error)
+	{
+		switch (error)
+		{
+		case TOX_ERR_CONFERENCE_INVITE_OK:
+			return {};
+		case TOX_ERR_CONFERENCE_INVITE_CONFERENCE_NOT_FOUND:
+			return Errors::tr ("the conference does not exist anymore");
+		case TOX_ERR_CONFERENCE_INVITE_FAIL_SEND:
+			return Errors::tr ("the invitation could not be sent, the friend is probably offline");
+		case TOX_ERR_CONFERENCE_INVITE_NO_CONNECTION:
+			return Errors::tr ("you are not connected to the conference yet");
+		}
+		return Errors::tr ("unknown error");
+	}
+
+	QString ToUserString (Tox_Err_Group_Invite_Friend error)
+	{
+		switch (error)
+		{
+		case TOX_ERR_GROUP_INVITE_FRIEND_OK:
+			return {};
+		case TOX_ERR_GROUP_INVITE_FRIEND_GROUP_NOT_FOUND:
+			return Errors::tr ("the group does not exist anymore");
+		case TOX_ERR_GROUP_INVITE_FRIEND_FRIEND_NOT_FOUND:
+			return Errors::tr ("the invitee is not a friend");
+		case TOX_ERR_GROUP_INVITE_FRIEND_INVITE_FAIL:
+			return Errors::tr ("the invitation could not be created");
+		case TOX_ERR_GROUP_INVITE_FRIEND_FAIL_SEND:
+			return Errors::tr ("the invitation could not be sent, the friend is probably offline");
+		case TOX_ERR_GROUP_INVITE_FRIEND_DISCONNECTED:
+			return Errors::tr ("you are not connected to the group");
+		}
+		return Errors::tr ("unknown error");
+	}
+
+	void ReportError (const QString& text)
+	{
+		const auto& e = Util::MakeNotification ("Azoth Sarin"_qs, text, Priority::Critical);
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+	}
+
+	Pubkey GetEntryPubkey (ICLEntry& entry)
+	{
+		const auto obj = entry.GetQObject ();
+		if (const auto contact = qobject_cast<ToxContact*> (obj))
+			return contact->GetPubKey ();
+		return qobject_ref_cast<ConfParticipant> (obj).GetPubKey ();
 	}
 
 	AddFriendError MapErrorCode (TOX_ERR_FRIEND_ADD error)

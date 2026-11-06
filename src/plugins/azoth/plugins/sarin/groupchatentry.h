@@ -86,6 +86,7 @@ namespace LC::Azoth::Sarin
 	private:
 		Util::ContextTask<void> RunLeave (QString, int retry = 0);
 		Util::ContextTask<void> RunSetNick (QString, int retry = 0);
+		Util::ContextTask<void> RunInvite (Pubkey, QString);
 
 		LC_CORO_CONTEXT
 	};

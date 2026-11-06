@@ -27,6 +27,11 @@ namespace LC::Azoth::Sarin
 	{
 	}
 
+	Pubkey ConfParticipant::GetPubKey () const
+	{
+		return Pkey_;
+	}
+
 	QObject* ConfParticipant::GetQObject ()
 	{
 		return this;
