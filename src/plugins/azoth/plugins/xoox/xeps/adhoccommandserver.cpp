@@ -22,6 +22,7 @@
 #include "roomclentry.h"
 #include "core.h"
 #include "glooxmessage.h"
+#include "roomhandler.h"
 
 namespace LC
 {
@@ -315,7 +316,7 @@ namespace Xoox
 			options << std::pair
 			{
 				entry->GetHumanReadableAddress () + "/" + entry->GetNick (),
-				entry->GetEntryId ()
+				entry->GetRoomHandler ()->GetRoomJid ()
 			};
 
 		QXmppDataForm::Field gcs (QXmppDataForm::Field::ListMultiField);
@@ -343,7 +344,7 @@ namespace Xoox
 
 			const QStringList& ids = field.value ().toStringList ();
 			for (const auto entry : Conn_->GetRoomCLEntries ())
-				if (ids.contains (entry->GetEntryId ()))
+				if (ids.contains (entry->GetRoomHandler ()->GetRoomJid ()))
 					entry->Leave (tr ("leaving as the result of the remote command"));
 
 			break;
