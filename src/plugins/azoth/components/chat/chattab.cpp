@@ -30,7 +30,6 @@
 #include <util/gui/findnotificationwe.h>
 #include <util/gui/fontsizescrollchanger.h>
 #include <util/sll/lambdaeventfilter.h>
-#include <util/sll/urloperator.h>
 #include <util/sll/scopeguards.h>
 #include <util/sll/visitor.h>
 #include <util/sll/prelude.h>
@@ -944,26 +943,6 @@ namespace Azoth
 		Ui_.EntryInfo_->setText (text);
 	}
 
-	namespace
-	{
-		void OpenChatWithText (QUrl newUrl, const QString& id, ICLEntry *own)
-		{
-			Util::UrlOperator { newUrl } -= "hrid";
-			for (const auto entry : own->GetParentAccount ()->GetCLEntries ())
-			{
-				if (entry->GetHumanReadableId () != id)
-					continue;
-
-				auto w = Core::Instance ().GetChatTabsManager ()->OpenChat (*entry, true);
-				QMetaObject::invokeMethod (w,
-						"handleViewLinkClicked",
-						Qt::QueuedConnection,
-						Q_ARG (QUrl, newUrl));
-				break;
-			}
-		}
-	}
-
 	void ChatTab::handleViewLinkClicked (QUrl url, bool raise)
 	{
 		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
@@ -978,43 +957,7 @@ namespace Azoth
 		}
 
 		const auto& host = url.host ();
-		if (host == "msgeditreplace")
-		{
-			const auto& queryItems = QUrlQuery { url }.queryItems ();
-			if (queryItems.isEmpty ())
-			{
-				Ui_.MsgEdit_->setText (url.path ().mid (1));
-				Ui_.MsgEdit_->moveCursor (QTextCursor::End);
-				Ui_.MsgEdit_->setFocus ();
-			}
-			else
-				for (const auto& item : queryItems)
-					if (item.first == "hrid")
-					{
-						OpenChatWithText (url, item.second, GetEntry<ICLEntry> ());
-						return;
-					}
-		}
-		else if (host == "msgeditinsert")
-		{
-			const auto& text = url.path ().mid (1);
-			const auto& split = text.split ("/#/", Qt::SkipEmptyParts);
-
-			const auto& insertText = split.value (0);
-			const auto& replaceText = split.size () > 1 ?
-					split.value (1) :
-					insertText;
-
-			if (Ui_.MsgEdit_->toPlainText ().simplified ().trimmed ().isEmpty ())
-			{
-				Ui_.MsgEdit_->setText (replaceText);
-				Ui_.MsgEdit_->moveCursor (QTextCursor::End);
-				Ui_.MsgEdit_->setFocus ();
-			}
-			else
-				Ui_.MsgEdit_->textCursor ().insertText (insertText);
-		}
-		else if (host == "insertnick")
+		if (host == "insertnick")
 		{
 			const auto& nick = QUrlQuery { url }.queryItemValue ("nick", QUrl::FullyDecoded);
 			InsertNick (nick);
@@ -1037,6 +980,8 @@ namespace Azoth
 							qWarning () << "inserting nick into a MUC with no persistent ID:" << EntryId_;
 						});
 		}
+		else
+			qWarning () << "unknown host:" << host;
 	}
 
 	void ChatTab::InsertNick (const QString& nicknameHtml)
