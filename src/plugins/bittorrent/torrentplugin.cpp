@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "torrentplugin.h"
+#include <optional>
 #include <QUrl>
 #include <QTemporaryFile>
 #include <QtDebug>
@@ -14,6 +15,7 @@
 #include <QTimer>
 #include <QUrlQuery>
 #include <QFileInfo>
+#include <QDir>
 #include <interfaces/entityconstants.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
@@ -203,6 +205,7 @@ namespace LC::BitTorrent
 	QFuture<IDownload::Result> TorrentPlugin::AddJob (Entity e)
 	{
 		QString suggestedFname;
+		std::optional<QTemporaryFile> tmpFile;
 
 		const auto tagsMgr = GetProxyHolder ()->GetTagsManager ();
 
@@ -228,12 +231,20 @@ namespace LC::BitTorrent
 			if (resource.scheme () == "file"_ql)
 				suggestedFname = resource.toLocalFile ();
 		}
-		else if (IsValidTorrent (e.Entity_.toByteArray ()))
+		else if (const auto& data = e.Entity_.toByteArray ();
+			IsValidTorrent (data))
 		{
-			QTemporaryFile tmpFile { "lctemporarybittorrentfile.XXXXXX"_qs };
-			tmpFile.write (e.Entity_.toByteArray ());
-			suggestedFname = tmpFile.fileName ();
-			tmpFile.setAutoRemove (false);
+			tmpFile.emplace (QDir::temp ().filePath ("lctemporarybittorrentfile.XXXXXX"_qs));
+			if (!tmpFile->open () || tmpFile->write (data) != data.size () || !tmpFile->flush ())
+			{
+				const auto& msg = tr ("Unable to save the torrent to a temporary file: %1.")
+						.arg (tmpFile->errorString ());
+				const auto& entity = Util::MakeNotification ("BitTorrent"_qs, msg, Priority::Critical);
+				GetProxyHolder ()->GetEntityManager ()->HandleEntity (entity);
+				return MakeReadyFuture (Result { AsLeft, { Error::Type::LocalError, msg } });
+			}
+			tmpFile->close ();
+			suggestedFname = tmpFile->fileName ();
 		}
 
 		QString path;
@@ -276,7 +287,8 @@ namespace LC::BitTorrent
 				tryLive,
 				files,
 				e.Parameters_);
-		QFile::remove (suggestedFname);
+		if (!tmpFile)
+			QFile::remove (suggestedFname);
 		return result;
 	}
 
