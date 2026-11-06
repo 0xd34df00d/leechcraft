@@ -15,6 +15,7 @@
 #include <util/sll/typegetter.h>
 #include <util/sll/void.h>
 #include <util/threads/coro/eithercoro.h>
+#include <interfaces/azoth/imucentry.h>
 #include "types.h"
 
 namespace LC::Azoth
@@ -24,6 +25,8 @@ namespace LC::Azoth
 
 namespace LC::Azoth::Sarin
 {
+	class ToxAccount;
+
 	std::optional<uint32_t> GetFriendId (const Tox *tox, Pubkey pubkey);
 	std::optional<Pubkey> GetFriendPubkey (const Tox *tox, uint32_t friendId);
 
@@ -73,7 +76,8 @@ namespace LC::Azoth::Sarin
 
 	void ReportError (const QString& text);
 
-	Pubkey GetEntryPubkey (ICLEntry& entry);
+	std::optional<Pubkey> GetEntryPubkey (const ICLEntry& entry);
+	IMUCEntry::InviteCheckResult_t CheckInvitee (const ToxAccount& account, const ICLEntry& entry);
 
 	InitError MapErrorCode (TOX_ERR_BOOTSTRAP error);
 	FileControlError MapErrorCode (TOX_ERR_FILE_CONTROL error);

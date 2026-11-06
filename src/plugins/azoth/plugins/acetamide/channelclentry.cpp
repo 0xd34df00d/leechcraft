@@ -295,6 +295,11 @@ namespace LC::Azoth::Acetamide
 		};
 	}
 
+	ChannelCLEntry::InviteCheckResult_t ChannelCLEntry::CanInvite (const ICLEntry&) const
+	{
+		return CannotInvite::UnsupportedFeature;
+	}
+
 	void ChannelCLEntry::InviteToMUC (ICLEntry&, const QString&)
 	{
 	}

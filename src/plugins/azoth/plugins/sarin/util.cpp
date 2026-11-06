@@ -13,11 +13,11 @@
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
-#include <util/sll/qobjectrefcast.h>
 #include <util/sll/qtutil.h>
 #include <util/threads/coro/eithercoro.h>
 #include <util/xpc/util.h>
 #include "confparticipant.h"
+#include "toxaccount.h"
 #include "toxcontact.h"
 
 namespace LC::Azoth::Sarin
@@ -217,12 +217,26 @@ namespace LC::Azoth::Sarin
 		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
-	Pubkey GetEntryPubkey (ICLEntry& entry)
+	std::optional<Pubkey> GetEntryPubkey (const ICLEntry& entry)
 	{
 		const auto obj = entry.GetQObject ();
-		if (const auto contact = qobject_cast<ToxContact*> (obj))
+		if (const auto contact = qobject_cast<const ToxContact*> (obj))
 			return contact->GetPubKey ();
-		return qobject_ref_cast<ConfParticipant> (obj).GetPubKey ();
+		if (const auto participant = qobject_cast<const ConfParticipant*> (obj))
+			return participant->GetPubKey ();
+		return {};
+	}
+
+	IMUCEntry::InviteCheckResult_t CheckInvitee (const ToxAccount& account, const ICLEntry& entry)
+	{
+		using enum IMUCEntry::CannotInvite;
+
+		const auto pubkey = GetEntryPubkey (entry);
+		if (!pubkey)
+			return UnsupportedEntryType;
+		if (!account.GetByPubkey (*pubkey))
+			return NotInContactList;
+		return IMUCEntry::MightInvite {};
 	}
 
 	AddFriendError MapErrorCode (TOX_ERR_FRIEND_ADD error)

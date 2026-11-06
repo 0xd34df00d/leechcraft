@@ -198,6 +198,36 @@ namespace Azoth
 		 */
 		virtual QVariantMap GetIdentifyingData () const = 0;
 
+		/** @brief The invitation _might_ succeed.
+		 *
+		 * Since the `CanInvite` check is supposed to be light and to
+		 * avoid TOCTOU, this does not necessarily guarantee that the
+		 * invitation will succeed.
+		 */
+		struct MightInvite {};
+
+		/** @brief The invitation will fail.
+		 */
+		enum class CannotInvite : std::uint8_t
+		{
+			UnknownReason,
+			UnsupportedFeature,
+			UnsupportedEntryType,
+			NotInContactList,
+		};
+		using InviteCheckResult_t = std::variant<MightInvite, CannotInvite>;
+
+		/** @brief Checks whether inviting `entry` to this MUC might succeed.
+		 *
+		 * This is necessarily a light check that must be synchronous and cheap.
+		 * Its positive result does not guarantee that the invitatoin will
+		 * succeed.
+		 *
+		 * @param[in] entry The entry to invite. It must belong to this
+		 * MUC's account.
+		 */
+		virtual InviteCheckResult_t CanInvite (const ICLEntry& entry) const = 0;
+
 		/** @brief Invites a contact list entry to this MUC.
 		 *
 		 * The invitation is sent by means of the protocol if it has

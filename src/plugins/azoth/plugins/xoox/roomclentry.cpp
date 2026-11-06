@@ -15,7 +15,7 @@
 #include <QXmppUri.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/azothutil.h>
-#include <util/azoth/util.h>
+#include <util/sll/qobjectrefcast.h>
 #include "clientconnectionextensionsmanager.h"
 #include "glooxaccount.h"
 #include "glooxprotocol.h"
@@ -329,13 +329,16 @@ namespace Xoox
 		return ClientConnection::Split (entry.GetRealJid ()).Bare_;
 	}
 
+	IMUCEntry::InviteCheckResult_t RoomCLEntry::CanInvite (const ICLEntry& entry) const
+	{
+		if (qobject_cast<const EntryBase*> (entry.GetQObject ()))
+			return MightInvite {};
+		return CannotInvite::UnsupportedEntryType;
+	}
+
 	void RoomCLEntry::InviteToMUC (ICLEntry& entry, const QString& msg)
 	{
-		if (const auto xooxEntry = qobject_cast<EntryBase*> (entry.GetQObject ()))
-			InviteToMUC (xooxEntry->GetJid (), msg);
-		else
-			qWarning () << "not an Azoth Xoox entry:" << entry.GetQObject ()
-					<< entry.GetHumanReadableAddress () << entry.GetGlobalStrongestId ();
+		InviteToMUC (qobject_ref_cast<EntryBase> (entry.GetQObject ()).GetJid (), msg);
 	}
 
 	void RoomCLEntry::InviteToMUC (const QString& address, const QString& msg)

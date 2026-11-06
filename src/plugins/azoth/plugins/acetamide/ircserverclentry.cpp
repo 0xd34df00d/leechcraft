@@ -171,6 +171,11 @@ namespace LC::Azoth::Acetamide
 		};
 	}
 
+	IrcServerCLEntry::InviteCheckResult_t IrcServerCLEntry::CanInvite (const ICLEntry&) const
+	{
+		return CannotInvite::UnsupportedFeature;
+	}
+
 	void IrcServerCLEntry::InviteToMUC (ICLEntry&, const QString&)
 	{
 	}

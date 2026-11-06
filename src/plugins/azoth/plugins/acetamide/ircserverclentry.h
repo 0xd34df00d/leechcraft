@@ -60,6 +60,7 @@ namespace LC::Azoth::Acetamide
 		QString GetGroupName () const override;
 		QString GetRealId (const ICLEntry&) const override;
 		QVariantMap GetIdentifyingData () const override;
+		InviteCheckResult_t CanInvite (const ICLEntry&) const override;
 		void InviteToMUC (ICLEntry&, const QString&) override;
 
 		// IConfigurableMUC

@@ -194,9 +194,14 @@ namespace LC::Azoth::Sarin
 		return {};
 	}
 
+	IMUCEntry::InviteCheckResult_t ConfEntry::CanInvite (const ICLEntry& entry) const
+	{
+		return CheckInvitee (Mgr_.GetAccount (), entry);
+	}
+
 	void ConfEntry::InviteToMUC (ICLEntry& entry, const QString&)
 	{
-		RunInvite (GetEntryPubkey (entry), entry.GetEntryName ());
+		RunInvite (GetEntryPubkey (entry).value (), entry.GetEntryName ());
 	}
 
 	Util::ContextTask<void> ConfEntry::RunInvite (Pubkey pubkey, QString name)

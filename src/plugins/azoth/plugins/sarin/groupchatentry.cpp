@@ -180,9 +180,14 @@ namespace LC::Azoth::Sarin
 		return {};
 	}
 
+	IMUCEntry::InviteCheckResult_t GroupChatEntry::CanInvite (const ICLEntry& entry) const
+	{
+		return CheckInvitee (Mgr_.GetAccount (), entry);
+	}
+
 	void GroupChatEntry::InviteToMUC (ICLEntry& entry, const QString&)
 	{
-		RunInvite (GetEntryPubkey (entry), entry.GetEntryName ());
+		RunInvite (GetEntryPubkey (entry).value (), entry.GetEntryName ());
 	}
 
 	Util::ContextTask<void> GroupChatEntry::RunInvite (Pubkey pubkey, QString name)
