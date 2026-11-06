@@ -194,7 +194,7 @@ namespace LC::Azoth::Sarin
 		return {};
 	}
 
-	void ConfEntry::InviteToMUC (const QString& userId, const QString& msg)
+	void ConfEntry::InviteToMUC (ICLEntry& entry, const QString& msg)
 	{
 	}
 

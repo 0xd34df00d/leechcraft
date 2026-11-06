@@ -310,38 +310,50 @@ namespace Azoth
 
 		void InviteToMuc (ICLEntry *entry)
 		{
-			const auto account = entry->GetParentAccount ();
-
-			MUCInviteDialog dia (account, MUCInviteDialog::ListType::ListMucs);
+			MUCInviteDialog<AddressInvitations::Disallowed> dia { *entry };
 			if (dia.exec () != QDialog::Accepted)
 				return;
 
-			const auto mucEntryBase = FindByHRId (account, dia.GetId ());
-			const auto mucEntry = qobject_cast<IMUCEntry*> (mucEntryBase ? mucEntryBase->GetQObject () : nullptr);
+			const auto mucEntry = dia.GetTargetEntry ();
 			if (!mucEntry)
-			{
-				qWarning () << "no MUC for" << dia.GetId ();
 				return;
-			}
 
 			const auto& msg = dia.GetInviteMessage ();
-			mucEntry->InviteToMUC (entry->GetHumanReadableId (), msg);
+			qobject_ref_cast<IMUCEntry> (mucEntry->GetQObject ()).InviteToMUC (*entry, msg);
+		}
+
+		template<AddressInvitations AI>
+		void RunInvite (IMUCEntry& mucEntry)
+		{
+			MUCInviteDialog<AI> dia { mucEntry.AsCLEntry () };
+			if (dia.exec () != QDialog::Accepted)
+				return;
+
+			const auto& msg = dia.GetInviteMessage ();
+			if constexpr (AI == AddressInvitations::Allowed)
+				Util::Visit (dia.GetTargetEntry (),
+						[&] (ICLEntry *target)
+						{
+							if (target)
+								mucEntry.InviteToMUC (*target, msg);
+						},
+						[&] (const QString& address)
+						{
+							if (!address.isEmpty ())
+								mucEntry.InviteToMUC (address, msg);
+						});
+			else
+				if (const auto target = dia.GetTargetEntry ())
+					mucEntry.InviteToMUC (*target, msg);
 		}
 
 		void Invite (ICLEntry *entry)
 		{
-			auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ());
-
-			MUCInviteDialog dia { entry->GetParentAccount () };
-			if (dia.exec () != QDialog::Accepted)
-				return;
-
-			const QString& id = dia.GetId ();
-			const QString& msg = dia.GetInviteMessage ();
-			if (id.isEmpty ())
-				return;
-
-			mucEntry->InviteToMUC (id, msg);
+			auto& mucEntry = qobject_ref_cast<IMUCEntry> (entry->GetQObject ());
+			if (mucEntry.GetMUCFeatures () & IMUCEntry::MUCFCanInviteByAddress)
+				RunInvite<AddressInvitations::Allowed> (mucEntry);
+			else
+				RunInvite<AddressInvitations::Disallowed> (mucEntry);
 		}
 
 		void Leave (ICLEntry *entry)

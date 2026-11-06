@@ -179,7 +179,7 @@ namespace LC::Azoth::Sarin
 		return {};
 	}
 
-	void GroupChatEntry::InviteToMUC (const QString& userId, const QString& msg)
+	void GroupChatEntry::InviteToMUC (ICLEntry& entry, const QString& msg)
 	{
 	}
 

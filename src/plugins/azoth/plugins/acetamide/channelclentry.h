@@ -83,7 +83,7 @@ namespace LC::Azoth::Acetamide
 		void SetNick (const QString&) override;
 		QString GetGroupName () const override;
 		QVariantMap GetIdentifyingData () const override;
-		void InviteToMUC (const QString&, const QString&) override;
+		void InviteToMUC (ICLEntry&, const QString&) override;
 
 		void HandleMessage (ChannelPublicMessage*);
 

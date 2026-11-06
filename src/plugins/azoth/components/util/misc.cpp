@@ -58,7 +58,10 @@ namespace LC::Azoth
 		}
 	}
 
-	bool OfferURLs (TransferJobManager& transfers, ICLEntry *entry, const QList<QUrl>& urls, QWidget *parent)
+	bool OfferURLs (TransferJobManager& transfers,
+			const Util::TrackingPointer<ICLEntry>& entry,
+			const QList<QUrl>& urls,
+			QWidget *parent)
 	{
 		if (!entry)
 			return false;
@@ -69,7 +72,7 @@ namespace LC::Azoth
 
 		if (paths.size () == 1)
 		{
-			new FileSendDialog { entry, paths [0] };
+			new FileSendDialog { &*entry, paths [0] };
 			return true;
 		}
 
@@ -79,15 +82,12 @@ namespace LC::Azoth
 					"Azoth",
 					text,
 					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
-			return false;
+			return true;
 
-		bool allSuccess = true;
-		for (const auto& url : urls)
-			if (const auto& path = url.toLocalFile ();
-				QFileInfo { path }.exists ())
-				allSuccess = transfers.SendFile ({ *entry, {}, path, {} }) && allSuccess;
+		for (const auto& path : paths)
+			transfers.SendFile ({ *entry, {}, path, {} });
 
-		return allSuccess;
+		return true;
 	}
 
 	namespace

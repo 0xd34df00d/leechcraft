@@ -9,7 +9,9 @@
 #pragma once
 
 #include <util/sll/qtutil.h>
+#include <util/sll/trackingpointer.h>
 #include <interfaces/azoth/message.h>
+#include <interfaces/azoth/iclentry.h>
 
 namespace LC
 {
@@ -19,14 +21,16 @@ namespace LC
 namespace LC::Azoth
 {
 	class IAccount;
-	class ICLEntry;
 
 	class AvatarsManager;
 	class TransferJobManager;
 
 	bool SendMessage (ICLEntry& e, OutgoingMessage);
 
-	bool OfferURLs (TransferJobManager& transfers, ICLEntry *entry, const QList<QUrl>& urls, QWidget *parent = nullptr);
+	bool OfferURLs (TransferJobManager& transfers,
+			const Util::TrackingPointer<ICLEntry>& entry,
+			const QList<QUrl>& urls,
+			QWidget *parent = nullptr);
 
 	struct NotificationInfo
 	{

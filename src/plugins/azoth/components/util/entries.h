@@ -8,14 +8,13 @@
 
 #pragma once
 
+#include <util/sll/trackingpointer.h>
 #include "interfaces/azoth/azothcommon.h"
-
-class QObject;
+#include "interfaces/azoth/iclentry.h"
 
 namespace LC::Azoth
 {
 	class IAccount;
-	class ICLEntry;
 	class IMUCEntry;
 	class ISupportPGP;
 
@@ -24,9 +23,11 @@ namespace LC::Azoth
 	void AuthorizeEntry (ICLEntry*);
 	void DenyAuthForEntry (ICLEntry*);
 
-	ICLEntry* FindByHRId (IAccount*, const QString&);
-
 	bool ChoosePGPKey (ISupportPGP*, ICLEntry*);
 
 	QStringList GetMucParticipants (const EntriesManager&, const GlobalPersistentId& mucEntryId);
+
+	void TryInvite (const QList<Util::TrackingPointer<ICLEntry>>& entries,
+			const Util::TrackingPointer<ICLEntry>& target,
+			QWidget *parent);
 }

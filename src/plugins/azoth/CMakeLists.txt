@@ -57,7 +57,6 @@ LC_DEFINE_PLUGIN (
 		components/chat/chattab.cpp
 		components/chat/chattabpartstatemanager.cpp
 		components/chat/chattabwebview.cpp
-		components/chat/contactdropfilter.cpp
 		components/chat/fileofferedpane.cpp
 		components/chat/filetransfersection.cpp
 		components/chat/msgeditautocompleter.cpp

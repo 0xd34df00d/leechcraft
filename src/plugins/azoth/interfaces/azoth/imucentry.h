@@ -49,9 +49,17 @@ namespace Azoth
 			 */
 			MUCFCanHaveSubject = 0x0002,
 
-			/** Room supports invitations.
+			/** Room supports inviting contact list entries of its account
+			 * via `InviteToMUC(ICLEntry&, const QString&)`.
 			 */
-			MUCFCanInvite = 0x0004
+			MUCFCanInvite = 0x0004,
+
+			/** Room supports inviting by protocol address via
+			 * `InviteToMUC(const QString&, const QString&)`, so anyone the
+			 * protocol can address may be invited, not only existing
+			 * contact list entries.
+			 */
+			MUCFCanInviteByAddress = 0x0008,
 		};
 
 		Q_DECLARE_FLAGS (MUCFeatures, MUCFeature)
@@ -190,25 +198,39 @@ namespace Azoth
 		 */
 		virtual QVariantMap GetIdentifyingData () const = 0;
 
-		/** @brief Invites the user to this MUC.
+		/** @brief Invites a contact list entry to this MUC.
 		 *
-		 * This function should invite the given user to this MUC by
-		 * means of the protocol, if applicable, or by a plain message
-		 * if not.
+		 * The invitation is sent by means of the protocol if it has
+		 * them, or as a plain message otherwise.
 		 *
-		 * User is identified by its protocol-specific ID, as returned
-		 * by ICLEntry::GetHumanReadableId().
-		 *
-		 * The invitation may contain an optional message.
-		 *
-		 * @param[in] userId The protocol-specific ID of the user to
-		 * invite.
+		 * @param[in] entry The entry to invite. It must belong to this
+		 * MUC's account.
 		 * @param[in] msg The optional message to send along with the
-		 * invite.
+		 * invitation.
 		 *
-		 * @sa ICLEntry::GetHumanReadableId()
+		 * @sa MUCFCanInvite
 		 */
-		virtual void InviteToMUC (const QString& userId, const QString& msg) = 0;	// TODO replace with ConventionalId?
+		virtual void InviteToMUC (ICLEntry& entry, const QString& msg) = 0;
+
+		/** @brief Invites the user with the given protocol address to
+		 * this MUC.
+		 *
+		 * Callers must check `MUCFCanInviteByAddress` first: rooms
+		 * without it ignore the call.
+		 *
+		 * @param[in] address The protocol address of the user to
+		 * invite, like a JID in XMPP.
+		 * @param[in] msg The optional message to send along with the
+		 * invitation.
+		 *
+		 * @sa MUCFCanInviteByAddress
+		 */
+		virtual void InviteToMUC (const QString& address, const QString& msg)
+		{
+			Q_UNUSED (address)
+			Q_UNUSED (msg)
+			qWarning () << "inviting by address is unsupported";
+		}
 	};
 }
 }

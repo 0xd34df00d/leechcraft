@@ -22,6 +22,11 @@
 
 class QTextBrowser;
 
+namespace LC::Azoth::DndUtil
+{
+	struct DndContext;
+}
+
 namespace LC
 {
 namespace Util
@@ -42,7 +47,6 @@ namespace Azoth
 	class ITransferManager;
 
 	class AvatarsManager;
-	class ContactDropFilter;
 	class CoreMessage;
 	class MsgEditAutocompleter;
 	class MsgFormatterWidget;
@@ -83,7 +87,6 @@ namespace Azoth
 
 		QIcon TabIcon_;
 
-		ContactDropFilter *CDF_;
 		MsgFormatterWidget *MsgFormatter_ = nullptr;
 		MsgEditAutocompleter *MsgEditAutocompleter_ = nullptr;
 
@@ -212,6 +215,8 @@ namespace Azoth
 
 		void handleAccountStyleChanged (IAccount*);
 	private:
+		DndUtil::DndContext GetDndContext ();
+
 		void BuildBasicActions ();
 		void InitEntrySpecific ();
 		void ReinitAvatar ();

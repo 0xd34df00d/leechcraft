@@ -8,6 +8,7 @@
 
 #include "entries.h"
 #include <ranges>
+#include <QInputDialog>
 #include <QSettings>
 #include <QMessageBox>
 #include <util/sll/prelude.h>
@@ -48,17 +49,6 @@ namespace LC::Azoth
 		const auto& e = Util::MakeANCancel ("org.LeechCraft.Azoth",
 				"org.LC.Plugins.Azoth.AuthRequestFrom/" + entry->GetEntryId ());
 		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
-	}
-
-	ICLEntry* FindByHRId (IAccount *acc, const QString& hrId)
-	{
-		const auto& allEntries = acc->GetCLEntries ();
-		const auto pos = std::ranges::find_if (allEntries,
-				[&hrId] (ICLEntry *entry)
-				{
-					return entry->GetConventionalId ().ToString () == hrId;
-				});
-		return pos == allEntries.end () ? nullptr : *pos;
 	}
 
 	bool ChoosePGPKey (ISupportPGP *pgp, ICLEntry *entry)
@@ -105,5 +95,60 @@ namespace LC::Azoth
 	{
 		auto& entry = entries.GetEntry<IMUCEntry> (entryId);
 		return Util::Map (entry.GetParticipants (), &ICLEntry::GetEntryName);
+	}
+
+	namespace
+	{
+		struct Trs
+		{
+			Q_DECLARE_TR_FUNCTIONS (LC::Azoth)
+		};
+	}
+
+	void TryInvite (const QList<Util::TrackingPointer<ICLEntry>>& entries,
+			const Util::TrackingPointer<ICLEntry>& target,
+			QWidget *parent)
+	{
+		const auto targetProto = target->GetParentAccount ()->GetParentProtocol ();
+		const auto targetMuc = qobject_cast<IMUCEntry*> (target->GetQObject ());
+
+		for (const auto& entry : entries)
+		{
+			if (!entry || !target)
+				continue;
+
+			const auto entryMuc = qobject_cast<IMUCEntry*> (entry->GetQObject ());
+			if (static_cast<bool> (targetMuc) == static_cast<bool> (entryMuc))
+				continue;
+
+			if (targetProto != entry->GetParentAccount ()->GetParentProtocol ())
+				continue;
+
+			const auto muc = entryMuc ? entryMuc : targetMuc;
+			const auto invitee = entryMuc ? target : entry;
+
+			const bool sameAccount = target->GetParentAccount () == entry->GetParentAccount ();
+			if (!sameAccount && !(muc->GetMUCFeatures () & IMUCEntry::MUCFeature::MUCFCanInviteByAddress))
+			{
+				QMessageBox::warning (parent,
+						Trs::tr ("Conference invitation"),
+						Trs::tr ("Cannot invite %1 to %2 because they belong to different accounts and the conference can't invite by address.")
+								.arg (FormatNameWithAddress (*invitee), FormatNameWithAddress (muc->AsCLEntry ())));
+				continue;
+			}
+
+			bool accepted = false;
+			const auto& inviteMessage = QInputDialog::getText (parent,
+					Trs::tr ("Conference invitation"),
+					Trs::tr ("Do you want to invite %1 to %2? You can add an optional invitation message:")
+							.arg (FormatNameWithAddress (*invitee), FormatNameWithAddress (muc->AsCLEntry ())),
+					QLineEdit::Normal,
+					{},
+					&accepted);
+			if (accepted && target && entry)
+				sameAccount ?
+						muc->InviteToMUC (*invitee, inviteMessage) :
+						muc->InviteToMUC (invitee->GetHumanReadableAddress (), inviteMessage);
+		}
 	}
 }

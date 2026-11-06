@@ -8,78 +8,57 @@
 
 #include "mucinvitedialog.h"
 #include <QtDebug>
+#include <util/sll/trackingpointer.h>
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/iclentry.h"
 #include "util/azoth/util.h"
 
-namespace LC
+namespace LC::Azoth
 {
-namespace Azoth
-{
-	MUCInviteDialog::MUCInviteDialog (IAccount *acc, ListType type, QWidget *parent)
+	MUCInviteDialogBase::MUCInviteDialogBase (const ICLEntry& source, QWidget *parent)
 	: QDialog (parent)
-	, ManualMode_ (false)
 	{
 		Ui_.setupUi (this);
 		Ui_.Invitee_->setInsertPolicy (QComboBox::NoInsert);
 
-		ICLEntry::EntryType requestedType = ICLEntry::EntryType::Chat;
-		switch (type)
-		{
-		case ListType::ListEntries:
-			break;
-		case ListType::ListMucs:
-			requestedType = ICLEntry::EntryType::MUC;
-			Ui_.InviteeLabel_->setText ("Conferences:");
-			break;
-		}
+		const bool sourceIsMuc = source.GetEntryType () == ICLEntry::EntryType::MUC;
+		const bool listMucs = !sourceIsMuc;
+		if (listMucs)
+			Ui_.InviteeLabel_->setText (tr ("Conferences:"));
 
-		for (const auto entry : acc->GetCLEntries ())
-		{
-			if (entry->GetEntryType () != requestedType)
-				continue;
-
-			Ui_.Invitee_->addItem (FormatNameWithAddress (*entry),
-					entry->GetConventionalId ().ToString ());
-		}
+		for (const auto entry : source.GetParentAccount ()->GetCLEntries ())
+			if ((entry->GetEntryType () == ICLEntry::EntryType::MUC) == listMucs)
+				Ui_.Invitee_->addItem (FormatNameWithAddress (*entry), QVariant::fromValue (Util::TrackingPointer { entry }));
 	}
 
-	QString MUCInviteDialog::GetId () const
-	{
-		const int idx = Ui_.Invitee_->currentIndex ();
-		return (idx >= 0 && !ManualMode_) ?
-				Ui_.Invitee_->itemData (idx).toString () :
-				Ui_.Invitee_->currentText ();
-	}
-
-	void MUCInviteDialog::SetId (const QString& id)
-	{
-		for (int i = 0; i < Ui_.Invitee_->count (); ++i)
-			if (Ui_.Invitee_->itemData (i).toString () == id)
-			{
-				Ui_.Invitee_->setCurrentIndex (i);
-				ManualMode_ = false;
-				return;
-			}
-
-		Ui_.Invitee_->setEditText (id);
-
-		ManualMode_ = true;
-	}
-
-	QString MUCInviteDialog::GetInviteMessage () const
+	QString MUCInviteDialogBase::GetInviteMessage () const
 	{
 		return Ui_.Message_->text ();
 	}
 
-	void MUCInviteDialog::on_Invitee__currentIndexChanged ()
+	template<AddressInvitations AI>
+	MUCInviteDialog<AI>::MUCInviteDialog (const ICLEntry& source, QWidget *parent)
+	: MUCInviteDialogBase { source, parent }
 	{
-		ManualMode_ = false;
+		Ui_.Invitee_->setEditable (AI == AddressInvitations::Allowed);
 	}
 
-	void MUCInviteDialog::on_Invitee__editTextChanged ()
+	template<AddressInvitations AI>
+	MUCInviteDialog<AI>::TargetEntry_t MUCInviteDialog<AI>::GetTargetEntry () const
 	{
-		ManualMode_ = true;
+		const auto idx = Ui_.Invitee_->currentIndex ();
+		const auto entry = Ui_.Invitee_->itemData (idx).value<Util::TrackingPointer<ICLEntry>> ().GetOrNull ();
+
+		if constexpr (AI == AddressInvitations::Allowed)
+		{
+			if (const auto& text = Ui_.Invitee_->currentText ().trimmed ();
+				text != Ui_.Invitee_->itemText (idx).trimmed ())
+				return text;
+		}
+
+		return entry;
 	}
-}
+
+	template class MUCInviteDialog<AddressInvitations::Disallowed>;
+	template class MUCInviteDialog<AddressInvitations::Allowed>;
 }

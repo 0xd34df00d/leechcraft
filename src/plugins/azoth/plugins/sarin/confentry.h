@@ -90,7 +90,7 @@ namespace LC::Azoth::Sarin
 		QString GetGroupName () const override;
 		QString GetRealId (const ICLEntry& participant) const override;
 		QVariantMap GetIdentifyingData () const override;
-		void InviteToMUC (const QString& userId, const QString& msg) override;
+		void InviteToMUC (ICLEntry& entry, const QString& msg) override;
 
 		void HandleConnected ();
 		void HandleMessage (const ConfMessageEvent&);

@@ -8,37 +8,47 @@
 
 #pragma once
 
+#include <type_traits>
+#include <variant>
 #include <QDialog>
 #include "ui_mucinvitedialog.h"
 
-namespace LC
+namespace LC::Azoth
 {
-namespace Azoth
-{
-	class IAccount;
+	class ICLEntry;
 
-	class MUCInviteDialog : public QDialog
+	class MUCInviteDialogBase : public QDialog
 	{
-		Q_OBJECT
-
+		Q_DECLARE_TR_FUNCTIONS (LC::Azoth::MUCInviteDialogBase)
+	protected:
 		Ui::MUCInviteDialog Ui_;
-		bool ManualMode_;
 	public:
-		enum class ListType
-		{
-			ListEntries,
-			ListMucs
-		};
-
-		MUCInviteDialog (IAccount*, ListType = ListType::ListEntries, QWidget* = 0);
-
-		QString GetId () const;
-		void SetId (const QString&);
+		explicit MUCInviteDialogBase (const ICLEntry& source, QWidget* = nullptr);
 
 		QString GetInviteMessage () const;
-	private slots:
-		void on_Invitee__currentIndexChanged ();
-		void on_Invitee__editTextChanged ();
 	};
-}
+
+	enum class AddressInvitations : bool
+	{
+		Disallowed,
+		Allowed
+	};
+
+	template<AddressInvitations AI>
+	class MUCInviteDialog : public MUCInviteDialogBase
+	{
+	public:
+		explicit MUCInviteDialog (const ICLEntry& source, QWidget* = nullptr);
+
+		using TargetEntry_t = std::conditional_t<
+				AI == AddressInvitations::Allowed,
+				std::variant<ICLEntry*, QString>,
+				ICLEntry*
+			>;
+
+		TargetEntry_t GetTargetEntry () const;
+	};
+
+	extern template class MUCInviteDialog<AddressInvitations::Disallowed>;
+	extern template class MUCInviteDialog<AddressInvitations::Allowed>;
 }

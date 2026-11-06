@@ -295,7 +295,7 @@ namespace LC::Azoth::Acetamide
 		};
 	}
 
-	void ChannelCLEntry::InviteToMUC (const QString&, const QString&)
+	void ChannelCLEntry::InviteToMUC (ICLEntry&, const QString&)
 	{
 	}
 

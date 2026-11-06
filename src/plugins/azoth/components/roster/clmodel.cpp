@@ -12,10 +12,8 @@
 #include <util/sll/qtutil.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
-#include "components/dialogs/mucinvitedialog.h"
 #include "components/transfers/transferjobmanager.h"
 #include "components/util/dnd.h"
-#include "components/util/misc.h"
 #include "core.h"
 #include "cltooltipmanager.h"
 #include "roles.h"
@@ -65,7 +63,7 @@ namespace LC::Azoth
 
 			entries.append ({ entry, thisGroup });
 			names << entry->GetEntryName ();
-			urls << QUrl (entry->GetConventionalId ().ToString ());		// TODO add a QUrl-shaped getter to ICLEntry?
+			urls << QUrl (entry->GetHumanReadableId ());		// TODO add a QUrl-shaped getter to ICLEntry?
 		}
 
 		DndUtil::Encode (entries, result);
@@ -81,14 +79,11 @@ namespace LC::Azoth
 		if (action == Qt::IgnoreAction)
 			return true;
 
-		if (TryInvite (mime, row, parent))
+		if (TryDropOntoContact (mime, row, parent))
 			return true;
 
-		if (TryDropContact (mime, row, parent) ||
-				TryDropContact (mime, parent.row (), parent.parent ()))
-			return true;
-
-		if (TryDropFile (mime, parent))
+		if (TryDropRegroup (mime, row, parent) ||
+				TryDropRegroup (mime, parent.row (), parent.parent ()))
 			return true;
 
 		return false;
@@ -96,7 +91,7 @@ namespace LC::Azoth
 
 	Qt::DropActions CLModel::supportedDropActions () const
 	{
-		return Qt::CopyAction | Qt::MoveAction | Qt::LinkAction;
+		return Qt::CopyAction | Qt::LinkAction;
 	}
 
 	void CLModel::CheckRequestUpdateTooltip (const QModelIndex& index, int role) const
@@ -111,40 +106,21 @@ namespace LC::Azoth
 			TooltipManager_->RebuildTooltip (entry);
 	}
 
-	bool CLModel::TryInvite (const QMimeData *mime, int, const QModelIndex& parent)
+	bool CLModel::TryDropOntoContact (const QMimeData *mime, int, const QModelIndex& parent)
 	{
-		if (!DndUtil::HasContacts (mime))
-			return false;
-
 		if (parent.data (CLREntryType).value<CLEntryType> () != CLETContact)
 			return false;
 
-		const auto targetEntry = parent.data (CLRIEntry).value<ICLEntry*> ();
-		const auto targetMuc = qobject_cast<IMUCEntry*> (targetEntry->GetQObject ());
-
-		bool accepted = false;
-
-		for (const auto& serializedEntry : DndUtil::DecodeEntryObjs (Entries_, mime))
-		{
-			const auto serializedMuc = qobject_cast<IMUCEntry*> (serializedEntry->GetQObject ());
-			if (static_cast<bool> (targetMuc) == static_cast<bool> (serializedMuc))
-				continue;
-
-			auto muc = serializedMuc ? serializedMuc : targetMuc;
-			auto entry = serializedMuc ? targetEntry : serializedEntry;
-
-			MUCInviteDialog dia (entry->GetParentAccount ());
-			dia.SetId (entry->GetHumanReadableId ());
-			if (dia.exec () == QDialog::Accepted)
-				muc->InviteToMUC (dia.GetId (), dia.GetInviteMessage ());
-
-			accepted = true;
-		}
-
-		return accepted;
+		return DndUtil::HandleDroppedOnto (*mime, { parent.data (CLRIEntry).value<ICLEntry*> () },
+				{
+					.Entries_ = Entries_,
+					.Tabs_ = *Core::Instance ().GetChatTabsManager (),
+					.Transfers_ = *Core::Instance ().GetTransferJobManager (),
+					.Parent_ = nullptr,
+				});
 	}
 
-	bool CLModel::TryDropContact (const QMimeData *mime, int row, const QModelIndex& parent)
+	bool CLModel::TryDropRegroup (const QMimeData *mime, int row, const QModelIndex& parent)
 	{
 		if (!DndUtil::HasContacts (mime))
 			return false;
@@ -174,19 +150,5 @@ namespace LC::Azoth
 		}
 
 		return true;
-	}
-
-	bool CLModel::TryDropFile (const QMimeData* mime, const QModelIndex& parent)
-	{
-		// If MIME has CLEntryFormat, it's another serialized entry; we probably
-		// don't want to send it.
-		if (DndUtil::HasContacts (mime))
-			return false;
-
-		if (parent.data (CLREntryType).value<CLEntryType> () != CLETContact)
-			return false;
-
-		const auto entry = parent.data (CLRIEntry).value<ICLEntry*> ();
-		return OfferURLs (*Core::Instance ().GetTransferJobManager (), entry, mime->urls ());
 	}
 }

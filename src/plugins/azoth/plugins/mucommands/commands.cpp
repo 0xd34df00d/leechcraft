@@ -34,6 +34,7 @@
 #include <interfaces/azoth/ihaveservicediscovery.h>
 #include <interfaces/azoth/iprovidecommands.h>
 #include <interfaces/azoth/imucprotocol.h>
+#include <util/azoth/util.h>
 
 namespace LC
 {
@@ -943,17 +944,23 @@ namespace MuCommands
 
 		if (entry->GetEntryType () == ICLEntry::EntryType::MUC)
 		{
-			const auto invitee = ResolveEntry (id, {}, entry->GetParentAccount (), entry);
-			const auto& inviteeId = invitee ?
-					invitee->GetHumanReadableId () :
-					id;
-
 			const auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ());
-			mucEntry->InviteToMUC (inviteeId, reason);
 
-			InjectMessage (azothProxy, entry, QObject::tr ("Invited %1 to %2.")
-					.arg (inviteeId)
-					.arg (entry->GetEntryName ()));
+			if (const auto invitee = ResolveEntry (id, {}, entry->GetParentAccount (), entry))
+			{
+				mucEntry->InviteToMUC (*invitee, reason);
+				InjectMessage (azothProxy, entry, QObject::tr ("Invited %1 to %2.")
+						.arg (FormatNameWithAddress (*invitee), entry->GetEntryName ()));
+			}
+			else if (mucEntry->GetMUCFeatures () & IMUCEntry::MUCFCanInviteByAddress)
+			{
+				mucEntry->InviteToMUC (id, reason);
+				InjectMessage (azothProxy, entry, QObject::tr ("Invited %1 to %2.")
+						.arg (id, entry->GetEntryName ()));
+			}
+			else
+				InjectMessage (azothProxy, entry, QObject::tr ("Unable to resolve %1, and %2 does not support inviting by address.")
+						.arg (id, entry->GetEntryName ()));
 		}
 		else
 		{
@@ -973,7 +980,7 @@ namespace MuCommands
 				return true;
 			}
 
-			mucIface->InviteToMUC (entry->GetHumanReadableId (), reason);
+			mucIface->InviteToMUC (*entry, reason);
 			InjectMessage (azothProxy, entry, QObject::tr ("Invited %1 to %2.")
 					.arg (entry->GetEntryName ())
 					.arg (mucEntry->GetEntryName ()));

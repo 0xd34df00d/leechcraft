@@ -12,16 +12,15 @@
 #include <QXmppMucManager.h>
 #include <QXmppBookmarkManager.h>
 #include <QXmppDiscoveryManager.h>
-#include <util/sll/prelude.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/azothutil.h>
+#include <util/azoth/util.h>
 #include "clientconnectionextensionsmanager.h"
 #include "glooxaccount.h"
 #include "glooxprotocol.h"
 #include "roompublicmessage.h"
 #include "roomhandler.h"
 #include "roomconfigwidget.h"
-#include "core.h"
 #include "util.h"
 
 namespace LC
@@ -246,7 +245,7 @@ namespace Xoox
 
 	IMUCEntry::MUCFeatures RoomCLEntry::GetMUCFeatures () const
 	{
-		return MUCFCanBeConfigured | MUCFCanInvite;
+		return MUCFCanBeConfigured | MUCFCanInvite | MUCFCanInviteByAddress;
 	}
 
 	QString RoomCLEntry::GetMUCSubject () const
@@ -321,9 +320,18 @@ namespace Xoox
 		return ClientConnection::Split (entry.GetRealJid ()).Bare_;
 	}
 
-	void RoomCLEntry::InviteToMUC (const QString& id, const QString& msg)
+	void RoomCLEntry::InviteToMUC (ICLEntry& entry, const QString& msg)
 	{
-		RH_->GetRoom ()->sendInvitation (id, msg);
+		if (const auto xooxEntry = qobject_cast<EntryBase*> (entry.GetQObject ()))
+			InviteToMUC (xooxEntry->GetJid (), msg);
+		else
+			qWarning () << "not an Azoth Xoox entry:" << entry.GetQObject ()
+					<< entry.GetHumanReadableAddress () << entry.GetGlobalStrongestId ();
+	}
+
+	void RoomCLEntry::InviteToMUC (const QString& address, const QString& msg)
+	{
+		RH_->GetRoom ()->sendInvitation (address, msg);
 	}
 
 	MUCPerms_t RoomCLEntry::GetPossiblePerms () const

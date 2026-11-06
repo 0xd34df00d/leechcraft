@@ -58,13 +58,13 @@
 #include "util/azoth/util.h"
 #include "components/dialogs/bookmarksmanagerdialog.h"
 #include "components/dialogs/userslistwidget.h"
+#include "components/util/dnd.h"
 #include "components/util/entries.h"
 #include "components/util/misc.h"
 #include "components/util/settings.h"
 #include "callchatwidget.h"
 #include "chateventsadapter.h"
 #include "chattabpartstatemanager.h"
-#include "contactdropfilter.h"
 #include "filetransfersection.h"
 #include "msgeditautocompleter.h"
 #include "msgformatterwidget.h"
@@ -129,7 +129,6 @@ namespace Azoth
 	, TabToolbar_ (new QToolBar (tr ("Azoth chat window"), this))
 	, MUCEventLog_ (new QTextBrowser ())
 	, EntryId_ (entry.GetGlobalStrongestId ())
-	, CDF_ (new ContactDropFilter (entries, *Core::Instance ().GetTransferJobManager (), *this))
 	, NumUnreadMsgs_ (Core::Instance ().GetUnreadCount (GetEntry<ICLEntry> ()))
 	{
 		Ui_.setupUi (this);
@@ -187,8 +186,18 @@ namespace Azoth
 
 		MUCEventLog_->installEventFilter (this);
 
-		Ui_.View_->installEventFilter (CDF_);
-		Ui_.MsgEdit_->installEventFilter (CDF_);
+		Ui_.View_->installEventFilter (Util::MakeLambdaEventFilter<QEvent::Drop> ([this] (QDropEvent *e)
+				{
+					DndUtil::HandleDroppedOnto (*e->mimeData (), GetEntry<ICLEntry> (), GetDndContext ());
+					// prevent web view from handling drop events by navigating to them
+					return true;
+				},
+				*this));
+		Ui_.MsgEdit_->installEventFilter (Util::MakeLambdaEventFilter<QEvent::Drop> ([this] (QDropEvent *e)
+				{
+					return DndUtil::HandleDroppedOnto (*e->mimeData (), GetEntry<ICLEntry> (), GetDndContext ());
+				},
+				*this));
 
 		Ui_.SubjBox_->setVisible (false);
 		Ui_.SubjChange_->setEnabled (false);
@@ -411,9 +420,8 @@ namespace Azoth
 	void ChatTab::HandleDrop (QDropEvent *event)
 	{
 		const auto data = event->mimeData ();
-		if (data->hasUrls () || data->hasImage ())
-			CDF_->HandleDrop (data);
-		else if (data->hasText ())
+		if (const auto customDropHandled = DndUtil::HandleDroppedOnto (*data, GetEntry<ICLEntry> (), GetDndContext ());
+			!customDropHandled && data->hasText ())
 			appendMessageText (data->text ());
 	}
 
@@ -1129,6 +1137,17 @@ namespace Azoth
 	T* ChatTab::GetEntry () const
 	{
 		return Entries_.GetEntryOrNull<T> (EntryId_);
+	}
+
+	DndUtil::DndContext ChatTab::GetDndContext ()
+	{
+		return
+		{
+			.Entries_ = Entries_,
+			.Tabs_ = *Core::Instance ().GetChatTabsManager (),
+			.Transfers_ = *Core::Instance ().GetTransferJobManager (),
+			.Parent_ = this,
+		};
 	}
 
 	void ChatTab::BuildBasicActions ()

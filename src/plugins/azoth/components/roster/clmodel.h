@@ -33,9 +33,8 @@ namespace LC::Azoth
 	private:
 		void CheckRequestUpdateTooltip (const QModelIndex&, int) const;
 
-		bool TryInvite (const QMimeData*, int, const QModelIndex&);
-		bool TryDropContact (const QMimeData*, int, const QModelIndex&);
-		bool TryDropFile (const QMimeData*, const QModelIndex&);
+		bool TryDropOntoContact (const QMimeData*, int, const QModelIndex&);
+		bool TryDropRegroup (const QMimeData*, int, const QModelIndex&);
 	signals:
 		void rebuiltTooltip ();
 	};

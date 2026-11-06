@@ -79,7 +79,7 @@ namespace LC::Azoth::Sarin
 		QString GetGroupName () const override;
 		QString GetRealId (const ICLEntry& participant) const override;
 		QVariantMap GetIdentifyingData () const override;
-		void InviteToMUC (const QString& userId, const QString& msg) override;
+		void InviteToMUC (ICLEntry&, const QString&) override;
 
 		void HandlePeerJoined (uint32_t peerId);
 		void HandlePeerExited (uint32_t peerId, const GroupPeerExitedEvent&);

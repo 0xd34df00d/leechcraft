@@ -100,6 +100,7 @@ namespace Xoox
 		QString GetGroupName () const override;
 		QVariantMap GetIdentifyingData () const override;
 		QString GetRealId (const ICLEntry&) const override;
+		void InviteToMUC (ICLEntry&, const QString&) override;
 		void InviteToMUC (const QString&, const QString&) override;
 
 		// IMUCPerms

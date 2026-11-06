@@ -171,7 +171,7 @@ namespace LC::Azoth::Acetamide
 		};
 	}
 
-	void IrcServerCLEntry::InviteToMUC (const QString&, const QString&)
+	void IrcServerCLEntry::InviteToMUC (ICLEntry&, const QString&)
 	{
 	}
 
