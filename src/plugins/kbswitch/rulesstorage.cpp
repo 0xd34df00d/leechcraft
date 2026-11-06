@@ -26,7 +26,7 @@ namespace KBSwitch
 	{
 		QString FindX11Dir ()
 		{
-			static const auto dirs =
+			static const QStringList dirs
 			{
 				"/etc/X11",
 				"/usr/share/X11",
@@ -43,12 +43,9 @@ namespace KBSwitch
 				"/usr/pkg/xorg/lib/X11"
 			};
 
-			for (const auto& item : dirs)
-			{
-				const QString itemStr (item);
-				if (QFile::exists (itemStr + "/xkb/rules"))
-					return itemStr;
-			}
+			for (const auto& dir : dirs)
+				if (QFile::exists (dir + "/xkb/rules"))
+					return dir;
 
 			return {};
 		}
@@ -59,20 +56,38 @@ namespace KBSwitch
 			char *path = 0;
 			if (XkbRF_GetNamesProp (display, &path, &vd) && path)
 			{
-				const QString pathStr (path);
+				const auto& pathStr = QFile::decodeName (path);
 				free (path);
 				return x11dir + "/xkb/rules/" + pathStr;
 			}
 
-			for (auto rfName : { "base", "xorg", "xfree86" })
+			static const QStringList rfNames { "base", "xorg", "xfree86" };
+			for (const auto& rfName : rfNames)
 			{
-				const auto rf = QString ("/xkb/rules/") + rfName;
-				const auto& path = x11dir + rf;
+				const auto& path = x11dir + "/xkb/rules/" + rfName;
 				if (QFile::exists (path))
 					return path;
 			}
 
 			return {};
+		}
+
+		struct VarDesc
+		{
+			QString Name_;
+			QString Desc_;
+		};
+
+		QList<VarDesc> Decode (const XkbRF_DescribeVarsRec& vars)
+		{
+			QList<VarDesc> result;
+			result.reserve (vars.num_desc);
+			for (int i = 0; i < vars.num_desc; ++i)
+			{
+				const auto& desc = vars.desc [i];
+				result.push_back ({ .Name_ = QString::fromUtf8 (desc.name), .Desc_ = QString::fromUtf8 (desc.desc) });
+			}
+			return result;
 		}
 	}
 
@@ -100,51 +115,42 @@ namespace KBSwitch
 			return;
 		}
 
-		for (int i = 0; i < xkbRules->layouts.num_desc; ++i)
+		for (const auto& [name, desc] : Decode (xkbRules->layouts))
 		{
-			const auto& desc = xkbRules->layouts.desc [i];
-			LayName2Desc_ [desc.name] = desc.desc;
-			LayDesc2Name_ [desc.desc] = desc.name;
+			LayName2Desc_ [name] = desc;
+			LayDesc2Name_ [desc] = name;
 		}
 
-		for (int i = 0; i < xkbRules->variants.num_desc; ++i)
+		for (const auto& [name, desc] : Decode (xkbRules->variants))
 		{
-			const auto& desc = xkbRules->variants.desc [i];
-
-			const QString descStr (desc.desc);
-			const auto& split = descStr.split (':', Qt::SkipEmptyParts);
+			const auto& split = desc.split (':', Qt::SkipEmptyParts);
 			const auto& varName = split.value (0).trimmed ();
 			const auto& hrName = split.value (1).trimmed ();
 
-			const QString name (desc.name);
 			LayName2Variants_ [varName] << name;
 
 			VarLayHR2NameVarPair_ [hrName] = std::make_pair (varName, name);
 		}
 
 		QStringList pcModelStrings;
-		for (int i = 0; i < xkbRules->models.num_desc; ++i)
+		for (const auto& [name, desc] : Decode (xkbRules->models))
 		{
-			const auto& model = xkbRules->models.desc [i];
-			KBModels_ [model.name] = model.desc;
+			KBModels_ [name] = desc;
 
-			const auto& kbString = QString ("%1 (%2)").arg (model.desc).arg (model.name);
-			if (QString (model.name).startsWith ("pc10"))
+			const auto& kbString = QString ("%1 (%2)").arg (desc, name);
+			if (name.startsWith ("pc10"))
 				pcModelStrings << kbString;
 			else
 				KBModelsStrings_ << kbString;
 
-			KBModelString2Code_ [kbString] = model.name;
+			KBModelString2Code_ [kbString] = name;
 		}
 		pcModelStrings.sort ();
 		KBModelsStrings_.sort ();
 		KBModelsStrings_ = pcModelStrings + KBModelsStrings_;
 
-		for (int i = 0; i < xkbRules->options.num_desc; ++i)
+		for (auto [name, desc] : Decode (xkbRules->options))
 		{
-			const auto& desc = xkbRules->options.desc [i];
-
-			QString name (desc.name);
 			name = name.toLower ();
 
 			const auto colonIdx = name.indexOf (':');
@@ -154,7 +160,7 @@ namespace KBSwitch
 					name = "numpad";
 
 				if (name != "currencysign")
-					Options_ [name] [{}] = desc.desc;
+					Options_ [name] [{}] = desc;
 
 				continue;
 			}
@@ -162,10 +168,9 @@ namespace KBSwitch
 			const auto& group = name.left (colonIdx);
 			const auto& option = name.mid (colonIdx + 1);
 
-			QString descStr (desc.desc);
-			descStr.replace ("&lt;", "<");
-			descStr.replace ("&gt;", ">");
-			Options_ [group] [option] = descStr;
+			desc.replace ("&lt;", "<");
+			desc.replace ("&gt;", ">");
+			Options_ [group] [option] = desc;
 		}
 
 		XkbRF_Free (xkbRules, True);

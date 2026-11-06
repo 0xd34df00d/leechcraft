@@ -363,7 +363,7 @@ namespace KBSwitch
 		const auto& varredLayouts = Rules_->GetVariantsD2Layouts ();
 		for (size_t i = 0; i < groupCount; ++i)
 		{
-			const QString str (result [i]);
+			const auto& str = QString::fromUtf8 (result [i]);
 			XFree (result [i]);
 
 			if (!layoutsD2N [str].isEmpty ())
