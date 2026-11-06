@@ -11,7 +11,6 @@
 #include <QMenu>
 #include <QHash>
 #include <QInputDialog>
-#include <QMessageBox>
 #include <QtDebug>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/util.h>
@@ -31,7 +30,6 @@
 #include "interfaces/azoth/ihaveconsole.h"
 #include "interfaces/azoth/ihavemicroblogs.h"
 #include "interfaces/azoth/iregmanagedaccount.h"
-#include "interfaces/azoth/isupportnonroster.h"
 #include "interfaces/azoth/ihaveserverhistory.h"
 #include "interfaces/azoth/imucprotocol.h"
 #include "interfaces/azoth/ihavecontactmood.h"
@@ -153,37 +151,6 @@ namespace LC::Azoth::Actions
 			if (dia.exec () == QDialog::Accepted)
 				dia.GetSelectedAccount ()->RequestAuth (dia.GetContactId (),
 						dia.GetReason (), dia.GetNick (), dia.GetGroups ());
-		}
-
-		void OpenNonRosterChat (ISupportNonRoster *isnr)
-		{
-			QObject *entryObj = nullptr;
-			QString contactId;
-			while (!entryObj)
-			{
-				contactId = QInputDialog::getText (nullptr,
-						AccountActions::tr ("Open chat with non-roster contact"),
-						AccountActions::tr ("Enter ID of the contact you wish to open chat with:"),
-						QLineEdit::Normal,
-						contactId);
-				if (contactId.isEmpty ())
-					return;
-
-				try
-				{
-					entryObj = isnr->CreateNonRosterItem (contactId);
-				}
-				catch (const std::exception& e)
-				{
-					QMessageBox::critical (nullptr,
-							"LeechCraft Azoth",
-							AccountActions::tr ("Error opening chat: %1")
-								.arg (QString::fromUtf8 (e.what ())));
-				}
-			}
-
-			const auto entry = qobject_cast<ICLEntry*> (entryObj);
-			Core::Instance ().GetChatTabsManager ()->OpenChat (*entry, true);
 		}
 
 		void AddServerHistoryActions (QMenu *menu, QObject *accObj)
@@ -328,10 +295,6 @@ namespace LC::Azoth::Actions
 					accObj,
 					[acc] { AddAccountContact (acc); });
 
-		if (const auto isnr = qobject_cast<ISupportNonRoster*> (accObj))
-			menu->addAction (AccountActions::tr ("Chat with non-CL contact"),
-					accObj,
-					[isnr] { OpenNonRosterChat (isnr); });
 		menu->addSeparator ();
 
 		AddServerHistoryActions (menu, accObj);

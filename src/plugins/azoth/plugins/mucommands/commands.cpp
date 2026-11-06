@@ -22,7 +22,6 @@
 #include <interfaces/azoth/imucentry.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/iaccount.h>
-#include <interfaces/azoth/isupportnonroster.h>
 #include <interfaces/azoth/imetainfoentry.h>
 #include <interfaces/azoth/ihaveentitytime.h>
 #include <interfaces/azoth/iprotocol.h>
@@ -116,10 +115,6 @@ namespace MuCommands
 
 			if (!entries.isEmpty ())
 				return entries.contains (hint) ? hint : entries.first ();
-
-			if (const auto isn = qobject_cast<ISupportNonRoster*> (acc->GetQObject ()))
-				if (const auto entry = qobject_cast<ICLEntry*> (isn->CreateNonRosterItem (name)))
-					return entry;
 
 			return nullptr;
 		}
