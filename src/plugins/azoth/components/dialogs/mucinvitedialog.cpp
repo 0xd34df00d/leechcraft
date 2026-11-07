@@ -7,6 +7,9 @@
  **********************************************************************/
 
 #include "mucinvitedialog.h"
+#include <variant>
+#include <QLineEdit>
+#include <QPushButton>
 #include <QtDebug>
 #include <util/sll/qobjectrefcast.h>
 #include <util/sll/trackingpointer.h>
@@ -24,10 +27,9 @@ namespace LC::Azoth
 			return entry.GetEntryType () == ICLEntry::EntryType::MUC;
 		}
 
-		bool IsInvitableMuc (ICLEntry& entry)
+		bool MightInvite (const ICLEntry& muc, const ICLEntry& invitee)
 		{
-			return IsMuc (entry) &&
-					qobject_ref_cast<IMUCEntry> (entry.GetQObject ()).GetMUCFeatures ().testFlag (IMUCEntry::MUCFCanInvite);
+			return qobject_ref_cast<const IMUCEntry> (muc.GetQObject ()).CanInvite (invitee) == IMUCEntry::MightInvite;
 		}
 	}
 
@@ -41,9 +43,21 @@ namespace LC::Azoth
 		if (!sourceIsMuc)
 			Ui_.InviteeLabel_->setText (tr ("Conferences:"));
 
+		const auto isOffered = [&] (const ICLEntry& entry)
+		{
+			return sourceIsMuc ?
+					!IsMuc (entry) && MightInvite (source, entry) :
+					IsMuc (entry) && MightInvite (entry, source);
+		};
+
 		for (const auto entry : source.GetParentAccount ()->GetCLEntries ())
-			if (sourceIsMuc ? !IsMuc (*entry) : IsInvitableMuc (*entry))
+			if (isOffered (*entry))
 				Ui_.Invitee_->addItem (FormatNameWithAddress (*entry), QVariant::fromValue (Util::TrackingPointer { entry }));
+
+		if (!Ui_.Invitee_->count ())
+			Ui_.Invitee_->setPlaceholderText (sourceIsMuc ?
+					tr ("Nobody can be invited to this conference") :
+					tr ("This contact cannot be invited to any conference"));
 	}
 
 	QString MUCInviteDialogBase::GetInviteMessage () const
@@ -56,6 +70,10 @@ namespace LC::Azoth
 	: MUCInviteDialogBase { source, parent }
 	{
 		Ui_.Invitee_->setEditable (AI == AddressInvitations::Allowed);
+		if constexpr (AI == AddressInvitations::Allowed)
+			Ui_.Invitee_->lineEdit ()->setPlaceholderText (tr ("Contact or address to invite"));
+		else if (!Ui_.Invitee_->count ())
+			Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (false);
 	}
 
 	template<AddressInvitations AI>
