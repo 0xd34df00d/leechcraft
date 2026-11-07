@@ -10,6 +10,7 @@
 #include <stdexcept>
 #include <sys/inotify.h>
 #include <sys/poll.h>
+#include <QFile>
 #include <QtDebug>
 #include <QStringList>
 #include <QTimer>
@@ -89,7 +90,7 @@ namespace NetStoreManager
 			struct inotify_event *event = reinterpret_cast<inotify_event*> (&buffer [i]);
 
 			const QString path = WatchedPathes2Descriptors_.right.at (event->wd);
-			const QString fullPath = path + "/" + QString (event->name);
+			const QString fullPath = path + "/" + QFile::decodeName (event->name);
 
 			i += EventSize_ + event->len;
 
@@ -128,7 +129,7 @@ namespace NetStoreManager
 						if ((*it)->cookie == event->cookie &&
 								(*it)->wd == event->wd)
 						{
-							QString oldPath = path + "/" + QString ((*it)->name);
+							QString oldPath = path + "/" + QFile::decodeName ((*it)->name);
 							if (QFileInfo (fullPath).isDir ())
 								RenamePath (oldPath, fullPath);
 
@@ -139,7 +140,7 @@ namespace NetStoreManager
 						else if ((*it)->cookie == event->cookie)
 						{
 							const QString oldPrePath = WatchedPathes2Descriptors_.right.at ((*it)->wd);
-							emit entryWasMoved (oldPrePath + "/" + QString ((*it)->name),
+							emit entryWasMoved (oldPrePath + "/" + QFile::decodeName ((*it)->name),
 									fullPath);
 							it = eventsBuffer.erase (it);
 							break;
@@ -156,7 +157,7 @@ namespace NetStoreManager
 		for (auto it = eventsBuffer.begin (); it < eventsBuffer.end (); )
 		{
 			const QString path = WatchedPathes2Descriptors_.right.at ((*it)->wd);
-			const QString fullPath = path + "/" + QString ((*it)->name);
+			const QString fullPath = path + "/" + QFile::decodeName ((*it)->name);
 
 			if ((*it)->mask & IN_ISDIR)
 				emit dirWasRemoved (fullPath);
