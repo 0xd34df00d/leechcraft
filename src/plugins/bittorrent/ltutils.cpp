@@ -306,7 +306,7 @@ namespace LC::BitTorrent
 		for (const auto& handle : session.get_torrents ())
 		{
 			const auto& s = handle.status ({});
-			auto domain = QUrl { s.current_tracker.c_str () }.host ();
+			auto domain = QUrl { QString::fromStdString (s.current_tracker) }.host ();
 			if (!domain.isEmpty ())
 			{
 				auto& domainStats = stats [domain];

@@ -1347,7 +1347,8 @@ namespace BitTorrent
 		auto nah = new Util::NotificationActionHandler (notifyE);
 		if (info.num_files () == 1)
 		{
-			const QByteArray path { (savePath + '/' + GetCurrentFilePath (torrent.Handle_, info, libtorrent::file_index_t { 0 })).c_str () };
+			const auto& path = QString::fromStdString (savePath + '/' +
+					GetCurrentFilePath (torrent.Handle_, info, libtorrent::file_index_t { 0 }));
 			nah->AddFunction (tr ("Open..."),
 					[iem, path]
 					{
