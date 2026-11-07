@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "udevbackend.h"
+#include <QFile>
 #include <QSocketNotifier>
 #include <QStandardItemModel>
 #include <QtDebug>
@@ -52,7 +53,8 @@ namespace Devmon
 			auto entry = udev_device_get_properties_list_entry (device);
 			while (entry)
 			{
-				props [udev_list_entry_get_name (entry)] = udev_list_entry_get_value (entry);
+				props [QString::fromUtf8 (udev_list_entry_get_name (entry))] =
+						QString::fromUtf8 (udev_list_entry_get_value (entry));
 				entry = udev_list_entry_get_next (entry);
 			}
 			return props;
@@ -90,7 +92,7 @@ namespace Devmon
 			item->setData (props ["ID_MODEL"], USBDeviceRole::Model);
 			item->setData (props ["BUSNUM"].toInt (), USBDeviceRole::Busnum);
 			item->setData (props ["DEVNUM"].toInt (), USBDeviceRole::Devnum);
-			item->setData (QString (udev_device_get_syspath (device)), USBDeviceRole::SysFile);
+			item->setData (QFile::decodeName (udev_device_get_syspath (device)), USBDeviceRole::SysFile);
 		}
 	}
 
@@ -147,7 +149,7 @@ namespace Devmon
 
 		const auto& props = GetProperties (device.get ());
 
-		const QString action (udev_device_get_action (device.get ()));
+		const QByteArrayView action (udev_device_get_action (device.get ()));
 		if (action == "add")
 		{
 			auto item = new QStandardItem ();
@@ -156,7 +158,7 @@ namespace Devmon
 		}
 		else if (action == "remove")
 		{
-			auto item = FindItemForPath (udev_device_get_syspath (device.get ()));
+			auto item = FindItemForPath (QFile::decodeName (udev_device_get_syspath (device.get ())));
 			if (!item)
 			{
 				qWarning () << Q_FUNC_INFO
@@ -169,7 +171,7 @@ namespace Devmon
 		}
 		else if (action == "change")
 		{
-			auto item = FindItemForPath (udev_device_get_syspath (device.get ()));
+			auto item = FindItemForPath (QFile::decodeName (udev_device_get_syspath (device.get ())));
 			if (!item)
 			{
 				qWarning () << Q_FUNC_INFO
