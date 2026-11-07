@@ -19,7 +19,6 @@
 #include <QWidgetAction>
 #include <QToolBar>
 #include <util/gui/util.h>
-#include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/iactionsexporter.h>
@@ -753,40 +752,16 @@ void LC::MainWindow::keyPressEvent (QKeyEvent *e)
 
 void MainWindow::dragEnterEvent (QDragEnterEvent *event)
 {
-	auto mimeData = event->mimeData ();
-	for (const QString& format : mimeData->formats ())
-	{
-		const Entity& e = Util::MakeEntity (mimeData->data (format),
-				QString (),
-				FromUserInitiated,
-				format);
-
-		if (EntityManager { nullptr, nullptr }.CouldHandle (e))
-		{
-			event->acceptProposedAction ();
-			return;
-		}
-	}
-
-	QMainWindow::dragEnterEvent (event);
+	if (CouldHandleDroppedData (*event->mimeData ()))
+		event->acceptProposedAction ();
+	else
+		QMainWindow::dragEnterEvent (event);
 }
 
 void MainWindow::dropEvent (QDropEvent *event)
 {
-	auto mimeData = event->mimeData ();
-	for (const auto& format : mimeData->formats ())
-	{
-		const Entity& e = Util::MakeEntity (mimeData->data (format),
-				QString (),
-				FromUserInitiated,
-				format);
-
-		if (EntityManager { nullptr, nullptr }.HandleEntity (e))
-		{
-			event->acceptProposedAction ();
-			break;
-		}
-	}
+	if (HandleDroppedData (*event->mimeData ()))
+		event->acceptProposedAction ();
 
 	QWidget::dropEvent (event);
 }

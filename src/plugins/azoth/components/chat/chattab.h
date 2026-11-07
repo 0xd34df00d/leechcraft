@@ -144,8 +144,8 @@ namespace Azoth
 		std::optional<TabSaveInfo> GetTabSaveInfo () const;
 
 		void FillMimeData (QMimeData*);
-		void HandleDragEnter (QDragMoveEvent*);
-		void HandleDrop (QDropEvent*);
+		bool CouldHandleDrop (const QMimeData&) const;
+		bool HandleDrop (const QMimeData&);
 
 		QObject* GetQObject ();
 		void SetFontFamily (FontFamily, const QFont&);

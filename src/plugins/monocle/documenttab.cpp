@@ -8,6 +8,7 @@
 
 #include "documenttab.h"
 #include <functional>
+#include <optional>
 #include <QActionGroup>
 #include <QToolBar>
 #include <QMenu>
@@ -289,33 +290,35 @@ namespace Monocle
 		data->setText (QFileInfo (CurrentDocPath_).fileName ());
 	}
 
-	void DocumentTab::HandleDragEnter (QDragMoveEvent *event)
+	namespace
 	{
-		auto data = event->mimeData ();
-		if (!data->hasUrls ())
-			return;
+		std::optional<QString> GetDroppedDocument (const DocumentLoader& loader, const QMimeData& data)
+		{
+			const auto& url = data.urls ().value (0);
+			if (!url.isLocalFile ())
+				return {};
 
-		const auto& url = data->urls ().value (0);
-		if (!url.isLocalFile () || !QFile::exists (url.toLocalFile ()))
-			return;
+			auto path = url.toLocalFile ();
+			if (!QFile::exists (path) || !loader.CanLoadDocument (path))
+				return {};
 
-		const auto& localPath = url.toLocalFile ();
-		if (Loader_.CanLoadDocument (localPath))
-			event->acceptProposedAction ();
+			return path;
+		}
 	}
 
-	void DocumentTab::HandleDrop (QDropEvent *event)
+	bool DocumentTab::CouldHandleDrop (const QMimeData& data) const
 	{
-		auto data = event->mimeData ();
-		if (!data->hasUrls ())
-			return;
+		return GetDroppedDocument (Loader_, data).has_value ();
+	}
 
-		const auto& url = data->urls ().value (0);
-		if (!url.isLocalFile () || !QFile::exists (url.toLocalFile ()))
-			return;
+	bool DocumentTab::HandleDrop (const QMimeData& data)
+	{
+		const auto& path = GetDroppedDocument (Loader_, data);
+		if (!path)
+			return false;
 
-		C_->Navigator_.OpenDocument (url.toLocalFile ());
-		event->acceptProposedAction ();
+		C_->Navigator_.OpenDocument (*path);
+		return true;
 	}
 
 	void DocumentTab::RecoverState (const QByteArray& data)
@@ -347,12 +350,14 @@ namespace Monocle
 
 	void DocumentTab::dragEnterEvent (QDragEnterEvent *event)
 	{
-		HandleDragEnter (event);
+		if (CouldHandleDrop (*event->mimeData ()))
+			event->acceptProposedAction ();
 	}
 
 	void DocumentTab::dropEvent (QDropEvent *event)
 	{
-		HandleDrop (event);
+		if (HandleDrop (*event->mimeData ()))
+			event->acceptProposedAction ();
 	}
 
 	void DocumentTab::SetupToolbarRotate ()

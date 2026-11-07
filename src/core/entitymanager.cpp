@@ -12,8 +12,10 @@
 #include <QFuture>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QMimeData>
 #include "util/sll/exceptions.h"
 #include "util/util.h"
+#include "util/xpc/util.h"
 #include "interfaces/entityconstants.h"
 #include "interfaces/structures.h"
 #include "interfaces/idownload.h"
@@ -388,4 +390,29 @@ namespace LC
 		DelegateAfterInit_.clear ();
 		HandleAfterInit_.clear ();
 	}
+
+	namespace
+	{
+		bool AnyDroppedEntity (const QMimeData& data, auto&& test)
+		{
+			return std::ranges::any_of (data.formats (),
+					[&] (const QString& format)
+					{
+						return test (Util::MakeEntity (data.data (format), {}, FromUserInitiated, format));
+					});
+		}
+	}
+
+	bool CouldHandleDroppedData (const QMimeData& data)
+	{
+		return AnyDroppedEntity (data,
+				[] (const Entity& e) { return EntityManager { nullptr, nullptr }.CouldHandle (e); });
+	}
+
+	bool HandleDroppedData (const QMimeData& data)
+	{
+		return AnyDroppedEntity (data,
+				[] (const Entity& e) { return EntityManager { nullptr, nullptr }.HandleEntity (e); });
+	}
+
 }

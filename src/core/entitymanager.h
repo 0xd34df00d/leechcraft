@@ -13,6 +13,8 @@
 #include <QVector>
 #include "interfaces/core/ientitymanager.h"
 
+class QMimeData;
+
 namespace LC
 {
 	class EntityManager : public QObject
@@ -44,4 +46,17 @@ namespace LC
 		bool CheckInitStage (const Entity&, QObject*, QVector<QueueEntry>&);
 		void RunQueues ();
 	};
+
+	/** @brief Checks whether some plugin could handle the dragged `data`.
+	 *
+	 * Each format of the `data` is offered as an entity carrying that
+	 * format's raw contents.
+	 */
+	bool CouldHandleDroppedData (const QMimeData& data);
+
+	/** @brief Handles the dragged `data` the way `CouldHandleDroppedData()` checks it.
+	 *
+	 * @return Whether some plugin handled the `data`.
+	 */
+	bool HandleDroppedData (const QMimeData& data);
 }

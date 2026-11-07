@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <optional>
 #include <QTabBar>
 #include <QHash>
 
@@ -25,6 +26,7 @@ namespace LC
 		SeparateTabWidget *TabWidget_ = nullptr;
 
 		QPoint DragStartPos_;
+		std::optional<bool> CoreCouldHandleDrop_;
 
 		QWidget *AddTabButton_ = nullptr;
 		mutable QVector<int> ComputedWidths_;
@@ -56,6 +58,7 @@ namespace LC
 		void mouseMoveEvent (QMouseEvent*);
 		void dragEnterEvent (QDragEnterEvent*);
 		void dragMoveEvent (QDragMoveEvent*);
+		void dragLeaveEvent (QDragLeaveEvent*);
 		void dropEvent (QDropEvent*);
 
 		void mouseDoubleClickEvent (QMouseEvent*);

@@ -19,6 +19,7 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/idndtab.h>
 #include "coreproxy.h"
+#include "entitymanager.h"
 #include "separatetabwidget.h"
 
 namespace LC
@@ -274,48 +275,96 @@ namespace LC
 		drag->exec ();
 	}
 
+	namespace
+	{
+		bool IsTabReordering (const QMimeData& data)
+		{
+			return data.data ("x-leechcraft/tab-drag-action") == "reordering";
+		}
+
+		IDNDTab* GetDndTab (const SeparateTabWidget& tabs, int index)
+		{
+			return qobject_cast<IDNDTab*> (tabs.Widget (index));
+		}
+
+		bool CouldDropOnTab (const IDNDTab *tab, const QMimeData& data)
+		{
+			return tab && tab->CouldHandleDrop (data);
+		}
+
+		bool TryDropOnTab (IDNDTab *tab, const QMimeData& data)
+		{
+			return CouldDropOnTab (tab, data) && tab->HandleDrop (data);
+		}
+
+		// Nothing in LeechCraft takes ownership of dropped data, so a drop is
+		// always a copy, and a source offering only a move is refused.
+		void AcceptCopy (QDropEvent& event)
+		{
+			if (!(event.possibleActions () & Qt::CopyAction))
+				return;
+
+			event.setDropAction (Qt::CopyAction);
+			event.accept ();
+		}
+	}
+
 	void SeparateTabBar::dragEnterEvent (QDragEnterEvent *event)
 	{
-		dragMoveEvent (event);
+		CoreCouldHandleDrop_ = CouldHandleDroppedData (*event->mimeData ());
+
+		// Qt delivers drag moves only after an accepted enter, and the moves
+		// are where the hovered tab gets activated and asked about the drop.
+		event->acceptProposedAction ();
 	}
 
 	void SeparateTabBar::dragMoveEvent (QDragMoveEvent *event)
 	{
-		const auto tabIdx = tabAt (event->position ().toPoint ());
-		if (tabIdx == count () - 1)
-			return;
+		event->ignore ();
 
-		auto data = event->mimeData ();
-		const auto& formats = data->formats ();
-		if (formats.contains ("x-leechcraft/tab-drag-action") &&
-				data->data ("x-leechcraft/tab-drag-action") == "reordering")
-			event->acceptProposedAction ();
-		else if (tabIdx >= 0)
+		const auto tabIdx = tabAt (event->position ().toPoint ());
+		const auto isAddTabButton = tabIdx == count () - 1;
+
+		const auto& data = *event->mimeData ();
+		if (IsTabReordering (data))
+		{
+			if (!isAddTabButton)
+				event->acceptProposedAction ();
+			return;
+		}
+
+		if (tabIdx >= 0 && !isAddTabButton)
 			TabWidget_->setCurrentIndex (tabIdx);
 
-		if (auto idt = qobject_cast<IDNDTab*> (TabWidget_->Widget (tabIdx)))
-			idt->HandleDragEnter (event);
+		if (CouldDropOnTab (GetDndTab (*TabWidget_, tabIdx), data) || CoreCouldHandleDrop_.value ())
+			AcceptCopy (*event);
+	}
+
+	void SeparateTabBar::dragLeaveEvent (QDragLeaveEvent*)
+	{
+		CoreCouldHandleDrop_.reset ();
 	}
 
 	void SeparateTabBar::dropEvent (QDropEvent *event)
 	{
-		auto data = event->mimeData ();
+		CoreCouldHandleDrop_.reset ();
 
 		const int to = tabAt (event->position ().toPoint ());
-		auto widget = TabWidget_->Widget (to);
-		if (data->data ("x-leechcraft/tab-drag-action") == "reordering")
+		const auto& data = *event->mimeData ();
+		if (IsTabReordering (data))
 		{
 			const int from = tabAt (DragStartPos_);
-
 			if (from == to || to == count () - 1)
 				return;
 
 			moveTab (from, to);
 			emit releasedMouseAfterMove (to);
 			event->acceptProposedAction ();
+			return;
 		}
-		else if (auto idt = qobject_cast<IDNDTab*> (widget))
-			idt->HandleDrop (event);
+
+		if (TryDropOnTab (GetDndTab (*TabWidget_, to), data) || HandleDroppedData (data))
+			AcceptCopy (*event);
 	}
 
 	void SeparateTabBar::mouseDoubleClickEvent (QMouseEvent *event)

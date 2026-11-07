@@ -399,29 +399,27 @@ namespace Azoth
 		}
 	}
 
-	void ChatTab::HandleDragEnter (QDragMoveEvent *event)
+	bool ChatTab::CouldHandleDrop (const QMimeData& data) const
 	{
-		auto data = event->mimeData ();
-		if (data->hasText ())
-			event->acceptProposedAction ();
-		else if (data->hasUrls ())
-		{
-			for (const auto& url : data->urls ())
-				if (url.isLocalFile () &&
-						QFile::exists (url.toLocalFile ()))
-				{
-					event->acceptProposedAction ();
-					break;
-				}
-		}
+		if (data.hasText ())
+			return true;
+
+		for (const auto& url : data.urls ())
+			if (url.isLocalFile () && QFile::exists (url.toLocalFile ()))
+				return true;
+		return false;
 	}
 
-	void ChatTab::HandleDrop (QDropEvent *event)
+	bool ChatTab::HandleDrop (const QMimeData& data)
 	{
-		const auto data = event->mimeData ();
-		if (const auto customDropHandled = DndUtil::HandleDroppedOnto (*data, GetEntry<ICLEntry> (), GetDndContext ());
-			!customDropHandled && data->hasText ())
-			appendMessageText (data->text ());
+		if (DndUtil::HandleDroppedOnto (data, GetEntry<ICLEntry> (), GetDndContext ()))
+			return true;
+
+		if (!data.hasText ())
+			return false;
+
+		appendMessageText (data.text ());
+		return true;
 	}
 
 	QObject* ChatTab::GetQObject ()

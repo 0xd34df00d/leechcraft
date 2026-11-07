@@ -139,8 +139,8 @@ namespace Poshuku
 		TabClassInfo GetTabClassInfo () const override;
 
 		void FillMimeData (QMimeData*) override;
-		void HandleDragEnter (QDragMoveEvent*) override;
-		void HandleDrop (QDropEvent*) override;
+		bool CouldHandleDrop (const QMimeData&) const override;
+		bool HandleDrop (const QMimeData&) override;
 
 		void SetTabRecoverData (const QByteArray&);
 		std::optional<TabSaveInfo> GetTabSaveInfo () const override;

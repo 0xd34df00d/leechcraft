@@ -662,18 +662,19 @@ namespace Poshuku
 		data->setImageData (image);
 	}
 
-	void BrowserWidget::HandleDragEnter (QDragMoveEvent *event)
+	bool BrowserWidget::CouldHandleDrop (const QMimeData& data) const
 	{
-		if (event->mimeData ()->hasUrls ())
-			event->acceptProposedAction ();
+		return data.hasUrls ();
 	}
 
-	void BrowserWidget::HandleDrop (QDropEvent *event)
+	bool BrowserWidget::HandleDrop (const QMimeData& data)
 	{
-		const auto& urls = event->mimeData ()->urls ();
-		if (!urls.isEmpty ())
-			SetURL (urls.first ());
-		event->acceptProposedAction ();
+		const auto& urls = data.urls ();
+		if (urls.isEmpty ())
+			return false;
+
+		SetURL (urls.first ());
+		return true;
 	}
 
 	void BrowserWidget::SetTabRecoverData (const QByteArray& data)

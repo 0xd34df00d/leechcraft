@@ -10,8 +10,6 @@
 
 #include <QObject>
 
-class QDropEvent;
-class QDragMoveEvent;
 class QMimeData;
 
 /** @brief Interface for tabs supporting Drag'n'Drop on tab level.
@@ -37,32 +35,35 @@ public:
 	 */
 	virtual void FillMimeData (QMimeData *data) = 0;
 
-	/** @brief Called when something is being dragged over this tab.
+	/** @brief Checks whether this tab could handle a drop of the `data`.
 	 *
-	 * This function is called by the LeechCraft Core when a drag
-	 * operation is in progress and the mouse cursor enters the tab
-	 * corresponding to this widget in the tab bar. The implementation
-	 * may call QDragMoveEvent::acceptProposedEvent() on the \em event
-	 * or ignore it.
+	 * This function is called by the LeechCraft Core while a drag
+	 * operation is in progress over the tab corresponding to this
+	 * widget in the tab bar, possibly many times. It must not have
+	 * side effects.
 	 *
-	 * This function is somewhat similar to QWidget::dragEnterEvent() or
-	 * QWidget::dragMoveEvent().
+	 * This function is somewhat similar to
+	 * QAbstractItemModel::canDropMimeData().
 	 *
-	 * @param[in,out] event The object describing the DnD operation.
+	 * @param[in] data The data being dragged.
+	 * @return Whether `HandleDrop()` would handle a drop of the `data`.
 	 */
-	virtual void HandleDragEnter (QDragMoveEvent *event) = 0;
+	virtual bool CouldHandleDrop (const QMimeData& data) const = 0;
 
-	/** @brief Called when something is dropped over this tab.
+	/** @brief Handles a drop of the `data` on this tab.
 	 *
 	 * This function is called by the LeechCraft Core when a drag
-	 * operation is in progress and the drag is dropped on the
-	 * corresponding tab.
+	 * operation is dropped on the tab corresponding to this widget in
+	 * the tab bar, and only if `CouldHandleDrop()` accepted the `data`.
 	 *
-	 * This function is somewhat similar to QWidget::dropEvent().
+	 * A handled drop is reported to the drag source as `Qt::CopyAction`
+	 * whatever action the source proposed, so the source keeps its data:
+	 * a tab cannot move data out of the source through this interface.
 	 *
-	 * @param[in] event The object describing the DnD operation.
+	 * @param[in] data The dropped data.
+	 * @return Whether the `data` was handled.
 	 */
-	virtual void HandleDrop (QDropEvent *event) = 0;
+	virtual bool HandleDrop (const QMimeData& data) = 0;
 };
 
 Q_DECLARE_INTERFACE (IDNDTab, "org.Deviant.LeechCraft.IDNDTab/1.0")

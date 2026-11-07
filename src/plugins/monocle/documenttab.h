@@ -102,8 +102,8 @@ namespace Monocle
 		std::optional<TabSaveInfo> GetTabSaveInfo () const override;
 
 		void FillMimeData (QMimeData*) override;
-		void HandleDragEnter (QDragMoveEvent*) override;
-		void HandleDrop (QDropEvent*) override;
+		bool CouldHandleDrop (const QMimeData&) const override;
+		bool HandleDrop (const QMimeData&) override;
 
 		void RecoverState (const QByteArray&);
 
