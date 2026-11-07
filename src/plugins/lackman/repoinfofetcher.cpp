@@ -218,7 +218,7 @@ namespace LackMan
 				{
 					try
 					{
-						emit infoFetched (ParseRepoInfo (url, { data }));
+						emit infoFetched (ParseRepoInfo (url, data));
 					}
 					catch (const QString& error)
 					{

@@ -22,7 +22,7 @@ namespace LC
 {
 namespace LackMan
 {
-	RepoInfo ParseRepoInfo (const QUrl& url, const QString& data)
+	RepoInfo ParseRepoInfo (const QUrl& url, const QByteArray& data)
 	{
 		QDomDocument doc;
 		if (!doc.setContent (data))
