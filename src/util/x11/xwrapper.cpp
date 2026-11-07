@@ -330,7 +330,7 @@ namespace LC::Util
 		ulong length = 0;
 		Guarded<uchar> data;
 		return GetWinProp (wid, GetAtom ("WM_CLASS"), &length, data.Get ()) &&
-				QString (data.GetAs<char*> (false)).startsWith ("leechcraft"_ql);
+				QByteArrayView (data.GetAs<char*> (false)).startsWith ("leechcraft");
 	}
 
 	bool XWrapper::ShouldShow (Window wid)

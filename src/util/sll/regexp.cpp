@@ -42,7 +42,7 @@ namespace LC::Util
 
 	bool RegExp::Matches (const QByteArray& ba) const
 	{
-		return Rx_.match (ba).hasMatch ();
+		return Rx_.match (QString::fromUtf8 (ba)).hasMatch ();
 	}
 
 	QString RegExp::GetPattern () const

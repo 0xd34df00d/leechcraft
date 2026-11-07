@@ -86,7 +86,7 @@ namespace LC::Util::SysInfo
 				QFile f (os.path);
 				if (f.open (QIODevice::ReadOnly))
 				{
-					QString data = QString (f.read (1024)).trimmed ();
+					QString data = QString::fromUtf8 (f.read (1024)).trimmed ();
 					return os.name.isEmpty () ?
 							data :
 							QStringLiteral ("%1 (%2)").arg (os.name, data);
@@ -143,10 +143,10 @@ namespace LC::Util::SysInfo
 
 		return
 		{
-			.Arch_ = u.machine,
-			.Name_ = osName.isEmpty () ? u.sysname : osName,
+			.Arch_ = QString::fromUtf8 (u.machine),
+			.Name_ = osName.isEmpty () ? QString::fromUtf8 (u.sysname) : osName,
 			.Version_ = QString ("%1 %2 %3").arg (u.machine, u.release, u.version),
-			.Flavour_ = u.sysname,
+			.Flavour_ = QString::fromUtf8 (u.sysname),
 		};
 #endif
 
