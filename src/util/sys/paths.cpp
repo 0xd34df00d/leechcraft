@@ -73,7 +73,7 @@ namespace LC::Util
 
 	QStringList GetSystemPaths ()
 	{
-		return qEnvironmentVariable ("PATH").split (':', Qt::SkipEmptyParts);
+		return qEnvironmentVariable ("PATH").split (QDir::listSeparator (), Qt::SkipEmptyParts);
 	}
 
 	QString FindInSystemPath (const QString& name, const QStringList& paths,
