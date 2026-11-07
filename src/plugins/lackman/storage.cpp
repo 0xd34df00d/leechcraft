@@ -34,7 +34,7 @@ namespace LackMan
 						<< "for reading";
 				return QString ();
 			}
-			return file.readAll ();
+			return QString::fromUtf8 (file.readAll ());
 		}
 
 		QUrl Slashize (const QUrl& url)

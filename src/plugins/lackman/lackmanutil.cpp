@@ -86,7 +86,7 @@ namespace LackManUtil
 			InstalledDependencyInfo info;
 			info.Source_ = InstalledDependencyInfo::SSystem;
 
-			const auto& lines = QString { file.readAll () }.split ('\n', Qt::SkipEmptyParts);
+			const auto& lines = QString::fromUtf8 (file.readAll ()).split ('\n', Qt::SkipEmptyParts);
 			for (const auto& untrimmed : lines)
 			{
 				const auto& string = untrimmed.trimmed ();
