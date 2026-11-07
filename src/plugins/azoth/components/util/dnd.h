@@ -40,6 +40,7 @@ namespace LC::Azoth::DndUtil
 	QList<MimeContactInfo> DecodeMimeInfos (const EntriesManager&, const QMimeData*);
 
 	bool HasContacts (const QMimeData*);
+	bool CanDropContacts (const EntriesManager&, const QMimeData&, ICLEntry& target);
 
 	struct DndContext
 	{

@@ -401,6 +401,12 @@ namespace Azoth
 
 	bool ChatTab::CouldHandleDrop (const QMimeData& data) const
 	{
+		if (DndUtil::HasContacts (&data))
+		{
+			const auto entry = GetEntry<ICLEntry> ();
+			return entry && DndUtil::CanDropContacts (Entries_, data, *entry);
+		}
+
 		if (data.hasText ())
 			return true;
 

@@ -7,6 +7,8 @@
  **********************************************************************/
 
 #include "dnd.h"
+#include <algorithm>
+#include <variant>
 #include <QDataStream>
 #include <QInputDialog>
 #include <QImageReader>
@@ -88,6 +90,15 @@ namespace LC::Azoth::DndUtil
 	bool HasContacts (const QMimeData *data)
 	{
 		return data->hasFormat (CLEntryFormat);
+	}
+
+	bool CanDropContacts (const EntriesManager& entries, const QMimeData& mime, ICLEntry& target)
+	{
+		return std::ranges::any_of (DecodeEntryObjs (entries, &mime),
+				[&] (const Util::TrackingPointer<ICLEntry>& entry)
+				{
+					return std::holds_alternative<InvitePlan> (CheckInvitation (*entry, target));
+				});
 	}
 
 	namespace

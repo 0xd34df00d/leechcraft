@@ -8,11 +8,13 @@
 
 #include "entries.h"
 #include <ranges>
+#include <variant>
 #include <QInputDialog>
 #include <QSettings>
 #include <QMessageBox>
 #include <util/sll/prelude.h>
 #include <util/sll/qobjectrefcast.h>
+#include <util/sll/visitor.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -105,61 +107,79 @@ namespace LC::Azoth
 		};
 	}
 
+	InviteCheck_t CheckInvitation (ICLEntry& entry, ICLEntry& target)
+	{
+		const auto entryMuc = qobject_cast<IMUCEntry*> (entry.GetQObject ());
+		const auto targetMuc = qobject_cast<IMUCEntry*> (target.GetQObject ());
+		if (static_cast<bool> (entryMuc) == static_cast<bool> (targetMuc))
+			return NotAnInvitation {};
+
+		const auto entryAcc = entry.GetParentAccount ();
+		const auto targetAcc = target.GetParentAccount ();
+		if (entryAcc->GetParentProtocol () != targetAcc->GetParentProtocol ())
+			return NotAnInvitation {};
+
+		const auto muc = entryMuc ? entryMuc : targetMuc;
+		auto& invitee = entryMuc ? target : entry;
+
+		const auto features = muc->GetMUCFeatures ();
+		if (!features.testFlag (IMUCEntry::MUCFCanInvite))
+			return InviteRefusal { FormatInviteRefusal (invitee, *muc, IMUCEntry::CannotInvite::UnsupportedFeature) };
+
+		if (entryAcc != targetAcc)
+		{
+			if (features.testFlag (IMUCEntry::MUCFCanInviteByAddress))
+				return InvitePlan { muc, invitee.GetHumanReadableAddress (), FormatNameWithAddress (invitee) };
+
+			return InviteRefusal { Trs::tr ("Cannot invite %1 to %2 because they belong to different accounts and the conference can't invite by address.")
+					.arg (FormatNameWithAddress (invitee), FormatNameWithAddress (muc->AsCLEntry ())) };
+		}
+
+		const auto check = muc->CanInvite (invitee);
+		if (const auto reason = std::get_if<IMUCEntry::CannotInvite> (&check))
+			return InviteRefusal { FormatInviteRefusal (invitee, *muc, *reason) };
+
+		return InvitePlan { muc, &invitee, FormatNameWithAddress (invitee) };
+	}
+
 	void TryInvite (const QList<Util::TrackingPointer<ICLEntry>>& entries,
 			const Util::TrackingPointer<ICLEntry>& target,
 			QWidget *parent)
 	{
-		const auto targetProto = target->GetParentAccount ()->GetParentProtocol ();
-		const auto targetMuc = qobject_cast<IMUCEntry*> (target->GetQObject ());
-
 		for (const auto& entry : entries)
 		{
 			if (!entry || !target)
 				continue;
 
-			const auto entryMuc = qobject_cast<IMUCEntry*> (entry->GetQObject ());
-			if (static_cast<bool> (targetMuc) == static_cast<bool> (entryMuc))
-				continue;
+			Util::Visit (CheckInvitation (*entry, *target),
+					[] (NotAnInvitation) {},
+					[&] (const InviteRefusal& refusal)
+					{
+						QMessageBox::warning (parent, Trs::tr ("Conference invitation"), refusal.Message_);
+					},
+					[&] (const InvitePlan& plan)
+					{
+						bool accepted = false;
+						const auto& inviteMessage = QInputDialog::getText (parent,
+								Trs::tr ("Conference invitation"),
+								Trs::tr ("Do you want to invite %1 to %2? You can add an optional invitation message:")
+										.arg (plan.InviteeLabel_, FormatNameWithAddress (plan.Muc_->AsCLEntry ())),
+								QLineEdit::Normal,
+								{},
+								&accepted);
+						if (!accepted || !target || !entry)
+							return;
 
-			if (targetProto != entry->GetParentAccount ()->GetParentProtocol ())
-				continue;
-
-			const auto muc = entryMuc ? entryMuc : targetMuc;
-			const auto invitee = entryMuc ? target : entry;
-
-			const auto refuse = [&] (const QString& reason)
-			{
-				QMessageBox::warning (parent,
-						Trs::tr ("Conference invitation"),
-						reason.arg (FormatNameWithAddress (*invitee), FormatNameWithAddress (muc->AsCLEntry ())));
-			};
-
-			const auto features = muc->GetMUCFeatures ();
-			if (!(features & IMUCEntry::MUCFeature::MUCFCanInvite))
-			{
-				refuse (Trs::tr ("Cannot invite %1 to %2 because the conference doesn't support invitations."));
-				continue;
-			}
-
-			const bool sameAccount = target->GetParentAccount () == entry->GetParentAccount ();
-			if (!sameAccount && !(features & IMUCEntry::MUCFeature::MUCFCanInviteByAddress))
-			{
-				refuse (Trs::tr ("Cannot invite %1 to %2 because they belong to different accounts and the conference can't invite by address."));
-				continue;
-			}
-
-			bool accepted = false;
-			const auto& inviteMessage = QInputDialog::getText (parent,
-					Trs::tr ("Conference invitation"),
-					Trs::tr ("Do you want to invite %1 to %2? You can add an optional invitation message:")
-							.arg (FormatNameWithAddress (*invitee), FormatNameWithAddress (muc->AsCLEntry ())),
-					QLineEdit::Normal,
-					{},
-					&accepted);
-			if (accepted && target && entry)
-				sameAccount ?
-						muc->InviteToMUC (*invitee, inviteMessage) :
-						muc->InviteToMUC (invitee->GetHumanReadableAddress (), inviteMessage);
+						Util::Visit (plan.Invitee_,
+								[&] (ICLEntry *invitee)
+								{
+									plan.Muc_->InviteToMUC (*invitee, inviteMessage);
+								},
+								[&] (const QString& address)
+								{
+									plan.Muc_->InviteToMUC (address, inviteMessage);
+								});
+					});
 		}
 	}
 }

@@ -76,6 +76,20 @@ namespace LC::Azoth
 		return result;
 	}
 
+	bool CLModel::canDropMimeData (const QMimeData *mime,
+			Qt::DropAction action, int row, int column, const QModelIndex& parent) const
+	{
+		if (!QStandardItemModel::canDropMimeData (mime, action, row, column, parent))
+			return false;
+
+		if (!DndUtil::HasContacts (mime) ||
+				parent.data (CLREntryType).value<CLEntryType> () != CLETContact)
+			return true;
+
+		const auto target = parent.data (CLRIEntry).value<ICLEntry*> ();
+		return target && DndUtil::CanDropContacts (Entries_, *mime, *target);
+	}
+
 	bool CLModel::dropMimeData (const QMimeData *mime,
 			Qt::DropAction action, int row, int, const QModelIndex& parent)
 	{

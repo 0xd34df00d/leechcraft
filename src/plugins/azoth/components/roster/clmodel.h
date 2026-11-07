@@ -28,6 +28,7 @@ namespace LC::Azoth
 
 		QStringList mimeTypes () const override;
 		QMimeData* mimeData (const QModelIndexList&) const override;
+		bool canDropMimeData (const QMimeData*, Qt::DropAction, int, int, const QModelIndex&) const override;
 		bool dropMimeData (const QMimeData*, Qt::DropAction, int, int, const QModelIndex&) override;
 		Qt::DropActions supportedDropActions () const override;
 	private:
