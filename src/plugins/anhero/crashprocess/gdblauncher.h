@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <optional>
 #include <QObject>
 #include <QProcess>
 
@@ -20,11 +21,14 @@ namespace LC::AnHero::CrashProcess
 		Q_OBJECT
 
 		QProcess * const Proc_;
+		std::optional<QByteArray> PendingFrame_;
 	public:
 		GDBLauncher (quint64 pid, const QString& path, QObject* = nullptr);
 		~GDBLauncher () override;
 	private:
 		void ConsumeStdout ();
+		void HandleLine (const QByteArray&);
+		void FlushFrame ();
 	signals:
 		void gotOutput (const QString&);
 		void finished (int, QProcess::ExitStatus);

@@ -7,6 +7,8 @@
  **********************************************************************/
 
 #include "gdblauncher.h"
+#include <algorithm>
+#include <utility>
 #include <QProcess>
 #include <QtDebug>
 
@@ -52,7 +54,16 @@ namespace LC::AnHero::CrashProcess
 		connect (Proc_,
 				qOverload<int, QProcess::ExitStatus> (&QProcess::finished),
 				this,
-				&GDBLauncher::finished);
+				[this] (int code, QProcess::ExitStatus status)
+				{
+					ConsumeStdout ();
+					const auto& lastLine = Proc_->readAllStandardOutput ();
+					if (!lastLine.isEmpty ())
+						HandleLine (lastLine);
+					FlushFrame ();
+
+					emit finished (code, status);
+				});
 
 		Proc_->start (QStringLiteral ("gdb"),
 				{
@@ -77,47 +88,35 @@ namespace LC::AnHero::CrashProcess
 
 	void GDBLauncher::ConsumeStdout ()
 	{
-		auto strs = Proc_->readAllStandardOutput ().trimmed ().split ('\n');
-		strs.erase (std::remove_if (strs.begin (), strs.end (),
-					[] (const QByteArray& str)
-					{
-						return !str.isEmpty () &&
-								std::all_of (str.begin (), str.end (),
-										[] (char c) { return c == '.'; });
-					}),
-				strs.end ());
+		while (Proc_->canReadLine ())
+			HandleLine (Proc_->readLine ().chopped (1));
+	}
 
-		enum class LineState
+	void GDBLauncher::HandleLine (const QByteArray& line)
+	{
+		const auto& trimmed = line.trimmed ();
+		if (!trimmed.isEmpty () && std::ranges::all_of (trimmed, [] (char c) { return c == '.'; }))
+			return;
+
+		if (PendingFrame_ && line.startsWith (' ') && line.size () > 1)
 		{
-			StackFrame,
-			Other
-		} state = LineState::Other;
-
-		for (auto i = strs.begin (); i != strs.end (); )
-		{
-			const auto& str = *i;
-
-			if (state == LineState::StackFrame &&
-				str.startsWith (' ') && str.size () > 1)
-			{
-				auto& prevStr = *std::prev (i);
-				if (!prevStr.endsWith ('('))
-					prevStr += ' ';
-				prevStr += str.trimmed ();
-
-				i = strs.erase (i);
-			}
-			else
-			{
-				state = str.startsWith ('#') ?
-						LineState::StackFrame :
-						LineState::Other;
-				*i = i->trimmed ();
-				++i;
-			}
+			if (!PendingFrame_->endsWith ('('))
+				*PendingFrame_ += ' ';
+			*PendingFrame_ += trimmed;
+			return;
 		}
 
-		for (const auto& str : strs)
-			emit gotOutput (QString::fromUtf8 (str));
+		FlushFrame ();
+
+		if (line.startsWith ('#'))
+			PendingFrame_ = trimmed;
+		else
+			emit gotOutput (QString::fromUtf8 (trimmed));
+	}
+
+	void GDBLauncher::FlushFrame ()
+	{
+		if (const auto frame = std::exchange (PendingFrame_, {}))
+			emit gotOutput (QString::fromUtf8 (*frame));
 	}
 }
