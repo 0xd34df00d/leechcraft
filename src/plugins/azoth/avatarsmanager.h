@@ -56,8 +56,6 @@ namespace LC::Azoth
 		void handleAccount (QObject*);
 	private slots:
 		void invalidateAvatar (QObject*);
-
-		void handleCacheSizeChanged ();
 	signals:
 		void avatarInvalidated (QObject*);
 		void accountAvatarInvalidated (const IAccount*);

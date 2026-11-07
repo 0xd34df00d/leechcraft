@@ -29,9 +29,9 @@ namespace Azoth
 	, Entries_ { entries }
 	, Storage_ { new AvatarsStorage { this } }
 	{
-		handleCacheSizeChanged ();
 		XmlSettingsManager::Instance ().RegisterObject ("AvatarsCacheSize",
-				this, "handleCacheSizeChanged");
+				this,
+				[this] (int size) { Storage_->SetCacheSize (size); });
 
 		connect (&Entries_,
 				&EntriesManager::added,
@@ -210,12 +210,6 @@ namespace Azoth
 
 		if (const auto acc = SelfInfo2Account_.value (that))
 			emit accountAvatarInvalidated (acc);
-	}
-
-	void AvatarsManager::handleCacheSizeChanged ()
-	{
-		Storage_->SetCacheSize (XmlSettingsManager::Instance ()
-				.property ("AvatarsCacheSize").toInt ());
 	}
 }
 }
