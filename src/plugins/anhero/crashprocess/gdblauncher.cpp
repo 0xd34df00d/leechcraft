@@ -79,11 +79,11 @@ namespace LC::AnHero::CrashProcess
 	{
 		auto strs = Proc_->readAllStandardOutput ().trimmed ().split ('\n');
 		strs.erase (std::remove_if (strs.begin (), strs.end (),
-					[] (const QString& str)
+					[] (const QByteArray& str)
 					{
 						return !str.isEmpty () &&
 								std::all_of (str.begin (), str.end (),
-										[] (QChar c) { return c == '.'; });
+										[] (char c) { return c == '.'; });
 					}),
 				strs.end ());
 
@@ -118,6 +118,6 @@ namespace LC::AnHero::CrashProcess
 		}
 
 		for (const auto& str : strs)
-			emit gotOutput (str);
+			emit gotOutput (QString::fromUtf8 (str));
 	}
 }
