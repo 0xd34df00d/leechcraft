@@ -116,7 +116,10 @@ namespace LC::LMP::Graffiti
 				const auto firstSpace = line.indexOf (' ');
 				const auto& command = line.left (firstSpace);
 
-				auto textVal = [&line, firstSpace] () { return ChopQuotes (line.mid (firstSpace + 1).trimmed ()); };
+				auto textVal = [&line, firstSpace] ()
+				{
+					return ChopQuotes (QString::fromUtf8 (line.mid (firstSpace + 1).trimmed ()));
+				};
 				if (command == "TITLE")
 					track.Title_ = textVal ();
 				else if (command == "PERFORMER")

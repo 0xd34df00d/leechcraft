@@ -268,7 +268,7 @@ namespace LMP
 			QProcess ffmpegProcess;
 			ffmpegProcess.start ("ffmpeg", QStringList ("-codecs"));
 			ffmpegProcess.waitForFinished (1000);
-			S_FFmpegCodecs_ = ffmpegProcess.readAllStandardOutput ();
+			S_FFmpegCodecs_ = QString::fromUtf8 (ffmpegProcess.readAllStandardOutput ());
 		}
 
 		Formats_ << std::make_shared<OggFormat> ();

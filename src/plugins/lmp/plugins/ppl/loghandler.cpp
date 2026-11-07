@@ -137,7 +137,7 @@ namespace LC::LMP::PPL
 		if (!file.open (QIODevice::ReadOnly))
 			return;
 
-		const auto& tracks = ParseData (file.readAll ());
+		const auto& tracks = ParseData (QString::fromUtf8 (file.readAll ()));
 		if (tracks.isEmpty ())
 		{
 			deleteLater ();

@@ -55,7 +55,7 @@ namespace M3U
 			const auto& line = file.readLine ().trimmed ();
 			if (line.startsWith ('#'))
 			{
-				const auto& pair = ParseMetadata (line);
+				const auto& pair = ParseMetadata (QString::fromUtf8 (line));
 				if (!pair.first.isEmpty ())
 					lastMetadata [pair.first] = pair.second;
 				continue;

@@ -78,7 +78,8 @@ namespace LC::LMP::MTPSync
 				const auto& manufacturer = QString::fromUtf8 (LIBMTP_Get_Manufacturername (&*device));
 				const auto& model = QString::fromUtf8 (LIBMTP_Get_Modelname (&*device));
 				const auto& serial = QByteArray { LIBMTP_Get_Serialnumber (&*device) };
-				const auto& devName = manufacturer + ' ' + model + ' ' + LIBMTP_Get_Friendlyname (&*device);
+				const auto& friendlyName = QString::fromUtf8 (LIBMTP_Get_Friendlyname (&*device));
+				const auto& devName = manufacturer + ' ' + model + ' ' + friendlyName;
 				const MtpDeviceInfo info
 				{
 					.UsbDevice_ = usbDevice,
