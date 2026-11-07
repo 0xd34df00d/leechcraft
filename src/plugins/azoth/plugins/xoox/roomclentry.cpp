@@ -332,7 +332,7 @@ namespace Xoox
 	IMUCEntry::InviteCheckResult_t RoomCLEntry::CanInvite (const ICLEntry& entry) const
 	{
 		if (qobject_cast<const EntryBase*> (entry.GetQObject ()))
-			return MightInvite {};
+			return MightInvite;
 		return CannotInvite::UnsupportedEntryType;
 	}
 

@@ -204,7 +204,10 @@ namespace Azoth
 		 * avoid TOCTOU, this does not necessarily guarantee that the
 		 * invitation will succeed.
 		 */
-		struct MightInvite {};
+		struct MightInviteTag
+		{
+			auto operator<=> (const MightInviteTag&) const = default;
+		};
 
 		/** @brief The invitation will fail.
 		 */
@@ -215,7 +218,9 @@ namespace Azoth
 			UnsupportedEntryType,
 			NotInContactList,
 		};
-		using InviteCheckResult_t = std::variant<MightInvite, CannotInvite>;
+		using InviteCheckResult_t = std::variant<MightInviteTag, CannotInvite>;
+
+		constexpr static auto MightInvite = InviteCheckResult_t { MightInviteTag {} };
 
 		/** @brief Checks whether inviting `entry` to this MUC might succeed.
 		 *

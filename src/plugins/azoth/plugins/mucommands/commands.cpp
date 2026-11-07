@@ -949,7 +949,7 @@ namespace MuCommands
 				IMUCEntry& muc, ICLEntry& invitee, const QString& reason)
 		{
 			Util::Visit (muc.CanInvite (invitee),
-					[&] (IMUCEntry::MightInvite)
+					[&] (IMUCEntry::MightInviteTag)
 					{
 						muc.InviteToMUC (invitee, reason);
 						InjectMessage (azothProxy, entry, QObject::tr ("Invited %1 to %2.")

@@ -236,7 +236,7 @@ namespace LC::Azoth::Sarin
 			return UnsupportedEntryType;
 		if (!account.GetByPubkey (*pubkey))
 			return NotInContactList;
-		return IMUCEntry::MightInvite {};
+		return IMUCEntry::MightInvite;
 	}
 
 	AddFriendError MapErrorCode (TOX_ERR_FRIEND_ADD error)
