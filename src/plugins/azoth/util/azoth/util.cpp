@@ -93,6 +93,30 @@ namespace LC::Azoth
 		return name + " (" + address + ")";
 	}
 
+	QString FormatInviteRefusal (const ICLEntry& invitee, const IMUCEntry& muc, IMUCEntry::CannotInvite reason)
+	{
+		using enum IMUCEntry::CannotInvite;
+
+		const auto& format = [&] (const QString& pattern)
+		{
+			return pattern.arg (FormatNameWithAddress (invitee), FormatNameWithAddress (muc.AsCLEntry ()));
+		};
+
+		switch (reason)
+		{
+		case UnknownReason:
+			return format (QObject::tr ("Cannot invite %1 to %2."));
+		case UnsupportedFeature:
+			return format (QObject::tr ("Cannot invite %1 to %2 because the conference doesn't support invitations."));
+		case UnsupportedEntryType:
+			return format (QObject::tr ("Cannot invite %1 to %2 because entries of this kind can't be invited."));
+		case NotInContactList:
+			return format (QObject::tr ("Cannot invite %1 to %2 because only contacts can be invited."));
+		}
+
+		std::unreachable ();
+	}
+
 	void RejoinMuc (const IMUCEntry& entry)
 	{
 		const auto acc = entry.AsCLEntry ().GetParentAccount ();

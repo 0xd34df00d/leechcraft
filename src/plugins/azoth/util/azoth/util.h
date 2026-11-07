@@ -10,6 +10,7 @@
 
 #include "azothutilconfig.h"
 #include <interfaces/azoth/azothcommon.h>
+#include <interfaces/azoth/imucentry.h>
 
 class QDebug;
 
@@ -24,6 +25,7 @@ namespace LC::Azoth
 	AZOTH_UTIL_API QString StateToId (State);
 
 	AZOTH_UTIL_API QString FormatNameWithAddress (const ICLEntry&);
+	AZOTH_UTIL_API QString FormatInviteRefusal (const ICLEntry& invitee, const IMUCEntry& muc, IMUCEntry::CannotInvite reason);
 
 	AZOTH_UTIL_API void RejoinMuc (const IMUCEntry& entry);
 	AZOTH_UTIL_API void RejoinMuc (IAccount& acc, const QVariantMap& identiyfingData);

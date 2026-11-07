@@ -18,6 +18,7 @@
 #include <util/sll/slotclosure.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/visitor.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/imucentry.h>
 #include <interfaces/azoth/iproxyobject.h>
@@ -943,6 +944,22 @@ namespace MuCommands
 					QObject::tr ("%1 does not support invitations.").arg (FormatNameWithAddress (muc.AsCLEntry ())));
 			return false;
 		}
+
+		void InviteIfAllowed (IProxyObject *azothProxy, ICLEntry *entry,
+				IMUCEntry& muc, ICLEntry& invitee, const QString& reason)
+		{
+			Util::Visit (muc.CanInvite (invitee),
+					[&] (IMUCEntry::MightInvite)
+					{
+						muc.InviteToMUC (invitee, reason);
+						InjectMessage (azothProxy, entry, QObject::tr ("Invited %1 to %2.")
+								.arg (FormatNameWithAddress (invitee), FormatNameWithAddress (muc.AsCLEntry ())));
+					},
+					[&] (IMUCEntry::CannotInvite why)
+					{
+						InjectMessage (azothProxy, entry, FormatInviteRefusal (invitee, muc, why));
+					});
+		}
 	}
 
 	bool Invite (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
@@ -957,11 +974,7 @@ namespace MuCommands
 				return true;
 
 			if (const auto invitee = ResolveEntry (id, {}, entry->GetParentAccount (), entry))
-			{
-				mucEntry->InviteToMUC (*invitee, reason);
-				InjectMessage (azothProxy, entry, QObject::tr ("Invited %1 to %2.")
-						.arg (FormatNameWithAddress (*invitee), entry->GetEntryName ()));
-			}
+				InviteIfAllowed (azothProxy, entry, *mucEntry, *invitee, reason);
 			else if (mucEntry->GetMUCFeatures () & IMUCEntry::MUCFCanInviteByAddress)
 			{
 				mucEntry->InviteToMUC (id, reason);
@@ -993,10 +1006,7 @@ namespace MuCommands
 			if (!CheckCanInvite (azothProxy, entry, *mucIface))
 				return true;
 
-			mucIface->InviteToMUC (*entry, reason);
-			InjectMessage (azothProxy, entry, QObject::tr ("Invited %1 to %2.")
-					.arg (entry->GetEntryName ())
-					.arg (mucEntry->GetEntryName ()));
+			InviteIfAllowed (azothProxy, entry, *mucIface, *entry, reason);
 		}
 
 		return true;
