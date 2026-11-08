@@ -680,7 +680,7 @@ namespace OTRoid
 
 	void OtrHandler::writeKeys ()
 	{
-		WriteKeys (UserState_, GetOTRFilename ("privkey"));
+		WriteKeys (UserState_, OtrDir_.absoluteFilePath ("privkey"));
 	}
 
 	void OtrHandler::generateKeys (const AccountId& acc, const QString& proto)
