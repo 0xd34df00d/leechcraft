@@ -73,7 +73,7 @@ namespace LC::Azoth::Xoox
 		const auto& body = msg.body ();
 
 		QXmpp::Xml::Element crypt { "x", "jabber:x:encrypted" };
-		crypt.setText (PGPManager_->EncryptBody (key, body.toUtf8 ()));
+		crypt.setText (QString::fromUtf8 (PGPManager_->EncryptBody (key, body.toUtf8 ())));
 		msg.extensions ().add (std::move (crypt));
 
 		msg.setBody (tr ("This message is encrypted. Please decrypt "
