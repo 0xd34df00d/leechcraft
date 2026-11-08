@@ -37,7 +37,7 @@ namespace Hestia
 		}
 
 		AccountDB_ = QSqlDatabase::addDatabase ("QSQLITE",
-				QString (Account_->GetAccountID () + "_DataBase"));
+				QString::fromUtf8 (Account_->GetAccountID () + "_DataBase"));
 		AccountDB_.setDatabaseName (dbPath);
 
 		if (!AccountDB_.open ())
