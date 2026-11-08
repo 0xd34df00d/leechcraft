@@ -213,7 +213,7 @@ namespace Scroblibre
 				("t", nowStr);
 
 		const auto& service = UrlToService (BaseURL_);
-		const auto& pass = Util::GetPassword ("org.LeechCraft.Scroblibre/" + service + '/' + Login_,
+		const auto& pass = Util::GetPassword (("org.LeechCraft.Scroblibre/" + service + '/' + Login_).toUtf8 (),
 				tr ("Please enter password for account %1 on %2:")
 					.arg ("<em>" + Login_ + "</em>")
 					.arg (service),

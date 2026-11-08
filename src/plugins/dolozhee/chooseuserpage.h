@@ -45,7 +45,7 @@ namespace Dolozhee
 		QString GetFirstName () const;
 		QString GetLastName () const;
 	private:
-		QString GetPassKey () const;
+		QByteArray GetPassKey () const;
 		void SaveCredentials ();
 	};
 }

@@ -119,9 +119,9 @@ namespace Dolozhee
 		return Ui_.LastName_->text ();
 	}
 
-	QString ChooseUserPage::GetPassKey () const
+	QByteArray ChooseUserPage::GetPassKey () const
 	{
-		return "org.LeechCraft.Dolozhee.Username_" + Ui_.Login_->text ();
+		return "org.LeechCraft.Dolozhee.Username_" + Ui_.Login_->text ().toUtf8 ();
 	}
 
 	void ChooseUserPage::SaveCredentials ()

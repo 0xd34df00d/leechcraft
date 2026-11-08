@@ -104,7 +104,7 @@ namespace Xoox
 		void MakeNickChangeMessage (const QString&, const QString&);
 		void HandleNickConflict ();
 		void HandlePasswordRequired ();
-		QString GetPassKey () const;
+		QByteArray GetPassKey () const;
 
 		void RemoveEntry (RoomParticipantEntry*);
 

@@ -80,7 +80,7 @@ namespace Lastfmscrobble
 
 		const auto& text = tr ("Enter password for Last.fm account %1:")
 					.arg (Util::FormatName (login));
-		const auto& password = Util::GetPassword ("org.LeechCraft.Lastfmscrobble/" + login,
+		const auto& password = Util::GetPassword ("org.LeechCraft.Lastfmscrobble/" + login.toUtf8 (),
 				text,
 				Proxy_,
 				!authFailure);

@@ -48,12 +48,12 @@ namespace LC::Util
 	 *
 	 * @sa SavePassword()
 	 */
-	UTIL_XPC_API QString GetPassword (const QString& keyName,
+	UTIL_XPC_API QString GetPassword (const QByteArray& keyName,
 			const QString& dialogText,
 			const ICoreProxy_ptr& proxy,
 			bool useStore = true);
 
-	UTIL_XPC_API void GetPassword (const QString& keyName,
+	UTIL_XPC_API void GetPassword (const QByteArray& keyName,
 			const QString& dialogText,
 			const ICoreProxy_ptr& proxy,
 			const EitherCont<void (), void (QString)>& cont,
@@ -79,6 +79,6 @@ namespace LC::Util
 	 * @sa GetPassword()
 	 */
 	UTIL_XPC_API void SavePassword (const QString& password,
-			const QString& keyName,
+			const QByteArray& keyName,
 			const ICoreProxy_ptr& proxy);
 }

@@ -43,12 +43,12 @@ namespace LC::Util
 		}
 	}
 
-	QString GetPassword (const QString& key, const QString& diaText,
+	QString GetPassword (const QByteArray& key, const QString& diaText,
 			const ICoreProxy_ptr& proxy, bool useStored)
 	{
 		if (useStored)
 		{
-			const auto& result = GetPasswordHelper (key.toUtf8 (), proxy);
+			const auto& result = GetPasswordHelper (key, proxy);
 			if (!result.isNull ())
 				return result;
 		}
@@ -62,7 +62,7 @@ namespace LC::Util
 		return result;
 	}
 
-	void GetPassword (const QString& key, const QString& diaText,
+	void GetPassword (const QByteArray& key, const QString& diaText,
 			const ICoreProxy_ptr& proxy,
 			const EitherCont<void (), void (QString)>& cont,
 			QObject *depender,
@@ -70,7 +70,7 @@ namespace LC::Util
 	{
 		if (useStored)
 		{
-			const auto& result = GetPasswordHelper (key.toUtf8 (), proxy);
+			const auto& result = GetPasswordHelper (key, proxy);
 			if (!result.isNull ())
 			{
 				cont.Right (result);
@@ -106,12 +106,12 @@ namespace LC::Util
 		dialog->show ();
 	}
 
-	void SavePassword (const QString& password, const QString& key,
+	void SavePassword (const QString& password, const QByteArray& key,
 			const ICoreProxy_ptr& proxy)
 	{
 		const auto& plugins = proxy->GetPluginsManager ()->GetAllCastableTo<IPersistentStoragePlugin*> ();
 		for (const auto plugin : plugins)
 			if (const auto& storage = plugin->RequestStorage ())
-				storage->Set (key.toUtf8 (), password);
+				storage->Set (key, password);
 	}
 }

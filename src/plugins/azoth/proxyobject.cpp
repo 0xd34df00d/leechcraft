@@ -156,14 +156,14 @@ namespace LC::Azoth
 	void ProxyObject::SetPassword (const QString& password, QObject *accObj)
 	{
 		const auto acc = qobject_cast<IAccount*> (accObj);
-		const auto& key = "org.LeechCraft.Azoth.PassForAccount/" + acc->GetAccountId ().ToString ();
+		const auto& key = "org.LeechCraft.Azoth.PassForAccount/" + acc->GetAccountId ().ToUtf8 ();
 		Util::SavePassword (password, key, Core::Instance ().GetProxy ());
 	}
 
 	QString ProxyObject::GetAccountPassword (QObject *accObj, bool useStored)
 	{
 		const auto acc = qobject_cast<IAccount*> (accObj);
-		const auto& key = "org.LeechCraft.Azoth.PassForAccount/" + acc->GetAccountId ().ToString ();
+		const auto& key = "org.LeechCraft.Azoth.PassForAccount/" + acc->GetAccountId ().ToUtf8 ();
 		return Util::GetPassword (key,
 				tr ("Enter password for %1:")
 						.arg (acc->GetAccountName ()),
