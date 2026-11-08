@@ -98,6 +98,21 @@ namespace Dik
 
 	bool MobiParser::InitRecords ()
 	{
+		if (!File_->seek (0x3c))
+			return false;
+
+		const auto& type = File_->read (8);
+		if (const auto& upper = type.toUpper ();
+			upper != "BOOKMOBI" && upper != "TEXTREAD")
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unsupported PalmDB type"
+					<< type
+					<< "in"
+					<< File_->fileName ();
+			return false;
+		}
+
 		if (!File_->seek (0x4c))
 			return false;
 
