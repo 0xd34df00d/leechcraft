@@ -121,7 +121,7 @@ namespace HttHare
 			)delim")
 				.arg (code)
 				.arg (reason.data ())
-				.arg (full.data ()).toUtf8 ();
+				.arg (QString::fromUtf8 (full).toHtmlEscaped ()).toUtf8 ();
 
 		DefaultWrite (Verb::Get);
 	}
@@ -172,7 +172,7 @@ namespace HttHare
 		}
 
 		QString result;
-		result += "<html><head><title>" + fi.fileName () + "</title><style>";
+		result += "<html><head><title>" + fi.fileName ().toHtmlEscaped () + "</title><style>";
 		for (auto pos = mimeCache.begin (); pos != mimeCache.end (); ++pos)
 		{
 			result += "." + NormalizeClass (pos.key ()) + " {";
@@ -181,7 +181,7 @@ namespace HttHare
 			result += "padding-left: " + QString::number (IconSize + 4) + ";";
 			result += "}";
 		}
-		result += "</style></head><body><h1>" + Tr ("Listing of %1").arg (url.toString ()) + "</h1>";
+		result += "</style></head><body><h1>" + Tr ("Listing of %1").arg (url.toString ().toHtmlEscaped ()) + "</h1>";
 		result += "<table style='width: 100%'><tr>";
 		result += QString ("<th style='width: 60%'>%1</th><th style='width: 20%'>%2</th><th style='width: 20%'>%3</th>")
 					.arg (Tr ("Name"))
@@ -195,7 +195,7 @@ namespace HttHare
 			const auto& link = QString::fromLatin1 (QUrl::toPercentEncoding (item.fileName (), {}, "'"));
 
 			result += "<tr><td class=" + NormalizeClass (mimes.at (i).MimeType_) + "><a href='";
-			result += link + "'>" + item.fileName () + "</a></td>";
+			result += link + "'>" + item.fileName ().toHtmlEscaped () + "</a></td>";
 			result += "<td>" + Util::MakePrettySize (item.size ()) + "</td>";
 			result += "<td>" + QLocale {}.toString (item.birthTime (), QLocale::ShortFormat) + "</td></tr>";
 		}
@@ -387,7 +387,7 @@ namespace HttHare
 					.arg (Tr ("Access forbidden. You could return "
 								"to the <a href='/'>root</a> of this server.")
 							.arg (path))
-					.arg (QFileInfo { Url_.path () }.fileName ())
+					.arg (QFileInfo { Url_.path () }.fileName ().toHtmlEscaped ())
 					.toUtf8 ();
 
 			DefaultWrite (verb);
@@ -408,9 +408,9 @@ namespace HttHare
 					</body>
 				</html>
 				)delim")
-					.arg (fi.fileName ())
+					.arg (fi.fileName ().toHtmlEscaped ())
 					.arg (Tr ("%1 is not found on this server")
-						.arg ("<em>" + path + "</em>"))
+						.arg ("<em>" + path.toHtmlEscaped () + "</em>"))
 					.toUtf8 ();
 
 			DefaultWrite (verb);
