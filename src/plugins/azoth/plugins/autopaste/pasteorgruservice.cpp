@@ -36,7 +36,7 @@ namespace LC::Azoth::Autopaste
 			return;
 		}
 
-		const QString refreshRaw { reply->rawHeader ("Refresh") };
+		const auto& refreshRaw = QString::fromUtf8 (reply->rawHeader ("Refresh"));
 		const auto& path = refreshRaw.section (";URL=", 1);
 		if (path.isEmpty ())
 		{
