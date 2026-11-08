@@ -8,7 +8,11 @@ LC_DEFINE_PLUGIN (
 		core.cpp
 		task.cpp
 		addtask.cpp
+		contentdisposition.cpp
 	SETTINGS cstpsettings.xml
 	QT_COMPONENTS Network Widgets
 	INSTALL_SHARE
+	HAS_TESTS
 	)
+
+AddCstpTest (contentdisposition SRCS tests/contentdispositiontest.cpp contentdisposition.cpp)

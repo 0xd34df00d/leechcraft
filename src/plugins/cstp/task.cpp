@@ -23,6 +23,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include "xmlsettingsmanager.h"
+#include "contentdisposition.h"
 
 namespace LC
 {
@@ -391,67 +392,6 @@ namespace CSTP
 		}
 	}
 
-	namespace
-	{
-		QString GetFilenameAscii (const QString& contdis)
-		{
-			const auto start = u"filename="_qsv;
-			int startPos = contdis.indexOf (start) + start.size ();
-			bool ignoreNextQuote = false;
-			QString result;
-			while (startPos < contdis.size ())
-			{
-				const auto cur = contdis.at (startPos++);
-				if (cur == '\\')
-				{
-					ignoreNextQuote = true;
-					continue;
-				}
-
-				result += cur;
-
-				if (cur == '"' &&
-						!ignoreNextQuote &&
-						result.size () != 1)
-					break;
-
-				ignoreNextQuote = false;
-			}
-			return result;
-		}
-
-		QString GetFilenameUtf8 (const QString& contdis)
-		{
-			const auto start = u"filename*=UTF-8''"_qsv;
-			const auto markerPos = contdis.indexOf (start);
-			if (markerPos == -1)
-				return {};
-
-			const auto startPos = markerPos + start.size ();
-			auto endPos = contdis.indexOf (';', startPos);
-			if (endPos == -1)
-				endPos = contdis.size ();
-
-			const auto& encoded = contdis.mid (startPos, endPos - startPos);
-			const auto& utf8 = QByteArray::fromPercentEncoding (encoded.toLatin1 ());
-
-			const auto& result = QString::fromUtf8 (utf8);
-			return result;
-		}
-
-		QString GetFilename (const QString& contdis)
-		{
-			auto result = GetFilenameUtf8 (contdis);
-			if (result.isEmpty ())
-				result = GetFilenameAscii (contdis);
-
-			if (result.startsWith ('"') && result.endsWith ('"'))
-				result = result.mid (1, result.size () - 2);
-
-			return result;
-		}
-	}
-
 	void Task::HandleError (IDownload::Error::Type err, const QString& msg)
 	{
 		// TODO don't emit this when the file is already fully downloaded
@@ -465,22 +405,15 @@ namespace CSTP
 		if (!CanChangeName_)
 			return;
 
-		const auto& contdis = QString::fromUtf8 (Reply_->rawHeader ("Content-Disposition"));
-		qDebug () << contdis;
-		if (!contdis.contains ("filename="))
-			return;
-
-		// the name comes from the server, and it must not move the file out of its directory
-		const auto& result = QFileInfo { GetFilename (contdis) }.fileName ();
-
-		if (result.isEmpty () || result == "."_ql || result == ".."_ql)
+		const auto& suggested = GetSuggestedFilename (Reply_->rawHeader ("Content-Disposition"));
+		if (!suggested)
 			return;
 
 		auto path = To_->fileName ();
 		auto oldPath = path;
 		auto fname = QFileInfo (path).fileName ();
 		path.replace (path.lastIndexOf (fname),
-				fname.size (), result);
+				fname.size (), *suggested);
 
 		if (path == oldPath)
 		{
