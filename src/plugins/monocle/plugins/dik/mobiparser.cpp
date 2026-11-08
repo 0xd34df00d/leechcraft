@@ -98,11 +98,6 @@ namespace Dik
 
 	bool MobiParser::InitRecords ()
 	{
-		if (!File_->seek (0x3c))
-			return false;
-
-		const QString filetype (File_->read (8));
-
 		if (!File_->seek (0x4c))
 			return false;
 
