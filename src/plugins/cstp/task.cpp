@@ -470,9 +470,10 @@ namespace CSTP
 		if (!contdis.contains ("filename="))
 			return;
 
-		const auto& result = GetFilename (contdis);
+		// the name comes from the server, and it must not move the file out of its directory
+		const auto& result = QFileInfo { GetFilename (contdis) }.fileName ();
 
-		if (result.isEmpty ())
+		if (result.isEmpty () || result == "."_ql || result == ".."_ql)
 			return;
 
 		auto path = To_->fileName ();
