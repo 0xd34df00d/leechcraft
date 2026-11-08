@@ -690,7 +690,7 @@ namespace Azoth
 					<< "unable to open script file"
 					<< scrollerJS.errorString ();
 		else
-			Ui_.View_->page ()->runJavaScript (scrollerJS.readAll ());
+			Ui_.View_->page ()->runJavaScript (QString::fromUtf8 (scrollerJS.readAll ()));
 	}
 
 #ifdef ENABLE_MEDIACALLS
