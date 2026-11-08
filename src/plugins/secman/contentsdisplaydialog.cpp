@@ -25,7 +25,7 @@ namespace SecMan
 			if (var.canConvert<QString> ())
 				return var.toString ();
 			else if (var.canConvert<QByteArray> ())
-				return var.toByteArray ();
+				return QString::fromUtf8 (var.toByteArray ());
 			else if (var.canConvert<int> ())
 				return QString::number (var.toInt ());
 			else if (var.canConvert<double> ())
