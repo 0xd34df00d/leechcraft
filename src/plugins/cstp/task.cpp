@@ -342,7 +342,7 @@ namespace CSTP
 		if (location.isEmpty ())
 			return;
 
-		const QUrl locationUrl { location };
+		const auto& locationUrl = QUrl::fromEncoded (location);
 		const QUrl newUrl = locationUrl.isRelative () ?
 				URL_.resolved (locationUrl) :
 				locationUrl;
@@ -395,7 +395,7 @@ namespace CSTP
 	{
 		QString GetFilenameAscii (const QString& contdis)
 		{
-			const QByteArray start { "filename=" };
+			const auto start = u"filename="_qsv;
 			int startPos = contdis.indexOf (start) + start.size ();
 			bool ignoreNextQuote = false;
 			QString result;
@@ -422,7 +422,7 @@ namespace CSTP
 
 		QString GetFilenameUtf8 (const QString& contdis)
 		{
-			const QByteArray start = "filename*=UTF-8''";
+			const auto start = u"filename*=UTF-8''"_qsv;
 			const auto markerPos = contdis.indexOf (start);
 			if (markerPos == -1)
 				return {};
@@ -465,7 +465,7 @@ namespace CSTP
 		if (!CanChangeName_)
 			return;
 
-		const auto& contdis = Reply_->rawHeader ("Content-Disposition");
+		const auto& contdis = QString::fromUtf8 (Reply_->rawHeader ("Content-Disposition"));
 		qDebug () << contdis;
 		if (!contdis.contains ("filename="))
 			return;
