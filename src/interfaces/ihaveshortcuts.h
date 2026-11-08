@@ -36,7 +36,7 @@ namespace LC
 		/// The primary key sequence for this action.
 		QKeySequence Seq_ {};
 
-		using Icon_t = std::variant<Util::Void, QByteArray, QIcon>;
+		using Icon_t = std::variant<Util::Void, QString, QIcon>;
 
 		/// Icon of the action, either a `QIcon` itself or its `ActionIcon`.
 		Icon_t Icon_ { Util::Void {} };

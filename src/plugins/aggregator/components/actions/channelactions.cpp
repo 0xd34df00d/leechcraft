@@ -13,6 +13,7 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 #include <util/gui/util.h>
 #include <util/util.h>
 #include "components/models/channelsmodel.h"
@@ -37,7 +38,7 @@ namespace LC::Aggregator
 
 	namespace
 	{
-		ActionInfo MakeInfo (const QString& text, const QByteArray& icon)
+		ActionInfo MakeInfo (const QString& text, const QString& icon)
 		{
 			return ActionInfo { .Text_ = text, .Icon_ = icon };
 		}
@@ -48,19 +49,19 @@ namespace LC::Aggregator
 			switch (action)
 			{
 			case MarkChannelAsRead:
-				return MakeInfo (ChannelActions::tr ("Mark channel as read"), "mail-mark-read");
+				return MakeInfo (ChannelActions::tr ("Mark channel as read"), "mail-mark-read"_qs);
 			case MarkChannelAsUnread:
-				return MakeInfo (ChannelActions::tr ("Mark channel as unread"), "mail-mark-unread");
+				return MakeInfo (ChannelActions::tr ("Mark channel as unread"), "mail-mark-unread"_qs);
 			case RemoveFeed:
-				return MakeInfo (ChannelActions::tr ("Remove feed"), "list-remove");
+				return MakeInfo (ChannelActions::tr ("Remove feed"), "list-remove"_qs);
 			case UpdateSelectedFeed:
-				return MakeInfo (ChannelActions::tr ("Update selected feed"), "view-refresh");
+				return MakeInfo (ChannelActions::tr ("Update selected feed"), "view-refresh"_qs);
 			case RenameFeed:
-				return MakeInfo (ChannelActions::tr ("Rename feed"), "edit-rename");
+				return MakeInfo (ChannelActions::tr ("Rename feed"), "edit-rename"_qs);
 			case RemoveChannel:
 				return MakeInfo (ChannelActions::tr ("Remove channel"), {});
 			case ChannelSettings:
-				return MakeInfo (ChannelActions::tr ("Settings..."), "configure");
+				return MakeInfo (ChannelActions::tr ("Settings..."), "configure"_qs);
 			}
 
 			qWarning () << "unknown action" << static_cast<int> (action);

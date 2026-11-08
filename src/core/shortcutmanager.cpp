@@ -32,7 +32,7 @@ namespace LC
 				auto icon = Util::Visit (iconDescr,
 						[] (Util::Void) { return IconThemeEngine::Instance ().GetIcon ("configure-shortcuts"_qs); },
 						[] (const QIcon& icon) { return icon; },
-						[] (const QByteArray& name) { return IconThemeEngine::Instance ().GetIcon (name); });
+						[] (const QString& name) { return IconThemeEngine::Instance ().GetIcon (name); });
 				item->setIcon (icon);
 			}
 		}

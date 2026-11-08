@@ -113,55 +113,55 @@ namespace LC
 					{
 						CoreInstanceObject::tr ("Switch to previously active tab"),
 						sysModifier | Qt::Key_Space,
-						"edit-undo"
+						"edit-undo"_qs
 					});
 			mgr.RegisterActionInfo ("FullScreen",
 					{
 						CoreInstanceObject::tr ("Toggle fullscreen"),
 						QString ("F11"),
-						"view-fullscreen"
+						"view-fullscreen"_qs
 					});
 			mgr.RegisterActionInfo ("NewTab",
 					{
 						CoreInstanceObject::tr ("New tab"),
 						QString ("Ctrl+T"),
-						"tab-new"
+						"tab-new"_qs
 					});
 			mgr.RegisterActionInfo ("CloseTab",
 					{
 						CoreInstanceObject::tr ("Close tab"),
 						QString ("Ctrl+W"),
-						"tab-close"
+						"tab-close"_qs
 					});
 			mgr.RegisterActionInfo ("SwitchToLeftTab",
 					{
 						CoreInstanceObject::tr ("Switch to tab to the left"),
 						QString ("Ctrl+PgUp"),
-						"go-previous"
+						"go-previous"_qs
 					});
 			mgr.RegisterActionInfo ("SwitchToRightTab",
 					{
 						CoreInstanceObject::tr ("Switch to tab to the right"),
 						QString ("Ctrl+PgDown"),
-						"go-next"
+						"go-next"_qs
 					});
 			mgr.RegisterActionInfo ("Settings",
 					{
 						CoreInstanceObject::tr ("Settings"),
 						QString ("Ctrl+P"),
-						"configure"
+						"configure"_qs
 					});
 			mgr.RegisterActionInfo ("Quit",
 					{
 						CoreInstanceObject::tr ("Quit LeechCraft"),
 						QString ("F10"),
-						"application-exit"
+						"application-exit"_qs
 					});
 			mgr.RegisterActionInfo ("Find.Show",
 					{
 						CoreInstanceObject::tr ("Open find dialog (where applicable)"),
 						QString { "Ctrl+F" },
-						"edit-find",
+						"edit-find"_qs,
 						{ QString ("Ctrl+F3") }
 					});
 			mgr.RegisterActionInfo ("Find.Prev",

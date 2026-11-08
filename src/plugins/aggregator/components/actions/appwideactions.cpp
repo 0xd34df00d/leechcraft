@@ -35,7 +35,7 @@ namespace LC::Aggregator
 
 	namespace
 	{
-		ActionInfo MakeInfo (const QString& text, const QByteArray& icon)
+		ActionInfo MakeInfo (const QString& text, const QString& icon)
 		{
 			return { .Text_ = text, .Icon_ = icon };
 		}
@@ -46,17 +46,17 @@ namespace LC::Aggregator
 			switch (action)
 			{
 			case AddFeed:
-				return MakeInfo (AppWideActions::tr ("Add feed..."), "list-add");
+				return MakeInfo (AppWideActions::tr ("Add feed..."), "list-add"_qs);
 			case UpdateFeeds:
-				return MakeInfo (AppWideActions::tr ("Update all feeds"), "mail-receive");
+				return MakeInfo (AppWideActions::tr ("Update all feeds"), "mail-receive"_qs);
 			case MarkAllChannelsRead:
-				return MakeInfo (AppWideActions::tr ("Mark all channels as read"), "mail-mark-read");
+				return MakeInfo (AppWideActions::tr ("Mark all channels as read"), "mail-mark-read"_qs);
 			case ImportOPML:
-				return MakeInfo (AppWideActions::tr ("Import from OPML..."), "document-import");
+				return MakeInfo (AppWideActions::tr ("Import from OPML..."), "document-import"_qs);
 			case ExportChannels:
-				return MakeInfo (AppWideActions::tr ("Export channels to OPML..."), "document-export");
+				return MakeInfo (AppWideActions::tr ("Export channels to OPML..."), "document-export"_qs);
 			case ExportItems:
-				return MakeInfo (AppWideActions::tr ("Export items..."), "document-export-table");
+				return MakeInfo (AppWideActions::tr ("Export items..."), "document-export-table"_qs);
 			}
 
 			qWarning () << "unknown action" << static_cast<int> (action);

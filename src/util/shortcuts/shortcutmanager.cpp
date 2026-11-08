@@ -48,7 +48,7 @@ namespace LC::Util
 			if (act->icon ().isNull ())
 				Util::Visit (info.Icon_,
 						[] (Util::Void) {},
-						[this, act] (const QByteArray& name)
+						[this, act] (const QString& name)
 						{
 							act->setIcon (CoreProxy_->GetIconThemeManager ()->GetIcon (name));
 							act->setProperty ("ActionIcon", name);

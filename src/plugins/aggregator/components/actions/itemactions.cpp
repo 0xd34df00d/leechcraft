@@ -51,7 +51,7 @@ namespace LC::Aggregator
 
 	namespace
 	{
-		ActionInfo MakeInfo (const QString& text, const QByteArray& icon, const QString& shortcut = {})
+		ActionInfo MakeInfo (const QString& text, const QString& icon, const QString& shortcut = {})
 		{
 			return { .Text_ = text, .Seq_ = shortcut, .Icon_ = icon };
 		}
@@ -66,27 +66,27 @@ namespace LC::Aggregator
 			case MarkItemAsRead:
 				return MakeInfo (ItemActions::tr ("Mark as read"), {}, "R"_qs);
 			case MarkItemAsUnimportant:
-				return MakeInfo (ItemActions::tr ("Unimportant"), "rating-unrated", "I"_qs);
+				return MakeInfo (ItemActions::tr ("Unimportant"), "rating-unrated"_qs, "I"_qs);
 			case MarkItemAsImportant:
-				return MakeInfo (ItemActions::tr ("Important"), "rating", "Shift+I"_qs);
+				return MakeInfo (ItemActions::tr ("Important"), "rating"_qs, "Shift+I"_qs);
 			case DeleteItem:
-				return MakeInfo (ItemActions::tr ("Delete"), "remove", "Delete"_qs);
+				return MakeInfo (ItemActions::tr ("Delete"), "remove"_qs, "Delete"_qs);
 			case ItemCommentsSubscribe:
-				return MakeInfo (ItemActions::tr ("Subscribe to comments"), "news-subscribe");
+				return MakeInfo (ItemActions::tr ("Subscribe to comments"), "news-subscribe"_qs);
 			case ItemLinkOpen:
-				return MakeInfo (ItemActions::tr ("Open in new tab"), "internet-web-browser", "O"_qs);
+				return MakeInfo (ItemActions::tr ("Open in new tab"), "internet-web-browser"_qs, "O"_qs);
 			case ItemLinkCopy:
-				return MakeInfo (ItemActions::tr ("Copy news item link"), "edit-copy", "C"_qs);
+				return MakeInfo (ItemActions::tr ("Copy news item link"), "edit-copy"_qs, "C"_qs);
 			case HideReadItems:
-				return MakeInfo (ItemActions::tr ("Hide read items"), "mail-mark-unread");
+				return MakeInfo (ItemActions::tr ("Hide read items"), "mail-mark-unread"_qs);
 			case PrevUnreadItem:
-				return MakeInfo (ItemActions::tr ("Previous unread item"), "go-first", "Shift+K"_qs);
+				return MakeInfo (ItemActions::tr ("Previous unread item"), "go-first"_qs, "Shift+K"_qs);
 			case NextUnreadItem:
-				return MakeInfo (ItemActions::tr ("Next unread item"), "go-last", "Shift+J"_qs);
+				return MakeInfo (ItemActions::tr ("Next unread item"), "go-last"_qs, "Shift+J"_qs);
 			case PrevItem:
-				return MakeInfo (ItemActions::tr ("Previous item"), "go-previous", "K"_qs);
+				return MakeInfo (ItemActions::tr ("Previous item"), "go-previous"_qs, "K"_qs);
 			case NextItem:
-				return MakeInfo (ItemActions::tr ("Next item"), "go-next", "J"_qs);
+				return MakeInfo (ItemActions::tr ("Next item"), "go-next"_qs, "J"_qs);
 			}
 
 			qWarning () << "unknown action" << static_cast<int> (action);
