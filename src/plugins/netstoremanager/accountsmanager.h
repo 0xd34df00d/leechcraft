@@ -42,7 +42,7 @@ namespace NetStoreManager
 		void AddPlugin (IStoragePlugin*);
 		QList<IStoragePlugin*> GetPlugins () const;
 		QList<IStorageAccount*> GetAccounts () const;
-		IStorageAccount* GetAccountFromUniqueID (const QString& id) const;
+		IStorageAccount* GetAccountFromUniqueID (const QByteArray& id) const;
 		QAbstractItemModel* GetModel () const;
 
 		void RemoveAccount (const QModelIndex&);

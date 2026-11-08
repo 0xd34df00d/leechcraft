@@ -34,7 +34,7 @@ namespace NetStoreManager
 
 		AccountsManager *AM_;
 		FilesWatcherBase *FilesWatcher_;
-		QHash<QString, Syncer*> AccountID2Syncer_;
+		QHash<QByteArray, Syncer*> AccountID2Syncer_;
 		QHash<Syncer*, QThread*> Syncer2Thread_;
 
 	public:
