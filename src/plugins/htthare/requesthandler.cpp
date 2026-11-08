@@ -69,7 +69,7 @@ namespace HttHare
 			const auto colonPos = line.indexOf (':');
 			if (colonPos <= 0)
 				return ErrorResponse (400, "Bad Request");
-			Headers_ [line.left (colonPos)] = line.mid (colonPos + 1).trimmed ();
+			Headers_ [QString::fromUtf8 (line.left (colonPos))] = QString::fromUtf8 (line.mid (colonPos + 1).trimmed ());
 		}
 
 #ifdef QT_DEBUG
@@ -192,7 +192,7 @@ namespace HttHare
 		{
 			const auto& item = entries.at (i);
 
-			auto link = QUrl::toPercentEncoding (item.fileName (), {}, "'");
+			const auto& link = QString::fromLatin1 (QUrl::toPercentEncoding (item.fileName (), {}, "'"));
 
 			result += "<tr><td class=" + NormalizeClass (mimes.at (i).MimeType_) + "><a href='";
 			result += link + "'>" + item.fileName () + "</a></td>";
