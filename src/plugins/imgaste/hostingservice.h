@@ -55,7 +55,7 @@ namespace LC::Imgaste
 
 		std::function<bool (ImageInfo)> Accepts_;
 		Uploader Upload_;
-		std::function<Result_t (const QString&)> GetLink_;
+		std::function<Result_t (const QByteArray&)> GetLink_;
 	};
 
 	const QVector<HostingService>& GetAllServices ();

@@ -42,11 +42,11 @@ namespace LC::Imgaste
 			}
 		}
 
-		HostingService::Result_t GetLinkTrimmed (QString body)
+		HostingService::Result_t GetLinkTrimmed (const QByteArray& body)
 		{
-			body = std::move (body).trimmed ();
-			if (QUrl { body }.isValid ())
-				return body;
+			const auto& link = QString::fromUtf8 (body).trimmed ();
+			if (QUrl { link }.isValid ())
+				return link;
 
 			return { Util::AsLeft, {} };
 		}
@@ -77,14 +77,14 @@ namespace LC::Imgaste
 		namespace PomfLike
 		{
 			[[maybe_unused]]
-			HostingService::Result_t GetLink (const QString& body)
+			HostingService::Result_t GetLink (const QByteArray& body)
 			{
 				try
 				{
 					using Util::As;
 					using enum QJsonValue::Type;
 
-					const auto& json = As<Object> (Util::ToJson (body.toUtf8 ()).GetRight ());
+					const auto& json = As<Object> (Util::ToJson (body).GetRight ());
 					const auto& files = As<Array> (json [u"files"_qsv]);
 					const auto& file = As<Object> (files [0]);
 					const auto& filename = As<String> (file [u"url"_qsv]);
