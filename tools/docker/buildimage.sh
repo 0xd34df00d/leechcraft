@@ -120,10 +120,10 @@ context_of()
 }
 
 # changed | unchanged: whether the new image differs from the baseline image given, in the packages listed in the file
-# given or in the context; no baseline is a change
+# given or in the context label given; no baseline is a change
 compare()
 {
-	if [ -z "$1" ] || ! cmp -s "$2" "$state/$distro.manifest" || [ "$(context_of "$1")" != "$context" ]; then
+	if [ -z "$1" ] || ! cmp -s "$2" "$state/$distro.manifest" || [ "$3" != "$context" ]; then
 		echo changed
 	else
 		echo unchanged
@@ -133,6 +133,10 @@ compare()
 context=$(context_hash)
 previous=$(image_id "$image")
 pushed=$(image_id "$pushed_image")
+# Read before the build, like the package lists: the build moves the tag, and with containerd's image store an image
+# no other tag holds is gone right after, so its label would read as empty and the context as changed.
+previous_context=$(context_of "$previous")
+pushed_context=$(context_of "$pushed")
 # A listing that fails leaves the verdicts unknown, which the job treats as changed and, through the exit status, as
 # unstable, so that a package manager this script does not know gets noticed rather than hidden behind "unchanged".
 comparable=true
@@ -157,8 +161,8 @@ manifest "$image" > "$state/$distro.manifest" || comparable=false
 current=$(toolchain "$image") || status=3
 printf '%s\n' "$current" | mark_changed "$state/$distro.toolchain.previous" > "$state/$distro.toolchain"
 if $comparable; then
-	verdict=$(compare "$previous" "$state/$distro.previous")
-	publish=$(compare "$pushed" "$state/$distro.pushed")
+	verdict=$(compare "$previous" "$state/$distro.previous" "$previous_context")
+	publish=$(compare "$pushed" "$state/$distro.pushed" "$pushed_context")
 	diff "$state/$distro.previous" "$state/$distro.manifest" > "$state/$distro.diff" || true
 else
 	verdict=unknown
@@ -179,7 +183,7 @@ fi
 if [ -z "$previous" ]; then
 	echo "=== $distro: no previous image to compare with"
 else
-	if [ "$(context_of "$previous")" != "$context" ]; then
+	if [ "$previous_context" != "$context" ]; then
 		echo "=== $distro: the build context or arguments changed since the previous image"
 	fi
 	if [ -s "$state/$distro.diff" ]; then
