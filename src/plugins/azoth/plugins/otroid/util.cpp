@@ -98,7 +98,7 @@ namespace OTRoid
 			otrl_userstate_create (),
 			&otrl_userstate_free
 		};
-		if (otrl_privkey_read (testState.get (), tmpFilename.toUtf8 ().constData ()))
+		if (otrl_privkey_read (testState.get (), QFile::encodeName (tmpFilename).constData ()))
 			throw std::runtime_error ("failed to save the keys");
 
 		QFile::remove (filename);

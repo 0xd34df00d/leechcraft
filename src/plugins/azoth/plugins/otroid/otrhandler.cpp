@@ -14,6 +14,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QEventLoop>
+#include <QFile>
 #include <QFutureWatcher>
 #include <QtConcurrentRun>
 #include <QTimer>
@@ -690,7 +691,7 @@ namespace OTRoid
 
 	QByteArray OtrHandler::GetOTRFilename (const QString& fname) const
 	{
-		return OtrDir_.absoluteFilePath (fname).toUtf8 ();
+		return QFile::encodeName (OtrDir_.absoluteFilePath (fname));
 	}
 
 	void OtrHandler::CreateActions (QObject *entry)
