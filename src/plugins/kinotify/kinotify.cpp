@@ -168,13 +168,11 @@ namespace LC::Kinotify
 		connect (notificationWidget,
 				&QObject::destroyed,
 				this,
-				[this]
+				[this, notificationWidget]
 				{
-					if (ActiveNotifications_.isEmpty ())
-						return;
-
-					ActiveNotifications_.removeFirst ();
-					if (!ActiveNotifications_.isEmpty ())
+					const auto wasDisplayed = ActiveNotifications_.value (0) == notificationWidget;
+					ActiveNotifications_.removeOne (notificationWidget);
+					if (wasDisplayed && !ActiveNotifications_.isEmpty ())
 						ActiveNotifications_.first ()->PrepareNotification ();
 				});
 
