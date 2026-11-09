@@ -155,12 +155,11 @@ namespace LC::Kinotify
 	{
 		QRect PreferredGeometry ()
 		{
-			const bool followMouse = XmlSettingsManager::Instance ().property ("FollowMouse").toBool ();
+			if (XmlSettingsManager::Instance ().property ("FollowMouse").toBool ())
+				return Util::AvailableGeometry (QCursor::pos ());
 
-			auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
-			return followMouse ?
-					Util::AvailableGeometry (QCursor::pos ()) :
-					rootWM->GetPreferredWindow ()->screen ()->availableGeometry ();
+			const auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
+			return rootWM->GetPreferredWindow ()->screen ()->availableGeometry ();
 		}
 	}
 
