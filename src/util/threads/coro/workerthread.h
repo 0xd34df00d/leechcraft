@@ -42,7 +42,7 @@ namespace LC::Util::Coro
 		}
 	};
 
-	template<typename T, typename Self>
+	template<typename T, typename Self, template<typename> typename... AdditionalExtensions>
 	class WorkerThread : public WorkerThreadBase
 	{
 	protected:
@@ -84,7 +84,7 @@ namespace LC::Util::Coro
 		}
 
 		template<typename F, typename... Args, typename R = std::invoke_result_t<F, T&, Args...>>
-		ContextTask<R> Run (F&& f, Args&&... args)
+		Task<R, ContextExtension, AdditionalExtensions...> Run (F&& f, Args&&... args)
 		{
 			co_return co_await Util::MetaMethod (Worker_, std::forward<F> (f), std::forward<Args> (args)...);
 		}
