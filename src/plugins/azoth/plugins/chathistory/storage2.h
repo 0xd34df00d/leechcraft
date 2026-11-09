@@ -47,7 +47,7 @@ namespace LC::Azoth::ChatHistory
 		Util::oral::ObjectInfo_ptr<MucContextRecord> MucContexts_;
 		Util::oral::ObjectInfo_ptr<MessageRecord> Messages_;
 	public:
-		explicit Storage2 (QObject* = nullptr);
+		explicit Storage2 ();
 		~Storage2 () override;
 
 		std::optional<QDateTime> GetLastTimestamp (const AccountId&) const;

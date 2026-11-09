@@ -156,9 +156,8 @@ namespace LC::Azoth::ChatHistory
 
 	namespace sph = Util::oral::sph;
 
-	Storage2::Storage2 (QObject *parent)
-	: QObject { parent }
-	, DB_ { QSqlDatabase::addDatabase ("QSQLITE", Util::GenConnectionName ("org.LC.Azoth.ChatHistory.Storage2")) }
+	Storage2::Storage2 ()
+	: DB_ { QSqlDatabase::addDatabase ("QSQLITE", Util::GenConnectionName ("org.LC.Azoth.ChatHistory.Storage2")) }
 	{
 		DB_.setDatabaseName (Util::CreateIfNotExists ("azoth").filePath ("history2.db"));
 
