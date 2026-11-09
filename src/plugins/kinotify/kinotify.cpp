@@ -179,23 +179,18 @@ namespace LC::Kinotify
 		notificationWidget->SetContent (header, text);
 		OverridePixmap (notificationWidget, e.Additional_ [LC::EF::NotificationPixmap], prio);
 
-		if (ActiveNotifications_.isEmpty ())
-			notificationWidget->PrepareNotification ();
-
 		if (sameIdPos == ActiveNotifications_.end ())
-			ActiveNotifications_ << notificationWidget;
-		else if (sameIdPos == ActiveNotifications_.begin ())
 		{
-			auto oldNotify = *sameIdPos;
-			std::advance (sameIdPos, 1);
-			ActiveNotifications_.insert (sameIdPos, notificationWidget);
-			oldNotify->deleteLater ();
+			ActiveNotifications_ << notificationWidget;
+			if (ActiveNotifications_.size () == 1)
+				notificationWidget->PrepareNotification ();
 		}
 		else
 		{
 			(*sameIdPos)->deleteLater ();
-			auto newPos = ActiveNotifications_.erase (sameIdPos);
-			ActiveNotifications_.insert (newPos, notificationWidget);
+			*sameIdPos = notificationWidget;
+			if (sameIdPos == ActiveNotifications_.begin ())
+				notificationWidget->PrepareNotification ();
 		}
 	}
 

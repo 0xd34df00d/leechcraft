@@ -23,6 +23,7 @@ namespace LC::Kinotify
 
 		void testShowsTheNextOneWhenTheDisplayedOneExpires ();
 		void testReplacingTheDisplayedOneShowsTheReplacement ();
+		void testReplacingTheDisplayedOneTwiceKeepsOnlyTheLatest ();
 		void testReplacingAQueuedOneKeepsTheDisplayedOne ();
 	};
 }

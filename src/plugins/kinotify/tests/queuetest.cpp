@@ -41,6 +41,7 @@ namespace LC::Kinotify
 
 		const auto A = "A"_qs;
 		const auto A2 = "A2"_qs;
+		const auto A3 = "A3"_qs;
 		const auto B = "B"_qs;
 		const auto B2 = "B2"_qs;
 
@@ -126,6 +127,20 @@ namespace LC::Kinotify
 
 		QTRY_COMPARE (Alive (), QStringList { A2 });
 		QCOMPARE (Shown (), QStringList { A2 });
+
+		QTRY_VERIFY (Alive ().isEmpty ());
+	}
+
+	void QueueTest::testReplacingTheDisplayedOneTwiceKeepsOnlyTheLatest ()
+	{
+		Plugin plugin;
+		plugin.Handle (MakeTestNotification ("a"_qs, A));
+		plugin.Handle (MakeTestNotification ("a"_qs, A2));
+		plugin.Handle (MakeTestNotification ("a"_qs, A3));
+
+		QTRY_VERIFY (!Alive ().contains (A));
+		QCOMPARE (Alive (), QStringList { A3 });
+		QCOMPARE (Shown (), QStringList { A3 });
 
 		QTRY_VERIFY (Alive ().isEmpty ());
 	}
