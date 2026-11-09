@@ -109,17 +109,17 @@ namespace BirthdayNotifier
 
 	void Plugin::NotifyBirthday (ICLEntry *entry, int days)
 	{
-		const auto& hrId = entry->GetEntryName ();
+		const auto& entryId = entry->GetGlobalStrongestId ();
 
 		const QString& notify = days ?
-				tr ("%1 has birthday in %n day(s)!", 0, days).arg (hrId) :
-				tr ("%1 has birthday today!").arg (hrId);
+				tr ("%1 has birthday in %n day(s)!", 0, days).arg (entryName) :
+				tr ("%1 has birthday today!").arg (entryName);
 		auto e = Util::MakeNotification (tr ("Birthday reminder"), notify, Priority::Info);
 
 		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = GetUniqueID ();
 		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = AN::CatOrganizer;
 		e.Additional_ ["org.LC.AdvNotifications.EventID"] = "org.LC.Plugins.Azoth.BirthdayNotifier.Birthday/" + entry->GetEntryId ();
-		e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList (hrId);
+		e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList (entryName);
 
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeOrganizerEventDue;
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = notify;
