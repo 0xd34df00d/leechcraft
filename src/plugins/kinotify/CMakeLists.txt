@@ -12,4 +12,7 @@ LC_DEFINE_PLUGIN (
 	SETTINGS kinotifysettings.xml
 	QT_COMPONENTS StateMachine
 	INSTALL_SHARE
+	HAS_TESTS
 	)
+
+AddKinotifyTest (queue SRCS tests/queuetest.cpp kinotify.cpp kinotifywidget.cpp QT_COMPONENTS StateMachine Widgets)
