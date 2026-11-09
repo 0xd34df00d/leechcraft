@@ -122,6 +122,7 @@ namespace LC::Kinotify
 	void KinotifyWidget::SetPixmap (QPixmap px)
 	{
 		Pixmap_ = std::move (px);
+		Ui_.Image_->setPixmap (Pixmap_);
 	}
 
 	void KinotifyWidget::showEvent (QShowEvent*)

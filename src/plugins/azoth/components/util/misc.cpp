@@ -18,6 +18,7 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/sll/qobjectrefcast.h>
 #include <util/sll/qtutil.h>
+#include <util/threads/coro.h>
 #include <util/xpc/util.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/iregmanagedaccount.h>
@@ -104,6 +105,17 @@ namespace LC::Azoth
 				return &qobject_ref_cast<IMUCEntry> (parent->GetQObject ());
 			return nullptr;
 		}
+
+		Util::NotificationPixmapTask_t FetchNotificationAvatar (QPointer<AvatarsManager> mgr, QPointer<QObject> src)
+		{
+			if (!mgr || !src)
+				co_return std::nullopt;
+
+			const auto image = co_await mgr->GetAvatar (src, IHaveAvatars::Size::Thumbnail);
+			if (image.isNull ())
+				co_return std::nullopt;
+			co_return image;
+		}
 	}
 
 	Entity BuildNotification (Entity e, NotificationInfo info)
@@ -134,16 +146,10 @@ namespace LC::Azoth
 		if (const auto room = RoomOf (info.Actor_))
 			e.Additional_.insert (NotificationsManager::RoomFields (*room));
 
-		QPointer<AvatarsManager> mgr { &info.Avatars_ };
-		QPointer<QObject> src { info.Actor_.GetQObject () };
-		const auto& avatarFutureGetter = [mgr, src] () -> Util::LazyNotificationPixmap_t::result_type
-		{
-			if (mgr && src)
-				return mgr->GetAvatar (src, IHaveAvatars::Size::Thumbnail);
-			else
-				return {};
-		};
-		e.Additional_ [EF::NotificationPixmap] = QVariant::fromValue<Util::LazyNotificationPixmap_t> (avatarFutureGetter);
+		const QPointer<AvatarsManager> mgr { &info.Avatars_ };
+		const QPointer<QObject> src { info.Actor_.GetQObject () };
+		const auto avatarGetter = [mgr, src] { return FetchNotificationAvatar (mgr, src); };
+		e.Additional_ [EF::NotificationPixmap] = QVariant::fromValue<Util::LazyNotificationPixmap_t> (avatarGetter);
 		return e;
 	}
 

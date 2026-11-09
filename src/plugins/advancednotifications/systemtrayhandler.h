@@ -12,6 +12,7 @@
 #include <QStringList>
 #include <util/threads/coro/taskfwd.h>
 #include <util/threads/coro/corocontext.h>
+#include <util/xpc/util.h>
 #include <interfaces/structures.h>
 #include <interfaces/iactionsexporter.h>
 #include "concretehandlerbase.h"
@@ -48,7 +49,7 @@ namespace LC::AdvancedNotifications
 	private:
 		void ExtractPixmap (EventData&, const Entity&);
 
-		Util::ContextTask<void> FetchLazyPixmap (EventKey key, QFuture<QImage> pxFuture);
+		Util::ContextTask<void> FetchLazyPixmap (EventKey key, Util::NotificationPixmapTask_t pxTask);
 
 		VisualNotificationsView* CreateVisualNotificationView ();
 		void PrepareSysTrayIcon (const QString&);

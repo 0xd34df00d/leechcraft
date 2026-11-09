@@ -9,8 +9,8 @@
 #include "birthdaynotifier.h"
 #include <QTimer>
 #include <QIcon>
+#include <util/threads/coro.h>
 #include <util/xpc/util.h>
-#include <util/threads/futures.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/an/constants.h>
@@ -93,6 +93,20 @@ namespace BirthdayNotifier
 		return XSD_;
 	}
 
+	namespace
+	{
+		Util::NotificationPixmapTask_t FetchNotificationAvatar (IAvatarsManager *mgr, QPointer<QObject> entryObj)
+		{
+			if (!entryObj)
+				co_return std::nullopt;
+
+			const auto image = co_await mgr->GetAvatar (entryObj, IHaveAvatars::Size::Thumbnail);
+			if (image.isNull ())
+				co_return std::nullopt;
+			co_return image;
+		}
+	}
+
 	void Plugin::NotifyBirthday (ICLEntry *entry, int days)
 	{
 		const auto& hrId = entry->GetEntryName ();
@@ -115,13 +129,7 @@ namespace BirthdayNotifier
 		const auto avatarsMgr = AzothProxy_->GetAvatarsManager ();
 		const QPointer<QObject> entryObj { entry->GetQObject () };
 
-		const auto avatarGetter = [avatarsMgr, entryObj] () -> Util::LazyNotificationPixmap_t::result_type
-		{
-			if (entryObj)
-				return avatarsMgr->GetAvatar (entryObj, IHaveAvatars::Size::Thumbnail);
-			else
-				return {};
-		};
+		const auto avatarGetter = [avatarsMgr, entryObj] { return FetchNotificationAvatar (avatarsMgr, entryObj); };
 		e.Additional_ ["NotificationPixmap"] = QVariant::fromValue<Util::LazyNotificationPixmap_t> (avatarGetter);
 		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}

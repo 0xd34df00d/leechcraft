@@ -10,12 +10,12 @@
 
 #include <functional>
 #include <optional>
-#include <QFuture>
 #include <QImage>
 #include <interfaces/structures.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/an/ianemitter.h>
 #include <interfaces/core/icoreproxy.h>
+#include <util/threads/coro/taskfwd.h>
 #include "xpcconfig.h"
 
 class IEntityManager;
@@ -215,7 +215,8 @@ namespace LC::Util
 	UTIL_XPC_API QVariant GetPersistentData (const QByteArray& key,
 			const ICoreProxy_ptr& proxy);
 
-	using LazyNotificationPixmap_t = std::function<std::optional<QFuture<QImage>> ()>;
+	using NotificationPixmapTask_t = ContextTask<std::optional<QImage>>;
+	using LazyNotificationPixmap_t = std::copyable_function<NotificationPixmapTask_t () const>;
 }
 
 Q_DECLARE_METATYPE (LC::Util::LazyNotificationPixmap_t)

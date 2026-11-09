@@ -18,7 +18,6 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
-#include <util/xpc/util.h>
 #include <util/gui/geometry.h>
 #include <util/gui/unhoverdeletemixin.h>
 #include <util/gui/util.h>
@@ -138,25 +137,23 @@ namespace LC::AdvancedNotifications
 
 		eventData.Pixmap_ = GetDefaultPixmap (e.Additional_ [EF::Priority].value<Priority> ());
 
-		const auto& lazyPxGetter = pxVar.value<Util::LazyNotificationPixmap_t> ();
-		if (!lazyPxGetter)
-			return;
-
-		if (const auto& maybeLazy = lazyPxGetter ())
-			FetchLazyPixmap ({ eventData.SenderId_, eventData.EventId_ }, *maybeLazy);
+		if (const auto pxGetter = pxVar.value<Util::LazyNotificationPixmap_t> ())
+			FetchLazyPixmap ({ eventData.SenderId_, eventData.EventId_ }, pxGetter ());
 	}
 
-	Util::ContextTask<void> SystemTrayHandler::FetchLazyPixmap (EventKey key, QFuture<QImage> pxFuture)
+	Util::ContextTask<void> SystemTrayHandler::FetchLazyPixmap (EventKey key, Util::NotificationPixmapTask_t pxTask)
 	{
 		co_await Util::AddContext { CoroContext_ };
 
-		const auto& px = co_await pxFuture;
+		const auto& px = co_await pxTask;
+		if (!px)
+			co_return;
 
 		const auto pos = Events_.find (key);
 		if (pos == Events_.end ())
 			co_return;
 
-		pos->Pixmap_ = QPixmap::fromImage (px);
+		pos->Pixmap_ = QPixmap::fromImage (*px);
 		RebuildState ();
 	}
 

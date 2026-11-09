@@ -12,7 +12,7 @@
 #include <util/xpc/notificationactionhandler.h>
 #include <util/sll/void.h>
 #include <util/sll/qtutil.h>
-#include <util/threads/futures.h>
+#include <util/threads/coro.h>
 #include <interfaces/entityconstants.h>
 #include <interfaces/an/entityfields.h>
 #include <interfaces/entitytesthandleresult.h>
@@ -92,43 +92,32 @@ namespace LC::Kinotify
 			}
 		}
 
-		QFuture<Util::Void> OverridePixmap (KinotifyWidget *notificationWidget,
-				const QVariant& notifVar, Priority prio)
+		Util::ContextTask<void> OverridePixmap (KinotifyWidget *notificationWidget, const QVariant& notifVar, Priority prio)
 		{
-			if (notifVar.canConvert<QPixmap> ())
+			if (auto pixmap = notifVar.value<QPixmap> ();
+				!pixmap.isNull ())
 			{
-				auto pixmap = notifVar.value<QPixmap> ();
-				if (!pixmap.isNull ())
-				{
-					notificationWidget->SetPixmap (std::move (pixmap));
-					return Util::MakeReadyFuture<Util::Void> ({});
-				}
+				notificationWidget->SetPixmap (std::move (pixmap));
+				co_return;
 			}
-			else if (notifVar.canConvert<QImage> ())
+
+			if (auto image = notifVar.value<QImage> ();
+				!image.isNull ())
 			{
-				auto image = notifVar.value<QImage> ();
-				if (!image.isNull ())
-				{
-					notificationWidget->SetPixmap (QPixmap::fromImage (std::move (image)));
-					return Util::MakeReadyFuture<Util::Void> ({});
-				}
-			}
-			else if (notifVar.canConvert<Util::LazyNotificationPixmap_t> ())
-			{
-				const auto& maybePxFuture = notifVar.value<Util::LazyNotificationPixmap_t> () ();
-				if (maybePxFuture)
-					return Util::Sequence (notificationWidget, *maybePxFuture) >>
-							[notificationWidget] (QImage image)
-							{
-								notificationWidget->SetPixmap (QPixmap::fromImage (std::move (image)));
-								return Util::MakeReadyFuture<Util::Void> ({});
-							};
+				notificationWidget->SetPixmap (QPixmap::fromImage (std::move (image)));
+				co_return;
 			}
 
 			const auto& icon = GetProxyHolder ()->GetIconThemeManager ()->GetIcon (GetPriorityIconName (prio));
 			const auto prioritySize = 128;
 			notificationWidget->SetPixmap (icon.pixmap ({ prioritySize, prioritySize }));
-			return Util::MakeReadyFuture<Util::Void> ({});
+
+			if (const auto pxTaskGetter = notifVar.value<Util::LazyNotificationPixmap_t> ())
+			{
+				co_await Util::AddContext { Util::CoroContext::Of (*notificationWidget) };
+				if (const auto px = co_await pxTaskGetter ())
+					notificationWidget->SetPixmap (QPixmap::fromImage (*px));
+			}
 		}
 	}
 
@@ -190,42 +179,26 @@ namespace LC::Kinotify
 				});
 
 		notificationWidget->SetContent (header, text);
+		OverridePixmap (notificationWidget, e.Additional_ [LC::EF::NotificationPixmap], prio);
 
-		auto worker = [this, notificationWidget] (auto sameIdPos)
+		if (ActiveNotifications_.isEmpty ())
+			notificationWidget->PrepareNotification ();
+
+		if (sameIdPos == ActiveNotifications_.end ())
+			ActiveNotifications_ << notificationWidget;
+		else if (sameIdPos == ActiveNotifications_.begin ())
 		{
-			if (ActiveNotifications_.isEmpty ())
-				notificationWidget->PrepareNotification ();
-
-			if (sameIdPos == ActiveNotifications_.end ())
-				ActiveNotifications_ << notificationWidget;
-			else if (sameIdPos == ActiveNotifications_.begin ())
-			{
-				auto oldNotify = *sameIdPos;
-				std::advance (sameIdPos, 1);
-				ActiveNotifications_.insert (sameIdPos, notificationWidget);
-				oldNotify->deleteLater ();
-			}
-			else
-			{
-				(*sameIdPos)->deleteLater ();
-				auto newPos = ActiveNotifications_.erase (sameIdPos);
-				ActiveNotifications_.insert (newPos, notificationWidget);
-			}
-		};
-		const auto& pxVar = e.Additional_ [LC::EF::NotificationPixmap];
-		const auto& pxFuture = OverridePixmap (notificationWidget, pxVar, prio);
-		if (pxFuture.isFinished ())
-			worker (sameIdPos);
+			auto oldNotify = *sameIdPos;
+			std::advance (sameIdPos, 1);
+			ActiveNotifications_.insert (sameIdPos, notificationWidget);
+			oldNotify->deleteLater ();
+		}
 		else
-			Util::Sequence (this, pxFuture) >>
-					[worker, notifyId, this] (const auto&)
-					{
-						const auto sameIdPos = notifyId.isEmpty () ?
-								ActiveNotifications_.end () :
-								std::find_if (ActiveNotifications_.begin (), ActiveNotifications_.end (),
-										[&notifyId] (KinotifyWidget *w) { return notifyId == w->GetID (); });
-						worker (sameIdPos);
-					};
+		{
+			(*sameIdPos)->deleteLater ();
+			auto newPos = ActiveNotifications_.erase (sameIdPos);
+			ActiveNotifications_.insert (newPos, notificationWidget);
+		}
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
