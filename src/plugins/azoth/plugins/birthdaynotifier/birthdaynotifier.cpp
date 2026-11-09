@@ -109,6 +109,7 @@ namespace BirthdayNotifier
 
 	void Plugin::NotifyBirthday (ICLEntry *entry, int days)
 	{
+		const auto& entryName = entry->GetEntryName ();
 		const auto& entryId = entry->GetGlobalStrongestId ();
 
 		const QString& notify = days ?
