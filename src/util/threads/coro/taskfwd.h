@@ -16,8 +16,22 @@ namespace LC::Util
 	template<typename>
 	struct ContextExtension;
 
+	/** @brief A Task cancelled along with the CoroContext it registers with.
+	 *
+	 * Every `co_await` in it checks the registered contexts, see AddContext
+	 * and CoroContext for the contract.
+	 */
 	template<typename R = void>
 	using ContextTask = Task<R, ContextExtension>;
+
+	template<typename>
+	struct SharedTaskExtension;
+
+	template<typename R = void>
+	using SharedTask = Task<R, SharedTaskExtension>;
+
+	template<typename R = void>
+	using SharedContextTask = Task<R, ContextExtension, SharedTaskExtension>;
 
 	struct AwaiterCPO {};
 }
