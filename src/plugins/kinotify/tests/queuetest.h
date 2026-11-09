@@ -25,5 +25,6 @@ namespace LC::Kinotify
 		void testReplacingTheDisplayedOneShowsTheReplacement ();
 		void testReplacingTheDisplayedOneTwiceKeepsOnlyTheLatest ();
 		void testReplacingAQueuedOneKeepsTheDisplayedOne ();
+		void testReleaseDropsAllNotifications ();
 	};
 }

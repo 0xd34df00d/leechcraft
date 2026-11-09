@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "kinotify.h"
+#include <utility>
 #include <QIcon>
 #include <util/xpc/util.h>
 #include <util/xpc/notificationactionhandler.h>
@@ -46,6 +47,8 @@ namespace LC::Kinotify
 
 	void Plugin::Release ()
 	{
+		const auto notifications = std::exchange (ActiveNotifications_, {});
+		qDeleteAll (notifications);
 	}
 
 	QByteArray Plugin::GetUniqueID () const

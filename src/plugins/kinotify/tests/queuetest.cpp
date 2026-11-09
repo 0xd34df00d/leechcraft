@@ -160,4 +160,13 @@ namespace LC::Kinotify
 
 		QTRY_VERIFY (Alive ().isEmpty ());
 	}
+
+	void QueueTest::testReleaseDropsAllNotifications ()
+	{
+		Plugin plugin;
+		plugin.Handle (MakeTestNotification ("a"_qs, A));
+		plugin.Handle (MakeTestNotification ("b"_qs, B));
+		plugin.Release ();
+		QVERIFY (Alive ().isEmpty ());
+	}
 }
