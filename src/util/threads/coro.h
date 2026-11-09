@@ -16,5 +16,6 @@
 #include "coro/networkreply.h"
 #include "coro/networkresult.h"
 #include "coro/process.h"
+#include "coro/sharedtask.h"
 #include "coro/signal.h"
 #include "coro/timer.h"
