@@ -220,7 +220,7 @@ namespace LC::Util::XDG
 
 		IsScanning_ = true;
 
-		[this] () -> ContextTask<void>
+		[this] (this auto) -> ContextTask<void>
 		{
 			co_await AddContext { CoroContext_ };
 			const auto& cat2id2item = co_await QtConcurrent::run (FindAndParse, Types_);
