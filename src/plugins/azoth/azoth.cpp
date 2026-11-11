@@ -25,6 +25,7 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
 #include <util/sys/resourceloader.h>
 #include <util/xpc/util.h>
@@ -92,14 +93,14 @@ namespace Azoth
 		XmlSettingsDialog_->SetDataSource ("SmileIcons",
 				Core::Instance ().GetSmilesOptionsModel ());
 
-		auto setSOM = [this] (const QByteArray& propName)
+		auto setSOM = [this] (const QString& propName)
 		{
-			auto mgr = Core::Instance ().GetChatStylesOptionsManager (propName);
+			auto mgr = Core::Instance ().GetChatStylesOptionsManager (propName.toUtf8 ());
 			XmlSettingsDialog_->SetDataSource (propName, mgr->GetStyleModel ());
 			XmlSettingsDialog_->SetDataSource (propName + "Variant", mgr->GetVariantModel ());
 		};
-		setSOM ("ChatWindowStyle");
-		setSOM ("MUCWindowStyle");
+		setSOM ("ChatWindowStyle"_qs);
+		setSOM ("MUCWindowStyle"_qs);
 
 		Core::Instance ().GetShortcutManager ()->AnnounceGlobalShorcuts ();
 

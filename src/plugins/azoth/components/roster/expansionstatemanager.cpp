@@ -18,20 +18,20 @@ namespace LC::Azoth
 {
 	namespace
 	{
-		QByteArray ToSettingsSafeName (const QString& name)
+		QString ToSettingsSafeName (const QString& name)
 		{
 			const auto isLatin1 = std::ranges::all_of (name, [] (QChar ch) { return ch.unicode () <= 127; });
-			auto ba = isLatin1 ? name.toLatin1 () : name.toUtf8 ().toBase64 (QByteArray::OmitTrailingEquals);
-			ba.replace ('/', '_');
-			return ba;
+			auto result = isLatin1 ? name : QString::fromLatin1 (name.toUtf8 ().toBase64 (QByteArray::OmitTrailingEquals));
+			result.replace ('/', '_');
+			return result;
 		}
 
-		QByteArray BuildPath (QModelIndex index)
+		QString BuildPath (QModelIndex index)
 		{
 			if (!index.isValid ())
 				return {};
 
-			QByteArrayList path { ToSettingsSafeName (index.data ().toString ()) };
+			QStringList path { ToSettingsSafeName (index.data ().toString ()) };
 			while ((index = index.parent ()).isValid ())
 				path.prepend (ToSettingsSafeName (index.data ().toString ()));
 
