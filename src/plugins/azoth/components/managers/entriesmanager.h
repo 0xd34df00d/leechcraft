@@ -43,6 +43,7 @@ namespace LC::Azoth
 	signals:
 		void added (const QList<ICLEntry*>&, IAccount&);
 		void aboutToBeRemoved (const QList<ICLEntry*>&, IAccount&);
+		void removed (const QList<ICLEntry*>&, IAccount&);
 
 		void strongestIdChanged (const GlobalConventionalId& oldId, const GlobalConventionalId& newId, const ICLEntry& entry);
 	};

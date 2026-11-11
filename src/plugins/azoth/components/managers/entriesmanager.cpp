@@ -106,6 +106,8 @@ namespace LC::Azoth
 		for (const auto entry : entries)
 			if (!Id2Entry_.remove (entry->GetGlobalStrongestId ()))
 				qCritical () << "removing non-existing entry:" << entry->GetGlobalStrongestId ();
+
+		emit removed (entries, account);
 	}
 
 	template QObject& EntriesManager::GetEntry<QObject> (const GlobalStrongestId&) const;
