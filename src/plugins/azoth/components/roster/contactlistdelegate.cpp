@@ -42,10 +42,10 @@ namespace Azoth
 {
 	const int CPadding = 2;
 
-	ContactListDelegate::ContactListDelegate (AvatarsManager& avatars, QTreeView* parent)
-	: QStyledItemDelegate (parent)
-	, Avatars_ (avatars)
-	, View_ (parent)
+	ContactListDelegate::ContactListDelegate (AvatarsManager& avatars, QTreeView& parent)
+	: QStyledItemDelegate { &parent }
+	, Avatars_ { avatars }
+	, View_ { parent }
 	{
 		XmlSettingsManager::Instance ().RegisterObject ("ShowAvatars", this,
 				[this] (bool show) { ShowAvatars_ = show; });
@@ -77,7 +77,7 @@ namespace Azoth
 				[this] (int height)
 				{
 					ContactHeight_ = height <= 0 ? 24 : height;
-					View_->setIconSize ({ ContactHeight_, ContactHeight_ });
+					View_.setIconSize ({ ContactHeight_, ContactHeight_ });
 				});
 
 		XmlSettingsManager::Instance ().RegisterObject ({
@@ -92,7 +92,7 @@ namespace Azoth
 					"HighlightGroups",
 				},
 				this,
-				[this] { View_->viewport ()->update (); });
+				[this] { View_.viewport ()->update (); });
 
 		Core::Instance ().RegisterHookable (this);
 	}
@@ -190,7 +190,7 @@ namespace Azoth
 		if (extAcc && extAcc->GetSelfContact ())
 		{
 			const auto& id = qobject_ref_cast<ICLEntry> (extAcc->GetSelfContact ()).GetGlobalStrongestId ();
-			avatarImg = RequestAvatar (Avatars_, id, *View_, index, iconSize);
+			avatarImg = RequestAvatar (Avatars_, id, View_, index, iconSize);
 		}
 		else
 			avatarImg = ResourcesManager::Instance ().GetDefaultAvatar (iconSize);
@@ -318,7 +318,7 @@ namespace Azoth
 		QString name = index.data (Qt::DisplayRole).value<QString> ();
 		const QString status = entry->GetStatus ().StatusString_.replace ('\n', ' ');
 		const QImage& avatarImg = ShowAvatars_ ?
-				RequestAvatar (Avatars_, entry->GetGlobalStrongestId (), *View_, index, iconSize) :
+				RequestAvatar (Avatars_, entry->GetGlobalStrongestId (), View_, index, iconSize) :
 				QImage {};
 		const int unreadNum = index.data (CLRUnreadMsgCount).toInt ();
 		const QString& unreadStr = unreadNum ?

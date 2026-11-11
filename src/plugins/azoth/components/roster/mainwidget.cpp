@@ -80,7 +80,7 @@ namespace Azoth
 
 		new KeyboardRosterFixer (Ui_.FilterLine_, Ui_.CLTree_, this);
 
-		Ui_.CLTree_->setItemDelegate (new ContactListDelegate (*Core::Instance ().GetAvatarsManager (), Ui_.CLTree_));
+		Ui_.CLTree_->setItemDelegate (new ContactListDelegate (*Core::Instance ().GetAvatarsManager (), *Ui_.CLTree_));
 		ProxyModel_->setSourceModel (Core::Instance ().GetCLModel ());
 		Ui_.CLTree_->setModel (ProxyModel_);
 

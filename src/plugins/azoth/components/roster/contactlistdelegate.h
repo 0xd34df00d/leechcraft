@@ -31,7 +31,7 @@ namespace Azoth
 		mutable QHash<QString, QIcon> MoodIconCache_;
 		mutable QHash<QString, QIcon> SystemIconCache_;
 
-		QTreeView *View_;
+		QTreeView& View_;
 
 		int ContactHeight_ = 24;
 		bool ShowAvatars_ = true;
@@ -39,7 +39,7 @@ namespace Azoth
 		bool ShowStatuses_ = true;
 		bool HighlightGroups_ = true;
 	public:
-		explicit ContactListDelegate (AvatarsManager& avatars, QTreeView* = 0);
+		explicit ContactListDelegate (AvatarsManager&, QTreeView&);
 
 		void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const override;
 		QSize sizeHint (const QStyleOptionViewItem&, const QModelIndex&) const override;
