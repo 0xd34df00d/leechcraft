@@ -21,7 +21,7 @@ namespace Xoox
 	{
 		QImage Img_;
 		QByteArray Saved_;
-		QByteArray Hash_;
+		QString Hash_;
 	public:
 		UserAvatarData (const QImage& = QImage ());
 

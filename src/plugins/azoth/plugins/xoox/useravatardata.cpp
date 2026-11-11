@@ -29,7 +29,7 @@ namespace Xoox
 			image.save (&buffer, "PNG", 0);
 		}
 
-		Hash_ = QCryptographicHash::hash (Saved_, QCryptographicHash::Sha1).toHex ();
+		Hash_ = QString::fromLatin1 (QCryptographicHash::hash (Saved_, QCryptographicHash::Sha1).toHex ());
 	}
 
 	QString UserAvatarData::GetNodeString ()
@@ -55,7 +55,7 @@ namespace Xoox
 
 	void UserAvatarData::Parse (const QDomElement& elem)
 	{
-		Hash_ = elem.attribute ("id").toLatin1 ();
+		Hash_ = elem.attribute ("id");
 
 		const QDomElement& data = elem.firstChildElement ("data");
 		Saved_ = QByteArray::fromBase64 (data.text ().toLatin1 ().trimmed ());
