@@ -357,7 +357,7 @@ namespace LC
 		auto& window = Windows_ [winIdx];
 
 		const auto& tc = itw->GetTabClassInfo ().TabClass_;
-		window.Window_->setWindowRole (tc);
+		window.Window_->setWindowRole (QString::fromUtf8 (tc));
 		SetWMClass (window.Window_, tc);
 		window.TM_->add (name, w);
 		emit tabAdded (winIdx, w);

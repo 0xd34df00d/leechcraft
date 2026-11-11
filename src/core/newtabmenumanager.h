@@ -28,7 +28,7 @@ namespace LC
 		QMenu *AdditionalTabMenu_;
 		QList<QObject*> RegisteredMultiTabs_;
 		QSet<QChar> UsedAccelerators_;
-		QMap<QObject*, QMap<QString, QAction*>> HiddenActions_;
+		QMap<QObject*, QMap<QByteArray, QAction*>> HiddenActions_;
 	public:
 		explicit NewTabMenuManager (QObject* = nullptr);
 

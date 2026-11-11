@@ -169,7 +169,7 @@ namespace LC::SB2
 		ImageProv_->AddTabClass (tc);
 
 		auto item = new QStandardItem;
-		item->setData (prefix + tc.TabClass_, LauncherModel::Roles::TabClassIcon);
+		item->setData (prefix + QString::fromUtf8 (tc.TabClass_), LauncherModel::Roles::TabClassIcon);
 		item->setData (tc.TabClass_, LauncherModel::Roles::TabClassID);
 		item->setData (tc.VisibleName_, LauncherModel::Roles::TabClassName);
 		item->setData (0, LauncherModel::Roles::OpenedTabsCount);
