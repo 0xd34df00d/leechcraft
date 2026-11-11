@@ -31,10 +31,10 @@ namespace LC::Azoth::Transfers
 		qint64 Size_;
 
 		QString EntryName_;
-		QByteArray EventId_;
+		QString EventId_;
 	};
 
 	QString GetFilename (const JobContext&);
 
-	QByteArray GetFinishedEventId (const JobContext&);
+	QString GetFinishedEventId (const JobContext&);
 }

@@ -17,6 +17,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <util/sll/qobjectrefcast.h>
+#include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/xpc/progressmanager.h>
@@ -109,10 +110,10 @@ namespace Azoth
 		return Entry2Incoming_.value (&entry);
 	}
 
-	QByteArray TransferJobManager::GenerateTransferEventId (const OutgoingFileOffer& offer)
+	QString TransferJobManager::GenerateTransferEventId (const OutgoingFileOffer& offer)
 	{
 		const auto accountId = offer.Entry_.GetParentAccount ()->GetAccountId ();
-		return "org.LC.Plugins.Azoth.OutgoingTransferTo/" + accountId.ToUtf8 () + '/' + QByteArray::number (OutgoingJobId_++);
+		return "org.LC.Plugins.Azoth.OutgoingTransferTo/"_qs + accountId.ToString () + '/' + QString::number (OutgoingJobId_++);
 	}
 
 	void TransferJobManager::HandleJob (ITransferJob *job, const JobContext& context)
@@ -168,10 +169,10 @@ namespace Azoth
 					dirPath);
 		}
 
-		QByteArray GetTransferEventId (const IncomingOffer& offer)
+		QString GetTransferEventId (const IncomingOffer& offer)
 		{
 			const auto accountId = offer.Entry_->GetParentAccount ()->GetAccountId ();
-			return "org.LC.Plugins.Azoth.IncomingFileFrom/" + accountId.ToUtf8 () + '/' + QByteArray::number (offer.JobId_);
+			return "org.LC.Plugins.Azoth.IncomingFileFrom/"_qs + accountId.ToString () + '/' + QString::number (offer.JobId_);
 		}
 	}
 

@@ -57,7 +57,7 @@ namespace Azoth
 		};
 		bool SendFile (const OutgoingFileOffer&);
 	private:
-		QByteArray GenerateTransferEventId (const OutgoingFileOffer&);
+		QString GenerateTransferEventId (const OutgoingFileOffer&);
 
 		void HandleJob (ITransferJob*, const Transfers::JobContext&);
 

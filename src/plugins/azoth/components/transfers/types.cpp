@@ -19,7 +19,7 @@ namespace LC::Azoth::Transfers
 				[&] (JobContext::Out) { return context.OrigFilename_; });
 	}
 
-	QByteArray GetFinishedEventId (const JobContext& ctx)
+	QString GetFinishedEventId (const JobContext& ctx)
 	{
 		return ctx.EventId_ + "/Finished";
 	}
