@@ -247,7 +247,7 @@ namespace Azoth
 		if (HighlightGroups_)
 			o.features |= QStyleOptionViewItem::Alternate;
 
-		style->drawPrimitive (QStyle::PE_PanelItemViewItem, &o, painter, o.widget);
+		style->drawPrimitive (QStyle::PE_PanelItemViewRow, &o, painter, o.widget);
 
 		if (o.state & QStyle::State_Selected)
 			painter->setPen (o.palette.color (QPalette::HighlightedText));
