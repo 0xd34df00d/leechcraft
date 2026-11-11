@@ -43,6 +43,7 @@ namespace Azoth
 						rl->FlushCache ();
 					DefaultAvatarCache_.clear ();
 				});
+		XmlSettingsManager::Instance ().RegisterObject ("ClientIcons", this, [this] { EntryClientIconCache_.clear (); });
 
 		for (const auto& rl : ResourceLoaders_)
 		{

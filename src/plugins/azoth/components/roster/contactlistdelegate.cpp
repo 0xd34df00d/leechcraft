@@ -85,6 +85,7 @@ namespace Azoth
 					"ShowClientIcons",
 					"ActivityIcons",
 					"AffIcons",
+					"ClientIcons",
 					"MoodIcons",
 					"SystemIcons",
 					"ShowStatuses",
