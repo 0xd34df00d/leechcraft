@@ -12,6 +12,8 @@
 #include <QPointer>
 #include <QDateTime>
 #include <util/sll/util.h>
+#include <util/threads/coro/corocontext.h>
+#include <util/threads/coro/taskfwd.h>
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/idndtab.h>
@@ -95,8 +97,6 @@ namespace Azoth
 		Util::FindNotificationWE *ChatFinder_;
 
 		QImage LastAvatar_;
-
-		Util::DefaultScopeGuard AvatarChangeSubscription_;
 
 		int CurrentHistoryPosition_ = -1;
 
@@ -219,7 +219,11 @@ namespace Azoth
 
 		void BuildBasicActions ();
 		void InitEntrySpecific ();
-		void ReinitAvatar ();
+
+		void InitAvatar ();
+		Util::ContextTask<void> RerequestAvatar ();
+		void SetAvatar (QImage&&);
+
 		void ReinitEntryTypeSpecific ();
 
 		void InitExtraActions ();
@@ -278,6 +282,8 @@ namespace Azoth
 				QObject *chatTab,
 				QWebEngineView *view,
 				QObject *entry);
+
+	LC_CORO_CONTEXT
 	};
 
 	typedef QPointer<ChatTab> ChatTab_ptr;

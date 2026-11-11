@@ -8,13 +8,11 @@
 
 #pragma once
 
-#include <QImage>
-#include <QFuture>
 #include <QObject>
+#include <util/sll/either.h>
+#include <util/threads/coro/taskfwd.h>
 
-namespace LC
-{
-namespace Azoth
+namespace LC::Azoth
 {
 	/** @brief Describes an entry that can have an associated avatar.
 	 */
@@ -23,50 +21,25 @@ namespace Azoth
 	protected:
 		virtual ~IHaveAvatars () {}
 	public:
-		/** @brief The size of the avatar.
-		 */
-		enum class Size
-		{
-			/** @brief Full-size avatar.
-			 */
-			Full,
+		struct FetchError {};
 
-			/** @brief Thumbnail avatar, possibly cropped.
-			 */
-			Thumbnail
-		};
+		using FetchResult_t = Util::Either<FetchError, QByteArray>;
 
-		/** @brief Requests the avatar of the given \em size.
+		/** @brief Requests the contact avatar.
 		 *
-		 * This function should schedule fetching the avatar and return a
-		 * future that will become ready once the avatar is fetched.
+		 * If there is no avatar, an empty `QByteArray` should be returned.
 		 *
-		 * If there is no avatar, a null QImage should be returned.
+		 * This function does not need to cache the avatar.
 		 *
-		 * No cached copies should be returned, the avatar information
-		 * should be rerequested from scratch (hence <em>refrech</em> in
-		 * the method name).
-		 *
-		 * If \em size is not supported, an empty, cancelled future should
-		 * be returned.
-		 *
-		 * @param[in] size The required size of the avatar.
-		 * @return A future providing the avatar's image.
+		 * @return Pending avatar image contents.
 		 */
-		virtual QFuture<QImage> RefreshAvatar (Size size) = 0;
+		virtual Util::ContextTask<FetchResult_t> FetchAvatar () = 0;
 
 		/** @brief Returns whether this exact entry has any avatar.
 		 *
 		 * @return Whether there is an avatar.
 		 */
 		virtual bool HasAvatar () const = 0;
-
-		/** @brief Whether this entry has an avatar of the given \em size.
-		 *
-		 * @param[in] size The desired size of the avatar.
-		 * @return Whether the entry has this size.
-		 */
-		virtual bool SupportsSize (Size size) const = 0;
 	protected:
 		/** @brief Notifies that the avatar of the entry has been changed.
 		 *
@@ -74,7 +47,7 @@ namespace Azoth
 		 * avatar has been changed.
 		 *
 		 * If possible, the new avatar should \em not be fetched unless
-		 * RefreshAvatar() is called.
+		 * `FetchAvatar()` is called.
 		 *
 		 * @note This function is expected to be a signal.
 		 *
@@ -82,17 +55,6 @@ namespace Azoth
 		 */
 		virtual void avatarChanged (QObject *thisObject) = 0;
 	};
-
-	/** @brief Defines a hashing function for avatar sizes.
-	 *
-	 * @param[in] size The size of the avatar.
-	 * @return The hash of the size.
-	 */
-	inline uint qHash (IHaveAvatars::Size size)
-	{
-		return static_cast<uint> (size);
-	}
-}
 }
 
 Q_DECLARE_INTERFACE (LC::Azoth::IHaveAvatars,

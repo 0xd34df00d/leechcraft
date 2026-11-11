@@ -133,8 +133,6 @@ LC_DEFINE_PLUGIN (
 		notificationsmanager.cpp
 		avatarsmanager.cpp
 		avatarsstorage.cpp
-		avatarsstorageondisk.cpp
-		avatarsstoragethread.cpp
 		historysyncer.cpp
 		sslerrorshandler.cpp
 		sslerrorschoicestorage.cpp

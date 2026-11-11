@@ -7,135 +7,137 @@
  **********************************************************************/
 
 #include "avatarsstorage.h"
-#include <QBuffer>
-#include <QtConcurrentRun>
-#include <QtDebug>
-#include <util/threads/futures.h>
+#include <QCryptographicHash>
+#include <QImage>
+#include <QImageReader>
+#include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
-#include "avatarsstoragethread.h"
-#include "interfaces/azoth/iclentry.h"
+#include <util/sys/paths.h>
+#include "util/azoth/entryidops.h"
+#include "util/azoth/util.h"
 
-namespace LC
+namespace LC::Azoth
 {
-namespace Azoth
-{
-	AvatarsStorage::AvatarsStorage (QObject *parent)
-	: QObject { parent }
-	, StorageThread_ { new AvatarsStorageThread { this } }
-	, Cache_ { 5 * 1024 * 1024 }
+	AvatarsStorage::AvatarsStorage ()
+	: CacheDir_ { Util::GetUserDir (Util::UserDir::Cache, "azoth/avatars") }
 	{
-		StorageThread_->start (QThread::IdlePriority);
 	}
 
 	namespace
 	{
-		int GetImageCost (const QImage& image)
+		QString GetFilename (const GlobalStrongestId& entryId)
 		{
-			if (image.isNull ())
-				return 1;
-
-			return image.width () * image.height () * image.depth () / 8;
+			const auto bytes = SerializeBytes (entryId);
+			return QCryptographicHash::hash (bytes, QCryptographicHash::Sha1).toHex () + ".bin"_qs;
 		}
 	}
 
-	QFuture<void> AvatarsStorage::SetAvatar (const QString& entryId,
-			IHaveAvatars::Size size, const QImage& image)
+	void AvatarsStorage::SetAvatar (const GlobalStrongestId& entryId, const QByteArray& imageData)
 	{
-		QByteArray data;
-		QBuffer buffer { &data };
-		image.save (&buffer, "PNG", 0);
-
-		Cache_.insert ({ entryId, size }, new CacheValue_t { image }, GetImageCost (image));
-
-		return StorageThread_->SetAvatar (entryId, size, data);
-	}
-
-	QFuture<void> AvatarsStorage::SetAvatar (const QString& entryId,
-			IHaveAvatars::Size size, const QByteArray& data)
-	{
-		Cache_.insert ({ entryId, size }, new CacheValue_t { data }, data.size ());
-
-		return StorageThread_->SetAvatar (entryId, size, data);
-	}
-
-	QFuture<MaybeImage> AvatarsStorage::GetAvatar (const ICLEntry *entry, IHaveAvatars::Size size)
-	{
-		const auto& entryId = entry->GetEntryId ();
-		if (const auto value = Cache_ [{ entryId, size }])
+		auto file = GetFile (entryId, Mode::Write);
+		if (!file)
+			return;
+		if (file->write (imageData) != imageData.size () || !file->flush ())
 		{
-			auto image = Util::Visit (*value,
-					[] (const QImage& image) { return image; },
-					[] (const QByteArray& array)
-					{
-						QImage image;
-						if (!image.loadFromData (array))
-						{
-							qWarning () << Q_FUNC_INFO
-									<< "unable to load image";
-							return QImage {};
-						}
-						return image;
-					});
-			CacheValue_t convertedValue { image };
-			if (convertedValue.index () != value->index ())
-				Cache_.insert ({ entryId, size }, new CacheValue_t { std::move (convertedValue) }, GetImageCost (image));
+			qWarning () << "unable to write" << file->fileName () << file->errorString ();
+			file->remove ();
+		}
+	}
 
-			return Util::MakeReadyFuture<MaybeImage> (std::move (image));
+	std::optional<QByteArray> AvatarsStorage::GetAvatarData (const GlobalStrongestId& entryId) const
+	{
+		const auto file = GetFile (entryId, Mode::Read);
+		if (!file)
+			return {};
+		return file->readAll ();
+	}
+
+	AvatarsStorage::Result_t<QImage> AvatarsStorage::ReadAvatarImage (const GlobalStrongestId& entryId,
+			IAvatarsManager::AvatarSize size, QIODevice& device)
+	{
+		QImageReader reader { &device };
+
+		const auto origSize = reader.size ();
+		if (!origSize.isValid ())
+			return Empty {};
+
+		const auto area = static_cast<quint64> (origSize.width ()) * origSize.height ();
+		constexpr auto depth = 4;
+		if (area * depth >= 10 * 1024 * 1024)
+		{
+			qWarning () << "avatar too large for" << entryId;
+			return Empty {};
 		}
 
-		const auto& hrId = entry->GetHumanReadableId ();
-
-		return Util::Sequence (this, StorageThread_->GetAvatar (entryId, size)) >>
-				[=] (const MaybeByteArray& data)
+		Util::Visit (size,
+				[] (IAvatarsManager::OriginalSize) {},
+				[&] (IAvatarsManager::Scaled scaled)
 				{
-					if (!data || data->isEmpty ())
-						return Util::MakeReadyFuture<MaybeImage> ({});
+					reader.setScaledSize (origSize.scaled (scaled.Dim_, scaled.Dim_, Qt::KeepAspectRatio));
+				});
 
-					QImage image;
-					if (!image.loadFromData (*data))
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "unable to load image from data for"
-								<< entryId
-								<< hrId;
-						return Util::MakeReadyFuture<MaybeImage> ({});
-					}
-
-					return Util::MakeReadyFuture<MaybeImage> (image);
-				};
+		auto img = reader.read ();
+		if (img.isNull ())
+		{
+			qWarning () << "unable to load avatar for" << entryId;
+			return Empty {};
+		}
+		return img;
 	}
 
-	QFuture<MaybeByteArray> AvatarsStorage::GetAvatar (const QString& entryId, IHaveAvatars::Size size)
+	AvatarsStorage::Result_t<QImage> AvatarsStorage::GetAvatarImage (const GlobalStrongestId& entryId, IAvatarsManager::AvatarSize size) const
 	{
-		if (const auto value = Cache_ [{ entryId, size }])
+		const auto file = GetFile (entryId, Mode::Read);
+		if (!file)
+			return NotStored {};
+		return ReadAvatarImage (entryId, size, *file);
+	}
+
+	void AvatarsStorage::MoveAvatars (const GlobalStrongestId& from, const GlobalStrongestId& to)
+	{
+		DeleteAvatars (to);
+
+		QFile file { GetPath (from) };
+		const auto& targetName = GetPath (to);
+		if (file.exists () && !file.rename (targetName))
+			qWarning () << "unable to rename" << file.fileName () << "to" << targetName << file.errorString ();
+	}
+
+	void AvatarsStorage::DeleteAvatars (const GlobalStrongestId& entryId)
+	{
+		if (QFile file { GetPath (entryId) };
+			file.exists () && !file.remove ())
+			qWarning () << "unable to remove" << file.fileName () << file.errorString ();
+	}
+
+	QString AvatarsStorage::GetPath (const GlobalStrongestId& entryId) const
+	{
+		return CacheDir_.filePath (GetFilename (entryId));
+	}
+
+	std::unique_ptr<QFile> AvatarsStorage::GetFile (const GlobalStrongestId& entryId, Mode mode) const
+	{
+		auto file = std::make_unique<QFile> (GetPath (entryId));
+		switch (mode)
 		{
-			auto ba = Util::Visit (*value,
-					[] (const QByteArray& arr) { return arr; },
-					[] (const QImage& image)
-					{
-						QByteArray data;
-						QBuffer buffer { &data };
-						image.save (&buffer, "PNG", 0);
-						return data;
-					});
-			return Util::MakeReadyFuture<MaybeByteArray> (std::move (ba));
+		case Mode::Read:
+			if (!file->exists ())
+				return {};
+			if (!file->open (QIODevice::ReadOnly))
+			{
+				qWarning () << "unable to read" << file->fileName () << file->errorString ();
+				return {};
+			}
+			return file;
+		case Mode::Write:
+			if (!file->open (QIODevice::WriteOnly))
+			{
+				qWarning () << "unable to write" << file->fileName () << file->errorString ();
+				return {};
+			}
+			return file;
 		}
 
-		return StorageThread_->GetAvatar (entryId, size);
+		std::unreachable ();
 	}
-
-	QFuture<void> AvatarsStorage::DeleteAvatars (const QString& entryId)
-	{
-		for (const auto& key : Cache_.keys ())
-			if (key.first == entryId)
-				Cache_.remove (key);
-
-		return StorageThread_->DeleteAvatars (entryId);
-	}
-
-	void AvatarsStorage::SetCacheSize (int mibs)
-	{
-		Cache_.setMaxCost (mibs * 1024 * 1024);
-	}
-}
 }

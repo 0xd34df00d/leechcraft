@@ -7,31 +7,39 @@
  **********************************************************************/
 
 #include "avatarsmanager.h"
-#include <util/threads/futures.h>
+#include <QBuffer>
+#include <QImage>
 #include <util/sll/util.h>
 #include <util/sll/qobjectrefcast.h>
-#include <util/sll/qtutil.h>
-#include <util/sll/unreachable.h>
+#include <util/sll/trackingpointer.h>
+#include <util/sll/visitor.h>
+#include <util/threads/coro.h>
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iextselfinfoaccount.h"
+#include "util/azoth/util.h"
 #include "components/managers/entriesmanager.h"
 #include "avatarsstorage.h"
-#include "resourcesmanager.h"
 #include "xmlsettingsmanager.h"
 
-namespace LC
+namespace LC::Azoth
 {
-namespace Azoth
-{
+	namespace
+	{
+		constexpr auto CacheBiggestMultiplier = 2;
+	}
+
 	AvatarsManager::AvatarsManager (const EntriesManager& entries, QObject *parent)
 	: QObject { parent }
 	, Entries_ { entries }
-	, Storage_ { new AvatarsStorage { this } }
 	{
 		XmlSettingsManager::Instance ().RegisterObject ("AvatarsCacheSize",
 				this,
-				[this] (int size) { Storage_->SetCacheSize (size); });
+				[this] (int size)
+				{
+					const auto target = static_cast<qsizetype> (size) * 1024 * 1024;
+					ImageCache_.setMaxCost (std::max (target, BiggestImageSeen_ * CacheBiggestMultiplier));
+				});
 
 		connect (&Entries_,
 				&EntriesManager::added,
@@ -45,171 +53,317 @@ namespace Azoth
 									this,
 									SLOT (invalidateAvatar (QObject*)));
 				});
+
+		connect (&Entries_,
+				&EntriesManager::strongestIdChanged,
+				this,
+				[this] (const GlobalConventionalId& oldId, const GlobalStrongestId& newId)
+				{
+					Storage_.Run (&AvatarsStorage::MoveAvatars, oldId, newId);
+
+					for (const auto& [id, size] : ImageCache_.keys ())
+						if (id == newId)
+							ImageCache_.remove ({ id, size });
+
+					for (const auto& [id, size] : ImageCache_.keys ())
+						if (id == oldId)
+							if (const std::unique_ptr<QImage> img { ImageCache_.take ({ id, size }) })
+								InsertCache (newId, size, *img);
+
+					if (const auto pos = FailedFetches_.find (oldId);
+						pos != FailedFetches_.end ())
+					{
+						const auto failure = *pos;
+						FailedFetches_.erase (pos);
+						FailedFetches_ [newId] = failure;
+					}
+				});
+	}
+
+	AvatarsManager::~AvatarsManager () = default;
+
+	Util::ContextTask<std::optional<QByteArray>> AvatarsManager::GetAvatarData (GlobalStrongestId entryId)
+	{
+		if (IsAlwaysAvatarless (entryId))
+			co_return QByteArray {};
+
+		co_await Util::AddContext { CoroContext_ };
+
+		const auto stored = co_await RunStorageCoalescing (entryId, PendingCachedDataRequests_,
+				&AvatarsStorage::GetAvatarData, entryId);
+		if (stored)
+			co_return stored;
+
+		const auto fetchResult = co_await RunCoalescing (entryId, PendingProtoDataRequests_, [&] { return FetchAndSave (entryId); });
+		co_return fetchResult.MaybeRight ();
+	}
+
+	Util::ContextTask<std::optional<QByteArray>> AvatarsManager::GetLocalAvatarData (GlobalStrongestId entryId)
+	{
+		return RunStorageCoalescing (entryId, PendingCachedDataRequests_, &AvatarsStorage::GetAvatarData, entryId);
 	}
 
 	namespace
 	{
-		int Size2Dim (IHaveAvatars::Size size)
+		template<typename T>
+		bool HasReadyResult (const AvatarsStorage::Result_t<T>& result)
 		{
-			switch (size)
-			{
-			case IHaveAvatars::Size::Full:
-				return 256;
-			case IHaveAvatars::Size::Thumbnail:
-				return 64;
-			}
-
-			Util::Unreachable ();
+			return !std::holds_alternative<AvatarsStorage::NotStored> (result);
 		}
 
-		std::optional<IHaveAvatars::Size> ChooseSize (IHaveAvatars *iha, IHaveAvatars::Size size)
+		template<typename T>
+		std::optional<T> ExtractMaybe (const AvatarsStorage::Result_t<T>& result)
 		{
-			if (iha->SupportsSize (size))
-				return size;
+			return Util::Visit (result,
+					[&] (AvatarsStorage::NotStored) { return std::optional<T> {}; },
+					[] (AvatarsStorage::Empty) { return std::optional<T> {}; },
+					[] (const T& data) { return std::optional { data }; });
+		}
+	}
 
-			for (auto known : { IHaveAvatars::Size::Full, IHaveAvatars::Size::Thumbnail })
-				if (iha->SupportsSize (known))
-					return known;
+	Util::ContextTask<std::optional<QImage>> AvatarsManager::GetAvatarImage (GlobalStrongestId entryId, AvatarSize size)
+	{
+		if (IsAlwaysAvatarless (entryId))
+			co_return {};
 
+		if (const auto img = ImageCache_ [{ entryId, size }])
+			co_return img->isNull () ? std::optional<QImage> {} : *img;
+
+		co_await Util::AddContext { CoroContext_ };
+
+		if (const auto onDisk = co_await GetAvatarFromDiskOnly (entryId, size);
+			HasReadyResult (onDisk))
+			co_return ExtractMaybe (onDisk);
+
+		if (HasActiveFailure (entryId))
+			co_return {};
+
+		const auto fetchResult = co_await RunCoalescing (entryId, PendingProtoDataRequests_, [&] { return FetchAndSave (entryId); });
+		if (fetchResult.IsLeft ())
+			co_return {};
+
+		if (const auto onDisk = co_await GetAvatarFromDiskOnly (entryId, size);
+			HasReadyResult (onDisk))
+			co_return ExtractMaybe (onDisk);
+
+		// likely a storage write failure, so just decode it here
+		QBuffer buffer;
+		buffer.setData (fetchResult.GetRight ());
+		const auto image = ExtractMaybe (AvatarsStorage::ReadAvatarImage (entryId, size, buffer));
+		InsertCache (entryId, size, image.value_or ({}));
+		co_return image;
+	}
+
+	AvatarsManager::MaybeNowResult_t<std::optional<QImage>> AvatarsManager::GetAvatarImageNow (const GlobalStrongestId& entryId, const AvatarSize& size)
+	{
+		if (IsAlwaysAvatarless (entryId))
 			return {};
-		}
+
+		if (const auto img = ImageCache_ [{ entryId, size }])
+			return img->isNull () ? std::optional<QImage> {} : *img;
+
+		return GetAvatarImage (entryId, size);
 	}
 
-	QFuture<QImage> AvatarsManager::GetAvatar (QObject *entryObj, IHaveAvatars::Size size)
+	std::optional<QImage> AvatarsManager::GetAvatarImageIfCached (const GlobalStrongestId& entryId, const AvatarSize& size) const
 	{
-		const auto defaultAvatarGetter = [size]
-		{
-			return ResourcesManager::Instance ().GetDefaultAvatar (Size2Dim (size));
-		};
-
-		const auto entry = qobject_cast<ICLEntry*> (entryObj);
-		const auto iha = qobject_cast<IHaveAvatars*> (entryObj);
-		if (!iha)
-			return Util::MakeReadyFuture (defaultAvatarGetter ());
-
-		const auto maybeSupportedSize = ChooseSize (iha, size);
-		if (!maybeSupportedSize)
-			return Util::MakeReadyFuture (defaultAvatarGetter ());
-
-		const auto supportedSize = *maybeSupportedSize;
-
-		const auto& sizes = PendingRequests_.value (entryObj);
-		if (sizes.contains (size))
-			return sizes.value (size);
-
-		const auto entryId = entry->GetEntryId ();
-		auto future = Util::Sequence (entryObj, Storage_->GetAvatar (entry, size))
-				.DestructionValue (defaultAvatarGetter) >>
-				[=, this] (const MaybeImage& image)
-				{
-					if (image)
-						return Util::MakeReadyFuture (*image);
-
-					auto refreshFuture = iha->RefreshAvatar (supportedSize);
-					Util::Sequence (this, refreshFuture) >>
-							[=, this] (QImage img)
-							{
-								if (auto tgtDim = Size2Dim (size); tgtDim < Size2Dim (supportedSize) && !img.isNull ())
-									img = img.scaled (tgtDim, tgtDim, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-								Storage_->SetAvatar (entryId, size, img);
-							};
-					return refreshFuture;
-				} >>
-				[=, this] (QImage image)
-				{
-					auto& sizes = PendingRequests_ [entryObj];
-
-					sizes.remove (size);
-					if (sizes.isEmpty ())
-						PendingRequests_.remove (entryObj);
-
-					if (image.isNull ())
-						image = defaultAvatarGetter ();
-
-					return Util::MakeReadyFuture (image);
-				};
-		PendingRequests_ [entryObj] [size] = future;
-		return future;
-	}
-
-	QFuture<std::optional<QByteArray>> AvatarsManager::GetStoredAvatarData (const QString& entryId, IHaveAvatars::Size size)
-	{
-		return Storage_->GetAvatar (entryId, size);
+		const auto img = ImageCache_ [{ entryId, size }];
+		return !img || img->isNull () ? std::optional<QImage> {} : *img;
 	}
 
 	bool AvatarsManager::HasAvatar (QObject *entryObj) const
 	{
 		const auto iha = qobject_cast<IHaveAvatars*> (entryObj);
-		return iha ?
-				iha->HasAvatar () :
-				false;
+		return iha && iha->HasAvatar ();
 	}
 
-	Util::DefaultScopeGuard AvatarsManager::Subscribe (QObject *obj,
-			IHaveAvatars::Size size, const AvatarHandler_f& handler)
+	Util::ContextTask<AvatarsStorage::Result_t<QImage>> AvatarsManager::GetAvatarFromDiskOnly (GlobalStrongestId entryId, AvatarSize size)
 	{
-		const auto id = ++SubscriptionId_;
-		Subscriptions_ [obj] [size] [id] = handler;
+		co_await Util::AddContext { CoroContext_ };
+		const auto img = co_await RunStorageCoalescing ({ entryId, size }, PendingCachedImageRequests_,
+				&AvatarsStorage::GetAvatarImage, entryId, size);
+		Util::Visit (img,
+				[] (AvatarsStorage::NotStored) {},
+				[&] (AvatarsStorage::Empty) { InsertCache (entryId, size, {}); },
+				[&] (const QImage& image) { InsertCache (entryId, size, image); });
+		co_return img;
+	}
 
-		return Util::MakeScopeGuard ([=, this]
+	bool AvatarsManager::HasActiveFailure (const GlobalStrongestId& entryId) const
+	{
+		const auto pos = FailedFetches_.find (entryId);
+		if (pos == FailedFetches_.end ())
+			return false;
+		return Util::Visit (*pos,
+				[] (const QDeadlineTimer& timer) { return !timer.hasExpired (); },
+				[&] (const EntryUnavailable&) { return !Entries_.GetEntryOrNull (entryId); },
+				[&] (const AccountOffline&) { return !IsEntryAccountOnline (entryId); });
+	}
+
+	bool AvatarsManager::IsEntryAccountOnline (const GlobalStrongestId& entryId) const
+	{
+		const auto entry = Entries_.GetEntryOrNull (entryId);
+		return entry && IsOnline (entry->GetParentAccount ()->GetState ().State_);
+	}
+
+	bool AvatarsManager::IsAlwaysAvatarless (const GlobalStrongestId& entryId) const
+	{
+		const auto entry = Entries_.GetEntryOrNull (entryId);
+		return entry && !qobject_cast<IHaveAvatars*> (entry->GetQObject ());
+	}
+
+	Util::SharedContextTask<IHaveAvatars::FetchResult_t> AvatarsManager::FetchAndSave (GlobalStrongestId entryId)
+	{
+		using namespace std::chrono_literals;
+
+		if (IsAlwaysAvatarless (entryId))
+			co_return QByteArray {};
+
+		if (HasActiveFailure (entryId))
+			co_return Util::Left { IHaveAvatars::FetchError {} };
+
+		FailedFetches_.remove (entryId);
+
+		co_await Util::AddContext { CoroContext_ };
+
+		auto removeGuard = Util::MakeScopeGuard ([this, entryId] { FetchStates_.remove (entryId); });
+
+		constexpr size_t numAttempts = 3;
+		for (size_t attempt = 0; attempt < numAttempts; ++attempt)
+		{
+			// entry may die mid async call, so need to reresolve each iteration
+			const auto entry = Entries_.GetEntryOrNull<IHaveAvatars> (entryId);
+			if (!entry)
+			{
+				FailedFetches_ [entryId] = EntryUnavailable {};
+				co_return Util::Left { IHaveAvatars::FetchError {} };
+			}
+
+			if (!IsEntryAccountOnline (entryId))
+			{
+				FailedFetches_ [entryId] = AccountOffline {};
+				co_return Util::Left { IHaveAvatars::FetchError {} };
+			}
+
+			FetchStates_ [entryId] = FetchState::Running;
+			const auto response = co_await entry->FetchAvatar ();
+			if (FetchStates_ [entryId] == FetchState::Invalidated)
+				continue;
+
+			co_await Util::Visit (response,
+					[&] (IHaveAvatars::FetchError) -> Util::SharedContextTask<void>
+					{
+						if (IsEntryAccountOnline (entryId))
+							FailedFetches_ [entryId] = QDeadlineTimer { 1min };
+						else
+							FailedFetches_ [entryId] = AccountOffline {};
+						co_return;
+					},
+					[&] (const QByteArray& data) { return Storage_.Run (&AvatarsStorage::SetAvatar, entryId, data); });
+
+			if (FetchStates_ [entryId] == FetchState::Invalidated)
+				continue;
+
+			co_return response;
+		}
+		co_return Util::Left { IHaveAvatars::FetchError {} };
+	}
+
+	template<typename R, typename K, typename... RunArgs>
+	Util::ContextTask<R> AvatarsManager::RunStorageCoalescing (const K& key, QHash<K, Util::SharedContextTask<R>>& pending, RunArgs&&... runArgs)
+	{
+		return RunCoalescing (key, pending, [&] { return Storage_.Run (std::forward<RunArgs> (runArgs)...); });
+	}
+
+	template<typename R, typename K, typename Fun>
+	Util::ContextTask<R> AvatarsManager::RunCoalescing (K key, QHash<K, Util::SharedContextTask<R>>& pending, Fun&& fun)
+	{
+		co_await Util::AddContext { CoroContext_ };
+
+		auto pos = pending.find (key);
+		if (pos == pending.end ())
+			pos = pending.emplace (key, std::forward<Fun> (fun) ());
+		const auto guard = Util::MakeScopeGuard ([&] { pending.remove (key); });
+		co_return co_await *pos;
+	}
+
+	void AvatarsManager::InsertCache (const GlobalStrongestId& entryId, const AvatarSize& size, const QImage& image)
+	{
+		const auto cost = image.isNull () ? 1 : image.sizeInBytes ();
+
+		BiggestImageSeen_ = std::max (BiggestImageSeen_, cost);
+		if (const auto watermark = BiggestImageSeen_ * CacheBiggestMultiplier;
+			ImageCache_.maxCost () < watermark)
+		{
+			qWarning () << "expanding cache from" << ImageCache_.maxCost () << "to" << watermark;
+			ImageCache_.setMaxCost (watermark);
+		}
+
+		ImageCache_.insert ({ entryId, size }, new QImage { image }, cost);
+	}
+
+	void AvatarsManager::AddAccount (IAccount& acc)
+	{
+		connect (&acc.GetAccountEmitter (),
+				&Emitters::Account::statusChanged,
+				this,
+				[this, &acc] (const EntryStatus& status)
 				{
-					auto& objSubscrs = Subscriptions_ [obj];
-					auto& sizeSubscrs = objSubscrs [size];
-
-					sizeSubscrs.remove (id);
-					if (!sizeSubscrs.isEmpty ())
+					if (!IsOnline (status.State_))
 						return;
 
-					objSubscrs.remove (size);
-					if (objSubscrs.isEmpty ())
-						Subscriptions_.remove (obj);
+					QList<QObject*> availableEntries;
+
+					const auto& accId = acc.GetAccountId ();
+					for (auto it = FailedFetches_.begin (); it != FailedFetches_.end (); )
+					{
+						const auto entryId = it.key ();
+						if (GetAccountId (entryId) == accId && std::holds_alternative<AccountOffline> (*it))
+						{
+							it = FailedFetches_.erase (it);
+							if (const auto entry = Entries_.GetEntryOrNull<QObject> (entryId))
+								availableEntries << entry;
+						}
+						else
+							++it;
+					}
+
+					for (const auto entry : availableEntries)
+						emit avatarInvalidated (entry);
+
+					if (const auto iesia = qobject_cast<IExtSelfInfoAccount*> (acc.GetQObject ());
+						iesia && availableEntries.contains (iesia->GetSelfContact ()))
+						emit accountAvatarInvalidated (&acc);
 				});
 	}
 
-	void AvatarsManager::HandleSubscriptions (QObject *entry)
+	Util::ContextTask<void> AvatarsManager::invalidateAvatar (QObject *that)
 	{
-		for (const auto& subscriptions = Subscriptions_.value (entry); const auto& pair : subscriptions.asKeyValueRange ())
-		{
-			if (pair.second.isEmpty ())
-				continue;
+		Util::TrackingPointer entry { &qobject_ref_cast<ICLEntry> (that) };
 
-			const auto size = pair.first;
-			Util::Sequence (this, GetAvatar (entry, pair.first)) >>
-					[this, size, entry] (const std::optional<QImage>& image)
-					{
-						const auto realImg = image.value_or (QImage {});
-						for (const auto& handler : Subscriptions_.value (entry).value (size))
-							handler (realImg);
-					};
-		}
-	}
+		co_await Util::AddContext { CoroContext_ };
 
-	void AvatarsManager::handleAccount (QObject *accObj)
-	{
-		if (const auto iesia = qobject_cast<IExtSelfInfoAccount*> (accObj))
-			SelfInfo2Account_ [iesia->GetSelfContact ()] = &qobject_ref_cast<IAccount> (accObj);
-	}
+		const auto& entryId = entry->GetGlobalStrongestId ();
 
-	void AvatarsManager::invalidateAvatar (QObject *that)
-	{
-		const auto entry = qobject_cast<ICLEntry*> (that);
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "object is not an entry:"
-					<< sender ()
-					<< that;
-			return;
-		}
+		if (const auto pos = FetchStates_.find (entryId);
+			pos != FetchStates_.end ())
+			*pos = FetchState::Invalidated;
 
-		Storage_->DeleteAvatars (entry->GetEntryId ());
+		// Sort of a sync point: ensure all previous reads of this `entryId` have completed
+		// before moving on to clearing the caches, since the reads could insert into the
+		// cache what would be stale entries.
+		co_await Storage_.Run (&AvatarsStorage::DeleteAvatars, entryId);
 
-		emit avatarInvalidated (that);
+		FailedFetches_.remove (entryId);
+		for (const auto& [id, size] : ImageCache_.keys ())
+			if (id == entryId)
+				ImageCache_.remove ({ id, size });
 
-		HandleSubscriptions (that);
+		emit avatarInvalidated (entry->GetQObject ());
 
-		if (const auto acc = SelfInfo2Account_.value (that))
+		const auto acc = entry->GetParentAccount ();
+		if (const auto iesia = qobject_cast<IExtSelfInfoAccount*> (acc->GetQObject ());
+			iesia && iesia->GetSelfContact () == entry->GetQObject ())
 			emit accountAvatarInvalidated (acc);
 	}
-}
 }

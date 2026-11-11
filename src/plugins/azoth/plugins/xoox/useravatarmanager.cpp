@@ -8,12 +8,13 @@
 
 #include "useravatarmanager.h"
 #include <QCryptographicHash>
-#include <util/threads/futures.h>
+#include <util/threads/coro.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "xeps/pubsubmanager.h"
 #include "useravatardata.h"
 #include "useravatarmetadata.h"
 #include "clientconnection.h"
+#include "interfaces/azoth/core/iavatarsmanager.h"
 
 namespace LC
 {
@@ -50,33 +51,24 @@ namespace Xoox
 		Manager_->PublishEvent (&metadata);
 	}
 
-	void UserAvatarManager::HandleMDEvent (const QString& from, UserAvatarMetadata *mdEvent)
+	Util::ContextTask<void> UserAvatarManager::HandleMDEvent (QString from, UserAvatarMetadata *mdEvent)
 	{
 		const auto entry = qobject_cast<ICLEntry*> (Conn_->GetCLEntry (from));
 		if (!entry)
-			return;
+			co_return;
 
-		if (mdEvent->GetId ().isEmpty ())
+		const auto id = mdEvent->GetId ();
+		if (id.isEmpty ())
 		{
 			emit avatarUpdated (from);
-			return;
+			co_return;
 		}
 
-		const auto& id = mdEvent->GetId ();
+		co_await Util::AddContext { Util::CoroContext::Of (*this) };
 
-		Util::Sequence (this, AvatarsMgr_->GetStoredAvatarData (entry->GetEntryId (), IHaveAvatars::Size::Full)) >>
-				[this, id, from] (const std::optional<QByteArray>& data)
-				{
-					if (!data || data->isEmpty ())
-					{
-						emit avatarUpdated (from);
-						return;
-					}
-
-					const auto& storedId = QCryptographicHash::hash (*data, QCryptographicHash::Sha1).toHex ();
-					if (storedId != id)
-						emit avatarUpdated (from);
-				};
+		const auto data = co_await AvatarsMgr_->GetLocalAvatarData (entry->GetGlobalStrongestId ());
+		if (!data || data->isEmpty () || QCryptographicHash::hash (*data, QCryptographicHash::Sha1).toHex () != id)
+			emit avatarUpdated (from);
 	}
 
 	void UserAvatarManager::handleEvent (const QString& from, PEPEventBase *event)

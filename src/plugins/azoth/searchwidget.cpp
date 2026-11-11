@@ -8,13 +8,12 @@
 
 #include "searchwidget.h"
 #include <QTimer>
+#include <util/sll/qobjectrefcast.h>
 #include <util/sys/resourceloader.h>
-#include <util/threads/futures.h>
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/ihavesearch.h"
 #include "interfaces/azoth/iextselfinfoaccount.h"
 #include "core.h"
-#include "xmlsettingsmanager.h"
 #include "resourcesmanager.h"
 #include "avatarsmanager.h"
 
@@ -27,6 +26,29 @@ namespace Azoth
 	void SearchWidget::SetParentMultiTabs (QObject *parent)
 	{
 		S_ParentMultiTabs_ = parent;
+	}
+
+	namespace
+	{
+		Util::ContextTask<void> SetAvatar (AvatarsManager& am, QComboBox& box, int idx, IExtSelfInfoAccount *self)
+		{
+			co_await Util::AddContext { Util::CoroContext::Of (box) };
+			std::optional<QImage> avatar;
+			const auto accountIcon = self ? self->GetAccountIcon () : QIcon {};
+			if (auto selfEntry = self ? self->GetSelfContact () : nullptr)
+			{
+				const auto& id = qobject_ref_cast<ICLEntry> (selfEntry).GetGlobalStrongestId ();
+				const auto dim = box.iconSize ().width ();
+				avatar = co_await am.GetAvatarImage (id, IAvatarsManager::Scaled { dim });
+			}
+
+			QIcon icon { avatar ? QPixmap::fromImage (*avatar) : QPixmap {} };
+			if (icon.isNull ())
+				icon = accountIcon;
+
+			if (!icon.isNull ())
+				box.setItemIcon (idx, icon);
+		}
 	}
 
 	SearchWidget::SearchWidget (AvatarsManager *am, QWidget *parent)
@@ -56,14 +78,6 @@ namespace Azoth
 			const auto self = qobject_cast<IExtSelfInfoAccount*> (accObj);
 
 			const auto idx = Ui_.AccountBox_->count ();
-			auto iconSetter = [this, self, idx] (const QImage& image)
-			{
-				QIcon icon { QPixmap::fromImage (image) };
-				if (icon.isNull () && self)
-					icon = self->GetAccountIcon ();
-				if (!icon.isNull ())
-					Ui_.AccountBox_->setItemIcon (idx, icon);
-			};
 
 			Ui_.AccountBox_->blockSignals (true);
 			Ui_.AccountBox_->addItem (defaultAvatarIcon,
@@ -71,12 +85,7 @@ namespace Azoth
 					QVariant::fromValue<QObject*> (accObj));
 			Ui_.AccountBox_->blockSignals (false);
 
-			if (auto selfEntry = self ? self->GetSelfContact () : nullptr)
-				Util::Sequence (this,
-						AvatarsManager_->GetAvatar (selfEntry, IHaveAvatars::Size::Thumbnail)) >>
-						iconSetter;
-			else
-				iconSetter ({});
+			SetAvatar (*AvatarsManager_, *Ui_.AccountBox_, idx, self);
 		}
 
 		Ui_.AccountBox_->blockSignals (true);

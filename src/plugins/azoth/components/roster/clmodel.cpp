@@ -26,15 +26,14 @@ namespace LC::Azoth
 	, TooltipManager_ { manager }
 	, Entries_ { entries }
 	{
-		connect (manager,
-				&CLTooltipManager::rebuiltTooltip,
-				this,
-				&CLModel::rebuiltTooltip);
 	}
 
 	QVariant CLModel::data (const QModelIndex& index, int role) const
 	{
-		CheckRequestUpdateTooltip (index, role);
+		if (role == Qt::ToolTipRole)
+			if (const auto entry = index.data (CLRIEntry).value<ICLEntry*> ())
+				return TooltipManager_->GetTooltip (entry);
+
 		return QStandardItemModel::data (index, role);
 	}
 
@@ -109,18 +108,6 @@ namespace LC::Azoth
 	Qt::DropActions CLModel::supportedDropActions () const
 	{
 		return Qt::CopyAction | Qt::LinkAction;
-	}
-
-	void CLModel::CheckRequestUpdateTooltip (const QModelIndex& index, int role) const
-	{
-		if (role != Qt::ToolTipRole)
-			return;
-
-		if (index.data (CLREntryType).value<CLEntryType> () != CLETContact)
-			return;
-
-		if (const auto entry = index.data (CLRIEntry).value<ICLEntry*> ())
-			TooltipManager_->RebuildTooltip (entry);
 	}
 
 	bool CLModel::TryDropOntoContact (const QMimeData *mime, int, const QModelIndex& parent)

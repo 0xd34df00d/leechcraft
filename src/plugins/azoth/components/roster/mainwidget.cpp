@@ -20,7 +20,6 @@
 #include <util/util.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/shortcuts/shortcutmanager.h>
-#include <util/sll/slotclosure.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "interfaces/azoth/iclentry.h"
@@ -29,6 +28,7 @@
 #include "components/dialogs/bookmarksmanagerdialog.h"
 #include "components/dialogs/setstatusdialog.h"
 #include "components/dialogs/userslistwidget.h"
+#include "components/roster/clmodel.h"
 #include "components/util/misc.h"
 #include "keyboardrosterfixer.h"
 #include "expansionstatemanager.h"
@@ -40,6 +40,7 @@
 #include "actionsmanager.h"
 #include "accountactions.h"
 #include "categoryactions.h"
+#include "cltooltipmanager.h"
 #include "resourcesmanager.h"
 #include "roles.h"
 
@@ -79,7 +80,7 @@ namespace Azoth
 
 		new KeyboardRosterFixer (Ui_.FilterLine_, Ui_.CLTree_, this);
 
-		Ui_.CLTree_->setItemDelegate (new ContactListDelegate (Ui_.CLTree_));
+		Ui_.CLTree_->setItemDelegate (new ContactListDelegate (*Core::Instance ().GetAvatarsManager (), Ui_.CLTree_));
 		ProxyModel_->setSourceModel (Core::Instance ().GetCLModel ());
 		Ui_.CLTree_->setModel (ProxyModel_);
 
@@ -153,19 +154,10 @@ namespace Azoth
 				},
 				listShortcut);
 
-		new Util::SlotClosure<Util::NoDeletePolicy>
-		{
-			[this]
-			{
-				const auto& pos = QCursor::pos ();
-				const auto widget = Ui_.CLTree_->viewport ();
-				QHelpEvent event { QEvent::ToolTip, widget->mapFromGlobal (pos), pos };
-				QCoreApplication::sendEvent (widget, &event);
-			},
-			Core::Instance ().GetCLModel (),
-			SIGNAL (rebuiltTooltip ()),
-			this
-		};
+		connect (Core::Instance ().GetCLTooltipManager (),
+				&CLTooltipManager::redisplayTooltip,
+				Ui_.CLTree_,
+				&ContactsListView::RedisplayTooltip);
 	}
 
 	QList<QAction*> MainWidget::GetMenuActions ()

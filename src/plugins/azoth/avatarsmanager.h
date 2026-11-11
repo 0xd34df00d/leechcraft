@@ -8,56 +8,84 @@
 
 #pragma once
 
-#include <functional>
-#include <QObject>
+#include <QCache>
+#include <QDeadlineTimer>
 #include <QHash>
-#include <util/sll/util.h>
+#include <QObject>
+#include <util/threads/coro/corocontext.h>
+#include "interfaces/azoth/core/iavatarsmanager.h"
 #include "interfaces/azoth/ihaveavatars.h"
-#include "interfaces/azoth/iproxyobject.h"
-
-template<typename>
-class QFuture;
+#include "avatarsstorage.h"
 
 namespace LC::Azoth
 {
 	class IAccount;
 
-	class AvatarsStorage;
 	class EntriesManager;
 
-	class AvatarsManager : public QObject
-						 , public IAvatarsManager
+	class AvatarsManager
+		: public QObject
+		, public IAvatarsManager
 	{
 		Q_OBJECT
 
 		const EntriesManager& Entries_;
-		AvatarsStorage * const Storage_;
+		AvatarsStorageThread Storage_;
 
-		QHash<QObject*, QHash<IHaveAvatars::Size, QFuture<QImage>>> PendingRequests_;
-	public:
-		using AvatarHandler_f = std::function<void (QImage)>;
-	private:
-		uint64_t SubscriptionId_ = 0;
-		QHash<QObject*, QHash<IHaveAvatars::Size, QHash<uint64_t, AvatarHandler_f>>> Subscriptions_;
+		QHash<GlobalStrongestId, Util::SharedContextTask<std::optional<QByteArray>>> PendingCachedDataRequests_;
+		QHash<std::pair<GlobalStrongestId, AvatarSize>, Util::SharedContextTask<AvatarsStorage::Result_t<QImage>>> PendingCachedImageRequests_;
+		QHash<GlobalStrongestId, Util::SharedContextTask<IHaveAvatars::FetchResult_t>> PendingProtoDataRequests_;
 
-		QHash<QObject*, const IAccount*> SelfInfo2Account_;
+		qsizetype BiggestImageSeen_ = 0;
+		mutable QCache<std::pair<GlobalStrongestId, AvatarSize>, QImage> ImageCache_;
+
+		struct AccountOffline {};
+		struct EntryUnavailable {};
+		using FetchFailure = std::variant<QDeadlineTimer, AccountOffline, EntryUnavailable>;
+		QHash<GlobalStrongestId, FetchFailure> FailedFetches_;
+
+		enum class FetchState : std::uint8_t { Running, Invalidated };
+		QHash<GlobalStrongestId, FetchState> FetchStates_;
 	public:
 		explicit AvatarsManager (const EntriesManager&, QObject* = nullptr);
+		~AvatarsManager ();
 
-		QFuture<QImage> GetAvatar (QObject*, IHaveAvatars::Size) override;
-		QFuture<std::optional<QByteArray>> GetStoredAvatarData (const QString&, IHaveAvatars::Size) override;
+		void AddAccount (IAccount&);
+
+		Util::ContextTask<std::optional<QByteArray>> GetAvatarData (GlobalStrongestId);
+
+		Util::ContextTask<std::optional<QByteArray>> GetLocalAvatarData (GlobalStrongestId) override;
+		Util::ContextTask<std::optional<QImage>> GetAvatarImage (GlobalStrongestId, AvatarSize) override;
+
+		template<typename T>
+		using MaybeNowResult_t = std::variant<T, Util::ContextTask<T>>;
+
+		MaybeNowResult_t<std::optional<QImage>> GetAvatarImageNow (const GlobalStrongestId&, const AvatarSize&);
+
+		std::optional<QImage> GetAvatarImageIfCached (const GlobalStrongestId&, const AvatarSize&) const;
 
 		bool HasAvatar (QObject*) const;
-
-		Util::DefaultScopeGuard Subscribe (QObject*, IHaveAvatars::Size, const AvatarHandler_f&);
 	private:
-		void HandleSubscriptions (QObject*);
-	public slots:
-		void handleAccount (QObject*);
+		Util::ContextTask<AvatarsStorage::Result_t<QImage>> GetAvatarFromDiskOnly (GlobalStrongestId, AvatarSize);
+		Util::SharedContextTask<IHaveAvatars::FetchResult_t> FetchAndSave (GlobalStrongestId);
+
+		template<typename R, typename K, typename... RunArgs>
+		Util::ContextTask<R> RunStorageCoalescing (const K& key, QHash<K, Util::SharedContextTask<R>>& pending, RunArgs&&... runArgs);
+
+		template<typename R, typename K, typename Fun>
+		Util::ContextTask<R> RunCoalescing (K key, QHash<K, Util::SharedContextTask<R>>& pending, Fun&& fun);
+
+		void InsertCache (const GlobalStrongestId&, const AvatarSize&, const QImage&);
+
+		bool HasActiveFailure (const GlobalStrongestId&) const;
+		bool IsEntryAccountOnline (const GlobalStrongestId&) const;
+		bool IsAlwaysAvatarless (const GlobalStrongestId&) const;
 	private slots:
-		void invalidateAvatar (QObject*);
+		Util::ContextTask<void> invalidateAvatar (QObject*);
 	signals:
 		void avatarInvalidated (QObject*);
 		void accountAvatarInvalidated (const IAccount*);
+
+	LC_CORO_CONTEXT
 	};
 }

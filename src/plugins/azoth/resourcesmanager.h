@@ -9,6 +9,7 @@
 #pragma once
 
 #include <memory>
+#include <QCache>
 #include <QObject>
 #include <QMap>
 #include <QHash>
@@ -48,6 +49,8 @@ namespace Azoth
 
 		typedef QHash<ICLEntry*, QMap<QString, QIcon>> EntryClientIconCache_t;
 		EntryClientIconCache_t EntryClientIconCache_;
+
+		mutable QCache<int, QImage> DefaultAvatarCache_;
 
 		ResourcesManager ();
 
@@ -96,14 +99,6 @@ namespace Azoth
 		QImage GetDefaultAvatar (int size) const;
 
 		void InvalidateClientsIconCache (ICLEntry*);
-	private slots:
-		/** Removes the entries in the client icon cache for the sender,
-		 * if obj is null, or for obj, if it is not null.
-		 *
-		 * If the object can't be casted to ICLEntry, this function does
-		 * nothing.
-		 */
-		void flushIconCaches ();
 	};
 }
 }

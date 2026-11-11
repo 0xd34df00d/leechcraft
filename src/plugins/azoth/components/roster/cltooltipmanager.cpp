@@ -8,13 +8,13 @@
 
 #include "cltooltipmanager.h"
 #include <QTextDocument>
-#include <QStandardItem>
-#include <QToolTip>
+#include <QUrlQuery>
 #include <util/util.h>
-#include <util/threads/futures.h>
 #include <util/sll/functional.h>
 #include <util/sll/prelude.h>
+#include <util/sll/qobjectrefcast.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/visitor.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <interfaces/media/audiostructs.h>
 #include <interfaces/azoth/iclentry.h>
@@ -27,6 +27,7 @@
 #include "interfaces/azoth/ihavecontactactivity.h"
 #include "interfaces/azoth/moodinfo.h"
 #include "interfaces/azoth/activityinfo.h"
+#include "util/azoth/entryidops.h"
 #include "util/azoth/util.h"
 #include "components/dialogs/activitydialog.h"
 #include "components/dialogs/mooddialog.h"
@@ -39,17 +40,61 @@ namespace LC
 {
 namespace Azoth
 {
-	CLTooltipManager::CLTooltipManager (AvatarsManager *am, Entry2Items_t& items)
-	: AvatarsManager_ { am }
-	, Entry2Items_ (items)
-	, Avatar2TooltipSrcCache_ { 2 * 1024 * 1024 }
+	namespace
 	{
-		handleCacheSizeChanged ();
-		XmlSettingsManager::Instance ().RegisterObject ("CLToolTipsAvatarsCacheSize",
-				this, "handleCacheSizeChanged");
+		QUrl GetAvatarUrl (const ICLEntry& entry, const std::optional<QImage>& cached)
+		{
+			QUrl url;
+			url.setScheme ("azoth"_qs);
+			url.setHost ("tooltip.avatar"_qs);
+			url.setPath ('/' + SerializeString (entry.GetGlobalStrongestId ()), QUrl::DecodedMode);
 
-		XmlSettingsManager::Instance ().RegisterObject ("CLAvatarsSize",
-				this, "handleAvatarsSizeChanged");
+			if (cached)
+			{
+				QUrlQuery query;
+				query.addQueryItem ("cache", QString::number (cached->cacheKey ()));
+				url.setQuery (query);
+			}
+
+			return url;
+		}
+
+		std::optional<GlobalStrongestId> GetIdFromUrl (const QUrl& url)
+		{
+			if (url.scheme () != "azoth"_qs || url.host () != "tooltip.avatar"_qs)
+				return {};
+
+			return Deserialize<GlobalStrongestId> (url.path (QUrl::FullyDecoded).mid (1));
+		}
+	}
+
+	CLTooltipManager::CLTooltipManager (AvatarsManager& am)
+	: Avatars_ { am }
+	{
+		auto prevProv = QTextDocument::defaultResourceProvider ();
+		QTextDocument::setDefaultResourceProvider ([this, guard = QPointer { this }, prevProv] (const QUrl& url)
+		{
+			const auto entryId = GetIdFromUrl (url);
+			if (!guard || !entryId)
+				return prevProv ? prevProv (url) : QVariant {};
+
+			const auto size = XmlSettingsManager::Instance ().property ("CLAvatarsSize").toInt ();
+			auto img = Util::Visit (Avatars_.GetAvatarImageNow (*entryId, IAvatarsManager::Scaled { size }),
+					[] (const std::optional<QImage>& img) { return img.value_or ({}); },
+					[&] (const Util::ContextTask<std::optional<QImage>>& task)
+					{
+						[] (auto task, CLTooltipManager *mgr, GlobalStrongestId entryId) -> Util::ContextTask<void>
+						{
+							co_await Util::AddContext { mgr->CoroContext_ };
+							if (co_await task)
+								emit mgr->redisplayTooltip (entryId);
+						} (task, this, *entryId);
+						return QImage {};
+					});
+			if (img.isNull ())
+				img = ResourcesManager::Instance ().GetDefaultAvatar (size);
+			return QVariant { img };
+		});
 	}
 
 	namespace
@@ -71,83 +116,67 @@ namespace Azoth
 
 	void CLTooltipManager::AddEntry (ICLEntry *entry)
 	{
-		DirtyTooltips_ << entry;
-		connect (entry->GetQObject (),
-				&QObject::destroyed,
-				this,
-				[this, entry]
-				{
-					DirtyTooltips_.remove (entry);
-					Avatar2TooltipSrcCache_.remove (entry);
-				});
-
-		const auto invalidate = [this, entry] { InvalidateTooltip (entry); };
+		const auto redisplay = [this, entry] { RedisplayTooltip (entry); };
 
 		auto& emitter = entry->GetCLEntryEmitter ();
 		connect (&emitter,
 				&Emitters::CLEntry::statusChanged,
 				this,
-				invalidate);
+				redisplay);
 		connect (&emitter,
 				&Emitters::CLEntry::availableVariantsChanged,
 				this,
-				invalidate);
+				redisplay);
 		connect (&emitter,
 				&Emitters::CLEntry::entryGenerallyChanged,
 				this,
-				invalidate);
+				redisplay);
 		connect (&emitter,
 				&Emitters::CLEntry::nameChanged,
 				this,
-				invalidate);
+				redisplay);
 		connect (&emitter,
 				&Emitters::CLEntry::groupsChanged,
 				this,
-				invalidate);
+				redisplay);
 
 		const auto entryObj = entry->GetQObject ();
-		if (qobject_cast<IHaveAvatars*> (entryObj))
-			connect (entryObj,
-					SIGNAL (avatarChanged (QObject*)),
-					this,
-					SLOT (handleAvatarChanged (QObject*)),
-					Qt::UniqueConnection);
 
 		if (const auto perms = qobject_cast<IMUCPerms*> (entryObj))
 			connect (&perms->GetMUCPermsEmitter (),
 					&Emitters::MUCPerms::permsChanged,
 					this,
-					[this] (const MucEvents::ParticipantPermsChange& event) { InvalidateTooltip (&event.Participant_); });
+					[this] (const MucEvents::ParticipantPermsChange& event) { RedisplayTooltip (&event.Participant_); });
 
 		if (qobject_cast<IAdvancedCLEntry*> (entryObj))
 		{
 			connect (entryObj,
 					SIGNAL (attentionDrawn (const QString&, const QString&)),
 					this,
-					SLOT (remakeTooltipForSender ()));
+					SLOT (redisplayTooltipForSender ()));
 			connect (entryObj,
 					SIGNAL (locationChanged (const QString&)),
 					this,
-					SLOT (remakeTooltipForSender ()));
+					SLOT (redisplayTooltipForSender ()));
 		}
 
 		if (qobject_cast<IHaveContactTune*> (entryObj))
 			connect (entryObj,
 					SIGNAL (tuneChanged (QString)),
 					this,
-					SLOT (remakeTooltipForSender ()));
+					SLOT (redisplayTooltipForSender ()));
 
 		if (qobject_cast<IHaveContactMood*> (entryObj))
 			connect (entryObj,
 					SIGNAL (moodChanged (QString)),
 					this,
-					SLOT (remakeTooltipForSender ()));
+					SLOT (redisplayTooltipForSender ()));
 
 		if (qobject_cast<IHaveContactActivity*> (entryObj))
 			connect (entryObj,
 					SIGNAL (activityChanged (const QString&)),
 					this,
-					SLOT (remakeTooltipForSender ()));
+					SLOT (redisplayTooltipForSender ()));
 	}
 
 	namespace
@@ -226,16 +255,8 @@ namespace Azoth
 		}
 	}
 
-	QString CLTooltipManager::MakeTooltipString (ICLEntry *entry)
-	{
-		const auto maybeAvatar = Avatar2TooltipSrcCache_ [entry];
-		return MakeTooltipString (entry, maybeAvatar ? *maybeAvatar : QString {});
-	}
-
 	namespace
 	{
-		const auto MinAvatarSize = 32;
-
 		void FormatClientInfo (QString& tip,
 				const QMap<QString, QVariant>& info,
 				const QIcon& icon)
@@ -278,26 +299,20 @@ namespace Azoth
 		}
 	}
 
-	QString CLTooltipManager::MakeTooltipString (ICLEntry *entry, QString avatarStr)
+	QString CLTooltipManager::GetTooltip (ICLEntry *entry)
 	{
+		if (const auto ihet = qobject_cast<IHaveEntityTime*> (entry->GetQObject ()))
+			ihet->UpdateEntityTime ();
+
 		QString tip = "<table border='0'><tr><td>";
 
 		const auto& icons = ResourcesManager::Instance ().GetClientIconForEntry (entry);
 
-		bool shouldScheduleAvatarFetch = false;
-
-		const auto avatarSize = XmlSettingsManager::Instance ().property ("CLAvatarsSize").toInt ();
-
 		if (entry->GetEntryType () != ICLEntry::EntryType::MUC)
 		{
-			if (avatarStr.isNull ())
-			{
-				avatarStr = Util::GetAsBase64Src (ResourcesManager::Instance ().GetDefaultAvatar (avatarSize));
-				shouldScheduleAvatarFetch = true;
-				Avatar2TooltipSrcCache_.insert (entry, new QString { avatarStr }, avatarStr.size ());
-			}
-
-			tip += "<img src='" + avatarStr + "' />";
+			const auto avatarSize = XmlSettingsManager::Instance ().property ("CLAvatarsSize").toInt ();
+			const auto cached = Avatars_.GetAvatarImageIfCached (entry->GetGlobalStrongestId (), IAvatarsManager::Scaled { avatarSize });
+			tip += "<img src=\"" + GetAvatarUrl (*entry, cached).toString (QUrl::FullyEncoded).toHtmlEscaped () + "\" />";
 			tip += "</td><td>";
 		}
 
@@ -386,101 +401,17 @@ namespace Azoth
 
 		tip += "</td></tr></table>";
 
-		if (shouldScheduleAvatarFetch)
-		{
-			const auto& obj = entry->GetQObject ();
-			Util::Sequence (obj, AvatarsManager_->GetAvatar (obj, IHaveAvatars::Size::Full)) >>
-					[this, entry, tip, avatarSize] (QImage avatar)
-					{
-						if (avatar.isNull ())
-							return;
-
-						const auto maxDim = std::max (avatar.width (), avatar.height ());
-						if (maxDim > avatarSize)
-							avatar = avatar.scaled (avatarSize, avatarSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-						else if (maxDim < MinAvatarSize)
-							avatar = avatar.scaled (MinAvatarSize, MinAvatarSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-
-						const auto& data = Util::GetAsBase64Src (avatar);
-						Avatar2TooltipSrcCache_.insert (entry, new QString { data }, data.size ());
-
-						const auto& newTip = MakeTooltipString (entry, data);
-						for (auto item : Entry2Items_.value (entry))
-							item->setToolTip (newTip);
-
-						if (QToolTip::isVisible () && QToolTip::text () == tip)
-							emit rebuiltTooltip ();
-					};
-		}
-
 		return tip;
 	}
 
-	void CLTooltipManager::RebuildTooltip (ICLEntry *entry)
+	void CLTooltipManager::RedisplayTooltip (ICLEntry *entry)
 	{
-		if (const auto ihet = qobject_cast<IHaveEntityTime*> (entry->GetQObject ()))
-		{
-			ihet->UpdateEntityTime ();
-
-			for (const auto& var : entry->Variants ())
-				if (entry->GetClientInfo (var).contains ("client_time"))
-				{
-					DirtyTooltips_ << entry;
-					break;
-				}
-		}
-
-		if (!DirtyTooltips_.contains (entry))
-			return;
-
-		const auto& tip = MakeTooltipString (entry);
-		for (auto item : Entry2Items_.value (entry))
-			item->setToolTip (tip);
-
-		DirtyTooltips_.remove (entry);
+		emit redisplayTooltip (entry->GetGlobalStrongestId ());
 	}
 
-	void CLTooltipManager::InvalidateTooltip (ICLEntry *entry)
+	void CLTooltipManager::redisplayTooltipForSender ()
 	{
-		for (auto item : Entry2Items_.value (entry))
-			item->setToolTip ({});
-
-		DirtyTooltips_ << entry;
-	}
-
-	void CLTooltipManager::remakeTooltipForSender ()
-	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "could not be casted to ICLEntry";
-			return;
-		}
-		InvalidateTooltip (entry);
-	}
-
-	void CLTooltipManager::handleAvatarChanged (QObject *entryObj)
-	{
-		const auto entry = qobject_cast<ICLEntry*> (entryObj);
-		DirtyTooltips_ << entry;
-		Avatar2TooltipSrcCache_.remove (entry);
-	}
-
-	void CLTooltipManager::handleCacheSizeChanged ()
-	{
-		const auto mibs = XmlSettingsManager::Instance ()
-				.property ("CLToolTipsAvatarsCacheSize").toInt ();
-		Avatar2TooltipSrcCache_.setMaxCost (mibs * 1024 * 1024);
-	}
-
-	void CLTooltipManager::handleAvatarsSizeChanged ()
-	{
-		Avatar2TooltipSrcCache_.clear ();
-
-		for (const auto& pair : std::as_const (Entry2Items_).asKeyValueRange ())
-			DirtyTooltips_ << pair.first;
+		RedisplayTooltip (&qobject_ref_cast<ICLEntry> (sender ()));
 	}
 }
 }

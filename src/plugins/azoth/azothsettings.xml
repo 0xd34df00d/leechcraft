@@ -168,11 +168,8 @@
 			<item type="spinbox" property="ChatClearGraceTime" default="1" minimum="0" maximum="10" label="When clearing chat window, preserve the messages from the last" suffix=" s" />
 		</tab>
 		<tab label="Caching">
-			<item type="spinbox" property="AvatarsCacheSize" default="5" minimum="0" maximum="100" label="In-memory avatars cache size:" suffix=" MiB">
+			<item type="spinbox" property="AvatarsCacheSize" default="5" minimum="1" maximum="100" label="In-memory avatars cache size:" suffix=" MiB">
 				<tooltip>This option controls the in-memory cache for the contacts avatars. Setting this option to a too low value will lead to more frequent disk IO and will slightly increase the CPU usage. Network traffic consumption is not affected by this option.</tooltip>
-			</item>
-			<item type="spinbox" property="CLToolTipsAvatarsCacheSize" default="2" minimum="0" maximum="100" label="In-memory contact list tooltips-specific avatars cache size:" suffix=" MiB">
-				<tooltip>This option controls the in-memory cache for the tooltip-specific representation of contacts avatars. Setting this option to a too low value will slightly increase the CPU usage. Network traffic consumption is not affected by this option.</tooltip>
 			</item>
 		</tab>
 	</page>

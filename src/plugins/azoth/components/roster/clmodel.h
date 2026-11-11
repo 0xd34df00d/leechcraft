@@ -32,11 +32,7 @@ namespace LC::Azoth
 		bool dropMimeData (const QMimeData*, Qt::DropAction, int, int, const QModelIndex&) override;
 		Qt::DropActions supportedDropActions () const override;
 	private:
-		void CheckRequestUpdateTooltip (const QModelIndex&, int) const;
-
 		bool TryDropOntoContact (const QMimeData*, int, const QModelIndex&);
 		bool TryDropRegroup (const QMimeData*, int, const QModelIndex&);
-	signals:
-		void rebuiltTooltip ();
 	};
 }

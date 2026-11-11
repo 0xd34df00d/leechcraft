@@ -26,6 +26,24 @@ namespace Azoth
 		ResourceLoaders_ [RLTActivityIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/activities/", this));
 		ResourceLoaders_ [RLTMoodIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/moods/", this));
 
+		DefaultAvatarCache_.setMaxCost (16);
+
+		XmlSettingsManager::Instance ().RegisterObject ({
+					"StatusIcons",
+					"ClientIcons",
+					"AffIcons",
+					"MoodIcons",
+					"ActivityIcons",
+					"SystemIcons"
+				},
+				this,
+				[this]
+				{
+					for (const auto& rl : ResourceLoaders_)
+						rl->FlushCache ();
+					DefaultAvatarCache_.clear ();
+				});
+
 		for (const auto& rl : ResourceLoaders_)
 		{
 			rl->AddLocalPrefix ();
@@ -174,29 +192,24 @@ namespace Azoth
 
 	QImage ResourcesManager::GetDefaultAvatar (int size) const
 	{
-		const auto& name = XmlSettingsManager::Instance ()
-				.property ("SystemIcons").toString () + "/default_avatar";
-		const auto& image = ResourceLoaders_ [RLTSystemIconLoader]->LoadPixmap (name).toImage ();
+		if (const auto img = DefaultAvatarCache_ [size])
+			return *img;
 
+		const auto& name = XmlSettingsManager::Instance ().property ("SystemIcons").toString () + "/default_avatar";
+		auto image = ResourceLoaders_ [RLTSystemIconLoader]->LoadPixmap (name).toImage ();
 		if (image.isNull ())
 			return {};
 
-		if (size == -1)
-			return image;
+		if (size != -1)
+			image = image.scaled (size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
-		return image.scaled (size, size,
-				Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		DefaultAvatarCache_.insert (size, new QImage { image }, 1);
+		return image;
 	}
 
 	void ResourcesManager::InvalidateClientsIconCache (ICLEntry *entry)
 	{
 		EntryClientIconCache_.remove (entry);
-	}
-
-	void ResourcesManager::flushIconCaches ()
-	{
-		for (const auto& rl : ResourceLoaders_)
-			rl->FlushCache ();
 	}
 }
 }

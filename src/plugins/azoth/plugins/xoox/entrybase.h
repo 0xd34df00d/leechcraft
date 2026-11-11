@@ -163,9 +163,8 @@ namespace Xoox
 		void RequestLastPosts (int);
 
 		// IHaveAvatars
-		QFuture<QImage> RefreshAvatar (Size);
+		Util::ContextTask<FetchResult_t> FetchAvatar ();
 		bool HasAvatar () const;
-		bool SupportsSize (Size) const;
 
 		// IHaveContactTune
 		Media::AudioInfo GetUserTune (const QString&) const;

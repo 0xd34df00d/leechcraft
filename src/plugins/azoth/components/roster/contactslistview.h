@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QTreeView>
+#include "interfaces/azoth/azothcommon.h"
 
 namespace LC::Azoth
 {
@@ -18,5 +19,7 @@ namespace LC::Azoth
 		using QTreeView::QTreeView;
 
 		QRect visualRect (const QModelIndex&) const override;
+
+		void RedisplayTooltip (const GlobalStrongestId&);
 	};
 }

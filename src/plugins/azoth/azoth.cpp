@@ -437,17 +437,6 @@ namespace Azoth
 		setLoader ("ActivityIcons", ResourcesManager::RLTActivityIconLoader);
 		setLoader ("SystemIcons", ResourcesManager::RLTSystemIconLoader);
 
-		XmlSettingsManager::Instance ().RegisterObject ({
-					"StatusIcons",
-					"ClientIcons",
-					"AffIcons",
-					"MoodIcons",
-					"ActivityIcons",
-					"SystemIcons"
-				},
-				&Core::Instance (),
-				"flushIconCaches");
-
 #ifdef ENABLE_MEDIACALLS
 		QStringList audioIns (tr ("Default input device"));
 		for (const auto& info : QAudioDeviceInfo::availableDevices (QAudio::AudioInput))

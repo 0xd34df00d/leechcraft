@@ -91,9 +91,6 @@ namespace LC::Azoth
 		std::shared_ptr<NotificationsManager> NotificationsManager_;
 		ActionsManager *ActionsManager_;
 
-		typedef QCache<ICLEntry*, QImage> Entry2SmoothAvatarCache_t;
-		Entry2SmoothAvatarCache_t Entry2SmoothAvatarCache_ { 5 * 1024 * 1024 };
-
 		AnimatedIconManager<QStandardItem*> *ItemIconManager_;
 
 		std::shared_ptr<SourceTrackingModel<IEmoticonResourceSource>> SmilesOptionsModel_;
@@ -142,6 +139,7 @@ namespace LC::Azoth
 		const QObjectList& GetProtocolPlugins () const;
 
 		QAbstractItemModel* GetCLModel () const;
+		CLTooltipManager* GetCLTooltipManager () const;
 		ChatTabsManager* GetChatTabsManager () const;
 		QList<IAccount*> GetAccounts () const;
 		QList<IProtocol*> GetProtocols () const;
@@ -172,17 +170,6 @@ namespace LC::Azoth
 		 * highlights the participant.
 		 */
 		bool IsHighlightMessage (IMessage*);
-
-		/** @brief Returns the avatar for the given CL entry scaled to
-		 * the given size.
-		 *
-		 * The scale is performed using SmoothTransform and keeping the
-		 * aspect ratio.
-		 *
-		 * @param[in] entry Entry for which to get the avatar.
-		 * @return Entry's avatar scaled to the given size.
-		 */
-		QImage GetAvatar (ICLEntry *entry, int size);
 
 		ActionsManager* GetActionsManager () const;
 

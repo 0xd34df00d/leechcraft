@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QXmppClientExtension.h>
+#include <util/threads/coro/taskfwd.h>
 
 namespace LC
 {
@@ -35,7 +36,7 @@ namespace Xoox
 
 		void PublishAvatar (const QImage&);
 	private:
-		void HandleMDEvent (const QString&, UserAvatarMetadata*);
+		Util::ContextTask<void> HandleMDEvent (QString, UserAvatarMetadata*);
 	private slots:
 		void handleEvent (const QString&, PEPEventBase*);
 	signals:

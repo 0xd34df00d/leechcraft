@@ -9,42 +9,45 @@
 #pragma once
 
 #include <optional>
-#include <variant>
+#include <QDir>
 #include <QObject>
-#include <QCache>
-#include "interfaces/azoth/ihaveavatars.h"
+#include <util/threads/coro/workerthread.h>
+#include "interfaces/azoth/core/iavatarsmanager.h"
+#include "interfaces/azoth/azothcommon.h"
 
-template<typename>
-class QFuture;
-
-namespace LC
+namespace LC::Azoth
 {
-namespace Azoth
-{
-	class ICLEntry;
-	class AvatarsStorageThread;
-
-	using MaybeImage = std::optional<QImage>;
-	using MaybeByteArray = std::optional<QByteArray>;
-
 	class AvatarsStorage : public QObject
 	{
-		AvatarsStorageThread * const StorageThread_;
-
-		using CacheKey_t = std::pair<QString, IHaveAvatars::Size>;
-		using CacheValue_t = std::variant<QByteArray, QImage>;
-		QCache<CacheKey_t, CacheValue_t> Cache_;
+		QDir CacheDir_;
 	public:
-		explicit AvatarsStorage (QObject* = nullptr);
+		explicit AvatarsStorage ();
 
-		QFuture<void> SetAvatar (const QString&, IHaveAvatars::Size, const QImage&);
-		QFuture<void> SetAvatar (const QString&, IHaveAvatars::Size, const QByteArray&);
-		QFuture<MaybeImage> GetAvatar (const ICLEntry*, IHaveAvatars::Size);
-		QFuture<MaybeByteArray> GetAvatar (const QString&, IHaveAvatars::Size);
+		void SetAvatar (const GlobalStrongestId& entryId, const QByteArray& imageData);
+		std::optional<QByteArray> GetAvatarData (const GlobalStrongestId& entryId) const;
 
-		QFuture<void> DeleteAvatars (const QString&);
+		struct NotStored {};
+		struct Empty {};
 
-		void SetCacheSize (int mibs);
+		template<typename T>
+		using Result_t = std::variant<NotStored, Empty, T>;
+
+		static Result_t<QImage> ReadAvatarImage (const GlobalStrongestId&, IAvatarsManager::AvatarSize, QIODevice&);
+
+		Result_t<QImage> GetAvatarImage (const GlobalStrongestId& entryId, IAvatarsManager::AvatarSize size) const;
+
+		void MoveAvatars (const GlobalStrongestId& from, const GlobalStrongestId& to);
+		void DeleteAvatars (const GlobalStrongestId& entryId);
+	private:
+		QString GetPath (const GlobalStrongestId& entryId) const;
+
+		enum class Mode : uint8_t { Read, Write };
+		std::unique_ptr<QFile> GetFile (const GlobalStrongestId& entryId, Mode mode) const;
 	};
-}
+
+	class AvatarsStorageThread : public Util::Coro::WorkerThread<AvatarsStorage, AvatarsStorageThread, Util::SharedTaskExtension>
+	{
+	public:
+		using WorkerThread::WorkerThread;
+	};
 }

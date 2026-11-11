@@ -14,9 +14,12 @@
 #include <QApplication>
 #include <QAbstractProxyModel>
 #include <QTreeView>
+#include <util/sll/qobjectrefcast.h>
+#include <util/sll/visitor.h>
 #include <util/sys/resourceloader.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <interfaces/media/audiostructs.h>
+#include "avatarsmanager.h"
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/isupportgeolocation.h"
 #include "interfaces/azoth/iaccount.h"
@@ -38,8 +41,9 @@ namespace Azoth
 {
 	const int CPadding = 2;
 
-	ContactListDelegate::ContactListDelegate (QTreeView* parent)
+	ContactListDelegate::ContactListDelegate (AvatarsManager& avatars, QTreeView* parent)
 	: QStyledItemDelegate (parent)
+	, Avatars_ (avatars)
 	, ContactHeight_ (24)
 	, View_ (parent)
 	{
@@ -112,6 +116,32 @@ namespace Azoth
 		return size;
 	}
 
+	namespace
+	{
+		Util::ContextTask<void> RepaintWhenReady (QAbstractItemView& view,
+				QPersistentModelIndex index,
+				Util::ContextTask<std::optional<QImage>> task)
+		{
+			co_await Util::AddContext { Util::CoroContext::Of (view) };
+			if (co_await task)
+				view.update (index);
+		}
+
+		QImage RequestAvatar (AvatarsManager& avatars, const GlobalStrongestId& id,
+				QTreeView& view, const QModelIndex& index, int iconSize)
+		{
+			auto result = avatars.GetAvatarImageNow (id, AvatarsManager::Scaled { iconSize });
+			const auto img = Util::Visit (result,
+					[&] (const std::optional<QImage>& maybeImg) { return maybeImg.value_or ({}); },
+					[&] (const Util::ContextTask<std::optional<QImage>>& task)
+					{
+						RepaintWhenReady (view, index, task);
+						return QImage {};
+					});
+			return !img.isNull () ? img : ResourcesManager::Instance ().GetDefaultAvatar (iconSize);
+		}
+	}
+
 	void ContactListDelegate::DrawAccount (QPainter *painter,
 			QStyleOptionViewItem o, const QModelIndex& index) const
 	{
@@ -138,26 +168,18 @@ namespace Azoth
 		QImage avatarImg;
 		if (extAcc && extAcc->GetSelfContact ())
 		{
-			const auto selfEntry = qobject_cast<ICLEntry*> (extAcc->GetSelfContact ());
-			avatarImg = Core::Instance ().GetAvatar (selfEntry, iconSize);
+			const auto& id = qobject_ref_cast<ICLEntry> (extAcc->GetSelfContact ()).GetGlobalStrongestId ();
+			avatarImg = RequestAvatar (Avatars_, id, *View_, index, iconSize);
 		}
-
-		if (avatarImg.isNull ())
-			avatarImg = ResourcesManager::Instance ().GetDefaultAvatar (iconSize);
 		else
-			avatarImg = avatarImg.scaled (iconSize, iconSize,
-					Qt::KeepAspectRatio, Qt::SmoothTransformation);
+			avatarImg = ResourcesManager::Instance ().GetDefaultAvatar (iconSize);
 
-		QPoint pxDraw = r.topRight () - QPoint (CPadding, 0);
+		auto pxDraw = r.topRight () - QPoint (CPadding, 0);
 
-		if (!avatarImg.isNull ())
-		{
-			pxDraw.rx () -= avatarImg.width ();
-			const QPoint delta { 0, (r.height () - avatarImg.height ()) / 2 };
-			painter->drawPixmap (pxDraw + delta,
-					QPixmap::fromImage (avatarImg));
-			pxDraw.rx () -= CPadding;
-		}
+		pxDraw.rx () -= avatarImg.width ();
+		const QPoint delta { 0, (r.height () - avatarImg.height ()) / 2 };
+		painter->drawPixmap (pxDraw + delta, QPixmap::fromImage (avatarImg));
+		pxDraw.rx () -= CPadding;
 
 		if (!accIcon.isNull ())
 		{
@@ -275,8 +297,8 @@ namespace Azoth
 		QString name = index.data (Qt::DisplayRole).value<QString> ();
 		const QString status = entry->GetStatus ().StatusString_.replace ('\n', ' ');
 		const QImage& avatarImg = ShowAvatars_ ?
-				Core::Instance ().GetAvatar (entry, iconSize) :
-				QImage ();
+				RequestAvatar (Avatars_, entry->GetGlobalStrongestId (), *View_, index, iconSize) :
+				QImage {};
 		const int unreadNum = index.data (CLRUnreadMsgCount).toInt ();
 		const QString& unreadStr = unreadNum ?
 				QString (" %1 :: ").arg (unreadNum) :

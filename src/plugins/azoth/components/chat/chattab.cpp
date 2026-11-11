@@ -212,7 +212,7 @@ namespace Azoth
 		ChatFinder_->hide ();
 
 		InitMsgEdit (entry);
-
+		InitAvatar ();
 		BuildBasicActions ();
 
 		Core::Instance ().RegisterHookable (this);
@@ -1221,8 +1221,6 @@ namespace Azoth
 		const auto& accName = entry->GetParentAccount ()->GetAccountName ();
 		Ui_.AccountName_->setText (accName);
 
-		ReinitAvatar ();
-
 		const auto adapter = ChatEventsAdapter::MakeFor (*entry);
 		connect (adapter,
 				&ChatEventsAdapter::gotEvent,
@@ -1264,32 +1262,45 @@ namespace Azoth
 			RequestLogs (num);
 	}
 
-	void ChatTab::ReinitAvatar ()
+	void ChatTab::InitAvatar ()
 	{
-		const auto obj = GetEntry<QObject> ();
+		SetAvatar ({});
+		RerequestAvatar ();
+		connect (AvatarsManager_,
+				&AvatarsManager::avatarInvalidated,
+				this,
+				[this] (QObject *entryObj)
+				{
+					if (entryObj == GetEntry<QObject> ())
+						RerequestAvatar ();
+				});
+	}
 
-		auto avatarSetter = [this] (QImage avatar)
-		{
-			LastAvatar_ = QImage {};
+	namespace
+	{
+		constexpr auto AvatarSize = 18;
+	}
 
-			Ui_.AvatarLabel_->setVisible (!avatar.isNull ());
+	Util::ContextTask<void> ChatTab::RerequestAvatar ()
+	{
+		if (!EntryId_)
+			co_return;
 
-			if (avatar.isNull ())
-				return;
+		co_await Util::AddContext { CoroContext_ };
+		auto img = co_await AvatarsManager_->GetAvatarImage (*EntryId_, IAvatarsManager::Scaled { AvatarSize });
+		SetAvatar (std::move (img).value_or ({}));
+	}
 
-			avatar = avatar.scaled ({ 18, 18 }, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-			LastAvatar_ = avatar;
+	void ChatTab::SetAvatar (QImage&& image)
+	{
+		if (image.isNull ())
+			image = ResourcesManager::Instance ().GetDefaultAvatar (AvatarSize);
 
-			const auto& px = QPixmap::fromImage (avatar);
-			Ui_.AvatarLabel_->setPixmap (px);
-			Ui_.AvatarLabel_->resize (px.size ());
-			Ui_.AvatarLabel_->setMaximumSize (px.size ());
-		};
-		AvatarChangeSubscription_ = AvatarsManager_->Subscribe (obj,
-				IHaveAvatars::Size::Thumbnail, avatarSetter);
-
-		Util::Sequence (this,
-				AvatarsManager_->GetAvatar (obj, IHaveAvatars::Size::Thumbnail)) >> avatarSetter;
+		LastAvatar_ = image;
+		auto px = QPixmap::fromImage (std::move (image));
+		Ui_.AvatarLabel_->setPixmap (px);
+		Ui_.AvatarLabel_->resize (px.size ());
+		Ui_.AvatarLabel_->setMaximumSize (px.size ());
 	}
 
 	void ChatTab::ReinitEntryTypeSpecific ()

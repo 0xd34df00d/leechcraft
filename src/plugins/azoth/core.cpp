@@ -159,7 +159,7 @@ namespace LC::Azoth
 	: Proxy_ (nullptr)
 	, AvatarsManager_ (std::make_shared<AvatarsManager> (Entries_))
 	, FontsWidget_ { new Util::WkFontsWidget { &XmlSettingsManager::Instance () } }
-	, TooltipManager_ (new CLTooltipManager (AvatarsManager_.get (), Entry2Items_))
+	, TooltipManager_ (new CLTooltipManager (*AvatarsManager_))
 	, CLModel_ (new CLModel (TooltipManager_, Entries_, this))
 	, ChatTabsManager_ (new ChatTabsManager (AvatarsManager_.get (), FontsWidget_, Entries_, this))
 	, CoreCommandsManager_ (new CoreCommandsManager (this))
@@ -210,7 +210,6 @@ namespace LC::Azoth
 
 						Entry2Items_.remove (entry);
 						ActionsManager_->HandleEntryRemoved (entry);
-						Entry2SmoothAvatarCache_.remove (entry);
 						ResourcesManager::Instance ().HandleRemoved (entry);
 					}
 				});
@@ -218,12 +217,7 @@ namespace LC::Azoth
 		connect (AvatarsManager_.get (),
 				&AvatarsManager::avatarInvalidated,
 				this,
-				[this] (QObject *entryObj)
-				{
-					const auto entry = qobject_cast<ICLEntry*> (entryObj);
-					Entry2SmoothAvatarCache_.remove (entry);
-					UpdateItem (entry);
-				});
+				[this] (QObject *entryObj) { UpdateItem (qobject_cast<ICLEntry*> (entryObj)); });
 		connect (AvatarsManager_.get (),
 				&AvatarsManager::accountAvatarInvalidated,
 				this,
@@ -545,6 +539,11 @@ namespace LC::Azoth
 	QAbstractItemModel* Core::GetCLModel () const
 	{
 		return CLModel_;
+	}
+
+	CLTooltipManager* Core::GetCLTooltipManager () const
+	{
+		return TooltipManager_;
 	}
 
 	ChatTabsManager* Core::GetChatTabsManager () const
@@ -1347,39 +1346,6 @@ namespace LC::Azoth
 				0;
 	}
 
-	QImage Core::GetAvatar (ICLEntry *entry, int size)
-	{
-		if (!entry)
-			return {};
-
-		if (const auto candPtr = Entry2SmoothAvatarCache_ [entry])
-		{
-			const auto& cand = *candPtr;
-			if (cand.width () == size ||
-				cand.height () == size)
-				return cand;
-
-			if (cand.width () >= size ||
-				cand.height () >= size)
-				return cand.scaled ({ size, size }, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-		}
-
-		const auto obj = entry->GetQObject ();
-		Util::Sequence (obj, AvatarsManager_->GetAvatar (obj, IHaveAvatars::Size::Thumbnail)) >>
-				[=, this] (QImage avatar)
-				{
-					avatar = avatar.isNull () ?
-							QImage {} :
-							avatar.scaled ({ size, size },
-									Qt::KeepAspectRatio, Qt::SmoothTransformation);
-					Entry2SmoothAvatarCache_.insert (entry, new QImage { avatar }, avatar.sizeInBytes ());
-
-					UpdateItem (entry);
-				};
-
-		return ResourcesManager::Instance ().GetDefaultAvatar (size);
-	}
-
 	ActionsManager* Core::GetActionsManager () const
 	{
 		return ActionsManager_;
@@ -1579,7 +1545,7 @@ namespace LC::Azoth
 		const bool show = XmlSettingsManager::Instance ().Property (showKey, true).toBool ();
 		account->SetShownInRoster (show);
 
-		AvatarsManager_->handleAccount (accObject);
+		AvatarsManager_->AddAccount (*account);
 
 		QStandardItem *accItem = new QStandardItem (accountName);
 		accItem->setData (QVariant::fromValue<IAccount*> (account), CLRAccountObject);

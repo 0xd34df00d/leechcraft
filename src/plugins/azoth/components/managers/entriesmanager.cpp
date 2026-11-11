@@ -9,6 +9,7 @@
 #include "entriesmanager.h"
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/iclentry.h"
+#include "interfaces/azoth/ihaveavatars.h"
 #include "interfaces/azoth/imucentry.h"
 #include "util/azoth/util.h"
 
@@ -110,8 +111,10 @@ namespace LC::Azoth
 	template QObject& EntriesManager::GetEntry<QObject> (const GlobalStrongestId&) const;
 	template ICLEntry& EntriesManager::GetEntry<ICLEntry> (const GlobalStrongestId&) const;
 	template IMUCEntry& EntriesManager::GetEntry<IMUCEntry> (const GlobalStrongestId&) const;
+	template IHaveAvatars& EntriesManager::GetEntry<IHaveAvatars> (const GlobalStrongestId&) const;
 
 	template QObject* EntriesManager::GetEntryOrNull<QObject> (const GlobalStrongestId&) const;
 	template ICLEntry* EntriesManager::GetEntryOrNull<ICLEntry> (const GlobalStrongestId&) const;
 	template IMUCEntry* EntriesManager::GetEntryOrNull<IMUCEntry> (const GlobalStrongestId&) const;
+	template IHaveAvatars* EntriesManager::GetEntryOrNull<IHaveAvatars> (const GlobalStrongestId&) const;
 }

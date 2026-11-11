@@ -422,16 +422,12 @@ namespace Xoox
 		}
 	}
 
-	QFuture<QImage> EntryBase::RefreshAvatar (Size)
+	Util::ContextTask<IHaveAvatars::FetchResult_t> EntryBase::FetchAvatar ()
 	{
-		const auto maybeVCard = Account_->GetParentProtocol ()->GetVCardStorage ()->GetVCard (GetConventionalId ());
-		if (maybeVCard && GetVCardPhotoHash () == ComputeVCardPhotoHash (*maybeVCard))
-			return Util::MakeReadyFuture (QImage::fromData (maybeVCard->photo ()));
-
 		if (!Account_->GetClientConnection ()->IsConnected ())
-			return Util::MakeReadyFuture (QImage {});
+			co_return FetchError {};
 
-		QFutureInterface<QImage> iface;
+		QFutureInterface<FetchResult_t> iface;
 		iface.reportStarted ();
 
 		const auto cancelTimer = new QTimer;
@@ -444,35 +440,33 @@ namespace Xoox
 				[iface, cancelTimer] () mutable
 				{
 					if (!iface.isFinished ())
-						Util::ReportFutureResult (iface, QImage {});
+						Util::ReportFutureResult (iface, FetchError {});
 					cancelTimer->deleteLater ();
 				});
 
 		Account_->GetClientConnection ()->FetchVCard (GetJid (),
-				[iface, cancelTimer] (const QXmppVCardIq& iq) mutable
+				[iface, cancelTimer, self = QPointer { this }] (const QXmppVCardIq& iq) mutable
 				{
 					if (iface.isFinished ())
 						return;
 
-					const auto& photo = iq.photo ();
-					const auto image = photo.isEmpty () ?
-							QImage {} :
-							QImage::fromData (photo);
-					iface.reportFinished (&image);
+					if (self)
+					{
+						self->VCardPhotoHash_ = ComputeVCardPhotoHash (iq);
+						self->WriteDownPhotoHash ();
+					}
+
+					const FetchResult_t photo { iq.photo () };
+					iface.reportFinished (&photo);
 					delete cancelTimer;
 				});
 
-		return iface.future ();
+		co_return co_await iface.future ();
 	}
 
 	bool EntryBase::HasAvatar () const
 	{
 		return !GetVCardPhotoHash ().isEmpty ();
-	}
-
-	bool EntryBase::SupportsSize (Size size) const
-	{
-		return size == Size::Full;
 	}
 
 	Media::AudioInfo EntryBase::GetUserTune (const QString& variant) const

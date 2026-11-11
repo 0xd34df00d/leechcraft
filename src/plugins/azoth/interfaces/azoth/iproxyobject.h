@@ -11,7 +11,6 @@
 #include <optional>
 #include <QString>
 #include "azothcommon.h"
-#include "ihaveavatars.h"
 
 class QObject;
 
@@ -29,6 +28,8 @@ namespace Azoth
 {
 	struct InjectedMessage;
 	class Hooks;
+
+	class IAvatarsManager;
 
 	class IFormatterProxyObject
 	{
@@ -98,16 +99,6 @@ namespace Azoth
 		virtual void FormatLinks (QString& body) = 0;
 
 		virtual QStringList FindLinks (const QString&) = 0;
-	};
-
-	class IAvatarsManager
-	{
-	protected:
-		virtual ~IAvatarsManager () {}
-	public:
-		virtual QFuture<QImage> GetAvatar (QObject *entryObj, IHaveAvatars::Size size) = 0;
-
-		virtual QFuture<std::optional<QByteArray>> GetStoredAvatarData (const QString& entryId, IHaveAvatars::Size size) = 0;
 	};
 
 	class IProxyObject

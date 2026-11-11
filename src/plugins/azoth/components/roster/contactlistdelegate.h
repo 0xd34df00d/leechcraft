@@ -21,6 +21,8 @@ namespace Azoth
 	{
 		Q_OBJECT
 
+		AvatarsManager& Avatars_;
+
 		bool ShowAvatars_;
 		bool ShowClientIcons_;
 		bool ShowStatuses_;
@@ -34,7 +36,7 @@ namespace Azoth
 		mutable QHash<QString, QIcon> SystemIconCache_;
 		QTreeView *View_;
 	public:
-		ContactListDelegate (QTreeView* = 0);
+		explicit ContactListDelegate (AvatarsManager& avatars, QTreeView* = 0);
 
 		virtual void paint (QPainter*,
 				const QStyleOptionViewItem&, const QModelIndex&) const;

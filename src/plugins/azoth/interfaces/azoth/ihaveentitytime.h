@@ -19,6 +19,7 @@ namespace Azoth
 	public:
 		virtual ~IHaveEntityTime () {}
 
+		// TODO port to coro handling
 		/** @brief Requests updating the entry's local time.
 		 */
 		virtual void UpdateEntityTime () = 0;

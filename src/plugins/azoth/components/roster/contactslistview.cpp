@@ -7,7 +7,11 @@
  **********************************************************************/
 
 #include "contactslistview.h"
+#include <QCoreApplication>
+#include <QHelpEvent>
+#include <QToolTip>
 #include "roles.h"
+#include "interfaces/azoth/iclentry.h"
 
 namespace LC::Azoth
 {
@@ -17,5 +21,20 @@ namespace LC::Azoth
 		if (index.data (CLREntryType).value<CLEntryType> () == CLETContact)
 			rect.setLeft (0);
 		return rect;
+	}
+
+	void ContactsListView::RedisplayTooltip (const GlobalStrongestId& entryId)
+	{
+		if (!QToolTip::isVisible ())
+			return;
+
+		const auto& pos = QCursor::pos ();
+		const auto& local = viewport ()->mapFromGlobal (pos);
+		if (const auto entry = indexAt (local).data (CLRIEntry).value<ICLEntry*> ();
+			!entry || entry->GetGlobalStrongestId () != entryId)
+			return;
+
+		QHelpEvent event { QEvent::ToolTip, local, pos };
+		QCoreApplication::sendEvent (viewport (), &event);
 	}
 }

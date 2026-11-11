@@ -10,57 +10,37 @@
 
 #include <memory>
 #include <QObject>
-#include <QHash>
-#include <QCache>
-#include <QPointer>
-#include <QSet>
 #include <QImage>
+#include <util/threads/coro/corocontext.h>
 #include <interfaces/core/ihookproxy.h>
+#include "interfaces/azoth/azothcommon.h"
 
-class QStandardItem;
-
-namespace LC
+namespace LC::Azoth
 {
-namespace Azoth
-{
-	class IProxyObject;
 	class ICLEntry;
-	struct EntryStatus;
+
 	class AvatarsManager;
 
 	class CLTooltipManager : public QObject
 	{
 		Q_OBJECT
 
-		AvatarsManager * const AvatarsManager_;
-
-		typedef QHash<ICLEntry*, QList<QStandardItem*>> Entry2Items_t;
-		Entry2Items_t& Entry2Items_;
-
-		QCache<ICLEntry*, QString> Avatar2TooltipSrcCache_;
-
-		QSet<ICLEntry*> DirtyTooltips_;
+		AvatarsManager& Avatars_;
 	public:
-		CLTooltipManager (AvatarsManager*, Entry2Items_t&);
+		explicit CLTooltipManager (AvatarsManager&);
 
 		void AddEntry (ICLEntry*);
-
-		QString MakeTooltipString (ICLEntry*);
-		void RebuildTooltip (ICLEntry *entry);
+		QString GetTooltip (ICLEntry*);
 	private:
-		QString MakeTooltipString (ICLEntry*, QString);
-		void InvalidateTooltip (ICLEntry*);
+		void RedisplayTooltip (ICLEntry*);
 	private slots:
-		void remakeTooltipForSender ();
-		void handleAvatarChanged (QObject*);
-
-		void handleCacheSizeChanged ();
-		void handleAvatarsSizeChanged ();
+		void redisplayTooltipForSender ();
 	signals:
 		void hookTooltipBeforeVariants (LC::IHookProxy_ptr proxy,
 				QObject *entry) const;
 
-		void rebuiltTooltip ();
+		void redisplayTooltip (const GlobalStrongestId&);
+
+	LC_CORO_CONTEXT
 	};
-}
 }

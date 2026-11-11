@@ -17,6 +17,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/azoth/core/iavatarsmanager.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/iaccount.h>
@@ -93,20 +94,6 @@ namespace BirthdayNotifier
 		return XSD_;
 	}
 
-	namespace
-	{
-		Util::NotificationPixmapTask_t FetchNotificationAvatar (IAvatarsManager *mgr, QPointer<QObject> entryObj)
-		{
-			if (!entryObj)
-				co_return std::nullopt;
-
-			const auto image = co_await mgr->GetAvatar (entryObj, IHaveAvatars::Size::Thumbnail);
-			if (image.isNull ())
-				co_return std::nullopt;
-			co_return image;
-		}
-	}
-
 	void Plugin::NotifyBirthday (ICLEntry *entry, int days)
 	{
 		const auto& entryName = entry->GetEntryName ();
@@ -128,9 +115,7 @@ namespace BirthdayNotifier
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
 
 		const auto avatarsMgr = AzothProxy_->GetAvatarsManager ();
-		const QPointer<QObject> entryObj { entry->GetQObject () };
-
-		const auto avatarGetter = [avatarsMgr, entryObj] { return FetchNotificationAvatar (avatarsMgr, entryObj); };
+		const auto avatarGetter = [=] { return avatarsMgr->GetAvatarImage (entryId, IAvatarsManager::NotificationSize); };
 		e.Additional_ ["NotificationPixmap"] = QVariant::fromValue<Util::LazyNotificationPixmap_t> (avatarGetter);
 		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}

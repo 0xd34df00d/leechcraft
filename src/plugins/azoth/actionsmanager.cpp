@@ -11,21 +11,23 @@
 #include <algorithm>
 #include <variant>
 #include <QAction>
+#include <QBuffer>
 #include <QMenu>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QClipboard>
 #include <QFileDialog>
+#include <QStandardPaths>
 #include <QTimer>
 #include <util/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qobjectrefcast.h>
+#include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
 #include <util/sll/void.h>
 #include <util/sys/util.h>
-#include <util/threads/futures.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -556,26 +558,40 @@ namespace Azoth
 					})
 			},
 			{ "inviteToMuc", SingleEntryActor_f (InviteToMuc) },
-			{ "saveAvatar", SingleEntryActor_f ([&am] (ICLEntry *e)
+			{ "saveAvatar", SingleEntryActor_f ([&am] (ICLEntry *e) -> Util::ContextTask<void>
 					{
-						const auto entryObj = e->GetQObject ();
-						Util::Sequence (entryObj, am.GetAvatar (entryObj, IHaveAvatars::Size::Full)) >>
-								[] (const QImage& image)
-								{
-									if (image.isNull ())
-										return;
+						const auto& name = FormatNameWithAddress (*e);
+						const auto data = co_await am.GetAvatarData (e->GetGlobalStrongestId ());
+						if (!data || data->isEmpty ())
+						{
+							const auto& msg = data ?
+									tr ("%1 does not have an avatar.") :
+									tr ("Unable to get %1's avatar.");
+							QMessageBox::warning (nullptr, tr ("Save avatar"), msg.arg (name));
+							co_return;
+						}
 
-									auto filename = QFileDialog::getSaveFileName (nullptr,
-											ActionsManager::tr ("Save avatar"));
-									if (filename.isEmpty ())
-										return;
+						QBuffer dataBuf;
+						dataBuf.setData (*data);
+						dataBuf.open (QIODevice::ReadOnly);
 
-									const auto& supported = Util::HasSupportedImageExtension (filename);
-									if (!supported)
-										filename += ".png";
+						const QImageReader reader { &dataBuf };
+						const auto& extension = reader.format ().isEmpty () ? "bin" : reader.format ().toLower ();
+						const auto filename = QFileDialog::getSaveFileName (nullptr,
+								tr ("Save avatar"),
+								QStandardPaths::writableLocation (QStandardPaths::DownloadLocation) + "/avatar."_qs + extension,
+								tr ("Images (*.%1)").arg (extension));
+						if (filename.isEmpty ())
+							co_return;
 
-									image.save (filename);
-								};
+						QFile file { filename };
+						if (!file.open (QIODevice::WriteOnly))
+						{
+							QMessageBox::critical (nullptr, tr ("Save avatar"), tr ("Unable to open %1 for writing: %2.").arg (filename, file.errorString ()));
+							co_return;
+						}
+						if (file.write (*data) != data->size () || !file.flush ())
+							QMessageBox::critical (nullptr, tr ("Save avatar"), tr ("Unable to write to %1: %2.").arg (filename, file.errorString ()));
 					}) },
 			{ "vcard", SingleEntryActor_f ([] (ICLEntry *e) { e->ShowInfo (); }) },
 			{ "sep_beforemuc", {} },
