@@ -377,7 +377,7 @@ namespace LC::Azoth::Acetamide
 			{ "admin", tr ("Admin") },
 			{ "owner", tr ("Owner") },
 		};
-		return translations.value (id, id);
+		return translations.value (id, QString::fromUtf8 (id));
 	}
 
 	bool ChannelCLEntry::IsLessByPerm (const ICLEntry& p1, const ICLEntry& p2) const

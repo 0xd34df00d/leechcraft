@@ -489,7 +489,7 @@ namespace Xoox
 
 	QString RoomCLEntry::GetUserString (const QByteArray& id) const
 	{
-		return Translations_.value (id, id);
+		return Translations_.value (id, QString::fromUtf8 (id));
 	}
 
 	QWidget* RoomCLEntry::GetConfigurationWidget ()
