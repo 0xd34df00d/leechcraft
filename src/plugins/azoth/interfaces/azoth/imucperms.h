@@ -169,12 +169,12 @@ namespace Azoth
 		 * \em permClass on the user identified by the given \em userId.
 		 * The user may or may not be present in the room at the moment.
 		 * The \em userId should be the same as would be returned by
-		 * ICLEntry::GetHumanReadableId() if the user was present in the
+		 * ICLEntry::GetHumanReadableAddress() if the user was present in the
 		 * room.
 		 *
 		 * It is OK for the function to do nothing.
 		 *
-		 * @param[in] userId The ID of the user to change the permission
+		 * @param[in] userAddress The ID of the user to change the permission
 		 * for.
 		 * @param[in] permClass The permission class to update.
 		 * @param[in] targetPerm The target permission in the given
@@ -183,10 +183,10 @@ namespace Azoth
 		 *
 		 * @sa SetPerm()
 		 */
-		virtual void TrySetPerm (const QString& userId,
+		virtual void TrySetPerm (const QString& userAddress,
 				const QByteArray& permClass, const QByteArray& targetPerm, const QString& reason)
 		{
-			Q_UNUSED (userId)
+			Q_UNUSED (userAddress)
 			Q_UNUSED (permClass)
 			Q_UNUSED (targetPerm)
 			Q_UNUSED (reason)

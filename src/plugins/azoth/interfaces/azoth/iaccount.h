@@ -198,7 +198,7 @@ namespace Azoth
 		/** @brief Requests authorization from the given entry.
 		 *
 		 * entry is a human-readable identifier of the remote, as
-		 * returned by ICLEntry::GetHumanReadableId().
+		 * returned by ICLEntry::GetHumanReadableAddress().
 		 *
 		 * If applicable and msg is a non-empty string, the msg should
 		 * be sent to the entry as the message sent along with the

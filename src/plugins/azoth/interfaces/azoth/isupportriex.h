@@ -47,12 +47,12 @@ namespace Azoth
 		 * This field must be non-empty.
 		 *
 		 * This is semantically equivalent to the return value of the
-		 * ICLEntry::GetHumanReadableId(). The same semantics apply:
+		 * `ICLEntry::GetHumanReadableAddress()`. The same semantics apply:
 		 * basically, this ID must uniquely identify the target user
 		 * in the protocol, but there is no need to make it unique
 		 * LeechCraft-wide.
 		 *
-		 * @sa ICLEntry::GetHumanReadableId().
+		 * @sa ICLEntry::GetHumanReadableAddress()
 		 */
 		QString Id_;
 

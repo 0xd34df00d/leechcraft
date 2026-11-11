@@ -163,12 +163,6 @@ namespace LC::Azoth
 			return GetGlobalStrongestId ().ToString ();
 		}
 
-		[[deprecated("Use GetConventionalId()")]]
-		QString GetHumanReadableId () const
-		{
-			return GetConventionalId ().ToString ();
-		}
-
 		/** @brief Returns the global persistent ID of this entry.
 		 *
 		 * The persistent ID:
