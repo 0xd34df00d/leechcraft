@@ -544,7 +544,7 @@ namespace LC::Azoth::Sarin
 		co_await Util::AddContext { Util::CoroContext::Of (*dialog) };
 
 		const auto& toxId = co_await Tox_->Run (&ToxW::GetToxId);
-		dialog->setToxId (QString::fromLatin1 (toxId));
+		dialog->setToxId (toxId);
 	}
 
 	void ToxAccount::HandleGotFriendRequest (Pubkey pubkey, const QString& msg)

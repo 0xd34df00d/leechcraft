@@ -44,22 +44,9 @@ namespace LC::Azoth::Sarin
 		return {};
 	}
 
-	QByteArray ToxId2HR (const uint8_t *address, size_t Size)
+	QString ToxId2HR (const uint8_t *address, size_t Size)
 	{
-		QByteArray result;
-		auto toHexChar = [] (uint8_t num) -> char
-		{
-			return num >= 10 ? (num - 10 + 'A') : (num + '0');
-		};
-
-		for (size_t i = 0; i < Size; ++i)
-		{
-			const auto num = address [i];
-			result += toHexChar ((num & 0xf0) >> 4);
-			result += toHexChar (num & 0xf);
-		}
-
-		return result;
+		return QString::fromLatin1 (QByteArray::fromRawData (std::bit_cast<const char*> (address), Size).toHex ().toUpper ());
 	}
 
 	QString FromToxStr (const uint8_t *data, size_t size)

@@ -39,7 +39,7 @@ namespace LC::Azoth::Sarin
 		return Tox_.get ();
 	}
 
-	QByteArray ToxW::GetToxId () const
+	QString ToxW::GetToxId () const
 	{
 		std::array<uint8_t, TOX_ADDRESS_SIZE> address {};
 		tox_self_get_address (Tox_.get (), address.data ());

@@ -30,10 +30,10 @@ namespace LC::Azoth::Sarin
 	std::optional<uint32_t> GetFriendId (const Tox *tox, Pubkey pubkey);
 	std::optional<Pubkey> GetFriendPubkey (const Tox *tox, uint32_t friendId);
 
-	QByteArray ToxId2HR (const uint8_t *address, size_t Size);
+	QString ToxId2HR (const uint8_t *address, size_t Size);
 
 	template<size_t Size>
-	QByteArray ToxId2HR (const std::array<uint8_t, Size>& address)
+	QString ToxId2HR (const std::array<uint8_t, Size>& address)
 	{
 		return ToxId2HR (address.data (), Size);
 	}

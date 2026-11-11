@@ -50,7 +50,7 @@ namespace LC::Azoth::Sarin
 		Tox* GetTox ();
 		void SaveState ();
 
-		QByteArray GetToxId () const;
+		QString GetToxId () const;
 
 		bool SetStatus (const EntryStatus&);
 
