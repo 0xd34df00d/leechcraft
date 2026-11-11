@@ -16,7 +16,7 @@ namespace LC::AdvancedNotifications
 
 	struct FieldMatch
 	{
-		QString PluginID_ {};
+		QByteArray PluginID_ {};
 		QString Name_;
 
 		QMetaType::Type Type_ = QMetaType::UnknownType;

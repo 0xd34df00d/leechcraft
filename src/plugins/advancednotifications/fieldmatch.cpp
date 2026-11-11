@@ -106,7 +106,7 @@ namespace LC::AdvancedNotifications
 	void FieldMatch::Save (QDataStream& out) const
 	{
 		out << static_cast<quint8> (1)
-				<< PluginID_
+				<< QString::fromUtf8 (PluginID_)
 				<< Name_
 				<< Type_;
 		Util::Visit (Matcher_,
@@ -125,11 +125,13 @@ namespace LC::AdvancedNotifications
 		}
 
 		FieldMatch m;
+		QString pluginId;
 		QVariantMap map;
-		in >> m.PluginID_
+		in >> pluginId
 			>> m.Name_
 			>> m.Type_
 			>> map;
+		m.PluginID_ = pluginId.toUtf8 ();
 		m.Matcher_ = FromMap (m.Type_, map)
 				.transform ([] (const AN::ValueMatcher& m) { return ValueMatcherOrData { m }; })
 				.value_or (map);

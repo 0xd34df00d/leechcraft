@@ -75,7 +75,7 @@ namespace LC::AdvancedNotifications
 
 	void MatchConfigDialog::SetFieldMatch (const FieldMatch& match)
 	{
-		const int fieldIdx = SelectPlugin (match.PluginID_.toLatin1 (), match.Name_);
+		const int fieldIdx = SelectPlugin (match.PluginID_, match.Name_);
 		if (fieldIdx == -1)
 		{
 			Ui_.FieldName_->setCurrentIndex (-1);

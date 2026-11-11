@@ -225,7 +225,7 @@ namespace LC::AdvancedNotifications
 			// TODO check which plugins emit value matcher as QVariant and not AN::ValueMatcher
 
 			rule.AddFieldMatch ({
-						.PluginID_ = standard ? QString {} : sender,
+						.PluginID_ = standard ? QByteArray {} : sender,
 						.Name_ = field.ID_,
 						.Type_ = field.Type_,
 						.Matcher_ = fieldValVar.value<AN::ValueMatcher> (),

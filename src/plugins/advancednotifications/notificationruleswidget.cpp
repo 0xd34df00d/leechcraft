@@ -281,7 +281,7 @@ namespace LC::AdvancedNotifications
 
 		QList<QStandardItem*> MatchToRow (const FieldMatch& match)
 		{
-			const auto& fields = Util::GetStdANFields ({}) + GetPluginFields (match.PluginID_.toUtf8 ());
+			const auto& fields = Util::GetStdANFields ({}) + GetPluginFields (match.PluginID_);
 			const auto pos = std::ranges::find_if (fields,
 					[&] (const auto& field) { return field.ID_ == match.Name_; });
 
