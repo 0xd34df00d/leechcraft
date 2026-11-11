@@ -23,11 +23,6 @@ namespace Azoth
 
 		AvatarsManager& Avatars_;
 
-		bool ShowAvatars_;
-		bool ShowClientIcons_;
-		bool ShowStatuses_;
-		bool HighlightGroups_;
-		int ContactHeight_;
 		QString ActivityIconset_;
 		QString MoodIconset_;
 		QString SystemIconset_;
@@ -37,6 +32,12 @@ namespace Azoth
 		mutable QHash<QString, QIcon> SystemIconCache_;
 
 		QTreeView *View_;
+
+		int ContactHeight_ = 24;
+		bool ShowAvatars_ = true;
+		bool ShowClientIcons_ = true;
+		bool ShowStatuses_ = true;
+		bool HighlightGroups_ = true;
 	public:
 		explicit ContactListDelegate (AvatarsManager& avatars, QTreeView* = 0);
 
@@ -51,15 +52,6 @@ namespace Azoth
 				QStyleOptionViewItem, const QModelIndex&) const;
 
 		QList<QIcon> GetContactIcons (const QModelIndex&, ICLEntry*, const QStringList&) const;
-	private slots:
-		void handleShowAvatarsChanged ();
-		void handleShowClientIconsChanged ();
-		void handleActivityIconsetChanged ();
-		void handleMoodIconsetChanged ();
-		void handleSystemIconsetChanged ();
-		void handleShowStatusesChanged ();
-		void handleHighlightGroupsChanged ();
-		void handleContactHeightChanged ();
 	signals:
 		void hookCollectContactIcons (LC::IHookProxy_ptr, QObject*, QList<QIcon>&) const;
 	};

@@ -45,34 +45,53 @@ namespace Azoth
 	ContactListDelegate::ContactListDelegate (AvatarsManager& avatars, QTreeView* parent)
 	: QStyledItemDelegate (parent)
 	, Avatars_ (avatars)
-	, ContactHeight_ (24)
 	, View_ (parent)
 	{
-		handleShowAvatarsChanged ();
-		handleShowClientIconsChanged ();
-		handleActivityIconsetChanged ();
-		handleMoodIconsetChanged ();
-		handleSystemIconsetChanged ();
-		handleShowStatusesChanged ();
-		handleHighlightGroupsChanged ();
-		handleContactHeightChanged ();
+		XmlSettingsManager::Instance ().RegisterObject ("ShowAvatars", this,
+				[this] (bool show) { ShowAvatars_ = show; });
+		XmlSettingsManager::Instance ().RegisterObject ("ShowClientIcons", this,
+				[this] (bool show) { ShowClientIcons_ = show; });
+		XmlSettingsManager::Instance ().RegisterObject ("ActivityIcons", this,
+				[this] (const QString& iconset)
+				{
+					ActivityIconCache_.clear ();
+					ActivityIconset_ = iconset;
+				});
+		XmlSettingsManager::Instance ().RegisterObject ("MoodIcons", this,
+				[this] (const QString& iconset)
+				{
+					MoodIconCache_.clear ();
+					MoodIconset_ = iconset;
+				});
+		XmlSettingsManager::Instance ().RegisterObject ("SystemIcons", this,
+				[this] (const QString& iconset)
+				{
+					SystemIconCache_.clear ();
+					SystemIconset_ = iconset;
+				});
+		XmlSettingsManager::Instance ().RegisterObject ("ShowStatuses", this,
+				[this] (bool show) { ShowStatuses_ = show; });
+		XmlSettingsManager::Instance ().RegisterObject ("HighlightGroups", this,
+				[this] (bool highlight) { HighlightGroups_ = highlight; });
+		XmlSettingsManager::Instance ().RegisterObject ("RosterContactHeight", this,
+				[this] (int height)
+				{
+					ContactHeight_ = height <= 0 ? 24 : height;
+					View_->setIconSize ({ ContactHeight_, ContactHeight_ });
+				});
 
-		XmlSettingsManager::Instance ().RegisterObject ("ShowAvatars",
-				this, "handleShowAvatarsChanged");
-		XmlSettingsManager::Instance ().RegisterObject ("ShowClientIcons",
-				this, "handleShowClientIconsChanged");
-		XmlSettingsManager::Instance ().RegisterObject ("ActivityIcons",
-				this, "handleActivityIconsetChanged");
-		XmlSettingsManager::Instance ().RegisterObject ("MoodIcons",
-				this, "handleMoodIconsetChanged");
-		XmlSettingsManager::Instance ().RegisterObject ("SystemIcons",
-				this, "handleSystemIconsetChanged");
-		XmlSettingsManager::Instance ().RegisterObject ("ShowStatuses",
-				this, "handleShowStatusesChanged");
-		XmlSettingsManager::Instance ().RegisterObject ("HighlightGroups",
-				this, "handleHighlightGroupsChanged");
-		XmlSettingsManager::Instance ().RegisterObject ("RosterContactHeight",
-				this, "handleContactHeightChanged");
+		XmlSettingsManager::Instance ().RegisterObject ({
+					"ShowAvatars",
+					"ShowClientIcons",
+					"ActivityIcons",
+					"AffIcons",
+					"MoodIcons",
+					"SystemIcons",
+					"ShowStatuses",
+					"HighlightGroups",
+				},
+				this,
+				[this] { View_->viewport ()->update (); });
 
 		Core::Instance ().RegisterHookable (this);
 	}
@@ -468,73 +487,6 @@ namespace Azoth
 		clientIcons.removeIf (std::mem_fn (&QIcon::isNull));
 
 		return clientIcons;
-	}
-
-	void ContactListDelegate::handleShowAvatarsChanged ()
-	{
-		ShowAvatars_ = XmlSettingsManager::Instance ()
-				.property ("ShowAvatars").toBool ();
-	}
-
-	void ContactListDelegate::handleShowClientIconsChanged ()
-	{
-		ShowClientIcons_ = XmlSettingsManager::Instance ()
-				.property ("ShowClientIcons").toBool ();
-	}
-
-	void ContactListDelegate::handleActivityIconsetChanged ()
-	{
-		ActivityIconCache_.clear ();
-
-		ActivityIconset_ = XmlSettingsManager::Instance ()
-				.property ("ActivityIcons").toString ();
-	}
-
-	void ContactListDelegate::handleMoodIconsetChanged ()
-	{
-		MoodIconCache_.clear ();
-
-		MoodIconset_ = XmlSettingsManager::Instance ()
-				.property ("MoodIcons").toString ();
-	}
-
-	void ContactListDelegate::handleSystemIconsetChanged ()
-	{
-		SystemIconCache_.clear ();
-
-		SystemIconset_ = XmlSettingsManager::Instance ()
-				.property ("SystemIcons").toString ();
-	}
-
-	void ContactListDelegate::handleShowStatusesChanged ()
-	{
-		ShowStatuses_ = XmlSettingsManager::Instance ()
-				.property ("ShowStatuses").toBool ();
-
-		View_->viewport ()->update ();
-		View_->update ();
-	}
-
-	void ContactListDelegate::handleHighlightGroupsChanged ()
-	{
-		HighlightGroups_ = XmlSettingsManager::Instance ()
-				.property ("HighlightGroups").toBool ();
-
-		View_->viewport ()->update ();
-		View_->update ();
-	}
-
-	void ContactListDelegate::handleContactHeightChanged ()
-	{
-		ContactHeight_ = XmlSettingsManager::Instance ()
-				.property ("RosterContactHeight").toInt ();
-		if (ContactHeight_ <= 0)
-			ContactHeight_ = 24;
-
-		View_->setIconSize (QSize (ContactHeight_, ContactHeight_));
-
-		View_->viewport ()->update ();
-		View_->update ();
 	}
 }
 }
