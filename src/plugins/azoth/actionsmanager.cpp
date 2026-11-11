@@ -576,7 +576,9 @@ namespace Azoth
 						dataBuf.open (QIODevice::ReadOnly);
 
 						const QImageReader reader { &dataBuf };
-						const auto& extension = reader.format ().isEmpty () ? "bin" : reader.format ().toLower ();
+						const auto& extension = reader.format ().isEmpty () ?
+								"bin"_qs :
+								QString::fromLatin1 (reader.format ().toLower ());
 						const auto filename = QFileDialog::getSaveFileName (nullptr,
 								tr ("Save avatar"),
 								QStandardPaths::writableLocation (QStandardPaths::DownloadLocation) + "/avatar."_qs + extension,

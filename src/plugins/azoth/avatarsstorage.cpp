@@ -28,7 +28,7 @@ namespace LC::Azoth
 		QString GetFilename (const GlobalStrongestId& entryId)
 		{
 			const auto bytes = SerializeBytes (entryId);
-			return QCryptographicHash::hash (bytes, QCryptographicHash::Sha1).toHex () + ".bin"_qs;
+			return QString::fromLatin1 (QCryptographicHash::hash (bytes, QCryptographicHash::Sha1).toHex ()) + ".bin"_qs;
 		}
 	}
 
