@@ -135,7 +135,7 @@ namespace Azoth
 
 	QStringList Plugin::Provides () const
 	{
-		return QStringList (GetUniqueID ());
+		return { QString::fromUtf8 (GetUniqueID ()) };
 	}
 
 	QSet<QByteArray> Plugin::GetExpectedPluginClasses () const

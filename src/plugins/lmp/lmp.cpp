@@ -256,7 +256,7 @@ namespace LMP
 
 		if (e.Mime_ == Mimes::DataFilterRequest)
 		{
-			if (!e.Additional_ ["DataFilter"].toString ().startsWith (GetUniqueID ()))
+			if (!e.Additional_ ["DataFilter"].toByteArray ().startsWith (GetUniqueID ()))
 				return {};
 
 			if (e.Entity_.typeId () != QMetaType::QString)
