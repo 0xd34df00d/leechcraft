@@ -37,4 +37,10 @@ namespace LC::Azoth
 		QHelpEvent event { QEvent::ToolTip, local, pos };
 		QCoreApplication::sendEvent (viewport (), &event);
 	}
+
+	void ContactsListView::drawBranches (QPainter *painter, const QRect& rect, const QModelIndex& index) const
+	{
+		if (index.data (CLREntryType).value<CLEntryType> () != CLETContact)
+			QTreeView::drawBranches (painter, rect, index);
+	}
 }
