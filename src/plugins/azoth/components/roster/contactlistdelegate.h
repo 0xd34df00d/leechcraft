@@ -31,17 +31,17 @@ namespace Azoth
 		QString ActivityIconset_;
 		QString MoodIconset_;
 		QString SystemIconset_;
+
 		mutable QHash<QString, QIcon> ActivityIconCache_;
 		mutable QHash<QString, QIcon> MoodIconCache_;
 		mutable QHash<QString, QIcon> SystemIconCache_;
+
 		QTreeView *View_;
 	public:
 		explicit ContactListDelegate (AvatarsManager& avatars, QTreeView* = 0);
 
-		virtual void paint (QPainter*,
-				const QStyleOptionViewItem&, const QModelIndex&) const;
-		virtual QSize sizeHint (const QStyleOptionViewItem&,
-				const QModelIndex&) const;
+		void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const override;
+		QSize sizeHint (const QStyleOptionViewItem&, const QModelIndex&) const override;
 	private:
 		void DrawAccount (QPainter*,
 				QStyleOptionViewItem, const QModelIndex&) const;
@@ -51,8 +51,6 @@ namespace Azoth
 				QStyleOptionViewItem, const QModelIndex&) const;
 
 		QList<QIcon> GetContactIcons (const QModelIndex&, ICLEntry*, const QStringList&) const;
-
-		void LoadSystemIcon (const QString&, QList<QIcon>&) const;
 	private slots:
 		void handleShowAvatarsChanged ();
 		void handleShowClientIconsChanged ();

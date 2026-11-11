@@ -15,6 +15,7 @@
 #include <QAbstractProxyModel>
 #include <QTreeView>
 #include <util/sll/qobjectrefcast.h>
+#include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
 #include <util/sys/resourceloader.h>
 #include <util/xpc/defaulthookproxy.h>
@@ -376,129 +377,97 @@ namespace Azoth
 		}
 	}
 
+	namespace
+	{
+		QIcon LoadIcon (QHash<QString, QIcon>& cache,
+				ResourcesManager::LoaderType loaderType,
+				const QString& iconset,
+				const QString& iconName)
+		{
+			const auto& fullName = iconset + '/' + iconName;
+			auto pos = cache.find (fullName);
+			if (pos == cache.end ())
+			{
+				const auto loader = ResourcesManager::Instance ().GetResourceLoader (loaderType);
+				pos = cache.insert (fullName, QIcon { loader->GetIconPath (fullName) });
+			}
+			return *pos;
+		}
+	}
+
 	QList<QIcon> ContactListDelegate::GetContactIcons (const QModelIndex& index,
 			ICLEntry *entry, const QStringList& vars) const
 	{
 		QList<QIcon> clientIcons;
+		clientIcons.reserve (vars.size () + 4);
+
+		if (entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
+		{
+			const auto& aff = index.data (CLRAffiliation).toByteArray ();
+			clientIcons.prepend (ResourcesManager::Instance ().GetAffIcon (aff));
+		}
+
+		if (!vars.isEmpty ())
+		{
+			if (const auto ihca = qobject_cast<IHaveContactActivity*> (entry->GetQObject ()))
+			{
+				QString iconName;
+				for (const auto& var : vars)
+				{
+					const auto& info = ihca->GetUserActivity (var);
+					iconName = GetActivityIconName (info.General_, info.Specific_);
+					if (!iconName.isEmpty ())
+						break;
+				}
+
+				if (!iconName.isEmpty ())
+					clientIcons << LoadIcon (ActivityIconCache_, ResourcesManager::RLTActivityIconLoader, ActivityIconset_, iconName);
+			}
+			if (const auto ihcm = qobject_cast<IHaveContactMood*> (entry->GetQObject ()))
+			{
+				QString iconName;
+				for (const auto& var : vars)
+				{
+					iconName = ihcm->GetUserMood (var).Mood_;
+					if (!iconName.isEmpty ())
+						break;
+				}
+				if (!iconName.isEmpty ())
+					clientIcons << LoadIcon (MoodIconCache_, ResourcesManager::RLTMoodIconLoader, MoodIconset_, iconName);
+			}
+			if (const auto ihct = qobject_cast<IHaveContactTune*> (entry->GetQObject ()))
+			{
+				if (std::ranges::any_of (vars,
+						[ihct] (const QString& var)
+						{
+							const auto& info = ihct->GetUserTune (var);
+							return !info.Artist_.isEmpty () || !info.Album_.isEmpty ();
+						}))
+					clientIcons << LoadIcon (SystemIconCache_, ResourcesManager::RLTSystemIconLoader, SystemIconset_, "notification_roster_tune"_qs);
+			}
+
+			if (auto geoloc = qobject_cast<ISupportGeolocation*> (entry->GetParentAccount ()->GetQObject ()))
+			{
+				if (const auto& info = geoloc->GetUserGeolocationInfo (entry->GetQObject (), vars.value (0));
+					!info.isEmpty ())
+					clientIcons << LoadIcon (SystemIconCache_, ResourcesManager::RLTSystemIconLoader, SystemIconset_, "geolocation"_qs);
+			}
+		}
 
 		const bool isMUC = entry->GetEntryType () == ICLEntry::EntryType::MUC;
-
 		if (!isMUC && ShowClientIcons_)
 		{
 			const auto& iconsMap = ResourcesManager::Instance ().GetClientIconForEntry (entry);
 			for (int i = 0; i < std::min (static_cast<int> (vars.size ()), 4); ++i)
 				clientIcons << iconsMap [vars.at (i)];
-
-			clientIcons.erase (std::remove_if (clientIcons.begin (), clientIcons.end (),
-						[] (const QIcon& icon) { return icon.isNull (); }),
-					clientIcons.end ());
-		}
-
-		if (entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
-		{
-			const QByteArray& aff = index.data (CLRAffiliation).toByteArray ();
-			const QIcon& icon = ResourcesManager::Instance ().GetAffIcon (aff);
-
-			if (!icon.isNull ())
-				clientIcons.prepend (icon);
-		}
-
-		if (vars.isEmpty ())
-		{
-			emit hookCollectContactIcons (IHookProxy_ptr { new Util::DefaultHookProxy },
-					entry->GetQObject (), clientIcons);
-			return clientIcons;
-		}
-
-		if (const auto ihca = qobject_cast<IHaveContactActivity*> (entry->GetQObject ()))
-		{
-			QString iconName;
-			for (const auto& var : vars)
-			{
-				const auto& info = ihca->GetUserActivity (var);
-				iconName = GetActivityIconName (info.General_, info.Specific_);
-				if (!iconName.isEmpty ())
-				{
-					iconName.prepend (ActivityIconset_ + '/');
-					break;
-				}
-			}
-
-			auto icon = ActivityIconCache_ [iconName];
-			if (icon.isNull ())
-				icon = QIcon (ResourcesManager::Instance ()
-						.GetResourceLoader (ResourcesManager::RLTActivityIconLoader)->
-								GetIconPath (iconName));
-
-			if (!icon.isNull ())
-			{
-				clientIcons.prepend (icon);
-				ActivityIconCache_ [iconName] = icon;
-			}
-		}
-		if (const auto ihcm = qobject_cast<IHaveContactMood*> (entry->GetQObject ()))
-		{
-			QString iconName;
-			for (const auto& var : vars)
-			{
-				iconName = ihcm->GetUserMood (var).Mood_;
-				if (!iconName.isEmpty ())
-				{
-					iconName [0] = iconName.at (0).toUpper ();
-					iconName.prepend (MoodIconset_ + '/');
-					break;
-				}
-			}
-
-			auto icon = MoodIconCache_ [iconName];
-			if (icon.isNull ())
-				icon = QIcon (ResourcesManager::Instance ().GetResourceLoader (ResourcesManager::RLTMoodIconLoader)->GetIconPath (iconName));
-
-			if (!icon.isNull ())
-			{
-				clientIcons.prepend (icon);
-				MoodIconCache_ [iconName] = icon;
-			}
-		}
-		if (const auto ihct = qobject_cast<IHaveContactTune*> (entry->GetQObject ()))
-		{
-			if (std::any_of (vars.begin (), vars.end (),
-					[ihct] (const QString& var)
-					{
-						const auto& info = ihct->GetUserTune (var);
-						return !info.Artist_.isEmpty () || !info.Album_.isEmpty ();
-					}))
-				LoadSystemIcon ("/notification_roster_tune", clientIcons);
-		}
-
-		if (auto geoloc = qobject_cast<ISupportGeolocation*> (entry->GetParentAccount ()->GetQObject ()))
-		{
-			const auto& info = geoloc->GetUserGeolocationInfo (entry->GetQObject (), vars.value (0));
-			if (!info.isEmpty ())
-				LoadSystemIcon ("/geolocation", clientIcons);
 		}
 
 		emit hookCollectContactIcons (IHookProxy_ptr { new Util::DefaultHookProxy },
 				entry->GetQObject (), clientIcons);
 
+		clientIcons.removeIf (std::mem_fn (&QIcon::isNull));
+
 		return clientIcons;
-	}
-
-	void ContactListDelegate::LoadSystemIcon (const QString& name,
-			QList<QIcon>& clientIcons) const
-	{
-		const QString& iconName = SystemIconset_ + name;
-		QIcon icon = SystemIconCache_ [iconName];
-		if (icon.isNull ())
-			icon = QIcon (ResourcesManager::Instance ()
-					.GetResourceLoader (ResourcesManager::RLTSystemIconLoader)->
-							GetIconPath (iconName));
-
-		if (!icon.isNull ())
-		{
-			clientIcons.prepend (icon);
-			SystemIconCache_ [iconName] = icon;
-		}
 	}
 
 	void ContactListDelegate::handleShowAvatarsChanged ()
