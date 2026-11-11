@@ -49,9 +49,9 @@ namespace Azoth
 		Ui_.ContactsView_->sortByColumn (sortParams.Column_, sortParams.Order_);
 
 		connect (dynamic_cast<QObject*> (account),
-				SIGNAL (serverHistoryFetched (QModelIndex, QByteArray, SrvHistMessages_t)),
+				SIGNAL (serverHistoryFetched (QModelIndex, QString, SrvHistMessages_t)),
 				this,
-				SLOT (handleFetched (QModelIndex, QByteArray, SrvHistMessages_t)));
+				SLOT (handleFetched (QModelIndex, QString, SrvHistMessages_t)));
 
 		connect (Ui_.ContactsFilter_,
 				SIGNAL (textChanged (QString)),
@@ -103,7 +103,7 @@ namespace Azoth
 	}
 
 	void ServerHistoryWidget::handleFetched (const QModelIndex& index,
-			const QByteArray& startId, const SrvHistMessages_t& messages)
+			const QString& startId, const SrvHistMessages_t& messages)
 	{
 		if (index.row () != ContactsFilter_->mapToSource (Ui_.ContactsView_->currentIndex ()).row ())
 			return;

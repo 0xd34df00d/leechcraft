@@ -218,7 +218,7 @@ namespace Xoox
 		bool HasFeature (ServerHistoryFeature) const override;
 		void OpenServerHistoryConfiguration () override;
 		QAbstractItemModel* GetServerContactsModel () const override;
-		void FetchServerHistory (const QModelIndex&, const QByteArray&, int) override;
+		void FetchServerHistory (const QModelIndex&, const QString&, int) override;
 		DefaultSortParams GetSortParams () const override;
 		Util::ContextTask<QList<History::SomeEntryWithMessages>> FetchServerHistory (const std::optional<QDateTime>&) override;
 
@@ -267,7 +267,7 @@ namespace Xoox
 
 		void serverPasswordUpdated (const QString&) override;
 
-		void serverHistoryFetched (const QModelIndex&, const QByteArray&, const SrvHistMessages_t&) override;
+		void serverHistoryFetched (const QModelIndex&, const QString&, const SrvHistMessages_t&) override;
 
 		void sslErrors (const QList<QSslError>&, const ICanHaveSslErrors::ISslErrorsReaction_ptr&) override;
 

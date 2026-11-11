@@ -27,7 +27,7 @@ namespace Azoth
 	struct SrvHistMessage
 	{
 		IMessage::Direction Dir_;
-		QByteArray Id_;
+		QString Id_;
 		QString Nick_;
 		QString Body_;
 		QDateTime TS_;
@@ -93,7 +93,7 @@ namespace Azoth
 		 * @param[in] contact The contact index from the
 		 * GetServerContactsModel() to fetch history with.
 		 * @param[in] startId The ID of the message around which to fetch
-		 * messages, or an empty array if most recent messages are
+		 * messages, or an empty string if most recent messages are
 		 * wanted.
 		 * @param[in] count The absolute value of \em count is the number
 		 * of messages to fetch. If the value is positive, then messages
@@ -103,7 +103,7 @@ namespace Azoth
 		 * @sa serverHistoryFetched()
 		 */
 		virtual void FetchServerHistory (const QModelIndex& contact,
-				const QByteArray& startId, int count) = 0;
+				const QString& startId, int count) = 0;
 
 		virtual DefaultSortParams GetSortParams () const = 0;
 
@@ -128,7 +128,7 @@ namespace Azoth
 		 * empty). Expected to be sorted in ascending order.
 		 */
 		virtual void serverHistoryFetched (const QModelIndex& contact,
-				const QByteArray& startId, const SrvHistMessages_t& messages) = 0;
+				const QString& startId, const SrvHistMessages_t& messages) = 0;
 	};
 }
 }

@@ -212,7 +212,7 @@ namespace Xoox
 				this,
 				[this] (const QString& jid, const QString& id, const SrvHistMessages_t& messages)
 				{
-					emit serverHistoryFetched (Xep0313ModelMgr_->Jid2Index (jid), id.toUtf8 (), messages);
+					emit serverHistoryFetched (Xep0313ModelMgr_->Jid2Index (jid), id, messages);
 				});
 
 		CarbonsAction_->setChecked (SettingsHolder_->IsMessageCarbonsEnabled ());
@@ -588,7 +588,7 @@ namespace Xoox
 	}
 
 	void GlooxAccount::FetchServerHistory (const QModelIndex& index,
-			const QByteArray& startId, int count)
+			const QString& startId, int count)
 	{
 		const auto& jid = Xep0313ModelMgr_->Index2Jid (index);
 		ClientConnection_->GetXep0313Manager ()->RequestHistory (jid, startId, count);

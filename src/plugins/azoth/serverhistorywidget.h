@@ -30,8 +30,8 @@ namespace Azoth
 
 		IHaveServerHistory * const IHSH_;
 
-		QByteArray CurrentId_;
-		QByteArray MaxId_;
+		QString CurrentId_;
+		QString MaxId_;
 		int FirstMsgCount_ = -1;
 
 		QSortFilterProxyModel * const ContactsFilter_;
@@ -45,7 +45,7 @@ namespace Azoth
 	private:
 		int GetReqMsgCount () const;
 	private slots:
-		void handleFetched (const QModelIndex&, const QByteArray&, const SrvHistMessages_t&);
+		void handleFetched (const QModelIndex&, const QString&, const SrvHistMessages_t&);
 		void on_ContactsView__clicked (const QModelIndex&);
 		void on_MessagesView__anchorClicked (const QUrl&);
 		void navigatePrevious ();
