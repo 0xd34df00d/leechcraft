@@ -195,16 +195,16 @@ namespace Launchy
 				if (!(tc.Features_ & TabFeature::TFOpenableByRequest))
 					continue;
 
-				const auto& iconId = tc.TabClass_;
-				IconsProvider_->AddIcon (iconId, tc.Icon_);
+				const auto& id = QString::fromUtf8 (tc.TabClass_);
+				IconsProvider_->AddIcon (id, tc.Icon_);
 
 				auto item = new QStandardItem;
 				item->setData (tc.VisibleName_, ModelRoles::ItemName);
 				item->setData (tc.Description_, ModelRoles::ItemDescription);
-				item->setData (iconId, ModelRoles::ItemIcon);
+				item->setData (id, ModelRoles::ItemIcon);
 				item->setData (QStringList ("X-LeechCraft"), ModelRoles::ItemNativeCategories);
-				item->setData (tc.TabClass_, ModelRoles::ItemID);
-				item->setData (FavManager_->IsFavorite (tc.TabClass_), ModelRoles::IsItemFavorite);
+				item->setData (id, ModelRoles::ItemID);
+				item->setData (FavManager_->IsFavorite (id), ModelRoles::IsItemFavorite);
 				item->setData (false, ModelRoles::IsItemRecent);
 
 				auto executor = [iht, tc] { iht->TabOpenRequested (tc.TabClass_); };
