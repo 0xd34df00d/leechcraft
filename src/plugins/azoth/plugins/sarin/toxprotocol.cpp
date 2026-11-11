@@ -11,6 +11,7 @@
 #include <QSettings>
 #include <QCoreApplication>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 #include "accregisterdetailspage.h"
 #include "groupjoinwidget.h"
 #include "toxaccount.h"
@@ -63,9 +64,9 @@ namespace LC::Azoth::Sarin
 		return {};
 	}
 
-	QByteArray ToxProtocol::GetProtocolId () const
+	QString ToxProtocol::GetProtocolId () const
 	{
-		return "org.LeechCraft.Azoth.Tox";
+		return "org.LeechCraft.Azoth.Tox"_qs;
 	}
 
 	QList<QWidget*> ToxProtocol::GetAccountRegistrationWidgets (IProtocol::AccountAddOptions)

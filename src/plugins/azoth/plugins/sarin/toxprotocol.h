@@ -37,7 +37,7 @@ namespace LC::Azoth::Sarin
 
 		QString GetProtocolName () const override;
 		QIcon GetProtocolIcon () const override;
-		QByteArray GetProtocolId () const override;
+		QString GetProtocolId () const override;
 
 		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions options) override;
 		void RegisterAccount (const QString& name, const QList<QWidget*>& widgets) override;

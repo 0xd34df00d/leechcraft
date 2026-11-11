@@ -295,7 +295,7 @@ namespace OTRoid
 				&OtrOps_,
 				this,
 				acc->GetAccountId ().ToUtf8 ().constData (),
-				proto->GetProtocolId ().constData (),
+				proto->GetProtocolId ().toUtf8 ().constData (),
 				SerializeString (entry.GetStrongestId ()).toUtf8 ().constData (),
 				OTRL_INSTAG_BEST,
 				msg.Body_.toUtf8 ().constData (),
@@ -367,7 +367,7 @@ namespace OTRoid
 		OtrlTLV *tlvs = 0;
 		int ignore = otrl_message_receiving (UserState_, &OtrOps_, this,
 				acc->GetAccountId ().ToUtf8 ().constData (),
-				proto->GetProtocolId ().constData (),
+				proto->GetProtocolId ().toUtf8 ().constData (),
 				SerializeString (entry->GetStrongestId ()).toUtf8 ().constData (),
 				msg->GetBody ().toUtf8 ().constData (),
 				&newMsg,
@@ -766,12 +766,12 @@ namespace OTRoid
 		const auto& accIdUtf8 = accId.ToUtf8 ();
 
 		auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
-		const auto& protoId = proto->GetProtocolId ();
+		const auto& protoIdUtf8 = proto->GetProtocolId ().toUtf8 ();
 
 		if (!enable)
 		{
 			otrl_message_disconnect (UserState_, &OtrOps_, this,
-					accIdUtf8.constData (), protoId.constData (),
+					accIdUtf8.constData (), protoIdUtf8.constData (),
 					SerializeString (entry->GetStrongestId ()).toUtf8 ().constData (), OTRL_INSTAG_BEST);
 			NotifyConvFlow (*entry, tr ("Private conversation closed"));
 			return;
@@ -781,8 +781,8 @@ namespace OTRoid
 
 		char fingerprint [OTRL_PRIVKEY_FPRINT_HUMAN_LEN];
 		if (!otrl_privkey_fingerprint (UserState_, fingerprint,
-				accIdUtf8.constData (), protoId.constData ()))
-			CreatePrivkey (accIdUtf8.constData (), protoId.constData());
+				accIdUtf8.constData (), protoIdUtf8.constData ()))
+			CreatePrivkey (accIdUtf8.constData (), protoIdUtf8.constData ());
 
 		std::shared_ptr<char> msg (otrl_proto_default_query_msg (accIdUtf8.constData (),
 					OTRL_POLICY_DEFAULT), free);
@@ -819,7 +819,7 @@ namespace OTRoid
 		const auto context = otrl_context_find (UserState_,
 				SerializeString (entry->GetStrongestId ()).toUtf8 ().constData (),
 				acc->GetAccountId ().ToUtf8 ().constData (),
-				proto->GetProtocolId ().constData (),
+				proto->GetProtocolId ().toUtf8 ().constData (),
 				OTRL_INSTAG_BEST,
 				true,
 				nullptr, nullptr, nullptr);

@@ -59,7 +59,7 @@ namespace LC::Azoth::Acetamide
 		QObject* GetParentProtocolPlugin () const override;
 		QString GetProtocolName () const override;
 		QIcon GetProtocolIcon () const override;
-		QByteArray GetProtocolId () const override;
+		QString GetProtocolId () const override;
 		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions) override;
 		void RegisterAccount (const QString&, const QList<QWidget*>&) override;
 		QWidget* GetMUCJoinWidget () override;

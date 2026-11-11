@@ -14,6 +14,7 @@
 #include <QXmppLogger.h>
 #include <util/sll/functional.h>
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 #include <util/sys/paths.h>
 #include <interfaces/azoth/iprotocolplugin.h>
 #include <interfaces/azoth/iproxyobject.h>
@@ -112,9 +113,9 @@ namespace Xoox
 		return icon;
 	}
 
-	QByteArray GlooxProtocol::GetProtocolId () const
+	QString GlooxProtocol::GetProtocolId () const
 	{
-		return "Xoox.Gloox.XMPP";
+		return "Xoox.Gloox.XMPP"_qs;
 	}
 
 	QList<QWidget*> GlooxProtocol::GetAccountRegistrationWidgets (AccountAddOptions options)

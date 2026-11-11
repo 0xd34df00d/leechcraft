@@ -142,7 +142,7 @@ namespace Azoth
 		 *
 		 * @return The unique ID of this protocol.
 		 */
-		virtual QByteArray GetProtocolId () const = 0;
+		virtual QString GetProtocolId () const = 0;
 
 		/** @brief Returns the widgets used for account addition.
 		 *

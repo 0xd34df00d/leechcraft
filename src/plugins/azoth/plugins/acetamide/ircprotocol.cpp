@@ -87,9 +87,9 @@ namespace LC::Azoth::Acetamide
 		return icon;
 	}
 
-	QByteArray IrcProtocol::GetProtocolId () const
+	QString IrcProtocol::GetProtocolId () const
 	{
-		return "Acetamide.IRC";
+		return "Acetamide.IRC"_qs;
 	}
 
 	QList<QWidget*> IrcProtocol::GetAccountRegistrationWidgets (IProtocol::AccountAddOptions)
