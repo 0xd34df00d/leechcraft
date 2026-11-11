@@ -364,7 +364,7 @@ namespace LC::Util
 		}
 
 		if (GetStoredValue (property).isNull ())
-			WorkingObject_->setProperty (property.toLatin1 ().constData (), *defaultValue);
+			WorkingObject_->setProperty (property.toUtf8 ().constData (), *defaultValue);
 	}
 
 	namespace
@@ -423,7 +423,7 @@ namespace LC::Util
 
 	QVariant XmlSettingsDialog::GetStoredValue (const QString& property) const
 	{
-		return WorkingObject_->property (property.toLatin1 ().constData ());
+		return WorkingObject_->property (property.toUtf8 ().constData ());
 	}
 
 	bool XmlSettingsDialog::eventFilter (QObject *obj, QEvent *event)
@@ -431,7 +431,7 @@ namespace LC::Util
 		if (event->type () == QEvent::DynamicPropertyChange)
 		{
 			const auto& name = static_cast<QDynamicPropertyChangeEvent*> (event)->propertyName ();
-			HandlersManager_->SetValue (name, obj->property (name.constData ()));
+			HandlersManager_->SetValue (QString::fromUtf8 (name), obj->property (name.constData ()));
 			return false;
 		}
 		return QObject::eventFilter (obj, event);

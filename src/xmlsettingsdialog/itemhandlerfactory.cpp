@@ -178,7 +178,7 @@ namespace LC
 	{
 		const auto storage = XSD_.GetManagerObject ();
 		for (const auto& [prop, val] : std::as_const (Prop2NewVal_).asKeyValueRange ())
-			storage->setProperty (prop.toLatin1 ().constData (), val);
+			storage->setProperty (prop.toUtf8 ().constData (), val);
 		Prop2NewVal_.clear ();
 
 		for (auto widget : CustomWidgets_)
@@ -192,7 +192,7 @@ namespace LC
 		{
 			const auto& info = Prop2Info_ [prop];
 			const auto guard = ExpectPropChange (prop);
-			info.Setter_ (storage->property (prop.toLatin1 ().constData ()));
+			info.Setter_ (storage->property (prop.toUtf8 ().constData ()));
 		}
 
 		Prop2NewVal_.clear ();
@@ -263,7 +263,7 @@ namespace LC
 		}
 
 		const auto& value = info.Getter_ ();
-		XSD_.GetManagerObject ()->OptionSelected (info.Prop_.toLatin1 (), value);
+		XSD_.GetManagerObject ()->OptionSelected (info.Prop_.toUtf8 (), value);
 		if (!ExpectedPropChanges_.contains (propName))
 			Prop2NewVal_ [info.Prop_] = value;
 	}
