@@ -1042,47 +1042,55 @@ if (parentItem == null) {
 	void RichEditorWidget::HandleInsertRow (int shift)
 	{
 		ExecJS (uR"(
-const row = findParent(window.getSelection().getRangeAt(0).endContainer, 'tr');
-const rowIdx = row.rowIndex;
-const table = findParent(row, 'table');
-const newRow = table.insertRow(rowIdx + %1);
-for (let j = 0; j < row.cells.length; ++j) {
-    const newCell = newRow.insertCell(j);
-    newCell.setAttribute('style', 'border: 1px solid black; min-width: 1em; height: 1.5em;');
-}
+(() => {
+    const row = findParent(window.getSelection().getRangeAt(0).endContainer, 'tr');
+    const rowIdx = row.rowIndex;
+    const table = findParent(row, 'table');
+    const newRow = table.insertRow(rowIdx + %1);
+    for (let j = 0; j < row.cells.length; ++j) {
+        const newCell = newRow.insertCell(j);
+        newCell.setAttribute('style', 'border: 1px solid black; min-width: 1em; height: 1.5em;');
+    }
+})();
 )"_qsv.arg (QString::number (shift)));
 	}
 
 	void RichEditorWidget::HandleInsertColumn (int shift)
 	{
 		ExecJS (uR"(
-const cell = findParent(window.getSelection().getRangeAt(0).endContainer, 'td');
-const colIdx = cell.cellIndex + %1;
-const table = findParent(cell, 'table');
-for (let r = 0; r < table.rows.length; ++r) {
-    const newCell = table.rows[r].insertCell(colIdx);
-    newCell.setAttribute('style', 'border: 1px solid black; min-width: 1em; height: 1.5em;');
-}
+(() => {
+    const cell = findParent(window.getSelection().getRangeAt(0).endContainer, 'td');
+    const colIdx = cell.cellIndex + %1;
+    const table = findParent(cell, 'table');
+    for (let r = 0; r < table.rows.length; ++r) {
+        const newCell = table.rows[r].insertCell(colIdx);
+        newCell.setAttribute('style', 'border: 1px solid black; min-width: 1em; height: 1.5em;');
+    }
+})();
 )"_qsv.arg (QString::number (shift)));
 	}
 
 	void RichEditorWidget::HandleRemoveRow ()
 	{
 		ExecJS (QStringLiteral (uR"(
-const row = findParent(window.getSelection().getRangeAt(0).endContainer, 'tr');
-const table = findParent(row, 'table');
-table.deleteRow(row.rowIndex);
+(() => {
+    const row = findParent(window.getSelection().getRangeAt(0).endContainer, 'tr');
+    const table = findParent(row, 'table');
+    table.deleteRow(row.rowIndex);
+})();
 )"));
 	}
 
 	void RichEditorWidget::HandleRemoveColumn ()
 	{
 		ExecJS (QStringLiteral (uR"(
-const cell = findParent(window.getSelection().getRangeAt(0).endContainer, 'td');
-const colIdx = cell.cellIndex;
-const table = findParent(cell, 'table');
-for (let r = 0; r < table.rows.length; ++r)
-    table.rows[r].deleteCell(colIdx);
+(() => {
+    const cell = findParent(window.getSelection().getRangeAt(0).endContainer, 'td');
+    const colIdx = cell.cellIndex;
+    const table = findParent(cell, 'table');
+    for (let r = 0; r < table.rows.length; ++r)
+        table.rows[r].deleteCell(colIdx);
+})();
 )"));
 	}
 
