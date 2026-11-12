@@ -236,8 +236,8 @@ namespace Blogique
 		const auto& path = QFileDialog::getSaveFileName (this,
 				tr ("Select export path"),
 				QDir::homePath ());
-
-		Ui_.SavePath_->setText (path);
+		if (!path.isEmpty ())
+			Ui_.SavePath_->setText (path);
 	}
 
 	void ExportWizard::addTag ()

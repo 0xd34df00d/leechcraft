@@ -338,6 +338,8 @@ namespace Otlozhu
 				tr ("Import tasks"),
 				QDir::homePath (),
 				tr ("iCalendar files (*.ics)"));
+		if (filename.isEmpty ())
+			return;
 
 		QFile file (filename);
 		if (!file.open (QIODevice::ReadOnly))
@@ -399,6 +401,8 @@ namespace Otlozhu
 				tr ("Todos export"),
 				QDir::homePath (),
 				tr ("iCalendar files (*.ics)"));
+		if (filename.isEmpty ())
+			return;
 
 		const auto iem = GetProxyHolder ()->GetEntityManager ();
 
