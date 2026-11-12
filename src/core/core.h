@@ -9,6 +9,7 @@
 #ifndef CORE_H
 #define CORE_H
 #include <memory>
+#include <optional>
 #include <QObject>
 #include <QString>
 #include <QTimer>
@@ -48,12 +49,19 @@ namespace LC
 		std::shared_ptr<CoreInstanceObject> CoreInstanceObject_;
 		std::shared_ptr<RootWindowsManager> RootWindowsManager_;
 		DockManager *DM_;
-		bool IsShuttingDown_ = false;
+		std::optional<ShutdownReason> RequestedShutdown_;
 
 		Core ();
 	public:
 		static Core& Instance ();
 		void Release (ShutdownReason, int exitCode = 0);
+
+		/** Releases the windows and the plugins.
+		 *
+		 * To be called once the event loop has returned, so that no plugin
+		 * code is on the call stack.
+		 */
+		void PerformRelease ();
 
 		bool IsShuttingDown () const;
 

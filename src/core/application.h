@@ -82,6 +82,13 @@ namespace LC
 
 		void Quit ();
 
+		/** Runs the event loop and, once it has returned, releases the
+		 * windows and the plugins.
+		 *
+		 * @return The exit code for main().
+		 */
+		int Run ();
+
 		/** Checks whether another instance of LeechCraft is running.
 		 */
 		bool IsAlreadyRunning () const;

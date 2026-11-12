@@ -268,6 +268,24 @@ namespace LC
 		Core::Instance ().Release (ShutdownReason::Quit);
 	}
 
+	int Application::Run ()
+	{
+		const auto exitCode = exec ();
+
+		// Not from a slot: a slot may run in a nested event loop (a modal dialog),
+		// below which plugin code is still on the stack.
+		try
+		{
+			Core::Instance ().PerformRelease ();
+			sendPostedEvents (nullptr, QEvent::DeferredDelete);
+		}
+		catch (...)
+		{
+			qWarning () << "unhandled exception" << Util::DescribeCurrentException () << "during the release";
+		}
+		return exitCode;
+	}
+
 	bool Application::notify (QObject *obj, QEvent *event)
 	{
 		if (event->type () == QEvent::LanguageChange)

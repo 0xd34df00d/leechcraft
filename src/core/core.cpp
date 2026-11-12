@@ -27,6 +27,7 @@
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/structures.h>
 #include <interfaces/entitytesthandleresult.h>
+#include <interfaces/ishutdownlistener.h>
 #include "components/network/networkaccessmanager.h"
 #include "application.h"
 #include "pluginmanager.h"
@@ -81,37 +82,61 @@ namespace LC
 		return core;
 	}
 
+	namespace
+	{
+		void CloseModalWidgets ()
+		{
+			QWidget *prev = nullptr;
+			while (const auto modal = QApplication::activeModalWidget ())
+			{
+				if (modal == prev || !modal->close ())
+					break;
+				prev = modal;
+			}
+		}
+	}
+
 	void Core::Release (ShutdownReason reason, int exitCode)
 	{
-		if (IsShuttingDown_)
+		if (RequestedShutdown_)
 			return;
 
-		IsShuttingDown_ = true;
-
-		RootWindowsManager_->Release ();
+		RequestedShutdown_ = reason;
 
 		QTimer::singleShot (0, this,
-				[this, reason, exitCode]
+				[exitCode]
 				{
-					LocalSocketHandler_.reset ();
-					XmlSettingsManager::Instance ()->setProperty ("FirstStart", "false");
-
-					PluginManager_->Release (reason);
-					delete PluginManager_;
-
-					CoreInstanceObject_.reset ();
-
-					NetworkAccessManager_.reset ();
-
-					XmlSettingsManager::Instance ()->Release ();
-
+					CloseModalWidgets ();
 					qApp->exit (exitCode);
 				});
 	}
 
+	void Core::PerformRelease ()
+	{
+		if (!RequestedShutdown_)
+			RequestedShutdown_ = ShutdownReason::Quit;
+
+		RootWindowsManager_->Release ();
+
+		// The tabs closed above only `deleteLater ()` themselves, and they have to be gone before their plugins are.
+		QCoreApplication::sendPostedEvents (nullptr, QEvent::DeferredDelete);
+
+		LocalSocketHandler_.reset ();
+		XmlSettingsManager::Instance ()->setProperty ("FirstStart", "false");
+
+		PluginManager_->Release (*RequestedShutdown_);
+		delete PluginManager_;
+
+		CoreInstanceObject_.reset ();
+
+		NetworkAccessManager_.reset ();
+
+		XmlSettingsManager::Instance ()->Release ();
+	}
+
 	bool Core::IsShuttingDown () const
 	{
-		return IsShuttingDown_;
+		return RequestedShutdown_.has_value ();
 	}
 
 	DockManager* Core::GetDockManager () const
