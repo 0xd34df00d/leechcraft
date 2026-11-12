@@ -32,6 +32,7 @@ namespace WebEngineView
 		Q_INTERFACES (IWkFontsSettable LC::Poshuku::IWebView)
 
 		Util::FindNotificationWE *FindDialog_ = nullptr;
+		QString DeclaredMimeType_;
 	public:
 		explicit CustomWebView (IProxyObject*);
 
@@ -46,6 +47,7 @@ namespace WebEngineView
 		QUrl GetUrl () const override;
 		QString GetHumanReadableUrl () const override;
 		QIcon GetIcon () const override;
+		QString GetDeclaredMimeType () const override;
 
 		void Load (const QUrl& url, const QString& title) override;
 

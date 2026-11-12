@@ -59,6 +59,11 @@ namespace Poshuku
 		return {};
 	}
 
+	QString DummyWebView::GetDeclaredMimeType () const
+	{
+		return {};
+	}
+
 	void DummyWebView::Load (const QUrl&, const QString&)
 	{
 	}

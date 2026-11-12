@@ -35,6 +35,7 @@ namespace Poshuku
 		QUrl GetUrl () const override;
 		QString GetHumanReadableUrl () const override;
 		QIcon GetIcon () const override;
+		QString GetDeclaredMimeType () const override;
 		void Load (const QUrl&, const QString&) override;
 		void SetContent (const QByteArray&, const QString&, const QUrl&) override;
 		void ToHtml (const std::function<void (QString)>&) const override;

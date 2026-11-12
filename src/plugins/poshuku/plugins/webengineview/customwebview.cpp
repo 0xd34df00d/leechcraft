@@ -11,6 +11,7 @@
 #include <QFile>
 #include <QWebEngineSettings>
 #include <QWebEngineHistory>
+#include <QWebEngineLoadingInfo>
 #include <QWebEngineContextMenuRequest>
 #include <QWebChannel>
 #include <QPrinter>
@@ -27,6 +28,30 @@
 
 namespace LC::Poshuku::WebEngineView
 {
+	namespace
+	{
+		// Qt reports a load stopped after its document got displayed like a response that never is (a download,
+		// 204, 205), so the previous document is only known to stay without a response or under another URL.
+		bool KnownToKeepDocument (const QWebEngineLoadingInfo& info, const QUrl& pageUrl)
+		{
+			return info.isDownload () || info.responseHeaders ().isEmpty () || pageUrl != info.url ();
+		}
+
+		QString GetMimeType (const QMultiMap<QByteArray, QByteArray>& headers)
+		{
+			for (const auto& [name, value] : headers.asKeyValueRange ())
+				if (name.compare ("content-type", Qt::CaseInsensitive) == 0)
+				{
+					auto type = value;
+					if (const auto semicolon = type.indexOf (';');
+						semicolon >= 0)
+						type.truncate (semicolon);
+					return QString::fromLatin1 (type.trimmed ().toLower ());
+				}
+			return {};
+		}
+	}
+
 	CustomWebView::CustomWebView (IProxyObject *poshukuProxy)
 	{
 		const auto page = new CustomWebPage { poshukuProxy, this };
@@ -37,9 +62,21 @@ namespace LC::Poshuku::WebEngineView
 				this,
 				&CustomWebView::earliestViewLayout);
 		connect (page,
-				&CustomWebPage::loadFinished,
+				&CustomWebPage::loadingChanged,
 				this,
-				&CustomWebView::loadFinished);
+				[this] (const QWebEngineLoadingInfo& info)
+				{
+					if (info.status () == QWebEngineLoadingInfo::LoadStartedStatus)
+						return;
+
+					if (info.status () != QWebEngineLoadingInfo::LoadStoppedStatus)
+						DeclaredMimeType_ = GetMimeType (info.responseHeaders ());
+					else if (!KnownToKeepDocument (info, url ()))
+						DeclaredMimeType_.clear ();
+
+					// the page's own loadFinished () comes right before this, without the response headers
+					emit loadFinished (info.status () == QWebEngineLoadingInfo::LoadSucceededStatus);
+				});
 		connect (page,
 				&CustomWebPage::iconChanged,
 				this,
@@ -123,6 +160,11 @@ namespace LC::Poshuku::WebEngineView
 	QIcon CustomWebView::GetIcon () const
 	{
 		return icon ();
+	}
+
+	QString CustomWebView::GetDeclaredMimeType () const
+	{
+		return DeclaredMimeType_;
 	}
 
 	void CustomWebView::Load (const QUrl& url, const QString& title)
