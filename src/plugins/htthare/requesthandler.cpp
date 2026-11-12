@@ -450,7 +450,7 @@ namespace HttHare
 		auto ranges = ParseRanges (Headers_.value ("Range"), fi.size ());
 
 		const auto& mime = Util::MimeDetector {} (path);
-		ResponseHeaders_.append ({ "Content-Type", mime });
+		ResponseHeaders_.append ({ "Content-Type", mime.toUtf8 () });
 
 		if (ranges.isEmpty ())
 		{

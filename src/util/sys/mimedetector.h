@@ -11,15 +11,14 @@
 #include "sysconfig.h"
 
 class QString;
-class QByteArray;
 
 namespace LC::Util
 {
 	struct MimeDetector
 	{
-		UTIL_SYS_API QByteArray Detect (const QString&);
-		UTIL_SYS_API QByteArray operator() (const QString&);
+		UTIL_SYS_API QString Detect (const QString&);
+		UTIL_SYS_API QString operator() (const QString&);
 	};
 
-	UTIL_SYS_API QByteArray DetectFileMime (const QString&);
+	UTIL_SYS_API QString DetectFileMime (const QString&);
 }

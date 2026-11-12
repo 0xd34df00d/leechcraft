@@ -12,17 +12,17 @@
 
 namespace LC::Util
 {
-	QByteArray MimeDetector::Detect (const QString& path)
+	QString MimeDetector::Detect (const QString& path)
 	{
-		return QMimeDatabase {}.mimeTypeForFile (path).name ().toUtf8 ();
+		return QMimeDatabase {}.mimeTypeForFile (path).name ();
 	}
 
-	QByteArray MimeDetector::operator() (const QString& path)
+	QString MimeDetector::operator() (const QString& path)
 	{
 		return Detect (path);
 	}
 
-	QByteArray DetectFileMime (const QString& path)
+	QString DetectFileMime (const QString& path)
 	{
 		return MimeDetector {} (path);
 	}

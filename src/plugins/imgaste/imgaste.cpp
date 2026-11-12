@@ -170,7 +170,7 @@ namespace LC::Imgaste
 			return;
 		}
 
-		const auto& formatStr = QString::fromLatin1 (Util::DetectFileMime (name)).section ('/', 1, 1);
+		const auto& formatStr = Util::DetectFileMime (name).section ('/', 1, 1);
 		const auto& data = file.readAll ();
 		Upload (data, QImageReader { name }.size (), e, GuessFormat (formatStr), ProgressManager_);
 	}

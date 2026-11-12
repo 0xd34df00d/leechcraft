@@ -544,7 +544,7 @@ namespace Snails
 
 			const auto& descr = act->property ("Snails/Description").toString ();
 
-			const auto& split = detector (path).split ('/');
+			const auto& split = detector (path).toUtf8 ().split ('/');
 			const auto& type = split.value (0);
 			const auto& subtype = split.value (1);
 
