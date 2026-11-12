@@ -60,7 +60,7 @@ namespace NetStoreManager
 				break;
 			}
 			RemoteDirectorySelectDialog dlg (AccountID_, AM_);
-			if (dlg.exec () != QDialog::Rejected)
+			if (dlg.exec () == QDialog::Accepted)
 				path = dlg.GetDirectoryPath ();
 			break;
 		}

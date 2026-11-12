@@ -196,7 +196,7 @@ namespace Blogique
 		if (auto account = Core::Instance ().GetAccountByID (accountId.toUtf8 ()))
 		{
 			AddCommentDialog dlg;
-			if (dlg.exec () == QDialog::Rejected)
+			if (dlg.exec () != QDialog::Accepted)
 				return;
 
 			CommentEntry ce;

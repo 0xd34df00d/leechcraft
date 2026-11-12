@@ -170,7 +170,7 @@ namespace Metida
 
 		dia.ConfWidget ()->SetPassword (GetPassword ());
 
-		if (dia.exec () == QDialog::Rejected)
+		if (dia.exec () != QDialog::Accepted)
 			return;
 
 		FillSettings (dia.ConfWidget ());
@@ -633,7 +633,7 @@ namespace Metida
 		if (XmlSettingsManager::Instance ().Property ("LoadLastAsk", true).toBool ())
 		{
 			UpdateTypeDialog dlg (UpdateTypeDialog::LoadType::LoadLastEvents);
-			if (dlg.exec () == QDialog::Rejected)
+			if (dlg.exec () != QDialog::Accepted)
 				return;
 			count = dlg.GetCount ();
 		}
@@ -649,7 +649,7 @@ namespace Metida
 		if (XmlSettingsManager::Instance ().Property ("LoadChangedAsk", true).toBool ())
 		{
 			UpdateTypeDialog dlg (UpdateTypeDialog::LoadType::LoadChangesEvents);
-			if (dlg.exec () == QDialog::Rejected)
+			if (dlg.exec () != QDialog::Accepted)
 				return;
 			dt = dlg.GetDateTime ();
 		}

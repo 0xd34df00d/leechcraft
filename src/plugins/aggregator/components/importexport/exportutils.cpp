@@ -110,7 +110,7 @@ namespace LC::Aggregator
 	{
 		const auto& allChannels = GetAllChannels ();
 		FeedsExportDialog exportDialog { channelsModel, parent };
-		if (exportDialog.exec () == QDialog::Rejected)
+		if (exportDialog.exec () != QDialog::Accepted)
 			return;
 
 		const auto channels = FilterChannels (allChannels, exportDialog.GetSelectedFeeds ());

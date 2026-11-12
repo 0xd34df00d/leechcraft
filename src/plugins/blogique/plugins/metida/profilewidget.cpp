@@ -266,7 +266,7 @@ namespace Metida
 	void ProfileWidget::on_Add__released ()
 	{
 		AddEditEntryDialog aeed (Profile_, ATEFriend);
-		if (aeed.exec () == QDialog::Rejected)
+		if (aeed.exec () != QDialog::Accepted)
 			return;
 
 		LJAccount *account = qobject_cast<LJAccount*> (Profile_->GetParentAccount ());
@@ -302,7 +302,7 @@ namespace Metida
 		dlg.SetForegroundColor (entry->GetFGColor ());
 		dlg.SetGroupMask (entry->GetGroupMask ());
 
-		if (dlg.exec () == QDialog::Rejected)
+		if (dlg.exec () != QDialog::Accepted)
 			return;
 
 		const QString& userName = dlg.GetUserName ();
@@ -424,7 +424,7 @@ namespace Metida
 	{
 		SendMessageDialog dlg (Profile_);
 		dlg.setWindowModality (Qt::WindowModal);
-		if (dlg.exec () == QDialog::Rejected)
+		if (dlg.exec () != QDialog::Accepted)
 			return;
 
 		if (auto acc = qobject_cast<LJAccount*> (Profile_->GetParentAccount ()))
@@ -469,7 +469,7 @@ namespace Metida
 		SendMessageDialog dlg (Profile_);
 		dlg.setWindowModality (Qt::WindowModal);
 		dlg.SetAddresses ({ index.data ().toString () });
-		if (dlg.exec () == QDialog::Rejected)
+		if (dlg.exec () != QDialog::Accepted)
 			return;
 
 		if (auto acc = qobject_cast<LJAccount*> (Profile_->GetParentAccount ()))
@@ -507,7 +507,7 @@ namespace Metida
 	void ProfileWidget::addNewGroup ()
 	{
 		AddEditEntryDialog aeed (Profile_, ATEGroup);
-		if (aeed.exec () == QDialog::Rejected)
+		if (aeed.exec () != QDialog::Accepted)
 			return;
 		LJAccount *account = qobject_cast<LJAccount*> (Profile_->GetParentAccount ());
 		if (!account)
@@ -567,7 +567,7 @@ namespace Metida
 		dlg.SetGroupName (index.data ().toString ());
 		dlg.SetAccess (item.Public_);
 
-		if (dlg.exec () == QDialog::Rejected)
+		if (dlg.exec () != QDialog::Accepted)
 			return;
 
 		account->AddGroup (dlg.GetGroupName (), dlg.GetAcccess (), item.Id_);

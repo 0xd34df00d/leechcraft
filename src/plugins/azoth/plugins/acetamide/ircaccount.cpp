@@ -124,7 +124,7 @@ namespace LC::Azoth::Acetamide
 		dia.ConfWidget ()->SetDefaultEncoding (DefaultEncoding_);
 		dia.ConfWidget ()->SetDefaultChannel (DefaultChannel_);
 
-		if (dia.exec () == QDialog::Rejected)
+		if (dia.exec () != QDialog::Accepted)
 			return;
 
 		FillSettings (dia.ConfWidget ());

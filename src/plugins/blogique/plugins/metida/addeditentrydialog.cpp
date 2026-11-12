@@ -213,7 +213,7 @@ namespace Metida
 	{
 		SelectGroupsDialog dlg (Profile_, GroupMask_);
 		dlg.SetHeaderLabel (tr ("Add friend to groups:"));
-		if (dlg.exec () == QDialog::Rejected)
+		if (dlg.exec () != QDialog::Accepted)
 			return;
 
 		GroupMask_ = 0;

@@ -140,7 +140,7 @@ namespace LC::Util
 				this,
 				[dialog, this] (int result)
 				{
-					if (result == QDialog::Rejected)
+					if (result != QDialog::Accepted)
 						return;
 
 					const auto& font = dialog->GetFont ();

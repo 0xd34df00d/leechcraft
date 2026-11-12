@@ -53,7 +53,7 @@ namespace LC::NamAuth
 			}
 
 		AuthenticationDialog dia (msg, suggestedUser, suggestedPassword, qApp->activeWindow ());
-		if (dia.exec () == QDialog::Rejected)
+		if (dia.exec () != QDialog::Accepted)
 			return;
 
 		const auto& login = dia.GetLogin ();

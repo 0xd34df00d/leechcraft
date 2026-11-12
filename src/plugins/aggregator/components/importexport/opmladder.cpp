@@ -80,7 +80,7 @@ namespace LC::Aggregator::Opml
 		void HandleOpml (const ImportOPMLDialog::Source& source, UpdatesManager& updatesManager)
 		{
 			ImportOPMLDialog importDialog { source };
-			if (importDialog.exec () == QDialog::Rejected)
+			if (importDialog.exec () != QDialog::Accepted)
 				return;
 
 			QList<AddFeedParams> feeds;

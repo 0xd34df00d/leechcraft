@@ -67,7 +67,7 @@ namespace DeathNote
 		case 2:
 		{
 			SelectGroupsDialog dlg (Login_, Account_);
-			if (dlg.exec () == QDialog::Rejected)
+			if (dlg.exec () != QDialog::Accepted)
 				break;
 
 			PrivacyLevel_ = dlg.GetSelectedGroupId ();

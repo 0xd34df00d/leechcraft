@@ -288,7 +288,7 @@ namespace Blogique
 		idx = idx.sibling (idx.row (), Utils::EntriesViewColumns::Date);
 
 		SubmitToDialog dlg;
-		if (dlg.exec () == QDialog::Rejected)
+		if (dlg.exec () != QDialog::Accepted)
 			return;
 
 		for (const auto& pair : dlg.GetPostingTargets ())

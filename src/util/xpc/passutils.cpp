@@ -97,7 +97,7 @@ namespace LC::Util
 				[dialog, cont] (int r)
 				{
 					const auto& value = dialog->textValue ();
-					if (r == QDialog::Rejected || value.isEmpty ())
+					if (r != QDialog::Accepted || value.isEmpty ())
 						cont.Left ();
 					else
 						cont.Right (value);

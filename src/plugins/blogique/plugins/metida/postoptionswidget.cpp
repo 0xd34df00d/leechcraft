@@ -358,7 +358,7 @@ namespace Metida
 					AllowMask_);
 			dlg.SetHeaderLabel (tr ("Choose friends groups that will be allowed to comment this post:"));
 
-			if (dlg.exec () == QDialog::Rejected ||
+			if (dlg.exec () != QDialog::Accepted ||
 					dlg.GetSelectedGroupsIds ().isEmpty ())
 				Ui_.Access_->setCurrentIndex (0);
 			else

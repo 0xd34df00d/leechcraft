@@ -996,7 +996,7 @@ namespace Blogique
 	void BlogiqueWidget::submitTo (const Entry& entry)
 	{
 		SubmitToDialog dlg;
-		if (dlg.exec () == QDialog::Rejected)
+		if (dlg.exec () != QDialog::Accepted)
 			return;
 
 		for (const auto& pair : dlg.GetPostingTargets ())

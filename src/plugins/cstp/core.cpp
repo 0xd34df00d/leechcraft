@@ -151,7 +151,7 @@ namespace CSTP
 				e.Location_.isEmpty ())
 		{
 			CSTP::AddTask at (url, e.Location_);
-			if (at.exec () == QDialog::Rejected)
+			if (at.exec () != QDialog::Accepted)
 				return mkErr (IDownload::Error::Type::UserCanceled, {});
 
 			task = at.GetTask ();

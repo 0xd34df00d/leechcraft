@@ -477,7 +477,7 @@ namespace Metida
 	void LJBloggingPlatform::handleAddLJPoll ()
 	{
 		PollDialog pollDlg;
-		if (pollDlg.exec () == QDialog::Rejected)
+		if (pollDlg.exec () != QDialog::Accepted)
 			return;
 
 		QStringList pqParts;

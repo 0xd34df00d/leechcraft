@@ -73,7 +73,7 @@ namespace Hestia
 		if (!DatabasePath_.isEmpty ())
 			dia.ConfWidget ()->SetAccountBasePath (DatabasePath_);
 
-		if (dia.exec () == QDialog::Rejected)
+		if (dia.exec () != QDialog::Accepted)
 			return;
 
 		FillSettings (dia.ConfWidget ());

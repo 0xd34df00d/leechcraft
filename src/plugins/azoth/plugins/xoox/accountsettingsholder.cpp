@@ -161,7 +161,7 @@ namespace Xoox
 		dia.W ()->SetTurnUser (TurnUser_);
 		dia.W ()->SetTurnPassword (TurnPass_);
 
-		if (dia.exec () == QDialog::Rejected)
+		if (dia.exec () != QDialog::Accepted)
 			return;
 
 		FillSettings (dia.W ());

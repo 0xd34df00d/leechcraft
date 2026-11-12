@@ -221,7 +221,7 @@ namespace LC
 					tr ("Set alternate shortcut:") :
 					tr ("Set primary shortcut:"),
 				this);
-		if (dia.exec () == QDialog::Rejected)
+		if (dia.exec () != QDialog::Accepted)
 			return;
 
 		if (item->data (Roles::OldSequence).isNull ())
