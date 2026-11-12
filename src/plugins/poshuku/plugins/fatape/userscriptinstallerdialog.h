@@ -30,9 +30,9 @@ namespace FatApe
 	public:
 		enum Result
 		{
+			Cancel = QDialog::Rejected,
 			Install,
-			ShowSource,
-			Cancel
+			ShowSource
 		};
 
 		UserScriptInstallerDialog (Plugin *plugin, QNetworkAccessManager *networkManager,
