@@ -63,7 +63,7 @@ namespace Poshuku
 	{
 	}
 
-	void DummyWebView::SetContent (const QByteArray&, const QByteArray&, const QUrl&)
+	void DummyWebView::SetContent (const QByteArray&, const QString&, const QUrl&)
 	{
 	}
 

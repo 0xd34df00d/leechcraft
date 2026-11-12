@@ -150,7 +150,7 @@ namespace Poshuku
 
 		virtual void Load (const QUrl& url, const QString& title = {}) = 0;
 
-		virtual void SetContent (const QByteArray& data, const QByteArray& mime, const QUrl& base = {}) = 0;
+		virtual void SetContent (const QByteArray& data, const QString& mime, const QUrl& base = {}) = 0;
 
 		virtual void ToHtml (const std::function<void (QString)>&) const = 0;
 

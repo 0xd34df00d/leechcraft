@@ -554,7 +554,7 @@ namespace Poshuku
 	{
 		Ui_.URLFrame_->GetEdit ()->clear ();
 		HtmlMode_ = true;
-		WebView_->SetContent (html.toUtf8 (), "text/html;charset=UTF-8", base);
+		WebView_->SetContent (html.toUtf8 (), "text/html;charset=UTF-8"_qs, base);
 	}
 
 	void BrowserWidget::SetNavBarVisible (bool visible)
@@ -1131,7 +1131,7 @@ namespace Poshuku
 					w.writeEndElement ();
 					w.writeEndDocument ();
 
-					WebView_->SetContent (formatted.toUtf8 (), "text/html");
+					WebView_->SetContent (formatted.toUtf8 (), "text/html"_qs);
 				});
 	}
 

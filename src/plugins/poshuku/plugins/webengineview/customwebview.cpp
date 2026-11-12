@@ -137,7 +137,7 @@ namespace LC::Poshuku::WebEngineView
 		emit urlChanged (url);
 	}
 
-	void CustomWebView::SetContent (const QByteArray& data, const QByteArray& mime, const QUrl& base)
+	void CustomWebView::SetContent (const QByteArray& data, const QString& mime, const QUrl& base)
 	{
 		setContent (data, mime, base);
 	}

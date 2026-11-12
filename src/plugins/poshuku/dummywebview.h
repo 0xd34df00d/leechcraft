@@ -36,7 +36,7 @@ namespace Poshuku
 		QString GetHumanReadableUrl () const override;
 		QIcon GetIcon () const override;
 		void Load (const QUrl&, const QString&) override;
-		void SetContent (const QByteArray&, const QByteArray&, const QUrl&) override;
+		void SetContent (const QByteArray&, const QString&, const QUrl&) override;
 		void ToHtml (const std::function<void (QString)>&) const override;
 		void EvaluateJS (const QString&, const std::function<void (QVariant)>&, Util::BitFlags<EvaluateJSFlag>) override;
 		void AddJavaScriptObject (const QString&, QObject*) override;
