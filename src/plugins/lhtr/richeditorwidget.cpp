@@ -150,11 +150,8 @@ const findParent = (item, name) => {
         }, 1000);
     };
 
-    window.addEventListener('DOMContentLoaded', notifier);
-    window.addEventListener('DOMSubtreeModified', notifier);
-    window.addEventListener('DOMAttrModified', notifier);
-    window.addEventListener('DOMNodeInserted', notifier);
-    window.addEventListener('DOMNodeRemoved', notifier);
+    new MutationObserver(notifier).observe(document.documentElement,
+            {subtree: true, childList: true, characterData: true, attributes: true});
 })();
 )"_qsv.arg (pageKey));
 			return script;
