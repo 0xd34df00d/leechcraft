@@ -734,18 +734,15 @@ namespace Blogique
 			{
 			case QMessageBox::Yes:
 				fillNewTabWithEntry (entry, acc->GetAccountID ());
-				break;
+				return;
 			case QMessageBox::No:
-				FillWidget (entry);
 				break;
-			case QMessageBox::Cancel:
 			default:
-				break;
+				return;
 			}
 		}
-		else
-			FillWidget (entry);
 
+		FillWidget (entry);
 		emit changeTabName (entry.Subject_);
 	}
 
