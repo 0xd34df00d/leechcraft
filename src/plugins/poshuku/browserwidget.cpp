@@ -25,7 +25,6 @@
 #include <QDataStream>
 #include <QKeySequence>
 #include <QLabel>
-#include <QXmlStreamWriter>
 #include <QMimeData>
 
 #ifdef ENABLE_IDN
@@ -958,144 +957,6 @@ namespace Poshuku
 				history->GetItems (IWebViewHistory::Direction::Forward, MaxHistoryItems));
 	}
 
-	namespace
-	{
-		class HtmlWriter
-		{
-			QXmlStreamWriter& W_;
-		public:
-			HtmlWriter (QXmlStreamWriter& w)
-			: W_ (w)
-			{
-			}
-
-			void WriteColored (const QString& color, const QString& text, int pad)
-			{
-				const auto& padStr = pad ?
-						("; margin-left: " + QString::number (pad) + "em;") :
-						QString ();
-
-				W_.writeStartElement ("span");
-				W_.writeAttribute ("style", "color:" + color + padStr);
-				W_.writeCharacters (text);
-				W_.writeEndElement ();
-			}
-
-			void ToHtml (const QDomDocument& doc)
-			{
-				const auto& doctype = doc.doctype ();
-				if (!doctype.name ().isEmpty ())
-				{
-					W_.writeStartElement ("div");
-					W_.writeAttribute ("style", "color: #964B00; margin-left: 1em;");
-					W_.writeCharacters ("<!DOCTYPE ");
-
-					WriteColored ("#000000", doctype.name (), 0);
-					W_.writeCharacters (" ");
-					WriteColored ("#881280", '"' + doctype.publicId () + '"', 0);
-					W_.writeEmptyElement ("br");
-					WriteColored ("#881280", '"' + doctype.systemId () + '"', 2);
-
-					W_.writeCharacters (">");
-
-					W_.writeEndElement ();
-				}
-
-				ToHtmlChildren (doc, [] {});
-			}
-
-			void ToHtml (const QDomElement& elem)
-			{
-				W_.writeStartElement ("div");
-				W_.writeAttribute ("style", "color: #881280; margin-left: 1em;");
-				W_.writeCharacters ("<" + elem.tagName ());
-
-				const auto& attrs = elem.attributes ();
-				for (int i = 0; i < attrs.size (); ++i)
-				{
-					const auto& attrNode = attrs.item (i).toAttr ();
-
-					WriteColored ("#994500", " " + attrNode.name (), 0);
-					WriteColored ("#881280", "=\"", 0);
-					WriteColored ("#1A1AA6", attrNode.value (), 0);
-					WriteColored ("#881280", "\"", 0);
-				}
-
-				bool hasChildren = false;
-				auto childrenize = [this, &hasChildren]
-				{
-					if (hasChildren)
-						return;
-
-					hasChildren = true;
-					W_.writeCharacters (">");
-					W_.writeEmptyElement ("br");
-				};
-
-				ToHtmlChildren (elem, childrenize);
-
-				W_.writeCharacters (hasChildren ? ("</" + elem.tagName () + ">") : " />");
-				W_.writeEndElement ();
-			}
-
-			template<typename ChildrenizeCbType>
-			void ToHtmlChildren (const QDomNode& elem, const ChildrenizeCbType& childrenize)
-			{
-				auto child = elem.firstChild ();
-				while (!child.isNull ())
-				{
-					switch (child.nodeType ())
-					{
-					case QDomDocument::TextNode:
-						childrenize ();
-						WriteColored ("#000000", child.toText ().data (), 1);
-						W_.writeEmptyElement ("br");
-						break;
-					case QDomDocument::CDATASectionNode:
-						childrenize ();
-						WriteColored ("#000000", "<![CDATA[ " + child.toCDATASection ().data () + " ]]>", 1);
-						W_.writeEmptyElement ("br");
-						break;
-					case QDomDocument::CommentNode:
-						childrenize ();
-						WriteColored ("#00BB00", "<!--" + child.toComment ().data () + "-->", 1);
-						W_.writeEmptyElement ("br");
-						break;
-					case QDomNode::ElementNode:
-						childrenize ();
-						ToHtml (child.toElement ());
-						break;
-					case QDomNode::ProcessingInstructionNode:
-					{
-						childrenize ();
-						const auto& instr = child.toProcessingInstruction ();
-						W_.writeStartElement ("div");
-						W_.writeAttribute ("style", "color: #007700; margin-left: 1em;");
-						W_.writeCharacters ("<?" + instr.target () + " ");
-						WriteColored ("#994500", instr.data (), 0);
-						W_.writeCharacters ("?>");
-						W_.writeEndElement ();
-						break;
-					}
-					case QDomNode::DocumentTypeNode:
-					case QDomNode::EntityNode:
-					case QDomNode::EntityReferenceNode:
-					case QDomNode::AttributeNode:
-					case QDomNode::CharacterDataNode:
-					case QDomNode::BaseNode:
-					case QDomNode::DocumentFragmentNode:
-					case QDomNode::DocumentNode:
-					case QDomNode::NotationNode:
-						qWarning () << "unexpected node type"
-								<< child.nodeType ();
-						break;
-					}
-					child = child.nextSibling ();
-				}
-			}
-		};
-	}
-
 	void BrowserWidget::checkLoadedDocument ()
 	{
 		WebView_->ToHtml ([this] (const QString& html)
@@ -1116,22 +977,6 @@ namespace Poshuku
 					e.Additional_ [IgnoreSelf] = true;
 					e.Additional_ ["URLData"] = html;
 					Proxy_->GetEntityManager ()->HandleEntity (e);
-
-					QString formatted;
-					QXmlStreamWriter w (&formatted);
-					w.writeStartDocument ();
-					w.writeStartElement ("html");
-					w.writeStartElement ("head");
-					w.writeTextElement ("title", WebView_->GetUrl ().toString ().toHtmlEscaped ());
-					w.writeEndElement ();
-					w.writeStartElement ("body");
-					w.writeAttribute ("style", "font-family:monospace;");
-					HtmlWriter { w }.ToHtml (doc);
-					w.writeEndElement ();
-					w.writeEndElement ();
-					w.writeEndDocument ();
-
-					WebView_->SetContent (formatted.toUtf8 (), "text/html"_qs);
 				});
 	}
 
