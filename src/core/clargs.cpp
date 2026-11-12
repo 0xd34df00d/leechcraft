@@ -39,7 +39,6 @@ namespace LC::CL
 					{ { "M"_qs, "multiprocess"_qs }, "load plugins in separate processes"_qs },
 					{ "nolog"_qs, "disable custom file logger and print everything to stdout/stderr"_qs },
 					{ "clear-socket"_qs, "clear stalled socket, use if you believe previous LC instance has terminated but failed to close its local socket properly"_qs },
-					{ "no-app-catch"_qs, "disable exceptions catch-all in QApplication::notify(), useful for debugging purposes"_qs },
 					{ "safe-mode"_qs, "disable all plugins so that you can manually enable them in Settings later"_qs },
 					{ "list-plugins"_qs, "list all non-adapted plugins that were found and exit (this one doesn't check if plugins are valid and loadable)"_qs },
 					{ "no-resource-caching"_qs, "disable caching of dynamic loadable resources (useful for stuff like Azoth themes development)"_qs },
@@ -179,7 +178,6 @@ namespace LC::CL
 
 			.SafeMode_ = parser.isSet ("safe-mode"_qs),
 
-			.CatchExceptions_ = !parser.isSet ("no-app-catch"_qs),
 			.NoLog_ = parser.isSet ("nolog"_qs),
 			.Backtrace_ = parser.isSet ("bt"_qs),
 

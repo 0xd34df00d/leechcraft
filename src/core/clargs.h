@@ -32,7 +32,6 @@ namespace LC::CL
 
 		bool SafeMode_;
 
-		bool CatchExceptions_;
 		bool NoLog_;
 		bool Backtrace_;
 

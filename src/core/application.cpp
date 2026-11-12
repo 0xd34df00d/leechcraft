@@ -270,10 +270,6 @@ namespace LC
 		if (event->type () == QEvent::LanguageChange)
 			return true;
 
-		// CLArgs_ is null if the constructor exits on invalid arguments, and exit () still delivers events
-		if (!CLArgs_ || !CLArgs_->CatchExceptions_)
-			return QApplication::notify (obj, event);
-
 		try
 		{
 			return QApplication::notify (obj, event);

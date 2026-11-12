@@ -112,10 +112,6 @@ the warning entries come from.
 Clear stalled local socket. Useful when LeechCraft doesn't start up and you know
 that no other instances are running.
 .TP
-.B --no-app-catch
-Disables catching all the exceptions in QApplication::notify(). Useful for
-debugging purposes only and shouldn't be used for live setups.
-.TP
 .B --autorestart
 Automatically restart if closed. This is done via Session Manager, so it won't
 work everywhere.
