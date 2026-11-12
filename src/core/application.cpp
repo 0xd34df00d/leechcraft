@@ -10,6 +10,9 @@
 #include <cstring>
 #include <cstdlib>
 #include <csignal>
+#ifdef __GLIBCXX__
+#include <cxxabi.h>
+#endif
 #include <boost/scoped_array.hpp>
 #include <QCommandLineParser>
 #include <QEvent>
@@ -274,6 +277,12 @@ namespace LC
 		{
 			return QApplication::notify (obj, event);
 		}
+#ifdef __GLIBCXX__
+		catch (abi::__forced_unwind&)
+		{
+			throw;
+		}
+#endif
 		catch (...)
 		{
 			qWarning () << "unhandled exception" << Util::DescribeCurrentException ()
