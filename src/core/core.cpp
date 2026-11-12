@@ -232,7 +232,7 @@ namespace LC
 			if (QMessageBox::question (win,
 						"LeechCraft",
 						tr ("Do you really want to clear the network cache?"),
-						QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 				return;
 
 			QAbstractNetworkCache *cache = NetworkAccessManager_->cache ();
@@ -244,7 +244,7 @@ namespace LC
 			if (QMessageBox::question (win,
 						"LeechCraft",
 						tr ("Do you really want to clear cookies?"),
-						QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 				return;
 
 			const auto jar = static_cast<CustomCookieJar*> (NetworkAccessManager_->cookieJar ());

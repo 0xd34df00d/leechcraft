@@ -59,7 +59,7 @@ namespace FatApe
 							UserScriptCreator::tr ("Unable to create file %1: %2. Do you want to try again changing the file name?")
 								.arg ("<em>" + fullPath + "</em>")
 								.arg (file->errorString ()),
-							QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+							QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 					return {};
 
 				filename = QInputDialog::getText (parent,

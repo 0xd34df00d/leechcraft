@@ -50,7 +50,7 @@ namespace Keywords
 						tr ("The keyword %1 already exists. Do you want to update the URL for this keyword?")
 							.arg ("<em>" + keyword + "</em>"),
 						QMessageBox::Yes | QMessageBox::No,
-						QMessageBox::Yes) == QMessageBox::No)
+						QMessageBox::Yes) != QMessageBox::Yes)
 				return;
 
 		Keywords_.setValue (keyword, url);

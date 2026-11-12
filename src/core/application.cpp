@@ -535,7 +535,7 @@ namespace LC
 					"LeechCraft",
 					tr ("This change requires restarting LeechCraft. "
 						"Do you want to restart now?"),
-					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
 
 		InitiateRestart ();

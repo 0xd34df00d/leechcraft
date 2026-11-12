@@ -385,10 +385,11 @@ void LC::MainWindow::on_ActionQuit__triggered ()
 		QPushButton always (tr ("Always"));
 		mbox.addButton (&always, QMessageBox::AcceptRole);
 
-		if (mbox.exec () == QMessageBox::No)
-			return;
-		else if (mbox.clickedButton () == &always)
+		const auto result = mbox.exec ();
+		if (mbox.clickedButton () == &always)
 			XmlSettingsManager::Instance ()->setProperty ("ConfirmQuit", false);
+		else if (result != QMessageBox::Yes)
+			return;
 	}
 
 	setEnabled (false);

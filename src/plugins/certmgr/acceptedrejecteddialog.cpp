@@ -61,7 +61,7 @@ namespace CertMgr
 					tr ("Remove exceptions"),
 					tr ("Are you sure you want to remove %n exception(s)?",
 						0, selected.size ()),
-					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
 
 		std::sort (selected.begin (), selected.end (),

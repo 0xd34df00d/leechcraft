@@ -31,11 +31,11 @@ namespace LC::Aggregator
 		QPushButton always { QObject::tr ("Always", "whether to remember the choice and don't ask again") };
 		mbox.addButton (&always, QMessageBox::AcceptRole);
 
-		if (mbox.exec () == QMessageBox::No)
-			return false;
+		const auto result = mbox.exec ();
+		if (mbox.clickedButton () != &always)
+			return result == QMessageBox::Yes;
 
-		if (mbox.clickedButton () == &always)
-			XmlSettingsManager::Instance ().setProperty (propName, false);
+		XmlSettingsManager::Instance ().setProperty (propName, false);
 		return true;
 	}
 }

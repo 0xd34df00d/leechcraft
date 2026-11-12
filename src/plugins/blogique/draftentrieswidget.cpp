@@ -266,11 +266,12 @@ namespace Blogique
 			QPushButton always (tr ("Always"));
 			mbox.addButton (&always, QMessageBox::AcceptRole);
 
-			if (mbox.exec () == QMessageBox::No)
-				return;
-			else if (mbox.clickedButton () == &always)
+			const auto result = mbox.exec ();
+			if (mbox.clickedButton () == &always)
 				XmlSettingsManager::Instance ()
 						.setProperty ("ConfirmDraftEntryRemoving", false);
+			else if (result != QMessageBox::Yes)
+				return;
 		}
 
 		idx = idx.sibling (idx.row (), Utils::EntriesViewColumns::Date);

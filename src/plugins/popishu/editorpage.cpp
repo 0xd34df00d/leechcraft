@@ -209,10 +209,10 @@ namespace Popishu
 								"Do you want to save it now?")
 								.arg (name),
 							QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
-			if (res == QMessageBox::Cancel)
-				return;
-			else if (res == QMessageBox::Yes)
+			if (res == QMessageBox::Yes)
 				on_ActionSave__triggered ();
+			else if (res != QMessageBox::No)
+				return;
 		}
 
 		emit removeTab ();

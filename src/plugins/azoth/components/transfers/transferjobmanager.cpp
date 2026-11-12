@@ -146,7 +146,7 @@ namespace Azoth
 					"Azoth",
 					TransferJobManager::tr ("Default path for incoming files doesn't exist, is not a directory or is unwritable. "
 						"Would you like to change the path now? Refusing will abort the transfer."),
-					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 				return QString ();
 
 			path = QFileDialog::getExistingDirectory (nullptr,

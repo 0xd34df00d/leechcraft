@@ -167,18 +167,19 @@ namespace LC::BitTorrent
 							QStringLiteral ("BitTorrent"),
 							tr ("Do you really want to delete %n torrent(s)?", nullptr, CurSelection_.size ()),
 							QMessageBox::Cancel);
-					confirm.addButton (tr ("&Delete"), QMessageBox::DestructiveRole);
-					auto withFilesButton = confirm.addButton (tr ("Delete with &files"), QMessageBox::DestructiveRole);
+					const auto deleteButton = confirm.addButton (tr ("&Delete"), QMessageBox::DestructiveRole);
+					const auto withFilesButton = confirm.addButton (tr ("Delete with &files"), QMessageBox::DestructiveRole);
 					confirm.setDefaultButton (QMessageBox::Cancel);
 
 					confirm.exec ();
 
-					if (confirm.clickedButton () == confirm.button (QMessageBox::Cancel))
+					const auto clicked = confirm.clickedButton ();
+					if (clicked != deleteButton && clicked != withFilesButton)
 						return;
 
 					auto rows = GetSelectedHandlesIndices ();
 
-					bool withFiles = confirm.clickedButton () == withFilesButton;
+					bool withFiles = clicked == withFilesButton;
 					std::sort (rows.begin (), rows.end (), std::greater<> ());
 					for (int row : rows)
 						Core::Instance ()->RemoveTorrent (row, withFiles);

@@ -149,7 +149,7 @@ namespace XProxy
 						"LeechCraft",
 						tr ("The specified proxy already exists. "
 							"Do you want to change the parameters of the new one?"),
-						QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 				return;
 		}
 
@@ -187,7 +187,7 @@ namespace XProxy
 						"LeechCraft",
 						tr ("The specified proxy already exists. "
 							"Do you want to change the parameters of the new one?"),
-						QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 				return;
 		}
 

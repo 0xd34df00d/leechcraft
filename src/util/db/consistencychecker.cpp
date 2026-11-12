@@ -147,7 +147,7 @@ namespace LC::Util::ConsistencyChecker
 			const auto& question = Tr::tr ("Unable to dump corrupted SQLite database %1.").arg (FormatName (dbPath)) +
 					"<br/><br/>"_qs +
 					GetRecoverFailureMessage (result.GetLeft ());
-			if (QMessageBox::question (nullptr, diaTitle, question, QMessageBox::Retry | QMessageBox::Cancel) == QMessageBox::Cancel)
+			if (QMessageBox::question (nullptr, diaTitle, question, QMessageBox::Retry | QMessageBox::Cancel) != QMessageBox::Retry)
 				co_return result;
 		}
 	}
