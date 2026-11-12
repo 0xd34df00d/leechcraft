@@ -60,14 +60,16 @@ namespace XProxy
 		for (const auto script : unaddedScripts)
 			names << script->GetListName ();
 
+		bool ok = false;
 		const auto& item = QInputDialog::getItem (this,
 				tr ("Add a script"),
 				tr ("Select a script or dynamic list to add:"),
 				names,
 				0,
-				false);
+				false,
+				&ok);
 		const auto idx = names.indexOf (item);
-		if (idx < 0)
+		if (!ok || idx < 0)
 			return;
 
 		const auto script = unaddedScripts.value (idx);

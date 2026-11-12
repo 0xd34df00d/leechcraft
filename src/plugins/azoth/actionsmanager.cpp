@@ -176,13 +176,15 @@ namespace Azoth
 
 				if (variants.size () > 2)
 				{
+					bool ok = false;
 					variant = QInputDialog::getItem (0,
 							ActionsManager::tr ("Select variant"),
 							ActionsManager::tr ("Select variant to send directed status to:"),
 							variants,
 							0,
-							false);
-					if (variant.isEmpty ())
+							false,
+							&ok);
+					if (!ok)
 						return;
 
 					if (variant == variants.front ())

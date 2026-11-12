@@ -552,13 +552,15 @@ namespace LC::LMP::Graffiti
 		QString cue;
 		if (cues.size () >= 2)
 		{
+			bool ok = false;
 			cue = QInputDialog::getItem (this,
 					Lits::LMPGraffiti,
 					tr ("Select cue sheet to use for splitting:"),
 					cues,
 					0,
-					false);
-			if (cue.isEmpty ())
+					false,
+					&ok);
+			if (!ok)
 				return;
 		}
 		else
