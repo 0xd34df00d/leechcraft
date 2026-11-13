@@ -8,6 +8,7 @@
 
 #include "richeditorwidget.h"
 #include <optional>
+#include <ranges>
 #include <QActionGroup>
 #include <QWebEnginePage>
 #include <QWebEngineScriptCollection>
@@ -207,11 +208,7 @@ const findParent = (item, name) => {
 		connect (Ui_.View_->page (),
 				&QWebEnginePage::selectionChanged,
 				this,
-				[this]
-				{
-					for (const auto& [cmd, act] : HtmlActions_)
-						act->setChecked (QueryCommandState (cmd));
-				});
+				&RichEditorWidget::UpdateHtmlActions);
 
 		qobject_cast<QVBoxLayout*> (Ui_.ViewTab_->layout ())->insertWidget (0, ViewBar_);
 
@@ -641,12 +638,6 @@ const findParent = (item, name) => {
 		removeColumn->setProperty ("ActionIcon", "edit-table-delete-column");
 	}
 
-	QVariant RichEditorWidget::ExecJSBlocking (const QString& js)
-	{
-		return Blocking<QVariant> (Ui_.View_,
-				[&] (QWebEnginePage *page, auto callback) { page->runJavaScript (js, callback); });
-	}
-
 	void RichEditorWidget::ExecCommand (QStringView cmd, QStringView arg)
 	{
 		if (cmd == u"insertHTML"_qsv)
@@ -661,9 +652,28 @@ const findParent = (item, name) => {
 		ExecJS (js);
 	}
 
-	bool RichEditorWidget::QueryCommandState (QStringView cmd)
+	Util::ContextTask<void> RichEditorWidget::UpdateHtmlActions ()
 	{
-		return ExecJSBlocking (uR"(document.queryCommandState("%1", false, null))"_qsv.arg (cmd)).toBool ();
+		co_await Util::AddContext { CoroContext_ };
+
+		const auto& cmds = HtmlActions_
+				| std::views::keys
+				| std::views::transform (&QStringView::toString)
+				| std::ranges::to<QStringList> ();
+
+		Util::Callback<QVariant> callback;
+		Ui_.View_->page ()->runJavaScript (uR"("%1".split(",").map(cmd => document.queryCommandState(cmd)))"_qsv.arg (cmds.join (',')),
+				callback.GetCallback ());
+		const auto result = co_await callback;
+		if (!result)
+			co_return;
+
+		const auto& states = result->toList ();
+		if (states.size () != HtmlActions_.size ())
+			co_return;
+
+		for (const auto& [state, action] : std::views::zip (states, HtmlActions_ | std::views::values))
+			action->setChecked (state.toBool ());
 	}
 
 	void RichEditorWidget::OpenFindReplace (bool)
@@ -1001,16 +1011,14 @@ if (parentItem == null) {
 
 		ExecCommand (u"fontName", font.family ());
 
-		auto checkWebAct = [this, &font] (auto f, QStringView cmd)
-		{
-			const bool state = std::invoke (f, &font);
-			if (QueryCommandState (cmd) != state)
-				ExecCommand (cmd);
-		};
-
-		checkWebAct (&QFont::bold, u"bold");
-		checkWebAct (&QFont::italic, u"italic");
-		checkWebAct (&QFont::underline, u"underline");
+		const auto js = [] (bool value) { return value ? u"true"_qsv : u"false"_qsv; };
+		ExecJS (uR"(
+for (const [cmd, state] of [["bold", %1], ["italic", %2], ["underline", %3]]) {
+    if (document.queryCommandState(cmd) != state) {
+        document.execCommand(cmd, false, null);
+    }
+}
+)"_qsv.arg (js (font.bold ()), js (font.italic ()), js (font.underline ())));
 	}
 
 	void RichEditorWidget::HandleInsertTable ()

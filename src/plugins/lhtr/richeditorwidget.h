@@ -71,7 +71,7 @@ namespace LC::LHTR
 		void SetupTableMenu ();
 
 		void ExecCommand (QStringView, QStringView = {});
-		bool QueryCommandState (QStringView cmd);
+		Util::ContextTask<void> UpdateHtmlActions ();
 
 		void OpenFindReplace (bool findOnly);
 
@@ -82,8 +82,6 @@ namespace LC::LHTR
 		};
 		QString ExpandCustomTags (QString, ExpandMode = ExpandMode::FullHTML) const;
 		QString RevertCustomTags (const QString&) const;
-
-		QVariant ExecJSBlocking (const QString&);
 
 		Util::ContextTask<void> SyncTabs (int chosenIdx);
 		Util::ContextTask<void> SyncHTMLToView ();
