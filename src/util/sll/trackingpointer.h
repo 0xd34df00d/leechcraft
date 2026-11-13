@@ -29,7 +29,15 @@ namespace LC::Util
 		template<typename T>
 		auto GetQObjectOf (T *ptr)
 		{
-			return ptr->GetQObject ();
+			if constexpr (std::is_base_of_v<QObject, T>)
+			{
+				if constexpr (std::is_const_v<T>)
+					return static_cast<const QObject*> (ptr);
+				else
+					return static_cast<QObject*> (ptr);
+			}
+			else
+				return ptr->GetQObject ();
 		}
 	}
 
