@@ -75,6 +75,7 @@ namespace Blogique
 		QUrl EntryUrl_;
 
 		bool EntryChanged_ = false;
+		QString ContentSnapshot_;
 
 		TagsProxyModel *TagsProxyModel_;
 		QStandardItemModel *TagsModel_;
@@ -112,7 +113,9 @@ namespace Blogique
 
 		void ClearEntry ();
 
+		Entry GetEntryWithoutContent () const;
 		Entry GetCurrentEntry () const;
+		void SetContentSnapshot (const QString& content);
 		void WarnEmptyEntry ();
 		bool SaveDraft ();
 
@@ -137,6 +140,7 @@ namespace Blogique
 		void fillNewTabWithEntry (const Entry& entry, const QByteArray& accountId);
 
 		void handleEntryChanged (const QString& str = QString ());
+		void handleContentChanged ();
 		void handleRemovingEntryBegin ();
 
 		void newEntry ();

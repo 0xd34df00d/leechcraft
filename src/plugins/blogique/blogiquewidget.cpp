@@ -194,6 +194,7 @@ namespace Blogique
 		EntryUrl_ = e.EntryUrl_;
 		Ui_.Subject_->setText (e.Subject_);
 		PostEdit_->SetContents (e.Content_, ContentType::HTML);
+		SetContentSnapshot (e.Content_);
 
 		for (auto w : SidePluginsWidgets_)
 		{
@@ -231,16 +232,16 @@ namespace Blogique
 
 	std::optional<TabSaveInfo> BlogiqueWidget::GetTabSaveInfo () const
 	{
-		const auto entry = GetCurrentEntry ();
-		if (entry.IsEmpty ())
+		if (ContentSnapshot_.isEmpty ())
 			return {};
 
+		const auto& entry = GetEntryWithoutContent ();
 		TabSaveInfo info { .Name_ = entry.Subject_.isEmpty () ? tr ("No subject") : entry.Subject_ };
 		const auto acc = Id2Account_.value (AccountsBox_->currentIndex ());
 		QDataStream stream (&info.Data_, QIODevice::WriteOnly);
 		stream << static_cast<qint64> (1)
 				<< entry.Subject_
-				<< entry.Content_
+				<< ContentSnapshot_
 				<< entry.Date_
 				<< entry.Tags_
 				<< entry.Target_
@@ -286,7 +287,7 @@ namespace Blogique
 			connect (w,
 					SIGNAL (textChanged ()),
 					this,
-					SLOT (handleEntryChanged ()));
+					SLOT (handleContentChanged ()));
 			PostEditWidget_ = w;
 			editFrameLay->addWidget (w);
 			break;
@@ -490,6 +491,7 @@ namespace Blogique
 	{
 		Ui_.Subject_->clear ();
 		PostEdit_->SetContents (QString (), ContentType::PlainText);
+		SetContentSnapshot ({});
 		EntryUrl_.clear ();
 		EntryId_ = 0;
 
@@ -518,13 +520,8 @@ namespace Blogique
 		EntryChanged_ = false;
 	}
 
-	Entry BlogiqueWidget::GetCurrentEntry () const
+	Entry BlogiqueWidget::GetEntryWithoutContent () const
 	{
-		if (!PostEdit_)
-			return Entry ();
-
-		const QString& content = PostEdit_->GetContents (ContentType::HTML);
-
 		Entry e;
 		for (auto w : SidePluginsWidgets_)
 		{
@@ -550,7 +547,6 @@ namespace Blogique
 		}
 
 		e.Target_ = PostTargetBox_->currentText ();
-		e.Content_ = content;
 		e.Subject_ = Ui_.Subject_->text ();
 		e.EntryType_ = EntryType_;
 		e.EntryId_ = EntryId_;
@@ -558,6 +554,22 @@ namespace Blogique
 			e.Date_ = QDateTime::currentDateTime ();
 
 		return e;
+	}
+
+	Entry BlogiqueWidget::GetCurrentEntry () const
+	{
+		if (!PostEdit_)
+			return Entry ();
+
+		auto e = GetEntryWithoutContent ();
+		e.Content_ = PostEdit_->GetContents (ContentType::HTML);
+		return e;
+	}
+
+	void BlogiqueWidget::SetContentSnapshot (const QString& content)
+	{
+		ContentSnapshot_ = content;
+		emit tabRecoverDataChanged ();
 	}
 
 	void BlogiqueWidget::WarnEmptyEntry ()
@@ -758,6 +770,12 @@ namespace Blogique
 	{
 		EntryChanged_ = true;
 		emit tabRecoverDataChanged ();
+	}
+
+	void BlogiqueWidget::handleContentChanged ()
+	{
+		EntryChanged_ = true;
+		SetContentSnapshot (PostEdit_->GetContents (ContentType::HTML));
 	}
 
 	void BlogiqueWidget::handleRemovingEntryBegin ()
