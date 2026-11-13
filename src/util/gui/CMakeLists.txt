@@ -12,6 +12,7 @@ endif ()
 add_util_library (util-gui
 	SRCS
 		actionresultreporter.cpp
+		asyncdialogs.cpp
 		autoresizemixin.cpp
 		clearlineeditaddon.cpp
 		colorbutton.cpp
@@ -38,6 +39,7 @@ add_util_library (util-gui
 		leechcraft-util-network
 		leechcraft-util-shortcuts
 		leechcraft-util-sll
+		leechcraft-util-threads
 		leechcraft-util-xpc
 		leechcraft-xsd
 	USES ${MAYBE_DBUS_DEP} Network Widgets
