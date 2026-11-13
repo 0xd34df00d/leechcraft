@@ -7,7 +7,6 @@
  **********************************************************************/
 
 #include "richeditorwidget.h"
-#include <memory>
 #include <optional>
 #include <QActionGroup>
 #include <QWebEnginePage>
@@ -42,6 +41,8 @@
 #include <util/sll/util.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/unreachable.h>
+#include <util/threads/coro.h>
+#include <util/threads/coro/callback.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -370,7 +371,7 @@ const findParent = (item, name) => {
 		{
 		case ContentType::HTML:
 			if (Ui_.TabWidget_->currentIndex () != TabWidgetIdx::TWIHTMLView)
-				SyncHTMLToView ();
+				const_cast<RichEditorWidget*> (this)->SyncHTMLToView ();
 			return Ui_.HTML_->toPlainText ();
 		case ContentType::PlainText:
 			return Blocking<QString> (Ui_.View_, &QWebEnginePage::toPlainText);
@@ -871,8 +872,11 @@ const findParent = (item, name) => {
 		return doc.toString ();
 	}
 
-	void RichEditorWidget::SyncHTMLToView () const
+	Util::ContextTask<void> RichEditorWidget::SyncHTMLToView ()
 	{
+		co_await Util::AddContext { CoroContext_ };
+
+		Util::Callback<QVariant> callback;
 		Ui_.View_->page ()->runJavaScript (QStringLiteral (R"(
 (() => {
     if (document.querySelectorAll("parsererror").length) {
@@ -881,30 +885,29 @@ const findParent = (item, name) => {
     return new XMLSerializer().serializeToString(document);
 })();
 )"),
-			[pThis = QPointer { this }] (const QVariant& var)
-			{
-				if (!pThis)
-				{
-					qWarning () << "editor died";
-					return;
-				}
+				callback.GetCallback ());
+		const auto var = co_await callback;
+		if (!var || !var->isValid ())
+		{
+			qWarning () << "unable to get the document from the page";
+			co_return;
+		}
 
-				if (var.typeId () == QMetaType::Bool && !var.toBool ())
-				{
-					qWarning () << "there are parser errors, ignoring reverting";
-					return;
-				}
+		if (var->typeId () == QMetaType::Bool && !var->toBool ())
+		{
+			qWarning () << "there are parser errors, ignoring reverting";
+			co_return;
+		}
 
-				disconnect (pThis->Ui_.HTML_,
-						&QTextEdit::textChanged,
-						&*pThis,
-						&RichEditorWidget::HandleHtmlEditChanged);
-				pThis->Ui_.HTML_->setPlainText (pThis->RevertCustomTags (var.toString ()));
-				connect (pThis->Ui_.HTML_,
-						&QTextEdit::textChanged,
-						&*pThis,
-						&RichEditorWidget::HandleHtmlEditChanged);
-			});
+		disconnect (Ui_.HTML_,
+				&QTextEdit::textChanged,
+				this,
+				&RichEditorWidget::HandleHtmlEditChanged);
+		Ui_.HTML_->setPlainText (RevertCustomTags (var->toString ()));
+		connect (Ui_.HTML_,
+				&QTextEdit::textChanged,
+				this,
+				&RichEditorWidget::HandleHtmlEditChanged);
 	}
 
 	void RichEditorWidget::HandleHtmlEditChanged ()
@@ -913,35 +916,38 @@ const findParent = (item, name) => {
 		emit textChanged ();
 	}
 
-	void RichEditorWidget::SyncTabs (int idx)
+	Util::ContextTask<void> RichEditorWidget::SyncTabs (int idx)
 	{
-		// Unfortunate to use a shared_ptr where a stack-allocated QSignalBlocker would do,
-		// but, sadly, QtWebEngine requires a copyable callback below.
-		auto blocker = std::make_shared<QSignalBlocker> (this);
+		co_await Util::AddContext { CoroContext_ };
 
 		switch (idx)
 		{
 		case TabWidgetIdx::TWIHTMLView:
-			SyncHTMLToView ();
+			co_await SyncHTMLToView ();
 			break;
 		case TabWidgetIdx::TWIVisualView:
+		{
 			if (!HTMLDirty_)
-				return;
+				co_return;
 
 			HTMLDirty_ = false;
-			const auto& str = ExpandCustomTags (Ui_.HTML_->toPlainText ());
+
+			const QSignalBlocker blocker { this };
+
+			const auto str = ExpandCustomTags (Ui_.HTML_->toPlainText ());
 			Ui_.View_->setHtml (str);
 
+			Util::Callback<QVariant> callback;
 			Ui_.View_->page ()->runJavaScript (QStringLiteral (R"(document.querySelectorAll("html > body").length)"),
-					[str, blocker, pThis = QPointer { this }] (const QVariant& result)
-					{
-						if (!result.toInt () && pThis)
-						{
-							qWarning () << "null html/body element";
-							pThis->SetContents (str, ContentType::HTML);
-						}
-					});
+					callback.GetCallback ());
+			if (const auto bodiesCount = co_await callback;
+				bodiesCount && !bodiesCount->toInt ())
+			{
+				qWarning () << "null html/body element";
+				SetContents (str, ContentType::HTML);
+			}
 			break;
+		}
 		}
 	}
 

@@ -13,6 +13,8 @@
 #include <interfaces/itexteditor.h>
 #include <interfaces/iadvancedhtmleditor.h>
 #include <interfaces/iwkfontssettable.h>
+#include <util/threads/coro/taskfwd.h>
+#include <util/threads/coro/corocontext.h>
 #include "ui_richeditorwidget.h"
 
 class QToolBar;
@@ -83,8 +85,8 @@ namespace LC::LHTR
 
 		QVariant ExecJSBlocking (const QString&);
 
-		void SyncTabs (int chosenIdx);
-		void SyncHTMLToView () const;
+		Util::ContextTask<void> SyncTabs (int chosenIdx);
+		Util::ContextTask<void> SyncHTMLToView ();
 		void HandleHtmlEditChanged ();
 
 		void HandleHtmlCmdAction (QStringView cmd, QStringView args);
@@ -103,5 +105,7 @@ namespace LC::LHTR
 		void handleCollectionImageChosen ();
 	signals:
 		void textChanged () override;
+
+		LC_CORO_CONTEXT
 	};
 }
