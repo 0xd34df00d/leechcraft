@@ -112,7 +112,9 @@ namespace Blogique
 
 		void ClearEntry ();
 
-		Entry GetCurrentEntry (bool interactive = false) const;
+		Entry GetCurrentEntry () const;
+		void WarnEmptyEntry ();
+		bool SaveDraft ();
 
 		void ShowProgress (const QString& labelText = QString ());
 

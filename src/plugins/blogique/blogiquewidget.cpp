@@ -20,6 +20,7 @@
 #include <QPushButton>
 #include <QStandardItemModel>
 #include <QWidgetAction>
+#include <util/gui/asyncdialogs.h>
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>
 #include <util/qml/themeimageprovider.h>
@@ -517,20 +518,12 @@ namespace Blogique
 		EntryChanged_ = false;
 	}
 
-	Entry BlogiqueWidget::GetCurrentEntry (bool interactive) const
+	Entry BlogiqueWidget::GetCurrentEntry () const
 	{
 		if (!PostEdit_)
 			return Entry ();
 
 		const QString& content = PostEdit_->GetContents (ContentType::HTML);
-		if (interactive &&
-				content.isEmpty ())
-		{
-			QMessageBox::warning (0,
-					tr ("LeechCraft"),
-					tr ("Entry can't be empty."));
-			return Entry ();
-		}
 
 		Entry e;
 		for (auto w : SidePluginsWidgets_)
@@ -567,6 +560,13 @@ namespace Blogique
 		return e;
 	}
 
+	void BlogiqueWidget::WarnEmptyEntry ()
+	{
+		Util::Dialogs::Warning (this,
+				tr ("LeechCraft"),
+				tr ("Entry can't be empty."));
+	}
+
 	void BlogiqueWidget::ShowProgress (const QString& labelText)
 	{
 		ProgressBarLabelAction_->setVisible (!labelText.isEmpty ());
@@ -579,7 +579,7 @@ namespace Blogique
 		if (!EntryChanged_)
 			return;
 
-		saveEntry ();
+		SaveDraft ();
 		EntryChanged_ = true;
 	}
 
@@ -883,10 +883,17 @@ namespace Blogique
 
 	void BlogiqueWidget::saveEntry ()
 	{
+		if (!SaveDraft ())
+			WarnEmptyEntry ();
+	}
+
+	bool BlogiqueWidget::SaveDraft ()
+	{
 		EntryChanged_ = false;
 		EntryType_ = EntryType::Draft;
-		const auto& e = GetCurrentEntry (true);
-		if (!e.IsEmpty ())
+		const auto& e = GetCurrentEntry ();
+		const auto hasContent = !e.IsEmpty ();
+		if (hasContent)
 		{
 			try
 			{
@@ -912,13 +919,15 @@ namespace Blogique
 			EntryType_ = EntryType::None;
 
 		DraftEntriesWidget_->loadDraftEntries ();
+
+		return hasContent;
 	}
 
 	void BlogiqueWidget::saveNewEntry ()
 	{
 		EntryChanged_ = false;
 		EntryType_ = EntryType::Draft;
-		const auto& e = GetCurrentEntry (true);
+		const auto& e = GetCurrentEntry ();
 
 		if (!e.IsEmpty ())
 		{
@@ -934,7 +943,10 @@ namespace Blogique
 			}
 		}
 		else
+		{
 			EntryType_ = EntryType::None;
+			WarnEmptyEntry ();
+		}
 
 		DraftEntriesWidget_->loadDraftEntries ();
 	}
@@ -946,7 +958,7 @@ namespace Blogique
 			return;
 
 		EntryChanged_ = false;
-		const auto& e = GetCurrentEntry (true);
+		const auto& e = GetCurrentEntry ();
 
 		if (!e.IsEmpty ())
 		{
@@ -982,6 +994,8 @@ namespace Blogique
 			}
 
 		}
+		else
+			WarnEmptyEntry ();
 	}
 
 	void BlogiqueWidget::submitTo ()
@@ -990,9 +1004,15 @@ namespace Blogique
 		if (dlg.exec () != QDialog::Accepted)
 			return;
 
+		auto e = GetCurrentEntry ();
+		if (e.IsEmpty ())
+		{
+			WarnEmptyEntry ();
+			return;
+		}
+
 		for (const auto& pair : dlg.GetPostingTargets ())
 		{
-			auto e = GetCurrentEntry (true);
 			e.Target_ = pair.second;
 			pair.first->submit (e);
 		}
@@ -1075,10 +1095,12 @@ namespace Blogique
 		if (!acc)
 			return;
 
-		const auto& e = GetCurrentEntry (true);
+		const auto& e = GetCurrentEntry ();
 
 		if (!e.IsEmpty ())
 			acc->preview (e);
+		else
+			WarnEmptyEntry ();
 	}
 }
 }
