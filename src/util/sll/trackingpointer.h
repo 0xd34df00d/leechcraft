@@ -86,5 +86,11 @@ namespace LC::Util
 				ReportBadAccess ();
 			return *Ptr_;
 		}
+
+		void Reset ()
+		{
+			Guard_ = {};
+			Ptr_ = nullptr;
+		}
 	};
 }
