@@ -103,6 +103,32 @@ namespace Poshuku
 		}
 	}
 
+	namespace
+	{
+		Entity MakeExternalLink (const QUrl& url, const QString& type, const QString& title, const QString& rel)
+		{
+			auto name = title;
+			if (name.isEmpty ())
+			{
+				name = type;
+				name.remove ("application/");
+				name.remove ("+xml");
+				name = name.toUpper ();
+			}
+
+			Entity e;
+			e.Mime_ = type;
+			e.Entity_ = url;
+			e.Additional_ ["SourceURL"] = url;
+			e.Parameters_ = FromUserInitiated |
+							OnlyHandle;
+			e.Additional_ [EF::UserVisibleName] = name;
+			e.Additional_ ["LinkRel"] = rel;
+			e.Additional_ [IgnoreSelf] = true;
+			return e;
+		}
+	}
+
 	void UrlEditButtonsManager::checkLinkRels ()
 	{
 		LineEdit_->RemoveAction (ExternalLinksAction_);
@@ -130,7 +156,7 @@ namespace Poshuku
 				)",
 				[=, this] (const QVariant& res)
 				{
-					bool inserted = false;
+					QList<Entity> entities;
 					for (const auto& var : res.toList ())
 					{
 						const auto& map = var.toMap ();
@@ -139,37 +165,18 @@ namespace Poshuku
 						if (type.isEmpty ())
 							continue;
 
-						const auto& title = map ["title"].toString ();
-						const auto& href = map ["href"].toString ();
-						const auto& rel = map ["rel"].toString ();
+						entities << MakeExternalLink (mainFrameURL.resolved (QUrl { map ["href"].toString () }),
+								type, map ["title"].toString (), map ["rel"].toString ());
+					}
 
-						Entity e;
-						e.Mime_ = type;
-
-						auto entity = title;
-						if (entity.isEmpty ())
-						{
-							entity = e.Mime_;
-							entity.remove ("application/");
-							entity.remove ("+xml");
-							entity = entity.toUpper ();
-						}
-
-						auto entityUrl = mainFrameURL.resolved (QUrl { href });
-						e.Entity_ = entityUrl;
-						e.Additional_ ["SourceURL"] = entityUrl;
-						e.Parameters_ = FromUserInitiated |
-										OnlyHandle;
-						e.Additional_ [EF::UserVisibleName] = entity;
-						e.Additional_ ["LinkRel"] = rel;
-						e.Additional_ [IgnoreSelf] = true;
-
+					bool inserted = false;
+					for (const auto& e : entities)
 						if (entityMgr->CouldHandle (e))
 						{
 							auto mime = e.Mime_;
 							mime.replace ('/', '_');
 							const auto& iconStr = QString { ":/resources/images/%1.png" }.arg (mime);
-							auto act = ExternalLinks_->addAction (QIcon { iconStr }, entity);
+							auto act = ExternalLinks_->addAction (QIcon { iconStr }, e.Additional_ [EF::UserVisibleName].toString ());
 
 							new Util::SlotClosure<Util::NoDeletePolicy>
 									{
@@ -199,7 +206,6 @@ namespace Poshuku
 								inserted = true;
 							}
 						}
-					}
 				});
 	}
 
