@@ -881,13 +881,11 @@ namespace Blogique
 			ClearEntry ();
 	}
 
-	void BlogiqueWidget::saveEntry (const Entry& entry)
+	void BlogiqueWidget::saveEntry ()
 	{
 		EntryChanged_ = false;
 		EntryType_ = EntryType::Draft;
-		const Entry& e = entry.IsEmpty () ?
-			GetCurrentEntry (true) :
-			entry;
+		const auto& e = GetCurrentEntry (true);
 		if (!e.IsEmpty ())
 		{
 			try
@@ -916,13 +914,11 @@ namespace Blogique
 		DraftEntriesWidget_->loadDraftEntries ();
 	}
 
-	void BlogiqueWidget::saveNewEntry (const Entry& entry)
+	void BlogiqueWidget::saveNewEntry ()
 	{
 		EntryChanged_ = false;
 		EntryType_ = EntryType::Draft;
-		const Entry& e = entry.IsEmpty () ?
-			GetCurrentEntry (true) :
-			entry;
+		const auto& e = GetCurrentEntry (true);
 
 		if (!e.IsEmpty ())
 		{
@@ -943,16 +939,14 @@ namespace Blogique
 		DraftEntriesWidget_->loadDraftEntries ();
 	}
 
-	void BlogiqueWidget::submit (const Entry& event)
+	void BlogiqueWidget::submit ()
 	{
 		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
 		if (!acc)
 			return;
 
 		EntryChanged_ = false;
-		const auto& e = event.IsEmpty () ?
-			GetCurrentEntry (true) :
-			event;
+		const auto& e = GetCurrentEntry (true);
 
 		if (!e.IsEmpty ())
 		{
@@ -990,7 +984,7 @@ namespace Blogique
 		}
 	}
 
-	void BlogiqueWidget::submitTo (const Entry& entry)
+	void BlogiqueWidget::submitTo ()
 	{
 		SubmitToDialog dlg;
 		if (dlg.exec () != QDialog::Accepted)
@@ -998,9 +992,7 @@ namespace Blogique
 
 		for (const auto& pair : dlg.GetPostingTargets ())
 		{
-			auto e = entry.IsEmpty () ?
-				GetCurrentEntry (true) :
-				entry;
+			auto e = GetCurrentEntry (true);
 			e.Target_ = pair.second;
 			pair.first->submit (e);
 		}

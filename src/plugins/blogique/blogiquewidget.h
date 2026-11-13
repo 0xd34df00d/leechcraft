@@ -138,10 +138,10 @@ namespace Blogique
 		void handleRemovingEntryBegin ();
 
 		void newEntry ();
-		void saveEntry (const Entry& e = Entry ());
-		void saveNewEntry (const Entry& e = Entry ());
-		void submit (const Entry& e = Entry ());
-		void submitTo (const Entry& e = Entry ());
+		void saveEntry ();
+		void saveNewEntry ();
+		void submit ();
+		void submitTo ();
 		void on_SideWidget__dockLocationChanged (Qt::DockWidgetArea area);
 		void on_ShowProfile__triggered ();
 		void on_CurrentTime__released ();
