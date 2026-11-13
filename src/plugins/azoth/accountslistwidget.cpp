@@ -16,11 +16,6 @@
 #include <QStyledItemDelegate>
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/iprotocol.h"
-#ifdef ENABLE_CRYPT
-#include "interfaces/azoth/isupportpgp.h"
-#include "components/dialogs/pgpkeyselectiondialog.h"
-#include "cryptomanager.h"
-#endif
 #include "components/util/misc.h"
 #include "core.h"
 #include "customchatstylemanager.h"
@@ -238,36 +233,6 @@ namespace Azoth
 		index.data (Role::AccObj).value<IAccount*> ()->OpenConfigurationDialog ();
 	}
 
-	void AccountsListWidget::on_PGP__released ()
-	{
-#ifdef ENABLE_CRYPT
-		const auto& index = Ui_.Accounts_->selectionModel ()->currentIndex ();
-		if (!index.isValid ())
-			return;
-
-		auto acc = index.data (Role::AccObj).value<IAccount*> ();
-		auto pgpAcc = qobject_cast<ISupportPGP*> (acc->GetQObject ());
-		if (!pgpAcc)
-		{
-			QMessageBox::warning (this,
-					"LeechCraft",
-					tr ("The account %1 doesn't support encryption.")
-						.arg (acc->GetAccountName ()));
-			return;
-		}
-
-		const QString& str = tr ("Please select new PGP key for the account %1.")
-				.arg (acc->GetAccountName ());
-		PGPKeySelectionDialog dia (str,
-				PGPKeySelectionDialog::TPrivate, pgpAcc->GetPrivateKey (), this);
-		if (dia.exec () != QDialog::Accepted)
-			return;
-
-		pgpAcc->SetPrivateKey (dia.GetSelectedKey ());
-		CryptoManager::Instance ().AssociatePrivateKey (acc, dia.GetSelectedKey ());
-#endif
-	}
-
 	void AccountsListWidget::on_Delete__released()
 	{
 		const auto& index = Ui_.Accounts_->selectionModel ()->currentIndex ();
@@ -297,9 +262,6 @@ namespace Azoth
 			Ui_.Delete_,
 			Ui_.Modify_,
 			Ui_.ResetStyles_,
-#ifdef ENABLE_CRYPT
-			Ui_.PGP_
-#endif
 		};
 		for (const auto item : items)
 			item->setEnabled (isValid);

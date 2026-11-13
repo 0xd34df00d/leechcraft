@@ -17,14 +17,11 @@ namespace LC::Azoth
 {
 	class IAccount;
 	class IMUCEntry;
-	class ISupportPGP;
 
 	class EntriesManager;
 
 	void AuthorizeEntry (ICLEntry*);
 	void DenyAuthForEntry (ICLEntry*);
-
-	bool ChoosePGPKey (ISupportPGP*, ICLEntry*);
 
 	QStringList GetMucParticipants (const EntriesManager&, const GlobalPersistentId& mucEntryId);
 

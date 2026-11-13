@@ -59,11 +59,6 @@
 #include "interfaces/azoth/ichatstyleresourcesource.h"
 #include "util/azoth/entryidops.h"
 #include "util/azoth/util.h"
-
-#ifdef ENABLE_CRYPT
-#include "cryptomanager.h"
-#endif
-
 #include "components/dialogs/accounthandlerchooserdialog.h"
 #include "components/dialogs/addcontactdialog.h"
 #include "components/dialogs/joinconferencedialog.h"
@@ -256,10 +251,6 @@ namespace LC::Azoth
 		ShortcutManager_.reset ();
 		StyleOptionManagers_.clear ();
 		AvatarsManager_.reset ();
-
-#ifdef ENABLE_CRYPT
-		CryptoManager::Instance ().Release ();
-#endif
 	}
 
 	void Core::SetProxy (ICoreProxy_ptr proxy, QObject *pluginObject)
@@ -1235,10 +1226,6 @@ namespace LC::Azoth
 
 		NotificationsManager_->AddCLEntry (entryObj);
 
-#ifdef ENABLE_CRYPT
-		CryptoManager::Instance ().AddEntry (entry);
-#endif
-
 		const auto& groups = GetDisplayGroups (entry);
 		for (const auto catItem : GetCategoriesItems (groups, accItem))
 		{
@@ -1561,10 +1548,6 @@ namespace LC::Azoth
 		HistorySyncer_->AddAccount (account);
 
 		emit accountAdded (account);
-
-#ifdef ENABLE_CRYPT
-		CryptoManager::Instance ().AddAccount (account);
-#endif
 
 		NotificationsManager_->AddAccount (accObject);
 

@@ -45,7 +45,6 @@ namespace Azoth
 	class ICLEntry;
 	class IMessage;
 	class IMUCEntry;
-	class ISupportPGP;
 	class ITransferManager;
 
 	class AvatarsManager;
@@ -75,9 +74,6 @@ namespace Azoth
 		QTextBrowser *MUCEventLog_;
 		QAction *ToggleRichText_ = nullptr;
 		QAction *Call_ = nullptr;
-#ifdef ENABLE_CRYPT
-		QAction *EnableEncryption_ = nullptr;
-#endif
 
 		std::optional<GlobalStrongestId> EntryId_;
 
@@ -197,10 +193,6 @@ namespace Azoth
 		void handleCallRequested ();
 		void handleCall (QObject*);
 #endif
-#ifdef ENABLE_CRYPT
-		void handleEnableEncryption ();
-		void handleEncryptionStateChanged (QObject*, bool);
-#endif
 		void handleEntryMessage (QObject*);
 		void handleVariantsChanged (QStringList);
 		void handleStatusChanged (const EntryStatus&, const QString&);
@@ -247,10 +239,6 @@ namespace Azoth
 		 * @param nickname a nick to insert, in html format.
 		 */
 		void InsertNick (const QString& nicknameHtml);
-
-#ifdef ENABLE_CRYPT
-		void SetEncryptionEnabled (ISupportPGP*, bool enable);
-#endif
 	signals:
 		void changeTabName (const QString&);
 		void changeTabIcon (const QIcon&);

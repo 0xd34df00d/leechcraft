@@ -24,14 +24,6 @@ if (ENABLE_MEDIACALLS)
 	set (EXTRA_MULTIMEDIA_LIBRARY Multimedia)
 endif ()
 
-option (ENABLE_CRYPT "Enable QCA2-based support for PGP" ON)
-
-if (ENABLE_CRYPT)
-	find_package(Qca-qt${LC_QT_VERSION} REQUIRED)
-
-	add_definitions (-DENABLE_CRYPT)
-endif ()
-
 add_util_library (azoth-util
 	SRCS
 		util/azoth/emitters/account.cpp
@@ -84,7 +76,6 @@ LC_DEFINE_PLUGIN (
 		components/dialogs/simpledialog.cpp
 		components/dialogs/sslerrorsdialog.cpp
 		components/dialogs/userslistwidget.cpp
-		$<$<BOOL:${ENABLE_CRYPT}>:components/dialogs/pgpkeyselectiondialog.cpp>
 		components/roster/clmodel.cpp
 		components/roster/cltooltipmanager.cpp
 		components/roster/contactlistdelegate.cpp
@@ -139,13 +130,11 @@ LC_DEFINE_PLUGIN (
 		tabbase.cpp
 		categoryactions.cpp
 		hooksinstance.cpp
-		$<$<BOOL:${ENABLE_CRYPT}>:cryptomanager.cpp>
 	SETTINGS azothsettings.xml
 	RESOURCES azothresources.qrc
 	QT_COMPONENTS Concurrent Network Sql WebEngineWidgets Widgets Xml ${EXTRA_MULTIMEDIA_LIBRARY}
 	LINK_LIBRARIES
 		leechcraft-azoth-util
-		$<$<BOOL:${ENABLE_CRYPT}>:qca-qt${LC_QT_VERSION}>
 	INSTALL_SHARE
 	HAS_TESTS
 	)

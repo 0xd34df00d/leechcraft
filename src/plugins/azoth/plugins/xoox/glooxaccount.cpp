@@ -20,11 +20,6 @@
 #include <util/threads/coro.h>
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/iproxyobject.h>
-
-#ifdef ENABLE_CRYPT
-#include "xeps/pgpmanager.h"
-#endif
-
 #include "glooxprotocol.h"
 #include "core.h"
 #include "clientconnection.h"
@@ -43,7 +38,6 @@
 #include "jabbersearchsession.h"
 #include "bookmarkeditwidget.h"
 #include "accountsettingsholder.h"
-#include "crypthandler.h"
 #include "gwitemsremovaldialog.h"
 #include "serverinfostorage.h"
 #include "xeps/xep0313manager.h"
@@ -643,78 +637,6 @@ namespace Xoox
 
 		new AddToBlockedRunner { allJids, ClientConnection_, this };
 	}
-
-#ifdef ENABLE_CRYPT
-	void GlooxAccount::SetPrivateKey (const QCA::PGPKey& key)
-	{
-		ClientConnection_->GetCryptHandler ()->GetPGPManager ()->SetPrivateKey (key);
-	}
-
-	QCA::PGPKey GlooxAccount::GetPrivateKey () const
-	{
-		return ClientConnection_->GetCryptHandler ()->GetPGPManager ()->PrivateKey ();
-	}
-
-	void GlooxAccount::SetEntryKey (QObject *entryObj, const QCA::PGPKey& pubKey)
-	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< entryObj
-					<< "doesn't implement ICLEntry";
-			return;
-		}
-
-		auto mgr = ClientConnection_->GetCryptHandler ()->GetPGPManager ();
-		mgr->SetPublicKey (entry->GetHumanReadableAddress (), pubKey);
-	}
-
-	QCA::PGPKey GlooxAccount::GetEntryKey (QObject *entryObj) const
-	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< entryObj
-					<< "doesn't implement ICLEntry";
-			return QCA::PGPKey ();
-		}
-
-		auto mgr = ClientConnection_->GetCryptHandler ()->GetPGPManager ();
-		return mgr->PublicKey (entry->GetHumanReadableAddress ());
-	}
-
-	GPGExceptions::MaybeException_t GlooxAccount::SetEncryptionEnabled (QObject *entry, bool enabled)
-	{
-		const auto glEntry = qobject_cast<GlooxCLEntry*> (entry);
-
-		const auto cryptHandler = ClientConnection_->GetCryptHandler ();
-		const auto pgpManager = cryptHandler->GetPGPManager ();
-
-		bool beenChanged = false;
-		const auto emitGuard = Util::MakeScopeGuard ([&]
-					{ emit encryptionStateChanged (entry, beenChanged ? enabled : !enabled); });
-
-		if (!glEntry)
-			return GPGExceptions::General { "Null entry" };
-		if (enabled && pgpManager->PublicKey (glEntry->GetJid ()).isNull ())
-			return GPGExceptions::NullPubkey {};
-		if (!cryptHandler->SetEncryptionEnabled (glEntry->GetJid (), enabled))
-			return GPGExceptions::General { "Cannot change encryption state. "};
-		beenChanged = true;
-		return {};
-	}
-
-	bool GlooxAccount::IsEncryptionEnabled (QObject *entry) const
-	{
-		const auto glEntry = qobject_cast<GlooxCLEntry*> (entry);
-		if (!glEntry)
-			return false;
-
-		return ClientConnection_->GetCryptHandler ()->IsEncryptionEnabled (glEntry->GetJid ());
-	}
-#endif
 
 	QString GlooxAccount::GetNick () const
 	{

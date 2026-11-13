@@ -56,7 +56,6 @@
 #include "pepmicroblog.h"
 #include "clientconnectionerrormgr.h"
 #include "accountsettingsholder.h"
-#include "crypthandler.h"
 #include "serverinfostorage.h"
 #include "xmlsettingsmanager.h"
 #include "inforequestpolicymanager.h"
@@ -86,7 +85,6 @@ namespace Xoox
 	, SDManager_ (new SDManager (this))
 	, Xep0313Manager_ (new Xep0313Manager (*this))
 	, CarbonsManager_ (new CarbonsManager)
-	, CryptHandler_ (new CryptHandler (this))
 	, ErrorMgr_ (new ClientConnectionErrorMgr (this))
 	, InfoReqPolicyMgr_ (new InfoRequestPolicyManager (this))
 	, DiscoManagerWrapper_ (new DiscoManagerWrapper (DiscoveryManager_, this))
@@ -147,7 +145,6 @@ namespace Xoox
 				this,
 				SLOT (handlePEPAvatarUpdated (QString)));
 
-		CryptHandler_->Init ();
 
 		Client_->addExtension (PubSubManager_);
 		Client_->addExtension (MUCManager_);
@@ -442,11 +439,6 @@ namespace Xoox
 		return InfoReqPolicyMgr_;
 	}
 
-	CryptHandler* ClientConnection::GetCryptHandler () const
-	{
-		return CryptHandler_;
-	}
-
 	ServerInfoStorage* ClientConnection::GetServerInfoStorage () const
 	{
 		return ServerInfoStorage_;
@@ -577,7 +569,6 @@ namespace Xoox
 	void ClientConnection::SendMessage (GlooxMessage *msgObj)
 	{
 		auto msg = msgObj->GetNativeMessage ();
-		CryptHandler_->ProcessOutgoing (msg, msgObj);
 
 		if (msgObj->IsOTRMessage ())
 		{
@@ -834,8 +825,6 @@ namespace Xoox
 		}
 
 		Jid2CLEntry_ [jid]->HandlePresence (pres, resource);
-
-		CryptHandler_->HandlePresence (pres, jid, resource);
 	}
 
 	namespace
@@ -872,8 +861,6 @@ namespace Xoox
 		}
 
 		auto [jid, resource] = Split (msg.from ());
-
-		CryptHandler_->ProcessIncoming (msg);
 
 		if (CarbonsManager_->CheckMessage (msg))
 			return;

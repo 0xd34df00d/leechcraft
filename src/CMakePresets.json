@@ -125,7 +125,6 @@
         "ENABLE_AZOTH_TRACOLOR": "True",
         "ENABLE_AZOTH_XTAZY": "True",
         "ENABLE_AZOTH_XOOX": "True",
-        "ENABLE_CRYPT": "True",
         "ENABLE_MEDIACALLS": "False",
         "ENABLE_BLASQ": "True",
         "ENABLE_BLASQ_DEATHNOTE": "True",

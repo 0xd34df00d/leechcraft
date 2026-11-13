@@ -53,7 +53,6 @@ namespace Azoth
 		void on_Add__released ();
 
 		void on_Modify__released ();
-		void on_PGP__released ();
 		void on_Delete__released ();
 		void on_ResetStyles__released ();
 

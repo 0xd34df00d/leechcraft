@@ -49,7 +49,6 @@ namespace Xoox
 
 	class InfoRequestPolicyManager;
 	class ClientConnectionErrorMgr;
-	class CryptHandler;
 	class ServerInfoStorage;
 
 	class DiscoManagerWrapper;
@@ -76,7 +75,6 @@ namespace Xoox
 		Xep0313Manager *Xep0313Manager_;
 		CarbonsManager *CarbonsManager_;
 
-		CryptHandler *CryptHandler_;
 		ClientConnectionErrorMgr *ErrorMgr_;
 
 		InfoRequestPolicyManager *InfoReqPolicyMgr_;
@@ -157,7 +155,6 @@ namespace Xoox
 
 		InfoRequestPolicyManager* GetInfoReqPolicyManager () const;
 
-		CryptHandler* GetCryptHandler () const;
 		ServerInfoStorage* GetServerInfoStorage () const;
 
 		void RequestInfo (const QString&) const;

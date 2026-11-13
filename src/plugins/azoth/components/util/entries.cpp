@@ -22,12 +22,6 @@
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/imucentry.h>
 #include "util/azoth/util.h"
-
-#ifdef ENABLE_CRYPT
-#include <interfaces/azoth/isupportpgp.h>
-#include "components/dialogs/pgpkeyselectiondialog.h"
-#endif
-
 #include "../../core.h"
 
 namespace LC::Azoth
@@ -51,46 +45,6 @@ namespace LC::Azoth
 		const auto& e = Util::MakeANCancel ("org.LeechCraft.Azoth",
 				"org.LC.Plugins.Azoth.AuthRequestFrom/" + entry->GetEntryId ());
 		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
-	}
-
-	bool ChoosePGPKey (ISupportPGP *pgp, ICLEntry *entry)
-	{
-#ifdef ENABLE_CRYPT
-		const auto persistentId = entry->GetGlobalPersistentId ();
-		if (!persistentId)
-		{
-			QMessageBox::critical (nullptr,
-					QObject::tr ("LeechCraft"),
-					QObject::tr ("PGP keys can only be bound to contacts with a persistent identifier. "
-								"Unfortunately, %1 does not have one on the protocol level.")
-						.arg (FormatNameWithAddress (*entry)));
-			qWarning () << "no persistent ID for" << entry->GetHumanReadableAddress ();
-			return false;
-		}
-
-		const auto& str = QObject::tr ("Please select the key for %1.")
-				.arg (FormatNameWithAddress (*entry));
-		PGPKeySelectionDialog dia { str, PGPKeySelectionDialog::TPublic,
-				pgp->GetEntryKey (entry->GetQObject ()) };
-		if (dia.exec () != QDialog::Accepted)
-			return false;
-
-		const auto& key = dia.GetSelectedKey ();
-
-		pgp->SetEntryKey (entry->GetQObject (), key);
-
-		QSettings settings { QCoreApplication::organizationName (), QCoreApplication::applicationName () + "_Azoth" };
-		settings.beginGroup ("PublicEntryKeys");
-		if (key.isNull ())
-			settings.remove (persistentId->ToString ());
-		else
-			settings.setValue (persistentId->ToString (), key.keyId ());
-		settings.endGroup ();
-
-		return !key.isNull ();
-#else
-		return false;
-#endif
 	}
 
 	QStringList GetMucParticipants (const EntriesManager& entries, const GlobalPersistentId& entryId)

@@ -6,7 +6,6 @@ find_package (PkgConfig)
 pkg_check_modules (QXMPP REQUIRED IMPORTED_TARGET QXmppQt${LC_QT_VERSION}>=1.16.0)
 
 add_compile_definitions (
-	$<$<BOOL:${ENABLE_CRYPT}>:ENABLE_CRYPT>
 	$<$<BOOL:${ENABLE_MEDIACALLS}>:ENABLE_MEDIACALLS>
 	"QXMPP_DISABLE_DEPRECATED_BEFORE=QT_VERSION_CHECK(1, 11, 0)"
 	)
@@ -82,7 +81,6 @@ LC_DEFINE_PLUGIN (
 		clientconnectionerrormgr.cpp
 		accstatusrestorer.cpp
 		accountsettingsholder.cpp
-		crypthandler.cpp
 		serverinfostorage.cpp
 		inforequestpolicymanager.cpp
 		xeps/xmppannotationsiq.cpp
@@ -113,7 +111,6 @@ LC_DEFINE_PLUGIN (
 		inbandaccountactions.cpp
 		xmppelementdescription.cpp
 		deliveryreceiptsintegrator.cpp
-		$<$<BOOL:${ENABLE_CRYPT}>:xeps/pgpmanager.cpp>
 		$<$<BOOL:${ENABLE_MEDIACALLS}>:mediacall.cpp>
 	RESOURCES azothxooxresources.qrc
 	SETTINGS azothxooxsettings.xml
@@ -121,6 +118,5 @@ LC_DEFINE_PLUGIN (
 	LINK_LIBRARIES
 		leechcraft-azoth-util
 		PkgConfig::QXMPP
-		$<$<BOOL:${ENABLE_CRYPT}>:qca-qt${LC_QT_VERSION}>
 	INSTALL_DESKTOP
 	)

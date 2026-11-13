@@ -47,11 +47,6 @@
 #include "interfaces/azoth/imucprotocol.h"
 #include "interfaces/azoth/ihaveblacklists.h"
 #include "interfaces/azoth/ihaveserverhistory.h"
-
-#ifdef ENABLE_CRYPT
-#include "interfaces/azoth/isupportpgp.h"
-#endif
-
 #include "components/dialogs/drawattentiondialog.h"
 #include "components/dialogs/groupeditordialog.h"
 #include "components/dialogs/shareriexdialog.h"
@@ -238,31 +233,6 @@ namespace Azoth
 			widget->SelectEntry (entry);
 			GetProxyHolder ()->GetRootWindowsManager ()->AddTab (widget);
 		}
-
-#ifdef ENABLE_CRYPT
-		void ManagePGP (ICLEntry *entry)
-		{
-			const auto acc = entry->GetParentAccount ();
-			const auto accObj = acc->GetQObject ();
-			const auto pgp = qobject_cast<ISupportPGP*> (accObj);
-
-			if (!pgp)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< accObj
-						<< "doesn't implement ISupportPGP";
-				QMessageBox::warning (0,
-						"LeechCraft",
-						ActionsManager::tr ("The parent account %1 for entry %2 doesn't "
-							"support encryption.")
-								.arg (acc->GetAccountName ())
-								.arg (entry->GetEntryName ()));
-				return;
-			}
-
-			ChoosePGPKey (pgp, entry);
-		}
-#endif
 
 		void ShareRIEX (ICLEntry *entry)
 		{
@@ -547,9 +517,6 @@ namespace Azoth
 			{ "copy_muc_id", SingleEntryActor_f (CopyMUCParticipantId) },
 			{ "sep_afterjid", {} },
 			{ "view_server_history", SingleEntryActor_f (ViewServerHistory) },
-#ifdef ENABLE_CRYPT
-			{ "managepgp", SingleEntryActor_f (ManagePGP) },
-#endif
 			{ "shareRIEX", SingleEntryActor_f (ShareRIEX) },
 			{
 				"copy_id",
@@ -1137,16 +1104,6 @@ namespace Azoth
 			Entry2Actions_ [entry] ["view_server_history"] = openHistory;
 			Action2Areas_ [openHistory] << CLEAAContactListCtxtMenu;
 		}
-
-#ifdef ENABLE_CRYPT
-		if (qobject_cast<ISupportPGP*> (accObj))
-		{
-			QAction *manageGPG = new QAction (tr ("Manage PGP keys..."), entry->GetQObject ());
-			manageGPG->setProperty ("ActionIcon", "document-encrypt");
-			Entry2Actions_ [entry] ["managepgp"] = manageGPG;
-			Action2Areas_ [manageGPG] << CLEAAContactListCtxtMenu;
-		}
-#endif
 
 		if (qobject_cast<ISupportRIEX*> (accObj))
 		{

@@ -33,9 +33,6 @@
 #include <interfaces/azoth/isupportlastactivity.h>
 #include <interfaces/azoth/ihaveblacklists.h>
 #include <interfaces/azoth/icanhavesslerrors.h>
-#ifdef ENABLE_CRYPT
-#include <interfaces/azoth/isupportpgp.h>
-#endif
 #include "glooxprotocol.h"
 
 namespace LC
@@ -84,9 +81,6 @@ namespace Xoox
 					   , public IHaveServerHistory
 					   , public IHaveBlacklists
 					   , public ICanHaveSslErrors
-#ifdef ENABLE_CRYPT
-					   , public ISupportPGP
-#endif
 	{
 		Q_OBJECT
 		Q_INTERFACES (LC::Azoth::IAccount
@@ -110,10 +104,6 @@ namespace Xoox
 
 #ifdef ENABLE_MEDIACALLS
 		Q_INTERFACES (LC::Azoth::ISupportMediaCalls)
-#endif
-
-#ifdef ENABLE_CRYPT
-		Q_INTERFACES (LC::Azoth::ISupportPGP)
 #endif
 
 		QString Name_;
@@ -226,16 +216,6 @@ namespace Xoox
 		bool SupportsBlacklists () const override;
 		void SuggestToBlacklist (const QList<ICLEntry*>&) override;
 
-#ifdef ENABLE_CRYPT
-		// ISupportPGP
-		void SetPrivateKey (const QCA::PGPKey&) override;
-		QCA::PGPKey GetPrivateKey () const override;
-		void SetEntryKey (QObject*, const QCA::PGPKey&) override;
-		QCA::PGPKey GetEntryKey (QObject* entry) const override;
-		GPGExceptions::MaybeException_t SetEncryptionEnabled (QObject*, bool) override;
-		bool IsEncryptionEnabled (QObject*) const override;
-#endif
-
 		QString GetNick () const;
 		void JoinRoom (const QString& jid, const QString& nick, const QString& password);
 		void JoinRoom (const QString& room, const QString& server,
@@ -273,11 +253,6 @@ namespace Xoox
 
 #ifdef ENABLE_MEDIACALLS
 		void called (QObject*) override;
-#endif
-
-#ifdef ENABLE_CRYPT
-		void signatureVerified (QObject*, bool) override;
-		void encryptionStateChanged (QObject*, bool) override;
 #endif
 
 		void accountSettingsChanged ();

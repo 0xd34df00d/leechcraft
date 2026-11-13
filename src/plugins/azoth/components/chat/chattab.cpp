@@ -50,9 +50,6 @@
 #include "interfaces/azoth/imediacall.h"
 #include "interfaces/azoth/ihistoryplugin.h"
 #include "interfaces/azoth/iprovidecommands.h"
-#ifdef ENABLE_CRYPT
-#include "interfaces/azoth/isupportpgp.h"
-#endif
 #include "util/azoth/entryidops.h"
 #include "util/azoth/util.h"
 #include "components/dialogs/bookmarksmanagerdialog.h"
@@ -720,32 +717,6 @@ namespace Azoth
 	}
 #endif
 
-#ifdef ENABLE_CRYPT
-	void ChatTab::handleEnableEncryption ()
-	{
-		const auto accObj = GetEntry<ICLEntry> ()->GetParentAccount ()->GetQObject ();
-		const auto pgp = qobject_cast<ISupportPGP*> (accObj);
-		if (!pgp)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< accObj
-					<< "doesn't implement ISupportPGP";
-			return;
-		}
-
-		const bool enable = EnableEncryption_->isChecked ();
-		SetEncryptionEnabled (pgp, enable);
-	}
-
-	void ChatTab::handleEncryptionStateChanged (QObject *entry, bool enabled)
-	{
-		if (entry != GetEntry<QObject> ())
-			return;
-
-		EnableEncryption_->setChecked (enabled);
-	}
-#endif
-
 	void ChatTab::clearChat ()
 	{
 		ICLEntry *entry = GetEntry<ICLEntry> ();
@@ -1354,26 +1325,6 @@ namespace Azoth
 		}
 #endif
 
-#ifdef ENABLE_CRYPT
-		if (const auto isp = qobject_cast<ISupportPGP*> (accObj))
-		{
-			EnableEncryption_ = new QAction (tr ("Enable encryption"), this);
-			EnableEncryption_->setProperty ("ActionIcon", "document-encrypt");
-			EnableEncryption_->setCheckable (true);
-			EnableEncryption_->setChecked (isp->IsEncryptionEnabled (e->GetQObject ()));
-			connect (EnableEncryption_,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleEnableEncryption ()));
-			TabToolbar_->addAction (EnableEncryption_);
-
-			connect (accObj,
-					SIGNAL (encryptionStateChanged (QObject*, bool)),
-					this,
-					SLOT (handleEncryptionStateChanged (QObject*, bool)));
-		}
-#endif
-
 		AddManagedActions (true);
 	}
 
@@ -1673,35 +1624,6 @@ namespace Azoth
 	{
 		emit changeTabIcon (TabIcon_);
 	}
-
-#ifdef ENABLE_CRYPT
-	void ChatTab::SetEncryptionEnabled (ISupportPGP *pgp, bool enable)
-	{
-		const auto& result = pgp->SetEncryptionEnabled (GetEntry<QObject> (), enable);
-		if (!result)
-			return;
-
-		Util::Visit (*result,
-				[this, pgp, enable] (const GPGExceptions::NullPubkey&)
-				{
-					if (QMessageBox::question (this,
-								"LeechCraft",
-								tr ("This entry has no pubkey assigned to it. Do you want to choose one?"),
-								QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
-						return;
-
-					if (ChoosePGPKey (pgp, GetEntry<ICLEntry> ()))
-						SetEncryptionEnabled (pgp, enable);
-				},
-				[this] (const GPGExceptions::General& ex)
-				{
-					QMessageBox::critical (this,
-							"LeechCraft",
-							tr ("Cannot enable encryption: %1.")
-								.arg ("<br/><em>" + QString::fromStdString (ex.what ()) + "</em>"));
-				});
-	}
-#endif
 
 	template QObject* ChatTab::GetEntry<QObject> () const;
 	template ICLEntry* ChatTab::GetEntry<ICLEntry> () const;
