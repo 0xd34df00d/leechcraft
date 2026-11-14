@@ -76,6 +76,7 @@ namespace Blogique
 		EntryType EntryType_ = EntryType::None;
 		qint64 EntryId_ = -1;
 		QUrl EntryUrl_;
+		QByteArray EntryAccountId_;
 		// the draft the tab is saved into, which is a copy if the tab shows a blog entry
 		std::optional<qint64> DraftId_;
 		Util::CoroMutex EntryMutex_;

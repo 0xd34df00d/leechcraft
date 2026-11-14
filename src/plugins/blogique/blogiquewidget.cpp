@@ -193,6 +193,7 @@ namespace Blogique
 		EntryType_ = e.EntryType_;
 		EntryId_ = e.EntryId_;
 		EntryUrl_ = e.EntryUrl_;
+		EntryAccountId_ = acc ? acc->GetAccountID () : QByteArray {};
 		DraftId_.reset ();
 		if (e.EntryType_ == EntryType::Draft)
 			DraftId_ = e.EntryId_;
@@ -551,6 +552,7 @@ namespace Blogique
 		PostEdit_->SetContents (QString (), ContentType::PlainText);
 		SetContentSnapshot ({});
 		EntryUrl_.clear ();
+		EntryAccountId_.clear ();
 		EntryType_ = EntryType::None;
 		EntryId_ = 0;
 		DraftId_.reset ();
@@ -1024,7 +1026,7 @@ namespace Blogique
 
 		if (!e.IsEmpty ())
 		{
-			if (e.EntryType_ == EntryType::BlogEntry)
+			if (e.EntryType_ == EntryType::BlogEntry && acc->GetAccountID () == EntryAccountId_)
 			{
 				QMessageBox mbox (QMessageBox::Question,
 						"LeechCraft",
