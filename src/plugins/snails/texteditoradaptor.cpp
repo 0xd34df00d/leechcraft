@@ -8,6 +8,7 @@
 
 #include "texteditoradaptor.h"
 #include <QTextEdit>
+#include <util/threads/coro/context.h>
 
 namespace LC
 {
@@ -23,14 +24,14 @@ namespace Snails
 				SIGNAL (textChanged ()));
 	}
 
-	QString TextEditorAdaptor::GetContents (ContentType type) const
+	Util::ContextTask<QString> TextEditorAdaptor::GetContents (ContentType type)
 	{
 		switch (type)
 		{
 		case ContentType::PlainText:
-			return Edit_->toPlainText ();
+			co_return Edit_->toPlainText ();
 		default:
-			return {};
+			co_return {};
 		}
 	}
 

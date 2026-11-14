@@ -174,6 +174,9 @@ namespace Snails
 
 	void ComposeMessageTab::PrepareLinkedEditor (const MessageBodies& bodies)
 	{
+		// a fresh reply has nothing to carry over, and the asynchronous carry-over would land after the reply text is set
+		const QSignalBlocker blocker { Ui_.Editor_ };
+
 		const auto& replyOpt = XmlSettingsManager::Instance ().property ("ReplyMessageFormat").toString ();
 		if (replyOpt == "Plain")
 			Ui_.Editor_->SelectEditor (ContentType::PlainText);
@@ -589,11 +592,13 @@ namespace Snails
 				};
 	}
 
-	void ComposeMessageTab::handleSend ()
+	Util::ContextTask<void> ComposeMessageTab::handleSend ()
 	{
+		co_await Util::AddContext { CoroContext_ };
+
 		const auto account = GetSelectedAccount ();
 		if (!account)
-			return;
+			co_return;
 
 		const auto editor = Ui_.Editor_->GetCurrentEditor ();
 
@@ -604,8 +609,8 @@ namespace Snails
 
 		message->To_ = FromUserInput (Ui_.To_->text ());
 		message->Subject_ = Ui_.Subject_->text ();
-		message->Body_ = editor->GetContents (ContentType::PlainText);
-		message->HTMLBody_ = editor->GetContents (ContentType::HTML);
+		message->Body_ = co_await editor->GetContents (ContentType::PlainText);
+		message->HTMLBody_ = co_await editor->GetContents (ContentType::HTML);
 
 		SetMessageReferences (*message);
 
@@ -613,7 +618,7 @@ namespace Snails
 		{
 			AddAttachments (*message);
 			Send (account, *message);
-			return;
+			co_return;
 		}
 
 		Util::Sequence (this, LinkedAttachmentsFetcher_->GetFuture ()) >>
@@ -656,10 +661,12 @@ namespace Snails
 		AppendAttachment (path, descr);
 	}
 
-	void ComposeMessageTab::handleEditorChanged (IEditorWidget *newEditor, IEditorWidget *previous)
+	Util::ContextTask<void> ComposeMessageTab::handleEditorChanged (IEditorWidget *newEditor, IEditorWidget *previous)
 	{
-		const auto& currentHtml = previous->GetContents (ContentType::HTML);
-		const auto& currentPlain = previous->GetContents (ContentType::PlainText);
+		co_await Util::AddContext { CoroContext_ };
+
+		const auto& currentHtml = co_await previous->GetContents (ContentType::HTML);
+		const auto& currentPlain = co_await previous->GetContents (ContentType::PlainText);
 
 		newEditor->SetContents (currentPlain, ContentType::PlainText);
 		if (!currentHtml.isEmpty ())

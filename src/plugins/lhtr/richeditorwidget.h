@@ -45,7 +45,7 @@ namespace LC::LHTR
 	public:
 		explicit RichEditorWidget (QWidget* = nullptr);
 
-		QString GetContents (ContentType) const override;
+		Util::ContextTask<QString> GetContents (ContentType) override;
 		void SetContents (QString, ContentType) override;
 		void AppendAction (QAction*) override;
 		void AppendSeparator () override;

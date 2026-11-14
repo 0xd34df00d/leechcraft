@@ -172,6 +172,8 @@ namespace Blogique
 
 	void BlogiqueWidget::FillWidget (const Entry& e, const QByteArray& accId)
 	{
+		++EntryGeneration_;
+
 		for (int i = 0; !accId.isEmpty () && i < AccountsBox_->count (); ++i)
 		{
 			if (Id2Account_.contains (i) &&
@@ -489,6 +491,8 @@ namespace Blogique
 
 	void BlogiqueWidget::ClearEntry ()
 	{
+		++EntryGeneration_;
+
 		Ui_.Subject_->clear ();
 		PostEdit_->SetContents (QString (), ContentType::PlainText);
 		SetContentSnapshot ({});
@@ -556,18 +560,19 @@ namespace Blogique
 		return e;
 	}
 
-	Entry BlogiqueWidget::GetCurrentEntry () const
+	Util::ContextTask<Entry> BlogiqueWidget::GetCurrentEntry () const
 	{
 		if (!PostEdit_)
-			return Entry ();
+			co_return {};
 
 		auto e = GetEntryWithoutContent ();
-		e.Content_ = PostEdit_->GetContents (ContentType::HTML);
-		return e;
+		e.Content_ = co_await PostEdit_->GetContents (ContentType::HTML);
+		co_return e;
 	}
 
 	void BlogiqueWidget::SetContentSnapshot (const QString& content)
 	{
+		++SnapshotGeneration_;
 		ContentSnapshot_ = content;
 		emit tabRecoverDataChanged ();
 	}
@@ -586,13 +591,17 @@ namespace Blogique
 		ProgressBarAction_->setVisible (!labelText.isEmpty ());
 	}
 
-	void BlogiqueWidget::handleAutoSave ()
+	Util::ContextTask<void> BlogiqueWidget::handleAutoSave ()
 	{
-		if (!EntryChanged_)
-			return;
+		co_await Util::AddContext { CoroContext_ };
 
-		SaveDraft ();
-		EntryChanged_ = true;
+		if (!EntryChanged_)
+			co_return;
+
+		const auto generation = EntryGeneration_;
+		co_await SaveDraft ();
+		if (generation == EntryGeneration_)
+			EntryChanged_ = true;
 	}
 
 	void BlogiqueWidget::handleEntryPosted ()
@@ -776,10 +785,16 @@ namespace Blogique
 		emit tabRecoverDataChanged ();
 	}
 
-	void BlogiqueWidget::handleContentChanged ()
+	Util::ContextTask<void> BlogiqueWidget::handleContentChanged ()
 	{
+		co_await Util::AddContext { CoroContext_ };
+
 		EntryChanged_ = true;
-		SetContentSnapshot (PostEdit_->GetContents (ContentType::HTML));
+
+		const auto generation = ++SnapshotGeneration_;
+		const auto& content = co_await PostEdit_->GetContents (ContentType::HTML);
+		if (generation == SnapshotGeneration_)
+			SetContentSnapshot (content);
 	}
 
 	void BlogiqueWidget::handleRemovingEntryBegin ()
@@ -891,9 +906,13 @@ namespace Blogique
 			switch (res)
 			{
 			case QMessageBox::Yes:
-				saveEntry ();
-				ClearEntry ();
+			{
+				const auto generation = EntryGeneration_;
+				co_await saveEntry ();
+				if (generation == EntryGeneration_ && !EntryChanged_)
+					ClearEntry ();
 				break;
+			}
 			case QMessageBox::No:
 				ClearEntry ();
 				break;
@@ -905,32 +924,41 @@ namespace Blogique
 			ClearEntry ();
 	}
 
-	void BlogiqueWidget::saveEntry ()
+	Util::ContextTask<void> BlogiqueWidget::saveEntry ()
 	{
-		if (!SaveDraft ())
+		co_await Util::AddContext { CoroContext_ };
+
+		if (!co_await SaveDraft ())
 			WarnEmptyEntry ();
 	}
 
-	bool BlogiqueWidget::SaveDraft ()
+	Util::ContextTask<bool> BlogiqueWidget::SaveDraft ()
 	{
+		co_await Util::AddContext { CoroContext_ };
+
 		EntryChanged_ = false;
 		EntryType_ = EntryType::Draft;
-		const auto& e = GetCurrentEntry ();
+		const auto generation = EntryGeneration_;
+		const auto& e = co_await GetCurrentEntry ();
+		const auto sameEntry = generation == EntryGeneration_;
 		const auto hasContent = !e.IsEmpty ();
 		if (hasContent)
 		{
 			try
 			{
+				auto id = e.EntryId_;
 				switch (e.EntryType_)
 				{
 				case EntryType::Draft:
-					EntryId_ = Core::Instance ().GetStorageManager ()->UpdateDraft (e, EntryId_);
+					id = Core::Instance ().GetStorageManager ()->UpdateDraft (e, e.EntryId_);
 					break;
 				case EntryType::BlogEntry:
 				case EntryType::None:
-					EntryId_ = Core::Instance ().GetStorageManager ()->SaveNewDraft (e);
+					id = Core::Instance ().GetStorageManager ()->SaveNewDraft (e);
 					break;
 				}
+				if (sameEntry)
+					EntryId_ = id;
 			}
 			catch (const std::runtime_error& e)
 			{
@@ -939,25 +967,31 @@ namespace Blogique
 						<< e.what ();
 			}
 		}
-		else
+		else if (sameEntry)
 			EntryType_ = EntryType::None;
 
 		DraftEntriesWidget_->loadDraftEntries ();
 
-		return hasContent;
+		co_return hasContent;
 	}
 
-	void BlogiqueWidget::saveNewEntry ()
+	Util::ContextTask<void> BlogiqueWidget::saveNewEntry ()
 	{
+		co_await Util::AddContext { CoroContext_ };
+
 		EntryChanged_ = false;
 		EntryType_ = EntryType::Draft;
-		const auto& e = GetCurrentEntry ();
+		const auto generation = EntryGeneration_;
+		const auto& e = co_await GetCurrentEntry ();
+		const auto sameEntry = generation == EntryGeneration_;
 
 		if (!e.IsEmpty ())
 		{
 			try
 			{
-				EntryId_ = Core::Instance ().GetStorageManager ()->SaveNewDraft (e);
+				const auto id = Core::Instance ().GetStorageManager ()->SaveNewDraft (e);
+				if (sameEntry)
+					EntryId_ = id;
 			}
 			catch (const std::runtime_error& e)
 			{
@@ -968,7 +1002,8 @@ namespace Blogique
 		}
 		else
 		{
-			EntryType_ = EntryType::None;
+			if (sameEntry)
+				EntryType_ = EntryType::None;
 			WarnEmptyEntry ();
 		}
 
@@ -984,11 +1019,11 @@ namespace Blogique
 			co_return;
 
 		EntryChanged_ = false;
-		const auto& e = GetCurrentEntry ();
+		const auto& e = co_await GetCurrentEntry ();
 
 		if (!e.IsEmpty ())
 		{
-			if (EntryType_ == EntryType::BlogEntry)
+			if (e.EntryType_ == EntryType::BlogEntry)
 			{
 				QMessageBox mbox (QMessageBox::Question,
 						"LeechCraft",
@@ -1032,7 +1067,7 @@ namespace Blogique
 		if (co_await Util::Dialogs::Exec (dlg) != QDialog::Accepted)
 			co_return;
 
-		auto e = GetCurrentEntry ();
+		auto e = co_await GetCurrentEntry ();
 		if (e.IsEmpty ())
 		{
 			WarnEmptyEntry ();
@@ -1117,13 +1152,15 @@ namespace Blogique
 				FromUserInitiated | OnlyHandle));
 	}
 
-	void BlogiqueWidget::on_PreviewPost__triggered ()
+	Util::ContextTask<void> BlogiqueWidget::on_PreviewPost__triggered ()
 	{
+		co_await Util::AddContext { CoroContext_ };
+
 		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
 		if (!acc)
-			return;
+			co_return;
 
-		const auto& e = GetCurrentEntry ();
+		const auto& e = co_await GetCurrentEntry ();
 
 		if (!e.IsEmpty ())
 			acc->preview (e);

@@ -45,24 +45,32 @@ namespace Snails
 		prepareEditor (Ui_.ContentType_->currentIndex ());
 	}
 
-	void TemplatesEditorWidget::SaveCurrentText ()
+	Util::ContextTask<void> TemplatesEditorWidget::SaveCurrentText ()
 	{
+		co_await Util::AddContext { CoroContext_ };
+
 		if (!IsDirty_)
-			return;
+			co_return;
 
 		const auto currentType = Ui_.Editor_->GetCurrentEditorType ();
 		const auto msgType = static_cast<MsgType> (Ui_.MessageType_->currentIndex ());
 
-		const auto& tpl = Ui_.Editor_->GetCurrentEditor ()->GetContents (currentType);
+		const auto generation = DirtyGeneration_;
+		const auto& tpl = co_await Ui_.Editor_->GetCurrentEditor ()->GetContents (currentType);
+		if (!IsDirty_)
+			co_return;
 
 		Unsaved_ [currentType] [msgType] = tpl;
 
-		IsDirty_ = false;
+		if (generation == DirtyGeneration_)
+			IsDirty_ = false;
 	}
 
-	void TemplatesEditorWidget::accept ()
+	Util::ContextTask<void> TemplatesEditorWidget::accept ()
 	{
-		SaveCurrentText ();
+		co_await Util::AddContext { CoroContext_ };
+
+		co_await SaveCurrentText ();
 
 		const auto localCopy = Unsaved_;
 		for (const auto& rootPair : localCopy.asKeyValueRange ())
@@ -97,9 +105,11 @@ namespace Snails
 		loadTemplate ();
 	}
 
-	void TemplatesEditorWidget::prepareEditor (int index)
+	Util::ContextTask<void> TemplatesEditorWidget::prepareEditor (int index)
 	{
-		SaveCurrentText ();
+		co_await Util::AddContext { CoroContext_ };
+
+		co_await SaveCurrentText ();
 
 		EditorTypeActions_.value (index)->trigger ();
 
@@ -140,6 +150,7 @@ namespace Snails
 	void TemplatesEditorWidget::markAsDirty ()
 	{
 		IsDirty_ = true;
+		++DirtyGeneration_;
 	}
 }
 }

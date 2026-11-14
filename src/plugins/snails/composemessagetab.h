@@ -11,6 +11,7 @@
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/iwkfontssettable.h>
+#include <util/threads/coro/context.h>
 #include "ui_composemessagetab.h"
 #include "account.h"
 
@@ -85,12 +86,14 @@ namespace Snails
 		void AddAttachments (OutgoingMessage&);
 		void Send (Account*, const OutgoingMessage&);
 	private slots:
-		void handleSend ();
+		Util::ContextTask<void> handleSend ();
 		void handleAddAttachment ();
 
-		void handleEditorChanged (IEditorWidget*, IEditorWidget*);
+		Util::ContextTask<void> handleEditorChanged (IEditorWidget*, IEditorWidget*);
 	signals:
 		void removeTab ();
+
+		LC_CORO_CONTEXT
 	};
 }
 }

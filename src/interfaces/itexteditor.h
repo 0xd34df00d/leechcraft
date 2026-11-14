@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QVariantMap>
+#include <util/threads/coro/taskfwd.h>
 
 class QWidget;
 class QString;
@@ -88,11 +89,12 @@ public:
 	 * ContentType::HTML.
 	 *
 	 * @param[in] type How contents should be interpreted and returned.
-	 * @return The editor contents interpreted according to type.
+	 * @return A task yielding the editor contents interpreted according
+	 * to type.
 	 *
 	 * @sa SetContents()
 	 */
-	virtual QString GetContents (LC::ContentType type) const = 0;
+	virtual LC::Util::ContextTask<QString> GetContents (LC::ContentType type) = 0;
 
 	/** @brief Sets contents of this widget interpreted as of the given
 	 * type.

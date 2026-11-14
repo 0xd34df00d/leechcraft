@@ -30,7 +30,7 @@ namespace Snails
 	public:
 		explicit TextEditorAdaptor (QTextEdit*);
 
-		QString GetContents (ContentType type) const override;
+		Util::ContextTask<QString> GetContents (ContentType type) override;
 		void SetContents (QString contents, ContentType type) override;
 
 		QAction* GetEditorAction (EditorAction) override;

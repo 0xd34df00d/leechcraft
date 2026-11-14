@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QWidget>
+#include <util/threads/coro/context.h>
 #include "ui_templateseditorwidget.h"
 
 namespace LC
@@ -32,18 +33,21 @@ namespace Snails
 		QList<QAction*> EditorTypeActions_;
 
 		bool IsDirty_ = false;
+		int DirtyGeneration_ = 0;
 		QMap<ContentType, QMap<MsgType, QString>> Unsaved_;
 	public:
 		TemplatesEditorWidget (MsgTemplatesManager*, QWidget* = nullptr);
 	private:
-		void SaveCurrentText ();
+		Util::ContextTask<void> SaveCurrentText ();
 	public slots:
-		void accept ();
+		Util::ContextTask<void> accept ();
 		void reject ();
 	private slots:
-		void prepareEditor (int);
+		Util::ContextTask<void> prepareEditor (int);
 		void loadTemplate ();
 		void markAsDirty ();
+
+		LC_CORO_CONTEXT
 	};
 }
 }

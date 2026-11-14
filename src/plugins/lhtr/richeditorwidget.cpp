@@ -27,7 +27,6 @@
 #include <QNetworkRequest>
 #include <QtDebug>
 #include <QDomDocument>
-#include <QFutureWatcher>
 #include <QRandomGenerator>
 #include <QUrlQuery>
 
@@ -338,40 +337,22 @@ const findParent = (item, name) => {
 		setFocusProxy (Ui_.View_);
 	}
 
-	namespace
+	Util::ContextTask<QString> RichEditorWidget::GetContents (ContentType type)
 	{
-		template<typename R>
-		R Blocking (QWebEngineView *view, auto func)
-		{
-			QFutureInterface<R> promise;
-			promise.reportStarted ();
+		co_await Util::AddContext { CoroContext_ };
 
-			std::invoke (func, view->page (), [&] (const R& result) { promise.reportFinished (&result); });
-
-			QEventLoop loop;
-			QFutureWatcher<R> watcher;
-			QObject::connect (&watcher,
-					&QFutureWatcher<R>::finished,
-					&loop,
-					&QEventLoop::quit);
-			watcher.setFuture (promise.future ());
-
-			loop.exec (QEventLoop::ExcludeUserInputEvents);
-
-			return watcher.result ();
-		}
-	}
-
-	QString RichEditorWidget::GetContents (ContentType type) const
-	{
 		switch (type)
 		{
 		case ContentType::HTML:
 			if (Ui_.TabWidget_->currentIndex () != TabWidgetIdx::TWIHTMLView)
-				const_cast<RichEditorWidget*> (this)->SyncHTMLToView ();
-			return Ui_.HTML_->toPlainText ();
+				co_await SyncHTMLToView ();
+			co_return Ui_.HTML_->toPlainText ();
 		case ContentType::PlainText:
-			return Blocking<QString> (Ui_.View_, &QWebEnginePage::toPlainText);
+		{
+			Util::Callback<QString> callback;
+			Ui_.View_->page ()->toPlainText (callback.GetCallback ());
+			co_return (co_await callback).value_or ({});
+		}
 		}
 
 		Util::Unreachable ();

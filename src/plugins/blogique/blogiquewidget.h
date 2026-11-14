@@ -74,9 +74,11 @@ namespace Blogique
 		EntryType EntryType_ = EntryType::None;
 		qint64 EntryId_ = -1;
 		QUrl EntryUrl_;
+		int EntryGeneration_ = 0;
 
 		bool EntryChanged_ = false;
 		QString ContentSnapshot_;
+		int SnapshotGeneration_ = 0;
 
 		TagsProxyModel *TagsProxyModel_;
 		QStandardItemModel *TagsModel_;
@@ -115,15 +117,15 @@ namespace Blogique
 		void ClearEntry ();
 
 		Entry GetEntryWithoutContent () const;
-		Entry GetCurrentEntry () const;
+		Util::ContextTask<Entry> GetCurrentEntry () const;
 		void SetContentSnapshot (const QString& content);
 		void WarnEmptyEntry ();
-		bool SaveDraft ();
+		Util::ContextTask<bool> SaveDraft ();
 
 		void ShowProgress (const QString& labelText = QString ());
 
 	public slots:
-		void handleAutoSave ();
+		Util::ContextTask<void> handleAutoSave ();
 		void handleEntryPosted ();
 		void handleEntryRemoved ();
 		void handleRequestEntriesBegin ();
@@ -141,12 +143,12 @@ namespace Blogique
 		void fillNewTabWithEntry (const Entry& entry, const QByteArray& accountId);
 
 		void handleEntryChanged (const QString& str = QString ());
-		void handleContentChanged ();
+		Util::ContextTask<void> handleContentChanged ();
 		void handleRemovingEntryBegin ();
 
 		Util::ContextTask<void> newEntry ();
-		void saveEntry ();
-		void saveNewEntry ();
+		Util::ContextTask<void> saveEntry ();
+		Util::ContextTask<void> saveNewEntry ();
 		Util::ContextTask<void> submit ();
 		Util::ContextTask<void> submitTo ();
 		void on_SideWidget__dockLocationChanged (Qt::DockWidgetArea area);
@@ -157,7 +159,7 @@ namespace Blogique
 		void handleTagRemoved (const QString& tag);
 		void handleTagAdded (const QString& tag);
 		void on_OpenInBrowser__triggered ();
-		void on_PreviewPost__triggered ();
+		Util::ContextTask<void> on_PreviewPost__triggered ();
 
 	signals:
 		void removeTab ();
