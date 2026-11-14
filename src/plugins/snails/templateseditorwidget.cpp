@@ -12,6 +12,7 @@
 #include <util/sll/either.h>
 #include <util/sll/visitor.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/util.h>
 #include <interfaces/itexteditor.h>
 #include "msgtemplatesmanager.h"
 #include "structures.h"
@@ -108,6 +109,10 @@ namespace Snails
 	Util::ContextTask<void> TemplatesEditorWidget::prepareEditor (int index)
 	{
 		co_await Util::AddContext { CoroContext_ };
+
+		// an edit arriving while the current text is being saved would be lost with the switch
+		setEnabled (false);
+		const auto enableGuard = Util::MakeScopeGuard ([this] { setEnabled (true); });
 
 		co_await SaveCurrentText ();
 

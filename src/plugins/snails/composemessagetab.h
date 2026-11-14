@@ -12,6 +12,7 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/iwkfontssettable.h>
 #include <util/threads/coro/context.h>
+#include <util/threads/coro/coromutex.h>
 #include "ui_composemessagetab.h"
 #include "account.h"
 
@@ -52,6 +53,8 @@ namespace Snails
 		QByteArray OrigMessageId_;
 
 		std::shared_ptr<AttachmentsFetcher> LinkedAttachmentsFetcher_;
+
+		Util::CoroMutex EditorMutex_;
 	public:
 		static void SetParentPlugin (QObject*);
 		static void SetTabClassInfo (const TabClassInfo&);

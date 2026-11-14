@@ -24,6 +24,7 @@
 #include <util/sll/visitor.h>
 #include <util/sll/unreachable.h>
 #include <util/sll/prelude.h>
+#include <util/sll/util.h>
 #include <util/xpc/util.h>
 #include <util/gui/util.h>
 #include <interfaces/itexteditor.h>
@@ -595,6 +596,7 @@ namespace Snails
 	Util::ContextTask<void> ComposeMessageTab::handleSend ()
 	{
 		co_await Util::AddContext { CoroContext_ };
+		const auto guard = co_await EditorMutex_.Lock ();
 
 		const auto account = GetSelectedAccount ();
 		if (!account)
@@ -665,6 +667,11 @@ namespace Snails
 	{
 		co_await Util::AddContext { CoroContext_ };
 
+		// whatever gets typed into the new editor before the contents arrive would be overwritten by them
+		Ui_.Editor_->setEnabled (false);
+		const auto enableGuard = Util::MakeScopeGuard ([this] { Ui_.Editor_->setEnabled (true); });
+
+		const auto guard = co_await EditorMutex_.Lock ();
 		const auto& currentHtml = co_await previous->GetContents (ContentType::HTML);
 		const auto& currentPlain = co_await previous->GetContents (ContentType::PlainText);
 
