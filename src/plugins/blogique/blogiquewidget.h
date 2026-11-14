@@ -106,6 +106,8 @@ namespace Blogique
 		std::optional<TabSaveInfo> GetTabSaveInfo () const;
 
 		void FillWidget (const Entry& e, const QByteArray& accId = QByteArray ());
+		void RecoverState (const Entry& e, const QByteArray& accId,
+				const QByteArray& entryAccId, std::optional<qint64> draftId);
 	private:
 		void SetTextEditor ();
 		void SetToolBarActions ();

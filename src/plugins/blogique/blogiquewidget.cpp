@@ -231,6 +231,14 @@ namespace Blogique
 		EntryChanged_ = false;
 	}
 
+	void BlogiqueWidget::RecoverState (const Entry& e, const QByteArray& accId,
+			const QByteArray& entryAccId, std::optional<qint64> draftId)
+	{
+		FillWidget (e, accId);
+		EntryAccountId_ = entryAccId;
+		DraftId_ = draftId;
+	}
+
 	void BlogiqueWidget::SetParentMultiTabs (QObject *tab)
 	{
 		S_ParentMultiTabs_ = tab;
@@ -245,7 +253,7 @@ namespace Blogique
 		TabSaveInfo info { .Name_ = entry.Subject_.isEmpty () ? tr ("No subject") : entry.Subject_ };
 		const auto acc = GetSelectedAccount ();
 		QDataStream stream (&info.Data_, QIODevice::WriteOnly);
-		stream << static_cast<qint64> (1)
+		stream << static_cast<qint64> (2)
 				<< entry.Subject_
 				<< ContentSnapshot_
 				<< entry.Date_
@@ -253,7 +261,13 @@ namespace Blogique
 				<< entry.Target_
 				<< entry.PostOptions_
 				<< entry.CustomData_
-				<< (acc ? acc->GetAccountID () : QByteArray {});
+				<< (acc ? acc->GetAccountID () : QByteArray {})
+				<< EntryType_
+				<< EntryId_
+				<< EntryUrl_
+				<< EntryAccountId_
+				<< DraftId_.has_value ()
+				<< DraftId_.value_or (0);
 		return info;
 	}
 
@@ -969,6 +983,7 @@ namespace Blogique
 				DraftId_ = DraftId_ ?
 						storage->UpdateDraft (e, *DraftId_) :
 						storage->SaveNewDraft (e);
+				emit tabRecoverDataChanged ();
 			}
 			catch (const std::runtime_error& e)
 			{
@@ -996,6 +1011,7 @@ namespace Blogique
 			try
 			{
 				DraftId_ = Core::Instance ().GetStorageManager ()->SaveNewDraft (e);
+				emit tabRecoverDataChanged ();
 			}
 			catch (const std::runtime_error& e)
 			{

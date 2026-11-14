@@ -138,7 +138,7 @@ namespace Blogique
 			qint64 version;
 			str >> version;
 
-			if (version == 1)
+			if (version == 1 || version == 2)
 			{
 				auto tab = Core::Instance ().CreateBlogiqueWidget ();
 				Entry e;
@@ -151,7 +151,23 @@ namespace Blogique
 						>> e.CustomData_;
 				QByteArray accId;
 				str >> accId;
-				tab->FillWidget (e, accId);
+
+				QByteArray entryAccId;
+				std::optional<qint64> draftId;
+				if (version >= 2)
+				{
+					bool hasDraft = false;
+					qint64 savedDraftId = 0;
+					str >> e.EntryType_
+							>> e.EntryId_
+							>> e.EntryUrl_
+							>> entryAccId
+							>> hasDraft
+							>> savedDraftId;
+					if (hasDraft)
+						draftId = savedDraftId;
+				}
+				tab->RecoverState (e, accId, entryAccId, draftId);
 
 				GetProxyHolder ()->GetRootWindowsManager ()->AddTab (e.Subject_, tab);
 			}
