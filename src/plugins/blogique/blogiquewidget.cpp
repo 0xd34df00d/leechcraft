@@ -551,6 +551,7 @@ namespace Blogique
 		PostEdit_->SetContents (QString (), ContentType::PlainText);
 		SetContentSnapshot ({});
 		EntryUrl_.clear ();
+		EntryType_ = EntryType::None;
 		EntryId_ = 0;
 		DraftId_.reset ();
 
