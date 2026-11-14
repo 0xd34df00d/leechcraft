@@ -519,6 +519,7 @@ namespace Blogique
 		Ui_.BlogPosts_->clear ();
 		Ui_.BlogPosts_->SetAccount (nullptr);
 
+		disconnect (CurrentAccount_->GetQObject (), nullptr, this, nullptr);
 		CurrentAccount_.Reset ();
 	}
 
@@ -700,6 +701,19 @@ namespace Blogique
 			return;
 
 		DetachAccount ();
+
+		connect (account->GetQObject (),
+				SIGNAL (entryPosted (QList<Entry>)),
+				this,
+				SLOT (handleEntryPosted ()));
+		connect (account->GetQObject (),
+				SIGNAL (entryRemoved (int)),
+				this,
+				SLOT (handleEntryRemoved ()));
+		connect (account->GetQObject (),
+				SIGNAL (tagsUpdated (QHash<QString, int>)),
+				this,
+				SLOT (handleTagsUpdated (QHash<QString, int>)));
 
 		Ui_.BlogPosts_->clear ();
 		Ui_.BlogPosts_->SetAccount (account);

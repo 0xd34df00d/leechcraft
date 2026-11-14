@@ -148,18 +148,6 @@ namespace Blogique
 				newTab,
 				SLOT (handleAutoSave ()));
 		connect (&Core::Instance (),
-				SIGNAL (entryPosted ()),
-				newTab,
-				SLOT (handleEntryPosted ()));
-		connect (&Core::Instance (),
-				SIGNAL (entryRemoved ()),
-				newTab,
-				SLOT (handleEntryRemoved ()));
-		connect (&Core::Instance (),
-				SIGNAL (tagsUpdated (QHash<QString, int>)),
-				newTab,
-				SLOT (handleTagsUpdated (QHash<QString, int>)));
-		connect (&Core::Instance (),
 				SIGNAL (insertTag (QString)),
 				newTab,
 				SLOT (handleInsertTag (QString)));
@@ -251,10 +239,6 @@ namespace Blogique
 				this,
 				SLOT (handleEntryUpdated (QList<Entry>)));
 		connect (accObj,
-				SIGNAL (tagsUpdated (QHash<QString, int>)),
-				this,
-				SIGNAL (tagsUpdated (QHash<QString, int>)));
-		connect (accObj,
 				SIGNAL (gotRecentComments (QList<CommentEntry>)),
 				CommentsManager_,
 				SLOT (handleGotRecentComments (QList<CommentEntry>)));
@@ -330,7 +314,6 @@ namespace Blogique
 		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 		acc->RequestStatistics ();
 		acc->RequestTags ();
-		emit entryPosted ();
 	}
 
 	void Core::handleEntryRemoved (int)
@@ -344,7 +327,6 @@ namespace Blogique
 				Priority::Info));
 		acc->RequestStatistics ();
 		acc->RequestTags ();
-		emit entryRemoved ();
 	}
 
 	void Core::handleEntryUpdated (const QList<Entry>& entries)

@@ -92,11 +92,6 @@ namespace Blogique
 
 		void checkAutoSave ();
 
-		void entryPosted ();
-		void entryRemoved ();
-
-		void tagsUpdated (const QHash<QString, int>& tags);
-
 		void insertTag (const QString& tag);
 
 		void gotError (int errorCode, const QString& errorString,
