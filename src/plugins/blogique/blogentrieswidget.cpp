@@ -84,6 +84,9 @@ namespace Blogique
 			Ui_.LoadBlogEntries_->removeAction (act);
 		LoadActions_.clear ();
 
+		if (Account_)
+			disconnect (Account_->GetQObject (), nullptr, this, nullptr);
+
 		Account_ = account;
 		if (!Account_)
 			return;
@@ -91,18 +94,15 @@ namespace Blogique
 		connect (Account_->GetQObject (),
 				SIGNAL (gotBlogStatistics (QMap<QDate, int>)),
 				this,
-				SLOT (fillStatistic (QMap<QDate, int>)),
-				Qt::UniqueConnection);
+				SLOT (fillStatistic (QMap<QDate, int>)));
 		connect (Account_->GetQObject (),
 				SIGNAL (gotEntries (QList<Entry>)),
 				this,
-				SLOT (fillView (QList<Entry>)),
-				Qt::UniqueConnection);
+				SLOT (fillView (QList<Entry>)));
 		connect (Account_->GetQObject (),
 				SIGNAL (requestEntriesBegin ()),
 				this,
-				SIGNAL (requestEntriesBegin ()),
-				Qt::UniqueConnection);
+				SIGNAL (requestEntriesBegin ()));
 
 		LoadActions_ = account->GetUpdateActions ();
 		Ui_.LoadBlogEntries_->addActions (LoadActions_);
