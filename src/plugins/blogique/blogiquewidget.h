@@ -11,6 +11,7 @@
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaverecoverabletabs.h>
+#include <util/threads/coro/context.h>
 #include "interfaces/blogique/iaccount.h"
 #include "ui_blogiquewidget.h"
 
@@ -136,18 +137,18 @@ namespace Blogique
 
 	private slots:
 		void handleCurrentAccountChanged (int id);
-		void fillCurrentTabWithEntry (const Entry& entry);
+		Util::ContextTask<void> fillCurrentTabWithEntry (Entry entry);
 		void fillNewTabWithEntry (const Entry& entry, const QByteArray& accountId);
 
 		void handleEntryChanged (const QString& str = QString ());
 		void handleContentChanged ();
 		void handleRemovingEntryBegin ();
 
-		void newEntry ();
+		Util::ContextTask<void> newEntry ();
 		void saveEntry ();
 		void saveNewEntry ();
-		void submit ();
-		void submitTo ();
+		Util::ContextTask<void> submit ();
+		Util::ContextTask<void> submitTo ();
 		void on_SideWidget__dockLocationChanged (Qt::DockWidgetArea area);
 		void on_ShowProfile__triggered ();
 		void on_CurrentTime__released ();
@@ -165,6 +166,8 @@ namespace Blogique
 		void tabRecoverDataChanged ();
 
 		void tagSelected (const QString& tag);
+
+		LC_CORO_CONTEXT
 	};
 }
 }

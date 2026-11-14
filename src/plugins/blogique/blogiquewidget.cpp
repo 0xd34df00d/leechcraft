@@ -730,14 +730,18 @@ namespace Blogique
 				Id2Account_ [id]->GetAccountName ());
 	}
 
-	void BlogiqueWidget::fillCurrentTabWithEntry (const Entry& entry)
+	Util::ContextTask<void> BlogiqueWidget::fillCurrentTabWithEntry (Entry entry)
 	{
+		co_await Util::AddContext { CoroContext_ };
+
 		if (EntryChanged_)
 		{
 			IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
 			if (!acc)
-				return;
-			int res = QMessageBox::question (this,
+				co_return;
+
+			const auto& accId = acc->GetAccountID ();
+			const auto res = co_await Util::Dialogs::Question (this,
 					"LeechCraft Blogique",
 					tr ("You have unsaved changes in your current tab."
 						" Do you want to open this entry in a new tab instead?"),
@@ -745,12 +749,12 @@ namespace Blogique
 			switch (res)
 			{
 			case QMessageBox::Yes:
-				fillNewTabWithEntry (entry, acc->GetAccountID ());
-				return;
+				fillNewTabWithEntry (entry, accId);
+				co_return;
 			case QMessageBox::No:
 				break;
 			default:
-				return;
+				co_return;
 			}
 		}
 
@@ -874,11 +878,13 @@ namespace Blogique
 		}
 	}
 
-	void BlogiqueWidget::newEntry ()
+	Util::ContextTask<void> BlogiqueWidget::newEntry ()
 	{
+		co_await Util::AddContext { CoroContext_ };
+
 		if (EntryChanged_)
 		{
-			int res = QMessageBox::question (this,
+			const auto res = co_await Util::Dialogs::Question (this,
 					"LeechCraft Blogique",
 					tr ("Do you want to save current entry?"),
 					QMessageBox::Yes | QMessageBox::No);
@@ -892,7 +898,7 @@ namespace Blogique
 				ClearEntry ();
 				break;
 			default:
-				return;
+				co_return;
 			}
 		}
 		else
@@ -969,11 +975,13 @@ namespace Blogique
 		DraftEntriesWidget_->loadDraftEntries ();
 	}
 
-	void BlogiqueWidget::submit ()
+	Util::ContextTask<void> BlogiqueWidget::submit ()
 	{
+		co_await Util::AddContext { CoroContext_ };
+
 		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
 		if (!acc)
-			return;
+			co_return;
 
 		EntryChanged_ = false;
 		const auto& e = GetCurrentEntry ();
@@ -991,8 +999,8 @@ namespace Blogique
 				const auto updateButton = mbox.addButton (tr ("Update post"), QMessageBox::YesRole);
 				const auto newPostButton = mbox.addButton (tr ("Post new"), QMessageBox::YesRole);
 
-				if (mbox.exec () == QMessageBox::Cancel)
-					return;
+				if (co_await Util::Dialogs::Exec (mbox) == QMessageBox::Cancel)
+					co_return;
 
 				if (mbox.clickedButton () == newPostButton)
 				{
@@ -1016,17 +1024,19 @@ namespace Blogique
 			WarnEmptyEntry ();
 	}
 
-	void BlogiqueWidget::submitTo ()
+	Util::ContextTask<void> BlogiqueWidget::submitTo ()
 	{
+		co_await Util::AddContext { CoroContext_ };
+
 		SubmitToDialog dlg;
-		if (dlg.exec () != QDialog::Accepted)
-			return;
+		if (co_await Util::Dialogs::Exec (dlg) != QDialog::Accepted)
+			co_return;
 
 		auto e = GetCurrentEntry ();
 		if (e.IsEmpty ())
 		{
 			WarnEmptyEntry ();
-			return;
+			co_return;
 		}
 
 		for (const auto& pair : dlg.GetPostingTargets ())
