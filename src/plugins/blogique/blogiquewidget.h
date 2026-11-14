@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <optional>
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaverecoverabletabs.h>
@@ -75,6 +76,8 @@ namespace Blogique
 		EntryType EntryType_ = EntryType::None;
 		qint64 EntryId_ = -1;
 		QUrl EntryUrl_;
+		// the draft the tab is saved into, which is a copy if the tab shows a blog entry
+		std::optional<qint64> DraftId_;
 		Util::CoroMutex EntryMutex_;
 
 		bool EntryChanged_ = false;

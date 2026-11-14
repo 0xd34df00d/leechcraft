@@ -193,6 +193,9 @@ namespace Blogique
 		EntryType_ = e.EntryType_;
 		EntryId_ = e.EntryId_;
 		EntryUrl_ = e.EntryUrl_;
+		DraftId_.reset ();
+		if (e.EntryType_ == EntryType::Draft)
+			DraftId_ = e.EntryId_;
 		Ui_.Subject_->setText (e.Subject_);
 		if (PostEdit_)
 			PostEdit_->SetContents (e.Content_, ContentType::HTML);
@@ -549,6 +552,7 @@ namespace Blogique
 		SetContentSnapshot ({});
 		EntryUrl_.clear ();
 		EntryId_ = 0;
+		DraftId_.reset ();
 
 		for (auto w : SidePluginsWidgets_)
 		{
@@ -958,17 +962,10 @@ namespace Blogique
 		{
 			try
 			{
-				switch (e.EntryType_)
-				{
-				case EntryType::Draft:
-					EntryId_ = Core::Instance ().GetStorageManager ()->UpdateDraft (e, EntryId_);
-					break;
-				case EntryType::BlogEntry:
-				case EntryType::None:
-					EntryId_ = Core::Instance ().GetStorageManager ()->SaveNewDraft (e);
-					break;
-				}
-				EntryType_ = EntryType::Draft;
+				const auto storage = Core::Instance ().GetStorageManager ();
+				DraftId_ = DraftId_ ?
+						storage->UpdateDraft (e, *DraftId_) :
+						storage->SaveNewDraft (e);
 			}
 			catch (const std::runtime_error& e)
 			{
@@ -995,8 +992,7 @@ namespace Blogique
 		{
 			try
 			{
-				EntryId_ = Core::Instance ().GetStorageManager ()->SaveNewDraft (e);
-				EntryType_ = EntryType::Draft;
+				DraftId_ = Core::Instance ().GetStorageManager ()->SaveNewDraft (e);
 			}
 			catch (const std::runtime_error& e)
 			{
