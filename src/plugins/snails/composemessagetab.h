@@ -55,6 +55,7 @@ namespace Snails
 		std::shared_ptr<AttachmentsFetcher> LinkedAttachmentsFetcher_;
 
 		Util::CoroMutex EditorMutex_;
+		int PendingEditorSwitches_ = 0;
 	public:
 		static void SetParentPlugin (QObject*);
 		static void SetTabClassInfo (const TabClassInfo&);

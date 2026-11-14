@@ -668,8 +668,13 @@ namespace Snails
 		co_await Util::AddContext { CoroContext_ };
 
 		// whatever gets typed into the new editor before the contents arrive would be overwritten by them
+		++PendingEditorSwitches_;
 		Ui_.Editor_->setEnabled (false);
-		const auto enableGuard = Util::MakeScopeGuard ([this] { Ui_.Editor_->setEnabled (true); });
+		const auto enableGuard = Util::MakeScopeGuard ([this]
+				{
+					if (!--PendingEditorSwitches_)
+						Ui_.Editor_->setEnabled (true);
+				});
 
 		const auto guard = co_await EditorMutex_.Lock ();
 		const auto& currentHtml = co_await previous->GetContents (ContentType::HTML);
