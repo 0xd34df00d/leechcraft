@@ -185,7 +185,7 @@ namespace Blogique
 		}
 
 		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
-		auto ibp = qobject_cast<IBloggingPlatform*> (acc->GetParentBloggingPlatform ());
+		auto ibp = acc ? qobject_cast<IBloggingPlatform*> (acc->GetParentBloggingPlatform ()) : nullptr;
 		if (ibp &&
 				(ibp->GetFeatures () & IBloggingPlatform::BPFSelectablePostDestination) &&
 				PostTargetBox_)
@@ -195,7 +195,8 @@ namespace Blogique
 		EntryId_ = e.EntryId_;
 		EntryUrl_ = e.EntryUrl_;
 		Ui_.Subject_->setText (e.Subject_);
-		PostEdit_->SetContents (e.Content_, ContentType::HTML);
+		if (PostEdit_)
+			PostEdit_->SetContents (e.Content_, ContentType::HTML);
 		SetContentSnapshot (e.Content_);
 
 		for (auto w : SidePluginsWidgets_)

@@ -135,7 +135,7 @@ namespace Blogique
 		for (const auto& recInfo : infos)
 		{
 			QDataStream str (recInfo.Data_);
-			qint8 version;
+			qint64 version;
 			str >> version;
 
 			if (version == 1)
