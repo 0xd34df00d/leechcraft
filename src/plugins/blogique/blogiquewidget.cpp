@@ -797,15 +797,17 @@ namespace Blogique
 	Util::ContextTask<void> BlogiqueWidget::fillCurrentTabWithEntry (Entry entry)
 	{
 		co_await Util::AddContext { CoroContext_ };
+
+		const Util::TrackingPointer<IAccount> acc = GetSelectedAccount ();
+		const auto& accId = acc ? acc->GetAccountID () : QByteArray {};
+
 		const auto guard = co_await EntryMutex_.Lock ();
 
 		if (EntryChanged_)
 		{
-			IAccount *acc = GetSelectedAccount ();
-			if (!acc)
+			if (accId.isEmpty ())
 				co_return;
 
-			const auto& accId = acc->GetAccountID ();
 			const auto res = co_await Util::Dialogs::Question (this,
 					"LeechCraft Blogique",
 					tr ("You have unsaved changes in your current tab."
@@ -824,6 +826,7 @@ namespace Blogique
 		}
 
 		FillWidget (entry);
+		EntryAccountId_ = accId;
 		emit changeTabName (entry.Subject_);
 	}
 
@@ -1036,11 +1039,12 @@ namespace Blogique
 	Util::ContextTask<void> BlogiqueWidget::submit ()
 	{
 		co_await Util::AddContext { CoroContext_ };
-		const auto guard = co_await EntryMutex_.Lock ();
 
 		const Util::TrackingPointer<IAccount> acc = GetSelectedAccount ();
 		if (!acc)
 			co_return;
+
+		const auto guard = co_await EntryMutex_.Lock ();
 
 		EntryChanged_ = false;
 		const auto& e = co_await GetCurrentEntry ();
@@ -1182,11 +1186,12 @@ namespace Blogique
 	Util::ContextTask<void> BlogiqueWidget::on_PreviewPost__triggered ()
 	{
 		co_await Util::AddContext { CoroContext_ };
-		const auto guard = co_await EntryMutex_.Lock ();
 
 		const Util::TrackingPointer<IAccount> acc = GetSelectedAccount ();
 		if (!acc)
 			co_return;
+
+		const auto guard = co_await EntryMutex_.Lock ();
 
 		const auto& e = co_await GetCurrentEntry ();
 		if (!acc)
