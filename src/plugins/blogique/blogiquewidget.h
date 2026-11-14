@@ -12,6 +12,7 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaverecoverabletabs.h>
 #include <util/threads/coro/context.h>
+#include <util/threads/coro/coromutex.h>
 #include "interfaces/blogique/iaccount.h"
 #include "ui_blogiquewidget.h"
 
@@ -74,7 +75,7 @@ namespace Blogique
 		EntryType EntryType_ = EntryType::None;
 		qint64 EntryId_ = -1;
 		QUrl EntryUrl_;
-		int EntryGeneration_ = 0;
+		Util::CoroMutex EntryMutex_;
 
 		bool EntryChanged_ = false;
 		QString ContentSnapshot_;

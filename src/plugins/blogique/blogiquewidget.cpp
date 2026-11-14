@@ -172,8 +172,6 @@ namespace Blogique
 
 	void BlogiqueWidget::FillWidget (const Entry& e, const QByteArray& accId)
 	{
-		++EntryGeneration_;
-
 		for (int i = 0; !accId.isEmpty () && i < AccountsBox_->count (); ++i)
 		{
 			if (Id2Account_.contains (i) &&
@@ -492,8 +490,6 @@ namespace Blogique
 
 	void BlogiqueWidget::ClearEntry ()
 	{
-		++EntryGeneration_;
-
 		Ui_.Subject_->clear ();
 		PostEdit_->SetContents (QString (), ContentType::PlainText);
 		SetContentSnapshot ({});
@@ -596,13 +592,13 @@ namespace Blogique
 	{
 		co_await Util::AddContext { CoroContext_ };
 
-		if (!EntryChanged_)
+		// skip the tick instead of queueing it behind an operation that awaits the user's answer
+		if (!EntryChanged_ || EntryMutex_.IsLocked ())
 			co_return;
 
-		const auto generation = EntryGeneration_;
+		const auto guard = co_await EntryMutex_.Lock ();
 		co_await SaveDraft ();
-		if (generation == EntryGeneration_)
-			EntryChanged_ = true;
+		EntryChanged_ = true;
 	}
 
 	void BlogiqueWidget::handleEntryPosted ()
@@ -743,6 +739,7 @@ namespace Blogique
 	Util::ContextTask<void> BlogiqueWidget::fillCurrentTabWithEntry (Entry entry)
 	{
 		co_await Util::AddContext { CoroContext_ };
+		const auto guard = co_await EntryMutex_.Lock ();
 
 		if (EntryChanged_)
 		{
@@ -897,6 +894,7 @@ namespace Blogique
 	Util::ContextTask<void> BlogiqueWidget::newEntry ()
 	{
 		co_await Util::AddContext { CoroContext_ };
+		const auto guard = co_await EntryMutex_.Lock ();
 
 		if (EntryChanged_)
 		{
@@ -907,13 +905,12 @@ namespace Blogique
 			switch (res)
 			{
 			case QMessageBox::Yes:
-			{
-				const auto generation = EntryGeneration_;
-				co_await saveEntry ();
-				if (generation == EntryGeneration_ && !EntryChanged_)
+				if (!co_await SaveDraft ())
+					WarnEmptyEntry ();
+				// keep an edit that came in during the save
+				if (!EntryChanged_)
 					ClearEntry ();
 				break;
-			}
 			case QMessageBox::No:
 				ClearEntry ();
 				break;
@@ -928,6 +925,7 @@ namespace Blogique
 	Util::ContextTask<void> BlogiqueWidget::saveEntry ()
 	{
 		co_await Util::AddContext { CoroContext_ };
+		const auto guard = co_await EntryMutex_.Lock ();
 
 		if (!co_await SaveDraft ())
 			WarnEmptyEntry ();
@@ -939,27 +937,22 @@ namespace Blogique
 
 		EntryChanged_ = false;
 		EntryType_ = EntryType::Draft;
-		const auto generation = EntryGeneration_;
 		const auto& e = co_await GetCurrentEntry ();
-		const auto sameEntry = generation == EntryGeneration_;
 		const auto hasContent = !e.IsEmpty ();
 		if (hasContent)
 		{
 			try
 			{
-				auto id = e.EntryId_;
 				switch (e.EntryType_)
 				{
 				case EntryType::Draft:
-					id = Core::Instance ().GetStorageManager ()->UpdateDraft (e, e.EntryId_);
+					EntryId_ = Core::Instance ().GetStorageManager ()->UpdateDraft (e, EntryId_);
 					break;
 				case EntryType::BlogEntry:
 				case EntryType::None:
-					id = Core::Instance ().GetStorageManager ()->SaveNewDraft (e);
+					EntryId_ = Core::Instance ().GetStorageManager ()->SaveNewDraft (e);
 					break;
 				}
-				if (sameEntry)
-					EntryId_ = id;
 			}
 			catch (const std::runtime_error& e)
 			{
@@ -968,7 +961,7 @@ namespace Blogique
 						<< e.what ();
 			}
 		}
-		else if (sameEntry)
+		else
 			EntryType_ = EntryType::None;
 
 		DraftEntriesWidget_->loadDraftEntries ();
@@ -979,20 +972,17 @@ namespace Blogique
 	Util::ContextTask<void> BlogiqueWidget::saveNewEntry ()
 	{
 		co_await Util::AddContext { CoroContext_ };
+		const auto guard = co_await EntryMutex_.Lock ();
 
 		EntryChanged_ = false;
 		EntryType_ = EntryType::Draft;
-		const auto generation = EntryGeneration_;
 		const auto& e = co_await GetCurrentEntry ();
-		const auto sameEntry = generation == EntryGeneration_;
 
 		if (!e.IsEmpty ())
 		{
 			try
 			{
-				const auto id = Core::Instance ().GetStorageManager ()->SaveNewDraft (e);
-				if (sameEntry)
-					EntryId_ = id;
+				EntryId_ = Core::Instance ().GetStorageManager ()->SaveNewDraft (e);
 			}
 			catch (const std::runtime_error& e)
 			{
@@ -1003,8 +993,7 @@ namespace Blogique
 		}
 		else
 		{
-			if (sameEntry)
-				EntryType_ = EntryType::None;
+			EntryType_ = EntryType::None;
 			WarnEmptyEntry ();
 		}
 
@@ -1014,6 +1003,7 @@ namespace Blogique
 	Util::ContextTask<void> BlogiqueWidget::submit ()
 	{
 		co_await Util::AddContext { CoroContext_ };
+		const auto guard = co_await EntryMutex_.Lock ();
 
 		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
 		if (!acc)
@@ -1063,6 +1053,7 @@ namespace Blogique
 	Util::ContextTask<void> BlogiqueWidget::submitTo ()
 	{
 		co_await Util::AddContext { CoroContext_ };
+		const auto guard = co_await EntryMutex_.Lock ();
 
 		SubmitToDialog dlg;
 		if (co_await Util::Dialogs::Exec (dlg) != QDialog::Accepted)
@@ -1156,6 +1147,7 @@ namespace Blogique
 	Util::ContextTask<void> BlogiqueWidget::on_PreviewPost__triggered ()
 	{
 		co_await Util::AddContext { CoroContext_ };
+		const auto guard = co_await EntryMutex_.Lock ();
 
 		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
 		if (!acc)
