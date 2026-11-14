@@ -239,10 +239,6 @@ namespace Blogique
 		}
 
 		connect (accObj,
-				SIGNAL (requestEntriesBegin ()),
-				this,
-				SIGNAL (requestEntriesBegin ()));
-		connect (accObj,
 				SIGNAL (entryPosted (QList<Entry>)),
 				this,
 				SLOT (handleEntryPosted (QList<Entry>)));

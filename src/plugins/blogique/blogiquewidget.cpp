@@ -98,7 +98,7 @@ namespace Blogique
 		SetTextEditor ();
 		SetDefaultSideWidgets ();
 
-		connect (&Core::Instance (),
+		connect (Ui_.BlogPosts_,
 				SIGNAL (requestEntriesBegin ()),
 				this,
 				SLOT (handleRequestEntriesBegin ()));

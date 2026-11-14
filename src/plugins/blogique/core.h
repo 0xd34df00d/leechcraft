@@ -92,8 +92,6 @@ namespace Blogique
 
 		void checkAutoSave ();
 
-		void requestEntriesBegin ();
-
 		void entryPosted ();
 		void entryRemoved ();
 

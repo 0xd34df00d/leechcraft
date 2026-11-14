@@ -98,6 +98,11 @@ namespace Blogique
 				this,
 				SLOT (fillView (QList<Entry>)),
 				Qt::UniqueConnection);
+		connect (Account_->GetQObject (),
+				SIGNAL (requestEntriesBegin ()),
+				this,
+				SIGNAL (requestEntriesBegin ()),
+				Qt::UniqueConnection);
 
 		LoadActions_ = account->GetUpdateActions ();
 		Ui_.LoadBlogEntries_->addActions (LoadActions_);
