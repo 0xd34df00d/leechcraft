@@ -175,15 +175,15 @@ namespace Blogique
 	{
 		for (int i = 0; !accId.isEmpty () && i < AccountsBox_->count (); ++i)
 		{
-			if (Id2Account_.contains (i) &&
-					Id2Account_ [i]->GetAccountID () == accId)
+			if (const auto acc = GetAccount (i);
+				acc && acc->GetAccountID () == accId)
 			{
 				AccountsBox_->setCurrentIndex (i);
 				break;
 			}
 		}
 
-		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		IAccount *acc = GetSelectedAccount ();
 		auto ibp = acc ? qobject_cast<IBloggingPlatform*> (acc->GetParentBloggingPlatform ()) : nullptr;
 		if (ibp &&
 				(ibp->GetFeatures () & IBloggingPlatform::BPFSelectablePostDestination) &&
@@ -239,7 +239,7 @@ namespace Blogique
 
 		const auto& entry = GetEntryWithoutContent ();
 		TabSaveInfo info { .Name_ = entry.Subject_.isEmpty () ? tr ("No subject") : entry.Subject_ };
-		const auto acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		const auto acc = GetSelectedAccount ();
 		QDataStream stream (&info.Data_, QIODevice::WriteOnly);
 		stream << static_cast<qint64> (1)
 				<< entry.Subject_
@@ -358,8 +358,7 @@ namespace Blogique
 
 		for (IAccount *acc : Core::Instance ().GetAccounts ())
 		{
-			AccountsBox_->addItem (acc->GetAccountName ());
-			Id2Account_ [AccountsBox_->count () - 1] = acc;
+			AccountsBox_->addItem (acc->GetAccountName (), QVariant::fromValue (acc->GetQObject ()));
 		}
 		int index = AccountsBox_->findText (XmlSettingsManager::Instance ()
 				.property ("LastActiveAccountName").toString (),
@@ -449,6 +448,16 @@ namespace Blogique
 			PostTargetAction_->setVisible (false);
 			PostTargetBox_->clear ();
 		}
+	}
+
+	IAccount* BlogiqueWidget::GetAccount (int row) const
+	{
+		return qobject_cast<IAccount*> (AccountsBox_->itemData (row).value<QObject*> ());
+	}
+
+	IAccount* BlogiqueWidget::GetSelectedAccount () const
+	{
+		return GetAccount (AccountsBox_->currentIndex ());
 	}
 
 	void BlogiqueWidget::SetPostDate(const QDateTime& dt)
@@ -620,13 +629,14 @@ namespace Blogique
 			return;
 		}
 
-		if (!Id2Account_.contains (id))
+		const auto account = GetAccount (id);
+		// removing a row above the current one changes the index of the latter, but not the account
+		if (!account || account == CurrentAccount_.GetOrNull ())
 			return;
 
-		if (PrevAccountId_ != -1)
+		if (CurrentAccount_)
 		{
-			auto ibp = qobject_cast<IBloggingPlatform*> (Id2Account_ [PrevAccountId_]->
-					GetParentBloggingPlatform ());
+			auto ibp = qobject_cast<IBloggingPlatform*> (CurrentAccount_->GetParentBloggingPlatform ());
 			for (auto action : ibp->GetEditorActions ())
 				PostEdit_->RemoveAction (action);
 
@@ -661,7 +671,6 @@ namespace Blogique
 
 		}
 
-		auto account = Id2Account_ [id];
 		Ui_.BlogPosts_->clear ();
 		Ui_.BlogPosts_->SetAccount (account);
 
@@ -731,10 +740,10 @@ namespace Blogique
 				Ui_.Tools_->addItem (w, ibsw->GetName ());
 		}
 
-		PrevAccountId_ = id;
+		CurrentAccount_ = account;
 
 		XmlSettingsManager::Instance ().setProperty ("LastActiveAccountName",
-				Id2Account_ [id]->GetAccountName ());
+				account->GetAccountName ());
 	}
 
 	Util::ContextTask<void> BlogiqueWidget::fillCurrentTabWithEntry (Entry entry)
@@ -744,7 +753,7 @@ namespace Blogique
 
 		if (EntryChanged_)
 		{
-			IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
+			IAccount *acc = GetSelectedAccount ();
 			if (!acc)
 				co_return;
 
@@ -870,26 +879,14 @@ namespace Blogique
 	void BlogiqueWidget::handleAccountAdded (QObject *acc)
 	{
 		if (auto account = qobject_cast<IAccount*> (acc))
-		{
-			AccountsBox_->insertItem (AccountsBox_->count () - 1, account->GetAccountName ());
-			Id2Account_ [AccountsBox_->count () - 2] = account;
-		}
+			AccountsBox_->insertItem (AccountsBox_->count () - 1, account->GetAccountName (), QVariant::fromValue (acc));
 	}
 
 	void BlogiqueWidget::handleAccountRemoved (QObject *acc)
 	{
-		if (auto account = qobject_cast<IAccount*> (acc))
-		{
-			for (const auto& value : Id2Account_.values ())
-			{
-				if (value != account)
-					continue;
-				auto id = Id2Account_.key (account);
-				Id2Account_.remove (id);
-				AccountsBox_->removeItem (id);
-				break;
-			}
-		}
+		if (const auto row = AccountsBox_->findData (QVariant::fromValue (acc));
+			row != -1)
+			AccountsBox_->removeItem (row);
 	}
 
 	Util::ContextTask<void> BlogiqueWidget::newEntry ()
@@ -1006,7 +1003,7 @@ namespace Blogique
 		co_await Util::AddContext { CoroContext_ };
 		const auto guard = co_await EntryMutex_.Lock ();
 
-		const Util::TrackingPointer<IAccount> acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		const Util::TrackingPointer<IAccount> acc = GetSelectedAccount ();
 		if (!acc)
 			co_return;
 
@@ -1085,7 +1082,7 @@ namespace Blogique
 
 	void BlogiqueWidget::on_ShowProfile__triggered ()
 	{
-		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		IAccount *acc = GetSelectedAccount ();
 		if (!acc)
 			return;
 
@@ -1152,7 +1149,7 @@ namespace Blogique
 		co_await Util::AddContext { CoroContext_ };
 		const auto guard = co_await EntryMutex_.Lock ();
 
-		const Util::TrackingPointer<IAccount> acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		const Util::TrackingPointer<IAccount> acc = GetSelectedAccount ();
 		if (!acc)
 			co_return;
 

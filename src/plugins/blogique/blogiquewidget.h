@@ -11,6 +11,7 @@
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaverecoverabletabs.h>
+#include <util/sll/trackingpointer.h>
 #include <util/threads/coro/context.h>
 #include <util/threads/coro/coromutex.h>
 #include "interfaces/blogique/iaccount.h"
@@ -68,8 +69,7 @@ namespace Blogique
 
 		DraftEntriesWidget *DraftEntriesWidget_;
 		CommentsWidget *CommentsWidget_;
-		QHash<int, IAccount*> Id2Account_;
-		int PrevAccountId_ = -1;
+		Util::TrackingPointer<IAccount> CurrentAccount_;
 		QList<QWidget*> SidePluginsWidgets_;
 
 		EntryType EntryType_ = EntryType::None;
@@ -108,6 +108,9 @@ namespace Blogique
 		void SetDefaultSideWidgets ();
 		void PrepareQmlWidgets ();
 		void RemovePostingTargetsWidget ();
+
+		IAccount* GetAccount (int row) const;
+		IAccount* GetSelectedAccount () const;
 
 		void SetPostDate (const QDateTime& dt);
 		QDateTime GetPostDate () const;
