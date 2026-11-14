@@ -952,7 +952,6 @@ namespace Blogique
 		co_await Util::AddContext { CoroContext_ };
 
 		EntryChanged_ = false;
-		EntryType_ = EntryType::Draft;
 		const auto& e = co_await GetCurrentEntry ();
 		const auto hasContent = !e.IsEmpty ();
 		if (hasContent)
@@ -969,6 +968,7 @@ namespace Blogique
 					EntryId_ = Core::Instance ().GetStorageManager ()->SaveNewDraft (e);
 					break;
 				}
+				EntryType_ = EntryType::Draft;
 			}
 			catch (const std::runtime_error& e)
 			{
@@ -977,8 +977,6 @@ namespace Blogique
 						<< e.what ();
 			}
 		}
-		else
-			EntryType_ = EntryType::None;
 
 		DraftEntriesWidget_->loadDraftEntries ();
 
@@ -991,7 +989,6 @@ namespace Blogique
 		const auto guard = co_await EntryMutex_.Lock ();
 
 		EntryChanged_ = false;
-		EntryType_ = EntryType::Draft;
 		const auto& e = co_await GetCurrentEntry ();
 
 		if (!e.IsEmpty ())
@@ -999,6 +996,7 @@ namespace Blogique
 			try
 			{
 				EntryId_ = Core::Instance ().GetStorageManager ()->SaveNewDraft (e);
+				EntryType_ = EntryType::Draft;
 			}
 			catch (const std::runtime_error& e)
 			{
@@ -1008,10 +1006,7 @@ namespace Blogique
 			}
 		}
 		else
-		{
-			EntryType_ = EntryType::None;
 			WarnEmptyEntry ();
-		}
 
 		DraftEntriesWidget_->loadDraftEntries ();
 	}
