@@ -80,6 +80,8 @@ namespace Blogique
 		void handleEntryPosted (const QList<Entry>& entries);
 		void handleEntryRemoved (int itemId);
 		void handleEntryUpdated (const QList<Entry>& entries);
+		void handleGotError (int errorCode, const QString& errorString,
+				const QString& localizedErrorString);
 
 		void handleAutoSaveIntervalChanged ();
 
@@ -93,9 +95,6 @@ namespace Blogique
 		void checkAutoSave ();
 
 		void insertTag (const QString& tag);
-
-		void gotError (int errorCode, const QString& errorString,
-				const QString& localizedErrorString);
 	};
 }
 }

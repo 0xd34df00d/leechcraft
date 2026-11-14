@@ -152,14 +152,6 @@ namespace Blogique
 				newTab,
 				SLOT (handleInsertTag (QString)));
 		connect (&Core::Instance (),
-				SIGNAL (gotError (int, QString, QString)),
-				newTab,
-				SLOT (handleGotError (int, QString, QString)));
-		connect (&Core::Instance (),
-				SIGNAL (gotError (int, QString, QString)),
-				newTab,
-				SLOT (handleGotError (int, QString, QString)));
-		connect (&Core::Instance (),
 				SIGNAL (accountAdded (QObject*)),
 				newTab,
 				SLOT (handleAccountAdded (QObject*)));
@@ -249,7 +241,7 @@ namespace Blogique
 		connect (accObj,
 				SIGNAL (gotError (int, QString, QString)),
 				this,
-				SIGNAL (gotError (int, QString, QString)));
+				SLOT (handleGotError (int, QString, QString)));
 
 		emit accountAdded (accObj);
 	}
@@ -343,6 +335,21 @@ namespace Blogique
 				Priority::Info));
 		acc->RequestStatistics ();
 		acc->RequestTags ();
+	}
+
+	void Core::handleGotError (int errorCode,
+			const QString& errorString, const QString& localizedErrorString)
+	{
+		qWarning () << Q_FUNC_INFO
+				<< "error code:"
+				<< errorCode
+				<< "error text:"
+				<< errorString;
+
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blogique",
+				tr ("%1 (original message: %2)")
+					.arg (localizedErrorString, errorString),
+				Priority::Warning));
 	}
 
 	void Core::handleAutoSaveIntervalChanged ()

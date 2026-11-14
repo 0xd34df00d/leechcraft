@@ -714,6 +714,10 @@ namespace Blogique
 				SIGNAL (tagsUpdated (QHash<QString, int>)),
 				this,
 				SLOT (handleTagsUpdated (QHash<QString, int>)));
+		connect (account->GetQObject (),
+				SIGNAL (gotError (int, QString, QString)),
+				this,
+				SLOT (handleGotError ()));
 
 		Ui_.BlogPosts_->clear ();
 		Ui_.BlogPosts_->SetAccount (account);
@@ -904,20 +908,9 @@ namespace Blogique
 		iahe->InsertHTML (tag);
 	}
 
-	void BlogiqueWidget::handleGotError (int errorCode,
-			const QString& errorString, const QString& localizedErrorString)
+	void BlogiqueWidget::handleGotError ()
 	{
 		ShowProgress ();
-		qWarning () << Q_FUNC_INFO
-				<< "error code:"
-				<< errorCode
-				<< "error text:"
-				<< errorString;
-
-		GetProxyHolder ()->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blogique",
-				tr ("%1 (original message: %2)")
-					.arg (localizedErrorString, errorString),
-				Priority::Warning));
 	}
 
 	void BlogiqueWidget::handleAccountAdded (QObject *acc)
