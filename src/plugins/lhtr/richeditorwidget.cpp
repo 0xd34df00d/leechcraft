@@ -132,23 +132,34 @@ const findParent = (item, name) => {
 (() => {
     document.body.contentEditable = true;
 
-    let notificationPending = false;
-    let counter = 0;
+    // The first change after a pause is reported right away, since the users of the editor track
+    // whether it has unsaved changes by this. The changes following it are reported once a second.
+    let throttled = false;
+    let changedWhileThrottled = false;
 
-    const notifier = (e) => {
-        if (notificationPending) {
-            return;
-        }
-
-        notificationPending = true;
-        setTimeout(async () => {
-            notificationPending = false;
-            try {
-                await fetch("https://lhtr/notify?key=%1", {mode: "no-cors"});
-            } catch (e) {
-                // fetch error is expected, do nothing
+    const notify = async () => {
+        throttled = true;
+        changedWhileThrottled = false;
+        setTimeout(() => {
+            throttled = false;
+            if (changedWhileThrottled) {
+                notify();
             }
         }, 1000);
+
+        try {
+            await fetch("https://lhtr/notify?key=%1", {mode: "no-cors"});
+        } catch (e) {
+            // fetch error is expected, do nothing
+        }
+    };
+
+    const notifier = (e) => {
+        if (throttled) {
+            changedWhileThrottled = true;
+        } else {
+            notify();
+        }
     };
 
     new MutationObserver(notifier).observe(document.documentElement,
