@@ -9,11 +9,14 @@
 #pragma once
 
 #include <memory>
-#include <QObject>
-#include <QDir>
+#include <variant>
 #include <QHash>
+#include <QDir>
+#include <QObject>
 #include <QSet>
-
+#include <util/sll/trackingpointer.h>
+#include <util/threads/coro/task.h>
+#include <util/threads/coro/corocontext.h>
 #include "interfaces/azoth/iclentry.h"
 
 extern "C"
@@ -45,7 +48,20 @@ namespace OTRoid
 	class OtrHandler : public QObject
 	{
 		Q_OBJECT
+	public:
+		enum class KeyGenResult : std::uint8_t
+		{
+			Rejected,
+			Created,
+			Failed,
+		};
 
+		enum class OtrState : bool
+		{
+			Disabled,
+			QuerySent,
+		};
+	private:
 		const ICoreProxy_ptr CoreProxy_;
 		IProxyObject * const AzothProxy_;
 
@@ -66,9 +82,11 @@ namespace OTRoid
 		};
 		QHash<QObject*, EntryActions> Entry2Action_;
 
-		bool IsGenerating_ = false;
-
 		QHash<ICLEntry*, Authenticator*> Auths_;
+
+		QHash<AccountId, Util::SharedContextTask<KeyGenResult>> PrivkeyCreationTasks_;
+
+		QSet<AccountId> PrivkeysRequested_;
 	public:
 		OtrHandler (const ICoreProxy_ptr&, IProxyObject*);
 		~OtrHandler ();
@@ -93,19 +111,32 @@ namespace OTRoid
 		ICLEntry* GetEntry (const AccountId& accId, const EntryStrongestId& entryId);
 		QString GetVisibleEntryName (const AccountId& accId, const EntryStrongestId& entryId);
 
-		void CreatePrivkey (const char*, const char*, bool confirm = true);
+		Util::SharedContextTask<KeyGenResult> CreatePrivkey (const AccountId&, const QString&, bool confirm = true);
 		void CreateInstag (const char*, const char*);
 
 		void SetPollTimerInterval (unsigned int seconds);
 		void HandleSmpEvent (OtrlSMPEvent, ConnContext*, unsigned short, const QString&);
 	private:
+		Util::SharedContextTask<KeyGenResult> RunCreatePrivkey (AccountId, QString, bool);
+
 		QByteArray GetOTRFilename (const QString&) const;
 
 		void CreateActions (QObject*);
-		void SetOtrState (ICLEntry*, bool);
+		Util::ContextTask<OtrState> SetOtrState (Util::TrackingPointer<ICLEntry>, bool);
+		Util::ContextTask<void> ReplayWithPrivkey (Util::TrackingPointer<ICLEntry>, QString);
+
+		struct ReceivingIgnore {};
+		struct ReceivingNonOtr {};
+		struct ReceivingOtrEnd { std::optional<QString> PlaintextMsg_; };
+		struct ReceivingDecrypted { QString Body_; };
+		using ReceivingResult_t = std::variant<ReceivingIgnore, ReceivingNonOtr, ReceivingOtrEnd, ReceivingDecrypted>;
+
+		ReceivingResult_t RunOtrReceiving (ICLEntry&, const QString&);
+
+		void SetOtrActionsState (ICLEntry&, bool);
 
 		void CreateAuthForEntry (ICLEntry*);
-		void HandleAuthRequested (ICLEntry*);
+		Util::ContextTask<void> HandleAuthRequested (Util::TrackingPointer<ICLEntry>);
 
 		void StartAuth (ICLEntry*, SmpMethod, const QString&, const QString&);
 	public slots:
@@ -115,6 +146,8 @@ namespace OTRoid
 		void generateKeys (const AccountId&, const QString&);
 	signals:
 		void privKeysChanged ();
+
+		LC_CORO_CONTEXT
 	};
 }
 }

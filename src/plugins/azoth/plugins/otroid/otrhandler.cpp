@@ -9,13 +9,17 @@
 #include "otrhandler.h"
 #include <cstring>
 #include <gcrypt.h>
+#include <unistd.h>
+#include <util/gui/asyncdialogs.h>
+#include <util/sll/qobjectrefcast.h>
+#include <util/sll/util.h>
+#include <util/sll/visitor.h>
 #include <util/sys/paths.h>
+#include <util/threads/coro.h>
 #include <util/xpc/util.h>
 #include <QMenu>
 #include <QMessageBox>
-#include <QEventLoop>
 #include <QFile>
-#include <QFutureWatcher>
 #include <QtConcurrentRun>
 #include <QTimer>
 
@@ -235,8 +239,8 @@ namespace OTRoid
 
 		memset (&OtrOps_, 0, sizeof (OtrOps_));
 		OtrOps_.policy = [] (void*, ConnContext*) { return OtrlPolicy { OTRL_POLICY_DEFAULT }; };
-		OtrOps_.create_privkey = [] (void *opData, const char *accName, const char *proto)
-				{ static_cast<OtrHandler*> (opData)->CreatePrivkey (accName, proto); };
+		OtrOps_.create_privkey = [] (void *opData, const char *accName, const char*)
+				{ static_cast<OtrHandler*> (opData)->PrivkeysRequested_ << AccountId::FromUtf8 (accName); };
 		OtrOps_.create_instag = [] (void *opData, const char *accName, const char *proto)
 				{ static_cast<OtrHandler*> (opData)->CreateInstag (accName, proto); };
 		OtrOps_.is_logged_in = &OTR::IsLoggedIn;
@@ -279,22 +283,20 @@ namespace OTRoid
 
 	void OtrHandler::HandleMessageCreated (bool& cancel, ICLEntry& entry, OutgoingMessage& msg)
 	{
-		if (IsGenerating_)
-			return;
-
 		const auto entryObj = entry.GetQObject ();
 		if (!Entry2Action_.contains (entryObj) ||
 				!Entry2Action_ [entryObj].ToggleOtr_->isChecked ())
 			return;
 
 		const auto acc = entry.GetParentAccount ();
+		const auto accName = acc->GetAccountId ();
 		const auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 
 		char *newMsg = 0;
 		const auto err = otrl_message_sending (UserState_,
 				&OtrOps_,
 				this,
-				acc->GetAccountId ().ToUtf8 ().constData (),
+				accName.ToUtf8 ().constData (),
 				proto->GetProtocolId ().toUtf8 ().constData (),
 				SerializeString (entry.GetStrongestId ()).toUtf8 ().constData (),
 				OTRL_INSTAG_BEST,
@@ -326,23 +328,59 @@ namespace OTRoid
 		otrl_message_free (newMsg);
 	}
 
-	void OtrHandler::HandleGotMessage (const IHookProxy_ptr& proxy, QObject *msgObj)
+	OtrHandler::ReceivingResult_t OtrHandler::RunOtrReceiving (ICLEntry& entry, const QString& body)
 	{
-		if (IsGenerating_)
-			return;
+		char *newMsg = nullptr;
+		const auto newMsgGuard = Util::MakeScopeGuard ([&] { if (newMsg) otrl_message_free (newMsg); });
 
-		IMessage *msg = qobject_cast<IMessage*> (msgObj);
-		if (!msg)
+		const auto acc = entry.GetParentAccount ();
+		const auto accName = acc->GetAccountId ();
+		const auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
+
+		OtrlTLV *tlvs = nullptr;
+		const auto tlvsGuard = Util::MakeScopeGuard ([&] { otrl_tlv_free (tlvs); });
+		auto ignore = otrl_message_receiving (UserState_, &OtrOps_, this,
+				accName.ToUtf8 ().constData (),
+				proto->GetProtocolId ().toUtf8 ().constData (),
+				SerializeString (entry.GetStrongestId ()).toUtf8 ().constData (),
+				body.toUtf8 ().constData (),
+				&newMsg,
+				&tlvs,
+				nullptr,
+				nullptr,
+				nullptr);
+
+		if (otrl_tlv_find (tlvs, OTRL_TLV_DISCONNECTED))
 		{
-			qWarning () << Q_FUNC_INFO
-					<< msgObj
-					<< "doesn't implement IMessage";
-			return;
+			const auto& message = tr ("%1 has ended the private conversation with you, you should do the same.")
+					.arg (FormatNameWithAddress (entry));
+			NotifyConvFlow (entry, message);
+			const auto& plaintext = newMsg ? std::optional { QString::fromUtf8 (newMsg) } : std::nullopt;
+			return ReceivingOtrEnd { plaintext };
 		}
 
-		if (msg->IsForwarded ())
+		// Magic hack to force it work similar to libotr < 4.0.0.
+		// If user received unencrypted message they should be notified.
+		// See OTRL_MSGEVENT_RCVDMSG_UNENCRYPTED as well.
+		if (!body.startsWith("?OTR") && ignore && !newMsg)
+			ignore = 0;
+
+		if (ignore)
+			return ReceivingIgnore {};
+
+		if (newMsg)
+			return ReceivingDecrypted { QString::fromUtf8 (newMsg) };
+
+		return ReceivingNonOtr {};
+	}
+
+	void OtrHandler::HandleGotMessage (const IHookProxy_ptr& proxy, QObject *msgObj)
+	{
+		auto& msg = qobject_ref_cast<IMessage> (msgObj);
+
+		if (msg.IsForwarded ())
 		{
-			if (msg->GetBody ().startsWith ("?OTR"))
+			if (msg.GetBody ().startsWith ("?OTR"))
 			{
 				proxy->CancelDefault ();
 				msgObj->setProperty ("Azoth/HiddenMessage", true);
@@ -350,69 +388,55 @@ namespace OTRoid
 			return;
 		}
 
-		if (msg->GetMessageType () != IMessage::Type::ChatMessage ||
-			msg->GetDirection () != IMessage::Direction::In)
+		if (msg.GetMessageType () != IMessage::Type::ChatMessage ||
+			msg.GetDirection () != IMessage::Direction::In)
 			return;
 
-		const auto entryObj = msg->ParentCLEntry ();
+		const auto entryObj = msg.ParentCLEntry ();
 		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 		if (!entry ||
 				entry->GetEntryType () == ICLEntry::EntryType::MUC)
 			return;
 
-		const auto acc = entry->GetParentAccount ();
-		const auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
+		const auto accName = entry->GetParentAccount ()->GetAccountId ();
 
-		char *newMsg = 0;
-		OtrlTLV *tlvs = 0;
-		int ignore = otrl_message_receiving (UserState_, &OtrOps_, this,
-				acc->GetAccountId ().ToUtf8 ().constData (),
-				proto->GetProtocolId ().toUtf8 ().constData (),
-				SerializeString (entry->GetStrongestId ()).toUtf8 ().constData (),
-				msg->GetBody ().toUtf8 ().constData (),
-				&newMsg,
-				&tlvs,
-				NULL,
-				NULL,
-				NULL);
+		const auto& origBody = msg.GetBody ();
 
-		OtrlTLV *tlv = otrl_tlv_find (tlvs, OTRL_TLV_DISCONNECTED);
-		if (tlv)
-		{
-			const auto& message = tr ("%1 has ended the private conversation with you, you should do the same.")
-					.arg (FormatNameWithAddress (*entry));
-			NotifyConvFlow (*entry, message);
-		}
-		otrl_tlv_free (tlvs);
+		const auto isOtrMessage = Util::Visit (RunOtrReceiving (*entry, msg.GetBody ()),
+				[&] (const ReceivingIgnore&)
+				{
+					proxy->CancelDefault ();
+					msgObj->setProperty ("Azoth/HiddenMessage", true);
+					return true;
+				},
+				[&] (const ReceivingNonOtr&) { return false; },
+				[&] (const ReceivingOtrEnd& end)
+				{
+					if (end.PlaintextMsg_)
+					{
+						msg.SetBody (*end.PlaintextMsg_);
+					}
+					else
+					{
+						proxy->CancelDefault ();
+						msgObj->setProperty ("Azoth/HiddenMessage", true);
+					}
+					return false;
+				},
+				[&] (const ReceivingDecrypted& decrypted)
+				{
+					msg.SetBody (decrypted.Body_);
+					return true;
+				});
 
-		// Magic hack to force it work similar to libotr < 4.0.0.
-		// If user received unencrypted message he (she) should be notified.
-		// See OTRL_MSGEVENT_RCVDMSG_UNENCRYPTED as well.
-		if (!msg->GetBody ().startsWith("?OTR") && ignore && !newMsg)
-			ignore = 0;
+		msg.ToggleOTRMessage (isOtrMessage);
+		if (!Entry2Action_.contains (entryObj))
+			CreateActions (entryObj);
+		if (isOtrMessage)
+			SetOtrActionsState (*entry, true);
 
-		if (ignore)
-		{
-			proxy->CancelDefault ();
-			msgObj->setProperty ("Azoth/HiddenMessage", true);
-		}
-
-		if (newMsg)
-		{
-			msg->SetBody (QString::fromUtf8 (newMsg));
-			otrl_message_free (newMsg);
-		}
-
-		if (ignore || newMsg)
-		{
-			msg->ToggleOTRMessage (true);
-
-			if (!Entry2Action_.contains (entryObj))
-				CreateActions (entryObj);
-
-			if (!tlv)
-				Entry2Action_ [entryObj].ToggleOtr_->setChecked (true);
-		}
+		if (PrivkeysRequested_.remove (accName))
+			ReplayWithPrivkey (entry, origBody);
 	}
 
 	void OtrHandler::HandleEntryActionsRemoved (QObject *entry)
@@ -525,23 +549,57 @@ namespace OTRoid
 		return FormatNameWithAddress (*entry);
 	}
 
-	void OtrHandler::CreatePrivkey (const char *accName, const char *proto, bool confirm)
+	Util::SharedContextTask<OtrHandler::KeyGenResult> OtrHandler::CreatePrivkey (const AccountId& accName, const QString& proto, bool confirm)
 	{
-		if (IsGenerating_)
-			return;
+		auto pos = PrivkeyCreationTasks_.find (accName);
+		if (pos == PrivkeyCreationTasks_.end ())
+			pos = PrivkeyCreationTasks_.emplace (accName, RunCreatePrivkey (accName, proto, confirm));
+		return *pos;
+	}
 
-		const auto& hrAccName = GetAccountName (AccountId::FromUtf8 (accName));
-		if (confirm && QMessageBox::question (nullptr,
+	namespace
+	{
+		gcry_error_t FinishKeyGeneration (OtrlUserState state, void *newKeyCtx, const QString& keysPath)
+		{
+			QFile file { keysPath };
+			constexpr auto perms = QFile::ReadOwner | QFile::WriteOwner;
+			const auto keysCFile = file.open (QFile::ReadWrite | QFile::Truncate, perms) ?
+					fdopen (dup (file.handle ()), "w+b") :
+					nullptr;
+			if (!keysCFile)
+			{
+				const auto openErr = gcry_error_from_errno (errno);
+				otrl_privkey_generate_cancelled (state, newKeyCtx);
+				return openErr ? openErr : gcry_error (GPG_ERR_GENERAL);
+			}
+
+			const auto err = otrl_privkey_generate_finish_FILEp (state, newKeyCtx, keysCFile);
+			fclose (keysCFile);
+			return err;
+		}
+	}
+
+	Util::SharedContextTask<OtrHandler::KeyGenResult> OtrHandler::RunCreatePrivkey (AccountId accName, QString proto, bool confirm)
+	{
+		co_await Util::AddContext { CoroContext_ };
+
+		const auto& hrAccName = GetAccountName (accName);
+
+		using namespace std::chrono_literals;
+		// ensure the task is stored in `PrivkeyCreationTasks_`
+		co_await 0ms;
+
+		const auto guard = Util::MakeScopeGuard ([this, accName] { PrivkeyCreationTasks_.remove (accName); });
+
+		if (confirm && co_await Util::Dialogs::Question (nullptr,
 				"Azoth OTRoid",
-				tr ("Private keys for account %1 need to be generated. This takes quite some "
-					"time (from a few seconds to a couple of minutes), and while you can use "
-					"LeechCraft in the meantime, all the messages will be sent unencrypted "
-					"until keys are generated. You will be notified when this process finishes. "
-					"Do you want to generate keys now?"
-					"<br /><br />You can also move mouse randomily to help generating entropy.")
+				tr ("Private keys for account %1 need to be generated. This takes some "
+					"time (up to a couple of minutes), although you can use "
+					"LeechCraft in the meantime. You will be notified when this process finishes. "
+					"Do you want to generate the keys now?")
 					.arg (hrAccName),
 				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
-			return;
+			co_return KeyGenResult::Rejected;
 
 		const auto& notify = Util::MakeNotification ("Azoth OTRoid",
 				tr ("Keys for account %1 are now being generated...")
@@ -549,37 +607,41 @@ namespace OTRoid
 				Priority::Info);
 		CoreProxy_->GetEntityManager ()->HandleEntity (notify);
 
-		IsGenerating_ = true;
-
-		const auto keysFile = GetOTRFilename ("privkey");
-
-		QEventLoop loop;
-		QFutureWatcher<gcry_error_t> watcher;
-		connect (&watcher,
-				SIGNAL (finished ()),
-				&loop,
-				SLOT (quit ()));
-		auto future = QtConcurrent::run (otrl_privkey_generate,
-				UserState_, keysFile.constData (), accName, proto);
-		watcher.setFuture (future);
-
-		loop.exec ();
-
-		IsGenerating_ = false;
-
-		char fingerprint [OTRL_PRIVKEY_FPRINT_HUMAN_LEN];
-		if (!otrl_privkey_fingerprint (UserState_, fingerprint, accName, proto))
+		auto report = [hrAccName] (this auto, gcry_error_t err)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "failed";
-			return;
+			qWarning () << "gcry error" << err;
+			Util::Dialogs::Warning (nullptr,
+					"Azoth OTRoid",
+					tr ("Keys generation for account %1 failed: %2.").arg (hrAccName, QString::fromUtf8 (gcry_strerror (err))));
+		};
+
+		void *newKeyCtx;
+		if (const auto err = otrl_privkey_generate_start (UserState_, accName.ToUtf8 ().constData (), proto.toUtf8 ().constData (), &newKeyCtx))
+		{
+			report (err);
+			co_return KeyGenResult::Failed;
+		}
+
+		if (const auto calcError = co_await QtConcurrent::run (&otrl_privkey_generate_calculate, newKeyCtx))
+		{
+			otrl_privkey_generate_cancelled (UserState_, newKeyCtx);
+			report (calcError);
+			co_return KeyGenResult::Failed;
+		}
+
+		if (const auto err = FinishKeyGeneration (UserState_, newKeyCtx, OtrDir_.absoluteFilePath ("privkey")))
+		{
+			report (err);
+			co_return KeyGenResult::Failed;
 		}
 
 		emit privKeysChanged ();
 
-		QMessageBox::information (nullptr,
+		Util::Dialogs::Information (nullptr,
 				"Azoth OTRoid",
 				tr ("Keys are generated. Thanks for your patience."));
+
+		co_return KeyGenResult::Created;
 	}
 
 	void OtrHandler::CreateInstag (const char *accName, const char *proto)
@@ -686,7 +748,7 @@ namespace OTRoid
 
 	void OtrHandler::generateKeys (const AccountId& acc, const QString& proto)
 	{
-		CreatePrivkey (acc.ToUtf8 ().constData (), proto.toUtf8 ().constData (), false);
+		CreatePrivkey (acc, proto, false);
 	}
 
 	QByteArray OtrHandler::GetOTRFilename (const QString& fname) const
@@ -759,14 +821,16 @@ namespace OTRoid
 		};
 	}
 
-	void OtrHandler::SetOtrState (ICLEntry *entry, bool enable)
+	Util::ContextTask<OtrHandler::OtrState> OtrHandler::SetOtrState (Util::TrackingPointer<ICLEntry> entry, bool enable)
 	{
+		co_await Util::AddContext { CoroContext_ };
+
 		const auto acc = entry->GetParentAccount ();
 		const auto& accId = acc->GetAccountId ();
 		const auto& accIdUtf8 = accId.ToUtf8 ();
 
-		auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
-		const auto& protoIdUtf8 = proto->GetProtocolId ().toUtf8 ();
+		const auto& protoId = qobject_cast<IProtocol*> (acc->GetParentProtocol ())->GetProtocolId ();
+		const auto& protoIdUtf8 = protoId.toUtf8 ();
 
 		if (!enable)
 		{
@@ -774,7 +838,7 @@ namespace OTRoid
 					accIdUtf8.constData (), protoIdUtf8.constData (),
 					SerializeString (entry->GetStrongestId ()).toUtf8 ().constData (), OTRL_INSTAG_BEST);
 			NotifyConvFlow (*entry, tr ("Private conversation closed"));
-			return;
+			co_return OtrState::Disabled;
 		}
 
 		NotifyConvFlow (*entry, tr ("Attempting to start a private conversation"));
@@ -782,32 +846,80 @@ namespace OTRoid
 		char fingerprint [OTRL_PRIVKEY_FPRINT_HUMAN_LEN];
 		if (!otrl_privkey_fingerprint (UserState_, fingerprint,
 				accIdUtf8.constData (), protoIdUtf8.constData ()))
-			CreatePrivkey (accIdUtf8.constData (), protoIdUtf8.constData ());
+		{
+			const auto result = co_await CreatePrivkey (accId, protoId);
+			const bool enabled = result == KeyGenResult::Created;
+			switch (result)
+			{
+			case KeyGenResult::Created:
+				break;
+			case KeyGenResult::Rejected:
+				NotifyConvFlow (*entry, tr ("Key generation rejected, private conversation not started"));
+				break;
+			case KeyGenResult::Failed:
+				NotifyConvFlow (*entry, tr ("Key generation failed, private conversation not started"));
+				break;
+			}
+			SetOtrActionsState (*entry, enabled);
+			if (!enabled)
+				co_return OtrState::Disabled;
+		}
 
 		std::shared_ptr<char> msg (otrl_proto_default_query_msg (accIdUtf8.constData (),
 					OTRL_POLICY_DEFAULT), free);
 		entry->SendMessage ({ .Body_ = QString::fromUtf8 (msg.get ()), .Hidden_ = true });
+		co_return OtrState::QuerySent;
 	}
 
-	void OtrHandler::HandleAuthRequested (ICLEntry *entry)
+	Util::ContextTask<void> OtrHandler::ReplayWithPrivkey (Util::TrackingPointer<ICLEntry> entry, QString body)
 	{
+		co_await Util::AddContext { CoroContext_ };
+
+		const auto acc = entry->GetParentAccount ();
+		const auto accId = acc->GetAccountId ();
+		const auto& protoId = qobject_cast<IProtocol*> (acc->GetParentProtocol ())->GetProtocolId ();
+
+		if (co_await CreatePrivkey (accId, protoId) != KeyGenResult::Created)
+		{
+			SetOtrActionsState (*entry, false);
+			co_return;
+		}
+
+		RunOtrReceiving (*entry, body);
+	}
+
+	void OtrHandler::SetOtrActionsState (ICLEntry& entry, bool enabled)
+	{
+		if (const auto& actions = Entry2Action_.value (entry.GetQObject ());
+			actions.ToggleOtr_ && actions.ToggleOtrCtx_)
+		{
+			actions.ToggleOtr_->setChecked (enabled);
+			actions.ToggleOtrCtx_->setChecked (enabled);
+		}
+	}
+
+	Util::ContextTask<void> OtrHandler::HandleAuthRequested (Util::TrackingPointer<ICLEntry> entry)
+	{
+		co_await Util::AddContext { CoroContext_ };
+
 		if (!Entry2Action_ [entry->GetQObject ()].ToggleOtr_->isChecked ())
 		{
-			if (QMessageBox::question (nullptr,
+			if (co_await Util::Dialogs::Question (nullptr,
 						"LeechCraft",
 						tr ("You need to start a private conversation before authentication "
 							"can take place. Do you want to start it?"),
 						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
-				return;
+				co_return;
 
-			SetOtrState (entry, true);
+			if (co_await SetOtrState (entry, true) != OtrState::QuerySent)
+				co_return;
 		}
 
-		if (!Auths_.contains (entry))
-			CreateAuthForEntry (entry);
+		if (!Auths_.contains (&*entry))
+			CreateAuthForEntry (&*entry);
 
-		const auto auth = Auths_.value (entry);
-		auth->Initiate ();
+		const auto auth = Auths_.value (&*entry);
+		QTimer::singleShot (0, auth, &Authenticator::Initiate);
 	}
 
 	void OtrHandler::StartAuth (ICLEntry *entry, SmpMethod method,
