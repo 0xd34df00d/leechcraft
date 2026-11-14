@@ -460,6 +460,50 @@ namespace Blogique
 		return GetAccount (AccountsBox_->currentIndex ());
 	}
 
+	void BlogiqueWidget::DetachAccount ()
+	{
+		if (!CurrentAccount_)
+			return;
+
+		auto ibp = qobject_cast<IBloggingPlatform*> (CurrentAccount_->GetParentBloggingPlatform ());
+		for (auto action : ibp->GetEditorActions ())
+			PostEdit_->RemoveAction (action);
+
+		for (auto action : InlineTagInserters_)
+			PostEdit_->RemoveAction (action);
+
+		on_SelectTags__toggled (false);
+		Ui_.SelectTags_->setChecked (false);
+		for (auto w : SidePluginsWidgets_)
+		{
+			auto ibsw = qobject_cast<IBlogiqueSideWidget*> (w);
+			if (ibsw &&
+					ibsw->GetWidgetType () == SideWidgetType::PostOptionsSideWidget)
+				Ui_.PluginOptionsWidget_->layout ()->removeWidget (w);
+			else
+			{
+				int index = Ui_.Tools_->indexOf (w);
+				Ui_.Tools_->removeItem (index);
+			}
+
+			if (w)
+				w->deleteLater ();
+		}
+		SidePluginsWidgets_.clear ();
+
+		RemovePostingTargetsWidget ();
+
+		ToolBar_->removeAction (Ui_.OpenInBrowser_);
+		ToolBar_->removeAction (Ui_.ShowProfile_);
+		ToolBar_->removeAction (Ui_.PreviewPost_);
+		ToolBar_->removeAction (Ui_.SubmitTo_);
+
+		Ui_.BlogPosts_->clear ();
+		Ui_.BlogPosts_->SetAccount (nullptr);
+
+		CurrentAccount_.Reset ();
+	}
+
 	void BlogiqueWidget::SetPostDate(const QDateTime& dt)
 	{
 		Ui_.TimestampBox_->setChecked (true);
@@ -634,42 +678,7 @@ namespace Blogique
 		if (!account || account == CurrentAccount_.GetOrNull ())
 			return;
 
-		if (CurrentAccount_)
-		{
-			auto ibp = qobject_cast<IBloggingPlatform*> (CurrentAccount_->GetParentBloggingPlatform ());
-			for (auto action : ibp->GetEditorActions ())
-				PostEdit_->RemoveAction (action);
-
-			for (auto action : InlineTagInserters_)
-				PostEdit_->RemoveAction (action);
-
-			on_SelectTags__toggled (false);
-			Ui_.SelectTags_->setChecked (false);
-			for (auto w : SidePluginsWidgets_)
-			{
-				auto ibsw = qobject_cast<IBlogiqueSideWidget*> (w);
-				if (ibsw &&
-						ibsw->GetWidgetType () == SideWidgetType::PostOptionsSideWidget)
-					Ui_.PluginOptionsWidget_->layout ()->removeWidget (w);
-				else
-				{
-					int index = Ui_.Tools_->indexOf (w);
-					Ui_.Tools_->removeItem (index);
-				}
-
-				if (w)
-					w->deleteLater ();
-			}
-			SidePluginsWidgets_.clear ();
-
-			RemovePostingTargetsWidget ();
-
-			ToolBar_->removeAction (Ui_.OpenInBrowser_);
-			ToolBar_->removeAction (Ui_.ShowProfile_);
-			ToolBar_->removeAction (Ui_.PreviewPost_);
-			ToolBar_->removeAction (Ui_.SubmitTo_);
-
-		}
+		DetachAccount ();
 
 		Ui_.BlogPosts_->clear ();
 		Ui_.BlogPosts_->SetAccount (account);
@@ -884,9 +893,18 @@ namespace Blogique
 
 	void BlogiqueWidget::handleAccountRemoved (QObject *acc)
 	{
-		if (const auto row = AccountsBox_->findData (QVariant::fromValue (acc));
-			row != -1)
-			AccountsBox_->removeItem (row);
+		const auto row = AccountsBox_->findData (QVariant::fromValue (acc));
+		if (row == -1)
+			return;
+
+		if (GetAccount (row) == CurrentAccount_.GetOrNull ())
+		{
+			DetachAccount ();
+			// left to itself, the box selects the next row, switching the tab to another account
+			AccountsBox_->setCurrentIndex (-1);
+		}
+
+		AccountsBox_->removeItem (row);
 	}
 
 	Util::ContextTask<void> BlogiqueWidget::newEntry ()

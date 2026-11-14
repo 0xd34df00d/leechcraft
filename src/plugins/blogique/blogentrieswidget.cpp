@@ -85,6 +85,9 @@ namespace Blogique
 		LoadActions_.clear ();
 
 		Account_ = account;
+		if (!Account_)
+			return;
+
 		connect (Account_->GetQObject (),
 				SIGNAL (gotBlogStatistics (QMap<QDate, int>)),
 				this,

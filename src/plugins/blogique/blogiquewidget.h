@@ -111,6 +111,7 @@ namespace Blogique
 
 		IAccount* GetAccount (int row) const;
 		IAccount* GetSelectedAccount () const;
+		void DetachAccount ();
 
 		void SetPostDate (const QDateTime& dt);
 		QDateTime GetPostDate () const;
