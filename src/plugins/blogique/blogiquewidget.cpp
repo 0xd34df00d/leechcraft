@@ -21,6 +21,7 @@
 #include <QStandardItemModel>
 #include <QWidgetAction>
 #include <util/gui/asyncdialogs.h>
+#include <util/sll/trackingpointer.h>
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>
 #include <util/qml/themeimageprovider.h>
@@ -1005,12 +1006,14 @@ namespace Blogique
 		co_await Util::AddContext { CoroContext_ };
 		const auto guard = co_await EntryMutex_.Lock ();
 
-		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		const Util::TrackingPointer<IAccount> acc = Id2Account_.value (AccountsBox_->currentIndex ());
 		if (!acc)
 			co_return;
 
 		EntryChanged_ = false;
 		const auto& e = co_await GetCurrentEntry ();
+		if (!acc)
+			co_return;
 
 		if (!e.IsEmpty ())
 		{
@@ -1055,16 +1058,16 @@ namespace Blogique
 		co_await Util::AddContext { CoroContext_ };
 		const auto guard = co_await EntryMutex_.Lock ();
 
-		SubmitToDialog dlg;
-		if (co_await Util::Dialogs::Exec (dlg) != QDialog::Accepted)
-			co_return;
-
 		auto e = co_await GetCurrentEntry ();
 		if (e.IsEmpty ())
 		{
 			WarnEmptyEntry ();
 			co_return;
 		}
+
+		SubmitToDialog dlg;
+		if (co_await Util::Dialogs::Exec (dlg) != QDialog::Accepted)
+			co_return;
 
 		for (const auto& pair : dlg.GetPostingTargets ())
 		{
@@ -1149,11 +1152,13 @@ namespace Blogique
 		co_await Util::AddContext { CoroContext_ };
 		const auto guard = co_await EntryMutex_.Lock ();
 
-		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		const Util::TrackingPointer<IAccount> acc = Id2Account_.value (AccountsBox_->currentIndex ());
 		if (!acc)
 			co_return;
 
 		const auto& e = co_await GetCurrentEntry ();
+		if (!acc)
+			co_return;
 
 		if (!e.IsEmpty ())
 			acc->preview (e);
