@@ -42,9 +42,9 @@ namespace LC::Util
 	 * - *Cancellation.*
 	 *   A coroutine cancelled while it waits never gets the mutex, and a
 	 *   guard destroyed by the cancellation of its coroutine unlocks.
-	 * - *No order.*
-	 *   Which of the waiting coroutines gets the mutex next is not
-	 *   specified.
+	 * - *Order.*
+	 *   Coroutines of one thread get the mutex in the order they started
+	 *   waiting for it.
 	 * - *Lifetime.*
 	 *   The mutex shall outlive its guards and the coroutines waiting
 	 *   for it.

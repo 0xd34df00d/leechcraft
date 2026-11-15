@@ -19,10 +19,14 @@ namespace LC::Util
 		void testFreeMutexIsLockedRightAway ();
 		void testSectionsDontOverlap ();
 		void testUnlockDefersWakeup ();
+		void testWaitersGetMutexInOrder ();
 
 		void testCancelledWaiterDoesntGetMutex ();
 		void testCancelledHolderUnlocks ();
 		void testCancelledWaiterHandsMutexBack ();
+		void testCancelledWaitersKeepOrderOfOthers ();
 		void testOwnerDiesWithSectionsInFlight ();
+
+		void testRandomWalks ();
 	};
 }
