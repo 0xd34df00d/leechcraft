@@ -249,8 +249,8 @@ if (NOT DEFINED LEECHCRAFT_VERSION)
 		OUTPUT_VARIABLE LEECHCRAFT_VERSION
 		OUTPUT_STRIP_TRAILING_WHITESPACE
 		)
-	if (NOT DEFINED LEECHCRAFT_VERSION)
-		message (ERROR "Please define LeechCraft version")
+	if (NOT LEECHCRAFT_VERSION)
+		message (FATAL_ERROR "Unable to detect the LeechCraft version, please define LEECHCRAFT_VERSION")
 	endif ()
 	message (STATUS "Detected LeechCraft version: ${LEECHCRAFT_VERSION}")
 endif ()
