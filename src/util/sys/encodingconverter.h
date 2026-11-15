@@ -20,7 +20,7 @@ namespace LC::Util
 		QStringEncoder Encoder_;
 		QStringDecoder Decoder_;
 	public:
-		class UnknownEncoding : std::runtime_error
+		class UTIL_SYS_API UnknownEncoding : public std::runtime_error
 		{
 			QString Encoding_;
 		public:
