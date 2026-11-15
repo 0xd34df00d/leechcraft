@@ -9,6 +9,7 @@
 #pragma once
 
 #include <tuple>
+#include <stdexcept>
 #include <QTest>
 #include <QSqlError>
 #include <oral/oral.h>

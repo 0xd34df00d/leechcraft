@@ -12,6 +12,7 @@
 #include <functional>
 #include <memory>
 #include <optional>
+#include <stdexcept>
 #include <QFutureInterface>
 #include <QFutureWatcher>
 #include <QtDebug>

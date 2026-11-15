@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <stdexcept>
 #include <QVariant>
 #include <QSqlQuery>
 #include <QtDebug>

@@ -9,6 +9,7 @@
 #pragma once
 
 #include <utility>
+#include <stdexcept>
 #include <QDataStream>
 #include <QByteArray>
 #include "oral.h"

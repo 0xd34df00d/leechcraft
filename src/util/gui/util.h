@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <stdexcept>
 #include <QPoint>
 #include <QPalette>
 #include <QMimeData>

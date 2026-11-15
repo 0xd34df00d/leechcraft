@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <stdexcept>
 #include "flatitemsmodeltypedbase.h"
 
 namespace LC::Util

@@ -10,6 +10,7 @@
 
 #include <source_location>
 #include <variant>
+#include <stdexcept>
 #include <QtNetwork/QNetworkReply>
 #include "../threadsconfig.h"
 

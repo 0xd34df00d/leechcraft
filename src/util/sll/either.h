@@ -12,6 +12,7 @@
 #include <optional>
 #include <type_traits>
 #include <variant>
+#include <stdexcept>
 #include "overloaded.h"
 
 namespace LC::Util

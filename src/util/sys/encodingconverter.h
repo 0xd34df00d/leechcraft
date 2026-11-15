@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <stdexcept>
 #include <QStringDecoder>
 #include <QStringEncoder>
 #include "sysconfig.h"
