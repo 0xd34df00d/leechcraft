@@ -125,7 +125,7 @@ namespace OTRoid
 
 		void CreateActions (QObject*);
 		Util::ContextTask<OtrState> SetOtrState (Util::TrackingPointer<ICLEntry>, bool);
-		Util::ContextTask<void> ReplayWithPrivkey (Util::TrackingPointer<ICLEntry>, QString);
+		Util::ContextTask<void> ReplayWithPrivkey (Util::TrackingPointer<ICLEntry>, std::optional<QString>);
 
 		struct ReceivingIgnore {};
 		struct ReceivingNonOtr {};

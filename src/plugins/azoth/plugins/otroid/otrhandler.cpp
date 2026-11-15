@@ -380,20 +380,12 @@ namespace OTRoid
 
 	// libotr keeps no copy of a handshake message it drops for the lack of a private key,
 	// and feeding it one again takes the whole message, not the last fragment the hook gets.
+	// The context is chosen the way the fragment handling at the start of otrl_message_receiving () does it.
 	std::optional<QString> OtrHandler::Reassemble (ICLEntry& entry, const QString& body)
 	{
 		const auto& bodyUtf8 = body.toUtf8 ();
-
-		otrl_instag_t senderTag = OTRL_INSTAG_MASTER;
-		if (const auto v3Pos = bodyUtf8.indexOf ("?OTR|");
-			v3Pos >= 0)
-		{
-			// otrl_context_find () returns nullptr for the reserved instance tags.
-			if (std::sscanf (bodyUtf8.constData () + v3Pos, "?OTR|%x|", &senderTag) != 1 ||
-					senderTag < OTRL_MIN_VALID_INSTAG)
-				return {};
-		}
-		else if (!bodyUtf8.contains ("?OTR,"))
+		const auto otrPos = bodyUtf8.indexOf ("?OTR");
+		if (otrPos < 0)
 			return body;
 
 		const auto acc = entry.GetParentAccount ();
@@ -409,8 +401,22 @@ namespace OTRoid
 					tag, true, nullptr, nullptr, nullptr);
 		};
 		// otrl_context_find () takes a contact's first context for the master, so it has to exist before an instance's.
-		const auto master = findContext (OTRL_INSTAG_MASTER);
-		const auto context = senderTag == OTRL_INSTAG_MASTER ? master : findContext (senderTag);
+		auto context = findContext (OTRL_INSTAG_MASTER);
+
+		if (QByteArrayView { bodyUtf8 }.sliced (otrPos).startsWith ("?OTR|"))
+		{
+			otrl_instag_t senderTag = 0;
+			otrl_instag_t recipientTag = 0;
+			std::sscanf (bodyUtf8.constData () + otrPos, "?OTR|%x|%x,", &senderTag, &recipientTag);
+
+			const auto ourInstag = otrl_instag_find (UserState_, accId.constData (), protoId.constData ());
+			const auto isForUs = !recipientTag || (ourInstag && ourInstag->instag == recipientTag);
+			// otrl_context_find () returns nullptr for the reserved instance tags.
+			if (!isForUs || senderTag < OTRL_MIN_VALID_INSTAG)
+				return {};
+
+			context = findContext (senderTag);
+		}
 
 		char *whole = nullptr;
 		const auto wholeGuard = Util::MakeScopeGuard ([&] { free (whole); });
@@ -487,8 +493,8 @@ namespace OTRoid
 		if (isOtrMessage)
 			SetOtrActionsState (*entry, true);
 
-		if (PrivkeysRequested_.remove (accName) && wholeBody)
-			ReplayWithPrivkey (entry, *wholeBody);
+		if (PrivkeysRequested_.remove (accName))
+			ReplayWithPrivkey (entry, wholeBody);
 	}
 
 	void OtrHandler::HandleEntryActionsRemoved (QObject *entry)
@@ -923,7 +929,7 @@ namespace OTRoid
 		co_return OtrState::QuerySent;
 	}
 
-	Util::ContextTask<void> OtrHandler::ReplayWithPrivkey (Util::TrackingPointer<ICLEntry> entry, QString body)
+	Util::ContextTask<void> OtrHandler::ReplayWithPrivkey (Util::TrackingPointer<ICLEntry> entry, std::optional<QString> body)
 	{
 		co_await Util::AddContext { CoroContext_ };
 
@@ -937,7 +943,8 @@ namespace OTRoid
 			co_return;
 		}
 
-		RunOtrReceiving (*entry, body);
+		if (body)
+			RunOtrReceiving (*entry, *body);
 	}
 
 	void OtrHandler::SetOtrActionsState (ICLEntry& entry, bool enabled)
