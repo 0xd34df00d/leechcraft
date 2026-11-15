@@ -8,8 +8,7 @@ include_directories (${CMAKE_CURRENT_BINARY_DIR}
 
 option (WITH_DBUS_LOADERS "Build D-Bus loaders on UNIX" OFF)
 option (WITH_QWT "Enable support for Qwt (for QML PlotItem, for example)" ON)
-option (WITH_X11 "Enable X11 support on Linux" ON)
-if (WITH_X11 AND NOT APPLE)
+if (WITH_X11)
 	find_package (X11)
 endif ()
 

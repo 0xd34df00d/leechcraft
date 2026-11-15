@@ -2,7 +2,6 @@ set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
 option (ENABLE_UTIL_TESTS "Enable tests for some of the Utility components" ${ENABLE_ALL_TESTS})
 option (ENABLE_UTIL_TESTS_DBUS "Enable Utility tests that depend on D-Bus" ON)
-option (WITH_X11 "Enable X11 support on Linux" ON)
 option (WITH_QWT "Enable support for Qwt (for QML PlotItem, for example)" ON)
 
 include_directories (${Boost_INCLUDE_DIRS}
@@ -61,7 +60,7 @@ if (WITH_DBUS)
 		)
 endif ()
 
-if (WITH_X11 AND NOT APPLE)
+if (WITH_X11)
 	add_subdirectory (x11)
 	set (LEECHCRAFT_UTIL_LIBRARIES
 		${LEECHCRAFT_UTIL_LIBRARIES}

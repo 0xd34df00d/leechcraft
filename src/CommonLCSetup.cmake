@@ -2,6 +2,9 @@ set (CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package (Qt${LC_QT_VERSION}Widgets)
 find_package (Qt${LC_QT_VERSION}LinguistTools REQUIRED)
 
+include (CMakeDependentOption)
+cmake_dependent_option (WITH_X11 "Enable X11 support on Linux" ON "UNIX AND NOT APPLE" OFF)
+
 set (CMAKE_AUTOMOC TRUE)
 set (CMAKE_AUTOUIC TRUE)
 # By default a target's moc/uic step waits for the libraries the target links, in case moc needs a header one of them

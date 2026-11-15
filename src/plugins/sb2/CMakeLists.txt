@@ -1,10 +1,6 @@
 cmake_minimum_required (VERSION 3.10)
 project (sb2)
 include (InitLCPlugin NO_POLICY_SCOPE)
-include (CMakeDependentOption)
-
-cmake_dependent_option (WITH_X11 "Enable X11 support on Linux" ON "UNIX AND NOT APPLE" OFF)
-
 if (WITH_X11)
 	add_definitions (-DWITH_X11)
 endif ()
