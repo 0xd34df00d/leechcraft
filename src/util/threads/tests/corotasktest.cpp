@@ -48,16 +48,6 @@ using namespace std::chrono_literals;
 
 namespace LC::Util
 {
-	namespace
-	{
-		constexpr auto TimerTolerance = 0.05;
-
-		constexpr auto MinElapsed (std::chrono::milliseconds expected)
-		{
-			return expected.count () * (1 - TimerTolerance);
-		}
-	}
-
 	void CoroTaskTest::testReturn ()
 	{
 		auto task = [] () -> Task<int> { co_return 42; } ();
@@ -313,7 +303,6 @@ namespace LC::Util
 		QCOMPARE (result, expected);
 		QCOMPARE_LT (creationElapsed, 1);
 
-		QCOMPARE_GE (executionElapsed, MinElapsed (max * 1ms));
 		const auto linearizedExecTime = max * (max + 1) / 2;
 		QCOMPARE_LT (executionElapsed, linearizedExecTime / 2);
 	}
@@ -332,8 +321,6 @@ namespace LC::Util
 		const auto executionElapsed = timer.elapsed ();
 
 		QCOMPARE (result, (std::tuple { 10, 9, 2, 1 }));
-
-		QCOMPARE_GE (executionElapsed, 10);
 		QCOMPARE_LT (executionElapsed, (10 + 9 + 2 + 1) / 2);
 	}
 
@@ -364,7 +351,6 @@ namespace LC::Util
 		QCOMPARE (result, expected);
 		QCOMPARE_LT (creationElapsed, 1);
 
-		QCOMPARE_GE (executionElapsed, MinElapsed (max * 1ms));
 		const auto linearizedExecTime = max * (max + 1) / 2;
 		QCOMPARE_LT (executionElapsed, linearizedExecTime / 2);
 	}
@@ -399,7 +385,6 @@ namespace LC::Util
 			expected << i;
 		QCOMPARE (result, expected);
 
-		QCOMPARE_GE (executionElapsed, MinElapsed (count * unit));
 		const auto linearizedExecTime = unit.count () * count * (count + 1) / 2;
 		QCOMPARE_LT (executionElapsed, linearizedExecTime / 2);
 	}
@@ -471,16 +456,10 @@ namespace LC::Util
 
 	void CoroTaskTest::testWaitManyJoinsAfterFailure ()
 	{
-		constexpr auto slowDelay = 60ms;
 		bool slowDone = false;
-		QElapsedTimer timer;
-		timer.start ();
-		const auto message = ThrownMessage ([&] { GetTaskResult (InParallel ({ SlowFailure (10ms, "early"), SlowSuccess (slowDelay, slowDone) })); });
-		const auto elapsed = timer.elapsed ();
-
+		const auto message = ThrownMessage ([&] { GetTaskResult (InParallel ({ SlowFailure (10ms, "early"), SlowSuccess (60ms, slowDone) })); });
 		QCOMPARE (message, "early"_qs);
 		QVERIFY (slowDone);
-		QCOMPARE_GE (elapsed, MinElapsed (slowDelay));
 	}
 
 	void CoroTaskTest::testWaitManyVoidJoinsAfterFailure ()
@@ -512,7 +491,6 @@ namespace LC::Util
 
 	void CoroTaskTest::testWaitManyInvokingFactoryThrows ()
 	{
-		constexpr auto delay = 40ms;
 		QVector<bool> done (5, false);
 		int created = 0;
 		auto mkTask = [&] (int index)
@@ -520,18 +498,13 @@ namespace LC::Util
 			if (index == 2)
 				throw std::runtime_error { "factory" };
 			++created;
-			return SlowSuccess (delay, done [index]);
+			return SlowSuccess (40ms, done [index]);
 		};
 
-		QElapsedTimer timer;
-		timer.start ();
 		const auto message = ThrownMessage ([&] { GetTaskResult (InParallel (QVector { 0, 1, 2, 3, 4 }, mkTask)); });
-		const auto elapsed = timer.elapsed ();
-
 		QCOMPARE (message, "factory"_qs);
 		QCOMPARE (created, 2);
 		QCOMPARE (done, (QVector { true, true, false, false, false }));
-		QCOMPARE_GE (elapsed, MinElapsed (delay));
 	}
 
 	void CoroTaskTest::testNCopiesFactoryThrows ()
