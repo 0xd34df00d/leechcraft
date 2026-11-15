@@ -433,18 +433,17 @@ namespace LC
 	{
 		for (const auto object : plugins)
 		{
-			if (!Obj2Loader_.contains (object))
+			const auto loader = Obj2Loader_.take (object);
+			if (!loader)
 				continue;
 
 			qDebug () << "trying to unload"
 					<< object;
-			Obj2Loader_ [object]->Unload ();
-			Obj2Loader_.remove (object);
 
-			PluginContainers_.erase (std::remove_if (PluginContainers_.begin (), PluginContainers_.end (),
-						[object] (const Loaders::IPluginLoader_ptr& loader)
-							{ return loader->Instance () == object; }),
-					PluginContainers_.end ());
+			Plugins_.removeAll (object);
+			PluginTreeBuilder_->RemoveObject (object);
+			PluginContainers_.removeAll (loader);
+			loader->Unload ();
 		}
 	}
 
@@ -464,16 +463,11 @@ namespace LC
 
 		auto ordered = PluginTreeBuilder_->GetResult ();
 
+		QObjectList unfulfilled;
 		for (const auto plugin : Plugins_)
 			if (!ordered.contains (plugin))
-				if (const auto val = Obj2Loader_.value (plugin))
-				{
-					const auto ii = qobject_cast<IInfo*> (plugin);
-					qDebug () << Q_FUNC_INFO
-							<< "will try to unload loader for failed instance"
-							<< (ii ? ii->GetUniqueID () : "<unknown>");
-					qDebug () << val->Unload ();
-				}
+				unfulfilled << plugin;
+		TryUnload (unfulfilled);
 
 		const auto fstInitProc = std::make_shared<PluginLoadProcess> (tr ("Plugins initialization: first stage..."),
 					ordered.size ());
