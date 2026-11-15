@@ -494,7 +494,7 @@ namespace OTRoid
 			SetOtrActionsState (*entry, true);
 
 		if (PrivkeysRequested_.remove (accName))
-			ReplayWithPrivkey (entry, wholeBody);
+			ResumeWithPrivkey (entry, wholeBody);
 	}
 
 	void OtrHandler::HandleEntryActionsRemoved (QObject *entry)
@@ -923,13 +923,18 @@ namespace OTRoid
 				co_return OtrState::Disabled;
 		}
 
-		std::shared_ptr<char> msg (otrl_proto_default_query_msg (accIdUtf8.constData (),
-					OTRL_POLICY_DEFAULT), free);
-		entry->SendMessage ({ .Body_ = QString::fromUtf8 (msg.get ()), .Hidden_ = true });
+		SendOtrQuery (*entry);
 		co_return OtrState::QuerySent;
 	}
 
-	Util::ContextTask<void> OtrHandler::ReplayWithPrivkey (Util::TrackingPointer<ICLEntry> entry, std::optional<QString> body)
+	void OtrHandler::SendOtrQuery (ICLEntry& entry)
+	{
+		const auto& accId = entry.GetParentAccount ()->GetAccountId ().ToUtf8 ();
+		const std::shared_ptr<char> msg { otrl_proto_default_query_msg (accId.constData (), OTRL_POLICY_DEFAULT), free };
+		entry.SendMessage ({ .Body_ = QString::fromUtf8 (msg.get ()), .Hidden_ = true });
+	}
+
+	Util::ContextTask<void> OtrHandler::ResumeWithPrivkey (Util::TrackingPointer<ICLEntry> entry, std::optional<QString> body)
 	{
 		co_await Util::AddContext { CoroContext_ };
 
@@ -943,8 +948,40 @@ namespace OTRoid
 			co_return;
 		}
 
+		const auto findContext = [&] (otrl_instag_t instance)
+		{
+			return otrl_context_find (UserState_,
+					SerializeString (entry->GetStrongestId ()).toUtf8 ().constData (),
+					accId.ToUtf8 ().constData (), protoId.toUtf8 ().constData (),
+					instance, false, nullptr, nullptr, nullptr);
+		};
+
 		if (body)
+		{
 			RunOtrReceiving (*entry, *body);
+
+			// The contact may have stopped waiting for this. If its answer is merely late,
+			// the query below makes the two sides exchange keys once more, which is harmless.
+			using namespace std::chrono_literals;
+			co_await 3s;
+
+			const auto context = findContext (OTRL_INSTAG_BEST);
+			const auto& actions = Entry2Action_.value (entry->GetQObject ());
+			if ((context && context->msgstate == OTRL_MSGSTATE_ENCRYPTED) ||
+					!actions.ToggleOtr_ || !actions.ToggleOtr_->isChecked ())
+				co_return;
+		}
+		else
+		{
+			// Without the message there is nothing to resume, and what is left of this handshake
+			// on our side can win the collision with the contact's answer to the query.
+			const auto master = findContext (OTRL_INSTAG_MASTER);
+			for (auto context = master; context && context->m_context == master; context = context->next)
+				if (context->auth.authstate != OTRL_AUTHSTATE_NONE)
+					otrl_auth_clear (&context->auth);
+		}
+
+		SendOtrQuery (*entry);
 	}
 
 	void OtrHandler::SetOtrActionsState (ICLEntry& entry, bool enabled)
