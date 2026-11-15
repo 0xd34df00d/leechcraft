@@ -7,7 +7,9 @@
  **********************************************************************/
 
 #include "otrhandler.h"
+#include <cstdio>
 #include <cstring>
+#include <utility>
 #include <gcrypt.h>
 #include <unistd.h>
 #include <util/gui/asyncdialogs.h>
@@ -231,6 +233,7 @@ namespace OTRoid
 	, AzothProxy_ { azothProxy }
 	, OtrDir_ { Util::CreateIfNotExists ("azoth/otr/") }
 	, UserState_ { otrl_userstate_create () }
+	, FragmentsState_ { otrl_userstate_create () }
 	{
 		otrl_privkey_read (UserState_, GetOTRFilename ("privkey").constData ());
 		otrl_privkey_read_fingerprints (UserState_,
@@ -279,6 +282,7 @@ namespace OTRoid
 	OtrHandler::~OtrHandler ()
 	{
 		otrl_userstate_free (UserState_);
+		otrl_userstate_free (FragmentsState_);
 	}
 
 	void OtrHandler::HandleMessageCreated (bool& cancel, ICLEntry& entry, OutgoingMessage& msg)
@@ -374,6 +378,54 @@ namespace OTRoid
 		return ReceivingNonOtr {};
 	}
 
+	// libotr keeps no copy of a handshake message it drops for the lack of a private key,
+	// and feeding it one again takes the whole message, not the last fragment the hook gets.
+	std::optional<QString> OtrHandler::Reassemble (ICLEntry& entry, const QString& body)
+	{
+		const auto& bodyUtf8 = body.toUtf8 ();
+
+		otrl_instag_t senderTag = OTRL_INSTAG_MASTER;
+		if (const auto v3Pos = bodyUtf8.indexOf ("?OTR|");
+			v3Pos >= 0)
+		{
+			// otrl_context_find () returns nullptr for the reserved instance tags.
+			if (std::sscanf (bodyUtf8.constData () + v3Pos, "?OTR|%x|", &senderTag) != 1 ||
+					senderTag < OTRL_MIN_VALID_INSTAG)
+				return {};
+		}
+		else if (!bodyUtf8.contains ("?OTR,"))
+			return body;
+
+		const auto acc = entry.GetParentAccount ();
+		const auto& accId = acc->GetAccountId ().ToUtf8 ();
+		const auto& protoId = qobject_cast<IProtocol*> (acc->GetParentProtocol ())->GetProtocolId ().toUtf8 ();
+		if (otrl_privkey_find (UserState_, accId.constData (), protoId.constData ()))
+			return {};
+
+		const auto& entryId = SerializeString (entry.GetStrongestId ()).toUtf8 ();
+		const auto findContext = [&] (otrl_instag_t tag)
+		{
+			return otrl_context_find (FragmentsState_, entryId.constData (), accId.constData (), protoId.constData (),
+					tag, true, nullptr, nullptr, nullptr);
+		};
+		// otrl_context_find () takes a contact's first context for the master, so it has to exist before an instance's.
+		const auto master = findContext (OTRL_INSTAG_MASTER);
+		const auto context = senderTag == OTRL_INSTAG_MASTER ? master : findContext (senderTag);
+
+		char *whole = nullptr;
+		const auto wholeGuard = Util::MakeScopeGuard ([&] { free (whole); });
+		switch (otrl_proto_fragment_accumulate (&whole, context, bodyUtf8.constData ()))
+		{
+		case OTRL_FRAGMENT_UNFRAGMENTED:
+			return body;
+		case OTRL_FRAGMENT_INCOMPLETE:
+			return {};
+		case OTRL_FRAGMENT_COMPLETE:
+			return QString::fromUtf8 (whole);
+		}
+		std::unreachable ();
+	}
+
 	void OtrHandler::HandleGotMessage (const IHookProxy_ptr& proxy, QObject *msgObj)
 	{
 		auto& msg = qobject_ref_cast<IMessage> (msgObj);
@@ -400,7 +452,7 @@ namespace OTRoid
 
 		const auto accName = entry->GetParentAccount ()->GetAccountId ();
 
-		const auto& origBody = msg.GetBody ();
+		const auto& wholeBody = Reassemble (*entry, msg.GetBody ());
 
 		const auto isOtrMessage = Util::Visit (RunOtrReceiving (*entry, msg.GetBody ()),
 				[&] (const ReceivingIgnore&)
@@ -435,8 +487,8 @@ namespace OTRoid
 		if (isOtrMessage)
 			SetOtrActionsState (*entry, true);
 
-		if (PrivkeysRequested_.remove (accName))
-			ReplayWithPrivkey (entry, origBody);
+		if (PrivkeysRequested_.remove (accName) && wholeBody)
+			ReplayWithPrivkey (entry, *wholeBody);
 	}
 
 	void OtrHandler::HandleEntryActionsRemoved (QObject *entry)

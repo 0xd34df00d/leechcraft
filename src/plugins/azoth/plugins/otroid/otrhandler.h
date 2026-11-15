@@ -9,6 +9,7 @@
 #pragma once
 
 #include <memory>
+#include <optional>
 #include <variant>
 #include <QHash>
 #include <QDir>
@@ -68,6 +69,7 @@ namespace OTRoid
 		const QDir OtrDir_;
 
 		const OtrlUserState UserState_;
+		const OtrlUserState FragmentsState_;
 		OtrlMessageAppOps OtrOps_;
 
 		QTimer *PollTimer_;
@@ -132,6 +134,7 @@ namespace OTRoid
 		using ReceivingResult_t = std::variant<ReceivingIgnore, ReceivingNonOtr, ReceivingOtrEnd, ReceivingDecrypted>;
 
 		ReceivingResult_t RunOtrReceiving (ICLEntry&, const QString&);
+		std::optional<QString> Reassemble (ICLEntry&, const QString&);
 
 		void SetOtrActionsState (ICLEntry&, bool);
 
