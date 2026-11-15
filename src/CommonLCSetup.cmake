@@ -162,7 +162,7 @@ function (SUBPLUGIN suffix descr)
 	endif ()
 
 	set (defVal "ON")
-	if (ARGC GREATER 0 AND NOT ARGN)
+	if (ARGC GREATER 2)
 		set (defVal ${ARGV2})
 	endif ()
 	string (TOLOWER ${suffix} suffixL)
