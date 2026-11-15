@@ -6,6 +6,7 @@ add_util_library (util-db
 		dumper.cpp
 		consistencychecker.cpp
 	DEPENDS
+		Boost::headers
 		leechcraft-util-gui
 		leechcraft-util-sll
 		leechcraft-util-sys

@@ -1,6 +1,7 @@
 set (CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package (Qt${LC_QT_VERSION}Widgets)
 find_package (Qt${LC_QT_VERSION}LinguistTools REQUIRED)
+find_package (Boost REQUIRED CONFIG)
 
 include (CMakeDependentOption)
 cmake_dependent_option (WITH_X11 "Enable X11 support on Linux" ON "UNIX AND NOT APPLE" OFF)
@@ -102,7 +103,7 @@ function (LC_DEFINE_PLUGIN)
 		${P_RESOURCES}
 		)
 	set_target_properties (${FULL_NAME} PROPERTIES AUTOUIC TRUE AUTORCC TRUE)
-	target_link_libraries (${FULL_NAME} ${LEECHCRAFT_LIBRARIES} ${P_LINK_LIBRARIES})
+	target_link_libraries (${FULL_NAME} Boost::headers ${LEECHCRAFT_LIBRARIES} ${P_LINK_LIBRARIES})
 
 	CreateTrs (${FULL_NAME})
 

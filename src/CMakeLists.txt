@@ -92,8 +92,6 @@ else ()
 	set (LC_SHARE_DEST "leechcraft.app/Contents/Resources/share")
 endif ()
 
-find_package (Boost REQUIRED)
-
 include (CommonLCSetup.cmake)
 
 string (COMPARE EQUAL "${CMAKE_INSTALL_PREFIX}" "/usr" STANDARD_PREFIX)
