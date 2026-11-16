@@ -348,9 +348,10 @@ namespace LC::Util
 		plot.setAutoFillBackground (false);
 		plot.setCanvasBackground (Qt::transparent);
 
+		std::unique_ptr<QwtPlotGrid> grid;
 		if (YGridEnabled_)
 		{
-			auto grid = new QwtPlotGrid;
+			grid = std::make_unique<QwtPlotGrid> ();
 			grid->enableYMin (YMinorGridEnabled_);
 			grid->enableX (false);
 			grid->setMajorPen (QPen (GridLinesColor_, 1, Qt::SolidLine));
