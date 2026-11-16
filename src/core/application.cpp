@@ -13,7 +13,6 @@
 #ifdef __GLIBCXX__
 #include <cxxabi.h>
 #endif
-#include <boost/scoped_array.hpp>
 #include <QCommandLineParser>
 #include <QEvent>
 #include <QtDebug>
@@ -215,29 +214,11 @@ namespace LC
 		return *CLArgs_;
 	}
 
-#ifdef Q_OS_WIN32
-#include <windows.h>
-#else
-#include <unistd.h>
-#include <sys/types.h>
-#endif
-
 	QString Application::GetSocketName ()
 	{
 		QString templ = QString ("LeechCraft_local_socket_%1");
 #ifdef Q_OS_WIN32
-		boost::scoped_array<TCHAR> buffer (new TCHAR [0]);
-		DWORD size = 0;
-		GetUserName (buffer.get (), &size);
-		buffer.reset (new TCHAR [size]);
-		if (GetUserName (buffer.get (), &size))
-#ifdef _UNICODE
-			return templ.arg (QString::fromWCharArray (buffer.get ()));
-#else
-			return templ.arg (buffer.get ());
-#endif
-		else
-			return templ.arg ("unknown");
+		return templ.arg (qEnvironmentVariable ("USERNAME", "unknown"));
 #else
 		return templ.arg (getuid ());
 #endif
@@ -506,14 +487,6 @@ namespace LC
 
 		if (style == "Default")
 			style = DefaultSystemStyleName_;
-
-		if (style.isEmpty ())
-		{
-#ifdef Q_OS_WIN32
-			style = "Plastique";
-			XmlSettingsManager::Instance ()->setProperty ("AppQStyle", style);
-#endif
-		}
 
 #ifdef Q_OS_MAC
 		if (auto styleObj = QStyleFactory::create (style))

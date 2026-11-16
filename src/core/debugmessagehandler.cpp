@@ -16,7 +16,9 @@
 #ifndef __APPLE__
 #include <stacktrace>
 #endif
+#ifndef Q_OS_WIN32
 #include <unistd.h>
+#endif
 #include <QMutex>
 #include <QMutexLocker>
 #include <QThread>
@@ -49,8 +51,12 @@ namespace
 
 	bool SupportsColors ()
 	{
+#ifdef Q_OS_WIN32
+		return false;
+#else
 		static const auto supportsColors = isatty (fileno (stdout));
 		return supportsColors;
+#endif
 	}
 
 	std::string GetColorCode (QtMsgType type)
