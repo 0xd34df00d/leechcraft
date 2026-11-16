@@ -102,7 +102,6 @@ set (SRCS
 
 set (RESOURCES
 	mainresources.qrc
-	$<$<PLATFORM_ID:Windows>:../../../tools/win32/leechcraft.rc>
 	)
 
 add_executable (leechcraft-core WIN32
@@ -124,7 +123,7 @@ target_link_libraries (leechcraft-core
 		Boost::headers
 		${LEECHCRAFT_LIBRARIES}
 		$<$<BOOL:${X11_FOUND}>:${X11_X11_LIB}>
-		$<$<NOT:$<PLATFORM_ID:Darwin>>:stdc++exp>
+		$<$<NOT:$<OR:$<PLATFORM_ID:Darwin>,$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>>>:stdc++exp>
 		)
 
 if (APPLE AND USE_UNIX_LAYOUT)

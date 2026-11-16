@@ -2,19 +2,14 @@ cmake_minimum_required (VERSION 3.31)
 
 project (leechcraft)
 
-if (MSVC)
-	set (CMAKE_CXX_FLAGS "/EHa /W3")
-	set (CMAKE_CXX_FLAGS_RELEASE "/Ob2 /O2 /Ot /Oi /Oy /GT /GL /MD /D NDEBUG")
-	set (CMAKE_CXX_FLAGS_DEBUG "/Zi /Od /GT /MDd")
-
-	set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
-	include (LibHelperWin32Macros)
-endif ()
 if (WIN32)
-	add_definitions (-DWIN32_LEAN_AND_MEAN) # Don't include not needed headers with a lot of useless macross definitions
-	add_definitions (-D_WIN32_WINNT=0x0600) # Use Windows Vista definitions. Needed by Liznoo and Kinotify
-	add_definitions (-DWINVER=0x0600)
-	add_definitions (-DNTDDI_VERSION=0x0600)
+	add_compile_definitions (
+		WIN32_LEAN_AND_MEAN
+		NOMINMAX
+		_WIN32_WINNT=0x0A00
+		WINVER=0x0A00
+		NTDDI_VERSION=0x0A000000
+	)
 endif ()
 
 option (USE_LTO "Use LTO" OFF)
@@ -27,6 +22,10 @@ option (USE_UBSAN "Use UB sanitizer" OFF)
 
 set (LC_QT_VERSION 6)
 set (LC_LIBSUFFIX "-qt${LC_QT_VERSION}")
+
+if (MSVC)
+	add_compile_options (/W4)
+endif ()
 
 if (UNIX OR (WIN32 AND MINGW))
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -Wall -Wextra")
@@ -70,11 +69,12 @@ if (UNIX AND (NOT APPLE OR USE_UNIX_LAYOUT))
 	set (LC_SETTINGS_DEST "share/leechcraft/settings")
 	set (LC_SHARE_DEST "share/leechcraft")
 elseif (WIN32)
+	# DLLs are looked up next to the executable.
 	if (NOT LIBDIR)
-		set (LIBDIR "${CMAKE_INSTALL_PREFIX}")
+		set (LIBDIR ".")
 	endif ()
 
-	set (LC_BINDIR "${CMAKE_INSTALL_PREFIX}")
+	set (LC_BINDIR ".")
 	set (LC_PLUGINS_DEST "plugins/bin")
 	set (LC_TRANSLATIONS_DEST "translations")
 	set (LC_SETTINGS_DEST "settings")

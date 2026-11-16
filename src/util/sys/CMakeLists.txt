@@ -7,7 +7,7 @@ add_util_library (util-sys
 		sysinfo.cpp
 		extensionsdata.cpp
 		util.cpp
-		fdguard.cpp
+		$<$<NOT:$<PLATFORM_ID:Windows>>:fdguard.cpp>
 		cpufeatures.cpp
 		loggingfilter.cpp
 		serialization.cpp
