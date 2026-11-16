@@ -27,7 +27,7 @@ namespace LC::Util
 
 		int BackoffFactor_ = 0;
 
-		struct Awaiter
+		struct UTIL_THREADS_API Awaiter
 		{
 			Throttle& Throttle_;
 			std::coroutine_handle<> Handle_ {};

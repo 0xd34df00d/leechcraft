@@ -26,7 +26,7 @@ namespace LC::Util
 {
 	/** @brief The "leechcraft" literal, with no run-time overhead.
 	 */
-	Q_DECL_IMPORT extern const QString LCLowercase;
+	UTIL_API extern const QString LCLowercase;
 
 	/** @brief Returns the given image in a Base64-encoded form.
 	 *

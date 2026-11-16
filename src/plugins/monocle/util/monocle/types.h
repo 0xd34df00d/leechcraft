@@ -12,10 +12,11 @@
 #include <QString>
 #include <QTextCharFormat>
 #include <QVector>
+#include "monocleutilconfig.h"
 
 namespace LC::Monocle
 {
-	Q_DECL_IMPORT extern const QString TocSectionIdAttr;
+	MONOCLE_UTIL_API extern const QString TocSectionIdAttr;
 
 	struct Span
 	{

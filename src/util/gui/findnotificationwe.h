@@ -30,7 +30,7 @@ namespace LC::Util
 	 *
 	 * @ingroup GuiUtil
 	 */
-	class UTIL_GUI_API FindNotificationWE : public FindNotification
+	class FindNotificationWE : public FindNotification
 	{
 		QWebEngineView * const WebView_;
 		QString PreviousFindText_;
