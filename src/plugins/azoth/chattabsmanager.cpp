@@ -12,6 +12,7 @@
 #include <QtDebug>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <util/compat/functional.h>
 #include <util/sll/qobjectrefcast.h>
 #include <util/xpc/sessionprops.h>
 #include "util/azoth/util.h"

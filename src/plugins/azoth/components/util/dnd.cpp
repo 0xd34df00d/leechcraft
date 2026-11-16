@@ -19,6 +19,7 @@
 #include <interfaces/idatafilter.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/core/ientitymanager.h>
+#include <util/compat/functional.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <util/util.h>

@@ -15,6 +15,7 @@
 #include <util/xpc/an/constants.h>
 #include <interfaces/an/ianemitter.h>
 #include <interfaces/core/icoreproxy.h>
+#include <util/compat/functional.h>
 #include <util/threads/coro/taskfwd.h>
 #include "xpcconfig.h"
 

@@ -18,6 +18,7 @@
 #include <QString>
 #include <QStringList>
 #include <QTest>
+#include <util/compat/functional.h>
 #include <util/sll/visitor.h>
 
 namespace LC::Util
