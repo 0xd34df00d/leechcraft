@@ -6,6 +6,11 @@ find_package (Boost REQUIRED CONFIG)
 include (CMakeDependentOption)
 cmake_dependent_option (WITH_X11 "Enable X11 support on Linux" ON "UNIX AND NOT APPLE" OFF)
 
+add_compile_definitions (
+	QT_ENABLE_STRICT_MODE_UP_TO=0x060A00
+	QT_MESSAGELOGCONTEXT
+)
+
 set (CMAKE_AUTOMOC TRUE)
 set (CMAKE_AUTOUIC TRUE)
 # By default a target's moc/uic step waits for the libraries the target links, in case moc needs a header one of them

@@ -28,8 +28,6 @@ option (USE_UBSAN "Use UB sanitizer" OFF)
 set (LC_QT_VERSION 6)
 set (LC_LIBSUFFIX "-qt${LC_QT_VERSION}")
 
-add_compile_definitions (QT_ENABLE_STRICT_MODE_UP_TO=0x060A00)
-
 if (UNIX OR (WIN32 AND MINGW))
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -Wall -Wextra")
 
@@ -41,8 +39,6 @@ if (UNIX OR (WIN32 AND MINGW))
 		add_compile_options (-fsanitize=undefined)
 		add_link_options (-fsanitize=undefined)
 	endif ()
-
-	add_definitions (-DQT_MESSAGELOGCONTEXT)
 
 	if (NOT APPLE)
 		set (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--as-needed")
