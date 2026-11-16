@@ -1,0 +1,18 @@
+#!/bin/sh
+# scp to and from the Windows build VM, configured like win-ssh: a win: prefix names the guest,
+# as in win-scp build.log win:/C:/lc/logs/ or win-scp win:/C:/lc/logs/build.log .
+set -eu
+host=${LC_WIN_HOST:?the VM host, as an ssh destination}
+port=${LC_WIN_SSH_PORT:-2223}
+opts=${LC_WIN_SSH_OPTS:-}
+known=${LC_WIN_KNOWN_HOSTS:+-oUserKnownHostsFile=$LC_WIN_KNOWN_HOSTS}
+for arg do
+	shift
+	case $arg in
+	win:*) set -- "$@" "Administrator@127.0.0.1:${arg#win:}" ;;
+	*) set -- "$@" "$arg" ;;
+	esac
+done
+# shellcheck disable=SC2086
+exec scp -q $opts -o ProxyCommand="ssh $opts -W %h:%p $host" -o HostKeyAlias=leechcraft-windows-vm $known \
+	-o StrictHostKeyChecking=accept-new -P "$port" "$@"

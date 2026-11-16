@@ -1,0 +1,33 @@
+#!/bin/sh
+# Mirror the sources and the guest scripts of the LeechCraft tree this script lives in (tracked and
+# untracked files, minus ignored ones) into the Windows build VM's C:\lc. Files that vanished from
+# the tree vanish there too; unchanged files keep their mtimes, so Ninja only rebuilds what changed.
+# The tree's version goes along into C:\lc\version.txt, since the guest has no repository to ask.
+set -eu
+S=$(dirname "$(readlink -f "$0")")
+cd "$(git -C "$S" rev-parse --show-toplevel)"
+version=$(git describe)
+manifest=$(mktemp)
+trap 'rm -f "$manifest"' EXIT
+git ls-files -co --exclude-standard src tools/windows/guest | while IFS= read -r file; do
+	if [ -e "$file" ]; then
+		printf '%s\n' "$file"
+	fi
+done > "$manifest"
+tr '\n' '\0' < "$manifest" | tar --null -T - -cf - | "$S/win-ssh" '
+	$ErrorActionPreference = "Stop"
+	New-Item -ItemType Directory -Force C:\lc | Out-Null
+	tar -xf - -C C:/lc
+	if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+	"synced"'
+"$S/win-ssh" '
+	$keep = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+	foreach ($line in $input) { if ($line) { [void] $keep.Add("C:\lc\" + ($line -replace "/", "\")) } }
+	$stale = Get-ChildItem C:\lc\src, C:\lc\tools -Recurse -File -ErrorAction SilentlyContinue |
+		Where-Object { -not $keep.Contains($_.FullName) }
+	$stale | Remove-Item -Force
+	"removed $(@($stale).Count) stale files"' < "$manifest"
+printf '%s\n' "$version" | "$S/win-ssh" '
+	$version = @($input)[0]
+	Set-Content C:\lc\version.txt $version
+	"version $version"'

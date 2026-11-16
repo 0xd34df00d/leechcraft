@@ -1,0 +1,16 @@
+#!/bin/sh
+# SSH into the Windows build VM, whose sshd the VM host forwards to its own 127.0.0.1.
+#   LC_WIN_HOST         the VM host, as an ssh destination (required)
+#   LC_WIN_SSH_PORT     the forwarded port (default: 2223, as in vm/win-vm.sh)
+#   LC_WIN_SSH_OPTS     extra ssh options for both hops, like "-i <key> -o IdentitiesOnly=yes"
+#   LC_WIN_KNOWN_HOSTS  where to keep the guest's host key instead of ssh's own known_hosts
+set -eu
+host=${LC_WIN_HOST:?the VM host, as an ssh destination}
+port=${LC_WIN_SSH_PORT:-2223}
+opts=${LC_WIN_SSH_OPTS:-}
+known=${LC_WIN_KNOWN_HOSTS:+-oUserKnownHostsFile=$LC_WIN_KNOWN_HOSTS}
+# The alias files the guest's key under its own name rather than under the VM host's 127.0.0.1.
+# shellcheck disable=SC2086
+exec ssh $opts -o ProxyCommand="ssh $opts -W %h:%p $host" -o HostKeyAlias=leechcraft-windows-vm $known \
+	-o StrictHostKeyChecking=accept-new -o ServerAliveInterval=30 -o ConnectTimeout=20 \
+	-p "$port" Administrator@127.0.0.1 "$@"
