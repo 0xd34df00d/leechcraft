@@ -13,11 +13,12 @@
 #include <QAbstractItemModelTester>
 #include <QHash>
 #include <QMimeData>
-#include <QRandomGenerator>
 #include <QSignalSpy>
 #include <QSortFilterProxyModel>
 #include <QStandardItemModel>
 #include <QTest>
+#include <util/test/collectingmodeltester.h>
+#include <util/test/randomwalk.h>
 #include "flattofoldersproxymodel.h"
 
 QTEST_GUILESS_MAIN (LC::Util::FlatToFoldersProxyModelTest)
@@ -30,6 +31,7 @@ namespace LC::Util
 		constexpr int KeysRole = Qt::UserRole + 2;
 		const auto DropFormat = QStringLiteral ("x-test/folder");
 		const auto Unkeyed = QStringLiteral ("unkeyed");
+		const QStringList InitialKeys { "t1", "t2", "t3", "t4" };
 
 		struct Source : QStandardItemModel
 		{
@@ -76,16 +78,15 @@ namespace LC::Util
 
 		// the keys stored in the source rows map to themselves unless Aliases_ says otherwise,
 		// which is how a key gets replaced behind the source's back
-		struct Fixture
+		struct Models
 		{
 			QHash<QString, QStringList> Aliases_;
 			Source Source_;
 			Filter Filter_;
 			QAbstractItemModel& Upstream_;
 			FlatToFoldersProxyModel Proxy_ { MakeConfig () };
-			QAbstractItemModelTester Tester_ { &Proxy_, QAbstractItemModelTester::FailureReportingMode::QtTest };
 
-			explicit Fixture (bool viaFilter)
+			explicit Models (bool viaFilter)
 			: Upstream_ { viaFilter ? static_cast<QAbstractItemModel&> (Filter_) : Source_ }
 			{
 				Filter_.setSourceModel (&Source_);
@@ -145,6 +146,13 @@ namespace LC::Util
 			}
 		};
 
+		struct Fixture : Models
+		{
+			QAbstractItemModelTester Tester_ { &Proxy_, QAbstractItemModelTester::FailureReportingMode::QtTest };
+
+			using Models::Models;
+		};
+
 		struct Spies
 		{
 			QSignalSpy Inserted_;
@@ -168,9 +176,9 @@ namespace LC::Util
 			}
 		};
 
-		QStringList ExpectedKeysOf (const Fixture& fixture, const QModelIndex& index)
+		QStringList ExpectedKeysOf (const Models& models, const QModelIndex& index)
 		{
-			auto keys = fixture.KeysOf (index);
+			auto keys = models.KeysOf (index);
 			keys.removeDuplicates ();
 			if (keys.isEmpty ())
 				keys << Unkeyed;
@@ -184,13 +192,13 @@ namespace LC::Util
 
 		using Picture = QMap<QString, QSet<int>>;
 
-		Picture Expected (const Fixture& fixture)
+		Picture Expected (const Models& models)
 		{
 			Picture result;
-			for (int row = 0; row < fixture.Upstream_.rowCount (); ++row)
+			for (int row = 0; row < models.Upstream_.rowCount (); ++row)
 			{
-				const auto& index = fixture.Upstream_.index (row, 0);
-				for (const auto& key : ExpectedKeysOf (fixture, index))
+				const auto& index = models.Upstream_.index (row, 0);
+				for (const auto& key : ExpectedKeysOf (models, index))
 					result [key] << index.data (IdRole).toInt ();
 			}
 			return result;
@@ -225,60 +233,197 @@ namespace LC::Util
 			return result;
 		}
 
-		void CheckTree (const Fixture& fixture)
+		std::optional<QString> TreeViolation (const Models& models)
 		{
-			const auto& proxy = fixture.Proxy_;
-			const auto& upstream = fixture.Upstream_;
-			QCOMPARE (proxy.columnCount (), upstream.columnCount ());
+			const auto& proxy = models.Proxy_;
+			const auto& upstream = models.Upstream_;
+			if (proxy.columnCount () != upstream.columnCount ())
+				return QString { "the tree has %1 columns, the source has %2" }.arg (proxy.columnCount ()).arg (upstream.columnCount ());
 
 			Picture actual;
 			int leaves = 0;
 			for (int f = 0; f < proxy.rowCount (); ++f)
 			{
 				const auto& folderIdx = proxy.index (f, 0);
-				QVERIFY (proxy.IsFolder (folderIdx));
-				QCOMPARE (proxy.parent (folderIdx), QModelIndex {});
-				if (upstream.columnCount () > 1)
-					QCOMPARE (proxy.rowCount (folderIdx.siblingAtColumn (1)), 0);
+				if (!proxy.IsFolder (folderIdx))
+					return QString { "top-level row %1 is not a folder" }.arg (f);
 
 				const auto& key = FolderName (folderIdx);
-				QVERIFY2 (!actual.contains (key), qPrintable ("duplicate folder for key " + key));
-				QVERIFY2 (proxy.rowCount (folderIdx) > 0, qPrintable ("empty folder for key " + key));
+				if (proxy.parent (folderIdx).isValid ())
+					return "folder " + key + " has a parent";
+				if (upstream.columnCount () > 1 && proxy.rowCount (folderIdx.siblingAtColumn (1)))
+					return "folder " + key + " has rows under its second column";
+				if (actual.contains (key))
+					return "duplicate folder for key " + key;
+				if (!proxy.rowCount (folderIdx))
+					return "empty folder for key " + key;
 
 				auto& ids = actual [key];
 				for (int l = 0; l < proxy.rowCount (folderIdx); ++l)
 				{
 					++leaves;
+					const auto aboutLeaf = [&] (const QString& problem) { return QString { "leaf %1 of folder %2 %3" }.arg (l).arg (key, problem); };
+
 					const auto& leafIdx = proxy.index (l, 0, folderIdx);
-					QVERIFY (!proxy.IsFolder (leafIdx));
-					QCOMPARE (proxy.rowCount (leafIdx), 0);
-					QCOMPARE (proxy.parent (leafIdx), folderIdx);
+					if (proxy.IsFolder (leafIdx))
+						return aboutLeaf ("is a folder");
+					if (proxy.rowCount (leafIdx))
+						return aboutLeaf ("has rows under it");
+					if (proxy.parent (leafIdx) != folderIdx)
+						return aboutLeaf ("has another parent");
 
 					const auto& source = proxy.MapToSource (leafIdx);
-					QVERIFY (source.isValid ());
-					QCOMPARE (source.model (), &upstream);
-					QVERIFY (ExpectedKeysOf (fixture, source).contains (key));
-					QVERIFY (proxy.MapFromSource (source).contains (leafIdx));
+					if (!source.isValid ())
+						return aboutLeaf ("maps to no source row");
+					if (source.model () != &upstream)
+						return aboutLeaf ("maps to another model");
+					if (!ExpectedKeysOf (models, source).contains (key))
+						return aboutLeaf ("maps to a source row without this key");
+					if (!proxy.MapFromSource (source).contains (leafIdx))
+						return aboutLeaf ("is not among what its source row maps to");
 					for (int col = 0; col < upstream.columnCount (); ++col)
-						QCOMPARE (proxy.index (l, col, folderIdx).data (), source.siblingAtColumn (col).data ());
+						if (proxy.index (l, col, folderIdx).data () != source.siblingAtColumn (col).data ())
+							return aboutLeaf (QString { "differs from its source row in column %1" }.arg (col));
 
 					ids << leafIdx.data (IdRole).toInt ();
 				}
 			}
 
-			const auto& expected = Expected (fixture);
-			QVERIFY2 (actual == expected,
-					qPrintable ("tree is " + Describe (actual) + ", source says " + Describe (expected)));
+			const auto& expected = Expected (models);
+			if (actual != expected)
+				return "tree is " + Describe (actual) + ", source says " + Describe (expected);
 
 			int expectedLeaves = 0;
 			for (int row = 0; row < upstream.rowCount (); ++row)
-				expectedLeaves += ExpectedKeysOf (fixture, upstream.index (row, 0)).size ();
-			QCOMPARE (leaves, expectedLeaves);
+				expectedLeaves += ExpectedKeysOf (models, upstream.index (row, 0)).size ();
+			if (leaves != expectedLeaves)
+				return QString { "the tree has %1 leaves, the source rows need %2" }.arg (leaves).arg (expectedLeaves);
+
+			return {};
+		}
+
+		void CheckTree (const Models& models)
+		{
+			if (const auto violation = TreeViolation (models))
+				QFAIL (qPrintable (*violation));
 		}
 
 		QModelIndex Parent (const QList<QVariant>& signalArgs)
 		{
 			return signalArgs.at (0).value<QModelIndex> ();
+		}
+
+		template<bool ViaFilter>
+		struct TreeWalk
+		{
+			Models Models_ { ViaFilter };
+			CollectingModelTester Tester_ { Models_.Proxy_ };
+			QStringList KnownKeys_ = InitialKeys;
+			int NextId_ = 1;
+
+			TreeWalk ()
+			{
+				Models_.Attach ();
+			}
+
+			void Append (Choices& choices)
+			{
+				const auto& text = DrawText (choices);
+				Models_.Source_.Append (NextId_++, text, DrawKeys (choices));
+			}
+
+			void Remove (Choices& choices)
+			{
+				if (const auto rows = Models_.Source_.rowCount ())
+					Models_.Source_.removeRow (choices.Draw (rows));
+			}
+
+			void SetKeys (Choices& choices)
+			{
+				if (const auto rows = Models_.Source_.rowCount ())
+				{
+					const auto row = choices.Draw (rows);
+					Models_.Source_.SetKeys (row, DrawKeys (choices));
+				}
+			}
+
+			void SetText (Choices& choices)
+			{
+				if (const auto rows = Models_.Source_.rowCount ())
+				{
+					const auto row = choices.Draw (rows);
+					Models_.Source_.item (row)->setText (DrawText (choices));
+				}
+			}
+
+			void Sort (Choices& choices)
+			{
+				Models_.Source_.sort (0, choices.Draw (2) ? Qt::DescendingOrder : Qt::AscendingOrder);
+			}
+
+			void SetFilter (Choices& choices)
+			{
+				Models_.Filter_.setFilterFixedString (choices.Draw (2) ? DrawText (choices) : QString {});
+			}
+
+			void Clear (Choices& choices)
+			{
+				if (!choices.Draw (20))
+					Models_.Source_.clear ();
+			}
+
+			void ReplaceKey (Choices& choices)
+			{
+				const auto old = KnownKeys_ [choices.Draw (KnownKeys_.size ())];
+				QStringList newKeys;
+				for (const auto& key : std::as_const (KnownKeys_))
+					if (choices.Draw (3) == 2)
+						newKeys << key;
+				if (choices.Draw (2))
+					newKeys << KnownKeys_.emplaceBack ("r" + QString::number (KnownKeys_.size ()));
+				Models_.ReplaceKey (old, newKeys);
+			}
+
+			std::optional<QString> Check () const
+			{
+				if (const auto& failures = Tester_.GetFailures ();
+					!failures.isEmpty ())
+					return failures.first ();
+				return TreeViolation (Models_);
+			}
+		private:
+			static QString DrawText (Choices& choices)
+			{
+				return QString { QChar { 'a' + choices.Draw (6) } };
+			}
+
+			static QStringList DrawKeys (Choices& choices)
+			{
+				QStringList keys;
+				for (const auto& key : InitialKeys)
+					if (choices.Draw (3) == 2)
+						keys << key;
+				if (!keys.isEmpty () && choices.Draw (4) == 3)
+					keys << keys.first ();
+				return keys;
+			}
+		};
+
+		template<bool ViaFilter>
+		void RunTreeWalks ()
+		{
+			using Walk = TreeWalk<ViaFilter>;
+			RunRandomWalks<Walk> ({ .Seed_ = 20261017, .Walks_ = 300, .Steps_ = 60 },
+					{
+						{ "append", &Walk::Append },
+						{ "remove", &Walk::Remove },
+						{ "set keys", &Walk::SetKeys },
+						{ "set text", &Walk::SetText },
+						{ "sort", &Walk::Sort },
+						{ "set filter", &Walk::SetFilter },
+						{ "clear", &Walk::Clear },
+						{ "replace key", &Walk::ReplaceKey },
+					});
 		}
 	}
 
@@ -608,76 +753,12 @@ namespace LC::Util
 		QCOMPARE (Dump (f.Proxy_), (QStringList { "t1: 1 2", "t2: 2", "unkeyed: 3" }));
 	}
 
-	void FlatToFoldersProxyModelTest::testRandomWalk ()
+	void FlatToFoldersProxyModelTest::testRandomWalks ()
 	{
 		QFETCH_GLOBAL (bool, viaFilter);
-		Fixture f { viaFilter };
-		f.Attach ();
-
-		constexpr quint32 seed = 20261017;
-		QRandomGenerator gen { seed };
-		const QStringList pool { "t1", "t2", "t3", "t4" };
-		QStringList known { "t1", "t2", "t3", "t4" };
-		const auto randomKeys = [&]
-		{
-			QStringList keys;
-			for (const auto& key : pool)
-				if (!gen.bounded (3))
-					keys << key;
-			if (!keys.isEmpty () && !gen.bounded (4))
-				keys << keys.first ();
-			return keys;
-		};
-		const auto randomText = [&] { return QString { QChar { 'a' + static_cast<int> (gen.bounded (6)) } }; };
-
-		int nextId = 1;
-		for (int step = 0; step < 400; ++step)
-		{
-			const auto rows = f.Source_.rowCount ();
-			switch (rows ? gen.bounded (7) : 0)
-			{
-			case 0:
-				f.Source_.Append (nextId++, randomText (), randomKeys ());
-				break;
-			case 1:
-				f.Source_.removeRow (gen.bounded (rows));
-				break;
-			case 2:
-				f.Source_.SetKeys (gen.bounded (rows), randomKeys ());
-				break;
-			case 3:
-				f.Source_.item (gen.bounded (rows))->setText (randomText ());
-				break;
-			case 4:
-				if (gen.bounded (2))
-					f.Source_.sort (0, gen.bounded (2) ? Qt::AscendingOrder : Qt::DescendingOrder);
-				else
-					f.Filter_.setFilterFixedString (gen.bounded (2) ? QString {} : randomText ());
-				break;
-			case 5:
-				if (!gen.bounded (20))
-					f.Source_.clear ();
-				break;
-			case 6:
-			{
-				const auto old = known [gen.bounded (static_cast<int> (known.size ()))];
-				QStringList newKeys;
-				for (const auto& key : known)
-					if (!gen.bounded (3))
-						newKeys << key;
-				if (gen.bounded (2))
-					newKeys << known.emplaceBack ("r" + QString::number (step));
-				f.ReplaceKey (old, newKeys);
-				break;
-			}
-			}
-
-			CheckTree (f);
-			if (QTest::currentTestFailed ())
-			{
-				qWarning () << "random walk failed at step" << step << "with seed" << seed << "upstream:" << Describe (Expected (f));
-				return;
-			}
-		}
+		if (viaFilter)
+			RunTreeWalks<true> ();
+		else
+			RunTreeWalks<false> ();
 	}
 }

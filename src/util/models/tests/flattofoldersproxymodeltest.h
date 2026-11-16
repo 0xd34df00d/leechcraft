@@ -36,6 +36,6 @@ namespace LC::Util
 		void testRemovedKeyMovesRowsToUnkeyed ();
 		void testKeepingTheOldKeyAddsFolders ();
 		void testUnknownKeyChangesNothing ();
-		void testRandomWalk ();
+		void testRandomWalks ();
 	};
 }
