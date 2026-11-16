@@ -596,7 +596,6 @@ namespace Snails
 	Util::ContextTask<void> ComposeMessageTab::handleSend ()
 	{
 		co_await Util::AddContext { CoroContext_ };
-		const auto guard = co_await EditorMutex_.Lock ();
 
 		const auto account = GetSelectedAccount ();
 		if (!account)
@@ -611,6 +610,8 @@ namespace Snails
 
 		message->To_ = FromUserInput (Ui_.To_->text ());
 		message->Subject_ = Ui_.Subject_->text ();
+
+		const auto guard = co_await EditorMutex_.Lock ();
 		message->Body_ = co_await editor->GetContents (ContentType::PlainText);
 		message->HTMLBody_ = co_await editor->GetContents (ContentType::HTML);
 
