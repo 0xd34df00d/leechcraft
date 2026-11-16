@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QString>
+#include "../xpcconfig.h"
 
 /** @brief Namespace for various AN entity fields.
  *
@@ -25,7 +26,7 @@ namespace LC::AN::EF
 	 * @note This field is required for rule creation entities and should
 	 * be equal to <em>org.LC.AdvNotifications.RuleRegister</em>.
 	 */
-	Q_DECL_IMPORT extern const QString SenderID;
+	UTIL_XPC_API extern const QString SenderID;
 
 	/** @brief The category of the event (QString).
 	 *
@@ -39,7 +40,7 @@ namespace LC::AN::EF
 	 *
 	 * @note This field is required for rule creation entities.
 	 */
-	Q_DECL_IMPORT extern const QString EventCategory;
+	UTIL_XPC_API extern const QString EventCategory;
 
 	/** @brief The ID of the event (QString).
 	 *
@@ -50,7 +51,7 @@ namespace LC::AN::EF
 	 *
 	 * @note This field is required for rule creation entities.
 	 */
-	Q_DECL_IMPORT extern const QString EventID;
+	UTIL_XPC_API extern const QString EventID;
 
 	/** @brief Visual path to this event (QStringList).
 	 *
@@ -59,7 +60,7 @@ namespace LC::AN::EF
 	 *
 	 * @note This field is required for event notification entities.
 	 */
-	Q_DECL_IMPORT extern const QString VisualPath;
+	UTIL_XPC_API extern const QString VisualPath;
 
 	/** @brief The type of the event (QString).
 	 *
@@ -75,19 +76,19 @@ namespace LC::AN::EF
 	 *
 	 * @note This field is required for rule creation entities.
 	 */
-	Q_DECL_IMPORT extern const QString EventType;
+	UTIL_XPC_API extern const QString EventType;
 
 	/** @brief The detailed text of the event (QString).
 	 *
 	 * @note This field is optional for event notification entities.
 	 */
-	Q_DECL_IMPORT extern const QString FullText;
+	UTIL_XPC_API extern const QString FullText;
 
 	/** @brief The even more detailed text than FullText (QString).
 	 *
 	 * @note This field is optional for event notification entities.
 	 */
-	Q_DECL_IMPORT extern const QString ExtendedText;
+	UTIL_XPC_API extern const QString ExtendedText;
 
 	/** @brief The change in event count (int).
 	 *
@@ -100,7 +101,7 @@ namespace LC::AN::EF
 	 * @note Either this field or the Count field should be present for
 	 * event notification entities.
 	 */
-	Q_DECL_IMPORT extern const QString DeltaCount;
+	UTIL_XPC_API extern const QString DeltaCount;
 
 	/** @brief The new total event count (int).
 	 *
@@ -110,7 +111,7 @@ namespace LC::AN::EF
 	 * @note Either this field or the DeltaCount field should be present
 	 * for event notification entities.
 	 */
-	Q_DECL_IMPORT extern const QString Count;
+	UTIL_XPC_API extern const QString Count;
 
 	/** @brief The index of the window associated with this event (int).
 	 *
@@ -119,7 +120,7 @@ namespace LC::AN::EF
 	 * For example, for an IM notification, this could be the window
 	 * containing the tab with the conversation in question.
 	 */
-	Q_DECL_IMPORT extern const QString WindowIndex;
+	UTIL_XPC_API extern const QString WindowIndex;
 
 	/** @brief Whether configuration dialog should be opened (bool).
 	 *
@@ -127,42 +128,42 @@ namespace LC::AN::EF
 	 *
 	 * @note This field is optional for rule creation entities.
 	 */
-	Q_DECL_IMPORT extern const QString OpenConfiguration;
+	UTIL_XPC_API extern const QString OpenConfiguration;
 
 	/** @brief Whether the created rule should be single-shot (bool).
 	 *
 	 * @note This field is optional for rule creation entities.
 	 */
-	Q_DECL_IMPORT extern const QString IsSingleShot;
+	UTIL_XPC_API extern const QString IsSingleShot;
 
 	/** @brief Whether a transient notifier should be enabled by default
 	 * in the rule being created (bool).
 	 *
 	 * @note This field is optional for rule creation entities.
 	 */
-	Q_DECL_IMPORT extern const QString NotifyTransient;
+	UTIL_XPC_API extern const QString NotifyTransient;
 
 	/** @brief Whether a persistent notifier should be enabled by default
 	 * in the rule being created (bool).
 	 *
 	 * @note This field is optional for rule creation entities.
 	 */
-	Q_DECL_IMPORT extern const QString NotifyPersistent;
+	UTIL_XPC_API extern const QString NotifyPersistent;
 
 	/** @brief Whether an audio notifier should be enabled by default in
 	 * the rule being created (bool).
 	 *
 	 * @note This field is optional for rule creation entities.
 	 */
-	Q_DECL_IMPORT extern const QString NotifyAudio;
+	UTIL_XPC_API extern const QString NotifyAudio;
 
-	Q_DECL_IMPORT extern const QString RuleID;
-	Q_DECL_IMPORT extern const QString AssocColor;
-	Q_DECL_IMPORT extern const QString IsEnabled;
+	UTIL_XPC_API extern const QString RuleID;
+	UTIL_XPC_API extern const QString AssocColor;
+	UTIL_XPC_API extern const QString IsEnabled;
 }
 
 namespace LC
 {
-	Q_DECL_IMPORT extern const QString IgnoreSelf;
-	Q_DECL_IMPORT extern const QString AllowedSemantics;
+	UTIL_XPC_API extern const QString IgnoreSelf;
+	UTIL_XPC_API extern const QString AllowedSemantics;
 }

@@ -9,7 +9,7 @@
 #include "gacts.h"
 #include <QIcon>
 #include <qxtglobalshortcut.h>
-#include <interfaces/entityconstants.h>
+#include <util/xpc/entityconstants.h>
 #include <interfaces/entitytesthandleresult.h>
 
 namespace LC

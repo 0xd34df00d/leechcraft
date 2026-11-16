@@ -11,7 +11,7 @@
 #include <QPainter>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
-#include <interfaces/an/constants.h>
+#include <util/xpc/an/constants.h>
 #include "entryeventsmanager.h"
 #include "eventssettingsmanager.h"
 #include "xmlsettingsmanager.h"

@@ -14,7 +14,7 @@
 #include <util/xpc/notificationactionhandler.h>
 #include <util/util.h>
 #include <interfaces/core/ientitymanager.h>
-#include <interfaces/an/constants.h>
+#include <util/xpc/an/constants.h>
 #include "packagesmodel.h"
 
 namespace LC

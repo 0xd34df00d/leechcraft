@@ -10,10 +10,10 @@
 #include <QIcon>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/iplugin2.h>
-#include <interfaces/entityconstants.h>
+#include <util/xpc/entityconstants.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
-#include <interfaces/an/entityfields.h>
+#include <util/xpc/an/entityfields.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/sys/resourceloader.h>
 #include "generalhandler.h"

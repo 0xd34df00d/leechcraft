@@ -8,8 +8,8 @@
 
 #include "cmdrunhandler.h"
 #include <QProcess>
-#include <interfaces/an/constants.h>
-#include <interfaces/an/entityfields.h>
+#include <util/xpc/an/constants.h>
+#include <util/xpc/an/entityfields.h>
 #include "notificationrule.h"
 
 namespace LC::AdvancedNotifications

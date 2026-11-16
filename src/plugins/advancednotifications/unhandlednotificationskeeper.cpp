@@ -11,7 +11,7 @@
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
-#include <interfaces/an/entityfields.h>
+#include <util/xpc/an/entityfields.h>
 #include <interfaces/an/ianemitter.h>
 #include <util/xpc/anutil.h>
 #include <util/xpc/stdanfields.h>

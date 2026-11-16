@@ -10,6 +10,7 @@
 
 #include <QString>
 #include <QFlags>
+#include "../xpcconfig.h"
 
 namespace LC::AN
 {
@@ -17,23 +18,23 @@ namespace LC::AN
 	 *
 	 * This category is used to cancel an event by a given event ID.
 	 */
-	Q_DECL_IMPORT extern const QString CatEventCancel;
+	UTIL_XPC_API extern const QString CatEventCancel;
 
 	/** @brief Category of Instant Messaging-related events.
 	 */
-	Q_DECL_IMPORT extern const QString CatIM;
+	UTIL_XPC_API extern const QString CatIM;
 
 	/** @brief Another user has requested our user's attention.
 	 */
-	Q_DECL_IMPORT extern const QString TypeIMAttention;
+	UTIL_XPC_API extern const QString TypeIMAttention;
 
 	/** @brief Another user has sent our user a file.
 	 */
-	Q_DECL_IMPORT extern const QString TypeIMIncFile;
+	UTIL_XPC_API extern const QString TypeIMIncFile;
 
 	/** @brief User has received a message in a standard one-to-one chat.
 	 */
-	Q_DECL_IMPORT extern const QString TypeIMIncMsg;
+	UTIL_XPC_API extern const QString TypeIMIncMsg;
 
 	/** @brief User has been highlighted in a multiuser chat.
 	 *
@@ -42,11 +43,11 @@ namespace LC::AN
 	 *
 	 * @sa TypeIMMUCMsg
 	 */
-	Q_DECL_IMPORT extern const QString TypeIMMUCHighlight;
+	UTIL_XPC_API extern const QString TypeIMMUCHighlight;
 
 	/** @brief User has been invited to a multiuser chat.
 	 */
-	Q_DECL_IMPORT extern const QString TypeIMMUCInvite;
+	UTIL_XPC_API extern const QString TypeIMMUCInvite;
 
 	/** @brief A message has been sent to a multiuser chat.
 	 *
@@ -55,120 +56,120 @@ namespace LC::AN
 	 *
 	 * @sa TypeIMMUCHighlight
 	 */
-	Q_DECL_IMPORT extern const QString TypeIMMUCMsg;
+	UTIL_XPC_API extern const QString TypeIMMUCMsg;
 
 	/** @brief Another user in our user's contact list has changed its
 	 * status.
 	 */
-	Q_DECL_IMPORT extern const QString TypeIMStatusChange;
+	UTIL_XPC_API extern const QString TypeIMStatusChange;
 
 	/** @brief Another user has granted subscription to our user.
 	 */
-	Q_DECL_IMPORT extern const QString TypeIMSubscrGrant;
+	UTIL_XPC_API extern const QString TypeIMSubscrGrant;
 
 	/** @brief Another user has revoked subscription from our user.
 	 */
-	Q_DECL_IMPORT extern const QString TypeIMSubscrRevoke;
+	UTIL_XPC_API extern const QString TypeIMSubscrRevoke;
 
 	/** @brief Another user has requested subscription from our user.
 	 */
-	Q_DECL_IMPORT extern const QString TypeIMSubscrRequest;
+	UTIL_XPC_API extern const QString TypeIMSubscrRequest;
 
 	/** @brief Another user has subscribed to our user.
 	 */
-	Q_DECL_IMPORT extern const QString TypeIMSubscrSub;
+	UTIL_XPC_API extern const QString TypeIMSubscrSub;
 
 	/** @brief Another user has unsubscribed from our user.
 	 */
-	Q_DECL_IMPORT extern const QString TypeIMSubscrUnsub;
+	UTIL_XPC_API extern const QString TypeIMSubscrUnsub;
 
 	/** @brief User's tune has changed.
 	 */
-	Q_DECL_IMPORT extern const QString TypeIMEventTuneChange;
+	UTIL_XPC_API extern const QString TypeIMEventTuneChange;
 
 	/** @brief User's mood has changed.
 	 */
-	Q_DECL_IMPORT extern const QString TypeIMEventMoodChange;
+	UTIL_XPC_API extern const QString TypeIMEventMoodChange;
 
 	/** @brief User's activity has changed.
 	 */
-	Q_DECL_IMPORT extern const QString TypeIMEventActivityChange;
+	UTIL_XPC_API extern const QString TypeIMEventActivityChange;
 
 	/** @brief User's location has changed.
 	 */
-	Q_DECL_IMPORT extern const QString TypeIMEventLocationChange;
+	UTIL_XPC_API extern const QString TypeIMEventLocationChange;
 
 	/** @brief Category of Organizer-related events.
 	 */
-	Q_DECL_IMPORT extern const QString CatOrganizer;
+	UTIL_XPC_API extern const QString CatOrganizer;
 
 	/** @brief An event due date is coming.
 	 */
-	Q_DECL_IMPORT extern const QString TypeOrganizerEventDue;
+	UTIL_XPC_API extern const QString TypeOrganizerEventDue;
 
 	/** @brief Category of Downloads-related events.
 	 */
-	Q_DECL_IMPORT extern const QString CatDownloads;
+	UTIL_XPC_API extern const QString CatDownloads;
 
 	/** @brief A download has been finished successfully without errors.
 	 */
-	Q_DECL_IMPORT extern const QString TypeDownloadFinished;
+	UTIL_XPC_API extern const QString TypeDownloadFinished;
 
 	/** @brief A download has been failed.
 	 */
-	Q_DECL_IMPORT extern const QString TypeDownloadError;
+	UTIL_XPC_API extern const QString TypeDownloadError;
 
 	/** @brief Category of package manager-related events.
 	 */
-	Q_DECL_IMPORT extern const QString CatPackageManager;
+	UTIL_XPC_API extern const QString CatPackageManager;
 
 	/** @brief A package has been updated.
 	 */
-	Q_DECL_IMPORT extern const QString TypePackageUpdated;
+	UTIL_XPC_API extern const QString TypePackageUpdated;
 
 	/** @brief Category of media player-related events.
 	 */
-	Q_DECL_IMPORT extern const QString CatMediaPlayer;
+	UTIL_XPC_API extern const QString CatMediaPlayer;
 
 	/** @brief A media file playback status has been changed.
 	 */
-	Q_DECL_IMPORT extern const QString TypeMediaPlaybackStatus;
+	UTIL_XPC_API extern const QString TypeMediaPlaybackStatus;
 
 	/** @brief Category for terminal emulation events.
 	 */
-	Q_DECL_IMPORT extern const QString CatTerminal;
+	UTIL_XPC_API extern const QString CatTerminal;
 
 	/** @brief A bell has ringed in a terminal window.
 	 */
-	Q_DECL_IMPORT extern const QString TypeTerminalBell;
+	UTIL_XPC_API extern const QString TypeTerminalBell;
 
 	/** @brief Activity in terminal window.
 	 */
-	Q_DECL_IMPORT extern const QString TypeTerminalActivity;
+	UTIL_XPC_API extern const QString TypeTerminalActivity;
 
 	/** @brief Inactivity in terminal window.
 	 */
-	Q_DECL_IMPORT extern const QString TypeTerminalInactivity;
+	UTIL_XPC_API extern const QString TypeTerminalInactivity;
 
 	/** @brief Category for news-related events.
 	 */
-	Q_DECL_IMPORT extern const QString CatNews;
+	UTIL_XPC_API extern const QString CatNews;
 
 	/** @brief News source got updated.
 	 */
-	Q_DECL_IMPORT extern const QString TypeNewsSourceUpdated;
+	UTIL_XPC_API extern const QString TypeNewsSourceUpdated;
 
 	/** @brief News source is detected to be broken.
 	 */
-	Q_DECL_IMPORT extern const QString TypeNewsSourceBroken;
+	UTIL_XPC_API extern const QString TypeNewsSourceBroken;
 
 	/** @brief Generic notifications that don't fit into any other category.
 	 */
-	Q_DECL_IMPORT extern const QString CatGeneric;
+	UTIL_XPC_API extern const QString CatGeneric;
 
 	/** @brief Generic type for generic notifications.
 	 */
-	Q_DECL_IMPORT extern const QString TypeGeneric;
+	UTIL_XPC_API extern const QString TypeGeneric;
 
 	/** @brief Describes the notification parameters.
 	 */
@@ -219,7 +220,7 @@ namespace LC::AN
 	{
 		/** @brief The URL to the file being played.
 		*/
-		Q_DECL_IMPORT extern const QString MediaPlayerURL;
+		UTIL_XPC_API extern const QString MediaPlayerURL;
 
 		/** @brief Playback status of the URL (QString).
 		 *
@@ -228,72 +229,72 @@ namespace LC::AN
 		 * - Paused
 		 * - Stopped
 		 */
-		Q_DECL_IMPORT extern const QString MediaPlaybackStatus;
+		UTIL_XPC_API extern const QString MediaPlaybackStatus;
 
 		/** @brief The title of the currently playing media (QString).
 		 */
-		Q_DECL_IMPORT extern const QString MediaTitle;
+		UTIL_XPC_API extern const QString MediaTitle;
 
 		/** @brief The artist of the currently playing media (QString).
 		 */
-		Q_DECL_IMPORT extern const QString MediaArtist;
+		UTIL_XPC_API extern const QString MediaArtist;
 
 		/** @brief The album of the currently playing media (QString).
 		 */
-		Q_DECL_IMPORT extern const QString MediaAlbum;
+		UTIL_XPC_API extern const QString MediaAlbum;
 
 		/** @brief The length of the currently playing media (int).
 		 */
-		Q_DECL_IMPORT extern const QString MediaLength;
+		UTIL_XPC_API extern const QString MediaLength;
 
 		/** @brief Whether the terminal window is active (bool).
 		 */
-		Q_DECL_IMPORT extern const QString TerminalActive;
+		UTIL_XPC_API extern const QString TerminalActive;
 
 		/** @brief General activity name of a contact (QString).
 		 */
-		Q_DECL_IMPORT extern const QString IMActivityGeneral;
+		UTIL_XPC_API extern const QString IMActivityGeneral;
 
 		/** @brief Specific activity name of a contact (QString).
 		 */
-		Q_DECL_IMPORT extern const QString IMActivitySpecific;
+		UTIL_XPC_API extern const QString IMActivitySpecific;
 
 		/** @brief Accompanying activity text entered by a contact (QString).
 		 */
-		Q_DECL_IMPORT extern const QString IMActivityText;
+		UTIL_XPC_API extern const QString IMActivityText;
 
 		/** @brief General mood name of a contact (QString).
 		 */
-		Q_DECL_IMPORT extern const QString IMMoodGeneral;
+		UTIL_XPC_API extern const QString IMMoodGeneral;
 
 		/** @brief Accompanying mood text entered by a contact (QString).
 		 */
-		Q_DECL_IMPORT extern const QString IMMoodText;
+		UTIL_XPC_API extern const QString IMMoodText;
 
 		/** @brief Longitude of a contact's position (double).
 		 */
-		Q_DECL_IMPORT extern const QString IMLocationLongitude;
+		UTIL_XPC_API extern const QString IMLocationLongitude;
 
 		/** @brief Latitude of a contact's position (double).
 		 */
-		Q_DECL_IMPORT extern const QString IMLocationLatitude;
+		UTIL_XPC_API extern const QString IMLocationLatitude;
 
 		/** @brief Country a contact is currently in (QString).
 		 */
-		Q_DECL_IMPORT extern const QString IMLocationCountry;
+		UTIL_XPC_API extern const QString IMLocationCountry;
 
 		/** @brief Exact locality, like a town or a city, a contact is
 		 * currently in (QString).
 		 */
-		Q_DECL_IMPORT extern const QString IMLocationLocality;
+		UTIL_XPC_API extern const QString IMLocationLocality;
 
 		/** @brief News source name (QString).
 		 */
-		Q_DECL_IMPORT extern const QString NewsSourceName;
+		UTIL_XPC_API extern const QString NewsSourceName;
 
 		/** @brief News source URL (QString).
 		 */
-		Q_DECL_IMPORT extern const QString NewsSourceURL;
+		UTIL_XPC_API extern const QString NewsSourceURL;
 	}
 }
 

@@ -9,9 +9,9 @@
 #include "generalhandler.h"
 #include <QAction>
 #include <interfaces/core/icoreproxy.h>
-#include <interfaces/an/constants.h>
-#include <interfaces/an/entityfields.h>
-#include <interfaces/entityconstants.h>
+#include <util/xpc/an/constants.h>
+#include <util/xpc/an/entityfields.h>
+#include <util/xpc/entityconstants.h>
 #include "systemtrayhandler.h"
 #include "visualhandler.h"
 #include "audiohandler.h"

@@ -11,9 +11,9 @@
 #include <QSettings>
 #include <QCoreApplication>
 #include <QtDebug>
-#include <interfaces/an/constants.h>
+#include <util/xpc/an/constants.h>
 #include <interfaces/an/ianemitter.h>
-#include <interfaces/an/entityfields.h>
+#include <util/xpc/an/entityfields.h>
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>

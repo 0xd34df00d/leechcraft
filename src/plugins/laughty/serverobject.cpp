@@ -16,7 +16,7 @@
 #include <util/xpc/util.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/xdg/xdg.h>
-#include <interfaces/an/constants.h>
+#include <util/xpc/an/constants.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
 

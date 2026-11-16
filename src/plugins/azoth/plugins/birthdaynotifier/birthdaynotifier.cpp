@@ -13,7 +13,7 @@
 #include <util/xpc/util.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <interfaces/an/constants.h>
+#include <util/xpc/an/constants.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>

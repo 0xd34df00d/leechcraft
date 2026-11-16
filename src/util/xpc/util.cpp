@@ -12,7 +12,7 @@
 #include <interfaces/idatafilter.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
-#include <interfaces/an/entityfields.h>
+#include <util/xpc/an/entityfields.h>
 #include <interfaces/ipersistentstorageplugin.h>
 #include <interfaces/ijobholder.h>
 

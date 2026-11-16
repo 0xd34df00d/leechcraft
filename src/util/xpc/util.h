@@ -12,7 +12,7 @@
 #include <optional>
 #include <QImage>
 #include <interfaces/structures.h>
-#include <interfaces/an/constants.h>
+#include <util/xpc/an/constants.h>
 #include <interfaces/an/ianemitter.h>
 #include <interfaces/core/icoreproxy.h>
 #include <util/threads/coro/taskfwd.h>
@@ -42,9 +42,9 @@ namespace LC::Util
 	 * @param[in] priority The priority of this notification.
 	 * @param[in] senderID The ID of the plugin sending this notification.
 	 * @param[in] cat The category of this notification (one of Cat
-	 * constants in interfaces/an/constants.h).
+	 * constants in `util/xpc/an/constants.h`).
 	 * @param[in] type The type of this notification (one of Type
-	 * constants in interfaces/an/constants.h).
+	 * constants in `util/xpc/an/constants.h`).
 	 * @param[in] id The ID of this notification, used to group
 	 * consecutive notifications about similar events like incoming
 	 * message from the same IM contact.

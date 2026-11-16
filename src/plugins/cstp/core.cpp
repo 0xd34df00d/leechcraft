@@ -17,12 +17,12 @@
 #include <QtDebug>
 #include <QDesktopServices>
 #include <QToolBar>
-#include <interfaces/entityconstants.h>
+#include <util/xpc/entityconstants.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/ijobholder.h>
-#include <interfaces/an/constants.h>
+#include <util/xpc/an/constants.h>
 #include <interfaces/idownload.h>
 #include <util/util.h>
 #include <util/sll/prelude.h>

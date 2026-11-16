@@ -10,7 +10,9 @@ add_util_library (util-xpc
 		anutil.cpp
 		introspectable.cpp
 		screensaverprohibitor.cpp
-		anconstantsdefs.cpp
+		an/constants.cpp
+		an/entityfields.cpp
+		entityconstants.cpp
 		downloadhelpers.cpp
 		downloaderrorstrings.cpp
 		progressmanager.cpp

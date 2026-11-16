@@ -40,8 +40,8 @@
 #include <util/xpc/notificationactionhandler.h>
 #include <util/xpc/stddatafiltermenucreator.h>
 #include <util/shortcuts/shortcutmanager.h>
-#include <interfaces/entityconstants.h>
-#include <interfaces/an/entityfields.h>
+#include <util/xpc/entityconstants.h>
+#include <util/xpc/an/entityfields.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>

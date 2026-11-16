@@ -10,7 +10,7 @@
 #include <QMap>
 #include <QList>
 #include <interfaces/an/ianemitter.h>
-#include <interfaces/an/constants.h>
+#include <util/xpc/an/constants.h>
 
 namespace LC::Util
 {

@@ -12,8 +12,8 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <interfaces/ijobholder.h>
-#include <interfaces/an/constants.h>
-#include <interfaces/an/entityfields.h>
+#include <util/xpc/an/constants.h>
+#include <util/xpc/an/entityfields.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <util/sll/qobjectrefcast.h>

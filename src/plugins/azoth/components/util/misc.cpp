@@ -10,9 +10,9 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QWizard>
-#include <interfaces/entityconstants.h>
-#include <interfaces/an/constants.h>
-#include <interfaces/an/entityfields.h>
+#include <util/xpc/entityconstants.h>
+#include <util/xpc/an/constants.h>
+#include <util/xpc/an/entityfields.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/irootwindowsmanager.h>

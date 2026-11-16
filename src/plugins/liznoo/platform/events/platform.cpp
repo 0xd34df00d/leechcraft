@@ -8,7 +8,7 @@
 
 #include "platform.h"
 #include <util/xpc/util.h>
-#include <interfaces/entityconstants.h>
+#include <util/xpc/entityconstants.h>
 #include <interfaces/core/ientitymanager.h>
 
 namespace LC::Liznoo::Events

@@ -20,7 +20,7 @@
 #include <util/db/dblock.h>
 #include <util/db/util.h>
 #include <util/sll/prelude.h>
-#include <interfaces/entityconstants.h>
+#include <util/xpc/entityconstants.h>
 #include <interfaces/structures.h>
 #include <interfaces/core/itagsmanager.h>
 

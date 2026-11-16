@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QString>
+#include "xpcconfig.h"
 
 class QVariant;
 
@@ -16,14 +17,14 @@ class QVariant;
  */
 namespace LC::EF
 {
-	Q_DECL_IMPORT extern const QString Priority;
-	Q_DECL_IMPORT extern const QString NotificationActions;
-	Q_DECL_IMPORT extern const QString NotificationPixmap;
-	Q_DECL_IMPORT extern const QString NotificationTimeout;
-	Q_DECL_IMPORT extern const QString HandlingObject;
-	Q_DECL_IMPORT extern const QString UserVisibleName;
-	Q_DECL_IMPORT extern const QString Text;
-	Q_DECL_IMPORT extern const QString Tags;
+	UTIL_XPC_API extern const QString Priority;
+	UTIL_XPC_API extern const QString NotificationActions;
+	UTIL_XPC_API extern const QString NotificationPixmap;
+	UTIL_XPC_API extern const QString NotificationTimeout;
+	UTIL_XPC_API extern const QString HandlingObject;
+	UTIL_XPC_API extern const QString UserVisibleName;
+	UTIL_XPC_API extern const QString Text;
+	UTIL_XPC_API extern const QString Tags;
 
 	/** @brief Entity fields corresponding to global action registration.
 	 *
@@ -31,11 +32,11 @@ namespace LC::EF
 	 */
 	namespace GlobalAction
 	{
-		Q_DECL_IMPORT extern const QString ActionID;
-		Q_DECL_IMPORT extern const QString Shortcut;
-		Q_DECL_IMPORT extern const QString Receiver;
-		Q_DECL_IMPORT extern const QString Method;
-		Q_DECL_IMPORT extern const QString AltShortcuts;
+		UTIL_XPC_API extern const QString ActionID;
+		UTIL_XPC_API extern const QString Shortcut;
+		UTIL_XPC_API extern const QString Receiver;
+		UTIL_XPC_API extern const QString Method;
+		UTIL_XPC_API extern const QString AltShortcuts;
 	}
 
 	/** @brief Entity fields corresponding to power state change events.
@@ -44,7 +45,7 @@ namespace LC::EF
 	 */
 	namespace PowerState
 	{
-		Q_DECL_IMPORT extern const QString TimeLeft;
+		UTIL_XPC_API extern const QString TimeLeft;
 	}
 }
 
@@ -52,30 +53,30 @@ namespace LC::EF
  */
 namespace LC::Mimes
 {
-	Q_DECL_IMPORT extern const QString Notification;
-	Q_DECL_IMPORT extern const QString NotificationRuleCreate;
+	UTIL_XPC_API extern const QString Notification;
+	UTIL_XPC_API extern const QString NotificationRuleCreate;
 
 	/** @brief Registration of a global system-wide action.
 	 *
 	 * @sa LC::EF::GlobalAction
 	 */
-	Q_DECL_IMPORT extern const QString GlobalActionRegister;
-	Q_DECL_IMPORT extern const QString GlobalActionUnregister;
+	UTIL_XPC_API extern const QString GlobalActionRegister;
+	UTIL_XPC_API extern const QString GlobalActionUnregister;
 
 	/** @brief Energy power state has changed.
 	 *
 	 * @sa LC::PowerState
 	 * @sa LC::EF::PowerState
 	 */
-	Q_DECL_IMPORT extern const QString PowerStateChanged;
+	UTIL_XPC_API extern const QString PowerStateChanged;
 
-	Q_DECL_IMPORT extern const QString DataFilterRequest;
+	UTIL_XPC_API extern const QString DataFilterRequest;
 }
 
 /** @brief The values of the Entity::Entity_ corresponding to LC::Mimes::PowerStateChanged.
  */
 namespace LC::PowerState
 {
-	Q_DECL_IMPORT extern const QVariant Sleeping;
-	Q_DECL_IMPORT extern const QVariant WokeUp;
+	UTIL_XPC_API extern const QVariant Sleeping;
+	UTIL_XPC_API extern const QVariant WokeUp;
 }

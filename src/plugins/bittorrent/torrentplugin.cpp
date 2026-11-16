@@ -16,7 +16,7 @@
 #include <QUrlQuery>
 #include <QFileInfo>
 #include <QDir>
-#include <interfaces/entityconstants.h>
+#include <util/xpc/entityconstants.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>

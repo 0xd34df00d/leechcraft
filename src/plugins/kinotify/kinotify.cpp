@@ -14,8 +14,8 @@
 #include <util/sll/void.h>
 #include <util/sll/qtutil.h>
 #include <util/threads/coro.h>
-#include <interfaces/entityconstants.h>
-#include <interfaces/an/entityfields.h>
+#include <util/xpc/entityconstants.h>
+#include <util/xpc/an/entityfields.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>

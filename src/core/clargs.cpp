@@ -12,7 +12,7 @@
 #include <QStringList>
 #include <QUrl>
 #include <QtDebug>
-#include <interfaces/entityconstants.h>
+#include <util/xpc/entityconstants.h>
 #include <interfaces/structures.h>
 #include <util/sll/qtutil.h>
 #include <util/xpc/util.h>

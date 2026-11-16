@@ -9,7 +9,7 @@
 #include "notificationsmanager.h"
 #include <QTimer>
 #include <util/xpc/util.h>
-#include <interfaces/an/constants.h>
+#include <util/xpc/an/constants.h>
 #include <interfaces/core/ientitymanager.h>
 #include "todostorage.h"
 

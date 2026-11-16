@@ -15,7 +15,7 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/an/ianemitter.h>
 #include <interfaces/an/ianrulesstorage.h>
-#include <interfaces/an/constants.h>
+#include <util/xpc/an/constants.h>
 #include <util/structuresops.h>
 #include <util/util.h>
 #include <util/sll/qtutil.h>

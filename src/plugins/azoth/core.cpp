@@ -35,9 +35,9 @@
 #include <util/sll/urloperator.h>
 #include <util/sll/util.h>
 #include <util/threads/futures.h>
-#include <interfaces/entityconstants.h>
+#include <util/xpc/entityconstants.h>
 #include <interfaces/iplugin2.h>
-#include <interfaces/an/constants.h>
+#include <util/xpc/an/constants.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/irootwindowsmanager.h>

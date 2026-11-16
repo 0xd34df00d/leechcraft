@@ -12,7 +12,7 @@
 #include <QMap>
 #include <QUrl>
 #include <interfaces/an/ianemitter.h>
-#include <interfaces/an/constants.h>
+#include <util/xpc/an/constants.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
 

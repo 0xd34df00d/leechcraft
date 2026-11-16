@@ -14,7 +14,7 @@
 #include <QMessageBox>
 #include <QAction>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <interfaces/entityconstants.h>
+#include <util/xpc/entityconstants.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>

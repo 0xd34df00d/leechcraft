@@ -13,8 +13,8 @@
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
-#include <interfaces/an/constants.h>
-#include <interfaces/an/entityfields.h>
+#include <util/xpc/an/constants.h>
+#include <util/xpc/an/entityfields.h>
 #include "generalhandler.h"
 
 namespace LC::AdvancedNotifications

@@ -10,7 +10,7 @@
 #include <QAction>
 #include <QShortcut>
 #include <QWidget>
-#include <interfaces/entityconstants.h>
+#include <util/xpc/entityconstants.h>
 #include <util/xpc/util.h>
 #include <util/sll/prelude.h>
 #include <util/sll/visitor.h>

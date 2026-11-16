@@ -13,7 +13,7 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <interfaces/an/ianemitter.h>
-#include <interfaces/an/constants.h>
+#include <util/xpc/an/constants.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>

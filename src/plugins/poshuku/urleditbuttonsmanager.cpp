@@ -10,8 +10,8 @@
 #include <QToolButton>
 #include <QMenu>
 #include <util/sll/slotclosure.h>
-#include <interfaces/entityconstants.h>
-#include <interfaces/an/entityfields.h>
+#include <util/xpc/entityconstants.h>
+#include <util/xpc/an/entityfields.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>

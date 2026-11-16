@@ -13,8 +13,8 @@
 #include <QTest>
 #include <util/sll/qtutil.h>
 #include <util/xpc/util.h>
-#include <interfaces/entityconstants.h>
-#include <interfaces/an/entityfields.h>
+#include <util/xpc/entityconstants.h>
+#include <util/xpc/an/entityfields.h>
 #include "../kinotify.h"
 #include "../kinotifywidget.h"
 #include "../xmlsettingsmanager.h"

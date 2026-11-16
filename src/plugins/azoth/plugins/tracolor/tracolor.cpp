@@ -11,8 +11,8 @@
 #include <QtDebug>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/entitytesthandleresult.h>
-#include <interfaces/an/constants.h>
-#include <interfaces/an/entityfields.h>
+#include <util/xpc/an/constants.h>
+#include <util/xpc/an/entityfields.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/iaccount.h>

@@ -6,62 +6,7 @@
  * (See accompanying file LICENSE or copy at https://www.boost.org/LICENSE_1_0.txt)
  **********************************************************************/
 
-#include <interfaces/entityconstants.h>
-#include <interfaces/an/constants.h>
-#include <interfaces/an/entityfields.h>
-#include <QVariant>
-
-namespace LC
-{
-	const QString IgnoreSelf { QStringLiteral ("IgnoreSelf") };
-	const QString AllowedSemantics { QStringLiteral ("AllowedSemantics") };
-}
-
-namespace LC::EF
-{
-	const QString Priority { QStringLiteral ("Priority") };
-	const QString NotificationActions { QStringLiteral ("NotificationActions") };
-	const QString NotificationPixmap { QStringLiteral ("NotificationPixmap") };
-	const QString NotificationTimeout { QStringLiteral ("NotificationTimeout") };
-	const QString HandlingObject { QStringLiteral ("HandlingObject") };
-	const QString UserVisibleName { QStringLiteral ("UserVisibleName") };
-	const QString Text { QStringLiteral ("Text") };
-	const QString Tags { QStringLiteral ("Tags") };
-
-	namespace GlobalAction
-	{
-		const QString ActionID { QStringLiteral ("ActionID") };
-		const QString Shortcut { QStringLiteral ("Shortcut") };
-		const QString Receiver { QStringLiteral ("Receiver") };
-		const QString Method { QStringLiteral ("Method") };
-		const QString AltShortcuts { QStringLiteral ("AltShortcuts") };
-	}
-
-	namespace PowerState
-	{
-		const QString TimeLeft { QStringLiteral ("TimeLeft") };
-	}
-}
-
-namespace LC::Mimes
-{
-#define MIME_NOTIFICATION "x-leechcraft/notification"
-	const QString Notification { QStringLiteral (MIME_NOTIFICATION) };
-	const QString NotificationRuleCreate { QStringLiteral (MIME_NOTIFICATION "-rule-create") };
-
-	const QString GlobalActionRegister { QStringLiteral ("x-leechcraft/global-action-register") };
-	const QString GlobalActionUnregister { QStringLiteral ("x-leechcraft/global-action-unregister") };
-
-	const QString PowerStateChanged { QStringLiteral ("x-leechcraft/power-state-changed") };
-
-	const QString DataFilterRequest { QStringLiteral ("x-leechcraft/data-filter-request") };
-}
-
-namespace LC::PowerState
-{
-	const QVariant Sleeping { QByteArray { "Sleeping" } };
-	const QVariant WokeUp { QByteArray { "WokeUp" } };
-}
+#include "constants.h"
 
 namespace LC::AN
 {
@@ -138,30 +83,5 @@ namespace LC::AN
 		const QString IMLocationLocality { QStringLiteral (CAT_IM ".Fields.Location.Locality") };
 		const QString NewsSourceName { QStringLiteral (CAT_NEWS ".Fields.Source.Name") };
 		const QString NewsSourceURL { QStringLiteral (CAT_NEWS ".Fields.Source.URL") };
-	}
-
-	namespace EF
-	{
-		const QString SenderID { QStringLiteral ("org.LC.AdvNotifications.SenderID") };
-		const QString EventCategory { QStringLiteral ("org.LC.AdvNotifications.EventCategory") };
-		const QString EventID { QStringLiteral ("org.LC.AdvNotifications.EventID") };
-		const QString VisualPath { QStringLiteral ("org.LC.AdvNotifications.VisualPath") };
-		const QString EventType { QStringLiteral ("org.LC.AdvNotifications.EventType") };
-		const QString FullText { QStringLiteral ("org.LC.AdvNotifications.FullText") };
-		const QString ExtendedText { QStringLiteral ("org.LC.AdvNotifications.ExtendedText") };
-		const QString DeltaCount { QStringLiteral ("org.LC.AdvNotifications.DeltaCount") };
-		const QString Count { QStringLiteral ("org.LC.AdvNotifications.Count") };
-
-		const QString WindowIndex { QStringLiteral ("org.LC.AdvNotifications.WindowIndex") };
-
-		const QString OpenConfiguration { QStringLiteral ("org.LC.AdvNotifications.OpenConfiguration") };
-		const QString IsSingleShot { QStringLiteral ("org.LC.AdvNotifications.SingleShot") };
-		const QString NotifyTransient { QStringLiteral ("org.LC.AdvNotifications.NotifyTransient") };
-		const QString NotifyPersistent { QStringLiteral ("org.LC.AdvNotifications.NotifyPersistent") };
-		const QString NotifyAudio { QStringLiteral ("org.LC.AdvNotifications.NotifyAudio") };
-
-		const QString RuleID { QStringLiteral ("org.LC.AdvNotifications.RuleID") };
-		const QString AssocColor { QStringLiteral ("org.LC.AdvNotifications.AssocColor") };
-		const QString IsEnabled { QStringLiteral ("org.LC.AdvNotifications.IsEnabled") };
 	}
 }

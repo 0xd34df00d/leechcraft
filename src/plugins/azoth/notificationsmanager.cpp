@@ -18,8 +18,8 @@
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
-#include <interfaces/an/constants.h>
-#include <interfaces/an/entityfields.h>
+#include <util/xpc/an/constants.h>
+#include <util/xpc/an/entityfields.h>
 #include <interfaces/media/audiostructs.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
