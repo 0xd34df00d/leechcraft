@@ -45,8 +45,8 @@ namespace LC::Util
 
 	void FancyTrayIconFallback::UpdateTooltip ()
 	{
-#if Q_OS_WIN
-		Icon_.setToolTip (FTI_.GetTooltip ().Plain_);
+#ifdef Q_OS_WIN
+		Icon_.setToolTip (FTI_.GetTooltip ().PlainText_);
 #else
 		Icon_.setToolTip (FTI_.GetTooltip ().HTML_);
 #endif

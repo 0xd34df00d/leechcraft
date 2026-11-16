@@ -1035,7 +1035,16 @@ namespace LC::Util
 
 					const auto process = new QProcess {};
 					const auto delay = std::chrono::duration_cast<std::chrono::milliseconds> (LongDelay);
+#ifdef Q_OS_WIN
+					process->start ("powershell"_qs,
+							{
+								"-NoProfile"_qs,
+								"-Command"_qs,
+								"Start-Sleep -Milliseconds " + QString::number (delay.count ())
+							});
+#else
 					process->start ("sleep", { QString::number (delay.count () / 1000.0) });
+#endif
 					connect (process,
 							&QProcess::finished,
 							process,
@@ -1215,6 +1224,7 @@ namespace LC::Util
 
 			auto env = QProcessEnvironment::systemEnvironment ();
 			env.insert (QString::fromUtf8 (DeathChildEnvVar), "1"_qs);
+			env.insert ("QT_FORCE_STDERR_LOGGING"_qs, "1"_qs);
 
 			QProcess child;
 			child.setProcessEnvironment (env);
@@ -1297,7 +1307,11 @@ namespace LC::Util
 
 	void CoroTaskTest::testProcessOutcomeExited ()
 	{
+#ifdef Q_OS_WIN
+		const auto outcome = GetTaskResult (RunProcess ("cmd"_qs, { "/c"_qs, "exit 3"_qs }));
+#else
 		const auto outcome = GetTaskResult (RunProcess ("sh"_qs, { "-c"_qs, "exit 3"_qs }));
+#endif
 		QVERIFY (std::holds_alternative<ProcessExited> (outcome));
 		QCOMPARE (std::get<ProcessExited> (outcome).Code_, 3);
 	}
