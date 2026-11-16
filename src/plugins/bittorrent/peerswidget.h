@@ -10,14 +10,10 @@
 
 #include <memory>
 #include <QWidget>
+#include <libtorrent/fwd.hpp>
 #include "ui_peerswidget.h"
 
 class QSortFilterProxyModel;
-
-namespace libtorrent
-{
-	class session;
-}
 
 namespace LC::BitTorrent
 {

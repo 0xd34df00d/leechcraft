@@ -11,14 +11,9 @@
 #include <list>
 #include <memory>
 #include <QHash>
+#include <libtorrent/fwd.hpp>
 #include <util/sll/scopeguards.h>
 #include <util/sll/typegetter.h>
-
-namespace libtorrent
-{
-	class alert;
-	class session;
-}
 
 namespace LC::BitTorrent
 {

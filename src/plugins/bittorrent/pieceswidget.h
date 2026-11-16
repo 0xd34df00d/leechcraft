@@ -10,11 +10,7 @@
 
 #include <QLabel>
 #include <QVector>
-
-namespace libtorrent
-{
-	class bitfield;
-}
+#include <libtorrent/fwd.hpp>
 
 namespace LC::BitTorrent
 {

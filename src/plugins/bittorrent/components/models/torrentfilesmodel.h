@@ -10,14 +10,10 @@
 
 #include <memory>
 #include <QStringList>
+#include <libtorrent/fwd.hpp>
 #include <util/sll/scopeguards.h>
 #include "fileinfo.h"
 #include "torrentfilesmodelbase.h"
-
-namespace libtorrent
-{
-	struct torrent_handle;
-}
 
 namespace LC::BitTorrent
 {

@@ -11,11 +11,7 @@
 #include <memory>
 #include <QObject>
 #include <QMap>
-
-namespace libtorrent
-{
-	struct torrent_handle;
-}
+#include <libtorrent/fwd.hpp>
 
 namespace LC::BitTorrent
 {

@@ -14,6 +14,7 @@
 #include <QList>
 #include <QVector>
 #include <QFutureInterface>
+#include <libtorrent/fwd.hpp>
 #include <libtorrent/alert_types.hpp>
 #include <libtorrent/torrent_info.hpp>
 #include <libtorrent/torrent_handle.hpp>
@@ -33,11 +34,6 @@ class QDomElement;
 class QToolBar;
 class QStandardItemModel;
 class QDataStream;
-
-namespace libtorrent
-{
-	class session;
-};
 
 struct EntityTestHandleResult;
 

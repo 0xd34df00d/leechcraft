@@ -11,15 +11,11 @@
 #include <memory>
 #include <QTabWidget>
 #include <QModelIndex>
+#include <libtorrent/fwd.hpp>
 #include <util/tags/tagseditoraddon.h>
 #include "ui_torrenttabwidget.h"
 
 class QAbstractItemModel;
-
-namespace libtorrent
-{
-	class session;
-}
 
 namespace LC::BitTorrent
 {

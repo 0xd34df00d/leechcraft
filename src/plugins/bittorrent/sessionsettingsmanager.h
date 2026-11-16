@@ -9,13 +9,9 @@
 #pragma once
 
 #include <QObject>
+#include <libtorrent/fwd.hpp>
 
 class QTimer;
-
-namespace libtorrent
-{
-	class session;
-}
 
 namespace LC::BitTorrent
 {

@@ -12,17 +12,12 @@
 #include <QObject>
 #include <QModelIndexList>
 #include <QCoreApplication>
+#include <libtorrent/fwd.hpp>
 
 class QAction;
 class QMenu;
 class QToolBar;
 class QWidget;
-
-namespace libtorrent
-{
-	class session;
-	struct torrent_handle;
-}
 
 namespace LC::BitTorrent
 {

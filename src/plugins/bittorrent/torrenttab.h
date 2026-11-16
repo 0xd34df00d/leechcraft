@@ -9,15 +9,11 @@
 #pragma once
 
 #include <QWidget>
+#include <libtorrent/fwd.hpp>
 #include <interfaces/ihavetabs.h>
 #include "ui_torrenttab.h"
 
 class QModelIndex;
-
-namespace libtorrent
-{
-	class session;
-}
 
 namespace LC::BitTorrent
 {
