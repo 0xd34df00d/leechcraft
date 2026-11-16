@@ -15,7 +15,7 @@ LC_DEFINE_PLUGIN (
 		autoidler.cpp
 		3dparty/idle.cpp
 		${X11_IMPL}
-		$<$<PLATFORM_ID:Win32>:3dparty/idle_win.cpp>
+		$<$<PLATFORM_ID:Windows>:3dparty/idle_win.cpp>
 		$<$<PLATFORM_ID:Darwin>:3dparty/idle_mac.cpp>
 	SETTINGS azothautoidlersettings.xml
 	QT_COMPONENTS Widgets
