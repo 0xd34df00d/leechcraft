@@ -34,12 +34,6 @@ namespace LC::Azoth
 		 * @return Pending avatar image contents.
 		 */
 		virtual Util::ContextTask<FetchResult_t> FetchAvatar () = 0;
-
-		/** @brief Returns whether this exact entry has any avatar.
-		 *
-		 * @return Whether there is an avatar.
-		 */
-		virtual bool HasAvatar () const = 0;
 	protected:
 		/** @brief Notifies that the avatar of the entry has been changed.
 		 *

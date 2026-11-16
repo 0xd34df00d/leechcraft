@@ -164,7 +164,6 @@ namespace Xoox
 
 		// IHaveAvatars
 		Util::ContextTask<FetchResult_t> FetchAvatar ();
-		bool HasAvatar () const;
 
 		// IHaveContactTune
 		Media::AudioInfo GetUserTune (const QString&) const;

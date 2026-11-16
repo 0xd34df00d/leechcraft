@@ -63,8 +63,6 @@ namespace LC::Azoth
 		MaybeNowResult_t<std::optional<QImage>> GetAvatarImageNow (const GlobalStrongestId&, const AvatarSize&);
 
 		std::optional<QImage> GetAvatarImageIfCached (const GlobalStrongestId&, const AvatarSize&) const;
-
-		bool HasAvatar (QObject*) const;
 	private:
 		Util::ContextTask<AvatarsStorage::Result_t<QImage>> GetAvatarFromDiskOnly (GlobalStrongestId, AvatarSize);
 		Util::SharedContextTask<IHaveAvatars::FetchResult_t> FetchAndSave (GlobalStrongestId);

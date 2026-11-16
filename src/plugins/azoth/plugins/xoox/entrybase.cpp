@@ -464,11 +464,6 @@ namespace Xoox
 		co_return co_await iface.future ();
 	}
 
-	bool EntryBase::HasAvatar () const
-	{
-		return !GetVCardPhotoHash ().isEmpty ();
-	}
-
 	Media::AudioInfo EntryBase::GetUserTune (const QString& variant) const
 	{
 		return Variants_ [GetVariantOrHighest (variant)].Audio_.value_or (Media::AudioInfo {});

@@ -171,12 +171,6 @@ namespace LC::Azoth
 		return !img || img->isNull () ? std::optional<QImage> {} : *img;
 	}
 
-	bool AvatarsManager::HasAvatar (QObject *entryObj) const
-	{
-		const auto iha = qobject_cast<IHaveAvatars*> (entryObj);
-		return iha && iha->HasAvatar ();
-	}
-
 	Util::ContextTask<AvatarsStorage::Result_t<QImage>> AvatarsManager::GetAvatarFromDiskOnly (GlobalStrongestId entryId, AvatarSize size)
 	{
 		co_await Util::AddContext { CoroContext_ };
