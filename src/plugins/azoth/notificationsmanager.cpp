@@ -177,25 +177,25 @@ namespace Azoth
 
 		namespace Source
 		{
-			constexpr EntryField Name { Fields::SourceName, &Extract::Name };
-			constexpr EntryField AccountId { Fields::SourceAccountId, &Extract::AccountId };
-			constexpr EntryField HumanReadableAddress { Fields::SourceHumanReadableAddress, &Extract::HumanReadableAddress };
-			constexpr EntryField Groups { Fields::SourceGroups, &Extract::Groups };
+			const EntryField Name { Fields::SourceName, &Extract::Name };
+			const EntryField AccountId { Fields::SourceAccountId, &Extract::AccountId };
+			const EntryField HumanReadableAddress { Fields::SourceHumanReadableAddress, &Extract::HumanReadableAddress };
+			const EntryField Groups { Fields::SourceGroups, &Extract::Groups };
 
 			namespace Internal
 			{
-				constexpr EntryField GlobalStrongestId { Fields::Internal::SourceGlobalStrongestId, &Extract::GlobalStrongestId };
+				const EntryField GlobalStrongestId { Fields::Internal::SourceGlobalStrongestId, &Extract::GlobalStrongestId };
 			}
 		}
 
 		namespace Room
 		{
-			constexpr EntryField Name { Fields::RoomName, &Extract::Name };
-			constexpr EntryField HumanReadableAddress { Fields::RoomHumanReadableAddress, &Extract::HumanReadableAddress };
+			const EntryField Name { Fields::RoomName, &Extract::Name };
+			const EntryField HumanReadableAddress { Fields::RoomHumanReadableAddress, &Extract::HumanReadableAddress };
 
 			namespace Internal
 			{
-				constexpr EntryField GlobalStrongestId { Fields::Internal::RoomGlobalStrongestId, &Extract::GlobalStrongestId };
+				const EntryField GlobalStrongestId { Fields::Internal::RoomGlobalStrongestId, &Extract::GlobalStrongestId };
 			}
 		}
 
