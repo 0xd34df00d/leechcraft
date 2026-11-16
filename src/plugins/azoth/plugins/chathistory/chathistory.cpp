@@ -368,11 +368,11 @@ namespace LC::Azoth::ChatHistory
 		const auto richBody = irtm ? irtm->GetRichBody () : QString {};
 
 		StorageThread_->Run (&Storage2::AddMessage, Util::Visit (GetDescription (entry, *msg),
-				[&] (const auto& descrWithEndpoint)
+				[&]<History::EntryKind K> (const History::EntryDescrWithEndpoint<K>& descrWithEndpoint)
 				{
 					return History::SomeEntryWithMessages
 					{
-						History::EntryWithMessages
+						History::EntryWithMessages<K>		// https://github.com/llvm/llvm-project/issues/237766
 						{
 							History::Entry
 							{
