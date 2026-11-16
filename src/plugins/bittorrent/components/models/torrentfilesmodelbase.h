@@ -66,16 +66,8 @@ namespace LC::BitTorrent
 	class TorrentFilesModelBase : public QAbstractItemModel
 	{
 		const QStringList HeaderData_;
-
-		struct Hash
-		{
-			size_t operator() (const std::filesystem::path& path) const
-			{
-				return std::hash<std::string> {} (path.native ());
-			}
-		};
 	protected:
-		using Path2Node_t = std::unordered_map<std::filesystem::path, std::shared_ptr<T>, Hash>;
+		using Path2Node_t = std::unordered_map<std::filesystem::path, std::shared_ptr<T>>;
 		Path2Node_t Path2Node_;
 
 		const std::shared_ptr<T> RootNode_;
