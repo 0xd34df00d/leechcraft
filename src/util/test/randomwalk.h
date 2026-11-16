@@ -10,7 +10,6 @@
 
 #include <algorithm>
 #include <functional>
-#include <numeric>
 #include <optional>
 #include <utility>
 #include <variant>
@@ -141,22 +140,14 @@ namespace LC::Util
 			constexpr auto maxOpWeight = 4;
 
 			QRandomGenerator gen { seed };
-			std::vector<int> weights (ops.size ());
-			for (auto& weight : weights)
-				weight = gen.bounded (1, maxOpWeight + 1);
-			const auto randomOp = [&]
-			{
-				auto pick = gen.bounded (std::reduce (weights.begin (), weights.end ()));
-				int op = 0;
-				while (pick >= weights [op])
-					pick -= weights [op++];
-				return op;
-			};
+			std::vector<int> opPool;
+			for (std::size_t op = 0; op < ops.size (); ++op)
+				opPool.insert (opPool.end (), gen.bounded (1, maxOpWeight + 1), static_cast<int> (op));
 
 			State state;
 			for (int i = 0; i < steps; ++i)
 			{
-				const auto op = randomOp ();
+				const auto op = opPool [gen.bounded (static_cast<int> (opPool.size ()))];
 				Choices choices { std::ref (gen) };
 				ops [op].Run_ (state, choices);
 				walk.push_back ({ op, choices.GetDrawn () });
@@ -190,10 +181,14 @@ namespace LC::Util
 			constexpr auto replaysLimit = 2000;
 
 			int replays = 0;
-			const auto tryWalk = [&] (Walk candidate)
+			const auto tryChange = [&] (auto edit)
 			{
-				if (++replays > replaysLimit)
+				if (replays == replaysLimit)
 					return false;
+				++replays;
+
+				auto candidate = walk;
+				edit (candidate);
 
 				const auto result = Replay (ops, candidate);
 				if (!result)
@@ -206,9 +201,10 @@ namespace LC::Util
 
 			const auto tryWithoutSteps = [&] (std::size_t pos, std::size_t count)
 			{
-				auto candidate = walk;
-				candidate.erase (candidate.begin () + pos, candidate.begin () + pos + count);
-				return tryWalk (std::move (candidate));
+				return tryChange ([=] (Walk& candidate)
+						{
+							candidate.erase (candidate.begin () + pos, candidate.begin () + pos + count);
+						});
 			};
 
 			const auto tryLoweringDraw = [&] (std::size_t step, std::size_t draw)
@@ -221,9 +217,7 @@ namespace LC::Util
 						continue;
 
 					lastTried = lower;
-					auto candidate = walk;
-					candidate [step].Draws_ [draw] = lower;
-					if (tryWalk (std::move (candidate)))
+					if (tryChange ([=] (Walk& candidate) { candidate [step].Draws_ [draw] = lower; }))
 						return true;
 				}
 				return false;
@@ -233,7 +227,7 @@ namespace LC::Util
 			{
 				hasShrunk = false;
 
-				for (auto count = std::max<std::size_t> (walk.size () / 2, 1); count; count /= 2)
+				for (auto count = walk.size (); count; count /= 2)
 					for (std::size_t pos = 0; pos + count <= walk.size (); )
 						if (tryWithoutSteps (pos, count))
 							hasShrunk = true;
