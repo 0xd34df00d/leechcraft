@@ -28,7 +28,7 @@ namespace LC::Util
 
 	constexpr auto AsLeft = Left<void> {};
 
-	inline struct FromStdExpected_t {} FromStdExpected;
+	inline constexpr struct FromStdExpected_t {} FromStdExpected {};
 
 	template<typename L, typename R>
 	class Either

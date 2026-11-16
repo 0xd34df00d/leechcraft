@@ -15,7 +15,7 @@ namespace LC::Util::oral
 {
 	namespace detail
 	{
-		bool MatchesSchema (const QString& baseName, const QString& schema, QSqlDatabase& db)
+		inline bool MatchesSchema (const QString& baseName, const QString& schema, QSqlDatabase& db)
 		{
 			auto result = Util::RunTextQuery (db,
 					"SELECT sql FROM sqlite_master WHERE type = 'table' AND name = '%1'"_qs
