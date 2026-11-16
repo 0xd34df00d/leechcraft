@@ -1322,7 +1322,12 @@ namespace Azoth
 					isOnline;
 			Entry2Actions_ [entry] ["vcard"]->setEnabled (enableVCard);
 
-			Entry2Actions_ [entry] ["saveAvatar"]->setEnabled (AvatarsManager_.HasAvatar (entry->GetQObject ()));
+			[this, entry, action = Entry2Actions_ [entry] ["saveAvatar"]] (this auto) -> Util::ContextTask<void>
+			{
+				co_await Util::AddContext { Util::CoroContext::Of (*action) };
+				const auto avatarData = co_await AvatarsManager_.GetAvatarData (entry->GetGlobalStrongestId ());
+				action->setEnabled (avatarData && !avatarData->isEmpty ());
+			} ();
 
 			const auto& allEntries = account->GetCLEntries ();
 			const auto hasMucs = std::ranges::any_of (allEntries,
