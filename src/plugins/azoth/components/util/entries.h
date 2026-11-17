@@ -12,11 +12,11 @@
 #include <util/sll/trackingpointer.h>
 #include "interfaces/azoth/azothcommon.h"
 #include "interfaces/azoth/iclentry.h"
+#include "interfaces/azoth/imucentry.h"
 
 namespace LC::Azoth
 {
 	class IAccount;
-	class IMUCEntry;
 
 	class EntriesManager;
 
@@ -34,8 +34,8 @@ namespace LC::Azoth
 
 	struct InvitePlan
 	{
-		IMUCEntry *Muc_;
-		std::variant<ICLEntry*, QString> Invitee_;
+		Util::TrackingPointer<IMUCEntry> Muc_;
+		std::variant<Util::TrackingPointer<ICLEntry>, QString> Invitee_;
 		QString InviteeLabel_;
 	};
 

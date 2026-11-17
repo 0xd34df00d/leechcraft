@@ -96,10 +96,58 @@ namespace LC::Azoth
 		return InvitePlan { muc, &invitee, FormatNameWithAddress (invitee) };
 	}
 
+	namespace
+	{
+		std::optional<QString> GetInviteMessage (QWidget *parent, const QString& label)
+		{
+			bool accepted = false;
+			const auto& msg = QInputDialog::getText (parent,
+					Trs::tr ("Conference invitation"),
+					label + '\n' + Trs::tr ("You can add an optional invitation message:"),
+					QLineEdit::Normal,
+					{},
+					&accepted);
+			return accepted ? std::optional { msg } : std::nullopt;
+		}
+
+		QString MakeInviteMessageLabel (const QList<InvitePlan>& plans)
+		{
+			const auto& first = plans [0];
+			if (plans.size () == 1)
+				return Trs::tr ("Do you want to invite %1 to %2?")
+						.arg (first.InviteeLabel_, FormatNameWithAddress (first.Muc_->AsCLEntry ()));
+
+			// by construction, all invites are either of the same entry to multiple rooms,
+			// or of multiple entries to the same room
+			enum class MultiInviteType : bool
+			{
+				SameEntryToManyRooms,
+				ManyEntriesToSameRoom
+			};
+
+			const auto inviteType = plans [0].Muc_ == plans [1].Muc_ ?
+					MultiInviteType::ManyEntriesToSameRoom :
+					MultiInviteType::SameEntryToManyRooms;
+			switch (inviteType)
+			{
+			case MultiInviteType::SameEntryToManyRooms:
+				return Trs::tr ("Do you want to invite %1 to %n rooms?", nullptr, plans.size ())
+						.arg (first.InviteeLabel_);
+			case MultiInviteType::ManyEntriesToSameRoom:
+				return Trs::tr ("Do you want to invite %n entries to %1?", nullptr, plans.size ())
+						.arg (FormatNameWithAddress (first.Muc_->AsCLEntry ()));
+			}
+			std::unreachable ();
+		}
+	}
+
 	void TryInvite (const QList<Util::TrackingPointer<ICLEntry>>& entries,
 			const Util::TrackingPointer<ICLEntry>& target,
 			QWidget *parent)
 	{
+		QList<InviteRefusal> refusals;
+		QList<InvitePlan> plans;
+
 		for (const auto& entry : entries)
 		{
 			if (!entry || !target)
@@ -107,33 +155,34 @@ namespace LC::Azoth
 
 			Util::Visit (CheckInvitation (*entry, *target),
 					[] (NotAnInvitation) {},
-					[&] (const InviteRefusal& refusal)
-					{
-						QMessageBox::warning (parent, Trs::tr ("Conference invitation"), refusal.Message_);
-					},
-					[&] (const InvitePlan& plan)
-					{
-						bool accepted = false;
-						const auto& inviteMessage = QInputDialog::getText (parent,
-								Trs::tr ("Conference invitation"),
-								Trs::tr ("Do you want to invite %1 to %2? You can add an optional invitation message:")
-										.arg (plan.InviteeLabel_, FormatNameWithAddress (plan.Muc_->AsCLEntry ())),
-								QLineEdit::Normal,
-								{},
-								&accepted);
-						if (!accepted || !target || !entry)
-							return;
-
-						Util::Visit (plan.Invitee_,
-								[&] (ICLEntry *invitee)
-								{
-									plan.Muc_->InviteToMUC (*invitee, inviteMessage);
-								},
-								[&] (const QString& address)
-								{
-									plan.Muc_->InviteToMUC (address, inviteMessage);
-								});
-					});
+					[&] (const InviteRefusal& refusal) { refusals << refusal; },
+					[&] (const InvitePlan& plan) { plans << plan; });
 		}
+
+		const auto warnGuard = Util::MakeScopeGuard ([&]
+				{
+					if (!refusals.isEmpty ())
+						QMessageBox::warning (parent,
+								Trs::tr ("Conference invitation"),
+								Util::Map (refusals, &InviteRefusal::Message_).join ('\n'));
+				});
+
+		if (plans.isEmpty ())
+			return;
+
+		if (const auto& msg = GetInviteMessage (parent, MakeInviteMessageLabel (plans)))
+			for (const auto& plan : plans)
+			{
+				if (!plan.Muc_)
+					continue;
+
+				Util::Visit (plan.Invitee_,
+						[&] (const Util::TrackingPointer<ICLEntry>& entry)
+						{
+							if (entry)
+								plan.Muc_->InviteToMUC (*entry, *msg);
+						},
+						[&] (const QString& address) { plan.Muc_->InviteToMUC (address, *msg); });
+			}
 	}
 }
