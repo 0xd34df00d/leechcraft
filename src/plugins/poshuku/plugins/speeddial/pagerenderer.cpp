@@ -60,7 +60,7 @@ namespace LC::Poshuku::SpeedDial
 
 					td > a {
 						text-decoration: none;
-						color: "#222";
+						color: #222;
 					}
 
 					table {
@@ -141,8 +141,9 @@ namespace LC::Poshuku::SpeedDial
 	QByteArray MakeEmptyTopList ()
 	{
 		const auto& msg = QObject::tr ("A static site list is selected for speed dial, but no sites are configured.");
-		return "<html><head><title>%1</title></head><body>%2</body></html>"_qs
-				.arg (GetPageHeader (), msg)
-				.toUtf8 ();
+		return Tags::Html ({
+				Tag { "head"_qba, {}, { Tags::Title (GetPageHeader ()) } },
+				Tags::Body ({ msg }),
+			}).Serialize<QByteArray> ({ .Dtd_ = Util::Html5Dtd {} });
 	}
 }
