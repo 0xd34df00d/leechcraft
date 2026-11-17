@@ -65,7 +65,11 @@ namespace LC::Azoth::DndUtil
 
 	QList<Util::TrackingPointer<ICLEntry>> DecodeEntryObjs (const EntriesManager& entries, const QMimeData *mime)
 	{
-		return Util::Map (DecodeMimeInfos (entries, mime), &MimeContactInfo::Entry_);
+		QList<Util::TrackingPointer<ICLEntry>> result;
+		for (const auto& info : DecodeMimeInfos (entries, mime))
+			if (!result.contains (info.Entry_))
+				result << info.Entry_;
+		return result;
 	}
 
 	QList<MimeContactInfo> DecodeMimeInfos (const EntriesManager& entries, const QMimeData *mime)
