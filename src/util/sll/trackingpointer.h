@@ -61,6 +61,11 @@ namespace LC::Util
 		TrackingPointer& operator= (TrackingPointer&&) = default;
 		~TrackingPointer () = default;
 
+		auto operator<=> (const TrackingPointer& other) const
+		{
+			return std::compare_three_way {} (Ptr_, other.Ptr_);
+		}
+
 		bool operator== (const TrackingPointer& other) const
 		{
 			return Ptr_ == other.Ptr_;
@@ -99,6 +104,11 @@ namespace LC::Util
 		{
 			Guard_ = {};
 			Ptr_ = nullptr;
+		}
+
+		friend size_t qHash (const TrackingPointer& ptr, size_t seed = 0)
+		{
+			return ::qHash (ptr.Ptr_, seed);
 		}
 	};
 }
