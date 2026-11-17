@@ -82,7 +82,7 @@ namespace LC::Util
 
 		Visit (config.Dtd_,
 				[] (NoDtd) {},
-				[&w] (Html5Dtd) { w.writeDTD ("html"_qba); },
+				[&w] (Html5Dtd) { w.writeDTD ("<!DOCTYPE html>"_qba); },
 				[&w] (const CustomDtd& dtd) { w.writeDTD (dtd.Dtd_); });
 
 		TagToHtml (*this, w);
