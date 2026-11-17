@@ -141,7 +141,7 @@ namespace LC::Poshuku::SpeedDial
 			return
 			{
 				{
-					.ContentType_ = "text/html",
+					.ContentType_ = "application/xhtml+xml",
 					.Contents_ = MakeRootPage (deps)
 				}
 			};
