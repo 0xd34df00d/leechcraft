@@ -11,6 +11,7 @@
 #include <QFlags>
 #include <QVariant>
 #include <util/azoth/emitters/mucentry.h>
+#include "iclentry.h"
 
 namespace LC
 {
@@ -71,6 +72,8 @@ namespace Azoth
 		 * entry that does not need RTTI.
 		 */
 		virtual const ICLEntry& AsCLEntry () const = 0;
+
+		const QObject* GetQObject () const { return AsCLEntry ().GetQObject (); }
 
 		/** @brief The list of features of this MUC.
 		 *
