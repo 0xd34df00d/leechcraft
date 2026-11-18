@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QWebEngineView>
+#include "components/util/dnd.h"
 
 namespace LC::Azoth
 {
@@ -20,13 +21,20 @@ namespace LC::Azoth
 
 		QAction *QuoteAct_ = nullptr;
 		const EntriesManager *Entries_ = nullptr;
+		DndUtil::DropHandler DropHandler_;
 	public:
 		using QWebEngineView::QWebEngineView;
 
 		void InitializePage (QWebEngineProfile*, const EntriesManager&);
 		void SetQuoteAction (QAction*);
+		void SetDropHandler (DndUtil::DropHandler);
 	protected:
 		void contextMenuEvent (QContextMenuEvent*) override;
+
+		void dragEnterEvent (QDragEnterEvent*) override;
+		void dragMoveEvent (QDragMoveEvent*) override;
+		void dragLeaveEvent (QDragLeaveEvent*) override;
+		void dropEvent (QDropEvent*) override;
 	private:
 		void HandleNick (QMenu*, const QUrl&);
 		void HandleURL (QMenu*, const QUrl&);

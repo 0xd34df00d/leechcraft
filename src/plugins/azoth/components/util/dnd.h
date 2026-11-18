@@ -9,12 +9,14 @@
 #pragma once
 
 #include <QString>
+#include <util/compat/functional.h>
 #include <util/sll/trackingpointer.h>
 #include "interfaces/azoth/iclentry.h"
 
 template<typename T>
 class QList;
 
+class QDropEvent;
 class QMimeData;
 
 namespace LC::Azoth
@@ -50,5 +52,17 @@ namespace LC::Azoth::DndUtil
 		QWidget *Parent_;
 	};
 
+	bool CanDropAttachments (const QMimeData&);
+	bool DropAttachments (const QMimeData&, const Util::TrackingPointer<ICLEntry>&, const DndContext&);
+
+	bool CanHandleDroppedOnto (const EntriesManager&, const QMimeData&, ICLEntry& target);
 	bool HandleDroppedOnto (const QMimeData&, const Util::TrackingPointer<ICLEntry>&, const DndContext&);
+
+	struct DropHandler
+	{
+		std::copyable_function<bool (const QMimeData&) const> CanDrop_;
+		std::copyable_function<bool (const QMimeData&) const> Drop_;
+	};
+
+	void AcceptEventAsCopy (QDropEvent&);
 }

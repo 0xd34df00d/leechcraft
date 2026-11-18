@@ -182,18 +182,27 @@ namespace Azoth
 
 		MUCEventLog_->installEventFilter (this);
 
-		Ui_.View_->installEventFilter (Util::MakeLambdaEventFilter<QEvent::Drop> ([this] (QDropEvent *e)
-				{
-					DndUtil::HandleDroppedOnto (*e->mimeData (), GetEntry<ICLEntry> (), GetDndContext ());
-					// prevent web view from handling drop events by navigating to them
-					return true;
-				},
-				*this));
-		Ui_.MsgEdit_->installEventFilter (Util::MakeLambdaEventFilter<QEvent::Drop> ([this] (QDropEvent *e)
-				{
-					return DndUtil::HandleDroppedOnto (*e->mimeData (), GetEntry<ICLEntry> (), GetDndContext ());
-				},
-				*this));
+		Ui_.View_->SetDropHandler ({
+					.CanDrop_ = [this] (const QMimeData& mime)
+							{
+								const auto entry = GetEntry<ICLEntry> ();
+								return entry && DndUtil::CanHandleDroppedOnto (Entries_, mime, *entry);
+							},
+					.Drop_ = [this] (const QMimeData& mime)
+							{
+								return DndUtil::HandleDroppedOnto (mime, GetEntry<ICLEntry> (), GetDndContext ());
+							},
+				});
+		Ui_.MsgEdit_->SetDropHandler ({
+					.CanDrop_ = [this] (const QMimeData& mime)
+							{
+								return GetEntry<ICLEntry> () && DndUtil::CanDropAttachments (mime);
+							},
+					.Drop_ = [this] (const QMimeData& mime)
+							{
+								return DndUtil::DropAttachments (mime, GetEntry<ICLEntry> (), GetDndContext ());
+							},
+				});
 
 		Ui_.SubjBox_->setVisible (false);
 		Ui_.SubjChange_->setEnabled (false);

@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <variant>
 #include <QDataStream>
+#include <QDropEvent>
 #include <QInputDialog>
 #include <QImageReader>
 #include <QIODevice>
@@ -268,14 +269,39 @@ namespace LC::Azoth::DndUtil
 		}
 	}
 
+	bool CanDropAttachments (const QMimeData& mime)
+	{
+		return IsImageDrop (mime) || CouldOfferURLs (mime.urls ());
+	}
+
+	bool DropAttachments (const QMimeData& mime, const Util::TrackingPointer<ICLEntry>& target, const DndContext& context)
+	{
+		const auto droppedFiles = DropFiles (context.Transfers_, context.Parent_, mime, target);
+		const auto droppedImages = DropImages (context, mime, target);
+		return droppedFiles || droppedImages;
+	}
+
+	bool CanHandleDroppedOnto (const EntriesManager& entries, const QMimeData& mime, ICLEntry& target)
+	{
+		return CanDropContacts (entries, mime, target) || CanDropAttachments (mime);
+	}
+
 	bool HandleDroppedOnto (const QMimeData& mime, const Util::TrackingPointer<ICLEntry>& target, const DndContext& context)
 	{
 		if (!target)
 			return false;
 
 		const auto droppedContacts = DropContacts (context.Entries_, mime, target, context.Parent_);
-		const auto droppedFiles = DropFiles (context.Transfers_, context.Parent_, mime, target);
-		const auto droppedImages = DropImages (context, mime, target);
-		return droppedContacts || droppedFiles || droppedImages;
+		const auto droppedAttachments = DropAttachments (mime, target, context);
+		return droppedContacts || droppedAttachments;
+	}
+
+	void AcceptEventAsCopy (QDropEvent& event)
+	{
+		if (!(event.possibleActions () & Qt::CopyAction))
+			return;
+
+		event.setDropAction (Qt::CopyAction);
+		event.accept ();
 	}
 }

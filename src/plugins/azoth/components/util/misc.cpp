@@ -58,6 +58,11 @@ namespace LC::Azoth
 		}
 	}
 
+	bool CouldOfferURLs (const QList<QUrl>& urls)
+	{
+		return !ToLocalFiles (urls).isEmpty ();
+	}
+
 	bool OfferURLs (TransferJobManager& transfers,
 			const Util::TrackingPointer<ICLEntry>& entry,
 			const QList<QUrl>& urls,

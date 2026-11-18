@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QTextEdit>
+#include "components/util/dnd.h"
 
 namespace LC::Util
 {
@@ -27,13 +28,29 @@ namespace LC::Azoth
 
 		Qt::KeyboardModifiers SendMods_ {};
 		bool AllowKeypadEnter_ = true;
+
+		DndUtil::DropHandler DropHandler_;
+
+		enum class DragOwner
+		{
+			Nobody,
+			DropHandler,
+			Editor,
+		};
+		DragOwner DragOwner_ = DragOwner::Nobody;
 	public:
 		explicit TextEdit (QWidget *parent = nullptr);
 
 		void SetShortcutManager (Util::ShortcutManager& mgr);
+		void SetDropHandler (DndUtil::DropHandler);
 		void ForceUpdateVisibleLines ();
 	protected:
 		void keyPressEvent (QKeyEvent*) override;
+
+		void dragEnterEvent (QDragEnterEvent*) override;
+		void dragMoveEvent (QDragMoveEvent*) override;
+		void dragLeaveEvent (QDragLeaveEvent*) override;
+		void dropEvent (QDropEvent*) override;
 	private:
 		bool IsMessageSend (const QKeyEvent&) const;
 		void UpdateVisibleLines ();

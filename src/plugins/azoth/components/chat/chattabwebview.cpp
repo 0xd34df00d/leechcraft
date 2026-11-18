@@ -8,6 +8,7 @@
 
 #include "chattabwebview.h"
 #include <QContextMenuEvent>
+#include <QDropEvent>
 #include <QWebEngineContextMenuRequest>
 #include <QPointer>
 #include <QMenu>
@@ -58,6 +59,11 @@ namespace LC::Azoth
 	void ChatTabWebView::SetQuoteAction (QAction *act)
 	{
 		QuoteAct_ = act;
+	}
+
+	void ChatTabWebView::SetDropHandler (DndUtil::DropHandler handler)
+	{
+		DropHandler_ = std::move (handler);
 	}
 
 	void ChatTabWebView::contextMenuEvent (QContextMenuEvent *e)
@@ -116,6 +122,28 @@ namespace LC::Azoth
 			return;
 
 		menu->exec (mapToGlobal (e->pos ()));
+	}
+
+	void ChatTabWebView::dragEnterEvent (QDragEnterEvent *e)
+	{
+		// the base class is kept out of the drags: the web view would handle drops by navigating to them
+		if (DropHandler_.CanDrop_ (*e->mimeData ()))
+			DndUtil::AcceptEventAsCopy (*e);
+	}
+
+	void ChatTabWebView::dragMoveEvent (QDragMoveEvent *e)
+	{
+		DndUtil::AcceptEventAsCopy (*e);
+	}
+
+	void ChatTabWebView::dragLeaveEvent (QDragLeaveEvent*)
+	{
+	}
+
+	void ChatTabWebView::dropEvent (QDropEvent *e)
+	{
+		if (DropHandler_.Drop_ (*e->mimeData ()))
+			DndUtil::AcceptEventAsCopy (*e);
 	}
 
 	void ChatTabWebView::HandleNick (QMenu *menu, const QUrl& nickUrl)

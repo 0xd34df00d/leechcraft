@@ -27,6 +27,7 @@ namespace LC::Azoth
 
 	bool SendMessage (ICLEntry& e, OutgoingMessage);
 
+	bool CouldOfferURLs (const QList<QUrl>& urls);
 	bool OfferURLs (TransferJobManager& transfers,
 			const Util::TrackingPointer<ICLEntry>& entry,
 			const QList<QUrl>& urls,

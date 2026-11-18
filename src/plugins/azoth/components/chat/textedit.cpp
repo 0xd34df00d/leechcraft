@@ -7,6 +7,8 @@
  **********************************************************************/
 
 #include "textedit.h"
+#include <utility>
+#include <QDropEvent>
 #include <QKeyEvent>
 #include <QShortcut>
 #include <util/shortcuts/shortcutmanager.h>
@@ -105,6 +107,11 @@ namespace LC::Azoth
 				eolShortcut);
 	}
 
+	void TextEdit::SetDropHandler (DndUtil::DropHandler handler)
+	{
+		DropHandler_ = std::move (handler);
+	}
+
 	void TextEdit::keyPressEvent (QKeyEvent *event)
 	{
 		if (IsMessageSend (*event))
@@ -115,6 +122,59 @@ namespace LC::Azoth
 			emit scrollRequested (event->key () == Qt::Key_PageUp ? -1 : 1);
 		else
 			QTextEdit::keyPressEvent (event);
+	}
+
+	void TextEdit::dragEnterEvent (QDragEnterEvent *e)
+	{
+		if (DropHandler_.CanDrop_ (*e->mimeData ()))
+		{
+			DragOwner_ = DragOwner::DropHandler;
+			DndUtil::AcceptEventAsCopy (*e);
+		}
+		else
+		{
+			DragOwner_ = DragOwner::Editor;
+			QTextEdit::dragEnterEvent (e);
+		}
+	}
+
+	void TextEdit::dragMoveEvent (QDragMoveEvent *e)
+	{
+		switch (DragOwner_)
+		{
+		case DragOwner::Nobody:
+			e->ignore ();
+			break;
+		case DragOwner::DropHandler:
+			DndUtil::AcceptEventAsCopy (*e);
+			break;
+		case DragOwner::Editor:
+			QTextEdit::dragMoveEvent (e);
+			break;
+		}
+	}
+
+	void TextEdit::dragLeaveEvent (QDragLeaveEvent *e)
+	{
+		DragOwner_ = DragOwner::Nobody;
+		QTextEdit::dragLeaveEvent (e);
+	}
+
+	void TextEdit::dropEvent (QDropEvent *e)
+	{
+		switch (std::exchange (DragOwner_, DragOwner::Nobody))
+		{
+		case DragOwner::Nobody:
+			e->ignore ();
+			break;
+		case DragOwner::DropHandler:
+			if (DropHandler_.Drop_ (*e->mimeData ()))
+				DndUtil::AcceptEventAsCopy (*e);
+			break;
+		case DragOwner::Editor:
+			QTextEdit::dropEvent (e);
+			break;
+		}
 	}
 
 	bool TextEdit::IsMessageSend (const QKeyEvent& event) const
