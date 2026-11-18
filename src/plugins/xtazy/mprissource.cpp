@@ -8,6 +8,8 @@
 
 #include "mprissource.h"
 #include <QDBusConnectionInterface>
+#include <QDBusError>
+#include <QtDebug>
 
 namespace LC
 {
@@ -37,8 +39,14 @@ namespace Xtazy
 	MPRISSource::MPRISSource (QObject *parent)
 	: TuneSourceBase { "MPRIS", parent }
 	, SB_ { QDBusConnection::connectToBus (QDBusConnection::SessionBus, "org.LeechCraft.Xtazy") }
-	, Players_ { SB_.interface ()->registeredServiceNames ().value ().filter (MPRISPrefix) }
 	{
+		if (!SB_.isConnected ())
+		{
+			qWarning () << "unable to connect to the session bus:" << SB_.lastError ().message ();
+			return;
+		}
+
+		Players_ = SB_.interface ()->registeredServiceNames ().value ().filter (MPRISPrefix);
 		for (const auto& player : Players_)
 			ConnectToBus (player);
 
