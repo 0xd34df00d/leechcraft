@@ -12,7 +12,10 @@ LC_DEFINE_PLUGIN (
 		$<$<PLATFORM_ID:Linux>:linuxbackend.cpp>
 		$<$<PLATFORM_ID:FreeBSD>:freebsdbackend.cpp>
 		$<$<PLATFORM_ID:Darwin>:macbackend.mm>
+		$<$<PLATFORM_ID:Windows>:winbackend.cpp>
 	QT_COMPONENTS Quick
-	LINK_LIBRARIES $<$<PLATFORM_ID:FreeBSD>:kvm>
+	LINK_LIBRARIES
+		$<$<PLATFORM_ID:FreeBSD>:kvm>
+		$<$<PLATFORM_ID:Windows>:ntdll>
 	INSTALL_SHARE
 	)

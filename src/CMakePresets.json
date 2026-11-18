@@ -104,6 +104,7 @@
         "ENABLE_BLASQ": "True",
         "ENABLE_BLOGIQUE": "True",
         "ENABLE_CERTMGR": "True",
+        "ENABLE_CPULOAD": "True",
         "ENABLE_CSTP": "True",
         "ENABLE_DEADLYRICS": "True",
         "ENABLE_DOLOZHEE": "True",

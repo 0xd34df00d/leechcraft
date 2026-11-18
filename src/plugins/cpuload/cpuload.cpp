@@ -16,6 +16,8 @@
 #include "freebsdbackend.h"
 #elif defined (Q_OS_MAC)
 #include "macbackend.h"
+#elif defined (Q_OS_WIN)
+#include "winbackend.h"
 #endif
 
 #include "backendproxy.h"
@@ -32,6 +34,8 @@ namespace CpuLoad
 		auto backend = new FreeBSDBackend;
 #elif defined (Q_OS_MAC)
 		auto backend = new MacBackend;
+#elif defined (Q_OS_WIN)
+		auto backend = new WinBackend;
 #else
 		Backend *backend = nullptr;
 #endif
