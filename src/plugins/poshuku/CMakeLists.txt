@@ -2,15 +2,6 @@ cmake_minimum_required (VERSION 3.10)
 project (poshuku)
 include (InitLCPlugin NO_POLICY_SCOPE)
 
-option (ENABLE_IDN "Enable support for Internationalized Domain Names" OFF)
-
-if (ENABLE_IDN)
-	add_definitions (-DENABLE_IDN)
-
-	find_package (PkgConfig)
-	pkg_check_modules (IDN REQUIRED IMPORTED_TARGET libidn)
-endif ()
-
 LC_DEFINE_PLUGIN (
 	SRCS
 		components/tabui/focustracker.cpp
@@ -55,7 +46,6 @@ LC_DEFINE_PLUGIN (
 	SETTINGS poshukusettings.xml
 	RESOURCES poshukuresources.qrc
 	QT_COMPONENTS Network PrintSupport Sql Xml
-	LINK_LIBRARIES $<$<BOOL:${ENABLE_IDN}>:PkgConfig::IDN>
 	)
 set (RESOURCES poshukuresources.qrc)
 

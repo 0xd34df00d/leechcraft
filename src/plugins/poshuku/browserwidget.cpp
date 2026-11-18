@@ -26,11 +26,6 @@
 #include <QKeySequence>
 #include <QLabel>
 #include <QMimeData>
-
-#ifdef ENABLE_IDN
-#include <idna.h>
-#endif
-
 #include <util/util.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/slotclosure.h>
@@ -1326,39 +1321,19 @@ namespace Poshuku
 		setProperty ("WidgetLogicalPath", path);
 	}
 
-	void BrowserWidget::handleUrlChanged (const QUrl& value)
+	void BrowserWidget::handleUrlChanged (const QUrl& url)
 	{
-		auto userText = value.toString ();
-#ifdef ENABLE_IDN
-		if (userText.contains ("xn--"))
-		{
-			static QRegularExpression rx { "(?://|\\.)xn--(.+)(?:\\.|/)", QRegularExpression::InvertedGreedinessOption };
-
-			QStringList caps;
-			for (const auto& match : rx.globalMatch (userText))
-				caps << match.captured (1);
-
-			for (auto str : caps)
-			{
-				str.prepend ("xn--");
-				char *output = 0;
-				idna_to_unicode_8z8z (str.toUtf8 ().constData (), &output, IDNA_ALLOW_UNASSIGNED);
-				QString newStr = QString::fromUtf8 (output);
-				userText.replace (str, newStr);
-			}
-		}
-#endif
-
+		const auto& userText = url.toString ();
 		if (userText.isEmpty ())
 			return;
 
-		if (value.scheme () != "data")
+		if (url.scheme () != "data")
 		{
 			Ui_.URLFrame_->GetEdit ()->setText (userText);
 			Ui_.URLFrame_->GetEdit ()->repaint ();
 		}
 
-		emit urlChanged (value);
+		emit urlChanged (url);
 	}
 
 	namespace
