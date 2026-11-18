@@ -162,11 +162,11 @@ namespace LC::Vrooby::UDisks2
 
 	Util::Task<void> Backend::MountDevice (const QString& id)
 	{
-		const auto pos = Id2Row_.value (id, -1);
-		if (pos == -1)
+		const auto row = FindRow (id);
+		if (!row)
 			co_return;
 
-		if (!Devices_.GetItems ().value (pos).IsMounted_)
+		if (!Devices_.GetItems () [*row].IsMounted_)
 			co_return co_await RunMount (id);
 	}
 
@@ -206,7 +206,7 @@ namespace LC::Vrooby::UDisks2
 	bool Backend::AddPath (const QDBusObjectPath& path)
 	{
 		const auto& str = path.path ();
-		if (Id2Row_.contains (str))
+		if (FindRow (str))
 			return true;
 
 		const auto blockIface = GetInterface (str, Interfaces::Block);
@@ -235,7 +235,7 @@ namespace LC::Vrooby::UDisks2
 			!slaveTo.path ().isEmpty () && !AddPath (slaveTo))
 			return false;
 
-		Id2Row_ [str] = Devices_.AddItem (ToDevice ({
+		Devices_.AddItem (ToDevice ({
 					.Partition_ = partitionIface,
 					.Block_ = blockIface,
 					.Drive_ = driveIface,
@@ -246,14 +246,17 @@ namespace LC::Vrooby::UDisks2
 
 	void Backend::RemovePath (const QDBusObjectPath& pathObj)
 	{
-		const auto& path = pathObj.path ();
-		if (const auto it = Id2Row_.find (path);
-			it != Id2Row_.end ())
-		{
-			const auto row = *it;
-			Id2Row_.erase (it);
-			Devices_.RemoveItem (row);
-		}
+		if (const auto row = FindRow (pathObj.path ()))
+			Devices_.RemoveItem (*row);
+	}
+
+	std::optional<int> Backend::FindRow (const QString& path) const
+	{
+		const auto& id = path.toUtf8 ();
+		for (auto&& [row, device] : std::ranges::views::enumerate (Devices_.GetItems ()))
+			if (device.DevId_ == id)
+				return row;
+		return {};
 	}
 
 	namespace
@@ -337,14 +340,14 @@ namespace LC::Vrooby::UDisks2
 
 	void Backend::toggleMount (const QString& id)
 	{
-		const auto row = Id2Row_.value (id, -1);
-		if (row < 0)
+		const auto row = FindRow (id);
+		if (!row)
 		{
 			qWarning () << "unknown id" << id;
 			return;
 		}
 
-		if (Devices_.GetItems ().value (row).IsMounted_)
+		if (Devices_.GetItems () [*row].IsMounted_)
 			RunUnmount (id);
 		else
 			RunMount (id);
@@ -354,8 +357,8 @@ namespace LC::Vrooby::UDisks2
 	{
 		const auto& path = msg.path ();
 
-		const auto row = Id2Row_.value (path, -1);
-		if (row < 0)
+		const auto row = FindRow (path);
+		if (!row)
 		{
 			qWarning () << "no item for path" << path;
 			return;
@@ -369,7 +372,7 @@ namespace LC::Vrooby::UDisks2
 			.Drive_ = GetInterface (blockIface->property ("Drive").value<QDBusObjectPath> ().path (), Interfaces::Drive),
 			.Props_ = GetInterface (path, Interfaces::Props)
 		};
-		Devices_.SetItem (row, ToDevice (faces));
+		Devices_.SetItem (*row, ToDevice (faces));
 	}
 
 	void Backend::UpdateDeviceSpaces ()

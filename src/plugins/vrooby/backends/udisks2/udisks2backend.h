@@ -10,7 +10,7 @@
 
 #include "../../devbackend.h"
 #include <memory>
-#include <QHash>
+#include <optional>
 #include <interfaces/devices/deviceroles.h>
 #include <util/models/itemsmodel.h>
 #include <util/threads/coro/taskfwd.h>
@@ -61,7 +61,6 @@ namespace LC::Vrooby::UDisks2
 			R<bool, MassStorageRole::IsMediaAvailable> IsMediaAvailable_ = false;
 		};
 		Util::RoledItemsModel<Device> Devices_;
-		QHash<QString, int> Id2Row_;
 
 		org::freedesktop::DBus::ObjectManager *UDisksObj_ = nullptr;
 	public:
@@ -77,6 +76,7 @@ namespace LC::Vrooby::UDisks2
 		Util::ContextTask<void> InitialEnumerate ();
 		bool AddPath (const QDBusObjectPath&);
 		void RemovePath (const QDBusObjectPath&);
+		std::optional<int> FindRow (const QString&) const;
 
 		struct ItemInterfaces
 		{
