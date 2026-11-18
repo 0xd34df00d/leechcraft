@@ -53,6 +53,7 @@ namespace LC::Monocle
 		TOCEntryLevel_t TOC_;
 		QHash<int, QList<ILink_ptr>> Links_;
 	public:
+		TextDocumentAdapter ();
 		~TextDocumentAdapter () override;
 
 		QObject* GetQObject () override;

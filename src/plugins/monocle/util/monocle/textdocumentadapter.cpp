@@ -27,6 +27,7 @@
 
 namespace LC::Monocle
 {
+	TextDocumentAdapter::TextDocumentAdapter () = default;
 	TextDocumentAdapter::~TextDocumentAdapter () = default;
 
 	QObject* TextDocumentAdapter::GetQObject ()
