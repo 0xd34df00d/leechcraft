@@ -33,7 +33,8 @@ $perQtSteps = 'qt', 'qxmpp'
 # libtorrent with the deprecated API, like distro builds (TORRENT_ABI_VERSION 2): BitTorrent still uses some of it.
 $vcpkgPorts = 'boost-graph', 'boost-preprocessor', 'boost-spirit', 'boost-phoenix', 'boost-fusion', 'boost-serialization',
 	'boost-asio', 'boost-container', 'boost-circular-buffer', 'boost-bimap', 'boost-variant', 'boost-function',
-	'pkgconf', 'libtorrent[core,deprfun,webtorrent]', 'libmaxminddb', 'taglib', 'hunspell'
+	'pkgconf', 'libtorrent[core,deprfun,webtorrent]', 'libmaxminddb', 'taglib', 'hunspell',
+	'libqrencode', 'tidy-html5'
 
 New-Item -ItemType Directory -Force $root, $downloads, $markers, $tools | Out-Null
 
@@ -190,6 +191,12 @@ Libs: -L`${libdir} -ltorrent-rasterbar
 Cflags: -I`${includedir}
 "@
 		[IO.File]::WriteAllText("$installed\lib\pkgconfig\libtorrent-rasterbar.pc", ($pc -replace "`r", ''))
+
+		# vcpkg's libmaxminddb.pc gives libdir and includedir without the prefix, so pkg-config hands out relative paths.
+		$maxminddb = "$installed\lib\pkgconfig\libmaxminddb.pc"
+		$pc = (Get-Content -Raw $maxminddb) -replace '(?m)^libdir=lib(?=\r?$)', 'libdir=$${prefix}/lib' `
+			-replace '(?m)^includedir=include(?=\r?$)', 'includedir=$${prefix}/include'
+		[IO.File]::WriteAllText($maxminddb, $pc)
 	}
 	gstreamer = {
 		$name = "gstreamer-1.0-msvc-x86_64-$($versions.GStreamer).exe"

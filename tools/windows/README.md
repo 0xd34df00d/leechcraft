@@ -62,7 +62,8 @@ now. The scripts live where they run:
   older one lacks.
 - aqtinstall's last release predates the Qt 6.11 repository layout, so `provision.ps1` pins a commit of its master.
 - vcpkg's libtorrent is built with its deprecated API, as distributions do; BitTorrent still uses some of it.
-  vcpkg's `libmaxminddb.pc` has relative paths, so `ENABLE_BITTORRENT_GEOIP` is off.
+  vcpkg's `libmaxminddb.pc` gives `libdir` and `includedir` without the prefix, so `provision.ps1` adds it, for
+  BitTorrent's GeoIP.
 - vcpkg's libtorrent comes with only its CMake package, while BitTorrent finds libtorrent through pkg-config, so
   `provision.ps1` writes a `libtorrent-rasterbar.pc` next to vcpkg's own. The include directory and the import
   library describe libtorrent fully: vcpkg writes the definitions its ABI depends on into the installed
