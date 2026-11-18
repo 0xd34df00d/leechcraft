@@ -106,7 +106,7 @@ namespace LC::Monocle::FXB
 			}
 		}
 
-		void Fixup (QDomElement& elem)
+		void Fixup (QDomElement elem)
 		{
 			const auto& tagName = elem.tagName ();
 			if (tagName == "title"_ql || tagName == "subtitle"_ql || tagName == "epigraph"_qs)
@@ -128,17 +128,19 @@ namespace LC::Monocle::FXB
 				elem.removeAttribute ("href"_qs);
 				elem.setAttribute ("src"_qs, refId.mid (1));
 			}
+		}
 
-			if (tagName == "a"_ql && elem.attribute ("type"_qs) == "note"_ql)
+		void WrapNoteLinks (const QDomElement& root)
+		{
+			for (const auto& link : Util::DomDescendants (root, "a"_qs))
 			{
-				auto parent = elem.parentNode ().toElement ();
-				if (parent.tagName () != "sup"_qs)
-				{
-					auto a = elem;
-					elem = elem.ownerDocument ().createElement ("sup"_qs);
-					elem.appendChild (a);
-					parent.appendChild (elem);
-				}
+				auto parent = link.parentNode ();
+				if (link.attribute ("type"_qs) != "note"_ql || parent.toElement ().tagName () == "sup"_qs)
+					continue;
+
+				auto sup = link.ownerDocument ().createElement ("sup"_qs);
+				parent.replaceChild (sup, link);
+				sup.appendChild (link);
 			}
 		}
 
@@ -152,6 +154,7 @@ namespace LC::Monocle::FXB
 			auto operator() (QDomElement&& elem)
 			{
 				RunConvert (elem);
+				WrapNoteLinks (elem);
 
 				if (!UnhandledTags_.isEmpty ())
 					qWarning () << "unhandled tags:" << UnhandledTags_;
