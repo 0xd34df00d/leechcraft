@@ -55,7 +55,6 @@ RUN --mount=type=bind,from=qxmpp,source=/out,target=/tmp/qxmpp \
         libdjvulibre-dev \
         libquazip1-qt6-dev \
         libtidy-dev \
-        libidn-dev \
         libqrencode-dev \
         libsensors-dev \
         libudev-dev \

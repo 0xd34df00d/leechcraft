@@ -33,7 +33,6 @@ RUN dnf install -y \
         poppler-qt6-devel \
         djvulibre-devel \
         quazip-qt6-devel \
-        libidn-devel \
         qrencode-devel \
         lm_sensors-devel \
         systemd-devel \

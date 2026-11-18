@@ -34,7 +34,6 @@ RUN apk add --no-cache \
         djvulibre-dev \
         quazip-dev \
         tidyhtml-dev \
-        libidn-dev \
         libqrencode-dev \
         lm-sensors-dev \
         eudev-dev \

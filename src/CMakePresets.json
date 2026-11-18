@@ -252,7 +252,6 @@
         "ENABLE_POGOOGLUE": "True",
         "ENABLE_POPISHU": "False",
         "ENABLE_POSHUKU": "True",
-        "ENABLE_IDN": "True",
         "ENABLE_POSHUKU_AUTOSEARCH": "True",
         "ENABLE_POSHUKU_CLEANWEB": "True",
         "ENABLE_POSHUKU_DCAC": "False",

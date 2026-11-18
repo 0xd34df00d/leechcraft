@@ -35,7 +35,6 @@ RUN pacman -Syu --noconfirm && \
         djvulibre \
         quazip-qt6 \
         tidy \
-        libidn \
         qrencode \
         lm_sensors \
         systemd \

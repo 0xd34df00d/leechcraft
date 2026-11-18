@@ -47,7 +47,6 @@ RUN --mount=type=bind,from=portage,source=/var/db/repos/gentoo,target=/var/db/re
         app-text/djvu \
         dev-libs/quazip \
         app-text/htmltidy \
-        net-dns/libidn \
         media-gfx/qrencode \
         sys-apps/lm-sensors \
         virtual/libudev \
