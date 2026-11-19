@@ -408,19 +408,11 @@ namespace Azoth
 
 	bool ChatTab::CouldHandleDrop (const QMimeData& data) const
 	{
+		const auto entry = GetEntry<ICLEntry> ();
 		if (DndUtil::HasContacts (&data))
-		{
-			const auto entry = GetEntry<ICLEntry> ();
 			return entry && DndUtil::CanDropContacts (Entries_, data, *entry);
-		}
 
-		if (data.hasText ())
-			return true;
-
-		for (const auto& url : data.urls ())
-			if (url.isLocalFile () && QFile::exists (url.toLocalFile ()))
-				return true;
-		return false;
+		return data.hasText () || (entry && DndUtil::CanDropAttachments (data));
 	}
 
 	bool ChatTab::HandleDrop (const QMimeData& data)
