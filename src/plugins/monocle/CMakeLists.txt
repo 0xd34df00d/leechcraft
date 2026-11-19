@@ -108,7 +108,6 @@ LC_DEFINE_PLUGIN (
 SUBPLUGIN (BOOP "Enable EPub backend for Monocle")
 SUBPLUGIN (DIK "Enable MOBI backend for Monocle")
 SUBPLUGIN (FXB "Enable FictionBook backend for Monocle")
-SUBPLUGIN (MU "Enable PDF backend for Monocle using the mupdf library" OFF)
 SUBPLUGIN (PDF "Enable PDF backend for Monocle using the Poppler library")
 SUBPLUGIN (POSTRUS "Enable PostScript backend for Monocle using the libspectre library")
 SUBPLUGIN (SEEN "Enable DjVu backend for Monocle using the DjVu library")
