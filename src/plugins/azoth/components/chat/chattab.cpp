@@ -399,6 +399,7 @@ namespace Azoth
 	{
 		if (const auto entry = GetEntry<ICLEntry> ())
 		{
+			DndUtil::Encode ({ { entry, {} } }, data);
 			data->setText (FormatNameWithAddress (*entry));
 			if (const auto url = entry->GetEntryUrl ())
 				data->setUrls ({ *url });

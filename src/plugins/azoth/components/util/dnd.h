@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <optional>
 #include <QString>
 #include <util/compat/functional.h>
 #include <util/sll/trackingpointer.h>
@@ -33,7 +34,7 @@ namespace LC::Azoth::DndUtil
 	struct MimeContactInfo
 	{
 		Util::TrackingPointer<ICLEntry> Entry_;
-		QString Group_;
+		std::optional<QString> SourceGroup_;
 	};
 
 	QByteArray Encode (const QList<MimeContactInfo>&, QMimeData*);

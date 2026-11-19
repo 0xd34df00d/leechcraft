@@ -141,13 +141,13 @@ namespace LC::Azoth
 		for (const auto& info : DndUtil::DecodeMimeInfos (Entries_, mime))
 		{
 			const auto entry = info.Entry_;
-			const auto& oldGroup = info.Group_;
+			const auto& oldGroup = info.SourceGroup_;
 
-			if (oldGroup == newGrp)
+			if (!oldGroup || oldGroup == newGrp)
 				continue;
 
 			auto groups = entry->Groups ();
-			groups.removeAll (oldGroup);
+			groups.removeAll (*oldGroup);
 			groups << newGrp;
 
 			entry->SetGroups (groups);

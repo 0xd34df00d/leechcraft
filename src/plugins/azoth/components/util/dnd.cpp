@@ -48,7 +48,7 @@ namespace LC::Azoth::DndUtil
 		for (const auto& info : entries)
 		{
 			Serialize (stream, info.Entry_->GetGlobalStrongestId ());
-			stream << info.Group_;
+			stream << info.SourceGroup_.has_value () << info.SourceGroup_.value_or ({});
 		}
 
 		if (data)
@@ -84,10 +84,11 @@ namespace LC::Azoth::DndUtil
 			if (!id)
 				break;
 
+			bool hasGroup = false;
 			QString group;
-			stream >> group;
+			stream >> hasGroup >> group;
 			if (const auto entry = entries.GetEntryOrNull (id))
-				result.append ({ entry, group });
+				result.append ({ entry, hasGroup ? std::optional { group } : std::nullopt });
 		}
 
 		return result;
