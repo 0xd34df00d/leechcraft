@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QFileDialog>
 #include <QMessageBox>
 #include <util/threads/coro/task.h>
 #include "guiconfig.h"
@@ -107,4 +108,77 @@ namespace LC::Util::Dialogs
 	{
 		return ShowMessageBox (QMessageBox::Critical, parent, title, text, buttons, defaultButton);
 	}
+
+	/** @brief The parameters of the file dialogs.
+	 *
+	 * The fields mean the same as the like-named parameters of the static
+	 * `QFileDialog` functions.
+	 *
+	 * @ingroup GuiUtil
+	 */
+	struct FileDialogParams
+	{
+		QWidget *Parent_ = nullptr;
+		QString Caption_ {};
+		QString Dir_ {};
+		QString Filter_ {};
+		QFileDialog::Options Options_ {};
+	};
+
+	/** @brief The parameters of the directory dialog.
+	 *
+	 * The fields mean the same as the like-named parameters of
+	 * `QFileDialog::getExistingDirectory()`.
+	 *
+	 * @ingroup GuiUtil
+	 */
+	struct DirectoryDialogParams
+	{
+		QWidget *Parent_ = nullptr;
+		QString Caption_ {};
+		QString Dir_ {};
+		QFileDialog::Options Options_ = QFileDialog::ShowDirsOnly;
+	};
+
+	/** @brief Asks for a file to open without running a nested event loop.
+	 *
+	 * The asynchronous counterpart of `QFileDialog::getOpenFileName()`:
+	 * the dialog is shown just as that function shows it, but the call
+	 * returns right away, and awaiting the returned task yields what the
+	 * function would return:
+	 * ```cpp
+	 * const auto path = co_await Util::Dialogs::GetOpenFileName ({
+	 * 			.Parent_ = this,
+	 * 			.Caption_ = tr ("Open image"),
+	 * 			.Filter_ = tr ("Images (*.png *.jpg)"),
+	 * 		});
+	 * if (path.isEmpty ())
+	 * 	co_return;
+	 * ```
+	 *
+	 * @return The chosen file, or an empty string if the dialog is
+	 * cancelled or is destroyed before that, as it is along with its
+	 * parent.
+	 *
+	 * @ingroup GuiUtil
+	 */
+	UTIL_GUI_API Task<QString> GetOpenFileName (const FileDialogParams& params);
+
+	/** @brief `GetOpenFileName()` for several files, as `QFileDialog::getOpenFileNames()`.
+	 *
+	 * @ingroup GuiUtil
+	 */
+	UTIL_GUI_API Task<QStringList> GetOpenFileNames (const FileDialogParams& params);
+
+	/** @brief `GetOpenFileName()` for a file to save to, as `QFileDialog::getSaveFileName()`.
+	 *
+	 * @ingroup GuiUtil
+	 */
+	UTIL_GUI_API Task<QString> GetSaveFileName (const FileDialogParams& params);
+
+	/** @brief `GetOpenFileName()` for a directory, as `QFileDialog::getExistingDirectory()`.
+	 *
+	 * @ingroup GuiUtil
+	 */
+	UTIL_GUI_API Task<QString> GetExistingDirectory (const DirectoryDialogParams& params);
 }
