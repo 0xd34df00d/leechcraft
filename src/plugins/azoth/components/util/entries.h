@@ -9,7 +9,9 @@
 #pragma once
 
 #include <variant>
+#include <QPointer>
 #include <util/sll/trackingpointer.h>
+#include <util/threads/coro/taskfwd.h>
 #include "interfaces/azoth/azothcommon.h"
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/imucentry.h"
@@ -43,7 +45,7 @@ namespace LC::Azoth
 
 	InviteCheck_t CheckInvitation (ICLEntry& entry, ICLEntry& target);
 
-	void TryInvite (const QList<Util::TrackingPointer<ICLEntry>>& entries,
-			const Util::TrackingPointer<ICLEntry>& target,
-			QWidget *parent);
+	Util::Task<void> TryInvite (QList<Util::TrackingPointer<ICLEntry>> entries,
+			Util::TrackingPointer<ICLEntry> target,
+			QPointer<QWidget> parent);
 }

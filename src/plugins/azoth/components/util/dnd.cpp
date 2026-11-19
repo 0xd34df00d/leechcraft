@@ -11,7 +11,6 @@
 #include <variant>
 #include <QDataStream>
 #include <QDropEvent>
-#include <QInputDialog>
 #include <QImageReader>
 #include <QIODevice>
 #include <QMimeData>
@@ -21,6 +20,7 @@
 #include <interfaces/ientityhandler.h>
 #include <interfaces/core/ientitymanager.h>
 #include <util/compat/functional.h>
+#include <util/gui/asyncdialogs.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <util/util.h>
@@ -223,20 +223,19 @@ namespace LC::Azoth::DndUtil
 			return actions;
 		}
 
-		void PerformChoice (const QList<Action>& actions, QWidget *parent)
+		Util::Task<void> PerformChoice (QList<Action> actions, QWidget *parent)
 		{
-			bool ok = false;
 			const auto& labels = Util::Map (actions, &Action::Label_);
-			const auto& choice = QInputDialog::getItem (parent,
-					Trs::tr ("Send image"),
-					Trs::tr ("How would you like to send the image?"),
-					labels,
-					0,
-					false,
-					&ok);
-			const auto idx = labels.indexOf (choice);
-			if (!ok || idx < 0)
-				return;
+			const auto& choice = co_await Util::Dialogs::GetItem ({
+						.Parent_ = parent,
+						.Title_ = Trs::tr ("Send image"),
+						.Label_ = Trs::tr ("How would you like to send the image?"),
+						.Items_ = labels,
+						.Editable_ = false,
+					});
+			const auto idx = choice ? labels.indexOf (*choice) : -1;
+			if (idx < 0)
+				co_return;
 
 			actions [idx].Fun_ ();
 		}
@@ -256,16 +255,16 @@ namespace LC::Azoth::DndUtil
 			const auto variant = context.Tabs_.GetActiveVariant (&*target);
 
 			auto actions = CollectDataFilters (context.Tabs_, image, target);
-			actions << Action { Trs::tr ("Send directly in chat"), [&] { SendInChat (image, target, variant); } };
+			actions << Action { Trs::tr ("Send directly in chat"), [=] { SendInChat (image, target, variant); } };
 			if (const auto& url = mime.urls ().value (0);
 				url.isValid ())
 			{
 				if (url.scheme () != "file")
-					actions << Action { Trs::tr ("Send link"), [&, url] { SendLink (url, target, variant); } };
+					actions << Action { Trs::tr ("Send link"), [=] { SendLink (url, target, variant); } };
 				else
-					actions << Action { Trs::tr ("Send as file"), [&, url] { OfferURLs (context.Transfers_, target, { url }); }};
+					actions << Action { Trs::tr ("Send as file"), [&transfers = context.Transfers_, target, url] { OfferURLs (transfers, target, { url }); }};
 			}
-			PerformChoice (actions, context.Parent_);
+			PerformChoice (std::move (actions), context.Parent_);
 			return true;
 		}
 	}

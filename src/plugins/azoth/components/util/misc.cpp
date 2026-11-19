@@ -10,6 +10,7 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QWizard>
+#include <util/gui/asyncdialogs.h>
 #include <util/xpc/entityconstants.h>
 #include <util/xpc/an/constants.h>
 #include <util/xpc/an/entityfields.h>
@@ -56,6 +57,18 @@ namespace LC::Azoth
 					result << path;
 			return result;
 		}
+
+		Util::Task<void> ConfirmAndSendFiles (TransferJobManager& transfers,
+				Util::TrackingPointer<ICLEntry> entry, QStringList paths, QWidget *parent)
+		{
+			const auto& text = QObject::tr ("Are you sure you want to send %n files to %1?", nullptr, paths.size ())
+					.arg (entry->GetEntryName ());
+			if (co_await Util::Dialogs::Question (parent, "Azoth", text) != QMessageBox::Yes || !entry)
+				co_return;
+
+			for (const auto& path : paths)
+				transfers.SendFile ({ *entry, {}, path, {} });
+		}
 	}
 
 	bool CouldOfferURLs (const QList<QUrl>& urls)
@@ -81,17 +94,7 @@ namespace LC::Azoth
 			return true;
 		}
 
-		const auto& text = QObject::tr ("Are you sure you want to send %n files to %1?", nullptr, paths.size ())
-				.arg (entry->GetEntryName ());
-		if (QMessageBox::question (parent,
-					"Azoth",
-					text,
-					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
-			return true;
-
-		for (const auto& path : paths)
-			transfers.SendFile ({ *entry, {}, path, {} });
-
+		ConfirmAndSendFiles (transfers, entry, paths, parent);
 		return true;
 	}
 

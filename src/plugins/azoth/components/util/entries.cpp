@@ -9,9 +9,8 @@
 #include "entries.h"
 #include <ranges>
 #include <variant>
-#include <QInputDialog>
 #include <QSettings>
-#include <QMessageBox>
+#include <util/gui/asyncdialogs.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qobjectrefcast.h>
 #include <util/sll/visitor.h>
@@ -98,16 +97,13 @@ namespace LC::Azoth
 
 	namespace
 	{
-		std::optional<QString> GetInviteMessage (QWidget *parent, const QString& label)
+		Util::Task<std::optional<QString>> GetInviteMessage (QWidget *parent, const QString& label)
 		{
-			bool accepted = false;
-			const auto& msg = QInputDialog::getText (parent,
-					Trs::tr ("Conference invitation"),
-					label + '\n' + Trs::tr ("You can add an optional invitation message:"),
-					QLineEdit::Normal,
-					{},
-					&accepted);
-			return accepted ? std::optional { msg } : std::nullopt;
+			return Util::Dialogs::GetText ({
+						.Parent_ = parent,
+						.Title_ = Trs::tr ("Conference invitation"),
+						.Label_ = label + '\n' + Trs::tr ("You can add an optional invitation message:"),
+					});
 		}
 
 		QString MakeInviteMessageLabel (const QList<InvitePlan>& plans)
@@ -141,9 +137,9 @@ namespace LC::Azoth
 		}
 	}
 
-	void TryInvite (const QList<Util::TrackingPointer<ICLEntry>>& entries,
-			const Util::TrackingPointer<ICLEntry>& target,
-			QWidget *parent)
+	Util::Task<void> TryInvite (QList<Util::TrackingPointer<ICLEntry>> entries,
+			Util::TrackingPointer<ICLEntry> target,
+			QPointer<QWidget> parent)
 	{
 		QList<InviteRefusal> refusals;
 		QList<InvitePlan> plans;
@@ -162,15 +158,15 @@ namespace LC::Azoth
 		const auto warnGuard = Util::MakeScopeGuard ([&]
 				{
 					if (!refusals.isEmpty ())
-						QMessageBox::warning (parent,
+						Util::Dialogs::Warning (parent,
 								Trs::tr ("Conference invitation"),
 								Util::Map (refusals, &InviteRefusal::Message_).join ('\n'));
 				});
 
 		if (plans.isEmpty ())
-			return;
+			co_return;
 
-		if (const auto& msg = GetInviteMessage (parent, MakeInviteMessageLabel (plans)))
+		if (const auto& msg = co_await GetInviteMessage (parent, MakeInviteMessageLabel (plans)))
 			for (const auto& plan : plans)
 			{
 				if (!plan.Muc_)
