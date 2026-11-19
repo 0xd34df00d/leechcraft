@@ -75,15 +75,69 @@ namespace LC::Azoth
 		return result;
 	}
 
+	namespace
+	{
+		bool IsCategory (const QModelIndex& index)
+		{
+			return index.data (CLREntryType).value<CLEntryType> () == CLETCategory;
+		}
+
+		QModelIndex GetTargetCategory (const QAbstractItemModel& model, int row, const QModelIndex& parent)
+		{
+			if (IsCategory (parent))
+				return parent;
+
+			const auto& child = model.index (row, 0, parent);
+			return IsCategory (child) ? child : QModelIndex {};
+		}
+
+		struct GroupsChange
+		{
+			Util::TrackingPointer<ICLEntry> Entry_;
+			QStringList NewGroups_;
+		};
+
+		QList<GroupsChange> PlanRegroup (const EntriesManager& entries, const QMimeData *mime, const QModelIndex& category)
+		{
+			if (!category.isValid ())
+				return {};
+
+			const auto account = category.data (CLRAccountObject).value<IAccount*> ();
+			const auto& newGroup = category.data (CLREntryCategory).toString ();
+
+			QList<GroupsChange> result;
+			for (const auto& [entry, oldGroup] : DndUtil::DecodeMimeInfos (entries, mime))
+			{
+				if (!oldGroup ||
+						entry->GetParentAccount () != account ||
+						!(entry->GetEntryFeatures () & ICLEntry::FSupportsGrouping))
+					continue;
+
+				const auto& groups = entry->Groups ();
+				auto newGroups = groups;
+				if (oldGroup != newGroup)
+					newGroups.removeAll (*oldGroup);
+				if (!newGroups.contains (newGroup))
+					newGroups << newGroup;
+
+				if (newGroups != groups)
+					result.append ({ entry, newGroups });
+			}
+			return result;
+		}
+	}
+
 	bool CLModel::canDropMimeData (const QMimeData *mime,
 			Qt::DropAction action, int row, int column, const QModelIndex& parent) const
 	{
 		if (!QStandardItemModel::canDropMimeData (mime, action, row, column, parent))
 			return false;
 
-		if (!DndUtil::HasContacts (mime) ||
-				parent.data (CLREntryType).value<CLEntryType> () != CLETContact)
+		if (!DndUtil::HasContacts (mime))
 			return true;
+
+		if (parent.data (CLREntryType).value<CLEntryType> () != CLETContact)
+			return !PlanRegroup (Entries_, mime, GetTargetCategory (*this, row, parent)).isEmpty ();
 
 		const auto target = parent.data (CLRIEntry).value<ICLEntry*> ();
 		return target && DndUtil::CanDropContacts (Entries_, *mime, *target);
@@ -95,14 +149,7 @@ namespace LC::Azoth
 		if (action == Qt::IgnoreAction)
 			return true;
 
-		if (TryDropOntoContact (mime, row, parent))
-			return true;
-
-		if (TryDropRegroup (mime, row, parent) ||
-				TryDropRegroup (mime, parent.row (), parent.parent ()))
-			return true;
-
-		return false;
+		return TryDropOntoContact (mime, row, parent) || TryDropRegroup (mime, row, parent);
 	}
 
 	Qt::DropActions CLModel::supportedDropActions () const
@@ -126,33 +173,9 @@ namespace LC::Azoth
 
 	bool CLModel::TryDropRegroup (const QMimeData *mime, int row, const QModelIndex& parent)
 	{
-		if (!DndUtil::HasContacts (mime))
-			return false;
-
-		if (parent.data (CLREntryType).value<CLEntryType> () != CLETAccount)
-			return false;
-
-		const auto acc = parent.data (CLRAccountObject).value<IAccount*> ();
-		if (!acc)
-			return false;
-
-		const auto& newGrp = index (row, 0, parent).data (CLREntryCategory).toString ();
-
-		for (const auto& info : DndUtil::DecodeMimeInfos (Entries_, mime))
-		{
-			const auto entry = info.Entry_;
-			const auto& oldGroup = info.SourceGroup_;
-
-			if (!oldGroup || oldGroup == newGrp)
-				continue;
-
-			auto groups = entry->Groups ();
-			groups.removeAll (*oldGroup);
-			groups << newGrp;
-
-			entry->SetGroups (groups);
-		}
-
-		return true;
+		const auto& changes = PlanRegroup (Entries_, mime, GetTargetCategory (*this, row, parent));
+		for (const auto& [entry, newGroups] : changes)
+			entry->SetGroups (newGroups);
+		return !changes.isEmpty ();
 	}
 }
