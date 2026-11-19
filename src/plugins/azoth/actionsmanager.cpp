@@ -14,12 +14,11 @@
 #include <QBuffer>
 #include <QMenu>
 #include <QInputDialog>
-#include <QMessageBox>
 #include <QClipboard>
-#include <QFileDialog>
 #include <QStandardPaths>
 #include <QTimer>
 #include <util/util.h>
+#include <util/gui/asyncdialogs.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/sll/prelude.h>
@@ -529,6 +528,8 @@ namespace Azoth
 			{ "inviteToMuc", SingleEntryActor_f (InviteToMuc) },
 			{ "saveAvatar", SingleEntryActor_f ([&am] (ICLEntry *e) -> Util::ContextTask<void>
 					{
+						co_await Util::AddContext { Util::CoroContext::Of (am) };
+
 						const auto& name = FormatNameWithAddress (*e);
 						const auto data = co_await am.GetAvatarData (e->GetGlobalStrongestId ());
 						if (!data || data->isEmpty ())
@@ -536,7 +537,7 @@ namespace Azoth
 							const auto& msg = data ?
 									tr ("%1 does not have an avatar.") :
 									tr ("Unable to get %1's avatar.");
-							QMessageBox::warning (nullptr, tr ("Save avatar"), msg.arg (name));
+							Util::Dialogs::Warning (nullptr, tr ("Save avatar"), msg.arg (name));
 							co_return;
 						}
 
@@ -548,21 +549,26 @@ namespace Azoth
 						const auto& extension = reader.format ().isEmpty () ?
 								"bin"_qs :
 								QString::fromLatin1 (reader.format ().toLower ());
-						const auto filename = QFileDialog::getSaveFileName (nullptr,
-								tr ("Save avatar"),
-								QStandardPaths::writableLocation (QStandardPaths::DownloadLocation) + "/avatar."_qs + extension,
-								tr ("Images (*.%1)").arg (extension));
+						const auto filename = co_await Util::Dialogs::GetSaveFileName ({
+									.Caption_ = tr ("Save avatar"),
+									.Dir_ = QStandardPaths::writableLocation (QStandardPaths::DownloadLocation) + "/avatar."_qs + extension,
+									.Filter_ = tr ("Images (*.%1)").arg (extension),
+								});
 						if (filename.isEmpty ())
 							co_return;
 
 						QFile file { filename };
 						if (!file.open (QIODevice::WriteOnly))
 						{
-							QMessageBox::critical (nullptr, tr ("Save avatar"), tr ("Unable to open %1 for writing: %2.").arg (filename, file.errorString ()));
+							Util::Dialogs::Critical (nullptr,
+									tr ("Save avatar"),
+									tr ("Unable to open %1 for writing: %2.").arg (filename, file.errorString ()));
 							co_return;
 						}
 						if (file.write (*data) != data->size () || !file.flush ())
-							QMessageBox::critical (nullptr, tr ("Save avatar"), tr ("Unable to write to %1: %2.").arg (filename, file.errorString ()));
+							Util::Dialogs::Critical (nullptr,
+									tr ("Save avatar"),
+									tr ("Unable to write to %1: %2.").arg (filename, file.errorString ()));
 					}) },
 			{ "vcard", SingleEntryActor_f ([] (ICLEntry *e) { e->ShowInfo (); }) },
 			{ "sep_beforemuc", {} },
