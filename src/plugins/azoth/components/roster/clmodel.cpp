@@ -108,14 +108,13 @@ namespace LC::Azoth
 			QList<GroupsChange> result;
 			for (const auto& [entry, oldGroup] : DndUtil::DecodeMimeInfos (entries, mime))
 			{
-				if (!oldGroup ||
-						entry->GetParentAccount () != account ||
+				if (entry->GetParentAccount () != account ||
 						!(entry->GetEntryFeatures () & ICLEntry::FSupportsGrouping))
 					continue;
 
 				const auto& groups = entry->Groups ();
 				auto newGroups = groups;
-				if (oldGroup != newGroup)
+				if (oldGroup && oldGroup != newGroup)
 					newGroups.removeAll (*oldGroup);
 				if (!newGroups.contains (newGroup))
 					newGroups << newGroup;
