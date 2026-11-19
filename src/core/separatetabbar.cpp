@@ -259,9 +259,10 @@ namespace LC
 		px = px.scaledToWidth (px.width () / 2, Qt::SmoothTransformation);
 
 		auto idt = qobject_cast<IDNDTab*> (widget);
+		const auto isReordering = !idt || QApplication::keyboardModifiers () == Qt::ControlModifier;
 
 		auto data = new QMimeData ();
-		if (!idt || QApplication::keyboardModifiers () == Qt::ControlModifier)
+		if (isReordering)
 		{
 			data->setData ("x-leechcraft/tab-drag-action", "reordering");
 			data->setData ("x-leechcraft/tab-tabclass", itw->GetTabClassInfo ().TabClass_);
@@ -272,7 +273,7 @@ namespace LC
 		auto drag = new QDrag (this);
 		drag->setMimeData (data);
 		drag->setPixmap (px);
-		drag->exec ();
+		drag->exec (isReordering ? Qt::MoveAction : Qt::CopyAction);
 	}
 
 	namespace
