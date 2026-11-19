@@ -8,7 +8,9 @@
 
 #pragma once
 
+#include <optional>
 #include <QFileDialog>
+#include <QLineEdit>
 #include <QMessageBox>
 #include <util/threads/coro/task.h>
 #include "guiconfig.h"
@@ -181,4 +183,85 @@ namespace LC::Util::Dialogs
 	 * @ingroup GuiUtil
 	 */
 	UTIL_GUI_API Task<QString> GetExistingDirectory (const DirectoryDialogParams& params);
+
+	/** @brief The parameters of the item dialog.
+	 *
+	 * The fields mean the same as the like-named parameters of
+	 * `QInputDialog::getItem()`.
+	 *
+	 * @ingroup GuiUtil
+	 */
+	struct ItemDialogParams
+	{
+		QWidget *Parent_ = nullptr;
+		QString Title_ {};
+		QString Label_ {};
+		QStringList Items_ {};
+		int Current_ = 0;
+		bool Editable_ = true;
+	};
+
+	/** @brief Asks to choose an item without running a nested event loop.
+	 *
+	 * The asynchronous counterpart of `QInputDialog::getItem()`: the
+	 * dialog is shown just as that function shows it, but the call returns
+	 * right away, and awaiting the returned task yields the choice:
+	 * ```cpp
+	 * const auto format = co_await Util::Dialogs::GetItem ({
+	 * 			.Parent_ = this,
+	 * 			.Title_ = tr ("Export"),
+	 * 			.Label_ = tr ("Choose the format:"),
+	 * 			.Items_ = formats,
+	 * 			.Editable_ = false,
+	 * 		});
+	 * if (!format)
+	 * 	co_return;
+	 * ```
+	 *
+	 * @return The text of the chosen item, or nothing if the dialog is
+	 * cancelled or is destroyed before that, as it is along with its
+	 * parent.
+	 *
+	 * @ingroup GuiUtil
+	 */
+	UTIL_GUI_API Task<std::optional<QString>> GetItem (const ItemDialogParams& params);
+
+	/** @brief The parameters of the text dialog.
+	 *
+	 * The fields mean the same as the like-named parameters of
+	 * `QInputDialog::getText()`.
+	 *
+	 * @ingroup GuiUtil
+	 */
+	struct TextDialogParams
+	{
+		QWidget *Parent_ = nullptr;
+		QString Title_ {};
+		QString Label_ {};
+		QLineEdit::EchoMode Echo_ = QLineEdit::Normal;
+		QString Text_ {};
+	};
+
+	/** @brief Asks for a line of text without running a nested event loop.
+	 *
+	 * The asynchronous counterpart of `QInputDialog::getText()`: the
+	 * dialog is shown just as that function shows it, but the call returns
+	 * right away, and awaiting the returned task yields the text:
+	 * ```cpp
+	 * const auto name = co_await Util::Dialogs::GetText ({
+	 * 			.Parent_ = this,
+	 * 			.Title_ = tr ("Rename"),
+	 * 			.Label_ = tr ("Enter the new name:"),
+	 * 			.Text_ = oldName,
+	 * 		});
+	 * if (!name)
+	 * 	co_return;
+	 * ```
+	 *
+	 * @return The entered text, or nothing if the dialog is cancelled or
+	 * is destroyed before that, as it is along with its parent.
+	 *
+	 * @ingroup GuiUtil
+	 */
+	UTIL_GUI_API Task<std::optional<QString>> GetText (const TextDialogParams& params);
 }

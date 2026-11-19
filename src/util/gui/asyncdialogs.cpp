@@ -8,6 +8,7 @@
 
 #include "asyncdialogs.h"
 #include <algorithm>
+#include <QInputDialog>
 #include <QPointer>
 #include <QPushButton>
 #include <QUrl>
@@ -83,6 +84,16 @@ namespace LC::Util::Dialogs
 			const auto urls = co_await AwaitUrls (std::move (dia));
 			co_return Map (urls, [] (const QUrl& url) { return url.toString (QUrl::PreferLocalFile); });
 		}
+
+		Task<std::optional<QString>> AwaitTextValue (QPointer<QInputDialog> dia)
+		{
+			const auto code = co_await Exec (*dia);
+			if (!dia)
+				co_return {};
+
+			dia->deleteLater ();
+			co_return code == QDialog::Accepted ? std::optional { dia->textValue () } : std::nullopt;
+		}
 	}
 
 	Task<int> Exec (QDialog& dia)
@@ -128,5 +139,26 @@ namespace LC::Util::Dialogs
 			.Options_ = params.Options_,
 		};
 		return AwaitFileName (MakeFileDialog (fileParams, QFileDialog::Directory));
+	}
+
+	Task<std::optional<QString>> GetItem (const ItemDialogParams& params)
+	{
+		const auto dia = new QInputDialog { params.Parent_ };
+		dia->setWindowTitle (params.Title_);
+		dia->setLabelText (params.Label_);
+		dia->setComboBoxItems (params.Items_);
+		dia->setTextValue (params.Items_.value (params.Current_));
+		dia->setComboBoxEditable (params.Editable_);
+		return AwaitTextValue (dia);
+	}
+
+	Task<std::optional<QString>> GetText (const TextDialogParams& params)
+	{
+		const auto dia = new QInputDialog { params.Parent_ };
+		dia->setWindowTitle (params.Title_);
+		dia->setLabelText (params.Label_);
+		dia->setTextValue (params.Text_);
+		dia->setTextEchoMode (params.Echo_);
+		return AwaitTextValue (dia);
 	}
 }
