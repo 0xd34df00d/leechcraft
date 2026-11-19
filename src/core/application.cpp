@@ -68,10 +68,6 @@
 #include "version.h"
 #include "entitymanager.h"
 
-#ifdef Q_OS_WIN32
-#include "winwarndialog.h"
-#endif
-
 namespace LC
 {
 	Application::Application (int& argc, char **argv)
@@ -176,10 +172,6 @@ namespace LC
 			qDebug () << "======APPLICATION STARTUP======";
 			qWarning () << "======APPLICATION STARTUP======";
 		}
-
-#ifdef Q_OS_WIN32
-		new WinWarnDialog;
-#endif
 
 		CheckStartupPass ();
 

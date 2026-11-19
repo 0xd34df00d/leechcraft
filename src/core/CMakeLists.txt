@@ -73,7 +73,6 @@ set (SRCS
 	separatetabbar.cpp
 	separatetabwidget.cpp
 	mwproxy.cpp
-	winwarndialog.cpp
 	coreplugin2manager.cpp
 	dockmanager.cpp
 	entitymanager.cpp
