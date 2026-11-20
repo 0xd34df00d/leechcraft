@@ -9,10 +9,10 @@
 #include "importopmldialog.h"
 #include <QBuffer>
 #include <QFileDialog>
-#include <QMessageBox>
 #include <QTimer>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <util/gui/asyncdialogs.h>
 #include <util/gui/util.h>
 #include <util/sll/either.h>
 #include <util/sll/qtutil.h>
@@ -142,7 +142,7 @@ namespace LC::Aggregator
 		Util::Visit (ParseOPML (device, context),
 				[this] (const QString& error)
 				{
-					QMessageBox::critical (this, MessageBoxTitle, error);
+					Util::Dialogs::Critical (this, MessageBoxTitle, error);
 					Reset ();
 				},
 				[this] (const OPMLParseResult& result)

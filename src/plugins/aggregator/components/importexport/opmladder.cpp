@@ -7,11 +7,11 @@
  **********************************************************************/
 
 #include "opmladder.h"
-#include <QTimer>
 #include <QUrl>
 #include <interfaces/structures.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/itagsmanager.h>
+#include <util/gui/asyncdialogs.h>
 #include <util/sll/either.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
@@ -22,6 +22,7 @@
 #include "dbutils.h"
 #include "importopmldialog.h"
 #include "opmlparser.h"
+#include "updatesmanager.h"
 
 namespace LC::Aggregator::Opml
 {
@@ -77,11 +78,13 @@ namespace LC::Aggregator::Opml
 					});
 		}
 
-		void HandleOpml (const ImportOPMLDialog::Source& source, UpdatesManager& updatesManager)
+		Util::ContextTask<void> HandleOpml (ImportOPMLDialog::Source source, UpdatesManager& updatesManager)
 		{
+			co_await Util::AddContext { Util::CoroContext::Of (updatesManager) };
+
 			ImportOPMLDialog importDialog { source };
-			if (importDialog.exec () != QDialog::Accepted)
-				return;
+			if (co_await Util::Dialogs::Exec (importDialog) != QDialog::Accepted)
+				co_return;
 
 			QList<AddFeedParams> feeds;
 			const auto& tags = GetProxyHolder ()->GetTagsManager ()->Split (importDialog.GetTags ());
@@ -103,7 +106,7 @@ namespace LC::Aggregator::Opml
 
 	void StartFileImport (UpdatesManager& updatesManager)
 	{
-		return HandleOpml (ImportOPMLDialog::Browse {}, updatesManager);
+		HandleOpml (ImportOPMLDialog::Browse {}, updatesManager);
 	}
 
 	void HandleOpmlEntity (const Entity& e, std::weak_ptr<UpdatesManager> updatesManager)
@@ -113,11 +116,7 @@ namespace LC::Aggregator::Opml
 			const auto remoteResult = co_await HandleOpmlUrl (url);
 			const auto opml = co_await WithHandler (remoteResult, ReportError);
 			if (const auto um = updatesManager.lock ())
-			{
-				// `HandleOpml` spins a nested event loop inside, and while it's safe in this particular coro,
-				// it's annoyingly fragile, so it's safer and more robust to invoke it from outside the coro frame.
-				QTimer::singleShot (0, [=] { HandleOpml (ToDialogSource (opml), *um); });
-			}
+				HandleOpml (ToDialogSource (opml), *um);
 		} (e.Entity_.toUrl (), std::move (updatesManager));
 	}
 }
