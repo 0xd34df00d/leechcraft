@@ -28,6 +28,7 @@
 #include <util/xpc/util.h>
 #include "chattabsmanager.h"
 #include "util/azoth/entryidops.h"
+#include "util/azoth/util.h"
 #include "interfaces/azoth/iclentry.h"
 #include "components/managers/entriesmanager.h"
 #include "components/util/entries.h"
@@ -42,27 +43,26 @@ namespace LC::Azoth::DndUtil
 		return CLEntryFormat;
 	}
 
-	QByteArray Encode (const QList<MimeContactInfo>& entries, QMimeData *data)
+	void Encode (const QList<MimeContactInfo>& entries, QMimeData& data)
 	{
 		QByteArray encoded;
 		QDataStream stream (&encoded, QIODevice::WriteOnly);
+		QStringList names;
+		QList<QUrl> urls;
 		for (const auto& info : entries)
 		{
 			Serialize (stream, info.Entry_->GetGlobalStrongestId ());
 			stream << info.SourceGroup_.has_value () << info.SourceGroup_.value_or ({});
+
+			names << FormatNameWithAddress (*info.Entry_);
+			if (const auto url = info.Entry_->GetEntryUrl ())
+				urls << *url;
 		}
 
-		if (data)
-			data->setData (CLEntryFormat, encoded);
-
-		return encoded;
-	}
-
-	ICLEntry* DecodeEntryObj (const EntriesManager& entries, const QMimeData *mime)
-	{
-		QDataStream stream (mime->data (CLEntryFormat));
-		const auto id = Deserialize<GlobalStrongestId> (stream);
-		return entries.GetEntryOrNull (id);
+		data.setData (CLEntryFormat, encoded);
+		data.setText (names.join ("; "_qs));
+		if (!urls.isEmpty ())
+			data.setUrls (urls);
 	}
 
 	QList<Util::TrackingPointer<ICLEntry>> DecodeEntryObjs (const EntriesManager& entries, const QMimeData *mime)

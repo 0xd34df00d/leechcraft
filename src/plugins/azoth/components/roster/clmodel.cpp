@@ -8,11 +8,9 @@
 
 #include "clmodel.h"
 #include <QMimeData>
-#include <QUrl>
 #include <util/sll/qtutil.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
-#include "util/azoth/util.h"
 #include "components/transfers/transferjobmanager.h"
 #include "components/util/dnd.h"
 #include "components/util/gui.h"
@@ -47,8 +45,6 @@ namespace LC::Azoth
 	{
 		QMimeData *result = new QMimeData;
 
-		QStringList names;
-		QList<QUrl> urls;
 		QList<DndUtil::MimeContactInfo> entries;
 
 		for (const auto& index : indexes)
@@ -63,15 +59,9 @@ namespace LC::Azoth
 			const auto& thisGroup = index.parent ().data (CLREntryCategory).toString ();
 
 			entries.append ({ entry, thisGroup });
-			names << FormatNameWithAddress (*entry);
-			if (const auto url = entry->GetEntryUrl ())
-				urls << *url;
 		}
 
-		DndUtil::Encode (entries, result);
-		result->setText (names.join ("; "));
-		if (!urls.isEmpty ())
-			result->setUrls (urls);
+		DndUtil::Encode (entries, *result);
 
 		return result;
 	}

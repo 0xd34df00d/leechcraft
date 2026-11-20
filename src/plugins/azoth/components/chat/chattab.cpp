@@ -398,12 +398,7 @@ namespace Azoth
 	void ChatTab::FillMimeData (QMimeData *data)
 	{
 		if (const auto entry = GetEntry<ICLEntry> ())
-		{
-			DndUtil::Encode ({ { entry, {} } }, data);
-			data->setText (FormatNameWithAddress (*entry));
-			if (const auto url = entry->GetEntryUrl ())
-				data->setUrls ({ *url });
-		}
+			DndUtil::Encode ({ { entry, {} } }, *data);
 	}
 
 	bool ChatTab::CouldHandleDrop (const QMimeData& data) const

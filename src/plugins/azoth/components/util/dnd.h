@@ -37,8 +37,7 @@ namespace LC::Azoth::DndUtil
 		std::optional<QString> SourceGroup_;
 	};
 
-	QByteArray Encode (const QList<MimeContactInfo>&, QMimeData*);
-	ICLEntry* DecodeEntryObj (const EntriesManager&, const QMimeData*);
+	void Encode (const QList<MimeContactInfo>&, QMimeData&);
 	QList<Util::TrackingPointer<ICLEntry>> DecodeEntryObjs (const EntriesManager&, const QMimeData*);
 	QList<MimeContactInfo> DecodeMimeInfos (const EntriesManager&, const QMimeData*);
 
