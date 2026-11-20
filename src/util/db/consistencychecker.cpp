@@ -10,9 +10,9 @@
 #include <memory>
 #include <QCoreApplication>
 #include <QFile>
-#include <QMessageBox>
 #include <QSqlDatabase>
 #include <QtConcurrentRun>
+#include <util/gui/asyncdialogs.h>
 #include <util/gui/util.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
@@ -105,7 +105,7 @@ namespace LC::Util::ConsistencyChecker
 			qCritical () << "unable to rename" << newPath << "→" << dbPath;
 			const auto& msg = Tr::tr ("Unable to rename %1 to %2. Please check %2 does not exist, and hit OK.")
 					.arg (newPath, dbPath);
-			QMessageBox::critical (nullptr, "LeechCraft"_qs, msg);
+			co_await Dialogs::Critical (nullptr, "LeechCraft"_qs, msg);
 		}
 
 		co_return RecoverFinished { .OldFileSize_ = oldSize, .NewFileSize_ = newSize };
@@ -147,7 +147,7 @@ namespace LC::Util::ConsistencyChecker
 			const auto& question = Tr::tr ("Unable to dump corrupted SQLite database %1.").arg (FormatName (dbPath)) +
 					"<br/><br/>"_qs +
 					GetRecoverFailureMessage (result.GetLeft ());
-			if (QMessageBox::question (nullptr, diaTitle, question, QMessageBox::Retry | QMessageBox::Cancel) != QMessageBox::Retry)
+			if (co_await Dialogs::Question (nullptr, diaTitle, question, QMessageBox::Retry | QMessageBox::Cancel) != QMessageBox::Retry)
 				co_return result;
 		}
 	}
