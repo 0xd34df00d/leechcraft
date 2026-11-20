@@ -43,8 +43,6 @@ namespace LC::Azoth
 
 	QMimeData* CLModel::mimeData (const QModelIndexList& indexes) const
 	{
-		QMimeData *result = new QMimeData;
-
 		QList<DndUtil::MimeContactInfo> entries;
 
 		for (const auto& index : indexes)
@@ -61,8 +59,11 @@ namespace LC::Azoth
 			entries.append ({ entry, thisGroup });
 		}
 
-		DndUtil::Encode (entries, *result);
+		if (entries.isEmpty ())
+			return nullptr;
 
+		const auto result = new QMimeData;
+		DndUtil::Encode (entries, *result);
 		return result;
 	}
 
