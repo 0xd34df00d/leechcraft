@@ -11,12 +11,12 @@
 #include <limits>
 #include <QIcon>
 #include <QAction>
-#include <QMessageBox>
 #include <QTimer>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/entitytesthandleresult.h>
+#include <util/gui/asyncdialogs.h>
 #include <util/xpc/util.h>
 #include <util/sll/either.h>
 #include <util/sll/qtutil.h>
@@ -320,8 +320,8 @@ namespace Liznoo
 		} ();
 
 		if (!res)
-			QMessageBox::critical (nullptr,
-					"LeechCraft",
+			Util::Dialogs::Critical (XSD_->GetWidget (),
+					"LeechCraft"_qs,
 					tr ("Unable to send test power events."));
 	}
 }
