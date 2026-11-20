@@ -146,6 +146,9 @@ namespace LC::Azoth::EmbedMedia
 					&QNetworkReply::abort);
 
 			const auto result = co_await *reply;
+			if (dia.wasCanceled ())
+				co_return;
+
 			const auto data = co_await Util::WithHandler (result.ToEither ("Azoth EmbedMedia"_qs),
 					[chatTab] (const QString& error)
 					{
