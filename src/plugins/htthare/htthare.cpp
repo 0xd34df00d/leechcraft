@@ -8,8 +8,6 @@
 
 #include "htthare.h"
 #include <QIcon>
-#include <QEventLoop>
-#include <QTimer>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/xsd/addressesmodelmanager.h>
 #include "server.h"
@@ -25,9 +23,18 @@ namespace HttHare
 
 		AddrMgr_ = new Util::AddressesModelManager (&XmlSettingsManager::Instance (), 14801, this);
 		connect (AddrMgr_,
-				SIGNAL (addressesChanged ()),
+				&Util::AddressesModelManager::addressesChanged,
 				this,
-				SLOT (reapplyAddresses ()));
+				[this]
+				{
+					if (!S_)
+						return;
+
+					// The old server has to release its ports before the new one binds them.
+					S_.reset ();
+					S_ = std::make_shared<Server> (AddrMgr_->GetAddresses ());
+					S_->Start ();
+				});
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "httharesettings.xml");
@@ -87,22 +94,6 @@ namespace HttHare
 			S_.reset (new Server { AddrMgr_->GetAddresses () });
 			S_->Start ();
 		}
-	}
-
-	void Plugin::reapplyAddresses ()
-	{
-		if (!S_)
-			return;
-
-		S_->Stop ();
-		S_.reset ();
-
-		QEventLoop loop;
-		QTimer::singleShot (100, &loop, SLOT (quit ()));
-		loop.exec ();
-
-		S_.reset (new Server { AddrMgr_->GetAddresses () });
-		S_->Start ();
 	}
 }
 }

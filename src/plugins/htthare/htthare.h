@@ -49,7 +49,6 @@ namespace HttHare
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	private slots:
 		void handleEnableServerChanged ();
-		void reapplyAddresses ();
 	};
 }
 }
