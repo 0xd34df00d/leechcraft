@@ -33,7 +33,8 @@ namespace Azoth
 		if (filename != Filename_)
 			return;
 
-		SendMessage (*Entry_, { .Variant_ = EntryVariant_, .Body_ = url.toString (QUrl::FullyEncoded) });
+		if (Entry_)
+			SendMessage (*Entry_, { .Variant_ = EntryVariant_, .Body_ = url.toString (QUrl::FullyEncoded) });
 		deleteLater ();
 	}
 }

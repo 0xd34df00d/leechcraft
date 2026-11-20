@@ -9,20 +9,20 @@
 #pragma once
 
 #include <QDialog>
+#include <util/sll/trackingpointer.h>
+#include "interfaces/azoth/iclentry.h"
 #include "ui_filesenddialog.h"
 
 namespace LC
 {
 namespace Azoth
 {
-	class ICLEntry;
-
 	class FileSendDialog : public QDialog
 	{
 		Q_OBJECT
 
 		Ui::FileSendDialog Ui_;
-		ICLEntry *Entry_;
+		Util::TrackingPointer<ICLEntry> Entry_;
 		const std::optional<QString> EntryVariant_;
 		bool AccSupportsFT_;
 

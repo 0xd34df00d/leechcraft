@@ -96,8 +96,8 @@ namespace Azoth
 		const auto& filename = Ui_.FileEdit_->text ();
 
 		auto sharer = qobject_cast<IWebFileStorage*> (info.Sharer_);
+		new PendingUploadPaster (info.Sharer_, &*Entry_, EntryVariant_, filename);
 		sharer->UploadFile (filename, info.Service_);
-		new PendingUploadPaster (info.Sharer_, Entry_, EntryVariant_, filename);
 	}
 
 	void FileSendDialog::SendProto ()

@@ -10,6 +10,8 @@
 
 #include <QObject>
 #include <QString>
+#include <util/sll/trackingpointer.h>
+#include "interfaces/azoth/iclentry.h"
 
 class QUrl;
 
@@ -17,13 +19,11 @@ namespace LC
 {
 namespace Azoth
 {
-	class ICLEntry;
-
 	class PendingUploadPaster : public QObject
 	{
 		Q_OBJECT
 
-		ICLEntry *Entry_;
+		Util::TrackingPointer<ICLEntry> Entry_;
 		const std::optional<QString> EntryVariant_;
 		const QString Filename_;
 	public:
