@@ -15,6 +15,7 @@
 #include "util/azoth/util.h"
 #include "components/transfers/transferjobmanager.h"
 #include "components/util/dnd.h"
+#include "components/util/gui.h"
 #include "core.h"
 #include "cltooltipmanager.h"
 #include "roles.h"
@@ -166,7 +167,7 @@ namespace LC::Azoth
 					.Entries_ = Entries_,
 					.Tabs_ = *Core::Instance ().GetChatTabsManager (),
 					.Transfers_ = *Core::Instance ().GetTransferJobManager (),
-					.Parent_ = nullptr,
+					.Parent_ = GetDialogParent (),
 				});
 	}
 

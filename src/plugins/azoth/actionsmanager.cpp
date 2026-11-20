@@ -57,6 +57,7 @@
 #include "components/dialogs/filesenddialog.h"
 #include "components/dialogs/advancedpermchangedialog.h"
 #include "components/util/entries.h"
+#include "components/util/gui.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "chattabsmanager.h"
@@ -498,7 +499,7 @@ namespace Azoth
 						{ Core::Instance ().GetChatTabsManager ()->OpenChat (*e, true); })
 			},
 			{ "drawattention", SingleEntryActor_f (DrawAttention) },
-			{ "sendfile", SingleEntryActor_f ([] (ICLEntry *entry) { new FileSendDialog (entry); }) },
+			{ "sendfile", SingleEntryActor_f ([] (ICLEntry *entry) { new FileSendDialog (entry, {}, GetDialogParent ()); }) },
 			{ "sep_afterinitiate", {} },
 			{ "rename", SingleEntryActor_f (Rename) },
 			{ "changegroups", MultiEntryActor_f (ChangeGroups) },

@@ -14,6 +14,7 @@
 #include <QImageReader>
 #include <QIODevice>
 #include <QMimeData>
+#include <QPointer>
 #include <QString>
 #include <QUrl>
 #include <interfaces/idatafilter.h>
@@ -253,6 +254,7 @@ namespace LC::Azoth::DndUtil
 				return OfferURLs (context.Transfers_, target, mime.urls (), context.Parent_);
 
 			const auto variant = context.Tabs_.GetActiveVariant (&*target);
+			const QPointer parent { context.Parent_ };
 
 			auto actions = CollectDataFilters (context.Tabs_, image, target);
 			actions << Action { Trs::tr ("Send directly in chat"), [=] { SendInChat (image, target, variant); } };
@@ -262,7 +264,7 @@ namespace LC::Azoth::DndUtil
 				if (url.scheme () != "file")
 					actions << Action { Trs::tr ("Send link"), [=] { SendLink (url, target, variant); } };
 				else
-					actions << Action { Trs::tr ("Send as file"), [&transfers = context.Transfers_, target, url] { OfferURLs (transfers, target, { url }); }};
+					actions << Action { Trs::tr ("Send as file"), [=, &transfers = context.Transfers_] { OfferURLs (transfers, target, { url }, parent); } };
 			}
 			PerformChoice (std::move (actions), context.Parent_);
 			return true;

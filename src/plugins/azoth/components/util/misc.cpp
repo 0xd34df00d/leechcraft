@@ -90,7 +90,7 @@ namespace LC::Azoth
 
 		if (paths.size () == 1)
 		{
-			new FileSendDialog { &*entry, paths [0] };
+			new FileSendDialog { &*entry, paths [0], parent };
 			return true;
 		}
 
