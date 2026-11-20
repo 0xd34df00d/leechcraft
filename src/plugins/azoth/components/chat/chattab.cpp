@@ -478,7 +478,7 @@ namespace Azoth
 		children += MUCEventLog_;
 		children += MsgFormatter_;
 		for (auto child : children)
-			if (child != Ui_.View_)
+			if (child != Ui_.View_ && !child->window ()->isModal ())
 				child->setEnabled (enabled);
 
 		if (enabled)
