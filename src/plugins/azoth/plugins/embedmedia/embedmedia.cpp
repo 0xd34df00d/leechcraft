@@ -11,12 +11,12 @@
 #include <QFileInfo>
 #include <QImageReader>
 #include <QLabel>
-#include <QMessageBox>
 #include <QProgressDialog>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <util/util.h>
+#include <util/gui/asyncdialogs.h>
 #include <util/gui/util.h>
 #include <util/sll/either.h>
 #include <util/sll/prelude.h>
@@ -149,7 +149,7 @@ namespace LC::Azoth::EmbedMedia
 			const auto data = co_await Util::WithHandler (result.ToEither ("Azoth EmbedMedia"_qs),
 					[chatTab] (const QString& error)
 					{
-						QMessageBox::critical (chatTab,
+						Util::Dialogs::Critical (chatTab,
 								"Azoth EmbedMedia"_qs,
 								tr ("Unable to fetch the image: %1").arg (error));
 					});
