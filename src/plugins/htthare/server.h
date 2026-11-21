@@ -10,7 +10,9 @@
 
 #include <thread>
 #include <boost/asio.hpp>
+#include "iconresolver.h"
 #include "storagemanager.h"
+#include "trmanager.h"
 
 template<typename T>
 class QSet;
@@ -21,9 +23,6 @@ namespace LC
 {
 namespace HttHare
 {
-	class IconResolver;
-	class TrManager;
-
 	class Server
 	{
 		boost::asio::io_context IoService_;
@@ -33,8 +32,8 @@ namespace HttHare
 
 		std::vector<std::thread> Threads_;
 
-		IconResolver * const IconResolver_;
-		TrManager * const TrManager_;
+		IconResolver IconResolver_;
+		TrManager TrManager_;
 	public:
 		Server (const QList<std::pair<QString, QString>>& addresses);
 		~Server ();

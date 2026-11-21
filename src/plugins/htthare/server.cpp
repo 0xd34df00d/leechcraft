@@ -10,8 +10,6 @@
 #include <QString>
 #include <QtDebug>
 #include "connection.h"
-#include "iconresolver.h"
-#include "trmanager.h"
 
 namespace LC
 {
@@ -20,8 +18,6 @@ namespace HttHare
 	namespace ip = boost::asio::ip;
 
 	Server::Server (const QList<std::pair<QString, QString>>& addresses)
-	: IconResolver_ { new IconResolver  }
-	, TrManager_ { new TrManager }
 	{
 		ip::tcp::resolver resolver { IoService_ };
 
@@ -76,7 +72,7 @@ namespace HttHare
 
 	void Server::StartAccept (ip::tcp::acceptor& acceptor)
 	{
-		Connection_ptr connection { new Connection { IoService_, StorageMgr_, IconResolver_, TrManager_ } };
+		Connection_ptr connection { new Connection { IoService_, StorageMgr_, &IconResolver_, &TrManager_ } };
 
 		acceptor.async_accept (connection->GetSocket (),
 				[this, connection, &acceptor] (const boost::system::error_code& ec)
