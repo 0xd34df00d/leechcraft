@@ -8,8 +8,10 @@
 
 #include "contactslistview.h"
 #include <QCoreApplication>
+#include <QDropEvent>
 #include <QHelpEvent>
 #include <QToolTip>
+#include <util/gui/util.h>
 #include "roles.h"
 #include "interfaces/azoth/iclentry.h"
 
@@ -36,6 +38,38 @@ namespace LC::Azoth
 
 		QHelpEvent event { QEvent::ToolTip, local, pos };
 		QCoreApplication::sendEvent (viewport (), &event);
+	}
+
+	namespace
+	{
+		void HandleAsCopy (QDropEvent& event, const auto& handle)
+		{
+			if (!(event.possibleActions () & Qt::CopyAction))
+			{
+				event.ignore ();
+				return;
+			}
+
+			event.setDropAction (Qt::CopyAction);
+			handle ();
+			if (event.isAccepted ())
+				Util::AcceptEventAsCopy (event);
+		}
+	}
+
+	void ContactsListView::dragEnterEvent (QDragEnterEvent *event)
+	{
+		HandleAsCopy (*event, [&] { QTreeView::dragEnterEvent (event); });
+	}
+
+	void ContactsListView::dragMoveEvent (QDragMoveEvent *event)
+	{
+		HandleAsCopy (*event, [&] { QTreeView::dragMoveEvent (event); });
+	}
+
+	void ContactsListView::dropEvent (QDropEvent *event)
+	{
+		HandleAsCopy (*event, [&] { QTreeView::dropEvent (event); });
 	}
 
 	void ContactsListView::drawBranches (QPainter *painter, const QRect& rect, const QModelIndex& index) const

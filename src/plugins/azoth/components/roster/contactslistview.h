@@ -22,6 +22,10 @@ namespace LC::Azoth
 
 		void RedisplayTooltip (const GlobalStrongestId&);
 	protected:
+		void dragEnterEvent (QDragEnterEvent*) override;
+		void dragMoveEvent (QDragMoveEvent*) override;
+		void dropEvent (QDropEvent*) override;
+
 		void drawBranches (QPainter *painter, const QRect& rect, const QModelIndex& index) const override;
 	};
 }

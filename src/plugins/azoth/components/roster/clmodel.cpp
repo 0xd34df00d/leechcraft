@@ -173,7 +173,7 @@ namespace LC::Azoth
 
 	Qt::DropActions CLModel::supportedDropActions () const
 	{
-		return Qt::CopyAction | Qt::LinkAction;
+		return Qt::CopyAction;
 	}
 
 	bool CLModel::TryDropOntoContact (const QMimeData *mime, int, const QModelIndex& parent)
