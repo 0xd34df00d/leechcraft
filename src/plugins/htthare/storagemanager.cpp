@@ -29,10 +29,10 @@ namespace HttHare
 		if (url.path ().startsWith ("/"))
 			url.setPath (url.path ().mid (1));
 
-		const auto& path = QUrl::fromLocalFile (QDir::homePath () + '/')
-				.resolved (url).toLocalFile ();
-		const QFileInfo fi { path };
-		if (!fi.absoluteFilePath ().startsWith (QDir::homePath ()))
+		const auto& home = QDir::homePath ();
+		const auto& homeDir = home.endsWith ('/') ? home : home + '/';
+		const auto& path = QDir::cleanPath (QUrl::fromLocalFile (homeDir).resolved (url).toLocalFile ());
+		if (path != home && !path.startsWith (homeDir))
 			throw AccessDeniedException ();
 
 		return path;
