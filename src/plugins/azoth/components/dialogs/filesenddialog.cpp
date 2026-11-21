@@ -9,6 +9,7 @@
 #include "filesenddialog.h"
 #include <QFileDialog>
 #include <QMessageBox>
+#include <util/gui/asyncdialogs.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -40,7 +41,6 @@ namespace Azoth
 				SIGNAL (accepted ()),
 				this,
 				SLOT (send ()));
-		show ();
 
 		Ui_.TargetLabel_->setText (FormatNameWithAddress (*entry));
 
@@ -56,7 +56,7 @@ namespace Azoth
 
 		if (!Ui_.TransferMethod_->count ())
 		{
-			QMessageBox::warning (this,
+			Util::Dialogs::Warning (parent,
 					"LeechCraft",
 					tr ("There aren't any file transfer methods available. "
 						"Please either make sure protocol file transfers are enabled and "
@@ -64,6 +64,8 @@ namespace Azoth
 			deleteLater ();
 			return;
 		}
+
+		show ();
 
 		if (suggested.isEmpty ())
 		{
