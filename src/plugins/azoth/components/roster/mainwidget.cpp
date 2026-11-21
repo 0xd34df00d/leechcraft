@@ -375,7 +375,7 @@ namespace Azoth
 					Actions::CategoryInfo
 					{
 						.Name_ = index.data ().toString (),
-						.Account_ = qobject_cast<IAccount*> (index.parent ().data (CLRAccountObject).value<QObject*> ()),
+						.Account_ = index.data (CLRAccountObject).value<IAccount*> (),
 						.Entries_ = GetCategoryEntries (index, Ui_.CLTree_->selectionModel ()->selectedRows ()),
 						.UnreadCount_ = index.data (CLRUnreadMsgCount).toInt (),
 					});

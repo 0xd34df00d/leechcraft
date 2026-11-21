@@ -13,6 +13,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <util/sll/prelude.h>
+#include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/iclentry.h"
 #include "components/dialogs/groupsenddialog.h"
 #include "components/dialogs/groupremovedialog.h"
@@ -33,7 +34,7 @@ namespace LC::Azoth::Actions
 			if (newName.isEmpty () || newName == cat.Name_)
 				return;
 
-			for (const auto entry : cat.Entries_)
+			for (const auto entry : cat.Account_->GetCLEntries ())
 			{
 				auto groups = entry->Groups ();
 				if (groups.removeAll (cat.Name_))
