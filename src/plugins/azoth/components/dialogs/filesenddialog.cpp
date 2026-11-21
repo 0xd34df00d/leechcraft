@@ -7,9 +7,11 @@
  **********************************************************************/
 
 #include "filesenddialog.h"
-#include <QFileDialog>
+#include <QDir>
+#include <QFileInfo>
 #include <QMessageBox>
 #include <util/gui/asyncdialogs.h>
+#include <util/threads/coro/context.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -41,6 +43,10 @@ namespace Azoth
 				SIGNAL (accepted ()),
 				this,
 				SLOT (send ()));
+		connect (Ui_.FileBrowse_,
+				&QPushButton::released,
+				this,
+				&FileSendDialog::BrowseFile);
 
 		Ui_.TargetLabel_->setText (FormatNameWithAddress (*entry));
 
@@ -70,7 +76,7 @@ namespace Azoth
 		if (suggested.isEmpty ())
 		{
 			if (XmlSettingsManager::Instance ().property ("AutoOpenFileDialogOnSend").toBool ())
-				on_FileBrowse__released ();
+				BrowseFile ();
 		}
 		else
 			Ui_.FileEdit_->setText (suggested);
@@ -137,14 +143,17 @@ namespace Azoth
 					tr ("No file transfer methods available."));
 	}
 
-	void FileSendDialog::on_FileBrowse__released ()
+	Util::ContextTask<void> FileSendDialog::BrowseFile ()
 	{
-		const auto& filename = QFileDialog::getOpenFileName (0,
-				tr ("Select file to send"),
-				XmlSettingsManager::Instance ()
-						.Property ("LastFileSendDir", QDir::homePath ()).toString ());
+		co_await Util::AddContext { CoroContext_ };
+
+		const auto& filename = co_await Util::Dialogs::GetOpenFileName ({
+					.Parent_ = this,
+					.Caption_ = tr ("Select file to send"),
+					.Dir_ = XmlSettingsManager::Instance ().Property ("LastFileSendDir", QDir::homePath ()).toString (),
+				});
 		if (filename.isEmpty ())
-			return;
+			co_return;
 
 		Ui_.FileEdit_->setText (filename);
 

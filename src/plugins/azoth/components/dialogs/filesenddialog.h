@@ -10,6 +10,8 @@
 
 #include <QDialog>
 #include <util/sll/trackingpointer.h>
+#include <util/threads/coro/corocontext.h>
+#include <util/threads/coro/taskfwd.h>
 #include "interfaces/azoth/iclentry.h"
 #include "ui_filesenddialog.h"
 
@@ -38,9 +40,12 @@ namespace Azoth
 		void FillSharers ();
 		void SendSharer (const SharerInfo&);
 		void SendProto ();
+
+		Util::ContextTask<void> BrowseFile ();
 	private slots:
 		void send ();
-		void on_FileBrowse__released ();
+
+		LC_CORO_CONTEXT
 	};
 }
 }
