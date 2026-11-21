@@ -44,21 +44,30 @@ namespace LC::Azoth
 
 	QMimeData* CLModel::mimeData (const QModelIndexList& indexes) const
 	{
-		QList<DndUtil::MimeContactInfo> entries;
-
-		for (const auto& index : indexes)
+		QModelIndexList contactRows;
+		const auto addContactRow = [&] (const QModelIndex& row)
 		{
-			if (index.data (CLREntryType).value<CLEntryType> () != CLETContact)
-				continue;
+			if (!contactRows.contains (row))
+				contactRows << row;
+		};
+		for (const auto& index : indexes)
+			switch (index.data (CLREntryType).value<CLEntryType> ())
+			{
+			case CLETContact:
+				addContactRow (index);
+				break;
+			case CLETCategory:
+				for (int row = 0; row < rowCount (index); ++row)
+					addContactRow (this->index (row, 0, index));
+				break;
+			case CLETAccount:
+				break;
+			}
 
-			const auto entry = index.data (CLRIEntry).value<ICLEntry*> ();
-			if (!entry)
-				continue;
-
-			const auto& thisGroup = index.parent ().data (CLREntryCategory).toString ();
-
-			entries.append ({ entry, thisGroup });
-		}
+		QList<DndUtil::MimeContactInfo> entries;
+		for (const auto& row : contactRows)
+			if (const auto entry = row.data (CLRIEntry).value<ICLEntry*> ())
+				entries.append ({ entry, row.parent ().data (CLREntryCategory).toString () });
 
 		if (entries.isEmpty ())
 			return nullptr;
