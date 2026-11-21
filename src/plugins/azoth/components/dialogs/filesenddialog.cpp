@@ -9,7 +9,6 @@
 #include "filesenddialog.h"
 #include <QDir>
 #include <QFileInfo>
-#include <QMessageBox>
 #include <util/gui/asyncdialogs.h>
 #include <util/threads/coro/context.h>
 #include <util/xpc/util.h>
@@ -35,7 +34,6 @@ namespace Azoth
 	: QDialog (parent)
 	, Entry_ (entry)
 	, EntryVariant_ (Core::Instance ().GetChatTabsManager ()->GetActiveVariant (entry))
-	, AccSupportsFT_ (false)
 	{
 		Ui_.setupUi (this);
 		setAttribute (Qt::WA_DeleteOnClose);
@@ -53,10 +51,7 @@ namespace Azoth
 		auto acc = Entry_->GetParentAccount ();
 		auto itm = qobject_cast<ITransferManager*> (acc->GetTransferManager ());
 		if (itm && itm->IsAvailable ())
-		{
-			AccSupportsFT_ = true;
 			Ui_.TransferMethod_->addItem (tr ("Protocol file transfer"));
-		}
 
 		FillSharers ();
 
@@ -135,12 +130,8 @@ namespace Azoth
 		const int idx = Ui_.TransferMethod_->currentIndex ();
 		if (Pos2Sharer_.contains (idx))
 			SendSharer (Pos2Sharer_ [idx]);
-		else if (AccSupportsFT_)
-			SendProto ();
 		else
-			QMessageBox::critical (this,
-					"LeechCraft",
-					tr ("No file transfer methods available."));
+			SendProto ();
 	}
 
 	Util::ContextTask<void> FileSendDialog::BrowseFile ()
