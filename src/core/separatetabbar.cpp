@@ -15,6 +15,7 @@
 #include <QMimeData>
 #include <QDrag>
 #include <QtDebug>
+#include <util/gui/util.h>
 #include <util/sll/prelude.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/idndtab.h>
@@ -297,17 +298,6 @@ namespace LC
 		{
 			return CouldDropOnTab (tab, data) && tab->HandleDrop (data);
 		}
-
-		// Nothing in LeechCraft takes ownership of dropped data, so a drop is
-		// always a copy, and a source offering only a move is refused.
-		void AcceptCopy (QDropEvent& event)
-		{
-			if (!(event.possibleActions () & Qt::CopyAction))
-				return;
-
-			event.setDropAction (Qt::CopyAction);
-			event.accept ();
-		}
 	}
 
 	void SeparateTabBar::dragEnterEvent (QDragEnterEvent *event)
@@ -338,7 +328,7 @@ namespace LC
 			TabWidget_->setCurrentIndex (tabIdx);
 
 		if (CouldDropOnTab (GetDndTab (*TabWidget_, tabIdx), data) || CoreCouldHandleDrop_.value ())
-			AcceptCopy (*event);
+			Util::AcceptEventAsCopy (*event);
 	}
 
 	void SeparateTabBar::dragLeaveEvent (QDragLeaveEvent*)
@@ -365,7 +355,7 @@ namespace LC
 		}
 
 		if (TryDropOnTab (GetDndTab (*TabWidget_, to), data) || HandleDroppedData (data))
-			AcceptCopy (*event);
+			Util::AcceptEventAsCopy (*event);
 	}
 
 	void SeparateTabBar::mouseDoubleClickEvent (QMouseEvent *event)
