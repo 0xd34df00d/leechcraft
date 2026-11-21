@@ -10,6 +10,7 @@
 #include <QSize>
 #include <QAbstractItemView>
 #include <QApplication>
+#include <QDropEvent>
 #include <QItemSelectionModel>
 #include <QKeyEvent>
 #include <QTimer>
@@ -213,5 +214,14 @@ namespace LC::Util
 	QString MakeFileDialogFilter (const QList<FileDialogFilterEntry>& entries)
 	{
 		return MakeFileDialogFilterImpl (entries);
+	}
+
+	void AcceptEventAsCopy (QDropEvent& event)
+	{
+		if (!(event.possibleActions () & Qt::CopyAction))
+			return;
+
+		event.setDropAction (Qt::CopyAction);
+		event.accept ();
 	}
 }

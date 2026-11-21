@@ -10,7 +10,6 @@
 #include <algorithm>
 #include <variant>
 #include <QDataStream>
-#include <QDropEvent>
 #include <QImageReader>
 #include <QIODevice>
 #include <QMimeData>
@@ -296,14 +295,5 @@ namespace LC::Azoth::DndUtil
 		const auto droppedContacts = DropContacts (context.Entries_, mime, target, context.Parent_);
 		const auto droppedAttachments = DropAttachments (mime, target, context);
 		return droppedContacts || droppedAttachments;
-	}
-
-	void AcceptEventAsCopy (QDropEvent& event)
-	{
-		if (!(event.possibleActions () & Qt::CopyAction))
-			return;
-
-		event.setDropAction (Qt::CopyAction);
-		event.accept ();
 	}
 }

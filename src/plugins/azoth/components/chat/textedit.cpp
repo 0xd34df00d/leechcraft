@@ -11,6 +11,7 @@
 #include <QDropEvent>
 #include <QKeyEvent>
 #include <QShortcut>
+#include <util/gui/util.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/sll/qtutil.h>
 #include "../../xmlsettingsmanager.h"
@@ -129,7 +130,7 @@ namespace LC::Azoth
 		if (DropHandler_.CanDrop_ (*e->mimeData ()))
 		{
 			DragOwner_ = DragOwner::DropHandler;
-			DndUtil::AcceptEventAsCopy (*e);
+			Util::AcceptEventAsCopy (*e);
 		}
 		else
 		{
@@ -146,7 +147,7 @@ namespace LC::Azoth
 			e->ignore ();
 			break;
 		case DragOwner::DropHandler:
-			DndUtil::AcceptEventAsCopy (*e);
+			Util::AcceptEventAsCopy (*e);
 			break;
 		case DragOwner::Editor:
 			QTextEdit::dragMoveEvent (e);
@@ -169,7 +170,7 @@ namespace LC::Azoth
 			break;
 		case DragOwner::DropHandler:
 			if (DropHandler_.Drop_ (*e->mimeData ()))
-				DndUtil::AcceptEventAsCopy (*e);
+				Util::AcceptEventAsCopy (*e);
 			break;
 		case DragOwner::Editor:
 			QTextEdit::dropEvent (e);

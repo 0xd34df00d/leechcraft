@@ -24,6 +24,7 @@ class QWidget;
 class QStyleOptionViewItem;
 class QAbstractItemView;
 class QModelIndex;
+class QDropEvent;
 
 namespace LC::Util
 {
@@ -148,6 +149,20 @@ namespace LC::Util
 	UTIL_GUI_API QString MakeFileDialogFilter (std::initializer_list<FileDialogFilterEntry> entries);
 
 	UTIL_GUI_API QString MakeFileDialogFilter (const QList<FileDialogFilterEntry>& entries);
+
+	/** @brief Accepts a drag or drop event as a copy.
+	 *
+	 * For targets that only read the dropped data and leave it with its
+	 * source. Such a drop is a copy whatever action was proposed, so the
+	 * source is never told to give its data up.
+	 *
+	 * If the source does not offer a copy, the event is left untouched.
+	 *
+	 * @param[in] event The event to accept.
+	 *
+	 * @ingroup GuiUtil
+	 */
+	UTIL_GUI_API void AcceptEventAsCopy (QDropEvent& event);
 
 	template<typename T>
 	void Save2MimeData (QMimeData *mimeData, const QString& name, const T& t)

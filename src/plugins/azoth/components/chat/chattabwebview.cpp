@@ -15,6 +15,7 @@
 #include <QDesktopServices>
 #include <QUrlQuery>
 #include <interfaces/core/ientitymanager.h>
+#include <util/gui/util.h>
 #include <util/xpc/util.h>
 #include <util/xpc/stddatafiltermenucreator.h>
 #include <util/sll/util.h>
@@ -128,12 +129,12 @@ namespace LC::Azoth
 	{
 		// the base class is kept out of the drags: the web view would handle drops by navigating to them
 		if (DropHandler_.CanDrop_ (*e->mimeData ()))
-			DndUtil::AcceptEventAsCopy (*e);
+			Util::AcceptEventAsCopy (*e);
 	}
 
 	void ChatTabWebView::dragMoveEvent (QDragMoveEvent *e)
 	{
-		DndUtil::AcceptEventAsCopy (*e);
+		Util::AcceptEventAsCopy (*e);
 	}
 
 	void ChatTabWebView::dragLeaveEvent (QDragLeaveEvent*)
@@ -143,7 +144,7 @@ namespace LC::Azoth
 	void ChatTabWebView::dropEvent (QDropEvent *e)
 	{
 		if (DropHandler_.Drop_ (*e->mimeData ()))
-			DndUtil::AcceptEventAsCopy (*e);
+			Util::AcceptEventAsCopy (*e);
 	}
 
 	void ChatTabWebView::HandleNick (QMenu *menu, const QUrl& nickUrl)

@@ -17,7 +17,6 @@
 template<typename T>
 class QList;
 
-class QDropEvent;
 class QMimeData;
 
 namespace LC::Azoth
@@ -63,6 +62,4 @@ namespace LC::Azoth::DndUtil
 		std::copyable_function<bool (const QMimeData&) const> CanDrop_;
 		std::copyable_function<bool (const QMimeData&) const> Drop_;
 	};
-
-	void AcceptEventAsCopy (QDropEvent&);
 }
