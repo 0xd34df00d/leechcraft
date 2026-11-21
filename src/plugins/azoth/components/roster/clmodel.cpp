@@ -9,6 +9,7 @@
 #include "clmodel.h"
 #include <algorithm>
 #include <QMimeData>
+#include <util/gui/asyncdialogs.h>
 #include <util/sll/qtutil.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
@@ -128,6 +129,21 @@ namespace LC::Azoth
 			result.removeIf ([] (const GroupsChange& change) { return change.NewGroups_ == change.Entry_->Groups (); });
 			return result;
 		}
+
+		Util::Task<void> Regroup (QList<GroupsChange> changes, QString group)
+		{
+			if (changes.size () > 1)
+			{
+				const auto& question = CLModel::tr ("Do you want to move %n contacts to the group %1?", nullptr, changes.size ())
+						.arg (group);
+				if (co_await Util::Dialogs::Question (GetDialogParent (), CLModel::tr ("Move contacts"), question) != QMessageBox::Yes)
+					co_return;
+			}
+
+			for (const auto& [entry, newGroups] : changes)
+				if (entry)
+					entry->SetGroups (newGroups);
+		}
 	}
 
 	bool CLModel::canDropMimeData (const QMimeData *mime,
@@ -176,9 +192,12 @@ namespace LC::Azoth
 
 	bool CLModel::TryDropRegroup (const QMimeData *mime, int row, const QModelIndex& parent)
 	{
-		const auto& changes = PlanRegroup (Entries_, mime, GetTargetCategory (*this, row, parent));
-		for (const auto& [entry, newGroups] : changes)
-			entry->SetGroups (newGroups);
-		return !changes.isEmpty ();
+		const auto& category = GetTargetCategory (*this, row, parent);
+		const auto& changes = PlanRegroup (Entries_, mime, category);
+		if (changes.isEmpty ())
+			return false;
+
+		Regroup (changes, category.data (CLREntryCategory).toString ());
+		return true;
 	}
 }
