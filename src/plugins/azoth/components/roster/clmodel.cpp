@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "clmodel.h"
+#include <algorithm>
 #include <QMimeData>
 #include <util/sll/qtutil.h>
 #include "interfaces/azoth/iclentry.h"
@@ -104,16 +105,18 @@ namespace LC::Azoth
 						!(entry->GetEntryFeatures () & ICLEntry::FSupportsGrouping))
 					continue;
 
-				const auto& groups = entry->Groups ();
-				auto newGroups = groups;
+				auto pos = std::ranges::find (result, entry, &GroupsChange::Entry_);
+				if (pos == result.end ())
+					pos = result.insert (pos, { entry, entry->Groups () });
+
+				auto& newGroups = pos->NewGroups_;
 				if (oldGroup && oldGroup != newGroup)
 					newGroups.removeAll (*oldGroup);
 				if (!newGroups.contains (newGroup))
 					newGroups << newGroup;
-
-				if (newGroups != groups)
-					result.append ({ entry, newGroups });
 			}
+
+			result.removeIf ([] (const GroupsChange& change) { return change.NewGroups_ == change.Entry_->Groups (); });
 			return result;
 		}
 	}
