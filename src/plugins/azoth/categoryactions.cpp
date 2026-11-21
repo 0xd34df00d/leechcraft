@@ -8,11 +8,11 @@
 
 #include "categoryactions.h"
 #include <QMenu>
-#include <QLineEdit>
-#include <QInputDialog>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <util/gui/asyncdialogs.h>
 #include <util/sll/prelude.h>
+#include <util/sll/trackingpointer.h>
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/iclentry.h"
 #include "components/dialogs/groupsenddialog.h"
@@ -23,24 +23,24 @@ namespace LC::Azoth::Actions
 {
 	namespace
 	{
-		void RenameCategory (const CategoryInfo& cat)
+		Util::Task<void> RenameCategory (Util::TrackingPointer<IAccount> account, QString name)
 		{
-			const auto& newName = QInputDialog::getText (GetDialogParent (),
-					CategoryActions::tr ("Rename group"),
-					CategoryActions::tr ("Enter new group name for %1:")
-						.arg (cat.Name_),
-					QLineEdit::Normal,
-					cat.Name_);
-			if (newName.isEmpty () || newName == cat.Name_)
-				return;
+			const auto& newName = co_await Util::Dialogs::GetText ({
+						.Parent_ = GetDialogParent (),
+						.Title_ = CategoryActions::tr ("Rename group"),
+						.Label_ = CategoryActions::tr ("Enter new group name for %1:").arg (name),
+						.Text_ = name,
+					});
+			if (!newName || newName->isEmpty () || *newName == name)
+				co_return;
 
-			for (const auto entry : cat.Account_->GetCLEntries ())
+			for (const auto entry : account->GetCLEntries ())
 			{
 				auto groups = entry->Groups ();
-				if (groups.removeAll (cat.Name_))
+				if (groups.removeAll (name))
 				{
-					if (!groups.contains (newName))
-						groups << newName;
+					if (!groups.contains (*newName))
+						groups << *newName;
 					entry->SetGroups (groups);
 				}
 			}
@@ -54,7 +54,7 @@ namespace LC::Azoth::Actions
 		menu->addAction (itm->GetIcon ("edit-rename"),
 				CategoryActions::tr ("Rename group..."),
 				menu,
-				[=] { RenameCategory (cat); });
+				[account = cat.Account_, name = cat.Name_] { RenameCategory (account, name); });
 
 		menu->addAction (itm->GetIcon ("mail-send"),
 				CategoryActions::tr ("Send message..."),
