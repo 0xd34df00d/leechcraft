@@ -45,7 +45,7 @@ namespace HttHare
 		void Start ();
 		void Stop ();
 	private:
-		void StartAccept ();
+		void StartAccept (boost::asio::ip::tcp::acceptor&);
 	};
 }
 }

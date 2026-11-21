@@ -47,7 +47,8 @@ namespace HttHare
 			}
 		}
 
-		StartAccept ();
+		for (const auto& acceptor : Acceptors_)
+			StartAccept (*acceptor);
 	}
 
 	Server::~Server ()
@@ -73,23 +74,22 @@ namespace HttHare
 		Threads_.clear ();
 	}
 
-	void Server::StartAccept ()
+	void Server::StartAccept (ip::tcp::acceptor& acceptor)
 	{
 		Connection_ptr connection { new Connection { IoService_, StorageMgr_, IconResolver_, TrManager_ } };
 
-		for (auto& acceptor : Acceptors_)
-			acceptor->async_accept (connection->GetSocket (),
-					[this, connection] (const boost::system::error_code& ec)
-					{
-						if (!ec)
-							connection->Start ();
-						else
-							qWarning () << Q_FUNC_INFO
-									<< "cannot accept:"
-									<< ec.message ().c_str ();
+		acceptor.async_accept (connection->GetSocket (),
+				[this, connection, &acceptor] (const boost::system::error_code& ec)
+				{
+					if (!ec)
+						connection->Start ();
+					else
+						qWarning () << Q_FUNC_INFO
+								<< "cannot accept:"
+								<< ec.message ().c_str ();
 
-						StartAccept ();
-					});
+					StartAccept (acceptor);
+				});
 	}
 }
 }
