@@ -39,7 +39,8 @@ namespace LC::Azoth::Actions
 				auto groups = entry->Groups ();
 				if (groups.removeAll (cat.Name_))
 				{
-					groups << newName;
+					if (!groups.contains (newName))
+						groups << newName;
 					entry->SetGroups (groups);
 				}
 			}
