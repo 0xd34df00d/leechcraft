@@ -75,8 +75,9 @@ namespace LC::Azoth
 		std::shared_ptr<AvatarsManager> AvatarsManager_;
 		Util::WkFontsWidget * const FontsWidget_;
 		CLTooltipManager * const TooltipManager_;
-		CLModel *CLModel_;
 		ChatTabsManager *ChatTabsManager_;
+		std::shared_ptr<TransferJobManager> XferJobManager_;
+		CLModel *CLModel_;
 		CoreCommandsManager *CoreCommandsManager_;
 
 		typedef QHash<QString, QStandardItem*> Category2Item_t;
@@ -98,7 +99,6 @@ namespace LC::Azoth
 
 		std::shared_ptr<PluginManager> PluginManager_;
 		std::shared_ptr<ProxyObject> PluginProxyObject_;
-		std::shared_ptr<TransferJobManager> XferJobManager_;
 		std::shared_ptr<CallManager> CallManager_;
 		std::shared_ptr<UnreadQueueManager> UnreadQueueManager_;
 		QMap<QByteArray, std::shared_ptr<ChatStyleOptionManager>> StyleOptionManagers_;

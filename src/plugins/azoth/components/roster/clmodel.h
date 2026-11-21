@@ -12,8 +12,10 @@
 
 namespace LC::Azoth
 {
+	class ChatTabsManager;
 	class CLTooltipManager;
 	class EntriesManager;
+	class TransferJobManager;
 
 	class CLModel : public QStandardItemModel
 	{
@@ -21,8 +23,10 @@ namespace LC::Azoth
 
 		CLTooltipManager * const TooltipManager_;
 		const EntriesManager& Entries_;
+		ChatTabsManager& Tabs_;
+		TransferJobManager& Transfers_;
 	public:
-		CLModel (CLTooltipManager*, const EntriesManager&, QObject* = nullptr);
+		CLModel (CLTooltipManager*, const EntriesManager&, ChatTabsManager&, TransferJobManager&, QObject* = nullptr);
 
 		QVariant data (const QModelIndex&, int) const override;
 

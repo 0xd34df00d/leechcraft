@@ -13,19 +13,20 @@
 #include <util/sll/qtutil.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
-#include "components/transfers/transferjobmanager.h"
 #include "components/util/dnd.h"
 #include "components/util/gui.h"
-#include "core.h"
 #include "cltooltipmanager.h"
 #include "roles.h"
 
 namespace LC::Azoth
 {
-	CLModel::CLModel (CLTooltipManager *manager, const EntriesManager& entries, QObject *parent)
+	CLModel::CLModel (CLTooltipManager *manager,
+			const EntriesManager& entries, ChatTabsManager& tabs, TransferJobManager& transfers, QObject *parent)
 	: QStandardItemModel { parent }
 	, TooltipManager_ { manager }
 	, Entries_ { entries }
+	, Tabs_ { tabs }
+	, Transfers_ { transfers }
 	{
 	}
 
@@ -184,8 +185,8 @@ namespace LC::Azoth
 		return DndUtil::HandleDroppedOnto (*mime, { parent.data (CLRIEntry).value<ICLEntry*> () },
 				{
 					.Entries_ = Entries_,
-					.Tabs_ = *Core::Instance ().GetChatTabsManager (),
-					.Transfers_ = *Core::Instance ().GetTransferJobManager (),
+					.Tabs_ = Tabs_,
+					.Transfers_ = Transfers_,
 					.Parent_ = GetDialogParent (),
 				});
 	}

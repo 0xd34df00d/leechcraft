@@ -155,8 +155,9 @@ namespace LC::Azoth
 	, AvatarsManager_ (std::make_shared<AvatarsManager> (Entries_))
 	, FontsWidget_ { new Util::WkFontsWidget { &XmlSettingsManager::Instance () } }
 	, TooltipManager_ (new CLTooltipManager (*AvatarsManager_))
-	, CLModel_ (new CLModel (TooltipManager_, Entries_, this))
 	, ChatTabsManager_ (new ChatTabsManager (AvatarsManager_.get (), FontsWidget_, Entries_, this))
+	, XferJobManager_ (new TransferJobManager { AvatarsManager_.get () })
+	, CLModel_ (new CLModel (TooltipManager_, Entries_, *ChatTabsManager_, *XferJobManager_, this))
 	, CoreCommandsManager_ (new CoreCommandsManager (this))
 	, NotificationsManager_ (new NotificationsManager (AvatarsManager_.get (), Entries_))
 	, ActionsManager_ (new ActionsManager (*NotificationsManager_, *AvatarsManager_, this))
@@ -166,7 +167,6 @@ namespace LC::Azoth
 	, ChatStylesOptionsModel_ (new SourceTrackingModel<IChatStyleResourceSource> ({ tr ("Chat style") }))
 	, PluginManager_ (new PluginManager)
 	, PluginProxyObject_ (new ProxyObject (AvatarsManager_.get (), Entries_))
-	, XferJobManager_ (new TransferJobManager { AvatarsManager_.get () })
 	, CallManager_ (new CallManager)
 	, UnreadQueueManager_ (new UnreadQueueManager)
 	, CustomChatStyleManager_ (new CustomChatStyleManager)
