@@ -10,6 +10,7 @@
 
 #include <memory>
 #include <QAbstractItemModel>
+#include <QCoreApplication>
 #include <QSslCertificate>
 
 namespace LC
@@ -18,6 +19,8 @@ namespace CertMgr
 {
 	class CertsModel : public QAbstractItemModel
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::CertMgr::CertsModel)
+
 		typedef QList<std::pair<QString, QList<QSslCertificate>>> CertsDict_t;
 		CertsDict_t Issuer2Certs_;
 
