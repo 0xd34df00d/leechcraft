@@ -16,6 +16,17 @@ set (CMAKE_AUTOUIC TRUE)
 # By default a target's moc/uic step waits for the libraries the target links, in case moc needs a header one of them
 # generates; nothing here generates headers at build time, and the wait serialises the build along the link chain.
 set (CMAKE_AUTOGEN_ORIGIN_DEPENDS OFF)
+
+# moc keys its type completeness checks per moc file, so GCC's -Wsfinae-incomplete in moc output is a false alarm.
+file (CONFIGURE
+	OUTPUT ${CMAKE_BINARY_DIR}/lc_moc_prelude.h
+	CONTENT [[
+#if defined (__GNUC__) && !defined (__clang__)
+#pragma GCC diagnostic ignored "-Wsfinae-incomplete"
+#endif
+]])
+set (CMAKE_AUTOMOC_MOC_OPTIONS -b ${CMAKE_BINARY_DIR}/lc_moc_prelude.h)
+
 set (CMAKE_CXX_STANDARD 26)
 set (CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set (CMAKE_CXX_EXTENSIONS OFF)
