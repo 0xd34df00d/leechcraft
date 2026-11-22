@@ -66,7 +66,7 @@ namespace LC::Monocle::Boop
 
 		QVector<QDomElement> SetScope (QVector<QDomElement>&& elems, const QString& path)
 		{
-			const auto& klass = path.toUtf8 ().toBase64 ();
+			const auto& klass = QString::fromLatin1 (path.toUtf8 ().toBase64 ());
 			for (auto& elem : elems)
 				elem.setAttribute ("class"_qs, elem.attribute ("class"_qs) + ' ' + klass);
 			return elems;
@@ -74,7 +74,7 @@ namespace LC::Monocle::Boop
 
 		QVector<Stylesheet> SetScope (QVector<Stylesheet>&& stylesheets, const QString& path)
 		{
-			const auto& klass = path.toUtf8 ().toBase64 ();
+			const auto& klass = QString::fromLatin1 (path.toUtf8 ().toBase64 ());
 			for (auto& css : stylesheets)
 				css.Scope_ = MicroCSS::ClassSelector { klass };
 			return stylesheets;
