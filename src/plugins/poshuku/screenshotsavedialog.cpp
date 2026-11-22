@@ -43,7 +43,7 @@ namespace Poshuku
 			formats.removeAll ("jpeg");
 		std::sort (formats.begin (), formats.end ());
 		for (const auto& format : formats)
-			Ui_.FormatCombobox_->addItem (format.toUpper ());
+			Ui_.FormatCombobox_->addItem (QString::fromUtf8 (format.toUpper ()));
 		if (formats.contains ("png"))
 			Ui_.FormatCombobox_->setCurrentIndex (formats.indexOf ("png"));
 
