@@ -52,12 +52,12 @@ namespace LC::Poshuku::WebEngineView
 	{
 		const auto prof = QWebEngineProfile::defaultProfile ();
 		const auto& uaParts = prof->httpUserAgent ().split (' ');
-		auto getVer = [&uaParts] (const QByteArray& marker)
+		auto getVer = [&uaParts] (const QString& marker)
 		{
 			return uaParts.filter (marker).value (0).section ('/', 1, 1);
 		};
-		const auto& wkVer = getVer ("AppleWebKit/");
-		const auto& chromeVer = getVer ("Chrome/");
+		const auto& wkVer = getVer ("AppleWebKit/"_qs);
+		const auto& chromeVer = getVer ("Chrome/"_qs);
 		prof->setHttpUserAgent (GetDefaultUserAgent (wkVer, chromeVer));
 
 		Interceptor_ = std::make_shared<RequestInterceptor> ();
