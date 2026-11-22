@@ -54,7 +54,7 @@ namespace LC::Azoth::Acetamide
 		InviteModel_->setHorizontalHeaderLabels ({ tr ("Invite mask"), tr ("Set by"), tr ("Date") });
 
 		using Section = std::tuple<QTableView*, QStandardItemModel*, QSortFilterProxyModel*>;
-		for (const auto [view, model, filter] : std::to_array<Section> ({
+		for (const auto& [view, model, filter] : std::to_array<Section> ({
 					{ Ui_.BanList_, BanModel_, BanFilterModel_ },
 					{ Ui_.ExceptList_, ExceptModel_, ExceptFilterModel_ },
 					{ Ui_.InviteList_, InviteModel_, InviteFilterModel_ },
