@@ -98,7 +98,7 @@ namespace LC::Azoth
 
 		if (fmt.hasProperty (QTextCharFormat::ForegroundBrush))
 		{
-			const auto& color = fmt.foreground ().color ();
+			const auto color = fmt.foreground ().color ();
 			attrs << "color:"_qs + color.name () + ';';
 		}
 
