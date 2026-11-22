@@ -73,7 +73,7 @@ namespace CertMgr
 					return;
 
 				result += "<tr><td align='right'>" + name + ": </td>";
-				result += "<td>" + val + "</td></tr>";
+				result += "<td>" + val.toHtmlEscaped () + "</td></tr>";
 			};
 
 			auto addStdFields = [&add] (auto&& listGetter)
