@@ -48,7 +48,7 @@ namespace LC::Monocle
 		if (sectionId.isEmpty ())
 			return;
 
-		const auto entry = Id2Entry_.value (sectionId.toLatin1 ());
+		const auto entry = Id2Entry_.value (sectionId.toUtf8 ());
 		if (!entry)
 		{
 			qWarning () << "unknown id"
