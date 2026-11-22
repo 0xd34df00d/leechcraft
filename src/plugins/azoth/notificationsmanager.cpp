@@ -111,7 +111,7 @@ namespace Azoth
 				.Type_ = QMetaType::QString,
 				.EventTypes_ = havingSourceFields,
 				.AllowedValues_ = Util::Map (Core::Instance ().GetAccounts (),
-						[] (IAccount *acc) { return AN::FieldData::AllowedValue { acc->GetAccountId ().ToUtf8 (), acc->GetAccountName () }; }),
+						[] (IAccount *acc) { return AN::FieldData::AllowedValue { acc->GetAccountId ().ToString (), acc->GetAccountName () }; }),
 			},
 			{
 				.ID_ = Fields::SourceHumanReadableAddress,
@@ -148,7 +148,7 @@ namespace Azoth
 				.Type_ = QMetaType::QString,
 				.EventTypes_ = { AN::TypeIMStatusChange },
 				.AllowedValues_ = Util::Map (QList { SOnline, SChat, SAway, SDND, SXA, SOffline },
-						[] (State st) { return AN::FieldData::AllowedValue { StateToId (st).toUtf8 (), StateToString (st) }; }),
+						[] (State st) { return AN::FieldData::AllowedValue { StateToId (st), StateToString (st) }; }),
 			}
 		};
 	}

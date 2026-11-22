@@ -160,7 +160,7 @@ namespace LC::AdvancedNotifications
 
 				if (HasAllowedValues_)
 				{
-					const auto& pattern = ExtractPattern (matcher.Pattern_).toUtf8 ();
+					const auto& pattern = ExtractPattern (matcher.Pattern_);
 					if (const auto idx = Ui_.VariantsBox_->findData (pattern);
 						idx >= 0)
 						Ui_.VariantsBox_->setCurrentIndex (idx);
@@ -170,7 +170,7 @@ namespace LC::AdvancedNotifications
 
 						const auto nextIdx = Ui_.VariantsBox_->count ();
 						//: %1 is the raw ID of a value missing from the list of the known values for this field.
-						Ui_.VariantsBox_->addItem (tr ("%1 (unknown)").arg (QString::fromUtf8 (pattern)), pattern);
+						Ui_.VariantsBox_->addItem (tr ("%1 (unknown)").arg (pattern), pattern);
 						Ui_.VariantsBox_->setCurrentIndex (nextIdx);
 					}
 				}
@@ -184,7 +184,7 @@ namespace LC::AdvancedNotifications
 			SVM::Pattern GetPattern () const
 			{
 				if (HasAllowedValues_)
-					return SVM::Exact { Ui_.VariantsBox_->currentData ().toByteArray () };
+					return SVM::Exact { Ui_.VariantsBox_->currentData ().toString () };
 
 				const auto idx = Ui_.PredicateBox_->currentIndex ();
 				if (const auto matcher = FromUiIndex (idx, Ui_.RegexpEditor_->text ()))

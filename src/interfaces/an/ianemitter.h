@@ -71,7 +71,7 @@ namespace LC::AN
 		{
 			/** @brief Persistent, stable value stored in rules on disk.
 			 */
-			QByteArray Id_;
+			QString Id_;
 
 			/** @brief Human-readable name of the value.
 			 */
