@@ -99,7 +99,8 @@ namespace CertMgr
 			addStdFields ([&cert] (QSslCertificate::SubjectInfo info)
 						{ return cert.subjectInfo (info); });
 
-			add (CertsModel::tr ("Serial number"), cert.serialNumber ());
+			add (CertsModel::tr ("Serial number"),
+					QString::fromLatin1 (cert.serialNumber ()));
 			result += "</table><br />";
 
 			result += "<strong>" + CertsModel::tr ("Issuer") + ":</strong>";
