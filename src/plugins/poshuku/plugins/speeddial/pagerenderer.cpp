@@ -118,7 +118,7 @@ namespace LC::Poshuku::SpeedDial
 		{
 			const auto& heading = tableInfo.first;
 			const auto& items = tableInfo.second;
-			const auto& cellMaker = std::bind_front (&MakeCell, std::ref (cache), std::ref (items));
+			const auto cellMaker = std::bind_front (&MakeCell, std::ref (cache), std::ref (items));
 			return Tag
 			{
 				.Name_ = "table"_qba,
