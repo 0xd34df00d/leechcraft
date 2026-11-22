@@ -31,6 +31,7 @@
 #include "groupsmanager.h"
 
 #ifdef ENABLE_MEDIACALLS
+#include <util/azoth/util.h>
 #include "audiocall.h"
 #endif
 
@@ -111,22 +112,6 @@ namespace LC::Azoth::Sarin
 
 		Nick_ = nickname;
 		emit accountChanged (this);
-	}
-
-	ToxContact* ToxAccount::GetByAzothId (const QString& azothId) const
-	{
-		const auto& pubkey = HumanReadable2ToxId<PubkeySize> (azothId.section ('/', 1));
-		if (!pubkey)
-		{
-			qWarning () << "invalid Azoth ID" << azothId;
-			return nullptr;
-		}
-
-		if (const auto entry = Contacts_.value (*pubkey))
-			return entry;
-
-		qWarning () << "unable to find entry for Azoth ID" << azothId;
-		return nullptr;
 	}
 
 	ToxContact* ToxAccount::GetByPubkey (Pubkey pubkey) const
@@ -326,7 +311,7 @@ namespace LC::Azoth::Sarin
 #endif
 	}
 
-	QObject* ToxAccount::Call (const QString& id, const QString&)
+	QObject* ToxAccount::Call (ICLEntry& entry, const QString&)
 	{
 #ifdef ENABLE_MEDIACALLS
 		if (!Tox_)
@@ -336,23 +321,21 @@ namespace LC::Azoth::Sarin
 			return nullptr;
 		}
 
-		const auto entry = GetByAzothId (id);
-		if (!entry)
+		const auto contact = qobject_cast<ToxContact*> (entry.GetQObject ());
+		if (!contact)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to find contact by"
-					<< id;
+			qWarning () << entry.GetConventionalId () << "is not a ToxContact";
 			return nullptr;
 		}
 
 		const auto callMgr = Tox_->GetCallManager ();
-		const auto call = new AudioCall { entry, callMgr, AudioCall::DOut };
+		const auto call = new AudioCall { contact, callMgr, AudioCall::DOut };
 		emit called (call);
-		Util::Sequence (entry, Tox_->ResolveFriendId (entry->GetPubKey ())) >>
+		Util::Sequence (contact, Tox_->ResolveFriendId (contact->GetPubKey ())) >>
 				Util::BindMemFn (&AudioCall::SetCallIdx, call);
 		return call;
 #else
-		Q_UNUSED (id)
+		Q_UNUSED (entry)
 		return nullptr;
 #endif
 	}

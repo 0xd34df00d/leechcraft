@@ -37,14 +37,6 @@ namespace LC::Azoth::Xoox
 	{
 	}
 
-	QString GlooxCLEntry::JidFromId (GlooxAccount *acc, const QString& id)
-	{
-		const QString& pre = acc->GetAccountId ().ToString () + ':';
-		return id.startsWith (pre) ?
-				id.mid (pre.size ()) :
-				id;
-	}
-
 	bool GlooxCLEntry::IsRosterEntry () const
 	{
 		return IsRosterEntry_;

@@ -14,6 +14,8 @@ namespace LC
 {
 namespace Azoth
 {
+	class ICLEntry;
+
 	/** @brief Interface for accounts supporting audio/video calls.
 	 *
 	 * This interface should be implemented by IAccount instances wishing
@@ -55,9 +57,6 @@ namespace Azoth
 
 		/** @brief Tries to call a contact list entry.
 		 *
-		 * The entry is identified by its \em id, which is the ID returned
-		 * by ICLEntry::GetEntryId().
-		 *
 		 * If the corresponding protocol supports multiple variants per
 		 * entry, the \em variant parameter specifies which variant (from
 		 * the ones returned from ICLEntry::Variants()) of the entry
@@ -69,12 +68,13 @@ namespace Azoth
 		 * @note If this method returns a valid IMediaCall object, it
 		 * should also be advertised via the called() signal.
 		 *
-		 * @param[in] id The ID of the entry to call (as in ICLEntry::GetEntryId()).
+		 * @param[in] entry The entry to call. It must belong to this
+		 * account.
 		 * @param[in] variant The variant of the entry to call to.
 		 * @return The call object implementing IMediaCall, or a nullptr
 		 * if it is impossible to make the call.
 		 */
-		virtual QObject* Call (const QString& id, const QString& variant) = 0;
+		virtual QObject* Call (ICLEntry& entry, const QString& variant) = 0;
 	protected:
 		/** @brief Emitted when a new call is established.
 		 *

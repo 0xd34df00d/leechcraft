@@ -12,6 +12,11 @@
 
 class QXmppCallManager;
 
+namespace LC::Azoth
+{
+	class ICLEntry;
+}
+
 namespace LC::Azoth::Xoox
 {
 	class GlooxAccount;
@@ -25,6 +30,6 @@ namespace LC::Azoth::Xoox
 	public:
 		explicit CallsHandler (QXmppCallManager&, ClientConnection&, GlooxAccount&, QObject* = nullptr);
 
-		QObject* Call (const QString& id, const QString& variant);
+		QObject* Call (ICLEntry& entry, const QString& variant);
 	};
 }

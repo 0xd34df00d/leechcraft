@@ -184,7 +184,7 @@ namespace Xoox
 #ifdef ENABLE_MEDIACALLS
 		// ISupportMediaCalls
 		MediaCallFeatures GetMediaCallFeatures () const override;
-		QObject* Call (const QString& id, const QString& variant) override;
+		QObject* Call (ICLEntry& entry, const QString& variant) override;
 #endif
 
 		// ISupportRIEX

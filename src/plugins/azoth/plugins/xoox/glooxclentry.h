@@ -51,8 +51,6 @@ namespace LC::Azoth::Xoox
 	public:
 		GlooxCLEntry (const QString& bareJid, GlooxAccount*);
 
-		static QString JidFromId (GlooxAccount*, const QString&);
-
 		bool IsRosterEntry () const;
 		void PromoteToRosterEntry ();
 

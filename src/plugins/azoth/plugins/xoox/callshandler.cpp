@@ -33,7 +33,18 @@ namespace LC::Azoth::Xoox
 		connect (&Mgr_,
 				&QXmppCallManager::callReceived,
 				this,
-				[this] (QXmppCall *call) { emit Acc_.called (new MediaCall (&Acc_, call)); });
+				[this] (QXmppCall *call)
+				{
+					const auto entry = qobject_cast<ICLEntry*> (Conn_.GetCLEntry (call->jid ()));
+					if (!entry)
+					{
+						qWarning () << "ignoring call from unknown caller" << call->jid ();
+						call->hangup ();
+						return;
+					}
+
+					emit Acc_.called (new MediaCall (&Acc_, call, *entry));
+				});
 
 		auto settings = acc.GetSettings ();
 		auto updateSettings = [&callMgr, settings]
@@ -58,10 +69,10 @@ namespace LC::Azoth::Xoox
 #endif
 	}
 
-	QObject* CallsHandler::Call (const QString& id, const QString& variant)
+	QObject* CallsHandler::Call (ICLEntry& entry, const QString& variant)
 	{
 #ifdef ENABLE_MEDIACALLS
-		if (id == qobject_cast<ICLEntry*> (Acc_.GetSelfContact ())->GetEntryId ())
+		if (entry.GetQObject () == Acc_.GetSelfContact ())
 		{
 			Core::Instance ().SendEntity (Util::MakeNotification ("LeechCraft",
 					tr ("Why would you call yourself?"),
@@ -69,27 +80,19 @@ namespace LC::Azoth::Xoox
 			return nullptr;
 		}
 
-		auto target = GlooxCLEntry::JidFromId (&Acc_, id);
+		auto target = entry.GetConventionalId ().ToString ();
 
 		auto resultingVar = variant;
 		if (resultingVar.isEmpty ())
-		{
-			const auto entryObj = Conn_.GetCLEntry (target, QString ());
-			if (const auto entry = qobject_cast<GlooxCLEntry*> (entryObj))
-				resultingVar = entry->Variants ().value (0);
-			else
-				qWarning () << Q_FUNC_INFO
-						<< "null entry for"
-						<< target;
-		}
+			resultingVar = entry.Variants ().value (0);
 		if (!resultingVar.isEmpty ())
 			target += '/' + resultingVar;
 
-		const auto call = new MediaCall (&Acc_, Mgr_.call (target));
+		const auto call = new MediaCall (&Acc_, Mgr_.call (target), entry);
 		emit Acc_.called (call);
 		return call;
 #else
-		Q_UNUSED (id)
+		Q_UNUSED (entry)
 		Q_UNUSED (variant)
 		return nullptr;
 #endif

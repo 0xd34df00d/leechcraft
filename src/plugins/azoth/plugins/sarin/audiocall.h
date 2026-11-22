@@ -37,7 +37,6 @@ namespace LC::Azoth::Sarin
 		Q_OBJECT
 		Q_INTERFACES (LC::Azoth::IMediaCall)
 
-		const QString SourceId_;
 		const QString SourcePubkey_;
 		const Direction Dir_;
 		const ICLEntry& Entry_;

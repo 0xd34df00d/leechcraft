@@ -70,7 +70,6 @@ namespace LC::Azoth::Sarin
 
 		void SetNickname (const QString&);
 
-		ToxContact* GetByAzothId (const QString&) const;
 		ToxContact* GetByPubkey (Pubkey) const;
 		ToxContact& GetOrCreateByPubkey (Pubkey);
 
@@ -98,7 +97,7 @@ namespace LC::Azoth::Sarin
 		void RemoveEntry (QObject*) override;
 
 		MediaCallFeatures GetMediaCallFeatures () const override;
-		QObject* Call (const QString& id, const QString& variant) override;
+		QObject* Call (ICLEntry& entry, const QString& variant) override;
 
 		QObject* GetTransferManager () const override;
 

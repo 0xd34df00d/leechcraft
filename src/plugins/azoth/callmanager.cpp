@@ -69,12 +69,12 @@ namespace Azoth
 			return nullptr;
 		}
 
-		const auto callObj = ismc->Call (entry->GetEntryId (), variant);
+		const auto callObj = ismc->Call (*entry, variant);
 		if (!callObj)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "got null call obj for"
-					<< entry->GetEntryId ()
+					<< entry->GetGlobalStrongestId ()
 					<< variant;
 			return nullptr;
 		}

@@ -471,9 +471,9 @@ namespace Xoox
 		return MCFSupportsAudioCalls;
 	}
 
-	QObject* GlooxAccount::Call (const QString& id, const QString& variant)
+	QObject* GlooxAccount::Call (ICLEntry& entry, const QString& variant)
 	{
-		return Managers_->CallsHandler_.Call (id, variant);
+		return Managers_->CallsHandler_.Call (entry, variant);
 	}
 #endif
 
