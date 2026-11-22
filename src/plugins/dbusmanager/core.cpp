@@ -72,7 +72,7 @@ namespace DBusManager
 			new WebFileStorageAdaptor (root);
 
 			auto ii = qobject_cast<IInfo*> (root);
-			const auto& name = "/WebFileStorage/" + ii->GetUniqueID ().replace ('.', '_');
+			const auto& name = QString::fromUtf8 ("/WebFileStorage/" + ii->GetUniqueID ().replace ('.', '_'));
 
 			QDBusConnection::sessionBus ().registerObject (name, root);
 		}
