@@ -21,7 +21,7 @@ namespace LC::Monocle
 		const QTextCursor& Cursor_;
 
 		TOCEntryT<Span> Root_;
-		QHash<QByteArray, TOCEntryT<Span>*> Id2Entry_;
+		QHash<QString, TOCEntryT<Span>*> Id2Entry_;
 	public:
 		explicit TocBuilder (const TOCEntryID& tocStructure, const QTextCursor& cursor);
 

@@ -19,7 +19,7 @@ namespace LC::Monocle
 	{
 		void TransformStructure (const TOCEntryID& toc,
 				TOCEntryT<Span>& spanLevel,
-				QHash<QByteArray, TOCEntryT<Span>*>& id2entry)
+				QHash<QString, TOCEntryT<Span>*>& id2entry)
 		{
 			spanLevel.Name_ = toc.Name_;
 			id2entry [toc.Navigation_] = &spanLevel;
@@ -48,7 +48,7 @@ namespace LC::Monocle
 		if (sectionId.isEmpty ())
 			return;
 
-		const auto entry = Id2Entry_.value (sectionId.toUtf8 ());
+		const auto entry = Id2Entry_.value (sectionId);
 		if (!entry)
 		{
 			qWarning () << "unknown id"

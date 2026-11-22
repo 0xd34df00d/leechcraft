@@ -42,8 +42,8 @@ namespace LC::Monocle
 	using TOCEntryLevel_t = TOCEntryLevelT<NavigationAction>;
 	using TOCEntry = TOCEntryT<NavigationAction>;
 
-	using TOCEntryIDLevel = TOCEntryLevelT<QByteArray>;
-	using TOCEntryID = TOCEntryT<QByteArray>;
+	using TOCEntryIDLevel = TOCEntryLevelT<QString>;
+	using TOCEntryID = TOCEntryT<QString>;
 
 	/** @brief Interface for documents supporting table of contents.
 	 *

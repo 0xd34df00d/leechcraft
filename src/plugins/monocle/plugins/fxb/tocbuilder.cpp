@@ -54,7 +54,7 @@ namespace LC::Monocle::FXB
 		elem.setAttribute (TocSectionIdAttr, IdCounter_);
 
 		auto& curLevel = CurrentEntryPath_.top ()->ChildLevel_;
-		curLevel.append ({ .Navigation_ = QByteArray::number (IdCounter_), .Name_ = ExtractTitle (elem) });
+		curLevel.append ({ .Navigation_ = QString::number (IdCounter_), .Name_ = ExtractTitle (elem) });
 		CurrentEntryPath_.push (&curLevel.back ());
 
 		return Util::MakeScopeGuard ([this] { CurrentEntryPath_.pop (); });
