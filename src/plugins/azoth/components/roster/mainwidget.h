@@ -49,6 +49,7 @@ namespace Azoth
 		void CreateMenu ();
 
 		void TreeActivated (const QModelIndex&);
+		void UpdateMucMode ();
 	public slots:
 		void handleAccountVisibilityChanged ();
 	private slots:
@@ -62,9 +63,6 @@ namespace Azoth
 		void handleShowOffline (bool);
 
 		void handleDeleteSelected ();
-
-		void handleEntryMadeCurrent (QObject*);
-		void handleEntryLostCurrent (QObject*);
 	};
 }
 }

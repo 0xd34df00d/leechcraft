@@ -151,18 +151,24 @@ namespace LC::Azoth
 				&ChatTab::needToClose,
 				this,
 				[this, tab] { CloseChatTab (tab, true); });
+
 		connect (tab,
-				SIGNAL (entryMadeCurrent (QObject*)),
+				&ChatTab::entryMadeCurrent,
 				this,
-				SIGNAL (entryMadeCurrent (QObject*)));
+				[this, tab] (ICLEntry& e)
+				{
+					CurrentTab_ = tab;
+					emit entryMadeCurrent (e);
+				});
 		connect (tab,
-				SIGNAL (entryMadeCurrent (QObject*)),
+				&ChatTab::tabLostCurrent,
 				this,
-				SLOT (updateCurrentTab (QObject*)));
-		connect (tab,
-				SIGNAL (entryLostCurrent (QObject*)),
-				this,
-				SIGNAL (entryLostCurrent (QObject*)));
+				[this, tab]
+				{
+					if (CurrentTab_ == tab)
+						CurrentTab_ = nullptr;
+					emit tabLostCurrent ();
+				});
 
 		IRootWindowsManager::AddTabFlags flags {};
 		if (!fromUser && !XmlSettingsManager::Instance ().property ("JumpToNewTabOnOpen").toBool ())
@@ -197,7 +203,7 @@ namespace LC::Azoth
 
 	ChatTab* ChatTabsManager::GetActiveChatTab () const
 	{
-		return LastCurrentTab_;
+		return CurrentTab_;
 	}
 
 	ChatTab* ChatTabsManager::GetChatTab (const GlobalStrongestId& entryId) const
@@ -295,12 +301,6 @@ namespace LC::Azoth
 		if (from.isActiveWindow () && from.isVisible ())
 			emit to.raiseTab ();
 		CloseChatTab (&from, false);
-	}
-
-	void ChatTabsManager::updateCurrentTab (QObject *entryObj)
-	{
-		auto entry = qobject_cast<ICLEntry*> (entryObj);
-		LastCurrentTab_ = entry ? Entry2Tab_.value (entry->GetGlobalStrongestId ()) : nullptr;
 	}
 
 	void ChatTabsManager::chatWindowStyleChanged ()

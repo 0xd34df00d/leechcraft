@@ -13,6 +13,7 @@
 #include <util/xpc/util.h>
 #include <util/xpc/passutils.h>
 #include <util/sys/sysinfo.h>
+#include <util/sll/qobjectrefcast.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
 #include <util/sll/regexp.h>
@@ -303,7 +304,7 @@ namespace LC::Azoth
 
 	void ProxyObject::MarkMessagesAsRead (QObject *entryObj)
 	{
-		Core::Instance ().GetUnreadQueueManager ()->clearMessagesForEntry (entryObj);
+		Core::Instance ().GetUnreadQueueManager ()->ClearMessagesForEntry (qobject_ref_cast<ICLEntry> (entryObj));
 	}
 
 	std::optional<CustomStatus> ProxyObject::FindCustomStatus (const QString& name) const

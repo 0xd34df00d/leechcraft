@@ -87,13 +87,13 @@ namespace Azoth
 		Ui_.CLTree_->viewport ()->setAcceptDrops (true);
 
 		connect (Core::Instance ().GetChatTabsManager (),
-				SIGNAL (entryMadeCurrent (QObject*)),
+				&ChatTabsManager::entryMadeCurrent,
 				this,
-				SLOT (handleEntryMadeCurrent (QObject*)));
+				&MainWidget::UpdateMucMode);
 		connect (Core::Instance ().GetChatTabsManager (),
-				SIGNAL (entryLostCurrent (QObject*)),
+				&ChatTabsManager::tabLostCurrent,
 				this,
-				SLOT (handleEntryLostCurrent (QObject*)));
+				&MainWidget::UpdateMucMode);
 
 		XmlSettingsManager::Instance ().RegisterObject ("EntryActivationType",
 				this,
@@ -452,11 +452,21 @@ namespace Azoth
 		acc->RemoveEntry (obj);
 	}
 
-	void MainWidget::handleEntryMadeCurrent (QObject *obj)
+	void MainWidget::UpdateMucMode ()
 	{
-		auto entry = qobject_cast<ICLEntry*> (obj);
-		if (entry && entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
-			obj = entry->GetParentCLEntryObject ();
+		const auto tab = Core::Instance ().GetChatTabsManager ()->GetActiveChatTab ();
+
+		const auto entry = tab ? tab->GetEntry<ICLEntry> () : nullptr;
+		if (!entry)
+		{
+			if (XmlSettingsManager::Instance ().property ("AutoMUCMode").toBool ())
+				ActionCLMode_->setChecked (false);
+			return;
+		}
+
+		const auto obj = entry->GetEntryType () == ICLEntry::EntryType::PrivateChat ?
+				entry->GetParentCLEntryObject () :
+				entry->GetQObject ();
 
 		const bool isMUC = qobject_cast<IMUCEntry*> (obj);
 
@@ -465,12 +475,6 @@ namespace Azoth
 
 		if (isMUC)
 			ProxyModel_->SetMUC (obj);
-	}
-
-	void MainWidget::handleEntryLostCurrent (QObject*)
-	{
-		if (XmlSettingsManager::Instance ().property ("AutoMUCMode").toBool ())
-			ActionCLMode_->setChecked (false);
 	}
 }
 }

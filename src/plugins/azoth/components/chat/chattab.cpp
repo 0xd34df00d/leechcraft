@@ -346,7 +346,7 @@ namespace Azoth
 	void ChatTab::Remove ()
 	{
 		if (IsCurrent_)
-			emit entryLostCurrent (GetEntry<QObject> ());
+			TabLostCurrent ();
 		emit needToClose ();
 	}
 
@@ -357,8 +357,8 @@ namespace Azoth
 
 		IsCurrent_ = true;
 
-		if (auto entry = GetEntry<QObject> ())
-			emit entryMadeCurrent (entry);
+		if (const auto entry = GetEntry<ICLEntry> ())
+			emit entryMadeCurrent (*entry);
 
 		NumUnreadMsgs_ = 0;
 		HadHighlight_ = false;
@@ -369,8 +369,7 @@ namespace Azoth
 
 	void ChatTab::TabLostCurrent ()
 	{
-		emit entryLostCurrent (GetEntry<QObject> ());
-
+		emit tabLostCurrent ();
 		IsCurrent_ = false;
 	}
 

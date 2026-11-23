@@ -920,10 +920,9 @@ namespace Azoth
 		BuildAndSendNotification (e, { .Avatars_ = *AvatarsMgr_, .Conversation_ = *entry, .EventId_ = "Typing"_qs });
 	}
 
-	void NotificationsManager::handleEntryMadeCurrent (QObject *entryObj)
+	void NotificationsManager::handleEntryMadeCurrent (const ICLEntry& entry)
 	{
-		if (entryObj)
-			ShouldNotifyNextTyping_ [qobject_ref_cast<ICLEntry> (entryObj).GetGlobalStrongestId ()] = true;
+		ShouldNotifyNextTyping_ [entry.GetGlobalStrongestId ()] = true;
 	}
 }
 }

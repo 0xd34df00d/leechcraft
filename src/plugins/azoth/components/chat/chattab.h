@@ -247,8 +247,9 @@ namespace Azoth
 
 		void needToClose ();
 
-		void entryMadeCurrent (QObject*);
-		void entryLostCurrent (QObject*);
+		void entryMadeCurrent (ICLEntry&);
+		void tabLostCurrent ();
+
 		void messageSent ();
 
 		void tabRecoverDataChanged ();

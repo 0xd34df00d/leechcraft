@@ -173,9 +173,9 @@ namespace LC::Azoth
 	, HistorySyncer_ (std::make_shared<HistorySyncer> ())
 	{
 		connect (ChatTabsManager_,
-				SIGNAL (entryMadeCurrent (QObject*)),
+				&ChatTabsManager::entryMadeCurrent,
 				UnreadQueueManager_.get (),
-				SLOT (clearMessagesForEntry (QObject*)));
+				&UnreadQueueManager::ClearMessagesForEntry);
 
 		connect (UnreadQueueManager_.get (),
 				SIGNAL (messagesCleared (QObject*)),
@@ -267,9 +267,9 @@ namespace LC::Azoth
 				SLOT (handleClearUnreadMsgCount (QObject*)));
 
 		connect (ChatTabsManager_,
-				SIGNAL (entryMadeCurrent (QObject*)),
+				&ChatTabsManager::entryMadeCurrent,
 				NotificationsManager_.get (),
-				SLOT (handleEntryMadeCurrent (QObject*)));
+				&NotificationsManager::handleEntryMadeCurrent);
 
 		auto addSOM = [this] (const QByteArray& option)
 		{

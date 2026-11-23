@@ -65,6 +65,7 @@ namespace Azoth
 		void HandleChatPartStateChanged (ICLEntry*, ChatPartState, const QString&);
 	public slots:
 		void handleClearUnreadMsgCount (QObject*);
+		void handleEntryMadeCurrent (const ICLEntry&);
 	private slots:
 		void handleTuneChanged (const QString&);
 		void handleActivityChanged (const QString&);
@@ -72,8 +73,6 @@ namespace Azoth
 		void handleLocationChanged (const QString&);
 
 		void handleAttentionDrawn (const QString&, const QString&);
-
-		void handleEntryMadeCurrent (QObject*);
 	signals:
 		void hookGotAuthRequest (LC::IHookProxy_ptr proxy,
 				QObject *entry,

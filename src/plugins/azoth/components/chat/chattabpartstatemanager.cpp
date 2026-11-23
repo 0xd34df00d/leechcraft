@@ -30,7 +30,7 @@ namespace LC::Azoth
 		TypeTimer_->callOnTimeout (this, setState (CPSPaused));
 
 		connect (&tab,
-				&ChatTab::entryLostCurrent,
+				&ChatTab::tabLostCurrent,
 				this,
 				setState (CPSInactive));
 		connect (&tab,

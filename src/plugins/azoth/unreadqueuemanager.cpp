@@ -73,8 +73,9 @@ namespace Azoth
 		}
 	}
 
-	void UnreadQueueManager::clearMessagesForEntry (QObject *entryObj)
+	void UnreadQueueManager::ClearMessagesForEntry (ICLEntry& entry)
 	{
+		const auto entryObj = entry.GetQObject ();		// TODO port everything here to `ICLEntry`
 		Queue_.removeAll (entryObj);
 
 		for (auto pos = UnreadMessages_.begin (); pos != UnreadMessages_.end (); )

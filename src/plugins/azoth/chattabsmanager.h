@@ -41,7 +41,7 @@ namespace Azoth
 		QHash<GlobalStrongestId, ChatTab_ptr> Entry2Tab_;
 		QSet<GlobalStrongestId> EverOpened_;
 
-		QPointer<ChatTab> LastCurrentTab_;
+		QPointer<ChatTab> CurrentTab_;
 	public:
 		struct RestoreChatInfo
 		{
@@ -78,11 +78,10 @@ namespace Azoth
 		void CloseChatTab (ChatTab*, bool fromUser);
 		void MergeTabs (ChatTab& from, ChatTab& to);
 	private slots:
-		void updateCurrentTab (QObject*);
 		void chatWindowStyleChanged ();
 	signals:
-		void entryMadeCurrent (QObject*);
-		void entryLostCurrent (QObject*);
+		void entryMadeCurrent (ICLEntry&);
+		void tabLostCurrent ();
 	};
 }
 }

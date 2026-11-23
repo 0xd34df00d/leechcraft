@@ -17,6 +17,8 @@ namespace LC
 {
 namespace Azoth
 {
+	class ICLEntry;
+
 	class UnreadQueueManager : public QObject
 	{
 		Q_OBJECT
@@ -33,8 +35,8 @@ namespace Azoth
 		void AddMessage (QObject*);
 		bool IsMessageRead (QObject*) const;
 		void ShowNext ();
-	public slots:
-		void clearMessagesForEntry (QObject*);
+
+		void ClearMessagesForEntry (ICLEntry&);
 	signals:
 		void messagesCleared (QObject*);
 	};
