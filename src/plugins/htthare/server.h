@@ -44,7 +44,8 @@ namespace HttHare
 		void Start ();
 		void Stop ();
 	private:
-		void StartAccept (boost::asio::ip::tcp::acceptor&);
+		boost::asio::awaitable<void> Accept (boost::asio::ip::tcp::acceptor&);
+		boost::asio::awaitable<void> Serve (boost::asio::ip::tcp::socket);
 	};
 }
 }

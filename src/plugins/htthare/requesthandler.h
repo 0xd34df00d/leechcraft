@@ -8,8 +8,10 @@
 
 #pragma once
 
-#include <memory>
+#include <vector>
+#include <boost/asio/awaitable.hpp>
 #include <boost/asio/buffer.hpp>
+#include <boost/asio/ip/tcp.hpp>
 #include <QByteArray>
 #include <QUrl>
 #include <QMap>
@@ -21,14 +23,18 @@ namespace LC
 {
 namespace HttHare
 {
-	class Connection;
-	typedef std::shared_ptr<Connection> Connection_ptr;
+	class StorageManager;
+	class IconResolver;
+	class TrManager;
 
 	class RequestHandler
 	{
 		Q_DECLARE_TR_FUNCTIONS (LC::HttHare::RequestHandler)
 
-		const Connection_ptr Conn_;
+		boost::asio::ip::tcp::socket& Socket_;
+		const StorageManager& StorageMgr_;
+		IconResolver& IconResolver_;
+		TrManager& TrManager_;
 
 		QUrl Url_;
 		QMap<QString, QString> Headers_;
@@ -44,19 +50,19 @@ namespace HttHare
 			Head
 		};
 	public:
-		RequestHandler (const Connection_ptr&);
+		RequestHandler (boost::asio::ip::tcp::socket&, const StorageManager&, IconResolver&, TrManager&);
 
-		void operator() (QByteArray);
+		boost::asio::awaitable<void> operator() (QByteArray);
 	private:
 		QString Tr (const char*);
 
-		void ErrorResponse (int, const QByteArray&, const QByteArray& = QByteArray ());
+		boost::asio::awaitable<void> ErrorResponse (int, QByteArray, QByteArray = {});
 		QByteArray MakeDirResponse (const QFileInfo&, const QString&, const QUrl&);
 
-		void HandleRequest (Verb);
-		void WriteDir (const QString&, const QFileInfo&, Verb);
-		void WriteFile (const QString&, const QFileInfo&, Verb);
-		void DefaultWrite (Verb);
+		boost::asio::awaitable<void> HandleRequest (Verb);
+		boost::asio::awaitable<void> WriteDir (QString, QFileInfo, Verb);
+		boost::asio::awaitable<void> WriteFile (QString, QFileInfo, Verb);
+		boost::asio::awaitable<void> DefaultWrite (Verb);
 		std::vector<boost::asio::const_buffer> ToBuffers (Verb);
 	};
 }

@@ -9,7 +9,7 @@
 #include "server.h"
 #include <QString>
 #include <QtDebug>
-#include "connection.h"
+#include "requesthandler.h"
 
 namespace LC
 {
@@ -44,7 +44,7 @@ namespace HttHare
 		}
 
 		for (const auto& acceptor : Acceptors_)
-			StartAccept (*acceptor);
+			boost::asio::co_spawn (IoService_, Accept (*acceptor), boost::asio::detached);
 	}
 
 	Server::~Server ()
@@ -70,22 +70,59 @@ namespace HttHare
 		Threads_.clear ();
 	}
 
-	void Server::StartAccept (ip::tcp::acceptor& acceptor)
+	namespace
 	{
-		Connection_ptr connection { new Connection { IoService_, StorageMgr_, &IconResolver_, &TrManager_ } };
+		void LogFailure (const std::exception_ptr& failure)
+		{
+			if (!failure)
+				return;
 
-		acceptor.async_accept (connection->GetSocket (),
-				[this, connection, &acceptor] (const boost::system::error_code& ec)
-				{
-					if (!ec)
-						connection->Start ();
-					else
-						qWarning () << Q_FUNC_INFO
-								<< "cannot accept:"
-								<< ec.message ().c_str ();
+			try
+			{
+				std::rethrow_exception (failure);
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << "connection failed:" << e.what ();
+			}
+			catch (...)
+			{
+				qWarning () << "connection failed";
+			}
+		}
+	}
 
-					StartAccept (acceptor);
-				});
+	boost::asio::awaitable<void> Server::Accept (ip::tcp::acceptor& acceptor)
+	{
+		for (;;)
+		{
+			auto [ec, socket] = co_await acceptor.async_accept (boost::asio::as_tuple (boost::asio::use_awaitable));
+			if (ec)
+				qWarning () << Q_FUNC_INFO
+						<< "cannot accept:"
+						<< ec.message ().c_str ();
+			else
+				boost::asio::co_spawn (IoService_, Serve (std::move (socket)), LogFailure);
+		}
+	}
+
+	boost::asio::awaitable<void> Server::Serve (ip::tcp::socket socket)
+	{
+		boost::asio::streambuf buf { 2 * 1024 };
+		const auto [ec, size] = co_await boost::asio::async_read_until (socket, buf, std::string_view { "\r\n\r\n" },
+				boost::asio::as_tuple (boost::asio::use_awaitable));
+		const auto headerTooLong = ec == boost::asio::error::not_found;
+		if (ec && !headerTooLong)
+			co_return;
+
+		QByteArray header { static_cast<qsizetype> (size), Qt::Uninitialized };
+		std::istream { &buf }.read (header.data (), header.size ());
+
+		RequestHandler handler { socket, StorageMgr_, IconResolver_, TrManager_ };
+		co_await handler (std::move (header));
+
+		boost::system::error_code shutdownEc;
+		socket.shutdown (ip::tcp::socket::shutdown_both, shutdownEc);
 	}
 }
 }

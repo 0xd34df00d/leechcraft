@@ -6,7 +6,6 @@ LC_DEFINE_PLUGIN (
 	SRCS
 		htthare.cpp
 		server.cpp
-		connection.cpp
 		requesthandler.cpp
 		storagemanager.cpp
 		iconresolver.cpp

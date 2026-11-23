@@ -21,6 +21,7 @@
 #endif
 
 #include <errno.h>
+#include <boost/asio.hpp>
 #include <QList>
 #include <QString>
 #include <QtDebug>
@@ -29,8 +30,6 @@
 #include <QDateTime>
 #include <util/util.h>
 #include <util/sys/mimedetector.h>
-#include <util/sll/util.h>
-#include "connection.h"
 #include "storagemanager.h"
 #include "iconresolver.h"
 #include "trmanager.h"
@@ -39,13 +38,17 @@ namespace LC
 {
 namespace HttHare
 {
-	RequestHandler::RequestHandler (const Connection_ptr& conn)
-	: Conn_ (conn)
+	RequestHandler::RequestHandler (boost::asio::ip::tcp::socket& socket,
+			const StorageManager& stMgr, IconResolver& resolver, TrManager& trMgr)
+	: Socket_ { socket }
+	, StorageMgr_ { stMgr }
+	, IconResolver_ { resolver }
+	, TrManager_ { trMgr }
 	{
 		ResponseHeaders_.push_back ({ "Accept-Ranges", "bytes" });
 	}
 
-	void RequestHandler::operator() (QByteArray data)
+	boost::asio::awaitable<void> RequestHandler::operator() (QByteArray data)
 	{
 		data.replace ("\r", "");
 
@@ -55,11 +58,11 @@ namespace HttHare
 		lines.removeAll ({});
 
 		if (lines.size () <= 0)
-			return ErrorResponse (400, "Bad Request");
+			co_return co_await ErrorResponse (400, "Bad Request");
 
 		const auto& req = lines.takeAt (0).split (' ');
 		if (req.size () < 2)
-			return ErrorResponse (400, "Bad Request");
+			co_return co_await ErrorResponse (400, "Bad Request");
 
 		const auto& verb = req.at (0).toLower ();
 		Url_ = QUrl::fromEncoded (req.at (1));
@@ -68,7 +71,7 @@ namespace HttHare
 		{
 			const auto colonPos = line.indexOf (':');
 			if (colonPos <= 0)
-				return ErrorResponse (400, "Bad Request");
+				co_return co_await ErrorResponse (400, "Bad Request");
 			Headers_ [QString::fromUtf8 (line.left (colonPos))] = QString::fromUtf8 (line.mid (colonPos + 1).trimmed ());
 		}
 
@@ -80,11 +83,11 @@ namespace HttHare
 #endif
 
 		if (verb == "head")
-			HandleRequest (Verb::Head);
+			co_await HandleRequest (Verb::Head);
 		else if (verb == "get")
-			HandleRequest (Verb::Get);
+			co_await HandleRequest (Verb::Get);
 		else
-			return ErrorResponse (405, "Method Not Allowed",
+			co_await ErrorResponse (405, "Method Not Allowed",
 					"Method " + verb + " not supported by this server.");
 	}
 
@@ -102,12 +105,10 @@ namespace HttHare
 		if (!locales.contains ("en"))
 			locales << "en";
 
-		auto mgr = Conn_->GetTrManager ();
-		return mgr->Translate (locales, "LC::HttHare::RequestHandler", msg);
+		return TrManager_.Translate (locales, "LC::HttHare::RequestHandler", msg);
 	}
 
-	void RequestHandler::ErrorResponse (int code,
-			const QByteArray& reason, const QByteArray& full)
+	boost::asio::awaitable<void> RequestHandler::ErrorResponse (int code, QByteArray reason, QByteArray full)
 	{
 		ResponseLine_ = "HTTP/1.1 " + QByteArray::number (code) + " " + reason + "\r\n";
 
@@ -123,7 +124,7 @@ namespace HttHare
 				.arg (reason.data ())
 				.arg (QString::fromUtf8 (full).toHtmlEscaped ()).toUtf8 ();
 
-		DefaultWrite (Verb::Get);
+		co_await DefaultWrite (Verb::Get);
 	}
 
 	namespace
@@ -159,7 +160,7 @@ namespace HttHare
 			if (!mimeCache.contains (type))
 			{
 				QByteArray image;
-				QMetaObject::invokeMethod (Conn_->GetIconResolver (),
+				QMetaObject::invokeMethod (&IconResolver_,
 						"resolveMime",
 						Qt::BlockingQueuedConnection,
 						Q_ARG (QString, type),
@@ -267,14 +268,20 @@ namespace HttHare
 
 	namespace
 	{
+		struct ChunkResult
+		{
+			int ErrCode_;
+			qint64 Transferred_;
+		};
+
 #if !defined (Q_OS_LINUX) && !defined (Q_OS_FREEBSD) && !defined (Q_OS_MAC)
-		std::pair<int, qint64> DumbSendfile (const std::shared_ptr<QFile>& file,
+		ChunkResult DumbSendfile (QFile& file,
 				boost::asio::ip::tcp::socket& sock, int offset, int toTransfer)
 		{
-			if (!file->seek (offset))
+			if (!file.seek (offset))
 				return { ESPIPE, 0 };
 
-			const auto& ba = file->read (toTransfer);
+			const auto& ba = file.read (toTransfer);
 			try
 			{
 				boost::asio::write (sock,
@@ -289,85 +296,51 @@ namespace HttHare
 		}
 #endif
 
-		struct Sendfiler
+		ChunkResult SendChunk (boost::asio::ip::tcp::socket& sock, QFile& file, qint64 from, qint64 size)
 		{
-			boost::asio::ip::tcp::socket& Sock_;
-			std::shared_ptr<QFile> File_;
-			off_t Offset_;
-
-			std::pair<qint64, qint64> CurrentRange_;
-			QList<std::pair<qint64, qint64>> TailRanges_;
-
-			std::function<void (boost::system::error_code)> Handler_;
-
-			void operator() (boost::system::error_code ec)
-			{
-				for (qint64 toTransfer = CurrentRange_.second - CurrentRange_.first + 1; toTransfer > 0; )
-				{
-					off_t offset = CurrentRange_.first;
 #ifdef Q_OS_LINUX
-					const auto rc = sendfile (Sock_.native_handle (),
-							File_->handle (), &offset, toTransfer);
-					const auto transferred = rc > 0 ? rc : 0;
-					const auto errCode = rc > 0 ? 0 : errno;
+			off_t offset = from;
+			const auto rc = sendfile (sock.native_handle (), file.handle (), &offset, size);
+			return rc >= 0 ? ChunkResult { 0, rc } : ChunkResult { errno, 0 };
 #elif defined (Q_OS_FREEBSD)
-					off_t transferred = toTransfer;
-					const auto rc = sendfile (File_->handle (), Sock_.native_handle (),
-							offset, toTransfer, nullptr, &transferred, 0);
-					if (rc == -1)
-						transferred = 0;
-					const auto errCode = rc == -1 ? errno : 0;
+			off_t transferred = 0;
+			const auto rc = sendfile (file.handle (), sock.native_handle (), from, size, nullptr, &transferred, 0);
+			return { rc == -1 ? errno : 0, transferred };
 #elif defined (Q_OS_MAC)
-					auto transferred = toTransfer;
-					auto errCode = sendfile (File_->handle (),
-							Sock_.native_handle (),
-							offset, &transferred,
-							nullptr, 0);
+			off_t transferred = size;
+			const auto rc = sendfile (file.handle (), sock.native_handle (), from, &transferred, nullptr, 0);
+			return { rc == -1 ? errno : 0, transferred };
 #else
 #warning "Using suboptimal file sending method"
-					const auto& pair = DumbSendfile (File_, Sock_, offset, toTransfer);
-					const auto errCode = pair.first;
-					const auto transferred = pair.second;
+			return DumbSendfile (file, sock, from, size);
 #endif
+		}
 
-					ec = boost::system::error_code (errCode,
-							boost::asio::error::get_system_category ());
+		boost::asio::awaitable<void> SendRanges (boost::asio::ip::tcp::socket& sock,
+				QFile& file, QList<std::pair<qint64, qint64>> ranges)
+		{
+			sock.native_non_blocking (true);
 
-					if (!errCode)
-					{
-						CurrentRange_.first = offset;
-						toTransfer -= transferred;
-					}
+			for (auto [first, last] : ranges)
+				while (first <= last)
+				{
+					const auto [errCode, transferred] = SendChunk (sock, file, first, last - first + 1);
+					first += transferred;
 
-					if (ec == boost::asio::error::interrupted)
+					const boost::system::error_code ec { errCode, boost::asio::error::get_system_category () };
+					if (ec == boost::asio::error::would_block || ec == boost::asio::error::try_again)
+						co_await sock.async_wait (boost::asio::socket_base::wait_write, boost::asio::use_awaitable);
+					else if (ec == boost::asio::error::interrupted)
 						continue;
-
-					if (ec == boost::asio::error::would_block ||
-							ec == boost::asio::error::try_again)
-					{
-						Sock_.async_wait (boost::asio::socket_base::wait_write, *this);
-						return;
-					}
-
-					if (ec)
-						break;
-
-					if (!toTransfer && !TailRanges_.isEmpty ())
-					{
-						CurrentRange_ = TailRanges_.takeFirst ();
-						Sock_.async_wait (boost::asio::socket_base::wait_write, *this);
-						return;
-					}
+					else if (ec || !transferred)
+						co_return;
 				}
-
-				Handler_ (ec);
-			}
-		};
+		}
 	}
 
-	void RequestHandler::HandleRequest (Verb verb)
+	boost::asio::awaitable<void> RequestHandler::HandleRequest (Verb verb)
 	{
-		const auto& maybePath = Conn_->GetStorageManager ().ResolvePath (Url_);
+		const auto& maybePath = StorageMgr_.ResolvePath (Url_);
 		if (!maybePath)
 		{
 			ResponseLine_ = "HTTP/1.1 403 Forbidden\r\n";
@@ -385,9 +358,9 @@ namespace HttHare
 					.arg (QFileInfo { Url_.path () }.fileName ().toHtmlEscaped ())
 					.toUtf8 ();
 
-			DefaultWrite (verb);
+			co_await DefaultWrite (verb);
 
-			return;
+			co_return;
 		}
 
 		const auto& path = *maybePath;
@@ -409,15 +382,15 @@ namespace HttHare
 						.arg ("<em>" + path.toHtmlEscaped () + "</em>"))
 					.toUtf8 ();
 
-			DefaultWrite (verb);
+			co_await DefaultWrite (verb);
 		}
 		else if (fi.isDir ())
-			WriteDir (path, fi, verb);
+			co_await WriteDir (path, fi, verb);
 		else
-			WriteFile (path, fi, verb);
+			co_await WriteFile (path, fi, verb);
 	}
 
-	void RequestHandler::WriteDir (const QString& path, const QFileInfo& fi, RequestHandler::Verb verb)
+	boost::asio::awaitable<void> RequestHandler::WriteDir (QString path, QFileInfo fi, Verb verb)
 	{
 		if (Url_.path ().endsWith ('/'))
 		{
@@ -426,7 +399,7 @@ namespace HttHare
 			ResponseHeaders_.push_back ({ "Content-Type", "text/html; charset=utf-8" });
 			ResponseBody_ = MakeDirResponse (fi, path, Url_);
 
-			DefaultWrite (verb);
+			co_await DefaultWrite (verb);
 		}
 		else
 		{
@@ -437,11 +410,11 @@ namespace HttHare
 			ResponseHeaders_.append ({ "Location", url.toString ().toUtf8 () });
 			ResponseBody_ = MakeDirResponse (fi, path, url);
 
-			DefaultWrite (verb);
+			co_await DefaultWrite (verb);
 		}
 	}
 
-	void RequestHandler::WriteFile (const QString& path, const QFileInfo& fi, RequestHandler::Verb verb)
+	boost::asio::awaitable<void> RequestHandler::WriteFile (QString path, QFileInfo fi, Verb verb)
 	{
 		auto ranges = ParseRanges (Headers_.value ("Range"), fi.size ());
 
@@ -464,67 +437,29 @@ namespace HttHare
 			ResponseHeaders_.append ({ "Content-Length", QByteArray::number (totalSize) });
 		}
 
-		auto c = Conn_;
-		boost::asio::async_write (c->GetSocket (),
-				ToBuffers (verb),
-				boost::asio::bind_executor (c->GetStrand (), [c, path, verb, ranges] (boost::system::error_code ec, ulong) mutable -> void
-					{
-						if (ec)
-							qWarning () << ec.message ().c_str ();
+		co_await DefaultWrite (verb);
+		if (verb != Verb::Get)
+			co_return;
 
-						auto& s = c->GetSocket ();
+		QFile file { path };
+		if (!file.open (QIODevice::ReadOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot open file"
+					<< path
+					<< file.errorString ();
+			co_return;
+		}
 
-						auto shutdownGuard = Util::MakeScopeGuard ([&s]
-							{
-								boost::system::error_code iec;
-								s.shutdown (boost::asio::socket_base::shutdown_both, iec);
-							}).Shared ();
+		if (ranges.isEmpty ())
+			ranges.append ({ 0, file.size () - 1 });
 
-						if (verb != Verb::Get)
-							return;
-
-						auto file = std::make_shared<QFile> (path);
-						if (!file->open (QIODevice::ReadOnly))
-						{
-							qWarning () << Q_FUNC_INFO
-									<< "cannot open file"
-									<< path
-									<< file->errorString ();
-							return;
-						}
-
-						if (ranges.isEmpty ())
-							ranges.append ({ 0, file->size () - 1 });
-
-						if (!s.native_non_blocking ())
-							s.native_non_blocking (true, ec);
-
-						const auto& headRange = ranges.takeFirst ();
-						Sendfiler
-						{
-							s,
-							std::move (file),
-							0,
-							headRange,
-							ranges,
-							[c, shutdownGuard] (boost::system::error_code) {}
-						} (ec);
-					}));
+		co_await SendRanges (Socket_, file, ranges);
 	}
 
-	void RequestHandler::DefaultWrite (Verb verb)
+	boost::asio::awaitable<void> RequestHandler::DefaultWrite (Verb verb)
 	{
-		auto c = Conn_;
-		boost::asio::async_write (c->GetSocket (),
-				ToBuffers (verb),
-				boost::asio::bind_executor (c->GetStrand (), [c] (const boost::system::error_code& ec, ulong)
-					{
-						if (ec)
-							qWarning () << ec.message ().c_str ();
-
-						boost::system::error_code iec;
-						c->GetSocket ().shutdown (boost::asio::socket_base::shutdown_both, iec);
-					}));
+		co_await boost::asio::async_write (Socket_, ToBuffers (verb), boost::asio::use_awaitable);
 	}
 
 	namespace
