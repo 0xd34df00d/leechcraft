@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QAbstractItemModel>
+#include <QCoreApplication>
 #include <QStringList>
 #include <QVector>
 #include <interfaces/data/iimgsource.h>
@@ -19,6 +20,8 @@ namespace LC::LHTR
 {
 	class ImageInfosModel : public QAbstractItemModel
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::LHTR::ImageInfosModel)
+
 		RemoteImageInfos_t& Infos_;
 		const QStringList Columns_;
 		QVector<QImage> Images_;

@@ -11,6 +11,7 @@
 #include <boost/function.hpp>
 #include <QObject>
 #include <QHash>
+#include <QCoreApplication>
 #include <QXmppElement.h>
 
 class QWidget;
@@ -23,6 +24,8 @@ namespace Xoox
 {
 	class LegacyFormBuilder : public QObject
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Azoth::Xoox::LegacyFormBuilder)
+
 		QWidget *Widget_;
 
 		using ElementActor_t = std::function<void (QWidget*, const QXmppElement&)>;

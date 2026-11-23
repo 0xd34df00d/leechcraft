@@ -9,6 +9,7 @@
 #pragma once
 
 #include <memory>
+#include <QCoreApplication>
 #include <QWidget>
 #include <libtorrent/fwd.hpp>
 #include "ui_peerswidget.h"
@@ -21,6 +22,8 @@ namespace LC::BitTorrent
 
 	class PeersWidget : public QWidget
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::PeersWidget)
+
 		Ui::PeersWidget Ui_;
 
 		libtorrent::session *Session_ = nullptr;

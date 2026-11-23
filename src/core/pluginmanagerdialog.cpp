@@ -9,6 +9,7 @@
 #include "pluginmanagerdialog.h"
 #include <QStyledItemDelegate>
 #include <QPushButton>
+#include <QCoreApplication>
 #include <util/models/fixedstringfilterproxymodel.h>
 #include "interfaces/ihavesettings.h"
 #include "interfaces/iinfo.h"
@@ -24,6 +25,7 @@ namespace LC
 	{
 		class PrefDelegate : public QStyledItemDelegate
 		{
+			Q_DECLARE_TR_FUNCTIONS (LC::PrefDelegate)
 		public:
 			using QStyledItemDelegate::QStyledItemDelegate;
 

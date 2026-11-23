@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QDialog>
 #include "ui_imagedialog.h"
 
@@ -15,6 +16,8 @@ namespace LC::LHTR
 {
 	class ImageDialog : public QDialog
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::LHTR::ImageDialog)
+
 		Ui::ImageDialog Ui_;
 	public:
 		explicit ImageDialog (QWidget* = nullptr);

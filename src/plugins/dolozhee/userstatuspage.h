@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QWizardPage>
 #include "ui_userstatuspage.h"
 
@@ -19,6 +20,8 @@ namespace Dolozhee
 
 	class UserStatusPage : public QWizardPage
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Dolozhee::UserStatusPage)
+
 		Ui::UserStatusPage Ui_;
 	public:
 		explicit UserStatusPage (QWidget* = nullptr);

@@ -12,6 +12,7 @@
 #include <QObject>
 #include <QHash>
 #include <QStringList>
+#include <QCoreApplication>
 
 class QMenu;
 
@@ -19,6 +20,8 @@ namespace LC::Monocle
 {
 	class RecentlyOpenedManager : public QObject
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Monocle::RecentlyOpenedManager)
+
 		QStringList OpenedDocs_;
 	public:
 		using PathHandler_t = std::function<void (QString)>;

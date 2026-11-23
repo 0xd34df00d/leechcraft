@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QWizard>
 
 namespace LC
@@ -18,6 +19,7 @@ namespace Snails
 
 	class AccountAddWizard final : public QWizard
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Snails::AccountAddWizard)
 	public:
 		AccountAddWizard (QWidget* = nullptr);
 

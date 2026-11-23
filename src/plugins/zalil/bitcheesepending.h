@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include "pendinguploadbase.h"
 
 namespace LC::Util
@@ -21,6 +22,7 @@ namespace Zalil
 {
 	class BitcheesePending final : public PendingUploadBase
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Zalil::BitcheesePending)
 	public:
 		BitcheesePending (const QString&, const ICoreProxy_ptr&, Util::ProgressManager&, QObject* = nullptr);
 	private:

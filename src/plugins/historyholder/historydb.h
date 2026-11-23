@@ -13,6 +13,7 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QMap>
+#include <QCoreApplication>
 #include <interfaces/core/itagsmanager.h>
 
 class QDateTime;
@@ -26,6 +27,8 @@ namespace HistoryHolder
 {
 	class HistoryDB : public QObject
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::HistoryHolder::HistoryDB)
+
 		ITagsManager * const TM_;
 
 		QSqlDatabase DB_ = QSqlDatabase::addDatabase ("QSQLITE", "org.LeechCraft.HistoryHolder");

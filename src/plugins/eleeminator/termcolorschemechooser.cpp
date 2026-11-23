@@ -8,6 +8,7 @@
 
 #include "termcolorschemechooser.h"
 #include <QActionGroup>
+#include <QCoreApplication>
 #include <QMenu>
 #include <QToolButton>
 #include <qtermwidget.h>
@@ -18,6 +19,8 @@ namespace LC::Eleeminator
 {
 	class ChooserState : public QObject
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Eleeminator::ChooserState)
+
 		QTermWidget& Term_;
 		const ColorSchemesManager& ColorSchemes_;
 

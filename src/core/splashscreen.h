@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QSplashScreen>
 
 namespace LC
@@ -16,6 +17,8 @@ namespace LC
 
 	class SplashScreen : public QSplashScreen
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::SplashScreen)
+
 		QList<LoadProcessBase*> Processes_;
 	public:
 		using QSplashScreen::QSplashScreen;

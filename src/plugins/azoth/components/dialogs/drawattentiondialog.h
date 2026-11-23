@@ -8,6 +8,7 @@
 
 #ifndef PLUGINS_AZOTH_DRAWATTENTIONDIALOG_H
 #define PLUGINS_AZOTH_DRAWATTENTIONDIALOG_H
+#include <QCoreApplication>
 #include <QDialog>
 #include "ui_drawattentiondialog.h"
 
@@ -17,6 +18,8 @@ namespace Azoth
 {
 	class DrawAttentionDialog : public QDialog
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Azoth::DrawAttentionDialog)
+
 		Ui::DrawAttentionDialog Ui_;
 	public:
 		DrawAttentionDialog (const QStringList&, QWidget* = 0);

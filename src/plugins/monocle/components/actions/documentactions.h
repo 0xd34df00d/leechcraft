@@ -9,6 +9,7 @@
 #pragma once
 
 #include <variant>
+#include <QCoreApplication>
 #include <QObject>
 
 class QAction;
@@ -19,6 +20,7 @@ namespace LC::Monocle
 
 	class DocumentActions : public QObject
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Monocle::DocumentActions)
 	public:
 		struct Deps
 		{

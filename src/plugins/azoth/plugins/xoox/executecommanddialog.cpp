@@ -10,6 +10,7 @@
 #include <QVBoxLayout>
 #include <QAbstractButton>
 #include <QLabel>
+#include <QCoreApplication>
 #include "glooxaccount.h"
 #include "clientconnection.h"
 #include "clientconnectionextensionsmanager.h"
@@ -25,6 +26,8 @@ namespace Xoox
 {
 	class WaitPage : public QWizardPage
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Azoth::Xoox::WaitPage)
+
 		bool DataFetched_;
 	public:
 		WaitPage (const QString& text, QWidget *parent = 0)

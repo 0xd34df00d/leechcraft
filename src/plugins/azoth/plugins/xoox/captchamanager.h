@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QObject>
 
 class QXmppDataForm;
@@ -25,6 +26,8 @@ namespace Xoox
 
 	class CaptchaManager : public QObject
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Azoth::Xoox::CaptchaManager)
+
 		XMPPCaptchaManager& CaptchaManager_;
 		XMPPBobManager& BobManager_;
 	public:

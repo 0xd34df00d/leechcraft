@@ -11,6 +11,7 @@
 #include <memory>
 #include <QObject>
 #include <QFile>
+#include <QCoreApplication>
 #include <util/threads/coro/taskfwd.h>
 #include <util/threads/coro/corocontext.h>
 #include "filetransferbase.h"
@@ -19,6 +20,8 @@ namespace LC::Azoth::Sarin
 {
 	class FileTransferOut final : public FileTransferBase
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Azoth::Sarin::FileTransferOut)
+
 		const QString FilePath_;
 
 		uint32_t FriendNum_ = -1;

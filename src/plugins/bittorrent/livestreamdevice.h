@@ -10,6 +10,7 @@
 
 #include <QVector>
 #include <QFile>
+#include <QCoreApplication>
 #include <libtorrent/fwd.hpp>
 #include <libtorrent/torrent_handle.hpp>
 #include <libtorrent/torrent_info.hpp>
@@ -20,6 +21,8 @@ namespace LC::BitTorrent
 
 	class LiveStreamDevice : public QIODevice
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::LiveStreamDevice)
+
 		CachedStatusKeeper& StatusKeeper_;
 
 		const libtorrent::torrent_handle Handle_;

@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QWizardPage>
 #include "ui_previewpage.h"
 
@@ -17,6 +18,8 @@ namespace Dolozhee
 {
 	class PreviewPage : public QWizardPage
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Dolozhee::PreviewPage)
+
 		Ui::RequestPreview Ui_;
 	public:
 		explicit PreviewPage (QWidget *parent = nullptr);

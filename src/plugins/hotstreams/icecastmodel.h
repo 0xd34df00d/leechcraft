@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QAbstractItemModel>
+#include <QCoreApplication>
 #include <QIcon>
 
 namespace LC
@@ -17,6 +18,8 @@ namespace HotStreams
 {
 	class IcecastModel : public QAbstractItemModel
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::HotStreams::IcecastModel)
+
 		const QIcon RadioIcon_ { ":/hotstreams/resources/images/radio.png" };
 	public:
 		struct StationInfo

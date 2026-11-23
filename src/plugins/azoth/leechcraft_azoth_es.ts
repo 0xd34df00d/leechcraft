@@ -3077,6 +3077,14 @@
     </message>
 </context>
 <context>
+    <name>LC::Azoth::RepresentationHandler</name>
+    <message>
+        <location filename="components/transfers/representationhandler.cpp" line="20"/>
+        <source>Abort</source>
+        <translation>Abortar</translation>
+    </message>
+</context>
+<context>
     <name>LC::Azoth::SearchWidget</name>
     <message>
         <location filename="searchwidget.cpp" line="91"/>

@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "accountaddwizard.h"
+#include <QCoreApplication>
 #include <QRegExpValidator>
 #include <QtDebug>
 #include "ui_accountaddwizardemailpage.h"
@@ -179,6 +180,8 @@ namespace Snails
 		class GMailServicePage : public QWizardPage
 							   , public IConfigGenerator
 		{
+			Q_DECLARE_TR_FUNCTIONS (LC::Snails::GMailServicePage)
+
 			QLineEdit * const Login_;
 		public:
 			GMailServicePage (QWizardPage *parent = nullptr)

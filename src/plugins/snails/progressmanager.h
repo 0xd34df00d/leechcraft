@@ -11,6 +11,7 @@
 #include <QObject>
 #include <QMap>
 #include <QMutex>
+#include <QCoreApplication>
 #include "progresslistener.h"
 
 class QAbstractItemModel;
@@ -25,6 +26,8 @@ namespace Snails
 
 	class ProgressManager : public QObject
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Snails::ProgressManager)
+
 		QStandardItemModel *Model_;
 
 		QMutex Listener2RowMutex_;

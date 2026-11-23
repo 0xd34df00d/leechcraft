@@ -11,6 +11,7 @@
 #include <QObject>
 #include <QSet>
 #include <QFutureInterface>
+#include <QCoreApplication>
 #include <interfaces/media/idiscographyprovider.h>
 
 class QNetworkAccessManager;
@@ -26,6 +27,8 @@ namespace MusicZombie
 {
 	class PendingDisco : public QObject
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::MusicZombie::PendingDisco)
+
 		const QString Artist_;
 		const QString ReleaseName_;
 		const QSet<QString> Hints_;

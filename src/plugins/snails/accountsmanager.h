@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QObject>
 #include "account.h"
 
@@ -24,6 +25,8 @@ namespace Snails
 
 	class AccountsManager : public QObject
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Snails::AccountsManager)
+
 		QStandardItemModel * const AccountsModel_;
 		QList<Account_ptr> Accounts_;
 

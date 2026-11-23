@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QObject>
 #include <vmime/net/session.hpp>
 #include <vmime/net/message.hpp>
@@ -45,6 +46,8 @@ namespace Snails
 
 	class AccountThreadWorker : public QObject
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Snails::AccountThreadWorker)
+
 		Account * const A_;
 		Storage * const Storage_;
 

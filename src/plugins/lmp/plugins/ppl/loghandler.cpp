@@ -8,6 +8,7 @@
 
 #include "loghandler.h"
 #include <functional>
+#include <QCoreApplication>
 #include <QFile>
 #include <QtDebug>
 #include <util/sll/prelude.h>
@@ -25,6 +26,8 @@ namespace LC::LMP::PPL
 		class LocalCollectionScrobbler : public QObject
 									   , public Media::IAudioScrobbler
 		{
+			Q_DECLARE_TR_FUNCTIONS (LC::LMP::PPL::LocalCollectionScrobbler)
+
 			ILocalCollection * const Coll_;
 		public:
 			LocalCollectionScrobbler (ILocalCollection*, QObject*);

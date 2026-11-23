@@ -9,6 +9,7 @@
 #pragma once
 
 #include <memory>
+#include <QCoreApplication>
 #include <QStringList>
 #include <libtorrent/fwd.hpp>
 #include <util/sll/scopeguards.h>
@@ -31,6 +32,8 @@ namespace LC::BitTorrent
 
 	class TorrentFilesModel : public TorrentFilesModelBase<TorrentNodeInfo>
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::TorrentFilesModel)
+
 		std::unique_ptr<libtorrent::torrent_handle> Handle_;
 		Util::DefaultScopeGuard RegGuard_;
 	public:

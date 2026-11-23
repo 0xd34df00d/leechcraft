@@ -9,6 +9,7 @@
 #pragma once
 
 #include <memory>
+#include <QCoreApplication>
 #include "filetransferbase.h"
 #include "types.h"
 
@@ -18,6 +19,8 @@ namespace LC::Azoth::Sarin
 {
 	class FileTransferIn final : public FileTransferBase
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Azoth::Sarin::FileTransferIn)
+
 		const quint32 FriendNum_;
 		const quint32 FileNum_;
 		const quint64 Filesize_;

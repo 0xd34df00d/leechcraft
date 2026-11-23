@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QDialog>
 #include "ui_advancedpermchangedialog.h"
 
@@ -19,6 +20,8 @@ namespace Azoth
 
 	class AdvancedPermChangeDialog : public QDialog
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Azoth::AdvancedPermChangeDialog)
+
 		Ui::AdvancedPermChangeDialog Ui_;
 	public:
 		AdvancedPermChangeDialog (const QList<ICLEntry*>& entry,

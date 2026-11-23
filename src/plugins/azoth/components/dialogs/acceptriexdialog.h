@@ -8,6 +8,7 @@
 
 #ifndef PLUGINS_AZOTH_ACCEPTRIEXDIALOG_H
 #define PLUGINS_AZOTH_ACCEPTRIEXDIALOG_H
+#include <QCoreApplication>
 #include <QDialog>
 #include "interfaces/azoth/isupportriex.h"
 #include "ui_acceptriexdialog.h"
@@ -20,6 +21,8 @@ namespace Azoth
 {
 	class AcceptRIEXDialog : public QDialog
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Azoth::AcceptRIEXDialog)
+
 		Ui::AcceptRIEXDialog Ui_;
 
 		QStandardItemModel *Model_;

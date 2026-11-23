@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include "searcher.h"
 
 class QNetworkAccessManager;
@@ -18,6 +19,8 @@ namespace DeadLyrics
 {
 	class HascirylSearcher : public Searcher
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::DeadLyrics::HascirylSearcher)
+
 		QNetworkAccessManager * const NAM_;
 	public:
 		HascirylSearcher (QNetworkAccessManager*);

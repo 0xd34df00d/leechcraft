@@ -9,6 +9,7 @@
 #pragma once
 
 #include <optional>
+#include <QCoreApplication>
 #include <QObject>
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -23,6 +24,8 @@ namespace Xoox
 {
 	class CapsStorageOnDisk : public QObject
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Azoth::Xoox::CapsStorageOnDisk)
+
 		QSqlDatabase DB_ = QSqlDatabase::addDatabase ("QSQLITE", "org.LeechCraft.Azoth.Xoox.Caps");
 
 		QSqlQuery InsertFeatures_;

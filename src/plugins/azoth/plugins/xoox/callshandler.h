@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QObject>
 
 class QXmppCallManager;
@@ -24,6 +25,8 @@ namespace LC::Azoth::Xoox
 
 	class CallsHandler : public QObject
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Azoth::Xoox::CallsHandler)
+
 		[[maybe_unused]] QXmppCallManager& Mgr_;
 		ClientConnection& Conn_;
 		GlooxAccount& Acc_;

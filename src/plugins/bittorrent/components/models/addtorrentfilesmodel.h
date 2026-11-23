@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include "torrentfilesmodelbase.h"
 
 namespace LC::BitTorrent
@@ -22,6 +23,7 @@ namespace LC::BitTorrent
 
 	class AddTorrentFilesModel final : public TorrentFilesModelBase<AddTorrentNodeInfo>
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::AddTorrentFilesModel)
 	public:
 		enum
 		{

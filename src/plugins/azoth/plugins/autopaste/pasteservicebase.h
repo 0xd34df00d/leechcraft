@@ -11,6 +11,7 @@
 #include <QObject>
 #include <QPointer>
 #include <QNetworkReply>
+#include <QCoreApplication>
 
 class QNetworkAccessManager;
 
@@ -34,6 +35,8 @@ namespace Azoth::Autopaste
 
 	class PasteServiceBase : public QObject
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Azoth::Autopaste::PasteServiceBase)
+
 		QPointer<QObject> Entry_;
 	public:
 		struct PasteParams

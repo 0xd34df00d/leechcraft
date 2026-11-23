@@ -13,6 +13,7 @@
 #include <QUrl>
 #include <QHash>
 #include <QSet>
+#include <QCoreApplication>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/iquarkcomponentprovider.h>
 
@@ -43,6 +44,8 @@ namespace SB2
 
 	class ViewManager : public QObject
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::SB2::ViewManager)
+
 		QStandardItemModel *ViewItemsModel_;
 		SBView *View_;
 		QToolBar *Toolbar_;

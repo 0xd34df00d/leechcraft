@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QDialog>
 #include "ui_finddialog.h"
 
@@ -37,6 +38,8 @@ namespace LC::LHTR
 
 	class FindDialog : public QDialog
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::LHTR::FindDialog)
+
 		Ui::FindDialog Ui_;
 		FindObjectProxy Proxy_;
 	public:

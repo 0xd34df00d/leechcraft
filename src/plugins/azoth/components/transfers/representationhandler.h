@@ -9,6 +9,7 @@
 #pragma once
 
 #include <memory>
+#include <QCoreApplication>
 #include <QModelIndex>
 #include <QObject>
 #include <interfaces/ijobholder.h>
@@ -21,6 +22,8 @@ namespace LC::Azoth
 		: public QObject
 		, public IJobHolderRepresentationHandler
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Azoth::RepresentationHandler)
+
 		TransferModelManager& ModelMgr_;
 		std::unique_ptr<QToolBar> ToolBar_;
 

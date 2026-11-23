@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QWizardPage>
 #include "ui_startupfirstpage.h"
 
@@ -17,6 +18,8 @@ namespace LC::BitTorrent
 
 	class StartupFirstPage : public QWizardPage
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::BitTorrent::StartupFirstPage)
+
 		Ui::StartupFirstPageWidget Ui_;
 
 		SessionSettingsManager * const SSM_;

@@ -9,6 +9,7 @@
 #pragma once
 
 #include <memory>
+#include <QCoreApplication>
 #include <QStyledItemDelegate>
 
 class QTreeView;
@@ -20,6 +21,8 @@ namespace Monocle
 {
 	class AnnTreeDelegate : public QStyledItemDelegate
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Monocle::AnnTreeDelegate)
+
 		QTreeView * const View_;
 		int PrevWidth_ = -1;
 	public:

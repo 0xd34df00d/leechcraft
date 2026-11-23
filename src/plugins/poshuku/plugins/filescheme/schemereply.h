@@ -10,6 +10,7 @@
 
 #include <QNetworkReply>
 #include <QBuffer>
+#include <QCoreApplication>
 
 namespace LC
 {
@@ -19,6 +20,8 @@ namespace FileScheme
 {
 	class SchemeReply final : public QNetworkReply
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Poshuku::FileScheme::SchemeReply)
+
 		QBuffer Buffer_;
 	public:
 		SchemeReply (const QNetworkRequest&, QObject* = 0);

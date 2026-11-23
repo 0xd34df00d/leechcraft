@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QDialog>
 #include "ui_gwitemsremovaldialog.h"
 
@@ -21,6 +22,8 @@ namespace Xoox
 
 	class GWItemsRemovalDialog : public QDialog
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Azoth::Xoox::GWItemsRemovalDialog)
+
 		Ui::GWItemsRemovalDialog Ui_;
 	public:
 		GWItemsRemovalDialog (const QList<GlooxCLEntry*>&, QWidget* = 0);

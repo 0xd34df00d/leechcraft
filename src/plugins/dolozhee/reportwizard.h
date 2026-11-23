@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QWizard>
 #include <util/xpc/downloadhelpers.h>
 #include <interfaces/core/icoreproxy.h>
@@ -28,6 +29,8 @@ namespace Dolozhee
 
 	class ReportWizard : public QWizard
 	{
+		Q_DECLARE_TR_FUNCTIONS (LC::Dolozhee::ReportWizard)
+
 		ICoreProxy_ptr Proxy_;
 
 		ChooseUserPage *ChooseUser_;

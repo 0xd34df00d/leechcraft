@@ -2,6 +2,14 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
+    <name>LC::HistoryHolder::HistoryDB</name>
+    <message>
+        <location filename="historydb.cpp" line="94"/>
+        <source>Title</source>
+        <translation>Название</translation>
+    </message>
+</context>
+<context>
     <name>LC::Plugins::HistoryHolder::Core</name>
     <message>
         <location filename="core.cpp" line="83"/>
