@@ -19,6 +19,8 @@
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ihavediaginfo.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <util/threads/coro/taskfwd.h>
+#include <util/threads/coro/corocontext.h>
 
 namespace LC::BitTorrent
 {
@@ -98,5 +100,9 @@ namespace LC::BitTorrent
 		QString GetDiagInfoString () const override;
 	signals:
 		void gotActions (QList<QAction*>, LC::ActionsEmbedPlace) override;
+	private:
+		Util::ContextTask<QFuture<Result>> RunAddJob (LC::Entity);
+
+		LC_CORO_CONTEXT
 	};
 }

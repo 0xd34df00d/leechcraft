@@ -16,6 +16,7 @@
 #include <QUrlQuery>
 #include <QFileInfo>
 #include <QDir>
+#include <QPromise>
 #include <util/xpc/entityconstants.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
@@ -27,6 +28,8 @@
 #include <util/sll/qtutil.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/threads/futures.h>
+#include <util/threads/coro/context.h>
+#include <util/threads/coro/signal.h>
 #include <util/xpc/util.h>
 #include "core.h"
 #include "addtorrent.h"
@@ -188,22 +191,23 @@ namespace LC::BitTorrent
 		return {};
 	}
 
-	namespace
-	{
-		void ExecDialog (QDialog& dia)
-		{
-			dia.show ();
-			QEventLoop dialogGuard;
-			QObject::connect (&dia,
-					&QDialog::finished,
-					&dialogGuard,
-					&QEventLoop::quit);
-			dialogGuard.exec ();
-		}
-	}
-
 	QFuture<IDownload::Result> TorrentPlugin::AddJob (Entity e)
 	{
+		QPromise<QFuture<Result>> promise;
+		promise.start ();
+		auto future = promise.future ().unwrap ();
+		[] (Util::ContextTask<QFuture<Result>> job, QPromise<QFuture<Result>> jobPromise) -> Util::Task<void>
+		{
+			jobPromise.addResult (co_await job);
+			jobPromise.finish ();
+		} (RunAddJob (std::move (e)), std::move (promise));
+		return future;
+	}
+
+	Util::ContextTask<QFuture<IDownload::Result>> TorrentPlugin::RunAddJob (Entity e)
+	{
+		co_await Util::AddContext { CoroContext_ };
+
 		QString suggestedFname;
 		std::optional<QTemporaryFile> tmpFile;
 
@@ -222,7 +226,7 @@ namespace LC::BitTorrent
 					if (key == "kt"_qs)
 						tagsIds += tagsMgr->GetIDs (value.split ('+', Qt::SkipEmptyParts));
 
-				return Core::Instance ()->AddMagnet (resource.toString (),
+				co_return Core::Instance ()->AddMagnet (resource.toString (),
 						e.Location_,
 						tagsIds,
 						e.Parameters_);
@@ -241,7 +245,7 @@ namespace LC::BitTorrent
 						.arg (tmpFile->errorString ());
 				const auto& entity = Util::MakeNotification ("BitTorrent"_qs, msg, Priority::Critical);
 				GetProxyHolder ()->GetEntityManager ()->HandleEntity (entity);
-				return MakeReadyFuture (Result { AsLeft, { Error::Type::LocalError, msg } });
+				co_return MakeReadyFuture (Result { AsLeft, { Error::Type::LocalError, msg } });
 			}
 			tmpFile->close ();
 			suggestedFname = tmpFile->fileName ();
@@ -261,10 +265,11 @@ namespace LC::BitTorrent
 			else if (e.Parameters_ & IsDownloaded && !suggestedFname.isEmpty ())
 				dia.SetSavePath (QFileInfo (suggestedFname).absolutePath ());
 
-			ExecDialog (dia);
+			dia.show ();
+			co_await Util::Signal { dia, &QDialog::finished };
 
 			if (dia.result () != QDialog::Accepted)
-				return MakeReadyFuture (Result { AsLeft, { Error::Type::UserCanceled, {} } });
+				co_return MakeReadyFuture (Result { AsLeft, { Error::Type::UserCanceled, {} } });
 
 			fname = dia.GetFilename (),
 			path = dia.GetSavePath ();
@@ -289,7 +294,7 @@ namespace LC::BitTorrent
 				e.Parameters_);
 		if (!tmpFile)
 			QFile::remove (suggestedFname);
-		return result;
+		co_return result;
 	}
 
 	std::vector<IJobHolderRepresentationHandler_ptr> TorrentPlugin::CreateRepresentationHandlers (const ViewCallbacks&)
