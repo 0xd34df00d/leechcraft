@@ -243,8 +243,8 @@ namespace HttHare
 					if (!ok)
 						continue;
 
-					if (first <= last)
-						result.append ({ first, last });
+					if (first <= last && first < fullSize)
+						result.append ({ first, std::min (last, fullSize - 1) });
 				}
 			}
 
