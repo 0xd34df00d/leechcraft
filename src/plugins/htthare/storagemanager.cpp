@@ -16,15 +16,11 @@ namespace LC
 {
 namespace HttHare
 {
-	AccessDeniedException::~AccessDeniedException () noexcept
-	{
-	}
-
 	StorageManager::StorageManager ()
 	{
 	}
 
-	QString StorageManager::ResolvePath (QUrl url) const
+	std::optional<QString> StorageManager::ResolvePath (QUrl url) const
 	{
 		if (url.path ().startsWith ("/"))
 			url.setPath (url.path ().mid (1));
@@ -33,7 +29,7 @@ namespace HttHare
 		const auto& homeDir = home.endsWith ('/') ? home : home + '/';
 		const auto& path = QDir::cleanPath (QUrl::fromLocalFile (homeDir).resolved (url).toLocalFile ());
 		if (path != home && !path.startsWith (homeDir))
-			throw AccessDeniedException ();
+			return {};
 
 		return path;
 	}

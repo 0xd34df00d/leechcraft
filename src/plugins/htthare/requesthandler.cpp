@@ -367,12 +367,8 @@ namespace HttHare
 
 	void RequestHandler::HandleRequest (Verb verb)
 	{
-		QString path;
-		try
-		{
-			path = Conn_->GetStorageManager ().ResolvePath (Url_);
-		}
-		catch (const AccessDeniedException&)
+		const auto& maybePath = Conn_->GetStorageManager ().ResolvePath (Url_);
+		if (!maybePath)
 		{
 			ResponseLine_ = "HTTP/1.1 403 Forbidden\r\n";
 
@@ -385,8 +381,7 @@ namespace HttHare
 				</html>
 				)delim")
 					.arg (Tr ("Access forbidden. You could return "
-								"to the <a href='/'>root</a> of this server.")
-							.arg (path))
+								"to the <a href='/'>root</a> of this server."))
 					.arg (QFileInfo { Url_.path () }.fileName ().toHtmlEscaped ())
 					.toUtf8 ();
 
@@ -395,6 +390,7 @@ namespace HttHare
 			return;
 		}
 
+		const auto& path = *maybePath;
 		const QFileInfo fi { path };
 		if (!fi.exists ())
 		{

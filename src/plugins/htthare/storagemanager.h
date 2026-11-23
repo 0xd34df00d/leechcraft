@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <stdexcept>
+#include <optional>
 #include <QUrl>
 
 class QString;
@@ -17,18 +17,12 @@ namespace LC
 {
 namespace HttHare
 {
-	class AccessDeniedException : public std::exception
-	{
-	public:
-		~AccessDeniedException () noexcept;
-	};
-
 	class StorageManager
 	{
 	public:
 		StorageManager ();
 
-		QString ResolvePath (QUrl) const;
+		std::optional<QString> ResolvePath (QUrl) const;
 	};
 }
 }
