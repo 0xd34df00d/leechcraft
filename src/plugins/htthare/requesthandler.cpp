@@ -399,6 +399,9 @@ namespace HttHare
 		{
 			ResponseLine_ = "HTTP/1.1 206 Partial content\r\n";
 			ResponseHeaders_.append ({ "Content-Length", QByteArray::number (range->second - range->first + 1) });
+			ResponseHeaders_.append ({ "Content-Range",
+					"bytes " + QByteArray::number (range->first) + '-' + QByteArray::number (range->second) +
+							'/' + QByteArray::number (fi.size ()) });
 		}
 
 		co_await DefaultWrite (verb);
