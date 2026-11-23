@@ -226,8 +226,8 @@ namespace HttHare
 					if (!ok)
 						continue;
 
-					if (last)
-						result.append ({ fullSize - last - 1, fullSize - 1 });
+					if (last > 0)
+						result.append ({ std::max<qint64> (fullSize - last, 0), fullSize - 1 });
 				}
 				else
 				{
