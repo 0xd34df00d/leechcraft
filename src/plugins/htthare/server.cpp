@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "server.h"
+#include <csignal>
 #include <QString>
 #include <QtDebug>
 #include "requesthandler.h"
@@ -53,13 +54,30 @@ namespace HttHare
 			Stop ();
 	}
 
+	namespace
+	{
+		void BlockSigpipe ()
+		{
+#ifdef Q_OS_UNIX
+			sigset_t set;
+			sigemptyset (&set);
+			sigaddset (&set, SIGPIPE);
+			pthread_sigmask (SIG_BLOCK, &set, nullptr);
+#endif
+		}
+	}
+
 	void Server::Start ()
 	{
 		if (Acceptors_.empty ())
 			return;
 
 		for (auto i = 0; i < 2; ++i)
-			Threads_.emplace_back ([this] { IoService_.run (); });
+			Threads_.emplace_back ([this]
+					{
+						BlockSigpipe ();
+						IoService_.run ();
+					});
 	}
 
 	void Server::Stop ()
