@@ -30,6 +30,7 @@
 #include <QDateTime>
 #include <util/util.h>
 #include <util/sys/mimedetector.h>
+#include <util/sll/qtutil.h>
 #include "storagemanager.h"
 #include "iconresolver.h"
 #include "trmanager.h"
@@ -198,61 +199,41 @@ namespace HttHare
 
 	namespace
 	{
-		QList<std::pair<qint64, qint64>> ParseRanges (QString str, qint64 fullSize)
+		using ByteRange = std::pair<qint64, qint64>;
+
+		std::optional<ByteRange> ParseRange (QStringView header, qint64 fullSize)
 		{
-			QList<std::pair<qint64, qint64>> result;
+			const auto unit = u"bytes="_qsv;
+			if (!header.startsWith (unit, Qt::CaseInsensitive) || header.contains (','))
+				return {};
 
-			const auto eqPos = str.indexOf ('=');
-			if (eqPos >= 0)
-				str = str.mid (eqPos + 1);
+			const auto spec = header.mid (unit.size ());
+			const auto dashPos = spec.indexOf ('-');
+			if (dashPos < 0)
+				return {};
 
-			const auto pcPos = str.indexOf (';');
-			if (pcPos >= 0)
-				str = str.left (pcPos);
+			const auto firstStr = spec.left (dashPos);
+			const auto lastStr = spec.mid (dashPos + 1);
 
-			for (const auto& elem : QStringView { str }.split (',', Qt::SkipEmptyParts))
+			bool ok = false;
+			if (firstStr.isEmpty ())
 			{
-				const auto dashPos = elem.indexOf ('-');
-
-				if (dashPos < 0)
-					continue;
-
-				const auto& startStr = elem.left (dashPos);
-				const auto& endStr = elem.mid (dashPos + 1);
-				if (startStr.isEmpty ())
-				{
-					bool ok = false;
-					const auto last = endStr.toLongLong (&ok);
-					if (!ok)
-						continue;
-
-					if (last > 0)
-						result.append ({ std::max<qint64> (fullSize - last, 0), fullSize - 1 });
-				}
-				else
-				{
-					bool ok = false;
-					const auto last = endStr.isEmpty () ?
-							(ok = true, fullSize - 1) :
-							endStr.toLongLong (&ok);
-					if (!ok)
-						continue;
-
-					ok = false;
-					const auto first = startStr.toLongLong (&ok);
-					if (!ok)
-						continue;
-
-					if (first <= last && first < fullSize)
-						result.append ({ first, std::min (last, fullSize - 1) });
-				}
-			}
-
-			for (const auto& range : result)
-				if (!range.first && range.second == fullSize - 1)
+				const auto suffixLength = lastStr.toLongLong (&ok);
+				if (!ok || suffixLength <= 0 || suffixLength >= fullSize)
 					return {};
 
-			return result;
+				return ByteRange { fullSize - suffixLength, fullSize - 1 };
+			}
+
+			const auto first = firstStr.toLongLong (&ok);
+			if (!ok || first >= fullSize)
+				return {};
+
+			const auto last = lastStr.isEmpty () ? fullSize - 1 : std::min (lastStr.toLongLong (&ok), fullSize - 1);
+			if (!ok || first > last || (!first && last == fullSize - 1))
+				return {};
+
+			return ByteRange { first, last };
 		}
 	}
 
@@ -306,25 +287,23 @@ namespace HttHare
 #endif
 		}
 
-		boost::asio::awaitable<void> SendRanges (boost::asio::ip::tcp::socket& sock,
-				QFile& file, QList<std::pair<qint64, qint64>> ranges)
+		boost::asio::awaitable<void> SendRange (boost::asio::ip::tcp::socket& sock, QFile& file, qint64 first, qint64 last)
 		{
 			sock.native_non_blocking (true);
 
-			for (auto [first, last] : ranges)
-				while (first <= last)
-				{
-					const auto [errCode, transferred] = SendChunk (sock, file, first, last - first + 1);
-					first += transferred;
+			while (first <= last)
+			{
+				const auto [errCode, transferred] = SendChunk (sock, file, first, last - first + 1);
+				first += transferred;
 
-					const boost::system::error_code ec { errCode, boost::asio::error::get_system_category () };
-					if (ec == boost::asio::error::would_block || ec == boost::asio::error::try_again)
-						co_await sock.async_wait (boost::asio::socket_base::wait_write, boost::asio::use_awaitable);
-					else if (ec == boost::asio::error::interrupted)
-						continue;
-					else if (ec || !transferred)
-						co_return;
-				}
+				const boost::system::error_code ec { errCode, boost::asio::error::get_system_category () };
+				if (ec == boost::asio::error::would_block || ec == boost::asio::error::try_again)
+					co_await sock.async_wait (boost::asio::socket_base::wait_write, boost::asio::use_awaitable);
+				else if (ec == boost::asio::error::interrupted)
+					continue;
+				else if (ec || !transferred)
+					co_return;
+			}
 		}
 	}
 
@@ -406,12 +385,12 @@ namespace HttHare
 
 	boost::asio::awaitable<void> RequestHandler::WriteFile (QString path, QFileInfo fi, Verb verb)
 	{
-		auto ranges = ParseRanges (Headers_.value ("Range"), fi.size ());
+		const auto& range = ParseRange (Headers_.value ("Range"), fi.size ());
 
 		const auto& mime = Util::MimeDetector {} (path);
 		ResponseHeaders_.append ({ "Content-Type", mime.toUtf8 () });
 
-		if (ranges.isEmpty ())
+		if (!range)
 		{
 			ResponseLine_ = "HTTP/1.1 200 OK\r\n";
 			ResponseHeaders_.append ({ "Content-Length", QByteArray::number (fi.size ()) });
@@ -419,12 +398,7 @@ namespace HttHare
 		else
 		{
 			ResponseLine_ = "HTTP/1.1 206 Partial content\r\n";
-
-			qint64 totalSize = 0;
-			for (const auto& range : ranges)
-				totalSize += range.second - range.first + 1;
-
-			ResponseHeaders_.append ({ "Content-Length", QByteArray::number (totalSize) });
+			ResponseHeaders_.append ({ "Content-Length", QByteArray::number (range->second - range->first + 1) });
 		}
 
 		co_await DefaultWrite (verb);
@@ -441,10 +415,8 @@ namespace HttHare
 			co_return;
 		}
 
-		if (ranges.isEmpty ())
-			ranges.append ({ 0, file.size () - 1 });
-
-		co_await SendRanges (Socket_, file, ranges);
+		const auto [first, last] = range ? *range : ByteRange { 0, file.size () - 1 };
+		co_await SendRange (Socket_, file, first, last);
 	}
 
 	boost::asio::awaitable<void> RequestHandler::DefaultWrite (Verb verb)
