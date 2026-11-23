@@ -71,7 +71,7 @@ namespace LC::Azoth
 	{
 		Ui_.Invitee_->setEditable (AI == AddressInvitations::Allowed);
 		if constexpr (AI == AddressInvitations::Allowed)
-			Ui_.Invitee_->lineEdit ()->setPlaceholderText (tr ("Contact or address to invite"));
+			Ui_.Invitee_->lineEdit ()->setPlaceholderText (MUCInviteDialogBase::tr ("Contact or address to invite"));
 		else if (!Ui_.Invitee_->count ())
 			Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (false);
 	}
