@@ -57,7 +57,6 @@ namespace LC::Azoth::Acetamide
 		const auto& oldGlobalId = GetGlobalConventionalId ();
 
 		Nick_ = name;
-		emit Emitter_.nameChanged (Nick_);
 
 		for (const auto message : AllMessages_)
 		{
@@ -74,6 +73,8 @@ namespace LC::Azoth::Acetamide
 		}
 
 		emit GetParentAccount ()->GetAccountEmitter ().conventionalIdChanged (oldGlobalId, GetGlobalConventionalId (), *this);
+
+		emit Emitter_.nameChanged (Nick_);
 	}
 
 	QStringList IrcParticipantEntry::Variants () const

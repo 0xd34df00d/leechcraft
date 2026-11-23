@@ -66,9 +66,8 @@ namespace Xoox
 
 		Nick_ = nick;
 		ConventionalId_ = MakeParticipantId (*RoomHandler_, nick);
-		emit Emitter_.nameChanged (Nick_);
-
 		emit Account_->GetAccountEmitter ().conventionalIdChanged (oldId, GetGlobalConventionalId (), *this);
+		emit Emitter_.nameChanged (Nick_);
 	}
 
 	std::optional<EntryPersistentId> RoomParticipantEntry::GetPersistentId () const

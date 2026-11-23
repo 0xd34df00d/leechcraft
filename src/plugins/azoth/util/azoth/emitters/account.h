@@ -165,7 +165,10 @@ namespace LC::Azoth::Emitters
 		 * and this signal shall be emitted.
 		 *
 		 * When this signal is emitted, the entry shall return the new ID
-		 * from the corresponding getters.
+		 * from the corresponding getters. This shall be the first signal
+		 * emitted after the ID changes: `Emitters::CLEntry::nameChanged()`
+		 * and any other signal caused by the same change shall not be
+		 * emitted before it.
 		 *
 		 * @sa ICLEntry::GetConventionalId()
 		 */

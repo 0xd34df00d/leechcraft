@@ -146,11 +146,12 @@ namespace Xoox
 			oldId = GetGlobalConventionalId ();
 
 		std::tie (BareJid_, Resource_) = ClientConnection::Split (fullJid);
-		emit Emitter_.availableVariantsChanged (Variants ());
 
 		if (const auto& newId = GetGlobalConventionalId ();
 			oldId && *oldId != newId)
 			emit Account_->GetAccountEmitter ().conventionalIdChanged (*oldId, newId, *this);
+
+		emit Emitter_.availableVariantsChanged (Variants ());
 	}
 }
 }
