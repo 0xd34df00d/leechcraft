@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "requesthandler.h"
+#include <variant>
 
 #ifdef Q_OS_LINUX
 #include <sys/sendfile.h>
@@ -201,16 +202,19 @@ namespace HttHare
 	{
 		using ByteRange = std::pair<qint64, qint64>;
 
-		std::optional<ByteRange> ParseRange (QStringView header, qint64 fullSize)
+		struct WholeFile {};
+		struct Unsatisfiable {};
+
+		std::variant<WholeFile, ByteRange, Unsatisfiable> ParseRange (QStringView header, qint64 fullSize)
 		{
 			const auto unit = u"bytes="_qsv;
-			if (!header.startsWith (unit, Qt::CaseInsensitive) || header.contains (','))
-				return {};
+			if (!fullSize || !header.startsWith (unit, Qt::CaseInsensitive) || header.contains (','))
+				return WholeFile {};
 
 			const auto spec = header.mid (unit.size ());
 			const auto dashPos = spec.indexOf ('-');
 			if (dashPos < 0)
-				return {};
+				return WholeFile {};
 
 			const auto firstStr = spec.left (dashPos);
 			const auto lastStr = spec.mid (dashPos + 1);
@@ -219,19 +223,23 @@ namespace HttHare
 			if (firstStr.isEmpty ())
 			{
 				const auto suffixLength = lastStr.toLongLong (&ok);
-				if (!ok || suffixLength <= 0 || suffixLength >= fullSize)
-					return {};
+				if (!ok || suffixLength < 0 || suffixLength >= fullSize)
+					return WholeFile {};
+				if (!suffixLength)
+					return Unsatisfiable {};
 
 				return ByteRange { fullSize - suffixLength, fullSize - 1 };
 			}
 
 			const auto first = firstStr.toLongLong (&ok);
-			if (!ok || first >= fullSize)
-				return {};
+			if (!ok)
+				return WholeFile {};
+			if (first >= fullSize)
+				return Unsatisfiable {};
 
 			const auto last = lastStr.isEmpty () ? fullSize - 1 : std::min (lastStr.toLongLong (&ok), fullSize - 1);
 			if (!ok || first > last || (!first && last == fullSize - 1))
-				return {};
+				return WholeFile {};
 
 			return ByteRange { first, last };
 		}
@@ -385,7 +393,15 @@ namespace HttHare
 
 	boost::asio::awaitable<void> RequestHandler::WriteFile (QString path, QFileInfo fi, Verb verb)
 	{
-		const auto& range = ParseRange (Headers_.value ("Range"), fi.size ());
+		const auto& requested = ParseRange (Headers_.value ("Range"), fi.size ());
+		if (std::holds_alternative<Unsatisfiable> (requested))
+		{
+			ResponseLine_ = "HTTP/1.1 416 Range Not Satisfiable\r\n";
+			ResponseHeaders_.append ({ "Content-Range", "bytes */" + QByteArray::number (fi.size ()) });
+			co_return co_await DefaultWrite (verb);
+		}
+
+		const auto range = std::get_if<ByteRange> (&requested);
 
 		const auto& mime = Util::MimeDetector {} (path);
 		ResponseHeaders_.append ({ "Content-Type", mime.toUtf8 () });
