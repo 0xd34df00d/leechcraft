@@ -9,6 +9,7 @@
 #pragma once
 
 #include <QObject>
+#include "interfaces/azoth/core/ientriesmanager.h"
 #include "interfaces/azoth/azothcommon.h"
 
 namespace LC::Azoth
@@ -16,7 +17,9 @@ namespace LC::Azoth
 	class IAccount;
 	class ICLEntry;
 
-	class EntriesManager : public QObject
+	class EntriesManager
+		: public QObject
+		, public IEntriesManager
 	{
 		Q_OBJECT
 
@@ -42,7 +45,8 @@ namespace LC::Azoth
 			return id ? GetEntryOrNull<T> (*id) : nullptr;
 		}
 
-		std::optional<quint64> GetSessionStableId (const GlobalStrongestId&) const;
+		std::optional<quint64> GetSessionStableId (const GlobalStrongestId&) const override;
+		using IEntriesManager::GetSessionStableId;
 	private:
 		void AddCLEntries (const QList<ICLEntry*>&, IAccount&);
 		void RemoveCLEntries (const QList<ICLEntry*>&, IAccount&);

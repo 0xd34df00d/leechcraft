@@ -134,7 +134,7 @@ namespace LC::Azoth
 		return result;
 	}
 
-	ProxyObject::ProxyObject (IAvatarsManager *am, const EntriesManager& entries, QObject* parent)
+	ProxyObject::ProxyObject (IAvatarsManager *am, EntriesManager& entries, QObject* parent)
 	: QObject { parent }
 	, SerializedStr2AuthStatus_
 		{
@@ -352,6 +352,11 @@ namespace LC::Azoth
 	IAvatarsManager* ProxyObject::GetAvatarsManager ()
 	{
 		return AvatarsManager_;
+	}
+
+	IEntriesManager& ProxyObject::GetEntriesManager ()
+	{
+		return Entries_;
 	}
 
 	Hooks& ProxyObject::GetHooks ()

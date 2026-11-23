@@ -54,10 +54,14 @@ namespace LC::Azoth
 						SessionStableIds_.erase (pos);
 						if (const auto prevId = std::exchange (SessionStableIds_ [newId], taken);
 							prevId != StableSentinel)
+						{
 							emit stableIdShadowed (prevId);
+							emit Emitter_.stableIdShadowed (prevId);
+						}
 					}
 
 					emit strongestIdChanged (oldId, newId, entry);
+					emit Emitter_.strongestIdChanged (oldId, newId, entry);
 				});
 	}
 
@@ -114,7 +118,10 @@ namespace LC::Azoth
 		}
 
 		if (!addedEntries.isEmpty ())
+		{
 			emit added (addedEntries, account);
+			emit Emitter_.added (addedEntries, account);
+		}
 	}
 
 	void EntriesManager::RemoveCLEntries (const QList<ICLEntry*>& entries, IAccount& account)
@@ -122,6 +129,7 @@ namespace LC::Azoth
 		if (entries.isEmpty ())
 			return;
 
+		emit Emitter_.aboutToBeRemoved (entries, account);
 		emit aboutToBeRemoved (entries, account);
 
 		for (const auto entry : entries)
@@ -129,6 +137,7 @@ namespace LC::Azoth
 				qCritical () << "removing non-existing entry:" << entry->GetGlobalStrongestId ();
 
 		emit removed (entries, account);
+		emit Emitter_.removed (entries, account);
 	}
 
 	template QObject& EntriesManager::GetEntry<QObject> (const GlobalStrongestId&) const;

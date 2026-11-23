@@ -30,6 +30,7 @@ namespace Azoth
 	class Hooks;
 
 	class IAvatarsManager;
+	class IEntriesManager;
 
 	class IFormatterProxyObject
 	{
@@ -285,6 +286,8 @@ namespace Azoth
 		virtual IFormatterProxyObject& GetFormatterProxy () = 0;
 
 		virtual IAvatarsManager* GetAvatarsManager () = 0;
+
+		virtual IEntriesManager& GetEntriesManager () = 0;
 
 		virtual Hooks& GetHooks () = 0;
 	};
