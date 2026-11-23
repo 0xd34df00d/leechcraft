@@ -16,6 +16,7 @@
 #include <vector>
 #include <QCoreApplication>
 #include <QTest>
+#include <util/sll/qtutil.h>
 #include <util/sll/util.h>
 #include <util/sll/void.h>
 #include <util/test/randomwalk.h>
@@ -46,7 +47,7 @@ namespace LC::Util
 				co_await gate;
 				log << name + " out";
 			}
-			log << name + (mutex.IsLocked () ? " handed over" : " unlocked");
+			log << name + (mutex.IsLocked () ? " handed over"_qs : " unlocked"_qs);
 		}
 
 		ContextTask<void> Waiter (CoroContext& context, CoroMutex& mutex, QList<int>& order, int index)
