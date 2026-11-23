@@ -17,6 +17,7 @@
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iaccount.h>
+#include <util/sll/qtutil.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 
@@ -36,9 +37,9 @@ namespace SHX
 		if (XmlSettingsManager::Instance ().property ("Command").toString ().isEmpty ())
 		{
 #ifdef Q_OS_WIN32
-			const QString& cmd = "cmd.exe /U /S";
+			const auto cmd = "cmd.exe /U /S"_qs;
 #else
-			const QString& cmd = "/bin/sh -c";
+			const auto cmd = "/bin/sh -c"_qs;
 #endif
 			XmlSettingsManager::Instance ().setProperty ("Command", cmd);
 		}

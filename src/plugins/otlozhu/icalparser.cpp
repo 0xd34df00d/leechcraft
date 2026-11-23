@@ -15,6 +15,7 @@
 #include <boost/phoenix/fusion.hpp>
 #include <QtDebug>
 #include <interfaces/core/itagsmanager.h>
+#include <util/sll/qtutil.h>
 #include "core.h"
 
 namespace LC
@@ -152,7 +153,7 @@ namespace Otlozhu
 
 		QDateTime AsQDateTime (const MaybeFieldVal_t& val)
 		{
-			const QString& fmtStr = "yyyyMMddTHHmmss";
+			const auto fmtStr = "yyyyMMddTHHmmss"_qs;
 			const auto& str = AsQString (val).left (fmtStr.size ());
 			return QDateTime::fromString (str, fmtStr);
 		}

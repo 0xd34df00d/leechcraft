@@ -9,6 +9,7 @@
 #include "consolewidget.h"
 #include <QDomDocument>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 #include "interfaces/azoth/iaccount.h"
 
 namespace LC
@@ -66,9 +67,9 @@ namespace Azoth
 		if (!filter.isEmpty () && !entryId.contains (filter, Qt::CaseInsensitive))
 			return;
 
-		const QString& color = direction == IHaveConsole::PacketDirection::Out ?
-				"#56ED56" :			// rather green
-				"#ED55ED";			// violet or something
+		const auto color = direction == IHaveConsole::PacketDirection::Out ?
+				"#56ED56"_qs :			// rather green
+				"#ED55ED"_qs;			// violet or something
 
 		QString html = (direction == IHaveConsole::PacketDirection::Out ?
 					QString::fromUtf8 ("→→→→→→ [%1] →→→→→→") :

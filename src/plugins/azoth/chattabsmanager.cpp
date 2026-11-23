@@ -14,6 +14,7 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/compat/functional.h>
 #include <util/sll/qobjectrefcast.h>
+#include <util/sll/qtutil.h>
 #include <util/xpc/sessionprops.h>
 #include "util/azoth/util.h"
 #include "interfaces/azoth/iclentry.h"
@@ -315,8 +316,8 @@ namespace LC::Azoth
 		upSet ("ChatWindowStyle");
 		upSet ("MUCWindowStyle");
 
-		const QString& custId = XmlSettingsManager::Instance ()
-					.property ("CustomMUCStyle").toBool () ? "t" : "f";
+		const auto custId = XmlSettingsManager::Instance ()
+					.property ("CustomMUCStyle").toBool () ? "t"_qs : "f"_qs;
 		params << custId;
 
 		if (params == StyleParams_)

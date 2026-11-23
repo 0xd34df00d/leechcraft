@@ -8,6 +8,7 @@
 
 #include "icalgenerator.h"
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
 
@@ -33,7 +34,7 @@ namespace Otlozhu
 		{
 			QList<QByteArray> lines;
 			lines << "BEGIN:VTODO";
-			const QString& dateFt = "yyyyMMddTHHmmss";
+			const auto dateFt = "yyyyMMddTHHmmss"_qs;
 			const auto& createdStr = item->GetCreatedDate ().toString (dateFt).toLatin1 ();
 			lines << ("DTSTAMP:" + createdStr + "Z");
 			lines << ("UID:" + item->GetID ().toLatin1 ());
