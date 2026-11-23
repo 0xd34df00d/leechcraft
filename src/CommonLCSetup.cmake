@@ -8,6 +8,8 @@ cmake_dependent_option (WITH_X11 "Enable X11 support on Linux" ON "UNIX AND NOT 
 
 add_compile_definitions (
 	QT_ENABLE_STRICT_MODE_UP_TO=0x060A00
+	QT_RESTRICTED_CAST_FROM_ASCII
+
 	QT_MESSAGELOGCONTEXT
 )
 
