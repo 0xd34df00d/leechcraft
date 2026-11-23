@@ -254,7 +254,7 @@ configure_file (FindLeechCraft.cmake.in FindLeechCraft${LC_LIBSUFFIX}.cmake @ONL
 install (FILES
 	${CMAKE_CURRENT_BINARY_DIR}/FindLeechCraft${LC_LIBSUFFIX}.cmake
 	CommonLCSetup.cmake
-	DESTINATION ${LC_SHARE_DEST}/cmake/)
+	DESTINATION ${CMAKE_INSTALL_DATADIR}/cmake/leechcraft)
 
 if (APPLE AND NOT USE_UNIX_LAYOUT)
 	configure_file (Info.plist.in Info.plist)
