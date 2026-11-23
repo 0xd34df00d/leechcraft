@@ -681,14 +681,15 @@ namespace LMP
 
 				const auto& pluginID = media.Additional_ ["LMP/PluginID"].toByteArray ();
 				const auto& radioID = media.Additional_ ["LMP/RadioID"].toString ();
+				const std::pair key { QString::fromUtf8 (pluginID), radioID };
 
-				if (!restored.contains ({ pluginID, radioID }))
+				if (!restored.contains (key))
 				{
 					newPlaylist << item;
 					continue;
 				}
 
-				auto restoredPlaylist = Util::Visit (restored.value ({ pluginID, radioID }),
+				auto restoredPlaylist = Util::Visit (restored.value (key),
 						[] (const QList<Media::AudioInfo>& infos)
 						{
 							return Util::Map (infos,
