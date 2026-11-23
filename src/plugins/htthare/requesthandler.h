@@ -57,7 +57,7 @@ namespace HttHare
 		QString Tr (const char*);
 
 		boost::asio::awaitable<void> ErrorResponse (int, QByteArray, QByteArray = {});
-		QByteArray MakeDirResponse (const QFileInfo&, const QString&, const QUrl&);
+		boost::asio::awaitable<QByteArray> MakeDirResponse (QFileInfo, QString, QUrl);
 
 		boost::asio::awaitable<void> HandleRequest (Verb);
 		boost::asio::awaitable<void> WriteDir (QString, QFileInfo, Verb);

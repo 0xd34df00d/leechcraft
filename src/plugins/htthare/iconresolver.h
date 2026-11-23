@@ -8,9 +8,10 @@
 
 #pragma once
 
+#include <boost/asio/awaitable.hpp>
 #include <QObject>
-
-class QImage;
+#include <QHash>
+#include <QSet>
 
 namespace LC
 {
@@ -18,11 +19,8 @@ namespace HttHare
 {
 	class IconResolver : public QObject
 	{
-		Q_OBJECT
 	public:
-		IconResolver (QObject* = 0);
-	public slots:
-		void resolveMime (QString, QByteArray&, int);
+		boost::asio::awaitable<QHash<QString, QByteArray>> Resolve (QSet<QString> mimes, int dim);
 	};
 }
 }

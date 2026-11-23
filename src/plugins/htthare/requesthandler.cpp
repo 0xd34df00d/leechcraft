@@ -140,7 +140,7 @@ namespace HttHare
 		const auto IconSize = 16;
 	}
 
-	QByteArray RequestHandler::MakeDirResponse (const QFileInfo& fi, const QString& path, const QUrl& url)
+	boost::asio::awaitable<QByteArray> RequestHandler::MakeDirResponse (QFileInfo fi, QString path, QUrl url)
 	{
 		const auto& entries = QDir { path }
 				.entryInfoList (QDir::AllEntries | QDir::NoDot,
@@ -150,31 +150,21 @@ namespace HttHare
 		{
 			QString MimeType_;
 		};
-		QHash<QString, QByteArray> mimeCache;
+		QSet<QString> types;
 		QList<MimeInfo> mimes;
 		Util::MimeDetector detector;
 		for (const auto& entry : entries)
 		{
 			const auto& type = detector (entry.filePath ());
-
-			if (!mimeCache.contains (type))
-			{
-				QByteArray image;
-				QMetaObject::invokeMethod (&IconResolver_,
-						"resolveMime",
-						Qt::BlockingQueuedConnection,
-						Q_ARG (QString, type),
-						Q_ARG (QByteArray&, image),
-						Q_ARG (int, IconSize));
-				mimeCache [type] = image;
-			}
-
+			types << type;
 			mimes.append ({ type });
 		}
 
+		const auto& icons = co_await IconResolver_.Resolve (types, IconSize);
+
 		QString result;
 		result += "<html><head><title>" + fi.fileName ().toHtmlEscaped () + "</title><style>";
-		for (auto pos = mimeCache.begin (); pos != mimeCache.end (); ++pos)
+		for (auto pos = icons.begin (); pos != icons.end (); ++pos)
 		{
 			result += "." + NormalizeClass (pos.key ()) + " {";
 			result += "background-image: url('" + pos.value () + "');";
@@ -203,7 +193,7 @@ namespace HttHare
 
 		result += "</table></body></html>";
 
-		return result.toUtf8 ();
+		co_return result.toUtf8 ();
 	}
 
 	namespace
@@ -397,7 +387,7 @@ namespace HttHare
 			ResponseLine_ = "HTTP/1.1 200 OK\r\n";
 
 			ResponseHeaders_.push_back ({ "Content-Type", "text/html; charset=utf-8" });
-			ResponseBody_ = MakeDirResponse (fi, path, Url_);
+			ResponseBody_ = co_await MakeDirResponse (fi, path, Url_);
 
 			co_await DefaultWrite (verb);
 		}
@@ -408,7 +398,7 @@ namespace HttHare
 			auto url = Url_;
 			url.setPath (url.path () + '/');
 			ResponseHeaders_.append ({ "Location", url.toString ().toUtf8 () });
-			ResponseBody_ = MakeDirResponse (fi, path, url);
+			ResponseBody_ = co_await MakeDirResponse (fi, path, url);
 
 			co_await DefaultWrite (verb);
 		}
