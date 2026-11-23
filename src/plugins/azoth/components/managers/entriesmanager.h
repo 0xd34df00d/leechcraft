@@ -21,6 +21,10 @@ namespace LC::Azoth
 		Q_OBJECT
 
 		QHash<GlobalStrongestId, ICLEntry*> Id2Entry_;
+
+		QHash<GlobalStrongestId, quint64> SessionStableIds_;
+		constexpr static quint64 StableSentinel = quint64 {};
+		quint64 StableCounter_ = StableSentinel + 1;
 	public:
 		using QObject::QObject;
 
@@ -37,6 +41,8 @@ namespace LC::Azoth
 		{
 			return id ? GetEntryOrNull<T> (*id) : nullptr;
 		}
+
+		std::optional<quint64> GetSessionStableId (const GlobalStrongestId&) const;
 	private:
 		void AddCLEntries (const QList<ICLEntry*>&, IAccount&);
 		void RemoveCLEntries (const QList<ICLEntry*>&, IAccount&);
@@ -46,5 +52,6 @@ namespace LC::Azoth
 		void removed (const QList<ICLEntry*>&, IAccount&);
 
 		void strongestIdChanged (const GlobalConventionalId& oldId, const GlobalConventionalId& newId, const ICLEntry& entry);
+		void stableIdShadowed (quint64);
 	};
 }

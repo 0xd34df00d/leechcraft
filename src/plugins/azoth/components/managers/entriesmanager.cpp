@@ -46,6 +46,17 @@ namespace LC::Azoth
 					}
 					else
 						qCritical () << "updating" << oldId << "->" << newId << "— the entry wasn't under oldId";
+
+					if (const auto pos = SessionStableIds_.find (oldId);
+						pos != SessionStableIds_.end ())
+					{
+						const auto taken = *pos;
+						SessionStableIds_.erase (pos);
+						if (const auto prevId = std::exchange (SessionStableIds_ [newId], taken);
+							prevId != StableSentinel)
+							emit stableIdShadowed (prevId);
+					}
+
 					emit strongestIdChanged (oldId, newId, entry);
 				});
 	}
@@ -74,6 +85,12 @@ namespace LC::Azoth
 			return qobject_cast<T*> (entry->GetQObject ());
 	}
 
+	std::optional<quint64> EntriesManager::GetSessionStableId (const GlobalStrongestId& id) const
+	{
+		const auto pos = SessionStableIds_.find (id);
+		return pos == SessionStableIds_.end () ? std::nullopt : std::optional { *pos };
+	}
+
 	void EntriesManager::AddCLEntries (const QList<ICLEntry*>& entries, IAccount& account)
 	{
 		QList<ICLEntry*> addedEntries;
@@ -81,14 +98,18 @@ namespace LC::Azoth
 
 		for (const auto entry : entries)
 		{
-			auto& existing = Id2Entry_ [entry->GetGlobalStrongestId ()];
+			const auto id = entry->GetGlobalStrongestId ();
+			auto& existing = Id2Entry_ [id];
 			if (existing && existing != entry)
-				qCritical () << "duplicate entry:" << entry->GetGlobalStrongestId ();
+				qCritical () << "duplicate entry:" << id;
 
 			if (!existing)
 			{
 				addedEntries << entry;
 				existing = entry;
+
+				if (!SessionStableIds_.contains (id))
+					SessionStableIds_ [id] = StableCounter_++;
 			}
 		}
 
