@@ -39,20 +39,19 @@ namespace LC::NamAuth
 	void NamHandler::DoCommonAuth (const QString& context, QAuthenticator *authen) const
 	{
 		const auto& realm = authen->realm ();
+
+		if (const auto maybeSaved = SB_->GetAuth (realm, context);
+			maybeSaved && (maybeSaved->Login_ != authen->user () || maybeSaved->Password_ != authen->password ()))
+		{
+			authen->setUser (maybeSaved->Login_);
+			authen->setPassword (maybeSaved->Password_);
+			return;
+		}
+
 		const auto& msg = tr ("%1 (%2) requires authentication.")
 				.arg (realm, "<em>" + context + "</em>");
 
-		auto suggestedUser = authen->user ();
-		auto suggestedPassword = authen->password ();
-
-		if (suggestedUser.isEmpty ())
-			if (const auto& data = SB_->GetAuth (realm, context))
-			{
-				suggestedUser = data->Login_;
-				suggestedPassword = data->Password_;
-			}
-
-		AuthenticationDialog dia (msg, suggestedUser, suggestedPassword, qApp->activeWindow ());
+		AuthenticationDialog dia (msg, authen->user (), authen->password (), qApp->activeWindow ());
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
