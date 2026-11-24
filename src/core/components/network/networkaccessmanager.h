@@ -19,6 +19,7 @@ namespace LC::Util
 namespace LC
 {
 	class CookieSaver;
+	class SslErrorsHandler;
 
 	class NetworkAccessManager : public QNetworkAccessManager
 	{
@@ -26,6 +27,7 @@ namespace LC
 
 		std::unique_ptr<Util::CustomCookieJar> CookieJar_;
 		std::unique_ptr<CookieSaver> CookieSaver_;
+		std::unique_ptr<SslErrorsHandler> SslErrorsHandler_;
 	public:
 		explicit NetworkAccessManager (QObject* = nullptr);
 		~NetworkAccessManager () override;

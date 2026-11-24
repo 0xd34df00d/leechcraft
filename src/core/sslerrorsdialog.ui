@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>SSL errors occured</string>
+   <string>SSL errors</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -21,21 +21,14 @@
    <item>
     <widget class="QLabel" name="Description_">
      <property name="text">
-      <string>The following URL has SSL errors:</string>
+      <string>Requests to this host fail because of SSL errors:</string>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QLineEdit" name="UrlEdit_">
+    <widget class="QLineEdit" name="Host_">
      <property name="readOnly">
       <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>What should we do?</string>
      </property>
     </widget>
    </item>
@@ -54,22 +47,29 @@
     </widget>
    </item>
    <item>
+    <widget class="QLabel" name="Question_">
+     <property name="text">
+      <string>Ignore SSL errors for this host?</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string/>
+      <string>Remember my choice</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <widget class="QRadioButton" name="RememberNot_">
+       <widget class="QRadioButton" name="UntilRestart_">
         <property name="text">
-         <string>Don't remember my choice</string>
+         <string>Until LeechCraft is restarted</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QRadioButton" name="RememberHost_">
+       <widget class="QRadioButton" name="Permanently_">
         <property name="text">
-         <string>Remember my choice for the whole host</string>
+         <string>Permanently</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -85,7 +85,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Abort|QDialogButtonBox::Ignore</set>
+      <set>QDialogButtonBox::No|QDialogButtonBox::Yes</set>
      </property>
     </widget>
    </item>

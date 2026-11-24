@@ -11,26 +11,23 @@
 
 namespace LC
 {
-SslErrorsDialog::SslErrorsDialog (const QString& url,
+SslErrorsDialog::SslErrorsDialog (const QString& host,
 		const QList<QSslError>& errors,
 		QWidget *parent)
 : QDialog (parent)
 {
 	Ui_.setupUi (this);
 
-	Ui_.UrlEdit_->setText (url);
+	Ui_.Host_->setText (host);
 
 	for (const auto& err : errors)
 		PopulateTree (err);
 	Ui_.Errors_->expandAll ();
 }
 
-SslErrorsDialog::RememberChoice SslErrorsDialog::GetRememberChoice () const
+bool SslErrorsDialog::IsPermanent () const
 {
-	if (Ui_.RememberNot_->isChecked ())
-		return RememberChoice::Not;
-	else
-		return RememberChoice::Host;
+	return Ui_.Permanently_->isChecked ();
 }
 
 void SslErrorsDialog::PopulateTree (const QSslError& error)

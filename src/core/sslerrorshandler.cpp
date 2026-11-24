@@ -7,117 +7,67 @@
  **********************************************************************/
 
 #include "sslerrorshandler.h"
-#include <QSslError>
+#include <QCoreApplication>
 #include <QNetworkReply>
 #include <QSettings>
-#include <QCoreApplication>
-#include <QPointer>
-#include <QtDebug>
+#include <QSslError>
+#include <util/sll/util.h>
+#include <util/threads/coro/context.h>
+#include <util/threads/coro/signal.h>
 #include "sslerrorsdialog.h"
 
 namespace LC
 {
 	namespace
 	{
-		void HandleFinished (int result,
-				SslErrorsDialog::RememberChoice rc,
-				const QString& host,
-				const std::shared_ptr<QSettings>& settings)
+		struct StoredDecisions : QSettings
 		{
-			if (rc == SslErrorsDialog::RememberChoice::Host)
-				settings->setValue (host, result == QDialog::Accepted);
+			StoredDecisions ()
+			: QSettings { QCoreApplication::organizationName (), QCoreApplication::applicationName () }
+			{
+				beginGroup ("SSL exceptions");
+			}
+		};
+	}
+
+	void SslErrorsHandler::Handle (QNetworkReply *reply, const QList<QSslError>& errors)
+	{
+		const auto& host = reply->url ().host ();
+
+		auto decision = SessionDecisions_.value (host, Decision::Undecided);
+		if (const StoredDecisions stored;
+			stored.contains (host))
+			decision = stored.value (host).toBool () ? Decision::Accepted : Decision::Rejected;
+
+		switch (decision)
+		{
+		case Decision::Accepted:
+			reply->ignoreSslErrors (errors);
+			break;
+		case Decision::Rejected:
+			break;
+		case Decision::Undecided:
+			if (!OpenQuestions_.contains (host))
+				Ask (host, errors);
+			break;
 		}
 	}
 
-	SslErrorsHandler::SslErrorsHandler (QNetworkReply *reply,
-			const QList<QSslError>& errors, QObject *parent)
-	: QObject { parent }
+	Util::ContextTask<void> SslErrorsHandler::Ask (QString host, QList<QSslError> errors)
 	{
-		const std::shared_ptr<QSettings> settings
-		{
-			new QSettings
-			{
-				QCoreApplication::organizationName (),
-				QCoreApplication::applicationName ()
-			},
-			[] (QSettings *settings)
-			{
-				settings->endGroup ();
-				delete settings;
-			}
-		};
-		settings->beginGroup ("SSL exceptions");
-		const auto& keys = settings->allKeys ();
-		const auto& url = reply->url ();
-		const auto& urlString = url.toString ();
-		const auto& host = url.host ();
+		co_await Util::AddContext { CoroContext_ };
 
-		if (keys.contains (host))
-		{
-			if (settings->value (host).toBool ())
-				reply->ignoreSslErrors (errors);
+		OpenQuestions_ << host;
+		const auto guard = Util::MakeScopeGuard ([this, host] { OpenQuestions_.remove (host); });
 
-			return;
-		}
+		SslErrorsDialog dia { host, errors };
+		dia.show ();
+		co_await Util::Signal { dia, &QDialog::finished };
 
-		auto errDialog = new SslErrorsDialog (urlString, errors);
-		errDialog->setAttribute (Qt::WA_DeleteOnClose);
-		errDialog->open ();
-
-		const auto contSync = 0;
-		const auto contAsync = 1;
-
-		QEventLoop loop;
-		connect (reply,
-				&QNetworkReply::finished,
-				this,
-				[&loop, reply]
-				{
-					qDebug () << Q_FUNC_INFO
-							<< "reply died, gonna exit"
-							<< reply->error ();
-					if (loop.isRunning ())
-						loop.exit (contAsync);
-				});
-		connect (errDialog,
-				&QDialog::finished,
-				this,
-				[&loop]
-				{
-					qDebug () << Q_FUNC_INFO
-							<< "dialog accepted";
-					if (loop.isRunning ())
-						loop.exit (contSync);
-				});
-
-		const auto finishedHandler = [=, this]
-		{
-			HandleFinished (errDialog->result (), errDialog->GetRememberChoice (), host, settings);
-			deleteLater ();
-		};
-
-		if (loop.exec () == contAsync)
-		{
-			connect (errDialog,
-					&QDialog::finished,
-					this,
-					finishedHandler);
-			return;
-		}
-		finishedHandler ();
-
-		switch (reply->error ())
-		{
-		case QNetworkReply::SslHandshakeFailedError:
-			qWarning () << Q_FUNC_INFO
-					<< "got SSL handshake error in handleSslErrors, but let's try to continue";
-		case QNetworkReply::NoError:
-			break;
-		default:
-			return;
-		}
-
-		if (errDialog->result () == QDialog::Accepted)
-			reply->ignoreSslErrors (errors);
+		const bool accepted = dia.result () == QDialog::Accepted;
+		if (dia.IsPermanent ())
+			StoredDecisions {}.setValue (host, accepted);
+		else
+			SessionDecisions_ [host] = accepted ? Decision::Accepted : Decision::Rejected;
 	}
 }

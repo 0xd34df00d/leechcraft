@@ -21,15 +21,9 @@ namespace LC
 
 		Ui::SslErrorsDialog Ui_;
 	public:
-		enum class RememberChoice
-		{
-			Not,
-			Host
-		};
+		SslErrorsDialog (const QString& host, const QList<QSslError>&, QWidget* = nullptr);
 
-		SslErrorsDialog (const QString&, const QList<QSslError>&, QWidget* = 0);
-
-		RememberChoice GetRememberChoice () const;
+		bool IsPermanent () const;
 	private:
 		void PopulateTree (const QSslError&);
 	};

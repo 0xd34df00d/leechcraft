@@ -37,13 +37,14 @@ namespace LC
 	: QNetworkAccessManager (parent)
 	, CookieJar_ { std::make_unique<Util::CustomCookieJar> () }
 	, CookieSaver_ { std::make_unique<CookieSaver> (*CookieJar_)}
+	, SslErrorsHandler_ { std::make_unique<SslErrorsHandler> () }
 	{
 		setCookieJar (CookieJar_.get ());
 
 		connect (this,
 				&QNetworkAccessManager::sslErrors,
-				this,
-				[] (QNetworkReply *reply, const QList<QSslError>& errors) { new SslErrorsHandler { reply, errors }; });
+				SslErrorsHandler_.get (),
+				&SslErrorsHandler::Handle);
 
 		XmlSettingsManager::Instance ()->RegisterObject ("FilterTrackingCookies",
 				CookieJar_.get (),

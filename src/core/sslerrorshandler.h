@@ -8,17 +8,35 @@
 
 #pragma once
 
+#include <QHash>
 #include <QObject>
-#include "sslerrorsdialog.h"
+#include <QSet>
+#include <util/threads/coro/taskfwd.h>
+#include <util/threads/coro/corocontext.h>
 
-class QSslError;
 class QNetworkReply;
+class QSslError;
 
 namespace LC
 {
 	class SslErrorsHandler : public QObject
 	{
+		enum class Decision
+		{
+			Undecided,
+			Accepted,
+			Rejected
+		};
+
+		QHash<QString, Decision> SessionDecisions_;
+		QSet<QString> OpenQuestions_;
 	public:
-		SslErrorsHandler (QNetworkReply*, const QList<QSslError>&, QObject* = nullptr);
+		using QObject::QObject;
+
+		void Handle (QNetworkReply*, const QList<QSslError>&);
+	private:
+		Util::ContextTask<void> Ask (QString host, QList<QSslError>);
+
+		LC_CORO_CONTEXT
 	};
 }
