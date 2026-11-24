@@ -292,9 +292,17 @@ namespace LC::AN
 		 */
 		UTIL_XPC_API extern const QString IMLocationLocality;
 
+		/** @brief Is the corresponding chat the one the user is interacting with right now? (bool).
+		 */
+		UTIL_XPC_API extern const QString IMChatIsActive;
+
+		/** @brief Is the corresponding chat open (perhaps in the background)? (bool).
+		 */
+		UTIL_XPC_API extern const QString IMChatIsOpen;
+
 		/** @brief Has the corresponding chat ever been opened in this session? (bool).
 		 */
-		UTIL_XPC_API extern const QString IMChatEverOpened;
+		UTIL_XPC_API extern const QString IMChatHasBeenOpened;
 
 		/** @brief News source name (QString).
 		 */

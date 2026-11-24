@@ -678,6 +678,7 @@ namespace Azoth
 			nh->AddDependentObject (n.Conversation_.GetQObject ());
 		}
 
+		const auto& convId = n.Conversation_.GetGlobalStrongestId ();
 		const auto& stableId = EntriesMgr_.GetSessionStableId (n.Conversation_);
 
 		e.Additional_ [AN::EF::SenderID] = "org.LeechCraft.Azoth"_qs;
@@ -687,7 +688,9 @@ namespace Azoth
 		e.Additional_ [AN::EF::VisualPath] = QStringList { n.Conversation_.GetEntryName () };
 		e.Additional_ [AN::EF::WindowIndex] = GetWindowOf (TabsMgr_, n.Conversation_);
 
-		e.Additional_ [AN::Field::IMChatEverOpened] = TabsMgr_.IsOpenedChat (n.Conversation_.GetGlobalStrongestId ());
+		e.Additional_ [AN::Field::IMChatIsActive] = TabsMgr_.IsActiveChat (&n.Conversation_);
+		e.Additional_ [AN::Field::IMChatIsOpen] = static_cast<bool> (TabsMgr_.GetChatTab (convId));
+		e.Additional_ [AN::Field::IMChatHasBeenOpened] = TabsMgr_.IsOpenedChat (convId);
 
 		e.Additional_.insert (SourceFields (n.Actor_));
 		if (const auto room = RoomOf (n.Actor_))

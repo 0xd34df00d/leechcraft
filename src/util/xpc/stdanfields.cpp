@@ -22,8 +22,22 @@ namespace LC::Util
 				AN::CatIM,
 				{
 					{
-						AN::Field::IMChatEverOpened,
-						QObject::tr ("Chat ever opened"),
+						AN::Field::IMChatIsActive,
+						QObject::tr ("Chat is active"),
+						QObject::tr ("Whether the corresponding chat is currently open, and its tab and its window are in the foreground."),
+						QMetaType::Bool,
+						{},
+					},
+					{
+						AN::Field::IMChatIsOpen,
+						QObject::tr ("Chat is open"),
+						QObject::tr ("Whether the corresponding chat is currently open, perhaps in the background."),
+						QMetaType::Bool,
+						{},
+					},
+					{
+						AN::Field::IMChatHasBeenOpened,
+						QObject::tr ("Chat has been opened"),
 						QObject::tr ("Whether the corresponding chat has ever been opened since LeechCraft started."),
 						QMetaType::Bool,
 						{},

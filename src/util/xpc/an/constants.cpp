@@ -75,7 +75,10 @@ namespace LC::AN
 
 		const QString TerminalActive { QStringLiteral (CAT_TERMINAL ".Fields.Active") };
 
-		const QString IMChatEverOpened { QStringLiteral (CAT_IM ".Fields.Chat.EverOpened") };
+		const QString IMChatIsActive { QStringLiteral (CAT_IM ".Fields.Chat.IsActive") };
+		const QString IMChatIsOpen { QStringLiteral (CAT_IM ".Fields.Chat.IsOpen") };
+		const QString IMChatHasBeenOpened { QStringLiteral (CAT_IM ".Fields.Chat.HasBeenOpened") };
+
 		const QString IMActivityGeneral { QStringLiteral (CAT_IM ".Fields.Activity.General") };
 		const QString IMActivitySpecific { QStringLiteral (CAT_IM ".Fields.Activity.Specific") };
 		const QString IMActivityText { QStringLiteral (CAT_IM ".Fields.Activity.Text") };

@@ -138,7 +138,7 @@ namespace LC::Azoth
 
 		e.Additional_ [AN::EF::WindowIndex] = win;
 
-		e.Additional_ [AN::Field::IMChatEverOpened] = Core::Instance ().GetChatTabsManager ()->IsOpenedChat (info.Conversation_.GetGlobalStrongestId ());
+		e.Additional_ [AN::Field::IMChatHasBeenOpened] = Core::Instance ().GetChatTabsManager ()->IsOpenedChat (info.Conversation_.GetGlobalStrongestId ());
 
 		e.Additional_.insert (NotificationsManager::SourceFields (info.Actor_));
 		if (const auto room = RoomOf (info.Actor_))
