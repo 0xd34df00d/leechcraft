@@ -690,7 +690,7 @@ namespace Azoth
 
 		e.Additional_ [AN::Field::IMChatIsActive] = TabsMgr_.IsActiveChat (&n.Conversation_);
 		e.Additional_ [AN::Field::IMChatIsOpen] = static_cast<bool> (TabsMgr_.GetChatTab (convId));
-		e.Additional_ [AN::Field::IMChatHasBeenOpened] = TabsMgr_.IsOpenedChat (convId);
+		e.Additional_ [AN::Field::IMChatHasBeenOpened] = TabsMgr_.HasChatBeenOpened (convId);
 
 		e.Additional_.insert (SourceFields (n.Actor_));
 		if (const auto room = RoomOf (n.Actor_))

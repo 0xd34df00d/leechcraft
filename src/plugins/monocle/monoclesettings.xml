@@ -10,7 +10,7 @@
 					Changes the scroll direction when the value of the page indicator is changed using the keyboard, for example, via the up/down arrows and &lt;strong>Page Up&lt;/strong>/&lt;strong>Page Down&lt;/strong> keys.
 				</tooltip>
 			</item>
-			<item type="checkbox" property="InhibitScreensaver" default="true" label="Inhibit screensaver while a Monocle tab is active" />
+			<item type="checkbox" property="InhibitScreensaver" default="true" label="Inhibit screensaver while a Monocle tab is in the foreground" />
 			<item type="checkbox" property="PreserveParaNewlines" default="false" label="Preserve line breaks within paragraphs when using the text selection tool">
 				<tooltip>
 					When enabled, line breaks within a paragraph are preserved when copying text to the clipboard. When disabled, line breaks are replaced with spaces.

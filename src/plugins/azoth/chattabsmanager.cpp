@@ -196,12 +196,12 @@ namespace LC::Azoth
 		return tab->isVisible () && tab->isActiveWindow ();
 	}
 
-	bool ChatTabsManager::IsOpenedChat (const GlobalStrongestId& id) const
+	bool ChatTabsManager::HasChatBeenOpened (const GlobalStrongestId& id) const
 	{
 		return EverOpened_.contains (id);
 	}
 
-	ChatTab* ChatTabsManager::GetActiveChatTab () const
+	ChatTab* ChatTabsManager::GetCurrentChatTab () const
 	{
 		return CurrentTab_;
 	}
@@ -250,7 +250,7 @@ namespace LC::Azoth
 		}
 	}
 
-	std::optional<QString> ChatTabsManager::GetActiveVariant (ICLEntry *entry) const
+	std::optional<QString> ChatTabsManager::GetSelectedVariant (ICLEntry *entry) const
 	{
 		const auto tab = Entry2Tab_ [entry->GetGlobalStrongestId ()];
 		if (!tab)

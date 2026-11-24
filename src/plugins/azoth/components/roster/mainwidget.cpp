@@ -233,7 +233,7 @@ namespace Azoth
 			return;
 
 		if (QApplication::keyboardModifiers () & Qt::CTRL)
-			if (auto tab = Core::Instance ().GetChatTabsManager ()->GetActiveChatTab ())
+			if (auto tab = Core::Instance ().GetChatTabsManager ()->GetCurrentChatTab ())
 			{
 				auto text = index.data ().toString ();
 
@@ -454,7 +454,7 @@ namespace Azoth
 
 	void MainWidget::UpdateMucMode ()
 	{
-		const auto tab = Core::Instance ().GetChatTabsManager ()->GetActiveChatTab ();
+		const auto tab = Core::Instance ().GetChatTabsManager ()->GetCurrentChatTab ();
 
 		const auto entry = tab ? tab->GetEntry<ICLEntry> () : nullptr;
 		if (!entry)

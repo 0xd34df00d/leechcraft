@@ -33,7 +33,7 @@ namespace Azoth
 	FileSendDialog::FileSendDialog (ICLEntry *entry, const QString& suggested, QWidget *parent)
 	: QDialog (parent)
 	, Entry_ (entry)
-	, EntryVariant_ (Core::Instance ().GetChatTabsManager ()->GetActiveVariant (entry))
+	, EntryVariant_ (Core::Instance ().GetChatTabsManager ()->GetSelectedVariant (entry))
 	{
 		Ui_.setupUi (this);
 		setAttribute (Qt::WA_DeleteOnClose);

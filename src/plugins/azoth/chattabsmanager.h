@@ -61,8 +61,8 @@ namespace Azoth
 		void CloseChat (const ICLEntry&, bool fromUser);
 
 		bool IsActiveChat (const ICLEntry*) const;
-		bool IsOpenedChat (const GlobalStrongestId&) const;
-		ChatTab* GetActiveChatTab () const;
+		bool HasChatBeenOpened (const GlobalStrongestId&) const;
+		ChatTab* GetCurrentChatTab () const;
 		ChatTab* GetChatTab (const GlobalStrongestId& entryId) const;
 
 		void HandleInMessage (IMessage*);
@@ -71,7 +71,7 @@ namespace Azoth
 
 		void EnqueueRestoreInfos (const QList<RestoreChatInfo>&);
 
-		std::optional<QString> GetActiveVariant (ICLEntry*) const;
+		std::optional<QString> GetSelectedVariant (ICLEntry*) const;
 	protected:
 		bool eventFilter (QObject*, QEvent*);
 	private:

@@ -75,7 +75,7 @@ namespace LC
 
 		/** @brief The tab uses the standard tab close shortcut (Ctrl+W).
 		 *
-		 * Thus, when this tab is active, the tab close shortcut will be
+		 * Thus, when this tab is current, the tab close shortcut will be
 		 * disabled if it matches "Ctrl+W".
 		 */
 		TFOverridesTabClose = 1 << 4
@@ -220,7 +220,7 @@ public:
 	 * defined later), the corresponding submenu would be created in
 	 * LeechCraft global menu, and the corresponding list of actions
 	 * would be inserted into that submenu. The submenus created would
-	 * only be visible when this tab is active.
+	 * only be visible when this tab is current.
 	 *
 	 * There are special values for the keys:
 	 * - "view" for the View menu.
@@ -236,7 +236,10 @@ public:
 		return {};
 	}
 
-	/** @brief This method is called when this tab becomes active.
+	/** @brief This method is called when this tab becomes current.
+	 *
+	 * A tab is current when it is the selected one in its tab widget,
+	 * whether or not its window is the active one.
 	 *
 	 * The default implementation does nothing.
 	 */
@@ -244,10 +247,9 @@ public:
 	{
 	}
 
-	/** @brief This method is called when another tab becomes active.
+	/** @brief This method is called when another tab becomes current.
 	 *
-	 * This method is called only if this tab was active before the
-	 * other tab activates.
+	 * This method is called only if this tab was current before that.
 	 */
 	virtual void TabLostCurrent ()
 	{
@@ -264,7 +266,7 @@ public:
 	 *
 	 * The name of the tab is shown in the tab bar of the tab widget. It
 	 * also may be shown in other places and contexts, like in the
-	 * LeechCraft title bar when the corresponding tab is active.
+	 * LeechCraft title bar when the corresponding tab is current.
 	 *
 	 * @note This function is expected to be a signal in subclasses.
 	 *

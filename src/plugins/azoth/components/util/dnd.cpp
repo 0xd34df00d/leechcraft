@@ -339,7 +339,7 @@ namespace LC::Azoth::DndUtil
 			if (image.isNull ())
 				return OfferURLs (context.Transfers_, target, mime.urls (), context.Parent_);
 
-			const auto variant = context.Tabs_.GetActiveVariant (&*target);
+			const auto variant = context.Tabs_.GetSelectedVariant (&*target);
 			const QPointer parent { context.Parent_ };
 
 			auto actions = CollectDataFilters (context.Tabs_, image, target);
