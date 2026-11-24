@@ -67,14 +67,14 @@ namespace LC
 		if (keys.contains (urlString))
 		{
 			if (settings->value (urlString).toBool ())
-				reply->ignoreSslErrors ();
+				reply->ignoreSslErrors (errors);
 
 			return;
 		}
 		else if (keys.contains (host))
 		{
 			if (settings->value (host).toBool ())
-				reply->ignoreSslErrors ();
+				reply->ignoreSslErrors (errors);
 
 			return;
 		}
@@ -138,6 +138,6 @@ namespace LC
 		}
 
 		if (errDialog->result () == QDialog::Accepted)
-			reply->ignoreSslErrors ();
+			reply->ignoreSslErrors (errors);
 	}
 }
