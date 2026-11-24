@@ -72,16 +72,13 @@ namespace HttHare
 		for (const auto& line : lines)
 		{
 			const auto colonPos = line.indexOf (':');
-			if (colonPos <= 0)
+			if (colonPos <= 0 || !Headers_.append (line.left (colonPos), line.mid (colonPos + 1)))
 				co_return co_await ErrorResponse (400, "Bad Request");
-			Headers_ [QString::fromUtf8 (line.left (colonPos))] = QString::fromUtf8 (line.mid (colonPos + 1).trimmed ());
 		}
 
 #ifdef QT_DEBUG
 		qDebug () << Q_FUNC_INFO << "got request";
-		qDebug () << req << Url_;
-		for (auto i = Headers_.begin (); i != Headers_.end (); ++i)
-			qDebug () << '\t' << i.key () << ": " << i.value ();
+		qDebug () << req << Url_ << Headers_;
 #endif
 
 		if (verb == "head")
@@ -95,7 +92,8 @@ namespace HttHare
 
 	QString RequestHandler::Tr (const char *msg)
 	{
-		auto locales = Headers_ ["Accept-Language"].split (',');
+		auto locales = QString::fromLatin1 (Headers_.combinedValue (QHttpHeaders::WellKnownHeader::AcceptLanguage))
+				.split (',');
 		locales.removeAll ("*");
 		for (auto& locale : locales)
 		{
@@ -393,7 +391,8 @@ namespace HttHare
 
 	boost::asio::awaitable<void> RequestHandler::WriteFile (QString path, QFileInfo fi, Verb verb)
 	{
-		const auto& requested = ParseRange (Headers_.value ("Range"), fi.size ());
+		const auto& rangeHeader = QString::fromLatin1 (Headers_.combinedValue (QHttpHeaders::WellKnownHeader::Range));
+		const auto& requested = ParseRange (rangeHeader, fi.size ());
 		if (std::holds_alternative<Unsatisfiable> (requested))
 		{
 			ResponseLine_ = "HTTP/1.1 416 Range Not Satisfiable\r\n";
@@ -450,7 +449,7 @@ namespace HttHare
 			return { ba.constData (), static_cast<size_t> (ba.size ()) };
 		}
 
-		bool SupportsDeflate (const QStringList& ae)
+		bool SupportsDeflate (const QList<QByteArray>& ae)
 		{
 			for (const auto& val : ae)
 				if (!val.trimmed ().compare ("deflate", Qt::CaseInsensitive))
@@ -467,7 +466,7 @@ namespace HttHare
 		const bool hasContentLength = std::any_of (ResponseHeaders_.begin (), ResponseHeaders_.end (),
 				[] (const auto& pair) { return pair.first.toLower () == "content-length"; });
 
-		const auto& splitAe = Headers_.value ("Accept-Encoding").split (',');
+		const auto& splitAe = Headers_.combinedValue (QHttpHeaders::WellKnownHeader::AcceptEncoding).split (',');
 		if (verb == Verb::Get &&
 				!ResponseBody_.isEmpty () &&
 				SupportsDeflate (splitAe))

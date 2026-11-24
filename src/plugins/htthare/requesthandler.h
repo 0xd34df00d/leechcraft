@@ -14,7 +14,7 @@
 #include <boost/asio/ip/tcp.hpp>
 #include <QByteArray>
 #include <QUrl>
-#include <QMap>
+#include <QHttpHeaders>
 #include <QCoreApplication>
 
 class QFileInfo;
@@ -37,7 +37,7 @@ namespace HttHare
 		TrManager& TrManager_;
 
 		QUrl Url_;
-		QMap<QString, QString> Headers_;
+		QHttpHeaders Headers_;
 
 		QByteArray ResponseLine_;
 		QList<std::pair<QByteArray, QByteArray>> ResponseHeaders_;
