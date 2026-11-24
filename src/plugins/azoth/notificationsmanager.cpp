@@ -82,7 +82,8 @@ namespace Azoth
 			AN::TypeIMEventTuneChange,
 			AN::TypeIMEventMoodChange,
 			AN::TypeIMEventActivityChange,
-			AN::TypeIMEventLocationChange
+			AN::TypeIMEventLocationChange,
+			AN::TypeIMTyping,
 		};
 
 		return
