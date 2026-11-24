@@ -19,6 +19,18 @@ namespace LC::Util
 		static const QMap<QString, QList<AN::FieldData>> values
 		{
 			{
+				AN::CatIM,
+				{
+					{
+						AN::Field::IMChatEverOpened,
+						QObject::tr ("Chat ever opened"),
+						QObject::tr ("Whether the corresponding chat has ever been opened since LeechCraft started."),
+						QMetaType::Bool,
+						{},
+					},
+				}
+			},
+			{
 				AN::TypeIMEventTuneChange,
 				{
 					{

@@ -292,6 +292,10 @@ namespace LC::AN
 		 */
 		UTIL_XPC_API extern const QString IMLocationLocality;
 
+		/** @brief Has the corresponding chat ever been opened in this session? (bool).
+		 */
+		UTIL_XPC_API extern const QString IMChatEverOpened;
+
 		/** @brief News source name (QString).
 		 */
 		UTIL_XPC_API extern const QString NewsSourceName;

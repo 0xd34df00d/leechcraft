@@ -72,7 +72,10 @@ namespace LC::AN
 		const QString MediaArtist { QStringLiteral (CAT_MEDIA_PLAYER ".Fields.Artist") };
 		const QString MediaAlbum { QStringLiteral (CAT_MEDIA_PLAYER ".Fields.Album") };
 		const QString MediaLength { QStringLiteral (CAT_MEDIA_PLAYER ".Fields.Length") };
+
 		const QString TerminalActive { QStringLiteral (CAT_TERMINAL ".Fields.Active") };
+
+		const QString IMChatEverOpened { QStringLiteral (CAT_IM ".Fields.Chat.EverOpened") };
 		const QString IMActivityGeneral { QStringLiteral (CAT_IM ".Fields.Activity.General") };
 		const QString IMActivitySpecific { QStringLiteral (CAT_IM ".Fields.Activity.Specific") };
 		const QString IMActivityText { QStringLiteral (CAT_IM ".Fields.Activity.Text") };
@@ -82,6 +85,7 @@ namespace LC::AN
 		const QString IMLocationLatitude { QStringLiteral (CAT_IM ".Fields.Location.Latitude") };
 		const QString IMLocationCountry { QStringLiteral (CAT_IM ".Fields.Location.Country") };
 		const QString IMLocationLocality { QStringLiteral (CAT_IM ".Fields.Location.Locality") };
+
 		const QString NewsSourceName { QStringLiteral (CAT_NEWS ".Fields.Source.Name") };
 		const QString NewsSourceURL { QStringLiteral (CAT_NEWS ".Fields.Source.URL") };
 	}
