@@ -34,8 +34,6 @@ namespace LC::Eleeminator
 		QToolBar * const Toolbar_;
 
 		QTermWidget& Term_;
-
-		bool IsTabCurrent_ = false;
 	public:
 		TermTab (Util::ShortcutManager*, const ColorSchemesManager&, QObject*);
 
@@ -45,8 +43,6 @@ namespace LC::Eleeminator
 		QObject* ParentMultiTabs () override;
 		QToolBar* GetToolBar () const override;
 		void Remove () override;
-		void TabMadeCurrent () override;
-		void TabLostCurrent () override;
 	private:
 		void SetupToolbar (Util::ShortcutManager*, const ColorSchemesManager&);
 		void SetupShortcuts (Util::ShortcutManager*);

@@ -249,16 +249,6 @@ namespace LC::Eleeminator
 		RemoveTab ();
 	}
 
-	void TermTab::TabMadeCurrent ()
-	{
-		IsTabCurrent_ = true;
-	}
-
-	void TermTab::TabLostCurrent ()
-	{
-		IsTabCurrent_ = false;
-	}
-
 	void TermTab::SetupToolbar (Util::ShortcutManager *manager, const ColorSchemesManager& colorSchemes)
 	{
 		Toolbar_->addWidget (MakeColorChooser (Term_, colorSchemes).release ());
@@ -304,7 +294,7 @@ namespace LC::Eleeminator
 				0,
 				message);
 		e.Mime_ += "+advanced";
-		e.Additional_ [AN::Field::TerminalActive] = IsTabCurrent_;
+		e.Additional_ [AN::Field::TerminalActive] = isVisible () && isActiveWindow ();
 		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
