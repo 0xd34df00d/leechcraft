@@ -137,6 +137,8 @@ namespace Azoth
 		void TabMadeCurrent ();
 		void TabLostCurrent ();
 
+		bool IsActiveChat () const;
+
 		std::optional<TabSaveInfo> GetTabSaveInfo () const;
 
 		void FillMimeData (QMimeData*);

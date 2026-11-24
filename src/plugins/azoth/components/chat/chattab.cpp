@@ -373,6 +373,11 @@ namespace Azoth
 		IsCurrent_ = false;
 	}
 
+	bool ChatTab::IsActiveChat () const
+	{
+		return isVisible () && isActiveWindow ();
+	}
+
 	std::optional<TabSaveInfo> ChatTab::GetTabSaveInfo () const
 	{
 		const auto entry = GetEntry<ICLEntry> ();
@@ -787,7 +792,7 @@ namespace Azoth
 
 		auto entry = GetEntry<ICLEntry> ();
 
-		const bool isActiveChat = Core::Instance ().GetChatTabsManager ()->IsActiveChat (entry);
+		const bool isActiveChat = IsActiveChat ();
 
 		bool shouldReformat = false;
 		if (Core::Instance ().ShouldCountUnread (entry, msg))
@@ -1474,8 +1479,7 @@ namespace Azoth
 
 		const auto frame = Ui_.View_->page ();
 
-		const bool isActiveChat = Core::Instance ()
-				.GetChatTabsManager ()->IsActiveChat (GetEntry<ICLEntry> ());
+		const bool isActiveChat = IsActiveChat ();
 
 		if (!LastDateTime_.isNull () && !IsSameDay (LastDateTime_, msg) && parent)
 		{

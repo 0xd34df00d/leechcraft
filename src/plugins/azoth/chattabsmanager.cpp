@@ -190,10 +190,7 @@ namespace LC::Azoth
 	bool ChatTabsManager::IsActiveChat (const ICLEntry *entry) const
 	{
 		const auto tab = Entry2Tab_.value (entry->GetGlobalStrongestId ());
-		if (!tab)
-			return false;
-
-		return tab->isVisible () && tab->isActiveWindow ();
+		return tab && tab->IsActiveChat ();
 	}
 
 	bool ChatTabsManager::HasChatBeenOpened (const GlobalStrongestId& id) const
@@ -235,7 +232,7 @@ namespace LC::Azoth
 			return;
 		}
 
-		if (IsActiveChat (entry))
+		if (curTab->IsActiveChat ())
 			entry->MarkMsgsRead ();
 	}
 
