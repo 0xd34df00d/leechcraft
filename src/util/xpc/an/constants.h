@@ -83,19 +83,19 @@ namespace LC::AN
 	 */
 	UTIL_XPC_API extern const QString TypeIMSubscrUnsub;
 
-	/** @brief User's tune has changed.
+	/** @brief Another user's tune has changed.
 	 */
 	UTIL_XPC_API extern const QString TypeIMEventTuneChange;
 
-	/** @brief User's mood has changed.
+	/** @brief Another user's mood has changed.
 	 */
 	UTIL_XPC_API extern const QString TypeIMEventMoodChange;
 
-	/** @brief User's activity has changed.
+	/** @brief Another user's activity has changed.
 	 */
 	UTIL_XPC_API extern const QString TypeIMEventActivityChange;
 
-	/** @brief User's location has changed.
+	/** @brief Another user's location has changed.
 	 */
 	UTIL_XPC_API extern const QString TypeIMEventLocationChange;
 
