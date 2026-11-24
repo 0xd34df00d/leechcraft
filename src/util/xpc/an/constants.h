@@ -99,6 +99,10 @@ namespace LC::AN
 	 */
 	UTIL_XPC_API extern const QString TypeIMEventLocationChange;
 
+	/** @brief Another user is typing.
+	 */
+	UTIL_XPC_API extern const QString TypeIMTyping;
+
 	/** @brief Category of Organizer-related events.
 	 */
 	UTIL_XPC_API extern const QString CatOrganizer;

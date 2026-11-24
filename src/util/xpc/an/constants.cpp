@@ -30,6 +30,7 @@ namespace LC::AN
 	const QString TypeIMEventMoodChange { QStringLiteral (CAT_IM ".Event.Mood") };
 	const QString TypeIMEventActivityChange { QStringLiteral (CAT_IM ".Event.Activity") };
 	const QString TypeIMEventLocationChange { QStringLiteral (CAT_IM ".Event.Location") };
+	const QString TypeIMTyping { QStringLiteral (CAT_IM ".Typing") };
 
 #define CAT_ORGANIZER "org.LC.AdvNotifications.Organizer"
 	const QString CatOrganizer { QStringLiteral (CAT_ORGANIZER) };

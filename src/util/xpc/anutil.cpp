@@ -58,7 +58,8 @@ namespace LC::Util::AN
 					LAN::TypeIMEventTuneChange,
 					LAN::TypeIMEventMoodChange,
 					LAN::TypeIMEventActivityChange,
-					LAN::TypeIMEventLocationChange
+					LAN::TypeIMEventLocationChange,
+					LAN::TypeIMTyping,
 				}
 			},
 			{
@@ -136,6 +137,7 @@ namespace LC::Util::AN
 			{ LAN::TypeIMEventMoodChange, QObject::tr ("Contact's mood changed") },
 			{ LAN::TypeIMEventActivityChange, QObject::tr ("Contact's activity changed") },
 			{ LAN::TypeIMEventLocationChange, QObject::tr ("Contact's location changed") },
+			{ LAN::TypeIMTyping, QObject::tr ("Contact is typing a message") },
 
 			{ LAN::TypeOrganizerEventDue, QObject::tr ("Event is due") },
 
