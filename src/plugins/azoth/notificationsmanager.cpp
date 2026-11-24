@@ -636,6 +636,8 @@ namespace Azoth
 			return win;
 		}
 
+		QString AnTypeOf (const Notifications::Typing&) { return AN::TypeIMTyping; }
+
 		struct MustSpecialize {};
 
 		template<typename>
@@ -657,7 +659,7 @@ namespace Azoth
 	}
 
 	template<typename Event>
-	void NotificationsManager::SendNotification (const Event&, const EntryEventNotification& n)
+	void NotificationsManager::SendNotification (const Event& event, const EntryEventNotification& n)
 	{
 		auto e = Util::MakeNotification (EventTitle,
 				n.Text_,
@@ -675,6 +677,7 @@ namespace Azoth
 
 		e.Additional_ [AN::EF::SenderID] = "org.LeechCraft.Azoth"_qs;
 		e.Additional_ [AN::EF::EventCategory] = AN::CatIM;
+		e.Additional_ [AN::EF::EventType] = AnTypeOf (event);
 		e.Additional_ [AN::EF::EventID] = EventId<Event> + '/' + QString::number (stableId);
 		e.Additional_ [AN::EF::VisualPath] = QStringList { n.Conversation_.GetEntryName () };
 		e.Additional_ [AN::EF::WindowIndex] = GetWindowOf (n.Conversation_);
