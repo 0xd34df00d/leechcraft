@@ -24,7 +24,6 @@ namespace LC
 		enum class RememberChoice
 		{
 			Not,
-			File,
 			Host
 		};
 

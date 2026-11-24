@@ -21,23 +21,11 @@ namespace LC
 	{
 		void HandleFinished (int result,
 				SslErrorsDialog::RememberChoice rc,
-				const QString& urlString,
 				const QString& host,
 				const std::shared_ptr<QSettings>& settings)
 		{
-			const bool ignore = result == QDialog::Accepted;
-
-			switch (rc)
-			{
-			case SslErrorsDialog::RememberChoice::File:
-				settings->setValue (urlString, ignore);
-				break;
-			case SslErrorsDialog::RememberChoice::Host:
-				settings->setValue (host, ignore);
-				break;
-			default:
-				break;
-			}
+			if (rc == SslErrorsDialog::RememberChoice::Host)
+				settings->setValue (host, result == QDialog::Accepted);
 		}
 	}
 
@@ -64,14 +52,7 @@ namespace LC
 		const auto& urlString = url.toString ();
 		const auto& host = url.host ();
 
-		if (keys.contains (urlString))
-		{
-			if (settings->value (urlString).toBool ())
-				reply->ignoreSslErrors (errors);
-
-			return;
-		}
-		else if (keys.contains (host))
+		if (keys.contains (host))
 		{
 			if (settings->value (host).toBool ())
 				reply->ignoreSslErrors (errors);
@@ -111,8 +92,7 @@ namespace LC
 
 		const auto finishedHandler = [=, this]
 		{
-			HandleFinished (errDialog->result (), errDialog->GetRememberChoice (),
-					urlString, host, settings);
+			HandleFinished (errDialog->result (), errDialog->GetRememberChoice (), host, settings);
 			deleteLater ();
 		};
 

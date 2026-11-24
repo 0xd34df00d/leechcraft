@@ -29,8 +29,6 @@ SslErrorsDialog::RememberChoice SslErrorsDialog::GetRememberChoice () const
 {
 	if (Ui_.RememberNot_->isChecked ())
 		return RememberChoice::Not;
-	else if (Ui_.RememberFile_->isChecked ())
-		return RememberChoice::File;
 	else
 		return RememberChoice::Host;
 }
