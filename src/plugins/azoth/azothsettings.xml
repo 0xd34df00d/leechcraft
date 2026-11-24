@@ -134,11 +134,6 @@
 		<tab label="Notifications">
 			<groupbox label="Messages">
 				<item type="checkbox" property="NotifyAboutIncomingMessages" default="true" label="Direct messages" />
-				<item type="combobox" property="NotifyIncomingComposing" label="Contacts composing messages:">
-					<option name="all" label="Always" />
-					<option name="opened" default="true" label="In open chats" />
-					<option name="none" label="Never" />
-				</item>
 				<item type="checkbox" property="NotifyAboutConferenceHighlights" default="true" label="Highlights in conferences" />
 				<item type="checkbox" property="RespectDrawAttentions" default="true" label="Attention requests" />
 				<item type="checkbox" property="ShowMsgInNotifications" default="false" label="Show message text in notifications" />

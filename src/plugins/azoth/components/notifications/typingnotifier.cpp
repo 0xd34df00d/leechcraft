@@ -11,7 +11,6 @@
 #include "components/managers/entriesmanager.h"
 #include "chattabsmanager.h"
 #include "notificationsmanager.h"
-#include "xmlsettingsmanager.h"
 #include "types.h"
 
 namespace LC::Azoth::Notifications
@@ -21,7 +20,6 @@ namespace LC::Azoth::Notifications
 			NotificationsManager& notifications,
 			QObject *parent)
 	: QObject { parent }
-	, Tabs_ { tabs }
 	, Notifications_ { notifications }
 	{
 		connect (&entries,
@@ -59,12 +57,7 @@ namespace LC::Azoth::Notifications
 		if (!ShouldNotifyNext_.value (id, true))
 			return;
 
-		const auto& type = XmlSettingsManager::Instance ().property ("NotifyIncomingComposing").toString ();
-		if (type != "all" && !(type == "opened" && Tabs_.IsOpenedChat (id)))
-			return;
-
 		ShouldNotifyNext_ [id] = false;
-
 		Notifications_.Notify (entry, Typing {});
 	}
 }

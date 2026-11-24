@@ -600,6 +600,8 @@ namespace Azoth
 		Priority Priority_ = Priority::Info;
 
 		QList<std::pair<QString, std::function<void ()>>> Actions_ {};
+
+		bool IsAdvanced_;
 	};
 
 	namespace
@@ -654,6 +656,7 @@ namespace Azoth
 					.Conversation_ = conversation,
 					.Text_ = tr ("%1 started composing a message to you.").arg (Util::FormatName (conversation.GetEntryName ())),
 					.Actions_ = { { tr ("Open chat"), openAction } },
+					.IsAdvanced_ = true,
 				});
 	}
 
@@ -663,6 +666,9 @@ namespace Azoth
 		auto e = Util::MakeNotification (EventTitle,
 				n.Text_,
 				n.Priority_);
+
+		if (n.IsAdvanced_)
+			e.Mime_ += "+advanced";
 
 		if (!n.Actions_.isEmpty ())
 		{

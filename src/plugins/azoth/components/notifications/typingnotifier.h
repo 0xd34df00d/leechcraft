@@ -22,7 +22,6 @@ namespace LC::Azoth::Notifications
 {
 	class TypingNotifier : public QObject
 	{
-		const ChatTabsManager& Tabs_;
 		NotificationsManager& Notifications_;
 
 		QHash<GlobalStrongestId, bool> ShouldNotifyNext_;
