@@ -229,7 +229,7 @@ namespace Azoth
 
 	NotificationsManager::NotificationsManager (AvatarsManager *am,
 			const EntriesManager& entries,
-			const ChatTabsManager& tabs,
+			ChatTabsManager& tabs,
 			QObject *parent)
 	: QObject { parent }
 	, EntityMgr_ { *GetProxyHolder ()->GetEntityManager () }
@@ -585,8 +585,7 @@ namespace Azoth
 		e.Additional_ [Fields::Msg] = body;
 
 		const auto nh = new Util::NotificationActionHandler { e, this };
-		nh->AddFunction (tr ("Open chat"),
-				[parentCL] { Core::Instance ().GetChatTabsManager ()->OpenChat (*parentCL, true); });
+		nh->AddFunction (tr ("Open chat"), [this, parentCL] { TabsMgr_.OpenChat (*parentCL, true); });
 		nh->AddDependentObject (parentCL->GetQObject ());
 
 		BuildAndSendNotification (e, { .Avatars_ = *AvatarsMgr_, .Conversation_ = *conversation, .Actor_ = *other });
@@ -618,10 +617,10 @@ namespace Azoth
 			return nullptr;
 		}
 
-		int GetWindowOf (ICLEntry& entry)
+		int GetWindowOf (const ChatTabsManager& tabs, ICLEntry& entry)
 		{
 			int win = 0;
-			const auto tab = Core::Instance ().GetChatTabsManager ()->GetChatTab (entry.GetGlobalStrongestId ());
+			const auto tab = tabs.GetChatTab (entry.GetGlobalStrongestId ());
 
 			const auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
 			if (tab)
@@ -649,7 +648,7 @@ namespace Azoth
 
 	void NotificationsManager::Notify (ICLEntry& conversation, const Notifications::Typing& event)
 	{
-		const auto openAction = [&conversation] { Core::Instance ().GetChatTabsManager ()->OpenChat (conversation, true); };
+		const auto openAction = [&] { TabsMgr_.OpenChat (conversation, true); };
 		SendNotification (event,
 				{
 					.Conversation_ = conversation,
@@ -680,7 +679,7 @@ namespace Azoth
 		e.Additional_ [AN::EF::EventType] = AnTypeOf (event);
 		e.Additional_ [AN::EF::EventID] = EventId<Event> + '/' + QString::number (stableId);
 		e.Additional_ [AN::EF::VisualPath] = QStringList { n.Conversation_.GetEntryName () };
-		e.Additional_ [AN::EF::WindowIndex] = GetWindowOf (n.Conversation_);
+		e.Additional_ [AN::EF::WindowIndex] = GetWindowOf (TabsMgr_, n.Conversation_);
 
 		e.Additional_ [AN::Field::IMChatEverOpened] = TabsMgr_.IsOpenedChat (n.Conversation_.GetGlobalStrongestId ());
 
@@ -975,8 +974,7 @@ namespace Azoth
 		e.Additional_ [Fields::Msg] = text;
 
 		const auto nh = new Util::NotificationActionHandler { e };
-		nh->AddFunction (tr ("Open chat"),
-				[&entry] { Core::Instance ().GetChatTabsManager ()->OpenChat (entry, true); });
+		nh->AddFunction (tr ("Open chat"), [&] { TabsMgr_.OpenChat (entry, true); });
 		nh->AddDependentObject (entry.GetQObject ());
 
 		BuildAndSendNotification (e, { .Avatars_ = *AvatarsMgr_, .Conversation_ = entry, .EventId_ = "AttentionDrawnBy"_qs });

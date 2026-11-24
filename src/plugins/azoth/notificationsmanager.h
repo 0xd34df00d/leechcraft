@@ -43,7 +43,7 @@ namespace Azoth
 		IEntityManager& EntityMgr_;
 		AvatarsManager * const AvatarsMgr_;
 		const EntriesManager& EntriesMgr_;
-		const ChatTabsManager& TabsMgr_;
+		ChatTabsManager& TabsMgr_;
 		QHash<ICLEntry*, int> UnreadCounts_;
 
 		QHash<IAccount*, QDateTime> LastAccountStatusChange_;
@@ -54,7 +54,7 @@ namespace Azoth
 		static QVariantMap SourceFields (const ICLEntry&);
 		static QVariantMap RoomFields (const IMUCEntry&);
 
-		NotificationsManager (AvatarsManager*, const EntriesManager&, const ChatTabsManager&, QObject* = nullptr);
+		NotificationsManager (AvatarsManager*, const EntriesManager&, ChatTabsManager&, QObject* = nullptr);
 
 		void AddAccount (QObject*);
 
