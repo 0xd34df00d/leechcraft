@@ -64,7 +64,8 @@ namespace Azoth
 			AN::TypeIMAttention,
 			AN::TypeIMSubscrGrant,
 			AN::TypeIMSubscrRevoke,
-			AN::TypeIMSubscrRequest
+			AN::TypeIMSubscrRequest,
+			AN::TypeIMStatusChange,
 		};
 
 		const QStringList havingSourceFields
@@ -91,12 +92,7 @@ namespace Azoth
 				.Name_ = tr ("Message body"),
 				.Description_ = tr ("Original human-readable message body."),
 				.Type_ = QMetaType::QString,
-				.EventTypes_ = [&]
-				{
-					auto res = havingMsgField + havingSourceFields;
-					res.removeDuplicates ();
-					return res;
-				} ()
+				.EventTypes_ = havingMsgField,
 			},
 			{
 				.ID_ = Fields::SourceName,
@@ -150,7 +146,7 @@ namespace Azoth
 				.EventTypes_ = { AN::TypeIMStatusChange },
 				.AllowedValues_ = Util::Map (QList { SOnline, SChat, SAway, SDND, SXA, SOffline },
 						[] (State st) { return AN::FieldData::AllowedValue { StateToId (st), StateToString (st) }; }),
-			}
+			},
 		};
 	}
 
