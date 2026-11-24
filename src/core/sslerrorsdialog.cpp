@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "sslerrorsdialog.h"
+#include <QPushButton>
 #include <util/network/sslerror2treeitem.h>
 
 namespace LC
@@ -23,11 +24,22 @@ SslErrorsDialog::SslErrorsDialog (const QString& host,
 	for (const auto& err : errors)
 		PopulateTree (err);
 	Ui_.Errors_->expandAll ();
+
+	Ui_.ButtonBox_->button (QDialogButtonBox::No)->setDefault (true);
+	connect (Ui_.ButtonBox_,
+			&QDialogButtonBox::clicked,
+			this,
+			[this] (QAbstractButton *button)
+			{
+				const bool ignore = Ui_.ButtonBox_->standardButton (button) == QDialogButtonBox::Yes;
+				Answer_ = Answer { .IgnoreErrors_ = ignore, .Permanently_ = Ui_.Permanently_->isChecked () };
+				done (ignore ? Accepted : Rejected);
+			});
 }
 
-bool SslErrorsDialog::IsPermanent () const
+std::optional<SslErrorsDialog::Answer> SslErrorsDialog::GetAnswer () const
 {
-	return Ui_.Permanently_->isChecked ();
+	return Answer_;
 }
 
 void SslErrorsDialog::PopulateTree (const QSslError& error)

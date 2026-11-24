@@ -64,10 +64,13 @@ namespace LC
 		dia.show ();
 		co_await Util::Signal { dia, &QDialog::finished };
 
-		const bool accepted = dia.result () == QDialog::Accepted;
-		if (dia.IsPermanent ())
-			StoredDecisions {}.setValue (host, accepted);
+		const auto maybeAnswer = dia.GetAnswer ();
+		if (!maybeAnswer)
+			co_return;
+
+		if (maybeAnswer->Permanently_)
+			StoredDecisions {}.setValue (host, maybeAnswer->IgnoreErrors_);
 		else
-			SessionDecisions_ [host] = accepted ? Decision::Accepted : Decision::Rejected;
+			SessionDecisions_ [host] = maybeAnswer->IgnoreErrors_ ? Decision::Accepted : Decision::Rejected;
 	}
 }
