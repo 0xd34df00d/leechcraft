@@ -77,6 +77,9 @@ LC_DEFINE_PLUGIN (
 		components/dialogs/simpledialog.cpp
 		components/dialogs/sslerrorsdialog.cpp
 		components/dialogs/userslistwidget.cpp
+		components/managers/entriesmanager.cpp
+		components/notifications/types.cpp
+		components/notifications/typingnotifier.cpp
 		components/roster/clmodel.cpp
 		components/roster/cltooltipmanager.cpp
 		components/roster/contactlistdelegate.cpp
@@ -85,7 +88,6 @@ LC_DEFINE_PLUGIN (
 		components/roster/keyboardrosterfixer.cpp
 		components/roster/mainwidget.cpp
 		components/roster/sortfilterproxymodel.cpp
-		components/managers/entriesmanager.cpp
 		components/transfers/pendinguploadpaster.cpp
 		components/transfers/representationhandler.cpp
 		components/transfers/transferjobmanager.cpp

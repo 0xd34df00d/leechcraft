@@ -12,6 +12,7 @@
 #include <QVariantMap>
 #include <interfaces/core/ihookproxy.h>
 #include "interfaces/azoth/azothcommon.h"
+#include "components/notifications/types.h"
 
 namespace LC::AN
 {
@@ -38,11 +39,12 @@ namespace Azoth
 
 		IEntityManager& EntityMgr_;
 		AvatarsManager * const AvatarsMgr_;
+		const EntriesManager& EntriesMgr_;
 		QHash<ICLEntry*, int> UnreadCounts_;
 
 		QHash<IAccount*, QDateTime> LastAccountStatusChange_;
 
-		QHash<GlobalStrongestId, bool> ShouldNotifyNextTyping_;
+		struct EntryEventNotification;
 	public:
 		static QList<AN::FieldData> GetANFields ();
 		static QVariantMap SourceFields (const ICLEntry&);
@@ -59,13 +61,14 @@ namespace Azoth
 		void CreateParticipantEnterRule (const IMUCEntry&, const QString& nick);
 
 		void HandleMessage (IMessage*);
+		void Notify (ICLEntry& conversation, const Notifications::Typing& event);
 	private:
-		void HandleStatusChanged (ICLEntry*, const EntryStatus&, const QString&);
+		template<typename Event>
+		void SendNotification (const Event&, const EntryEventNotification& n);
 
-		void HandleChatPartStateChanged (ICLEntry*, ChatPartState, const QString&);
+		void HandleStatusChanged (ICLEntry*, const EntryStatus&, const QString&);
 	public slots:
 		void handleClearUnreadMsgCount (QObject*);
-		void handleEntryMadeCurrent (const ICLEntry&);
 	private slots:
 		void handleTuneChanged (const QString&);
 		void handleActivityChanged (const QString&);

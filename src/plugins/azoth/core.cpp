@@ -62,6 +62,7 @@
 #include "components/dialogs/accounthandlerchooserdialog.h"
 #include "components/dialogs/addcontactdialog.h"
 #include "components/dialogs/joinconferencedialog.h"
+#include "components/notifications/typingnotifier.h"
 #include "components/roster/clmodel.h"
 #include "components/roster/cltooltipmanager.h"
 #include "components/transfers/transferjobmanager.h"
@@ -172,6 +173,9 @@ namespace LC::Azoth
 	, CustomChatStyleManager_ (new CustomChatStyleManager)
 	, HistorySyncer_ (std::make_shared<HistorySyncer> ())
 	{
+		// TODO de-Core-ification: this should be stack-owned after all the args instead of `QObject`-owned
+		new Notifications::TypingNotifier { Entries_, *ChatTabsManager_, *NotificationsManager_, this };
+
 		connect (ChatTabsManager_,
 				&ChatTabsManager::entryMadeCurrent,
 				UnreadQueueManager_.get (),
@@ -265,11 +269,6 @@ namespace LC::Azoth
 				SIGNAL (messagesCleared (QObject*)),
 				NotificationsManager_.get (),
 				SLOT (handleClearUnreadMsgCount (QObject*)));
-
-		connect (ChatTabsManager_,
-				&ChatTabsManager::entryMadeCurrent,
-				NotificationsManager_.get (),
-				&NotificationsManager::handleEntryMadeCurrent);
 
 		auto addSOM = [this] (const QByteArray& option)
 		{

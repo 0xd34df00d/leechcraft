@@ -20,6 +20,7 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/xpc/an/constants.h>
 #include <util/xpc/an/entityfields.h>
+#include <util/xpc/entityconstants.h>
 #include <interfaces/media/audiostructs.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
@@ -233,15 +234,8 @@ namespace Azoth
 	: QObject { parent }
 	, EntityMgr_ { *GetProxyHolder ()->GetEntityManager () }
 	, AvatarsMgr_ { am }
+	, EntriesMgr_ { entries }
 	{
-		connect (&entries,
-				&EntriesManager::strongestIdChanged,
-				this,
-				[this] (const GlobalConventionalId& oldId, const GlobalConventionalId& newId)
-				{
-					if (ShouldNotifyNextTyping_.contains (oldId))
-						ShouldNotifyNextTyping_ [newId] = ShouldNotifyNextTyping_.take (oldId);
-				});
 	}
 
 	namespace
@@ -418,10 +412,6 @@ namespace Azoth
 				&Emitters::CLEntry::statusChanged,
 				this,
 				std::bind_front (&NotificationsManager::HandleStatusChanged, this, &entry));
-		connect (&emitter,
-				&Emitters::CLEntry::chatPartStateChanged,
-				this,
-				std::bind_front (&NotificationsManager::HandleChatPartStateChanged, this, &entry));
 
 		if (qobject_cast<IAdvancedCLEntry*> (entryObj))
 		{
@@ -517,8 +507,7 @@ namespace Azoth
 
 	void NotificationsManager::HandleMessage (IMessage *msg)
 	{
-		const bool showMsg = XmlSettingsManager::Instance ()
-				.property ("ShowMsgInNotifications").toBool ();
+		const bool showMsg = XmlSettingsManager::Instance ().property ("ShowMsgInNotifications").toBool ();
 
 		const auto other = qobject_cast<ICLEntry*> (msg->OtherPart ());
 		const auto parentCL = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
@@ -600,6 +589,104 @@ namespace Azoth
 		nh->AddDependentObject (parentCL->GetQObject ());
 
 		BuildAndSendNotification (e, { .Avatars_ = *AvatarsMgr_, .Conversation_ = *conversation, .Actor_ = *other });
+	}
+
+	struct NotificationsManager::EntryEventNotification
+	{
+		ICLEntry& Conversation_;
+		ICLEntry& Actor_ = Conversation_;
+
+		QString Text_;
+		Priority Priority_ = Priority::Info;
+
+		QList<std::pair<QString, std::function<void ()>>> Actions_ {};
+	};
+
+	namespace
+	{
+		// TODO drop once the room comes from the event rather than the entry:
+		// participants will be able to belong to several rooms.
+		IMUCEntry* RoomOf (ICLEntry& entry)
+		{
+			if (entry.GetEntryType () == ICLEntry::EntryType::MUC)
+				return &qobject_ref_cast<IMUCEntry> (entry.GetQObject ());
+
+			if (const auto parent = entry.GetParentCLEntry ();
+				parent && parent->GetEntryType () == ICLEntry::EntryType::MUC)
+				return &qobject_ref_cast<IMUCEntry> (parent->GetQObject ());
+			return nullptr;
+		}
+
+		int GetWindowOf (ICLEntry& entry)
+		{
+			int win = 0;
+			const auto tab = Core::Instance ().GetChatTabsManager ()->GetChatTab (entry.GetGlobalStrongestId ());
+
+			const auto rootWM = GetProxyHolder ()->GetRootWindowsManager ();
+			if (tab)
+				win = rootWM->GetWindowForTab (tab);
+			if (!tab || win == -1)
+			{
+				const auto& tc = entry.GetEntryType () == ICLEntry::EntryType::MUC ?
+						ChatTab::GetMUCTabClassInfo () :
+						ChatTab::GetChatTabClassInfo ();
+				win = rootWM->GetPreferredWindowIndex (tc.TabClass_);
+			}
+			return win;
+		}
+
+		struct MustSpecialize {};
+
+		template<typename>
+		inline constexpr MustSpecialize EventId {};
+
+		template<>
+		inline const QString EventId<Notifications::Typing> = "org.LC.Azoth.Typing";
+	}
+
+	void NotificationsManager::Notify (ICLEntry& conversation, const Notifications::Typing& event)
+	{
+		const auto openAction = [&conversation] { Core::Instance ().GetChatTabsManager ()->OpenChat (conversation, true); };
+		SendNotification (event,
+				{
+					.Conversation_ = conversation,
+					.Text_ = tr ("%1 started composing a message to you.").arg (Util::FormatName (conversation.GetEntryName ())),
+					.Actions_ = { { tr ("Open chat"), openAction } },
+				});
+	}
+
+	template<typename Event>
+	void NotificationsManager::SendNotification (const Event&, const EntryEventNotification& n)
+	{
+		auto e = Util::MakeNotification (EventTitle,
+				n.Text_,
+				n.Priority_);
+
+		if (!n.Actions_.isEmpty ())
+		{
+			const auto nh = new Util::NotificationActionHandler { e };
+			for (const auto& [name, fun] : n.Actions_)
+				nh->AddFunction (name, fun);
+			nh->AddDependentObject (n.Conversation_.GetQObject ());
+		}
+
+		const auto& stableId = EntriesMgr_.GetSessionStableId (n.Conversation_);
+
+		e.Additional_ [AN::EF::SenderID] = "org.LeechCraft.Azoth"_qs;
+		e.Additional_ [AN::EF::EventCategory] = AN::CatIM;
+		e.Additional_ [AN::EF::EventID] = EventId<Event> + '/' + QString::number (stableId);
+		e.Additional_ [AN::EF::VisualPath] = QStringList { n.Conversation_.GetEntryName () };
+		e.Additional_ [AN::EF::WindowIndex] = GetWindowOf (n.Conversation_);
+
+		e.Additional_.insert (SourceFields (n.Actor_));
+		if (const auto room = RoomOf (n.Actor_))
+			e.Additional_.insert (RoomFields (*room));
+
+		const auto srcId = n.Actor_.GetGlobalStrongestId ();
+		const auto& avatarGetter = [srcId, &avatars = *AvatarsMgr_] { return avatars.GetAvatarImage (srcId, IAvatarsManager::NotificationSize); };
+		e.Additional_ [EF::NotificationPixmap] = QVariant::fromValue<Util::LazyNotificationPixmap_t> (avatarGetter);
+
+		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	namespace
@@ -887,42 +974,6 @@ namespace Azoth
 		nh->AddDependentObject (entry.GetQObject ());
 
 		BuildAndSendNotification (e, { .Avatars_ = *AvatarsMgr_, .Conversation_ = entry, .EventId_ = "AttentionDrawnBy"_qs });
-	}
-
-	void NotificationsManager::HandleChatPartStateChanged (ICLEntry *entry, ChatPartState state, const QString&)
-	{
-		if (state != CPSComposing)
-			return;
-
-		const auto& id = entry->GetGlobalStrongestId ();
-		if (!ShouldNotifyNextTyping_.value (id, true))
-			return;
-
-		const auto& type = XmlSettingsManager::Instance ()
-				.property ("NotifyIncomingComposing").toString ();
-		if (type != "all" &&
-			!(type == "opened" &&
-				Core::Instance ().GetChatTabsManager ()->IsOpenedChat (id)))
-			return;
-
-		ShouldNotifyNextTyping_ [id] = false;
-
-		auto e = Util::MakeNotification (EventTitle,
-				tr ("%1 started composing a message to you.")
-					.arg (Util::FormatName (entry->GetEntryName ())),
-				Priority::Info);
-
-		const auto nh = new Util::NotificationActionHandler { e };
-		nh->AddFunction (tr ("Open chat"),
-				[entry] { Core::Instance ().GetChatTabsManager ()->OpenChat (*entry, true); });
-		nh->AddDependentObject (entry->GetQObject ());
-
-		BuildAndSendNotification (e, { .Avatars_ = *AvatarsMgr_, .Conversation_ = *entry, .EventId_ = "Typing"_qs });
-	}
-
-	void NotificationsManager::handleEntryMadeCurrent (const ICLEntry& entry)
-	{
-		ShouldNotifyNextTyping_ [entry.GetGlobalStrongestId ()] = true;
 	}
 }
 }
