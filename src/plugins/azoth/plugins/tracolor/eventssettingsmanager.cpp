@@ -145,7 +145,7 @@ namespace Tracolor
 
 	void EventsSettingsManager::RebuildAddableEvents ()
 	{
-		QList<QString> remainingEvents
+		QList remainingEvents
 		{
 			AN::TypeIMMUCMsg,
 			AN::TypeIMIncMsg,
@@ -154,7 +154,8 @@ namespace Tracolor
 			AN::TypeIMEventTuneChange,
 			AN::TypeIMEventMoodChange,
 			AN::TypeIMEventActivityChange,
-			AN::TypeIMEventLocationChange
+			AN::TypeIMEventLocationChange,
+			AN::TypeIMTyping,
 		};
 
 		for (int i = 0, rc = Model_->rowCount (); i < rc; ++i)
