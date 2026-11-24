@@ -161,6 +161,10 @@ namespace LC::Azoth
 					emit entryMadeCurrent (e);
 				});
 		connect (tab,
+				&ChatTab::entryMadeActive,
+				this,
+				&ChatTabsManager::entryMadeActive);
+		connect (tab,
 				&ChatTab::tabLostCurrent,
 				this,
 				[this, tab]

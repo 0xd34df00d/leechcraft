@@ -34,7 +34,7 @@ namespace LC::Azoth
 				this,
 				setState (CPSInactive));
 		connect (&tab,
-				&ChatTab::entryMadeCurrent,
+				&ChatTab::entryMadeActive,
 				this,
 				setState (CPSActive));
 		connect (&tab,

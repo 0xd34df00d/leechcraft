@@ -81,6 +81,7 @@ namespace Azoth
 		void chatWindowStyleChanged ();
 	signals:
 		void entryMadeCurrent (ICLEntry&);
+		void entryMadeActive (ICLEntry&);
 		void tabLostCurrent ();
 	};
 }

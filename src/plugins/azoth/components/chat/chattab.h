@@ -250,6 +250,7 @@ namespace Azoth
 		void needToClose ();
 
 		void entryMadeCurrent (ICLEntry&);
+		void entryMadeActive (ICLEntry&);
 		void tabLostCurrent ();
 
 		void messageSent ();

@@ -43,7 +43,7 @@ namespace LC::Azoth::Notifications
 				});
 
 		connect (&tabs,
-				&ChatTabsManager::entryMadeCurrent,
+				&ChatTabsManager::entryMadeActive,
 				this,
 				[this] (const ICLEntry& entry) { ShouldNotifyNext_ [entry.GetGlobalStrongestId ()] = true; });
 	}

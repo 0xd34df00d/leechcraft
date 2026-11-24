@@ -358,7 +358,11 @@ namespace Azoth
 		IsCurrent_ = true;
 
 		if (const auto entry = GetEntry<ICLEntry> ())
+		{
 			emit entryMadeCurrent (*entry);
+			if (IsActiveChat ())
+				emit entryMadeActive (*entry);
+		}
 
 		NumUnreadMsgs_ = 0;
 		HadHighlight_ = false;

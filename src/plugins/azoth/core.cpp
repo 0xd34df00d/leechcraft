@@ -177,7 +177,7 @@ namespace LC::Azoth
 		new Notifications::TypingNotifier { Entries_, *ChatTabsManager_, *NotificationsManager_, this };
 
 		connect (ChatTabsManager_,
-				&ChatTabsManager::entryMadeCurrent,
+				&ChatTabsManager::entryMadeActive,
 				UnreadQueueManager_.get (),
 				&UnreadQueueManager::ClearMessagesForEntry);
 
