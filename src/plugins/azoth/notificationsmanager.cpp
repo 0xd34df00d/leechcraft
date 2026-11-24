@@ -230,11 +230,15 @@ namespace Azoth
 				Room::Internal::GlobalStrongestId);
 	}
 
-	NotificationsManager::NotificationsManager (AvatarsManager *am, const EntriesManager& entries, QObject *parent)
+	NotificationsManager::NotificationsManager (AvatarsManager *am,
+			const EntriesManager& entries,
+			const ChatTabsManager& tabs,
+			QObject *parent)
 	: QObject { parent }
 	, EntityMgr_ { *GetProxyHolder ()->GetEntityManager () }
 	, AvatarsMgr_ { am }
 	, EntriesMgr_ { entries }
+	, TabsMgr_ { tabs }
 	{
 	}
 
@@ -677,6 +681,8 @@ namespace Azoth
 		e.Additional_ [AN::EF::EventID] = EventId<Event> + '/' + QString::number (stableId);
 		e.Additional_ [AN::EF::VisualPath] = QStringList { n.Conversation_.GetEntryName () };
 		e.Additional_ [AN::EF::WindowIndex] = GetWindowOf (n.Conversation_);
+
+		e.Additional_ [AN::Field::IMChatEverOpened] = TabsMgr_.IsOpenedChat (n.Conversation_.GetGlobalStrongestId ());
 
 		e.Additional_.insert (SourceFields (n.Actor_));
 		if (const auto room = RoomOf (n.Actor_))

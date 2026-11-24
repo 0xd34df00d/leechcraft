@@ -160,7 +160,7 @@ namespace LC::Azoth
 	, XferJobManager_ (new TransferJobManager { AvatarsManager_.get () })
 	, CLModel_ (new CLModel (TooltipManager_, Entries_, *ChatTabsManager_, *XferJobManager_, this))
 	, CoreCommandsManager_ (new CoreCommandsManager (this))
-	, NotificationsManager_ (new NotificationsManager (AvatarsManager_.get (), Entries_))
+	, NotificationsManager_ (new NotificationsManager (AvatarsManager_.get (), Entries_, *ChatTabsManager_))
 	, ActionsManager_ (new ActionsManager (*NotificationsManager_, *AvatarsManager_, this))
 	, ItemIconManager_ (new AnimatedIconManager<QStandardItem*> ([] (QStandardItem *it, const QIcon& ic)
 						{ it->setIcon (ic); }))

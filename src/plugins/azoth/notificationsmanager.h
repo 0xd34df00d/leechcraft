@@ -29,8 +29,11 @@ namespace Azoth
 	class ICLEntry;
 	class IMUCEntry;
 	class IAccount;
+
 	class AvatarsManager;
+	class ChatTabsManager;
 	class EntriesManager;
+
 	struct EntryStatus;
 
 	class NotificationsManager : public QObject
@@ -40,6 +43,7 @@ namespace Azoth
 		IEntityManager& EntityMgr_;
 		AvatarsManager * const AvatarsMgr_;
 		const EntriesManager& EntriesMgr_;
+		const ChatTabsManager& TabsMgr_;
 		QHash<ICLEntry*, int> UnreadCounts_;
 
 		QHash<IAccount*, QDateTime> LastAccountStatusChange_;
@@ -50,7 +54,7 @@ namespace Azoth
 		static QVariantMap SourceFields (const ICLEntry&);
 		static QVariantMap RoomFields (const IMUCEntry&);
 
-		NotificationsManager (AvatarsManager*, const EntriesManager&, QObject* = nullptr);
+		NotificationsManager (AvatarsManager*, const EntriesManager&, const ChatTabsManager&, QObject* = nullptr);
 
 		void AddAccount (QObject*);
 
