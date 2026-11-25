@@ -530,17 +530,17 @@ namespace Azoth
 			break;
 		case IMessage::Type::MUCMessage:
 			isHighlightMsg = Core::Instance ().IsHighlightMessage (msg);
-			if (isHighlightMsg)
+			if (showMsg)
 			{
-				if (showMsg)
-				{
-					title = parentCL->GetEntryName ();
-					msgString = fmtEntryName + ": " + body;
-				}
-				else
-					msgString = tr ("%1 highlighted you in %2.")
-							.arg (fmtEntryName, Util::FormatName (parentCL->GetEntryName ()));
+				title = parentCL->GetEntryName ();
+				msgString = fmtEntryName + ": " + body;
 			}
+			else if (isHighlightMsg)
+				msgString = tr ("%1 highlighted you in %2.")
+						.arg (fmtEntryName, Util::FormatName (parentCL->GetEntryName ()));
+			else
+				msgString = tr ("%1 sent a message to %2.")
+						.arg (fmtEntryName, Util::FormatName (parentCL->GetEntryName ()));
 			break;
 		default:
 			return;
@@ -548,7 +548,7 @@ namespace Azoth
 
 		auto e = Util::MakeNotification (title, msgString, Priority::Info);
 
-		if (msgString.isEmpty ())
+		if (msg->GetMessageType () == IMessage::Type::MUCMessage && !isHighlightMsg)
 			e.Mime_ += "+advanced";
 
 		const auto conversation = msg->GetMessageType () == IMessage::Type::MUCMessage ?
