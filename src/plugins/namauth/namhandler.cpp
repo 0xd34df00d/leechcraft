@@ -11,6 +11,8 @@
 #include <QAuthenticator>
 #include <QNetworkReply>
 #include <QNetworkProxy>
+#include <QUrl>
+#include <util/sll/qtutil.h>
 #include <util/sll/util.h>
 #include <util/threads/coro/context.h>
 #include <util/threads/coro/signal.h>
@@ -18,6 +20,23 @@
 
 namespace LC::NamAuth
 {
+	namespace
+	{
+		QString GetContext (const QUrl& url)
+		{
+			auto root = url.adjusted (QUrl::RemoveUserInfo | QUrl::RemovePath | QUrl::RemoveQuery | QUrl::RemoveFragment);
+			if (root.port () == (root.scheme () == "https"_ql ? 443 : 80))
+				root.setPort (-1);
+			return root.toString ();
+		}
+
+		QString GetContext (const QNetworkProxy& proxy)
+		{
+			const auto kind = proxy.type () == QNetworkProxy::Socks5Proxy ? "socks5"_ql : "http"_ql;
+			return u"proxy-%1://%2:%3"_qsv.arg (kind, proxy.hostName (), QString::number (proxy.port ()));
+		}
+	}
+
 	NamHandler::NamHandler (SQLStorageBackend *sb, QNetworkAccessManager *nam)
 	: QObject { nam }
 	, SB_ { sb }
@@ -27,7 +46,7 @@ namespace LC::NamAuth
 				this,
 				[this] (QNetworkReply *reply, QAuthenticator *auth)
 				{
-					DoCommonAuth (reply->url ().host (), { auth->user (), auth->password () }, auth);
+					DoCommonAuth (GetContext (reply->url ()), { auth->user (), auth->password () }, auth);
 				});
 		connect (nam,
 				&QNetworkAccessManager::proxyAuthenticationRequired,
@@ -38,7 +57,7 @@ namespace LC::NamAuth
 					const auto& refused = proxy.type () == QNetworkProxy::Socks5Proxy ?
 							Credentials { proxy.user (), proxy.password () } :
 							Credentials { auth->user (), auth->password () };
-					DoCommonAuth (proxy.hostName (), refused, auth);
+					DoCommonAuth (GetContext (proxy), refused, auth);
 				});
 	}
 
