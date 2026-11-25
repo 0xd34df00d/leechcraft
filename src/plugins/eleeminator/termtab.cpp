@@ -280,7 +280,7 @@ namespace LC::Eleeminator
 		manager->RegisterShortcut ("org.LeechCraft.Eleeminator.Search", {}, searchSc);
 	}
 
-	void TermTab::HandleBell (const QString& message) const
+	void TermTab::HandleBell () const
 	{
 		auto e = Util::MakeAN ("Eleeminator"_qs,
 				tr ("Bell in terminal."),
@@ -289,10 +289,7 @@ namespace LC::Eleeminator
 				AN::CatTerminal,
 				AN::TypeTerminalBell,
 				"BellEvent"_qs,
-				{ "Eleeminator", tr ("Bell") },
-				1,
-				0,
-				message);
+				{ "Eleeminator", tr ("Bell") });
 		e.Mime_ += "+advanced";
 		e.Additional_ [AN::Field::TerminalActive] = isVisible () && isActiveWindow ();
 		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);

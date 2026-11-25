@@ -78,18 +78,6 @@ namespace LC::AN::EF
 	 */
 	UTIL_XPC_API extern const QString EventType;
 
-	/** @brief The detailed text of the event (QString).
-	 *
-	 * @note This field is optional for event notification entities.
-	 */
-	UTIL_XPC_API extern const QString FullText;
-
-	/** @brief The even more detailed text than FullText (QString).
-	 *
-	 * @note This field is optional for event notification entities.
-	 */
-	UTIL_XPC_API extern const QString ExtendedText;
-
 	/** @brief The change in event count (int).
 	 *
 	 * This field represents the change in the count of the events with

@@ -55,10 +55,6 @@ namespace LC::Util
 	 * to use count.
 	 * @param[in] count The total count of events with this id, used if
 	 * delta is 0.
-	 * @param[in] fullText The full text of this notification. If null,
-	 * the text parameter is used.
-	 * @param[in] extendedText The extended text of this notification. If
-	 * null, the text parameter is used.
 	 *
 	 * @sa MakeANCancel()
 	 * @sa MakeANRule()
@@ -66,8 +62,7 @@ namespace LC::Util
 	UTIL_XPC_API Entity MakeAN (const QString& header, const QString& text, Priority priority,
 			const QByteArray& senderID, const QString& cat, const QString& type,
 			const QString& id, const QStringList& visualPath,
-			int delta = 1, int count = 0,
-			const QString& fullText = QString (), const QString& extendedText = QString ());
+			int delta = 1, int count = 0);
 
 	/** @brief Creates an Entity defining an Advanced Notifications rule.
 	 *

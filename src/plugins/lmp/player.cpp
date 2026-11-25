@@ -1085,7 +1085,7 @@ namespace LMP
 
 		auto e = Util::MakeAN ("LMP", str, Priority::Info,
 				"org.LeechCraft.LMP", AN::CatMediaPlayer, AN::TypeMediaPlaybackStatus,
-				"org.LeechCraft.LMP.PlaybackStatus", {}, 0, 1, str);
+				"org.LeechCraft.LMP.PlaybackStatus", {}, 0, 1);
 		e.Mime_ += "+advanced";
 		e.Additional_ [AN::Field::MediaPlaybackStatus] = stateStr;
 		e.Additional_ [AN::Field::MediaPlayerURL] = Source_->GetActualSource ().ToUrl ();

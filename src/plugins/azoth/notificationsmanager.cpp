@@ -257,7 +257,6 @@ namespace Azoth
 
 				auto e = Util::MakeNotification (EventTitle, str, Priority::Info);
 				e.Additional_ [AN::EF::EventType] = eventType;
-				e.Additional_ [AN::EF::FullText] = str;
 				e.Additional_ [AN::EF::Count] = 1;
 				e.Additional_ [Fields::Msg] = msg;
 				BuildAndSendNotification (e, { .Avatars_ = avatarsMgr, .Conversation_ = entry, .EventId_ = "Event"_qs });
@@ -291,7 +290,6 @@ namespace Azoth
 					NotificationsManager::tr ("%1 requested subscription: %2.").arg (name, msg);
 			auto e = Util::MakeNotification (EventTitle, str, Priority::Info);
 			e.Additional_ [AN::EF::EventType] = AN::TypeIMSubscrRequest;
-			e.Additional_ [AN::EF::FullText] = str;
 			e.Additional_ [AN::EF::Count] = 1;
 			e.Additional_ [Fields::Msg] = msg;
 
@@ -328,7 +326,6 @@ namespace Azoth
 			e.Additional_ [AN::EF::VisualPath] = QStringList (name);
 			e.Additional_ [AN::EF::EventID] = "org.LC.Plugins.Azoth.Invited/" + name + '/' + inviter;
 			e.Additional_ [AN::EF::EventType] = AN::TypeIMMUCInvite;
-			e.Additional_ [AN::EF::FullText] = str;
 			e.Additional_ [AN::EF::Count] = 1;
 			e.Additional_ [Fields::Msg] = reason;
 
@@ -555,26 +552,13 @@ namespace Azoth
 				parentCL :
 				other;
 
-		const auto count = ++UnreadCounts_ [conversation];
 		if (msg->GetMessageType () == IMessage::Type::MUCMessage)
-		{
 			e.Additional_ [AN::EF::EventType] = isHighlightMsg ? AN::TypeIMMUCHighlight : AN::TypeIMMUCMsg;
-
-			const auto& mucName = Util::FormatName (parentCL->GetEntryName ());
-			const auto notifMsg = isHighlightMsg ?
-					// TODO this is wrong count for highlight messages
-					tr ("%n message(s) from %1 in %2", nullptr, count).arg (fmtEntryName, mucName) :
-					tr ("%n message(s) in %1", nullptr, count).arg (mucName);
-			e.Additional_ [AN::EF::FullText] = notifMsg;
-		}
 		else
-		{
 			e.Additional_ [AN::EF::EventType] = AN::TypeIMIncMsg;
-			e.Additional_ [AN::EF::FullText] = tr ("%n message(s) from %1", nullptr, count).arg (fmtEntryName);
-		}
 
-		e.Additional_ [AN::EF::Count] = count;
-		e.Additional_ [AN::EF::ExtendedText] = tr ("%n message(s)", nullptr, count);
+		// TODO this is wrong count for highlight messages
+		e.Additional_ [AN::EF::Count] = ++UnreadCounts_ [conversation];
 		e.Additional_ [Fields::Msg] = body;
 
 		const auto nh = new Util::NotificationActionHandler { e, this };
@@ -734,8 +718,6 @@ namespace Azoth
 		e.Mime_ += "+advanced";
 
 		e.Additional_ [AN::EF::EventType] = AN::TypeIMStatusChange;
-		e.Additional_ [AN::EF::FullText] = text;
-		e.Additional_ [AN::EF::ExtendedText] = text;
 		e.Additional_ [AN::EF::Count] = 1;
 		e.Additional_ [Fields::Msg] = entrySt.StatusString_;
 		e.Additional_ [Fields::NewStatus] = StateToId (entrySt.State_);
@@ -781,9 +763,6 @@ namespace Azoth
 		e.Mime_ += "+advanced";
 
 		e.Additional_ [AN::EF::EventType] = AN::TypeIMEventTuneChange;
-
-		e.Additional_ [AN::EF::FullText] = text;
-		e.Additional_ [AN::EF::ExtendedText] = text;
 		e.Additional_ [AN::EF::Count] = 1;
 
 		e.Additional_ [AN::Field::MediaArtist] = info.Artist_;
@@ -826,9 +805,6 @@ namespace Azoth
 		e.Mime_ += "+advanced";
 
 		e.Additional_ [AN::EF::EventType] = AN::TypeIMEventActivityChange;
-
-		e.Additional_ [AN::EF::FullText] = text;
-		e.Additional_ [AN::EF::ExtendedText] = text;
 		e.Additional_ [AN::EF::Count] = 1;
 
 		e.Additional_ [AN::Field::IMActivityGeneral] = info.General_;
@@ -862,9 +838,6 @@ namespace Azoth
 		e.Mime_ += "+advanced";
 
 		e.Additional_ [AN::EF::EventType] = AN::TypeIMEventMoodChange;
-
-		e.Additional_ [AN::EF::FullText] = text;
-		e.Additional_ [AN::EF::ExtendedText] = text;
 		e.Additional_ [AN::EF::Count] = 1;
 
 		e.Additional_ [AN::Field::IMMoodGeneral] = info.Mood_;
@@ -945,9 +918,6 @@ namespace Azoth
 		e.Mime_ += "+advanced";
 
 		e.Additional_ [AN::EF::EventType] = AN::TypeIMEventLocationChange;
-
-		e.Additional_ [AN::EF::FullText] = text;
-		e.Additional_ [AN::EF::ExtendedText] = text;
 		e.Additional_ [AN::EF::Count] = 1;
 
 		e.Additional_ [AN::Field::IMLocationLongitude] = info.Lon_;
@@ -968,8 +938,6 @@ namespace Azoth
 		auto e = Util::MakeNotification (EventTitle, str, Priority::Info);
 		e.Additional_ [AN::EF::DeltaCount] = 1;
 		e.Additional_ [AN::EF::EventType] = AN::TypeIMAttention;
-		e.Additional_ [AN::EF::ExtendedText] = tr ("Attention requested.");
-		e.Additional_ [AN::EF::FullText] = tr ("Attention requested by %1.").arg (entry.GetEntryName ());
 		e.Additional_ [Fields::Msg] = text;
 
 		const auto nh = new Util::NotificationActionHandler { e };

@@ -15,8 +15,6 @@ namespace LC::AN::EF
 	const QString EventID { QStringLiteral ("org.LC.AdvNotifications.EventID") };
 	const QString VisualPath { QStringLiteral ("org.LC.AdvNotifications.VisualPath") };
 	const QString EventType { QStringLiteral ("org.LC.AdvNotifications.EventType") };
-	const QString FullText { QStringLiteral ("org.LC.AdvNotifications.FullText") };
-	const QString ExtendedText { QStringLiteral ("org.LC.AdvNotifications.ExtendedText") };
 	const QString DeltaCount { QStringLiteral ("org.LC.AdvNotifications.DeltaCount") };
 	const QString Count { QStringLiteral ("org.LC.AdvNotifications.Count") };
 

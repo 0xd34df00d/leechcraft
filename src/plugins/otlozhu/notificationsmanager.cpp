@@ -54,8 +54,6 @@ namespace Otlozhu
 		e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList (NextEvent_->GetTitle ());
 
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeOrganizerEventDue;
-		e.Additional_ ["org.LC.AdvNotifications.FullText"] = notify;
-		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = notify;
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
 
 		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);

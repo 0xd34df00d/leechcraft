@@ -326,8 +326,6 @@ namespace Azoth
 		e.Additional_ [AN::EF::EventID] = GetTransferEventId (offer);
 		e.Additional_ [AN::EF::VisualPath] = QStringList { offer.Entry_->GetEntryName (), offer.Name_ };
 		e.Additional_ [AN::EF::DeltaCount] = 1;
-		e.Additional_ [AN::EF::ExtendedText] = tr ("Incoming file: %1")
-					.arg (offer.Description_.isEmpty () ? offer.Name_ : offer.Description_);
 
 		auto nh = new Util::NotificationActionHandler { e };
 		nh->AddFunction (tr ("Accept"), [this, offer] { AcceptOffer (offer, {}); });

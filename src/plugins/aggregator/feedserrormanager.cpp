@@ -39,8 +39,7 @@ namespace LC::Aggregator
 				AN::CatNews, AN::TypeNewsSourceBroken,
 				MakeEventId (id),
 				{},
-				0, 1,
-				error.Message_);
+				0, 1);
 		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
 	}
 

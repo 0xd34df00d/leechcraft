@@ -23,8 +23,7 @@ namespace LC::Util
 	Entity MakeAN (const QString& header, const QString& text, Priority priority,
 			const QByteArray& senderID, const QString& cat, const QString& type,
 			const QString& id, const QStringList& visualPath,
-			int delta, int count,
-			const QString& fullText, const QString& extendedText)
+			int delta, int count)
 	{
 		auto e = MakeNotification (header, text, priority);
 		e.Additional_ [AN::EF::SenderID] = senderID;
@@ -32,8 +31,6 @@ namespace LC::Util
 		e.Additional_ [AN::EF::EventID] = id;
 		e.Additional_ [AN::EF::VisualPath] = visualPath;
 		e.Additional_ [AN::EF::EventType] = type;
-		e.Additional_ [AN::EF::FullText] = fullText.isNull () ? text : fullText;
-		e.Additional_ [AN::EF::ExtendedText] = extendedText.isNull () ? text : extendedText;
 		if (delta)
 			e.Additional_ [AN::EF::DeltaCount] = delta;
 		else

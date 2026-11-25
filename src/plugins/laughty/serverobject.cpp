@@ -108,9 +108,7 @@ namespace Laughty
 					QString::number (id),
 					QStringList (),
 					0,
-					1,
-					summary,
-					body);
+					1);
 		}
 
 		HandleActions (e, id, actions, hints);

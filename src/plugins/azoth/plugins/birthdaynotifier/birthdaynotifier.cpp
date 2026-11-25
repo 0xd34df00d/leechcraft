@@ -110,8 +110,6 @@ namespace BirthdayNotifier
 		e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList (entryName);
 
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeOrganizerEventDue;
-		e.Additional_ ["org.LC.AdvNotifications.FullText"] = notify;
-		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = notify;
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
 
 		const auto avatarsMgr = AzothProxy_->GetAvatarsManager ();
