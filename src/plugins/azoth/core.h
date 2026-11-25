@@ -229,7 +229,9 @@ namespace LC::Azoth
 
 		/** Returns the QStandardItem for the given account.
 		 */
-		QStandardItem* GetAccountItem (const IAccount *accountObj);
+		QStandardItem* GetAccountItem (const IAccount *account);
+
+		QStandardItem* EnsureAccountItem (IAccount *account);
 
 		/** Handles the event of status changes in a contact list entry.
 		 */

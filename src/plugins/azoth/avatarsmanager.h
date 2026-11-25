@@ -82,7 +82,7 @@ namespace LC::Azoth
 		Util::ContextTask<void> invalidateAvatar (QObject*);
 	signals:
 		void avatarInvalidated (QObject*);
-		void accountAvatarInvalidated (const IAccount*);
+		void accountAvatarInvalidated (IAccount*);
 
 	LC_CORO_CONTEXT
 	};

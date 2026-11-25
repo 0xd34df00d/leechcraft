@@ -189,11 +189,9 @@ namespace LC::Azoth
 		connect (&Entries_,
 				&EntriesManager::added,
 				this,
-				[this] (const QList<ICLEntry*>& entries, const IAccount& account)
+				[this] (const QList<ICLEntry*>& entries, IAccount& account)
 				{
-					const auto accountItem = GetAccountItem (&account);
-					if (!accountItem)
-						return;
+					const auto accountItem = EnsureAccountItem (&account);
 					for (const auto entry : entries)
 						AddCLEntry (entry, accountItem);
 				});
@@ -220,9 +218,9 @@ namespace LC::Azoth
 		connect (AvatarsManager_.get (),
 				&AvatarsManager::accountAvatarInvalidated,
 				this,
-				[this] (const IAccount *acc)
+				[this] (IAccount *acc)
 				{
-					const auto item = GetAccountItem (acc);
+					const auto item = EnsureAccountItem (acc);
 					item->model ()->dataChanged (item->index (), item->index ());
 				});
 
@@ -1280,6 +1278,22 @@ namespace LC::Azoth
 		return nullptr;
 	}
 
+	QStandardItem* Core::EnsureAccountItem (IAccount *account)
+	{
+		if (const auto item = GetAccountItem (account))
+			return item;
+
+		const auto accItem = new QStandardItem (account->GetAccountName ());
+		accItem->setData (QVariant::fromValue<IAccount*> (account), CLRAccountObject);
+		accItem->setData (QVariant::fromValue<CLEntryType> (CLETAccount), CLREntryType);
+		const auto accState = account->GetState ().State_;
+		ItemIconManager_->SetIcon (accItem, ResourcesManager::Instance ().GetIconPathForState (accState).get ());
+		accItem->setEditable (false);
+		CLModel_->appendRow (accItem);
+
+		return accItem;
+	}
+
 	void Core::HandleStatusChanged (ICLEntry *entry, const EntryStatus&, const QString& variant)
 	{
 		emit hookEntryStatusChanged (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
@@ -1533,15 +1547,7 @@ namespace LC::Azoth
 
 		AvatarsManager_->AddAccount (*account);
 
-		QStandardItem *accItem = new QStandardItem (accountName);
-		accItem->setData (QVariant::fromValue<IAccount*> (account), CLRAccountObject);
-		accItem->setData (QVariant::fromValue<CLEntryType> (CLETAccount), CLREntryType);
-		const auto accState = account->GetState ().State_;
-		ItemIconManager_->SetIcon (accItem, ResourcesManager::Instance ().GetIconPathForState (accState).get ());
-		CLModel_->appendRow (accItem);
-
-		accItem->setEditable (false);
-
+		EnsureAccountItem (account);
 		Entries_.AddAccount (*account);
 
 		HistorySyncer_->AddAccount (account);
@@ -1562,19 +1568,13 @@ namespace LC::Azoth
 						stream << status;
 					}
 					XmlSettingsManager::Instance ().setProperty (account->GetAccountId ().ToUtf8 (), serializedStatus);
-
-					if (const auto item = GetAccountItem (account))
-						ItemIconManager_->SetIcon (item, ResourcesManager::Instance ().GetIconPathForState (status.State_).get ());
+					ItemIconManager_->SetIcon (EnsureAccountItem (account), ResourcesManager::Instance ().GetIconPathForState (status.State_).get ());
 				});
 
 		connect (&emitter,
 				&Emitters::Account::accountRenamed,
 				this,
-				[this, account] (const QString& name)
-				{
-					if (const auto item = GetAccountItem (account))
-						item->setText (name);
-				});
+				[this, account] (const QString& name) { EnsureAccountItem (account)->setText (name); });
 
 		if (qobject_cast<IHaveServiceDiscovery*> (accObject))
 			connect (accObject,
@@ -1640,8 +1640,7 @@ namespace LC::Azoth
 		if (newGroups.isEmpty () && !Entry2Items_.value (entry).isEmpty ())
 			return;
 
-		auto accItem = GetAccountItem (entry->GetParentAccount ());
-
+		const auto accItem = GetAccountItem (entry->GetParentAccount ());
 		for (auto catItem : GetCategoriesItems (newGroups, accItem))
 			AddEntryTo (entry, catItem);
 
