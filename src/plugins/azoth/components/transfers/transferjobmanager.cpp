@@ -314,8 +314,12 @@ namespace Azoth
 
 		Entry2Incoming_ [&*offer.Entry_] << offer;
 
-		const auto& text = tr ("File %1 (%2) offered from %3.")
-					.arg (offer.Name_, Util::MakePrettySize (offer.Size_), FormatNameWithAddress (*offer.Entry_));
+		const auto& size = Util::MakePrettySize (offer.Size_);
+		const auto& sender = FormatNameWithAddress (*offer.Entry_);
+		const auto& text = offer.Description_.isEmpty () ?
+				tr ("File %1 (%2) offered from %3.").arg (offer.Name_, size, sender) :
+				tr ("File %1 (%2) offered from %3: %4")
+					.arg (offer.Name_, size, sender, offer.Description_.toHtmlEscaped ());
 		auto e = BuildNotification (Util::MakeNotification ("Azoth", text, Priority::Info),
 				{ .Avatars_ = *AvatarsMgr_, .Conversation_ = *offer.Entry_ });
 		e.Additional_ [AN::EF::EventType] = AN::TypeIMIncFile;
