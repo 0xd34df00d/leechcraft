@@ -18,6 +18,7 @@
 #include <util/xpc/notificationactionhandler.h>
 #include <util/xdg/xdg.h>
 #include <util/xpc/an/constants.h>
+#include <util/xpc/an/entityfields.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
 
@@ -96,6 +97,8 @@ namespace Laughty
 		if (hints.value ("transient", false).toBool () || expire_timeout)
 		{
 			e = Util::MakeNotification (app_name, text, prio);
+			e.Additional_ [AN::EF::SenderID] = LaughtyID;
+			e.Additional_ [AN::EF::EventID] = QString::number (id);
 
 			if (expire_timeout > 0)
 				e.Additional_ ["NotificationTimeout"] = expire_timeout;
