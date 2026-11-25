@@ -63,31 +63,27 @@ namespace LC::AdvancedNotifications
 
 		PrepareSysTrayIcon (cat);
 		PrepareLCTrayAction (cat);
-		auto& eventData = [&] () -> EventData&
-		{
-			if (!Events_.contains (key))
-			{
-				EventData data;
-				data.SenderId_ = senderId;
-				data.EventId_ = eventId;
-				data.Count_ = 0;
-				data.Category_ = cat;
-				data.VisualPath_ = e.Additional_ [AN::EF::VisualPath].toStringList ();
-				data.HandlingObject_ = e.Additional_ [EF::HandlingObject].value<QObject_ptr> ();
-				data.Actions_ = e.Additional_ [EF::NotificationActions].toStringList ();
-				data.Canceller_ = Util::MakeANCancel (e);
-				Events_ [key] = data;
-			}
-			return Events_ [key];
-		} ();
 
-		if (const int delta = e.Additional_.value (AN::EF::DeltaCount, 0).toInt ())
-			eventData.Count_ += delta;
-		else
-			eventData.Count_ = e.Additional_.value (AN::EF::Count, 1).toInt ();
-		eventData.Title_ = e.Entity_.toString ();
-		eventData.Text_ = e.Additional_ [EF::Text].toString ();
+		const auto prevPos = Events_.constFind (key);
+		const auto prevCount = prevPos == Events_.cend () ? 0 : prevPos->Count_;
+		const int delta = e.Additional_.value (AN::EF::DeltaCount, 0).toInt ();
 
+		auto& eventData = *Events_.insert (key,
+				{
+					.SenderId_ = senderId,
+					.EventId_ = eventId,
+					.Count_ = delta ?
+							prevCount + delta :
+							e.Additional_.value (AN::EF::Count, 1).toInt (),
+					.Category_ = cat,
+					.VisualPath_ = e.Additional_ [AN::EF::VisualPath].toStringList (),
+					.Title_ = e.Entity_.toString (),
+					.Text_ = e.Additional_ [EF::Text].toString (),
+					.Pixmap_ = {},
+					.HandlingObject_ = e.Additional_ [EF::HandlingObject].value<QObject_ptr> (),
+					.Actions_ = e.Additional_ [EF::NotificationActions].toStringList (),
+					.Canceller_ = Util::MakeANCancel (e),
+				});
 		ExtractPixmap (eventData, e);
 
 		RebuildState ();
