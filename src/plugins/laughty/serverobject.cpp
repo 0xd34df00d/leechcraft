@@ -81,16 +81,18 @@ namespace Laughty
 		body.remove ("<html>");
 		body.remove ("</html>");
 
-		if (summary == app_name && !body.isEmpty ())
+		if ((summary.isEmpty () || summary == app_name) && !body.isEmpty ())
 		{
 			summary = body;
 			body.clear ();
 		}
 
+		const auto& text = body.isEmpty () ? summary : summary.toHtmlEscaped () + "<br/>" + body;
+
 		Entity e;
 		if (hints.value ("transient", false).toBool () || expire_timeout)
 		{
-			e = Util::MakeNotification (app_name, summary, prio);
+			e = Util::MakeNotification (app_name, text, prio);
 
 			if (expire_timeout > 0)
 				e.Additional_ ["NotificationTimeout"] = expire_timeout;
@@ -99,7 +101,7 @@ namespace Laughty
 		{
 			const auto& catTypePair = GetCatTypePair (hints);
 			e = Util::MakeAN (app_name,
-					summary,
+					text,
 					prio,
 					LaughtyID,
 					catTypePair.first, catTypePair.second,
