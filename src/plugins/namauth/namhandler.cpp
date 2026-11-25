@@ -71,7 +71,7 @@ namespace LC::NamAuth
 		const auto guard = Util::MakeScopeGuard ([this, site] { OpenQuestions_.remove (site); });
 
 		const auto& msg = tr ("%1 (%2) requires authentication.")
-				.arg (site.Realm_, "<em>" + site.Context_ + "</em>");
+				.arg (site.Realm_.toHtmlEscaped (), "<em>" + site.Context_.toHtmlEscaped () + "</em>");
 		AuthenticationDialog dia { msg, login, password };
 		dia.show ();
 		co_await Util::Signal { dia, &QDialog::finished };
