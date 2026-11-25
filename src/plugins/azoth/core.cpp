@@ -1612,6 +1612,7 @@ namespace LC::Azoth
 		if (const auto item = GetAccountItem (&account))
 		{
 			ItemIconManager_->Cancel (item);
+			Account2Category2Item_.remove (item);
 			CLModel_->removeRow (item->row ());
 		}
 
