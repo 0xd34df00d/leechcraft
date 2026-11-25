@@ -7,6 +7,7 @@
  **********************************************************************/
 
 #include "serverobject.h"
+#include <cstring>
 #include <QUrl>
 #include <QFile>
 #include <QIcon>
@@ -194,12 +195,26 @@ namespace Laughty
 		arg >> width >> height >> rowstride >> hasAlpha >> bps >> channels >> data;
 		arg.endStructure ();
 
-		const QImage img (reinterpret_cast<const uchar*> (data.constBegin ()),
-				width, height, QImage::Format_ARGB32);
+		const qint64 pixelSize = hasAlpha ? 4 : 3;
+		const auto rowSize = width * pixelSize;
+		if (width <= 0 || height <= 0 || bps != 8 || channels != pixelSize ||
+				rowstride < rowSize ||
+				data.size () < rowstride * static_cast<qint64> (height - 1) + rowSize)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "malformed image data:"
+					<< width << height << rowstride << hasAlpha << bps << channels << data.size ();
+			return false;
+		}
+
+		QImage img { width, height, hasAlpha ? QImage::Format_RGBA8888 : QImage::Format_RGB888 };
 		if (img.isNull ())
 			return false;
 
-		e.Additional_ ["NotificationPixmap"] = QPixmap::fromImage (img.rgbSwapped ());
+		for (int y = 0; y < height; ++y)
+			std::memcpy (img.scanLine (y), data.constData () + y * static_cast<qsizetype> (rowstride), rowSize);
+
+		e.Additional_ ["NotificationPixmap"] = QPixmap::fromImage (std::move (img));
 		return true;
 	}
 
