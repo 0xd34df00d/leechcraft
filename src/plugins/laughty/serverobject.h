@@ -31,7 +31,7 @@ namespace Laughty
 
 		uint Notify (const QString& app_name, uint replaces_id, const QString& app_icon,
 				QString summary, QString body, const QStringList& actions,
-				const QVariantMap& hints, uint expire_timeout);
+				const QVariantMap& hints, int expire_timeout);
 
 		void CloseNotification (uint id);
 	private:

@@ -71,7 +71,7 @@ namespace Laughty
 
 	uint ServerObject::Notify (const QString& app_name, uint,
 			const QString& app_icon, QString summary, QString body,
-			const QStringList& actions, const QVariantMap& hints, uint expire_timeout)
+			const QStringList& actions, const QVariantMap& hints, int expire_timeout)
 	{
 		const auto replaces = hints.value ("replaces_id", 0).toInt ();
 		const auto id = replaces > 0 ? replaces : ++LastID_;
