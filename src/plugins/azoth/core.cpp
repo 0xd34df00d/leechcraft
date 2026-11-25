@@ -141,12 +141,7 @@ namespace LC::Azoth
 					continue;
 
 				for (const auto accountObj : proto->GetRegisteredAccounts ())
-				{
-					const auto acc = qobject_cast<IAccount*> (accountObj);
-					if (!acc->IsShownInRoster ())
-						continue;
-					accounts << acc;
-				}
+					accounts << qobject_cast<IAccount*> (accountObj);
 			}
 		return accounts;
 	}
@@ -1481,12 +1476,6 @@ namespace LC::Azoth
 		UnreadQueueManager_->ShowNext ();
 	}
 
-	void Core::saveAccountVisibility (IAccount *account)
-	{
-		const auto& id = "ShowAccount_" + account->GetAccountId ().ToUtf8 ();
-		XmlSettingsManager::Instance ().setProperty (id, account->IsShownInRoster ());
-	}
-
 	void Core::handleNewProtocols (const QList<QObject*>& protocols)
 	{
 		for (const auto protoObj : protocols)
@@ -1541,10 +1530,6 @@ namespace LC::Azoth
 		const auto& accountId = account->GetAccountId ();
 		const auto& accountName = account->GetAccountName ();
 
-		const auto& showKey = "ShowAccount_" + accountId.ToUtf8 ();
-		const bool show = XmlSettingsManager::Instance ().Property (showKey, true).toBool ();
-		account->SetShownInRoster (show);
-
 		AvatarsManager_->AddAccount (*account);
 
 		EnsureAccountItem (account);
@@ -1582,11 +1567,8 @@ namespace LC::Azoth
 					this,
 					SLOT (handleGotSDSession (QObject*)));
 
-		if (account->IsShownInRoster ())
-		{
-			if (const auto& s = LoadSavedStatus (account))
-				account->ChangeState (*s);
-		}
+		if (const auto& s = LoadSavedStatus (account))
+			account->ChangeState (*s);
 
 		if (const auto xferMgr = account->GetTransferManager ())
 			XferJobManager_->AddAccountManager (*account, *xferMgr);

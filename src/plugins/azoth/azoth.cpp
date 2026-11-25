@@ -452,14 +452,6 @@ namespace Azoth
 
 		auto accountsList = new AccountsListWidget;
 		XmlSettingsDialog_->SetCustomWidget ("AccountsWidget", accountsList);
-		connect (accountsList,
-				SIGNAL (accountVisibilityChanged (IAccount*)),
-				MW_,
-				SLOT (handleAccountVisibilityChanged ()));
-		connect (accountsList,
-				SIGNAL (accountVisibilityChanged (IAccount*)),
-				&Core::Instance (),
-				SLOT (saveAccountVisibility (IAccount*)));
 
 		const auto fontsWidget = Core::Instance ().GetFontsWidget ();
 		XmlSettingsDialog_->SetCustomWidget ("FontsSelector", fontsWidget);

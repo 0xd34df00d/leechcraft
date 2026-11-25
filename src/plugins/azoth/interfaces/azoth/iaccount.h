@@ -45,7 +45,6 @@ namespace Azoth
 	 */
 	class IAccount
 	{
-		bool IsShown_ = true;
 	protected:
 		Emitters::Account Emitter_;
 
@@ -251,45 +250,6 @@ namespace Azoth
 		 * @return The file transfer manager, or NULL if not supported.
 		 */
 		virtual QObject* GetTransferManager () const = 0;
-
-		/** @brief Whether the account should be shown in the roster.
-		 *
-		 * The default implementation simply returns the value of a the
-		 * return variable set by SetShownInRoster().
-		 *
-		 * By default, accounts should be shown in the roster.
-		 *
-		 * @return Whether the account should be shown in roster.
-		 *
-		 * @sa SetShownInRoster()
-		 */
-		virtual bool IsShownInRoster () const
-		{
-			return IsShown_;
-		}
-
-		/** @brief Sets whether the account should be shown in the roster.
-		 *
-		 * The default implementation simply sets the corresponding
-		 * private variable that is returned from IsShownInRoster().
-		 *
-		 * Calling this function does not have to result in any kind of
-		 * account saving, signal emission and so on. This function (and
-		 * its IsShownInRoster() counterpart) are provided solely for
-		 * Azoth core convenience.
-		 *
-		 * After calling this function the IsShownInRoster() method
-		 * should return the last value of \em shown.
-		 *
-		 * @param[in] shown Whether the account should be shown in the
-		 * roster.
-		 *
-		 * @sa IsShownInRoster()
-		 */
-		virtual void SetShownInRoster (bool shown)
-		{
-			IsShown_ = shown;
-		}
 	};
 }
 }

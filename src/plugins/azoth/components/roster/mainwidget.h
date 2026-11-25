@@ -50,8 +50,6 @@ namespace Azoth
 
 		void TreeActivated (const QModelIndex&);
 		void UpdateMucMode ();
-	public slots:
-		void handleAccountVisibilityChanged ();
 	private slots:
 		void showAllUsersList ();
 		void on_CLTree__customContextMenuRequested (const QPoint&);

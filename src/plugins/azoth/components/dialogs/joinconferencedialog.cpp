@@ -29,9 +29,6 @@ namespace Azoth
 
 		for (const auto acc : accounts)
 		{
-			if (!acc->IsShownInRoster ())
-				continue;
-
 			const auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 			const auto mucProto = qobject_cast<IMUCProtocol*> (acc->GetParentProtocol ());
 			if (!mucProto)

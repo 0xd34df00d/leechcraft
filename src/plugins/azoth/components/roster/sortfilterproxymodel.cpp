@@ -224,7 +224,7 @@ namespace LC::Azoth
 
 			return false;
 		case CLETAccount:
-			return idx.data (CLRAccountObject).value<IAccount*> ()->IsShownInRoster ();
+			return true;
 		}
 
 		return FixedStringFilterProxyModel::filterAcceptsRow (row, parent);

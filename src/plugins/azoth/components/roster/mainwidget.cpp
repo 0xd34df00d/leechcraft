@@ -222,11 +222,6 @@ namespace Azoth
 		addBottomAct (ActionCLMode_);
 	}
 
-	void MainWidget::handleAccountVisibilityChanged ()
-	{
-		ProxyModel_->invalidate ();
-	}
-
 	void MainWidget::TreeActivated (const QModelIndex& index)
 	{
 		if (index.data (CLREntryType).value<CLEntryType> () != CLETContact)
@@ -261,9 +256,6 @@ namespace Azoth
 		int accCount = 0;
 		for (auto acc : Core::Instance ().GetAccounts ())
 		{
-			if (!acc->IsShownInRoster ())
-				continue;
-
 			++accCount;
 			const auto& accEntries = acc->GetCLEntries ();
 			std::ranges::copy_if (accEntries, std::back_inserter (entries),

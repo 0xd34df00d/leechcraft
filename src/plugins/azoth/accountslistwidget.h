@@ -38,7 +38,6 @@ namespace Azoth
 
 		enum Column
 		{
-			ShowInRoster,
 			Name,
 			ChatStyle,
 			ChatVariant,
@@ -61,8 +60,6 @@ namespace Azoth
 		void handleItemChanged (QStandardItem*);
 
 		void handleAccountRemoved (IAccount*);
-	signals:
-		void accountVisibilityChanged (IAccount*);
 	};
 }
 }

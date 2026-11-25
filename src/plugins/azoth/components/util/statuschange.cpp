@@ -116,7 +116,6 @@ namespace LC::Azoth::StatusChange
 		}
 
 		for (const auto acc : Core::Instance ().GetAccounts ())
-			if (acc->IsShownInRoster ())
-				acc->ChangeState (status);
+			acc->ChangeState (status);
 	}
 }

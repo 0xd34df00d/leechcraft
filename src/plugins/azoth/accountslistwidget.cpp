@@ -135,13 +135,12 @@ namespace Azoth
 
 		Ui_.Accounts_->setItemDelegate (new AccountListDelegate);
 
-		AccModel_->setHorizontalHeaderLabels ({ tr ("Show"), tr ("Name"),
+		AccModel_->setHorizontalHeaderLabels ({ tr ("Name"),
 				tr ("Chat style"), tr ("Variant"), tr ("MUC style"), tr ("MUC variant") });
 		connect (AccModel_,
 				SIGNAL (itemChanged (QStandardItem*)),
 				this,
 				SLOT (handleItemChanged (QStandardItem*)));
-
 
 		connect (&Core::Instance (),
 				SIGNAL (accountAdded (IAccount*)),
@@ -163,23 +162,17 @@ namespace Azoth
 				SLOT (handleAccountSelected (QModelIndex)));
 		handleAccountSelected ({});
 
-		Ui_.Accounts_->setColumnWidth (0, 32);
 		const auto& fm = fontMetrics ();
-		Ui_.Accounts_->setColumnWidth (1, fm.horizontalAdvance ("Some typical very long account name"));
-		Ui_.Accounts_->setColumnWidth (2, fm.horizontalAdvance ("Some typical style"));
-		Ui_.Accounts_->setColumnWidth (3, fm.horizontalAdvance ("Some typical style variant (alternate)"));
-		Ui_.Accounts_->setColumnWidth (4, fm.horizontalAdvance ("Some typical style"));
-		Ui_.Accounts_->setColumnWidth (5, fm.horizontalAdvance ("Some typical style variant (alternate)"));
+		Ui_.Accounts_->setColumnWidth (Column::Name, fm.horizontalAdvance ("Some typical very long account name"));
+		Ui_.Accounts_->setColumnWidth (Column::ChatStyle, fm.horizontalAdvance ("Some typical style"));
+		Ui_.Accounts_->setColumnWidth (Column::ChatVariant, fm.horizontalAdvance ("Some typical style variant (alternate)"));
+		Ui_.Accounts_->setColumnWidth (Column::MUCStyle, fm.horizontalAdvance ("Some typical style"));
+		Ui_.Accounts_->setColumnWidth (Column::MUCVariant, fm.horizontalAdvance ("Some typical style variant (alternate)"));
 	}
 
 	void AccountsListWidget::addAccount (IAccount *acc)
 	{
 		auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
-
-		auto show = new QStandardItem ();
-		show->setCheckable (true);
-		show->setCheckState (acc->IsShownInRoster () ? Qt::Checked : Qt::Unchecked);
-		show->setEditable (false);
 
 		auto name = new QStandardItem (acc->GetAccountName ());
 		name->setIcon (proto ? proto->GetProtocolIcon () : QIcon ());
@@ -204,7 +197,7 @@ namespace Azoth
 		auto mucStyler = new ChatStyleOptionManager (QByteArray (), acc->GetQObject ());
 		mucStyler->AddEmptyVariant ();
 
-		const QList<QStandardItem*> row { show, name, style, variant, mucStyle, mucVariant };
+		const QList row { name, style, variant, mucStyle, mucVariant };
 		for (auto item : row)
 		{
 			item->setData (QVariant::fromValue<IAccount*> (acc), Role::AccObj);
@@ -276,15 +269,6 @@ namespace Azoth
 
 		switch (item->column ())
 		{
-		case Column::ShowInRoster:
-			acc->SetShownInRoster (item->checkState () == Qt::Checked);
-
-			if (!acc->IsShownInRoster () && acc->GetState ().State_ != SOffline)
-				acc->ChangeState ({ SOffline, {} });
-
-			emit accountVisibilityChanged (acc);
-
-			break;
 		case Column::ChatStyle:
 			styleMgr->Set (acc, CustomChatStyleManager::Settable::ChatStyle, text);
 			break;
