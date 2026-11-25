@@ -27,23 +27,27 @@ namespace LC::NamAuth
 				this,
 				[this] (QNetworkReply *reply, QAuthenticator *auth)
 				{
-					DoCommonAuth (reply->url ().host (), auth);
+					DoCommonAuth (reply->url ().host (), { auth->user (), auth->password () }, auth);
 				});
 		connect (nam,
 				&QNetworkAccessManager::proxyAuthenticationRequired,
 				this,
 				[this] (const QNetworkProxy& proxy, QAuthenticator *auth)
 				{
-					DoCommonAuth (proxy.hostName (), auth);
+					// Qt's SOCKS5 engine passes a blank authenticator every time and keeps what it tried in the proxy.
+					const auto& refused = proxy.type () == QNetworkProxy::Socks5Proxy ?
+							Credentials { proxy.user (), proxy.password () } :
+							Credentials { auth->user (), auth->password () };
+					DoCommonAuth (proxy.hostName (), refused, auth);
 				});
 	}
 
-	void NamHandler::DoCommonAuth (const QString& context, QAuthenticator *authen)
+	void NamHandler::DoCommonAuth (const QString& context, const Credentials& refused, QAuthenticator *authen)
 	{
 		const Site site { authen->realm (), context };
 
 		if (const auto maybeKnown = GetCredentials (site);
-			maybeKnown && (maybeKnown->Login_ != authen->user () || maybeKnown->Password_ != authen->password ()))
+			maybeKnown && (maybeKnown->Login_ != refused.Login_ || maybeKnown->Password_ != refused.Password_))
 		{
 			authen->setUser (maybeKnown->Login_);
 			authen->setPassword (maybeKnown->Password_);
@@ -51,7 +55,7 @@ namespace LC::NamAuth
 		}
 
 		if (!OpenQuestions_.contains (site))
-			Ask (site, authen->user (), authen->password ());
+			Ask (site, refused.Login_, refused.Password_);
 	}
 
 	std::optional<SQLStorageBackend::AuthRecord> NamHandler::GetCredentials (const Site& site) const

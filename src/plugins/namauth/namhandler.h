@@ -38,6 +38,12 @@ namespace LC::NamAuth
 			friend size_t qHash (const Site& site, size_t seed = 0) { return qHashMulti (seed, site.Realm_, site.Context_); }
 		};
 
+		struct Credentials
+		{
+			QString Login_;
+			QString Password_;
+		};
+
 		SQLStorageBackend * const SB_;
 
 		QHash<Site, SQLStorageBackend::AuthRecord> SessionCredentials_;
@@ -45,7 +51,7 @@ namespace LC::NamAuth
 	public:
 		NamHandler (SQLStorageBackend*, QNetworkAccessManager*);
 	private:
-		void DoCommonAuth (const QString&, QAuthenticator*);
+		void DoCommonAuth (const QString&, const Credentials& refused, QAuthenticator*);
 		std::optional<SQLStorageBackend::AuthRecord> GetCredentials (const Site&) const;
 		Util::ContextTask<void> Ask (Site, QString login, QString password);
 
