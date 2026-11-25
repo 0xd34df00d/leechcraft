@@ -244,16 +244,12 @@ namespace Azoth
 		const auto EventTitle = "Azoth"_qs;
 
 		auto NotifyWithReason (AvatarsManager& avatarsMgr,
-				const char *settingName,
 				const QString& eventType,
 				const QString& patternLite,
 				const QString& patternFull)
 		{
 			return [=, &avatarsMgr] (ICLEntry& entry, const QString& msg)
 			{
-				if (!XmlSettingsManager::Instance ().property (settingName).toBool ())
-					return;
-
 				const auto& name = Util::FormatName (FormatNameWithAddress (entry));
 				const auto& str = msg.isEmpty () ?
 						patternLite.arg (name) :
@@ -358,13 +354,13 @@ namespace Azoth
 		connect (&emitter,
 				&Emitters::Account::itemSubscribed,
 				this,
-				NotifyWithReason (*AvatarsMgr_, "NotifySubscriptions", AN::TypeIMSubscrSub,
+				NotifyWithReason (*AvatarsMgr_, AN::TypeIMSubscrSub,
 						tr ("%1 subscribed to us."),
 						tr ("%1 subscribed to us: %2.")));
 		connect (&emitter,
 				qOverload<ICLEntry&, const QString&> (&Emitters::Account::itemUnsubscribed),
 				this,
-				NotifyWithReason (*AvatarsMgr_, "NotifyUnsubscriptions", AN::TypeIMSubscrUnsub,
+				NotifyWithReason (*AvatarsMgr_, AN::TypeIMSubscrUnsub,
 						tr ("%1 unsubscribed from us."),
 						tr ("%1 unsubscribed from us: %2.")));
 		connect (&emitter,
@@ -374,13 +370,13 @@ namespace Azoth
 		connect (&emitter,
 				&Emitters::Account::itemCancelledSubscription,
 				this,
-				NotifyWithReason (*AvatarsMgr_, "NotifySubCancels", AN::TypeIMSubscrRevoke,
+				NotifyWithReason (*AvatarsMgr_, AN::TypeIMSubscrRevoke,
 						tr ("%1 cancelled our subscription."),
 						tr ("%1 cancelled our subscription: %2.")));
 		connect (&emitter,
 				&Emitters::Account::itemGrantedSubscription,
 				this,
-				NotifyWithReason (*AvatarsMgr_, "NotifySubGrants", AN::TypeIMSubscrGrant,
+				NotifyWithReason (*AvatarsMgr_, AN::TypeIMSubscrGrant,
 						tr ("%1 granted subscription."),
 						tr ("%1 granted subscription: %2.")));
 		connect (&emitter,
@@ -524,20 +520,17 @@ namespace Azoth
 		switch (msg->GetMessageType ())
 		{
 		case IMessage::Type::ChatMessage:
-			if (XmlSettingsManager::Instance ().property ("NotifyAboutIncomingMessages").toBool ())
+			if (showMsg)
 			{
-				if (showMsg)
-				{
-					title = other->GetEntryName ();
-					msgString = body;
-				}
-				else
-					msgString = tr ("%1 sent you a message.").arg (fmtEntryName);
+				title = other->GetEntryName ();
+				msgString = body;
 			}
+			else
+				msgString = tr ("%1 sent you a message.").arg (fmtEntryName);
 			break;
 		case IMessage::Type::MUCMessage:
 			isHighlightMsg = Core::Instance ().IsHighlightMessage (msg);
-			if (isHighlightMsg && XmlSettingsManager::Instance ().property ("NotifyAboutConferenceHighlights").toBool ())
+			if (isHighlightMsg)
 			{
 				if (showMsg)
 				{
@@ -965,9 +958,6 @@ namespace Azoth
 
 	void NotificationsManager::handleAttentionDrawn (const QString& text, const QString&)
 	{
-		if (!XmlSettingsManager::Instance ().property ("RespectDrawAttentions").toBool ())
-			return;
-
 		auto& entry = qobject_ref_cast<ICLEntry> (*sender ());
 
 		const auto& name = Util::FormatName (entry.GetEntryName ());

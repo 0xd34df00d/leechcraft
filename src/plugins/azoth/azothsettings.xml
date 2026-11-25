@@ -133,17 +133,10 @@
 		</tab>
 		<tab label="Notifications">
 			<groupbox label="Messages">
-				<item type="checkbox" property="NotifyAboutIncomingMessages" default="true" label="Direct messages" />
-				<item type="checkbox" property="NotifyAboutConferenceHighlights" default="true" label="Highlights in conferences" />
-				<item type="checkbox" property="RespectDrawAttentions" default="true" label="Attention requests" />
 				<item type="checkbox" property="ShowMsgInNotifications" default="false" label="Show message text in notifications" />
 			</groupbox>
 			<groupbox label="Subscriptions">
-				<item type="checkbox" property="NotifySubscriptions" default="true" label="New subscriptions to us" />
-				<item type="checkbox" property="NotifyUnsubscriptions" default="true" label="Unsubscriptions from us" />
 				<item type="checkbox" property="NotifyAboutNonrosterUnsub" default="true" label="Non-roster unsubscriptions from us" />
-				<item type="checkbox" property="NotifySubGrants" default="true" label="Granting us subscription" />
-				<item type="checkbox" property="NotifySubCancels" default="true" label="Cancellations of our subscription" />
 			</groupbox>
 		</tab>
 		<tab label="Chat windows">
