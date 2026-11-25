@@ -69,12 +69,11 @@ namespace Laughty
 		}
 	}
 
-	uint ServerObject::Notify (const QString& app_name, uint,
+	uint ServerObject::Notify (const QString& app_name, uint replaces_id,
 			const QString& app_icon, QString summary, QString body,
 			const QStringList& actions, const QVariantMap& hints, int expire_timeout)
 	{
-		const auto replaces = hints.value ("replaces_id", 0).toInt ();
-		const auto id = replaces > 0 ? replaces : ++LastID_;
+		const auto id = replaces_id ? replaces_id : ++LastID_;
 
 		const auto prio = GetPriority (hints);
 
