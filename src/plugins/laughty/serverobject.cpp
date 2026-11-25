@@ -80,6 +80,7 @@ namespace Laughty
 
 		body.remove ("<html>");
 		body.remove ("</html>");
+		body = body.trimmed ().replace ('\n', "<br/>");
 
 		if ((summary.isEmpty () || summary == app_name) && !body.isEmpty ())
 		{
@@ -87,7 +88,9 @@ namespace Laughty
 			body.clear ();
 		}
 
-		const auto& text = body.isEmpty () ? summary : summary.toHtmlEscaped () + "<br/>" + body;
+		const auto& text = body.isEmpty () ?
+				summary :
+				summary.simplified ().toHtmlEscaped () + "<br/>" + body;
 
 		Entity e;
 		if (hints.value ("transient", false).toBool () || expire_timeout)
