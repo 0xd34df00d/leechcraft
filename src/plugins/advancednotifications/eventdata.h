@@ -21,7 +21,6 @@ namespace LC::AdvancedNotifications
 		int Count_;
 		QString Category_;
 		QStringList VisualPath_;
-		QString ExtendedText_;
 		QString Title_;
 		QString Text_;
 		QPixmap Pixmap_;

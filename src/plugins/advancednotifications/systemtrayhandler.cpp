@@ -26,6 +26,7 @@
 #include <util/threads/coro/future.h>
 #include <util/threads/coro.h>
 #include "generalhandler.h"
+#include "plaintext.h"
 #include "xmlsettingsmanager.h"
 #include "visualnotificationsview.h"
 
@@ -84,7 +85,6 @@ namespace LC::AdvancedNotifications
 			eventData.Count_ += delta;
 		else
 			eventData.Count_ = e.Additional_.value (AN::EF::Count, 1).toInt ();
-		eventData.ExtendedText_ = e.Additional_ [AN::EF::ExtendedText].toString ();
 		eventData.Title_ = e.Entity_.toString ();
 		eventData.Text_ = e.Additional_ [EF::Text].toString ();
 
@@ -195,6 +195,19 @@ namespace LC::AdvancedNotifications
 			}
 			view->setVisible (!view->isVisible ());
 		}
+
+		QString GetMenuLabel (const QMenu& menu, const EventData& data)
+		{
+			constexpr auto maxChars = 60;
+			const auto& metrics = menu.fontMetrics ();
+			auto label = metrics.elidedText (ToPlainTextLine (data.Text_),
+					Qt::ElideRight,
+					maxChars * metrics.averageCharWidth ());
+			label.replace ('&', "&&"_ql);
+			return data.Count_ > 1 ?
+					"%1 (%2)"_qs.arg (label, QString::number (data.Count_)) :
+					label;
+		}
 	}
 
 	VisualNotificationsView* SystemTrayHandler::CreateVisualNotificationView ()
@@ -270,7 +283,7 @@ namespace LC::AdvancedNotifications
 
 		if (!data.Pixmap_.isNull ())
 			menu->setIcon (data.Pixmap_);
-		menu->setToolTip (data.ExtendedText_);
+		menu->setToolTip (data.Text_);
 
 		int actionIdx = 0;
 		for (const auto& actionName : data.Actions_)
@@ -291,7 +304,7 @@ namespace LC::AdvancedNotifications
 				Qt::QueuedConnection);
 
 		menu->addSeparator ();
-		menu->addAction (data.ExtendedText_)->setEnabled (false);
+		menu->addAction (GetMenuLabel (*menu, data))->setEnabled (false);
 	}
 
 	void SystemTrayHandler::RebuildState ()

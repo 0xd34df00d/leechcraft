@@ -12,11 +12,13 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <util/xpc/an/entityfields.h>
+#include <util/xpc/entityconstants.h>
 #include <interfaces/an/ianemitter.h>
 #include <util/xpc/anutil.h>
 #include <util/xpc/stdanfields.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
+#include "plaintext.h"
 
 namespace LC::AdvancedNotifications
 {
@@ -40,7 +42,7 @@ namespace LC::AdvancedNotifications
 		QList<QStandardItem*> row
 		{
 			new QStandardItem { e.Entity_.toString () },
-			new QStandardItem { e.Additional_ [AN::EF::FullText].toString () },
+			new QStandardItem { ToPlainTextLine (e.Additional_ [EF::Text].toString ()) },
 			new QStandardItem { Util::AN::GetCategoryName (category) },
 			new QStandardItem { Util::AN::GetTypeName (type) }
 		};

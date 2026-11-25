@@ -34,18 +34,11 @@ namespace LC::AdvancedNotifications
 
 		if (e.Additional_ [EF::Text].toString ().isEmpty ())
 		{
-			if (!e.Additional_ [AN::EF::FullText].toString ().isEmpty ())
-				e.Additional_ [EF::Text] = e.Additional_ [AN::EF::FullText];
-			else if (!e.Additional_ [AN::EF::ExtendedText].toString ().isEmpty ())
-				e.Additional_ [EF::Text] = e.Additional_ [AN::EF::ExtendedText];
-			else
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "refusing to rehandle entity with empty text:"
-						<< e.Entity_
-						<< e.Additional_;
-				return;
-			}
+			qWarning () << Q_FUNC_INFO
+					<< "refusing to rehandle entity with empty text:"
+					<< e.Entity_
+					<< e.Additional_;
+			return;
 		}
 
 		for (auto i = e.Additional_.begin (); i !=  e.Additional_.end (); )
