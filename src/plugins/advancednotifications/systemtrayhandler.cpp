@@ -85,7 +85,8 @@ namespace LC::AdvancedNotifications
 		else
 			eventData.Count_ = e.Additional_.value (AN::EF::Count, 1).toInt ();
 		eventData.ExtendedText_ = e.Additional_ [AN::EF::ExtendedText].toString ();
-		eventData.FullText_ = e.Additional_ [AN::EF::FullText].toString ();
+		eventData.Title_ = e.Entity_.toString ();
+		eventData.Text_ = e.Additional_ [EF::Text].toString ();
 
 		ExtractPixmap (eventData, e);
 

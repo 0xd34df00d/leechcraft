@@ -61,7 +61,7 @@ Rectangle {
             Item {
                 id: eventPicAndText
 
-                height: Math.max(eventPic.height, eventText.height)
+                height: Math.max(eventPic.height, eventTitle.height + eventText.height)
                 anchors.left: parent.left
                 anchors.leftMargin: 12
                 anchors.right: dismissButton.left
@@ -81,18 +81,47 @@ Rectangle {
                 }
 
                 Text {
+                    id: eventTitle
+
+                    text: model.modelData.title
+                    color: colorProxy.color_TextBox_TitleTextColor
+                    font.bold: true
+                    elide: Text.ElideRight
+
+                    anchors.top: parent.top
+                    anchors.left: eventPic.right
+                    anchors.leftMargin: 4
+                    anchors.right: eventCount.left
+                    anchors.rightMargin: 4
+                }
+
+                Text {
+                    id: eventCount
+
+                    visible: model.modelData.count > 1
+                    width: visible ? implicitWidth : 0
+
+                    text: model.modelData.count
+                    color: colorProxy.color_TextBox_TitleTextColor
+                    font.bold: true
+
+                    anchors.top: parent.top
+                    anchors.right: eventText.right
+                }
+
+                Text {
                     id: eventText
 
                     width: parent.width - eventPic.width - eventPic.anchors.leftMargin - anchors.leftMargin - dismissButton.width - 10
 
-                    text: extendedText
+                    text: model.modelData.text
                     color: colorProxy.color_TextBox_TextColor
 
                     wrapMode: Text.Wrap
                     elide: Text.ElideRight
                     maximumLineCount: 4
 
-                    anchors.top: parent.top
+                    anchors.top: eventTitle.bottom
                     anchors.left: eventPic.right
                     anchors.leftMargin: 4
                 }

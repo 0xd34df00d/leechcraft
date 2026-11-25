@@ -19,7 +19,8 @@ namespace LC::AdvancedNotifications
 		Q_OBJECT
 		Q_PROPERTY (int count READ count NOTIFY countChanged)
 		Q_PROPERTY (QUrl image READ image NOTIFY imageChanged)
-		Q_PROPERTY (QString extendedText READ extendedText NOTIFY extendedTextChanged)
+		Q_PROPERTY (QString title READ title NOTIFY titleChanged)
+		Q_PROPERTY (QString text READ text NOTIFY textChanged)
 		Q_PROPERTY (QVariant eventActionsModel READ eventActionsModel NOTIFY eventActionsModelChanged)
 
 		EventData E_;
@@ -30,13 +31,15 @@ namespace LC::AdvancedNotifications
 
 		int count () const;
 		QUrl image () const;
-		QString extendedText () const;
+		QString title () const;
+		QString text () const;
 
 		QVariant eventActionsModel () const;
 	signals:
 		void countChanged ();
 		void imageChanged ();
-		void extendedTextChanged ();
+		void titleChanged ();
+		void textChanged ();
 
 		void eventActionsModelChanged ();
 

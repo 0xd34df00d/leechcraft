@@ -53,11 +53,14 @@ namespace LC::AdvancedNotifications
 		return CachedImage_;
 	}
 
-	QString EventProxyObject::extendedText () const
+	QString EventProxyObject::title () const
 	{
-		return E_.FullText_.isEmpty () ?
-				E_.ExtendedText_ :
-				E_.FullText_;
+		return E_.Title_;
+	}
+
+	QString EventProxyObject::text () const
+	{
+		return E_.Text_;
 	}
 
 	QVariant EventProxyObject::eventActionsModel () const
