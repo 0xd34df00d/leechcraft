@@ -165,6 +165,13 @@ namespace LC::Util
 	 */
 	UTIL_XPC_API RichTextString GetNotificationText (const Entity& notification);
 
+	/** @brief Converts `text` to plain text.
+	 *
+	 * Its lines and paragraphs are separated by line feeds, and embedded
+	 * objects such as images are left out.
+	 */
+	UTIL_XPC_API QString ToPlainText (const RichTextString& text);
+
 	/** @brief Makes an event for canceling another Advanced
 	 * Notifications event.
 	 *

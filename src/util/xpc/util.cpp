@@ -9,6 +9,7 @@
 #include "util.h"
 #include <QStandardItem>
 #include <QTextDocument>
+#include <QTextDocumentFragment>
 #include <util/sll/qtutil.h>
 #include <interfaces/idatafilter.h>
 #include <interfaces/core/ientitymanager.h>
@@ -109,6 +110,13 @@ namespace LC::Util
 		return Qt::mightBeRichText (text) ?
 				RichTextString { text } :
 				PlainTextString { text };
+	}
+
+	QString ToPlainText (const RichTextString& text)
+	{
+		auto plain = QTextDocumentFragment::fromHtml (text.ToHtml ()).toPlainText ();
+		plain.remove (QChar::ObjectReplacementCharacter);
+		return plain;
 	}
 
 	Entity MakeANCancel (const Entity& event)
