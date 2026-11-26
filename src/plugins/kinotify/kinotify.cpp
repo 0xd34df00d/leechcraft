@@ -142,7 +142,7 @@ namespace LC::Kinotify
 						[&notifyId] (KinotifyWidget *w) { return notifyId == w->GetID (); });
 
 		const auto& header = e.Entity_.toString ();
-		const auto& text = e.Additional_ [LC::EF::Text].toString ();
+		const auto& text = Util::GetNotificationText (e);
 		const auto sameDataPos =
 				std::find_if (ActiveNotifications_.begin (), ActiveNotifications_.end (),
 						[&header, &text] (KinotifyWidget *w)

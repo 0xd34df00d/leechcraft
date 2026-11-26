@@ -69,7 +69,7 @@ namespace LC::Kinotify
 		{
 			QStringList result;
 			for (const auto notification : notifications)
-				result << notification->GetBody ();
+				result << notification->GetBody ().ToHtml ();
 			result.sort ();
 			return result;
 		}

@@ -98,7 +98,7 @@ namespace LC::Kinotify
 		return Title_;
 	}
 
-	QString KinotifyWidget::GetBody () const
+	Util::RichTextString KinotifyWidget::GetBody () const
 	{
 		return Body_;
 	}
@@ -113,7 +113,7 @@ namespace LC::Kinotify
 		ID_ = id;
 	}
 
-	void KinotifyWidget::SetContent (const QString& title, const QString& body)
+	void KinotifyWidget::SetContent (const QString& title, const Util::RichTextString& body)
 	{
 		Title_ = title;
 		Body_ = body;
@@ -166,7 +166,7 @@ namespace LC::Kinotify
 	void KinotifyWidget::SetData ()
 	{
 		Ui_.Title_->setText ("<h3>" + Title_ + "</h3>");
-		Ui_.Body_->setText (Body_);
+		Ui_.Body_->setText (Body_.ToHtml ());
 		Ui_.Image_->setPixmap (Pixmap_);
 
 		for (int i = 0; i < ActionsNames_.size (); ++i)
@@ -187,7 +187,7 @@ namespace LC::Kinotify
 		}
 
 		const auto maxWidth = PreferredGeometry ().width () / 3;
-		auto twoLineWidth = Ui_.Body_->fontMetrics ().horizontalAdvance (Body_) / 2;
+		auto twoLineWidth = Ui_.Body_->fontMetrics ().horizontalAdvance (Body_.ToHtml ()) / 2;
 
 		const auto& theseMargins = layout ()->contentsMargins ();
 		const auto layoutPixels = Ui_.TopDisplayLayout_->spacing () + theseMargins.left () + theseMargins.right ();

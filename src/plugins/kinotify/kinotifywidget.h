@@ -10,6 +10,7 @@
 #pragma once
 
 #include <QStateMachine>
+#include <util/sll/richtextstring.h>
 #include "ui_kinotifywidget.h"
 
 using QObject_ptr = std::shared_ptr<QObject>;
@@ -26,7 +27,7 @@ namespace LC::Kinotify
 		QString ID_;
 
 		QString Title_;
-		QString Body_;
+		Util::RichTextString Body_;
 		QPixmap Pixmap_;
 		QStringList ActionsNames_;
 
@@ -37,12 +38,12 @@ namespace LC::Kinotify
 		explicit KinotifyWidget (int timeout, QWidget *widget = nullptr);
 
 		QString GetTitle () const;
-		QString GetBody () const;
+		Util::RichTextString GetBody () const;
 
 		QString GetID () const;
 		void SetID (const QString&);
 
-		void SetContent (const QString&, const QString&);
+		void SetContent (const QString&, const Util::RichTextString&);
 		void SetPixmap (QPixmap);
 		void SetActions (const QStringList&, QObject_ptr);
 
