@@ -34,7 +34,8 @@ namespace Sysnotify
 		qDBusRegisterMetaType<ImageHint> ();
 
 		Connection_.reset (new QDBusInterface ("org.freedesktop.Notifications",
-					"/org/freedesktop/Notifications"));
+					"/org/freedesktop/Notifications",
+					"org.freedesktop.Notifications"));
 		if (!Connection_->isValid ())
 			qWarning () << Q_FUNC_INFO
 					<< Connection_->lastError ();
