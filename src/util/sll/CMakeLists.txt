@@ -20,6 +20,7 @@ add_util_library (util-sll
 		demangle.cpp
 		logging.cpp
 		exceptions.cpp
+		richtextstring.cpp
 	USES Concurrent Xml
 	)
 
