@@ -16,6 +16,7 @@
 #include <interfaces/an/ianemitter.h>
 #include <interfaces/core/icoreproxy.h>
 #include <util/compat/functional.h>
+#include <util/sll/richtextstring.h>
 #include <util/threads/coro/taskfwd.h>
 #include "xpcconfig.h"
 
@@ -156,6 +157,13 @@ namespace LC::Util
 	UTIL_XPC_API Entity MakeNotification (const QString& header,
 			const QString& text,
 			Priority priority);
+
+	/** @brief Returns the text of a notification.
+	 *
+	 * @param notification An `Entity` made by `MakeNotification()` or
+	 * `MakeAN()`.
+	 */
+	UTIL_XPC_API RichTextString GetNotificationText (const Entity& notification);
 
 	/** @brief Makes an event for canceling another Advanced
 	 * Notifications event.

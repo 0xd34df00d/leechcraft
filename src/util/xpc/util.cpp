@@ -8,11 +8,13 @@
 
 #include "util.h"
 #include <QStandardItem>
+#include <QTextDocument>
 #include <util/sll/qtutil.h>
 #include <interfaces/idatafilter.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <util/xpc/an/entityfields.h>
+#include <util/xpc/entityconstants.h>
 #include <interfaces/ipersistentstorageplugin.h>
 #include <interfaces/ijobholder.h>
 
@@ -99,6 +101,14 @@ namespace LC::Util
 		result.Additional_ [QStringLiteral ("Text")] = text;
 		result.Additional_ [QStringLiteral ("Priority")] = QVariant::fromValue (priority);
 		return result;
+	}
+
+	RichTextString GetNotificationText (const Entity& notification)
+	{
+		const auto& text = notification.Additional_ [EF::Text].toString ();
+		return Qt::mightBeRichText (text) ?
+				RichTextString { text } :
+				PlainTextString { text };
 	}
 
 	Entity MakeANCancel (const Entity& event)
