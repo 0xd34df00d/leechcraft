@@ -11,6 +11,7 @@
 #include <QStringList>
 #include <QPixmap>
 #include <interfaces/structures.h>
+#include <util/sll/richtextstring.h>
 
 namespace LC::AdvancedNotifications
 {
@@ -22,7 +23,7 @@ namespace LC::AdvancedNotifications
 		QString Category_;
 		QStringList VisualPath_;
 		QString Title_;
-		QString Text_;
+		Util::RichTextString Text_;
 		QPixmap Pixmap_;
 
 		QObject_ptr HandlingObject_;

@@ -115,6 +115,7 @@ Rectangle {
                     width: parent.width - eventPic.width - eventPic.anchors.leftMargin - anchors.leftMargin - dismissButton.width - 10
 
                     text: model.modelData.text
+                    textFormat: Text.StyledText
                     color: colorProxy.color_TextBox_TextColor
 
                     wrapMode: Text.Wrap

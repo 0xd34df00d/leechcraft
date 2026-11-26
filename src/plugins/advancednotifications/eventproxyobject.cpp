@@ -60,7 +60,7 @@ namespace LC::AdvancedNotifications
 
 	QString EventProxyObject::text () const
 	{
-		return E_.Text_;
+		return E_.Text_.ToHtml ();
 	}
 
 	QVariant EventProxyObject::eventActionsModel () const

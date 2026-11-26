@@ -78,7 +78,7 @@ namespace LC::AdvancedNotifications
 					.Category_ = cat,
 					.VisualPath_ = e.Additional_ [AN::EF::VisualPath].toStringList (),
 					.Title_ = e.Entity_.toString (),
-					.Text_ = e.Additional_ [EF::Text].toString (),
+					.Text_ = Util::GetNotificationText (e),
 					.Pixmap_ = {},
 					.HandlingObject_ = e.Additional_ [EF::HandlingObject].value<QObject_ptr> (),
 					.Actions_ = e.Additional_ [EF::NotificationActions].toStringList (),
@@ -279,7 +279,9 @@ namespace LC::AdvancedNotifications
 
 		if (!data.Pixmap_.isNull ())
 			menu->setIcon (data.Pixmap_);
-		menu->setToolTip (data.Text_);
+
+		const auto& html = data.Text_.ToHtml ();
+		menu->setToolTip (html.isEmpty () ? QString {} : "<qt>%1</qt>"_qs.arg (html));
 
 		int actionIdx = 0;
 		for (const auto& actionName : data.Actions_)

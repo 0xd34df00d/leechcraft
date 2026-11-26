@@ -9,8 +9,9 @@
 #pragma once
 
 #include <QString>
+#include <util/sll/richtextstring.h>
 
 namespace LC::AdvancedNotifications
 {
-	QString ToPlainTextLine (const QString& text);
+	QString ToPlainTextLine (const Util::RichTextString& text);
 }

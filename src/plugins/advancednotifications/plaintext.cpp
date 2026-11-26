@@ -7,16 +7,13 @@
  **********************************************************************/
 
 #include "plaintext.h"
-#include <QTextDocument>
 #include <QTextDocumentFragment>
 
 namespace LC::AdvancedNotifications
 {
-	QString ToPlainTextLine (const QString& text)
+	QString ToPlainTextLine (const Util::RichTextString& text)
 	{
-		auto plain = Qt::mightBeRichText (text) ?
-				QTextDocumentFragment::fromHtml (text).toPlainText () :
-				text;
+		auto plain = QTextDocumentFragment::fromHtml (text.ToHtml ()).toPlainText ();
 		plain.remove (QChar::ObjectReplacementCharacter);
 		return plain.simplified ();
 	}
