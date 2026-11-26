@@ -104,6 +104,11 @@ namespace LC::Azoth::Sarin
 		return acc;
 	}
 
+	void ToxAccount::Release ()
+	{
+		emit Emitter_.removedCLItems (GetCLEntries ());
+	}
+
 	void ToxAccount::SetNickname (const QString& nickname)
 	{
 		if (nickname == Nick_)

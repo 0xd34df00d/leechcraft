@@ -68,6 +68,8 @@ namespace LC::Azoth::Sarin
 		QByteArray Serialize ();
 		static ToxAccount* Deserialize (const QByteArray&, ToxProtocol*);
 
+		void Release ();
+
 		void SetNickname (const QString&);
 
 		ToxContact* GetByPubkey (Pubkey) const;

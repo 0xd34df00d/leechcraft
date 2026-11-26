@@ -28,7 +28,7 @@ namespace LC::Azoth::Sarin
 	ToxProtocol::~ToxProtocol ()
 	{
 		for (auto acc : Accounts_)
-			emit accountRemoved (acc);
+			ReleaseAccount (acc);
 	}
 
 	QObject* ToxProtocol::GetQObject ()
@@ -100,7 +100,8 @@ namespace LC::Azoth::Sarin
 		settings.remove (account->GetAccountId ().ToString ());
 
 		Accounts_.removeOne (account);
-		emit accountRemoved (accObj);
+		account->ChangeState ({ SOffline, {} });
+		ReleaseAccount (account);
 	}
 
 	QWidget* ToxProtocol::GetMUCJoinWidget ()
@@ -145,5 +146,12 @@ namespace LC::Azoth::Sarin
 				QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_Sarin_Accounts" };
 		settings.setValue (account->GetAccountId ().ToString (), account->Serialize ());
+	}
+
+	void ToxProtocol::ReleaseAccount (ToxAccount *account)
+	{
+		account->Release ();
+		emit accountRemoved (account);
+		delete account;
 	}
 }

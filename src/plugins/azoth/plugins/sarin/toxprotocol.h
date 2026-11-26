@@ -48,6 +48,7 @@ namespace LC::Azoth::Sarin
 		void LoadAccounts ();
 		void InitConnections (ToxAccount*);
 		void SaveAccount (ToxAccount*);
+		void ReleaseAccount (ToxAccount*);
 	signals:
 		void accountAdded (QObject*) override;
 		void accountRemoved (QObject*) override;
