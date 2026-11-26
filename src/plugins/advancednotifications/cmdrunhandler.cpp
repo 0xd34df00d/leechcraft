@@ -10,6 +10,8 @@
 #include <QProcess>
 #include <util/xpc/an/constants.h>
 #include <util/xpc/an/entityfields.h>
+#include <util/xpc/entityconstants.h>
+#include <util/xpc/util.h>
 #include "notificationrule.h"
 
 namespace LC::AdvancedNotifications
@@ -43,7 +45,9 @@ namespace LC::AdvancedNotifications
 			if (!e.Additional_.contains (stripped))
 				continue;
 
-			arg = e.Additional_ [stripped].toString ();
+			arg = stripped == EF::Text ?
+					Util::ToPlainText (Util::GetNotificationText (e)) :
+					e.Additional_ [stripped].toString ();
 		}
 
 		QProcess::startDetached (params.Cmd_, args);
