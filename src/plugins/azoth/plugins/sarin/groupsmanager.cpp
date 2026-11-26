@@ -17,7 +17,8 @@
 namespace LC::Azoth::Sarin
 {
 	GroupsManager::GroupsManager (ToxAccount& acc)
-	: Acc_ { acc }
+	: QObject { &acc }
+	, Acc_ { acc }
 	{
 		connect (&acc,
 				&ToxAccount::threadChanged,

@@ -368,7 +368,7 @@ namespace LC::Azoth::Sarin
 					entry->SetState (getState (peer));
 				else
 				{
-					entry = new ConfParticipant { peer.Pkey_, peer.Name_, getState (peer), *this };
+					entry = new ConfParticipant { peer.Pkey_, peer.Name_, getState (peer), *this, this };
 					newEntries << entry;
 				}
 			}
