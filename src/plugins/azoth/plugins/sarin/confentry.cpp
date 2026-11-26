@@ -352,6 +352,8 @@ namespace LC::Azoth::Sarin
 
 	Util::ContextTask<void> ConfEntry::RefreshParticipants ()
 	{
+		co_await Util::AddContext { CoroContext_ };
+
 		const auto runner = Mgr_.GetAccount ().GetTox ();
 		if (!runner)
 			co_return;

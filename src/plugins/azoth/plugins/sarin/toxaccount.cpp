@@ -413,6 +413,8 @@ namespace LC::Azoth::Sarin
 
 	Util::ContextTask<void> ToxAccount::LoadFriends ()
 	{
+		co_await Util::AddContext { CoroContext_ };
+
 		if (!Tox_)
 			co_return;
 
