@@ -224,25 +224,9 @@ namespace LC::Azoth::Sarin
 			ReportError (tr ("Unable to invite %1 to %2: %3.").arg (name, GetEntryName (), ToUserString (result.GetLeft ())));
 	}
 
-	Util::ContextTask<void> ConfEntry::RunLeave ()
-	{
-		co_await Util::AddContext { CoroContext_ };
-
-		const auto runner = Mgr_.GetAccount ().GetTox ();
-		if (!runner)
-			co_return;
-
-		// Any error of tox_conference_delete means that conference is already gone,
-		// so we can ignore it for our purposes.
-		co_await runner->RunWithError (&tox_conference_delete, ConfNum_);
-		runner->Run (&ToxW::SaveState);
-
-		Mgr_.HandleSelfLeft (ConfNum_);
-	}
-
 	void ConfEntry::Leave (const QString&)
 	{
-		RunLeave ();
+		Mgr_.Leave (ConfNum_);
 	}
 
 	QString ConfEntry::GetNick () const

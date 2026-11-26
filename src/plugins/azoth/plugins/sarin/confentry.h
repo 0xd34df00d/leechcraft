@@ -99,7 +99,6 @@ namespace LC::Azoth::Sarin
 
 		void AppendMessage (ConfMessage*);
 	private:
-		Util::ContextTask<void> RunLeave ();
 		Util::ContextTask<void> RunInvite (Pubkey, QString);
 
 		LC_CORO_CONTEXT

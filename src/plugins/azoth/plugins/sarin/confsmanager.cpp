@@ -140,10 +140,21 @@ namespace LC::Azoth::Sarin
 		entry->RefreshParticipants ();
 	}
 
-	void ConfsManager::HandleSelfLeft (uint32_t confNum)
+	Util::ContextTask<void> ConfsManager::Leave (uint32_t confNum)
 	{
+		co_await Util::AddContext { CoroContext_ };
+
+		const auto runner = Acc_.GetTox ();
+		if (!runner)
+			co_return;
+
+		// Any error of tox_conference_delete means that conference is already gone,
+		// so we can ignore it for our purposes.
+		co_await runner->RunWithError (&tox_conference_delete, confNum);
+		runner->Run (&ToxW::SaveState);
+
 		if (const auto entry = Conf2Entry_.take (confNum))
-			entry->deleteLater ();
+			delete entry;
 		else
 			qWarning () << "unknown entry for" << confNum;
 	}

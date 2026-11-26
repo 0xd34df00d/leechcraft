@@ -39,7 +39,7 @@ namespace LC::Azoth::Sarin
 		QList<ICLEntry*> GetCLEntries () const;
 
 		Util::ContextTask<void> Join (QByteArray cookie, ConfType type, uint32_t friendNum);
-		void HandleSelfLeft (uint32_t);
+		Util::ContextTask<void> Leave (uint32_t confNum);
 	private:
 		void HandleInvited (const ConfInvitationEvent&);
 		void HandleToxThreadChanged (const std::shared_ptr<ToxRunner>&);
