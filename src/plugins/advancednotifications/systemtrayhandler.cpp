@@ -26,7 +26,6 @@
 #include <util/threads/coro/future.h>
 #include <util/threads/coro.h>
 #include "generalhandler.h"
-#include "plaintext.h"
 #include "xmlsettingsmanager.h"
 #include "visualnotificationsview.h"
 
@@ -196,7 +195,7 @@ namespace LC::AdvancedNotifications
 		{
 			constexpr auto maxChars = 60;
 			const auto& metrics = menu.fontMetrics ();
-			auto label = metrics.elidedText (ToPlainTextLine (data.Text_),
+			auto label = metrics.elidedText (Util::ToPlainText (data.Text_).simplified (),
 					Qt::ElideRight,
 					maxChars * metrics.averageCharWidth ());
 			label.replace ('&', "&&"_ql);

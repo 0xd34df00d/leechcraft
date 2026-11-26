@@ -18,7 +18,6 @@
 #include <util/xpc/stdanfields.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
-#include "plaintext.h"
 
 namespace LC::AdvancedNotifications
 {
@@ -42,7 +41,7 @@ namespace LC::AdvancedNotifications
 		QList<QStandardItem*> row
 		{
 			new QStandardItem { e.Entity_.toString () },
-			new QStandardItem { ToPlainTextLine (Util::GetNotificationText (e)) },
+			new QStandardItem { Util::ToPlainText (Util::GetNotificationText (e)).simplified () },
 			new QStandardItem { Util::AN::GetCategoryName (category) },
 			new QStandardItem { Util::AN::GetTypeName (type) }
 		};
