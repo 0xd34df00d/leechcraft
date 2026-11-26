@@ -35,6 +35,17 @@ namespace LC::Azoth::Sarin
 		return Acc_;
 	}
 
+	QList<ICLEntry*> ConfsManager::GetCLEntries () const
+	{
+		QList<ICLEntry*> result;
+		for (const auto conf : Conf2Entry_)
+		{
+			result << conf;
+			result += conf->GetParticipants ();
+		}
+		return result;
+	}
+
 	namespace
 	{
 		Util::Task<std::optional<uint32_t>> JoinTextConf (std::shared_ptr<ToxRunner> tox, QByteArray cookie, uint32_t friendNum)

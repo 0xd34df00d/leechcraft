@@ -14,6 +14,11 @@
 #include <util/threads/coro/corocontext.h>
 #include "types.h"
 
+namespace LC::Azoth
+{
+	class ICLEntry;
+}
+
 namespace LC::Azoth::Sarin
 {
 	struct ConfInvitationEvent;
@@ -31,6 +36,7 @@ namespace LC::Azoth::Sarin
 		explicit ConfsManager (ToxAccount&);
 
 		ToxAccount& GetAccount ();
+		QList<ICLEntry*> GetCLEntries () const;
 
 		Util::ContextTask<void> Join (QByteArray cookie, ConfType type, uint32_t friendNum);
 		void HandleSelfLeft (uint32_t);

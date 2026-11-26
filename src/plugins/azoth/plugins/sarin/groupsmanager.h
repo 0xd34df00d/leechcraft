@@ -15,6 +15,11 @@
 #include <util/threads/coro/corocontext.h>
 #include "types.h"
 
+namespace LC::Azoth
+{
+	class ICLEntry;
+}
+
 namespace LC::Azoth::Sarin
 {
 	class GroupChatEntry;
@@ -32,6 +37,7 @@ namespace LC::Azoth::Sarin
 		explicit GroupsManager (ToxAccount&);
 
 		ToxAccount& GetAccount ();
+		QList<ICLEntry*> GetCLEntries () const;
 
 		using JoinResult = Util::Either<JoinGroupError, Util::Void>;
 		Util::ContextTask<JoinResult> Join (QString groupId, QString nick, QString password);

@@ -148,7 +148,9 @@ namespace LC::Azoth::Sarin
 
 	QList<ICLEntry*> ToxAccount::GetCLEntries ()
 	{
-		return { Contacts_.begin (), Contacts_.end() };
+		return QList<ICLEntry*> { Contacts_.begin (), Contacts_.end () } +
+				ConfsMgr_->GetCLEntries () +
+				GroupsMgr_->GetCLEntries ();
 	}
 
 	QString ToxAccount::GetAccountName () const

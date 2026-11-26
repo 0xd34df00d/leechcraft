@@ -31,6 +31,17 @@ namespace LC::Azoth::Sarin
 		return Acc_;
 	}
 
+	QList<ICLEntry*> GroupsManager::GetCLEntries () const
+	{
+		QList<ICLEntry*> result;
+		for (const auto group : Groups_)
+		{
+			result << group;
+			result += group->GetParticipants ();
+		}
+		return result;
+	}
+
 	Util::ContextTask<GroupsManager::JoinResult> GroupsManager::Join (QString groupId, QString nick, QString password)
 	{
 		co_await Util::AddContext { CoroContext_ };
