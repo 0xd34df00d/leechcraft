@@ -43,7 +43,6 @@ namespace LC::Azoth::Sarin
 		QList<IMessage*> AllMessages_;
 	public:
 		explicit ConfEntry (uint32_t confNum, ConfId confId, ConfsManager& mgr);
-		~ConfEntry () override;
 
 		ConfsManager& GetConfsManager ();
 

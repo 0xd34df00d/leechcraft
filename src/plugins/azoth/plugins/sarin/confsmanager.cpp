@@ -137,6 +137,8 @@ namespace LC::Azoth::Sarin
 
 		const auto entry = new ConfEntry { *confNum, *confId, *this };
 		Conf2Entry_ [*confNum] = entry;
+		emit Acc_.GetAccountEmitter ().gotCLItems ({ entry });
+
 		entry->RefreshParticipants ();
 	}
 
@@ -153,10 +155,18 @@ namespace LC::Azoth::Sarin
 		co_await runner->RunWithError (&tox_conference_delete, confNum);
 		runner->Run (&ToxW::SaveState);
 
-		if (const auto entry = Conf2Entry_.take (confNum))
-			delete entry;
-		else
+		const auto entry = Conf2Entry_.take (confNum);
+		if (!entry)
+		{
 			qWarning () << "unknown entry for" << confNum;
+			co_return;
+		}
+
+		auto removed = entry->GetParticipants ();
+		removed << entry;
+		emit Acc_.GetAccountEmitter ().removedCLItems (removed);
+
+		delete entry;
 	}
 
 	void ConfsManager::HandleInvited (const ConfInvitationEvent& invite)

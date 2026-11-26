@@ -25,14 +25,6 @@ namespace LC::Azoth::Sarin
 	, ConfNum_ { confNum }
 	, ConfIdHR_ { ToxId2HR (ConfId_) }
 	{
-		emit mgr.GetAccount ().GetAccountEmitter ().gotCLItems ({ this });
-	}
-
-	ConfEntry::~ConfEntry ()
-	{
-		auto removed = GetParticipants ();
-		removed << this;
-		emit Mgr_.GetAccount ().GetAccountEmitter ().removedCLItems (removed);
 	}
 
 	ConfsManager& ConfEntry::GetConfsManager ()
