@@ -21,11 +21,17 @@ namespace Azoth
 {
 	class IAccount;
 
+	class AccountsManager;
+	class CustomChatStyleManager;
+
 	class AccountsListWidget : public QWidget
 	{
 		Q_OBJECT
 
 		Ui::AccountsListWidget Ui_;
+
+		CustomChatStyleManager& CustomChatStyleManager_;
+
 		QStandardItemModel * const AccModel_;
 		QHash<IAccount*, QStandardItem*> Account2Item_;
 	public:
@@ -45,9 +51,10 @@ namespace Azoth
 			MUCVariant
 		};
 
-		AccountsListWidget (QWidget* = 0);
+		explicit AccountsListWidget (const AccountsManager& accounts, CustomChatStyleManager&, QWidget* = nullptr);
+	private:
+		void AddAccount (IAccount&);
 	private slots:
-		void addAccount (IAccount*);
 
 		void on_Add__released ();
 
@@ -58,8 +65,6 @@ namespace Azoth
 		void handleAccountSelected (const QModelIndex&);
 
 		void handleItemChanged (QStandardItem*);
-
-		void handleAccountRemoved (IAccount*);
 	};
 }
 }

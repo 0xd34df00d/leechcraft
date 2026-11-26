@@ -28,6 +28,7 @@
 #include "util/azoth/emitters/transfermanager.h"
 #include "util/azoth/util.h"
 #include "components/dialogs/filesenddialog.h"
+#include "components/managers/accountsmanager.h"
 #include "components/util/misc.h"
 #include "../../core.h"
 #include "../../xmlsettingsmanager.h"
@@ -40,10 +41,16 @@ namespace Azoth
 	using Transfers::JobContext;
 	using Transfers::DeofferReason;
 
-	TransferJobManager::TransferJobManager (AvatarsManager *am, QObject *parent)
+	TransferJobManager::TransferJobManager (AvatarsManager *am, const AccountsManager& accounts, QObject *parent)
 	: QObject { parent }
 	, AvatarsMgr_ { am }
 	{
+		accounts.OnEachAccount (*this,
+				[this] (IAccount& account)
+				{
+					if (const auto xferMgr = account.GetTransferManager ())
+						AddAccountManager (account, *xferMgr);
+				});
 	}
 
 	void TransferJobManager::AddAccountManager (IAccount& account, QObject& mgrObj)

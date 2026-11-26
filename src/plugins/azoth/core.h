@@ -19,6 +19,7 @@
 #include "interfaces/azoth/imucentry.h"
 #include "interfaces/azoth/iprotocol.h"
 #include "interfaces/azoth/isupportriex.h"
+#include "components/managers/accountsmanager.h"
 #include "components/managers/entriesmanager.h"
 #include "sourcetrackingmodel.h"
 #include "animatediconmanager.h"
@@ -71,7 +72,9 @@ namespace LC::Azoth
 		QObjectList ProtocolPlugins_;
 		QList<QAction*> AccountCreatorActions_;
 
-		EntriesManager Entries_;
+		AccountsManager Accounts_;
+		EntriesManager Entries_ { Accounts_ };
+
 		std::shared_ptr<AvatarsManager> AvatarsManager_;
 		Util::WkFontsWidget * const FontsWidget_;
 		CLTooltipManager * const TooltipManager_;
@@ -151,6 +154,7 @@ namespace LC::Azoth
 		 */
 		QStringList GetChatGroups () const;
 
+		const AccountsManager& GetAccountsManager () const;
 		const EntriesManager& GetEntriesManager () const;
 
 		TransferJobManager* GetTransferJobManager () const;
@@ -265,20 +269,8 @@ namespace LC::Azoth
 	private slots:
 		void handleNewProtocols (const QList<QObject*>&);
 
-		/** Handles a new account. This account may be both a new one
-		 * (added as a result of user's actions) and already existing
-		 * one (in case it was just read from settings, for example).
-		 *
-		 * account is expected to implement IAccount interface.
-		 */
-		void addAccount (QObject *account);
-
-		/** Handles account removal. Basically, just removes it and its
-		 * children from the contact list.
-		 *
-		 * account is expected to implement IAccount interface.
-		 */
-		void handleAccountRemoved (QObject *accObj);
+		void addAccount (IAccount&);
+		void handleAccountRemoved (const IAccount&);
 
 		void handleEntryGroupsChanged (ICLEntry *entry, QStringList);
 		void handleEntryGotMessage (QObject *msg);
@@ -299,16 +291,6 @@ namespace LC::Azoth
 
 		void handleRIEXItemsSuggested (QList<LC::Azoth::RIEXItem>, QObject*, QString);
 	signals:
-		/** Convenient signal for rethrowing the event of an account
-		 * being added.
-		 */
-		void accountAdded (IAccount*);
-
-		/** Convenient signal for rethrowing the event of an account
-		 * being removed.
-		 */
-		void accountRemoved (IAccount*);
-
 		// Plugin API
 		void hookAddingCLEntryBegin (LC::IHookProxy_ptr proxy,
 				QObject *entry);

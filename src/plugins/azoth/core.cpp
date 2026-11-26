@@ -19,7 +19,6 @@
 #include <QDomElement>
 #include <QStringListModel>
 #include <QMessageBox>
-#include <QClipboard>
 #include <QtDebug>
 #include <util/util.h>
 #include <util/xpc/util.h>
@@ -34,7 +33,6 @@
 #include <util/sll/qtutil.h>
 #include <util/sll/urloperator.h>
 #include <util/sll/util.h>
-#include <util/threads/futures.h>
 #include <util/xpc/entityconstants.h>
 #include <interfaces/iplugin2.h>
 #include <util/xpc/an/constants.h>
@@ -55,7 +53,6 @@
 #include "interfaces/azoth/ihaveservicediscovery.h"
 #include "interfaces/azoth/iextselfinfoaccount.h"
 #include "interfaces/azoth/ihistoryplugin.h"
-#include "interfaces/azoth/icanhavesslerrors.h"
 #include "interfaces/azoth/ichatstyleresourcesource.h"
 #include "util/azoth/entryidops.h"
 #include "util/azoth/util.h"
@@ -84,39 +81,10 @@
 #include "notificationsmanager.h"
 #include "avatarsmanager.h"
 #include "historysyncer.h"
-#include "sslerrorshandler.h"
 #include "roles.h"
 
 namespace LC::Azoth
 {
-	QDataStream& operator<< (QDataStream& out, const EntryStatus& status)
-	{
-		quint8 version = 1;
-		out << version
-			<< static_cast<quint8> (status.State_)
-			<< status.StatusString_;
-		return out;
-	}
-
-	QDataStream& operator>> (QDataStream& in, EntryStatus& status)
-	{
-		quint8 version = 0;
-		in >> version;
-		if (version != 1)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown version"
-					<< version;
-			return in;
-		}
-
-		quint8 state;
-		in >> state
-			>> status.StatusString_;
-		status.State_ = static_cast<State> (state);
-		return in;
-	}
-
 	namespace
 	{
 		QByteArray GetStyleOptName (QObject *entry)
@@ -148,14 +116,14 @@ namespace LC::Azoth
 
 	Core::Core ()
 	: Proxy_ (nullptr)
-	, AvatarsManager_ (std::make_shared<AvatarsManager> (Entries_))
+	, AvatarsManager_ (std::make_shared<AvatarsManager> (Accounts_, Entries_))
 	, FontsWidget_ { new Util::WkFontsWidget { &XmlSettingsManager::Instance () } }
 	, TooltipManager_ (new CLTooltipManager (*AvatarsManager_))
 	, ChatTabsManager_ (new ChatTabsManager (AvatarsManager_.get (), FontsWidget_, Entries_, this))
-	, XferJobManager_ (new TransferJobManager { AvatarsManager_.get () })
+	, XferJobManager_ (new TransferJobManager { AvatarsManager_.get (), Accounts_ })
 	, CLModel_ (new CLModel (TooltipManager_, Entries_, *ChatTabsManager_, *XferJobManager_, this))
 	, CoreCommandsManager_ (new CoreCommandsManager (this))
-	, NotificationsManager_ (new NotificationsManager (AvatarsManager_.get (), Entries_, *ChatTabsManager_))
+	, NotificationsManager_ (new NotificationsManager (AvatarsManager_.get (), Accounts_, Entries_, *ChatTabsManager_))
 	, ActionsManager_ (new ActionsManager (*NotificationsManager_, *AvatarsManager_, this))
 	, ItemIconManager_ (new AnimatedIconManager<QStandardItem*> ([] (QStandardItem *it, const QIcon& ic)
 						{ it->setIcon (ic); }))
@@ -163,10 +131,10 @@ namespace LC::Azoth
 	, ChatStylesOptionsModel_ (new SourceTrackingModel<IChatStyleResourceSource> ({ tr ("Chat style") }))
 	, PluginManager_ (new PluginManager)
 	, PluginProxyObject_ (new ProxyObject (AvatarsManager_.get (), Entries_))
-	, CallManager_ (new CallManager)
+	, CallManager_ (new CallManager (Accounts_))
 	, UnreadQueueManager_ (new UnreadQueueManager)
 	, CustomChatStyleManager_ (new CustomChatStyleManager)
-	, HistorySyncer_ (std::make_shared<HistorySyncer> ())
+	, HistorySyncer_ (std::make_shared<HistorySyncer> (Accounts_))
 	{
 		// TODO de-Core-ification: this should be stack-owned after all the args instead of `QObject`-owned
 		new Notifications::TypingNotifier { Entries_, *ChatTabsManager_, *NotificationsManager_, this };
@@ -218,6 +186,12 @@ namespace LC::Azoth
 					const auto item = EnsureAccountItem (acc);
 					item->model ()->dataChanged (item->index (), item->index ());
 				});
+
+		Accounts_.OnEachAccount (*this, std::bind_front (&Core::addAccount, this));
+		connect (&Accounts_,
+				&AccountsManager::accountRemoved,
+				this,
+				&Core::handleAccountRemoved);
 
 		PluginManager_->RegisterHookable (this);
 		PluginManager_->RegisterHookable (CLModel_);
@@ -583,6 +557,11 @@ namespace LC::Azoth
 		return result.values ();
 	}
 
+	const AccountsManager& Core::GetAccountsManager () const
+	{
+		return Accounts_;
+	}
+
 	const EntriesManager& Core::GetEntriesManager () const
 	{
 		return Entries_;
@@ -636,8 +615,7 @@ namespace LC::Azoth
 
 	void Core::AddProtocolPlugin (QObject *plugin)
 	{
-		IProtocolPlugin *ipp =
-			qobject_cast<IProtocolPlugin*> (plugin);
+		IProtocolPlugin *ipp = qobject_cast<IProtocolPlugin*> (plugin);
 		if (!ipp)
 			qWarning () << Q_FUNC_INFO
 				<< "plugin"
@@ -1479,118 +1457,41 @@ namespace LC::Azoth
 	void Core::handleNewProtocols (const QList<QObject*>& protocols)
 	{
 		for (const auto protoObj : protocols)
-		{
-			const auto proto = qobject_cast<IProtocol*> (protoObj);
-
-			for (const auto accObj : proto->GetRegisteredAccounts ())
-				addAccount (accObj);
-
-			connect (proto->GetQObject (),
-					SIGNAL (accountAdded (QObject*)),
-					this,
-					SLOT (addAccount (QObject*)));
-			connect (proto->GetQObject (),
-					SIGNAL (accountRemoved (QObject*)),
-					this,
-					SLOT (handleAccountRemoved (QObject*)));
-		}
+			Accounts_.AddProtocol (qobject_ref_cast<IProtocol> (protoObj));
 	}
 
-	namespace
+	void Core::addAccount (IAccount& account)
 	{
-		std::optional<EntryStatus> LoadSavedStatus (IAccount *account)
-		{
-			const auto& var = XmlSettingsManager::Instance ().property (account->GetAccountId ().ToUtf8 ());
-			if (var.isNull () || !var.canConvert<QByteArray> ())
-				return {};
+		const auto item = EnsureAccountItem (&account);
 
-			EntryStatus s;
-			QDataStream stream { var.toByteArray () };
-			stream >> s;
-
-			if (s.State_ == State::SConnecting)
-				s.State_ = State::SOnline;
-
-			return s;
-		}
-	}
-
-	void Core::addAccount (QObject *accObject)
-	{
-		IAccount *account = qobject_cast<IAccount*> (accObject);
-		if (!account)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "account doesn't implement IAccount*"
-					<< accObject
-					<< sender ();
-			return;
-		}
-
-		const auto& accountId = account->GetAccountId ();
-		const auto& accountName = account->GetAccountName ();
-
-		AvatarsManager_->AddAccount (*account);
-
-		EnsureAccountItem (account);
-		Entries_.AddAccount (*account);
-
-		HistorySyncer_->AddAccount (account);
-
-		emit accountAdded (account);
-
-		NotificationsManager_->AddAccount (accObject);
-
-		auto& emitter = account->GetAccountEmitter ();
+		auto& emitter = account.GetAccountEmitter ();
 		connect (&emitter,
 				&Emitters::Account::statusChanged,
 				this,
-				[this, account] (const EntryStatus& status)
+				[this, item] (const EntryStatus& status)
 				{
-					QByteArray serializedStatus;
-					{
-						QDataStream stream (&serializedStatus, QIODevice::WriteOnly);
-						stream << status;
-					}
-					XmlSettingsManager::Instance ().setProperty (account->GetAccountId ().ToUtf8 (), serializedStatus);
-					ItemIconManager_->SetIcon (EnsureAccountItem (account), ResourcesManager::Instance ().GetIconPathForState (status.State_).get ());
+					ItemIconManager_->SetIcon (item, ResourcesManager::Instance ().GetIconPathForState (status.State_).get ());
 				});
-
 		connect (&emitter,
 				&Emitters::Account::accountRenamed,
 				this,
-				[this, account] (const QString& name) { EnsureAccountItem (account)->setText (name); });
+				[item] (const QString& name) { item->setText (name); });
 
-		if (qobject_cast<IHaveServiceDiscovery*> (accObject))
-			connect (accObject,
+		if (qobject_cast<IHaveServiceDiscovery*> (account.GetQObject ()))
+			connect (account.GetQObject (),
 					SIGNAL (gotSDSession (QObject*)),
 					this,
 					SLOT (handleGotSDSession (QObject*)));
 
-		if (const auto& s = LoadSavedStatus (account))
-			account->ChangeState (*s);
-
-		if (const auto xferMgr = account->GetTransferManager ())
-			XferJobManager_->AddAccountManager (*account, *xferMgr);
-
-		CallManager_->AddAccount (account->GetQObject ());
-
-		if (qobject_cast<ISupportRIEX*> (account->GetQObject ()))
-			connect (account->GetQObject (),
+		if (qobject_cast<ISupportRIEX*> (account.GetQObject ()))
+			connect (account.GetQObject (),
 					SIGNAL (riexItemsSuggested (QList<LC::Azoth::RIEXItem>, QObject*, QString)),
 					this,
 					SLOT (handleRIEXItemsSuggested (QList<LC::Azoth::RIEXItem>, QObject*, QString)));
-
-		if (const auto ichse = qobject_cast<ICanHaveSslErrors*> (account->GetQObject ()))
-			new SslErrorsHandler { SslErrorsHandler::Account { accountId, accountName }, ichse };
 	}
 
-	void Core::handleAccountRemoved (QObject *accObj)
+	void Core::handleAccountRemoved (const IAccount& account)
 	{
-		auto& account = qobject_ref_cast<IAccount> (accObj);
-
-		emit accountRemoved (&account);
-
 		if (const auto item = GetAccountItem (&account))
 		{
 			ItemIconManager_->Cancel (item);

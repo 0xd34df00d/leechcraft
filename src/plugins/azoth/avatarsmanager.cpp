@@ -18,6 +18,7 @@
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iextselfinfoaccount.h"
 #include "util/azoth/util.h"
+#include "components/managers/accountsmanager.h"
 #include "components/managers/entriesmanager.h"
 #include "avatarsstorage.h"
 #include "xmlsettingsmanager.h"
@@ -29,7 +30,7 @@ namespace LC::Azoth
 		constexpr auto CacheBiggestMultiplier = 2;
 	}
 
-	AvatarsManager::AvatarsManager (const EntriesManager& entries, QObject *parent)
+	AvatarsManager::AvatarsManager (const AccountsManager& accounts, const EntriesManager& entries, QObject *parent)
 	: QObject { parent }
 	, Entries_ { entries }
 	{
@@ -40,6 +41,8 @@ namespace LC::Azoth
 					const auto target = static_cast<qsizetype> (size) * 1024 * 1024;
 					ImageCache_.setMaxCost (std::max (target, BiggestImageSeen_ * CacheBiggestMultiplier));
 				});
+
+		accounts.OnEachAccount (*this, std::bind_front (&AvatarsManager::AddAccount, this));
 
 		connect (&Entries_,
 				&EntriesManager::added,

@@ -17,6 +17,8 @@ namespace LC::Azoth
 	class IAccount;
 	class ICLEntry;
 
+	class AccountsManager;
+
 	class EntriesManager
 		: public QObject
 		, public IEntriesManager
@@ -29,9 +31,7 @@ namespace LC::Azoth
 		constexpr static quint64 StableSentinel = quint64 {};
 		quint64 StableCounter_ = StableSentinel + 1;
 	public:
-		using QObject::QObject;
-
-		void AddAccount (IAccount&);
+		explicit EntriesManager (const AccountsManager&, QObject* = nullptr);
 
 		template<typename T = ICLEntry>
 		T& GetEntry (const GlobalStrongestId&) const;
@@ -48,6 +48,8 @@ namespace LC::Azoth
 		std::optional<quint64> GetSessionStableId (const GlobalStrongestId&) const override;
 		using IEntriesManager::GetSessionStableId;
 	private:
+		void AddAccount (IAccount&);
+
 		void AddCLEntries (const QList<ICLEntry*>&, IAccount&);
 		void RemoveCLEntries (const QList<ICLEntry*>&, IAccount&);
 	signals:

@@ -29,6 +29,8 @@ namespace LC
 namespace Azoth
 {
 	class ICLEntry;
+
+	class AccountsManager;
 	class AvatarsManager;
 
 	class TransferJobManager : public QObject
@@ -40,9 +42,7 @@ namespace Azoth
 
 		uint64_t OutgoingJobId_ = 0;
 	public:
-		explicit TransferJobManager (AvatarsManager*, QObject* = nullptr);
-
-		void AddAccountManager (IAccount&, QObject&);
+		explicit TransferJobManager (AvatarsManager*, const AccountsManager&, QObject* = nullptr);
 
 		void AcceptOffer (const IncomingOffer&, QString savePath = {});
 		void DeclineOffer (const IncomingOffer&);
@@ -57,6 +57,8 @@ namespace Azoth
 		};
 		bool SendFile (const OutgoingFileOffer&);
 	private:
+		void AddAccountManager (IAccount&, QObject&);
+
 		QString GenerateTransferEventId (const OutgoingFileOffer&);
 
 		void HandleJob (ITransferJob*, const Transfers::JobContext&);

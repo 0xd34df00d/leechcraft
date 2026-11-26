@@ -12,9 +12,16 @@
 #include "interfaces/azoth/ihaveavatars.h"
 #include "interfaces/azoth/imucentry.h"
 #include "util/azoth/util.h"
+#include "accountsmanager.h"
 
 namespace LC::Azoth
 {
+	EntriesManager::EntriesManager (const AccountsManager& accounts, QObject *parent)
+	: QObject { parent }
+	{
+		accounts.OnEachAccount (*this, std::bind_front (&EntriesManager::AddAccount, this));
+	}
+
 	void EntriesManager::AddAccount (IAccount& account)
 	{
 		AddCLEntries (account.GetCLEntries (), account);

@@ -16,8 +16,8 @@
 #include <QStyledItemDelegate>
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/iprotocol.h"
+#include "components/managers/accountsmanager.h"
 #include "components/util/misc.h"
-#include "core.h"
 #include "customchatstylemanager.h"
 #include "chatstyleoptionmanager.h"
 
@@ -127,9 +127,10 @@ namespace Azoth
 		}
 	}
 
-	AccountsListWidget::AccountsListWidget (QWidget* parent)
-	: QWidget (parent)
-	, AccModel_ (new QStandardItemModel (this))
+	AccountsListWidget::AccountsListWidget (const AccountsManager& accounts, CustomChatStyleManager& styles, QWidget* parent)
+	: QWidget { parent }
+	, CustomChatStyleManager_ { styles }
+	, AccModel_ { new QStandardItemModel { this } }
 	{
 		Ui_.setupUi (this);
 
@@ -142,25 +143,7 @@ namespace Azoth
 				this,
 				SLOT (handleItemChanged (QStandardItem*)));
 
-		connect (&Core::Instance (),
-				SIGNAL (accountAdded (IAccount*)),
-				this,
-				SLOT (addAccount (IAccount*)));
-		connect (&Core::Instance (),
-				SIGNAL (accountRemoved (IAccount*)),
-				this,
-				SLOT (handleAccountRemoved (IAccount*)));
-
-		for (const auto acc : Core::Instance ().GetAccounts ())
-			addAccount (acc);
-
 		Ui_.Accounts_->setModel (AccModel_);
-
-		connect (Ui_.Accounts_->selectionModel (),
-				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
-				this,
-				SLOT (handleAccountSelected (QModelIndex)));
-		handleAccountSelected ({});
 
 		const auto& fm = fontMetrics ();
 		Ui_.Accounts_->setColumnWidth (Column::Name, fm.horizontalAdvance ("Some typical very long account name"));
@@ -168,39 +151,58 @@ namespace Azoth
 		Ui_.Accounts_->setColumnWidth (Column::ChatVariant, fm.horizontalAdvance ("Some typical style variant (alternate)"));
 		Ui_.Accounts_->setColumnWidth (Column::MUCStyle, fm.horizontalAdvance ("Some typical style"));
 		Ui_.Accounts_->setColumnWidth (Column::MUCVariant, fm.horizontalAdvance ("Some typical style variant (alternate)"));
+
+		connect (&accounts,
+				&AccountsManager::accountRemoved,
+				this,
+				[this] (IAccount& acc)
+				{
+					const auto item = Account2Item_.take (&acc);
+					if (!item)
+					{
+						qWarning () << "account not found";
+						return;
+					}
+					AccModel_->removeRow (item->row ());
+				});
+		accounts.OnEachAccount (*this, std::bind_front (&AccountsListWidget::AddAccount, this));
+
+		connect (Ui_.Accounts_->selectionModel (),
+				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
+				this,
+				SLOT (handleAccountSelected (QModelIndex)));
+		handleAccountSelected ({});
 	}
 
-	void AccountsListWidget::addAccount (IAccount *acc)
+	void AccountsListWidget::AddAccount (IAccount& acc)
 	{
-		auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
+		auto proto = qobject_cast<IProtocol*> (acc.GetParentProtocol ());
 
-		auto name = new QStandardItem (acc->GetAccountName ());
+		auto name = new QStandardItem (acc.GetAccountName ());
 		name->setIcon (proto ? proto->GetProtocolIcon () : QIcon ());
 		name->setEditable (false);
 
-		const auto& stylePair = Core::Instance ()
-				.GetCustomChatStyleManager ()->GetStyleForAccount (acc);
+		const auto& stylePair = CustomChatStyleManager_.GetStyleForAccount (&acc);
 		auto style = new QStandardItem ();
 		style->setText (stylePair.first);
 		auto variant = new QStandardItem ();
 		variant->setText (stylePair.second);
 
-		const auto& mucPair = Core::Instance ()
-				.GetCustomChatStyleManager ()->GetMUCStyleForAccount (acc);
+		const auto& mucPair = CustomChatStyleManager_.GetMUCStyleForAccount (&acc);
 		auto mucStyle = new QStandardItem ();
 		mucStyle->setText (mucPair.first);
 		auto mucVariant = new QStandardItem ();
 		mucVariant->setText (mucPair.second);
 
-		auto chatStyler = new ChatStyleOptionManager (QByteArray (), acc->GetQObject ());
+		auto chatStyler = new ChatStyleOptionManager (QByteArray (), acc.GetQObject ());
 		chatStyler->AddEmptyVariant ();
-		auto mucStyler = new ChatStyleOptionManager (QByteArray (), acc->GetQObject ());
+		auto mucStyler = new ChatStyleOptionManager (QByteArray (), acc.GetQObject ());
 		mucStyler->AddEmptyVariant ();
 
 		const QList row { name, style, variant, mucStyle, mucVariant };
 		for (auto item : row)
 		{
-			item->setData (QVariant::fromValue<IAccount*> (acc), Role::AccObj);
+			item->setData (QVariant::fromValue<IAccount*> (&acc), Role::AccObj);
 			item->setData (QVariant::fromValue<ChatStyleOptionManager*> (chatStyler), Role::ChatStyleManager);
 			item->setData (QVariant::fromValue<ChatStyleOptionManager*> (mucStyler), Role::MUCStyleManager);
 		}
@@ -209,7 +211,7 @@ namespace Azoth
 		for (auto item : { style, variant, mucStyle, mucVariant })
 			Ui_.Accounts_->openPersistentEditor (item->index ());
 
-		Account2Item_ [acc] = name;
+		Account2Item_ [&acc] = name;
 	}
 
 	void AccountsListWidget::on_Add__released ()
@@ -263,45 +265,24 @@ namespace Azoth
 	void AccountsListWidget::handleItemChanged (QStandardItem *item)
 	{
 		auto acc = item->data (Role::AccObj).value<IAccount*> ();
-
-		const auto& styleMgr = Core::Instance ().GetCustomChatStyleManager ();
 		const auto& text = item->text ();
-
 		switch (item->column ())
 		{
 		case Column::ChatStyle:
-			styleMgr->Set (acc, CustomChatStyleManager::Settable::ChatStyle, text);
+			CustomChatStyleManager_.Set (acc, CustomChatStyleManager::Settable::ChatStyle, text);
 			break;
 		case Column::ChatVariant:
-			styleMgr->Set (acc, CustomChatStyleManager::Settable::ChatVariant, text);
+			CustomChatStyleManager_.Set (acc, CustomChatStyleManager::Settable::ChatVariant, text);
 			break;
 		case Column::MUCStyle:
-			styleMgr->Set (acc, CustomChatStyleManager::Settable::MUCStyle, text);
+			CustomChatStyleManager_.Set (acc, CustomChatStyleManager::Settable::MUCStyle, text);
 			break;
 		case Column::MUCVariant:
-			styleMgr->Set (acc, CustomChatStyleManager::Settable::MUCVariant, text);
+			CustomChatStyleManager_.Set (acc, CustomChatStyleManager::Settable::MUCVariant, text);
 			break;
 		default:
 			break;
 		}
-	}
-
-	void AccountsListWidget::handleAccountRemoved (IAccount *acc)
-	{
-		if (!Account2Item_.contains (acc))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "account"
-					<< acc->GetAccountName ()
-					<< acc->GetQObject ()
-					<< "from"
-					<< sender ()
-					<< "not found here";
-			return;
-		}
-
-		AccModel_->removeRow (Account2Item_ [acc]->row ());
-		Account2Item_.remove (acc);
 	}
 }
 }

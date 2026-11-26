@@ -77,6 +77,7 @@ LC_DEFINE_PLUGIN (
 		components/dialogs/simpledialog.cpp
 		components/dialogs/sslerrorsdialog.cpp
 		components/dialogs/userslistwidget.cpp
+		components/managers/accountsmanager.cpp
 		components/managers/entriesmanager.cpp
 		components/notifications/types.cpp
 		components/notifications/typingnotifier.cpp

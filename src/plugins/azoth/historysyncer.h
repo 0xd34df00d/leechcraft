@@ -23,6 +23,8 @@ namespace Azoth
 	class IAccount;
 	class IHistoryPlugin;
 
+	class AccountsManager;
+
 	class HistorySyncer : public QObject
 	{
 		Q_OBJECT
@@ -31,13 +33,14 @@ namespace Azoth
 
 		QSet<IAccount*> CurrentlyOnline_;
 	public:
-		HistorySyncer (QObject* = nullptr);
+		HistorySyncer (const AccountsManager&, QObject* = nullptr);
 
 		void AddStorage (IHistoryPlugin*);
-		void AddAccount (IAccount*);
 	private:
-		Util::ContextTask<void> SyncAccount (IAccount*);
-		Util::ContextTask<void> RequestAccountFrom (IAccount*, const std::optional<QDateTime>&);
+		void AddAccount (IAccount&);
+
+		Util::ContextTask<void> SyncAccount (IAccount&);
+		Util::ContextTask<void> RequestAccountFrom (IAccount&, const std::optional<QDateTime>&);
 
 		void AppendItems (const QList<History::SomeEntryWithMessages>&);
 

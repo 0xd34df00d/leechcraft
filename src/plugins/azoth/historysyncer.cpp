@@ -15,14 +15,16 @@
 #include "interfaces/azoth/ihistoryplugin.h"
 #include "interfaces/azoth/ihaveserverhistory.h"
 #include "util/azoth/util.h"
+#include "components/managers/accountsmanager.h"
 
 namespace LC
 {
 namespace Azoth
 {
-	HistorySyncer::HistorySyncer (QObject *parent)
+	HistorySyncer::HistorySyncer (const AccountsManager& accounts, QObject *parent)
 	: QObject { parent }
 	{
+		accounts.OnEachAccount (*this, std::bind_front (&HistorySyncer::AddAccount, this));
 	}
 
 	void HistorySyncer::AddStorage (IHistoryPlugin *storage)
@@ -30,30 +32,30 @@ namespace Azoth
 		Storages_ << storage;
 	}
 
-	void HistorySyncer::AddAccount (IAccount *acc)
+	void HistorySyncer::AddAccount (IAccount& acc)
 	{
-		const auto ihsh = qobject_cast<IHaveServerHistory*> (acc->GetQObject ());
+		const auto ihsh = qobject_cast<IHaveServerHistory*> (acc.GetQObject ());
 		if (!ihsh)
 			return;
 
-		connect (&acc->GetAccountEmitter (),
+		connect (&acc.GetAccountEmitter (),
 				&Emitters::Account::statusChanged,
 				this,
-				[this, acc] (const EntryStatus& status)
+				[this, &acc] (const EntryStatus& status)
 				{
 					if (!IsOnline (status.State_))
-						CurrentlyOnline_.remove (acc);
-					else if (!CurrentlyOnline_.contains (acc))
+						CurrentlyOnline_.remove (&acc);
+					else if (!CurrentlyOnline_.contains (&acc))
 					{
-						CurrentlyOnline_ << acc;
+						CurrentlyOnline_ << &acc;
 						SyncAccount (acc);
 					}
 				});
 	}
 
-	Util::ContextTask<void> HistorySyncer::SyncAccount (IAccount *acc)
+	Util::ContextTask<void> HistorySyncer::SyncAccount (IAccount& acc)
 	{
-		qDebug () << Q_FUNC_INFO << acc->GetAccountId ();
+		qDebug () << Q_FUNC_INFO << acc.GetAccountId ();
 
 		if (Storages_.isEmpty ())
 		{
@@ -62,9 +64,9 @@ namespace Azoth
 		}
 
 		co_await Util::AddContext { CoroContext_ };
-		co_await Util::AddContext { Util::CoroContext::Of (*acc->GetQObject ()) };
+		co_await Util::AddContext { Util::CoroContext::Of (*acc.GetQObject ()) };
 
-		auto results = co_await Util::InParallel (Storages_, &IHistoryPlugin::RequestMaxTimestamp, *acc)
+		auto results = co_await Util::InParallel (Storages_, &IHistoryPlugin::RequestMaxTimestamp, acc)
 				| std::views::filter ([] (const auto& opt) { return opt.has_value (); })
 				| std::views::transform ([] (const auto& opt) { return opt.value (); })
 				;
@@ -72,12 +74,12 @@ namespace Azoth
 		co_await RequestAccountFrom (acc, minDate);
 	}
 
-	Util::ContextTask<void> HistorySyncer::RequestAccountFrom (IAccount *acc, const std::optional<QDateTime>& from)
+	Util::ContextTask<void> HistorySyncer::RequestAccountFrom (IAccount& acc, const std::optional<QDateTime>& from)
 	{
-		qDebug () << acc->GetAccountId () << from;
+		qDebug () << acc.GetAccountId () << from;
 		co_await Util::AddContext { CoroContext_ };
 
-		const auto ihsh = qobject_cast<IHaveServerHistory*> (acc->GetQObject ());
+		const auto ihsh = qobject_cast<IHaveServerHistory*> (acc.GetQObject ());
 		const auto history = co_await ihsh->FetchServerHistory (from);
 		AppendItems (history);
 	}

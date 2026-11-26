@@ -21,6 +21,7 @@ namespace LC::Azoth
 {
 	class IAccount;
 
+	class AccountsManager;
 	class EntriesManager;
 
 	class AvatarsManager
@@ -47,10 +48,8 @@ namespace LC::Azoth
 		enum class FetchState : std::uint8_t { Running, Invalidated };
 		QHash<GlobalStrongestId, FetchState> FetchStates_;
 	public:
-		explicit AvatarsManager (const EntriesManager&, QObject* = nullptr);
+		explicit AvatarsManager (const AccountsManager&, const EntriesManager&, QObject* = nullptr);
 		~AvatarsManager ();
-
-		void AddAccount (IAccount&);
 
 		Util::ContextTask<std::optional<QByteArray>> GetAvatarData (GlobalStrongestId);
 
@@ -78,6 +77,8 @@ namespace LC::Azoth
 		bool HasActiveFailure (const GlobalStrongestId&) const;
 		bool IsEntryAccountOnline (const GlobalStrongestId&) const;
 		bool IsAlwaysAvatarless (const GlobalStrongestId&) const;
+
+		void AddAccount (IAccount&);
 	private slots:
 		Util::ContextTask<void> invalidateAvatar (QObject*);
 	signals:

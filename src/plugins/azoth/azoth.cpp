@@ -450,7 +450,7 @@ namespace Azoth
 		XmlSettingsDialog_->SetDataSource ("OutputAudioDevice", new QStringListModel (audioOuts));
 #endif
 
-		auto accountsList = new AccountsListWidget;
+		auto accountsList = new AccountsListWidget { Core::Instance ().GetAccountsManager (), *Core::Instance ().GetCustomChatStyleManager () };
 		XmlSettingsDialog_->SetCustomWidget ("AccountsWidget", accountsList);
 
 		const auto fontsWidget = Core::Instance ().GetFontsWidget ();

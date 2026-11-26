@@ -37,25 +37,21 @@ namespace Azoth
 		std::shared_ptr<QAudioOutput> OutDevice_;
 	};
 
-	CallManager::CallManager (QObject *parent)
+	CallManager::CallManager (const AccountsManager& accounts, QObject *parent)
 	: QObject (parent)
 	{
+		accounts.OnEachAccount (*this,
+				[&] (IAccount& account)
+				{
+					if (qobject_cast<ISupportMediaCalls*> (account.GetQObject ()))
+						connect (account.GetQObject (),
+								SIGNAL (called (QObject*)),
+								this,
+								SLOT (handleCall (QObject*)));
+				});
 	}
 
-	CallManager::~CallManager ()
-	{
-	}
-
-	void CallManager::AddAccount (QObject *account)
-	{
-		if (!qobject_cast<ISupportMediaCalls*> (account))
-			return;
-
-		connect (account,
-				SIGNAL (called (QObject*)),
-				this,
-				SLOT (handleCall (QObject*)));
-	}
+	CallManager::~CallManager () = default;
 
 	QObject* CallManager::Call (ICLEntry *entry, const QString& variant)
 	{

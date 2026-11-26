@@ -228,6 +228,7 @@ namespace Azoth
 	}
 
 	NotificationsManager::NotificationsManager (AvatarsManager *am,
+			const AccountsManager& accounts,
 			const EntriesManager& entries,
 			ChatTabsManager& tabs,
 			QObject *parent)
@@ -237,6 +238,7 @@ namespace Azoth
 	, EntriesMgr_ { entries }
 	, TabsMgr_ { tabs }
 	{
+		accounts.OnEachAccount (*this, std::bind_front (&NotificationsManager::AddAccount, this));
 	}
 
 	namespace
@@ -344,9 +346,8 @@ namespace Azoth
 		}
 	}
 
-	void NotificationsManager::AddAccount (QObject *accObject)
+	void NotificationsManager::AddAccount (IAccount& acc)
 	{
-		auto& acc = qobject_ref_cast<IAccount> (accObject);
 		auto& emitter = acc.GetAccountEmitter ();
 		connect (&emitter,
 				&Emitters::Account::itemSubscribed,

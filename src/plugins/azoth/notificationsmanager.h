@@ -30,6 +30,7 @@ namespace Azoth
 	class IMUCEntry;
 	class IAccount;
 
+	class AccountsManager;
 	class AvatarsManager;
 	class ChatTabsManager;
 	class EntriesManager;
@@ -54,9 +55,7 @@ namespace Azoth
 		static QVariantMap SourceFields (const ICLEntry&);
 		static QVariantMap RoomFields (const IMUCEntry&);
 
-		NotificationsManager (AvatarsManager*, const EntriesManager&, ChatTabsManager&, QObject* = nullptr);
-
-		void AddAccount (QObject*);
+		NotificationsManager (AvatarsManager*, const AccountsManager&, const EntriesManager&, ChatTabsManager&, QObject* = nullptr);
 
 		void AddCLEntry (QObject*);
 
@@ -67,6 +66,8 @@ namespace Azoth
 		void HandleMessage (IMessage*);
 		void Notify (ICLEntry& conversation, const Notifications::Typing& event);
 	private:
+		void AddAccount (IAccount&);
+
 		template<typename Event>
 		void SendNotification (const Event&, const EntryEventNotification& n);
 

@@ -29,6 +29,8 @@ namespace Azoth
 	class ICLEntry;
 	class IMediaCall;
 
+	class AccountsManager;
+
 	struct CallState;
 
 	class CallManager : public QObject
@@ -39,10 +41,9 @@ namespace Azoth
 
 		QHash<QObject*, CallState> CallStates_;
 	public:
-		CallManager (QObject* = 0);
-		~CallManager ();
+		explicit CallManager (const AccountsManager&, QObject* = nullptr);
+		~CallManager () override;
 
-		void AddAccount (QObject*);
 		QObject* Call (ICLEntry*, const QString&);
 		QObjectList GetCallsForEntry (const ICLEntry&) const;
 	private:
