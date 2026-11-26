@@ -13,7 +13,6 @@
 #include <QtDebug>
 #include <tox/tox.h>
 #include <util/xpc/util.h>
-#include <util/sll/slotclosure.h>
 #include <util/sll/functional.h>
 #include <util/sll/qtutil.h>
 #include <util/threads/futures.h>
@@ -191,13 +190,10 @@ namespace LC::Azoth::Sarin
 
 		configDialog->SetConfig (ToxConfig_);
 
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[this, configDialog] { HandleConfigAccepted (configDialog); },
-			configDialog,
-			SIGNAL (accepted ()),
-			configDialog
-		};
+		connect (configDialog,
+				&QDialog::accepted,
+				this,
+				[this, configDialog] { HandleConfigAccepted (configDialog); });
 	}
 
 	EntryStatus ToxAccount::GetState () const
