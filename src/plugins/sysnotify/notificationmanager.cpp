@@ -235,12 +235,14 @@ namespace Sysnotify
 			return;
 		}
 
-		const auto idx = action.toInt ();
-
-		QMetaObject::invokeMethod (ad.Handler_.get (),
-				"notificationActionTriggered",
-				Qt::QueuedConnection,
-				Q_ARG (int, idx));
+		QMetaObject::invokeMethod (this,
+				[handler = ad.Handler_, idx = action.toInt ()]
+				{
+					QMetaObject::invokeMethod (handler.get (),
+							"notificationActionTriggered",
+							Q_ARG (int, idx));
+				},
+				Qt::QueuedConnection);
 	}
 
 	void NotificationManager::handleNotificationClosed (uint id, uint reason)
