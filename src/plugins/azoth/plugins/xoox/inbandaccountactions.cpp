@@ -84,8 +84,8 @@ namespace LC::Azoth::Xoox
 					{
 						if (reply.type () == QXmppIq::Result)
 						{
-							Acc_.GetParentProtocol ()->RemoveAccount (&Acc_);
 							Acc_.ChangeState ({ SOffline, {} });
+							Acc_.GetParentProtocol ()->RemoveAccount (&Acc_);
 						}
 						else
 							qWarning () << Q_FUNC_INFO
