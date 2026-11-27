@@ -15,8 +15,8 @@
 #include <QPointer>
 #include <QStringList>
 #include <interfaces/structures.h>
-
-class QDBusPendingCallWatcher;
+#include <util/threads/coro/taskfwd.h>
+#include <util/threads/coro/corocontext.h>
 
 namespace LC
 {
@@ -28,19 +28,12 @@ namespace Sysnotify
 
 		std::unique_ptr<QDBusInterface> Connection_;
 
-		struct CapCheckData
-		{
-			Entity Entity_;
-		};
-		QMap<QDBusPendingCallWatcher*, CapCheckData> Watcher2CapCheck_;
-
 		struct ActionData
 		{
 			Entity E_;
 			QObject_ptr Handler_;
 			QStringList Actions_;
 		};
-		QMap<QDBusPendingCallWatcher*, ActionData> Watcher2AD_;
 		QMap<uint, ActionData> CallID2AD_;
 
 		bool IgnoreTimeoutCloses_ = false;
@@ -49,15 +42,14 @@ namespace Sysnotify
 		NotificationManager (QObject* = 0);
 
 		bool CouldNotify (const Entity&) const;
-		void HandleNotification (const Entity&);
+		Util::ContextTask<void> HandleNotification (Entity);
 	private:
-		void DoNotify (const Entity&, bool);
+		Util::ContextTask<void> CheckServer ();
 	private slots:
-		void handleGotServerInfo (QDBusPendingCallWatcher*);
-		void handleNotificationCallFinished (QDBusPendingCallWatcher*);
-		void handleCapCheckCallFinished (QDBusPendingCallWatcher*);
 		void handleActionInvoked (uint, QString);
 		void handleNotificationClosed (uint, uint);
+
+		LC_CORO_CONTEXT
 	};
 }
 }

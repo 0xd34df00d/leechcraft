@@ -9,6 +9,7 @@
 #include "sysnotify.h"
 #include <QIcon>
 #include <interfaces/entitytesthandleresult.h>
+#include <util/threads/coro/context.h>
 #include "notificationmanager.h"
 
 namespace LC

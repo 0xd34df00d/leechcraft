@@ -14,6 +14,8 @@
 #include <QtDebug>
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
+#include <util/threads/coro.h>
+#include <util/threads/coro/dbus.h>
 #include "imagehint.h"
 
 namespace LC
@@ -40,11 +42,7 @@ namespace Sysnotify
 			qWarning () << Q_FUNC_INFO
 					<< Connection_->lastError ();
 
-		auto pendingSI = Connection_->asyncCall ("GetServerInformation");
-		connect (new QDBusPendingCallWatcher { pendingSI, this },
-				SIGNAL (finished (QDBusPendingCallWatcher*)),
-				this,
-				SLOT (handleGotServerInfo (QDBusPendingCallWatcher*)));
+		CheckServer ();
 
 		connect (Connection_.get (),
 				SIGNAL (ActionInvoked (uint, QString)),
@@ -64,27 +62,6 @@ namespace Sysnotify
 				!e.Additional_ ["Text"].toString ().isEmpty ();
 	}
 
-	void NotificationManager::HandleNotification (const Entity& e)
-	{
-		if (!Connection_.get ())
-			return;
-
-		const auto& actions = e.Additional_ ["NotificationActions"].toStringList ();
-		if (actions.isEmpty ())
-		{
-			DoNotify (e, false);
-			return;
-		}
-
-		const auto& pending = Connection_->asyncCall ("GetCapabilities");
-		const auto watcher = new QDBusPendingCallWatcher { pending, this };
-		Watcher2CapCheck_ [watcher] = { e };
-		connect (watcher,
-				SIGNAL (finished (QDBusPendingCallWatcher*)),
-				this,
-				SLOT (handleCapCheckCallFinished (QDBusPendingCallWatcher*)));
-	}
-
 	namespace
 	{
 		QImage ToImage (const QVariant& imageVar)
@@ -99,21 +76,34 @@ namespace Sysnotify
 		}
 	}
 
-	void NotificationManager::DoNotify (const Entity& e, bool hasActions)
+	Util::ContextTask<void> NotificationManager::HandleNotification (const Entity e)
 	{
+		co_await Util::AddContext { CoroContext_ };
+
+		if (!Connection_)
+			co_return;
+
+		auto actions = e.Additional_ ["NotificationActions"].toStringList ();
+		if (!actions.isEmpty ())
+		{
+			const auto& pending = Connection_->asyncCall ("GetCapabilities");
+			const auto eitherCaps = co_await Util::Typed<QStringList> (pending);
+			const auto& caps = co_await Util::WithHandler (eitherCaps,
+					[] (const QDBusError& err) { qWarning () << "unable to query the capabilities:" << err; });
+			if (!Connection_)
+				co_return;
+
+			if (!caps.contains ("actions"))
+				actions.clear ();
+		}
+
 		const auto& header = e.Entity_.toString ();
 		const auto& text = e.Additional_ ["Text"].toString ();
 		bool uus = e.Additional_ ["UntilUserSees"].toBool ();
 
 		QStringList fmtActions;
-		QStringList actions;
-		if (hasActions)
-		{
-			actions = e.Additional_ ["NotificationActions"].toStringList ();
-			int i = 0;
-			for (const auto& action : actions)
-				fmtActions << QString::number (i++) << action;
-		}
+		for (int i = 0; i < actions.size (); ++i)
+			fmtActions << QString::number (i) << actions.at (i);
 
 		int timeout = 0;
 		if (!uus)
@@ -141,44 +131,29 @@ namespace Sysnotify
 			timeout
 		};
 
-		ActionData ad
-		{
-			e,
-			e.Additional_ ["HandlingObject"].value<QObject_ptr> (),
-			actions
-		};
-
 		const auto& pending = Connection_->asyncCallWithArgumentList ("Notify", arguments);
-		const auto watcher = new QDBusPendingCallWatcher { pending, this };
-		Watcher2AD_ [watcher] = ad;
-		connect (watcher,
-				SIGNAL (finished (QDBusPendingCallWatcher*)),
-				this,
-				SLOT (handleNotificationCallFinished (QDBusPendingCallWatcher*)));
+		const auto eitherId = co_await Util::Typed<uint> (pending);
+		const auto id = co_await Util::WithHandler (eitherId,
+				[] (const QDBusError& err) { qWarning () << "unable to show the notification:" << err; });
+		CallID2AD_ [id] = { e, e.Additional_ ["HandlingObject"].value<QObject_ptr> (), actions };
 	}
 
-	void NotificationManager::handleGotServerInfo (QDBusPendingCallWatcher *w)
+	Util::ContextTask<void> NotificationManager::CheckServer ()
 	{
-		w->deleteLater ();
+		co_await Util::AddContext { CoroContext_ };
 
-		QDBusPendingReply<QString, QString, QString, QString> reply = *w;
-		if (reply.isError ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< reply.error ().name ()
-					<< reply.error ().message ();
-			Connection_.reset ();
-			return;
-		}
-
-		const auto& implementation = reply.argumentAt<0> ();
-		const auto& vendor = reply.argumentAt<1> ();
-		auto versionString = reply.argumentAt<3> ();
-		qDebug () << Q_FUNC_INFO
-				<< "using"
+		const auto& pending = Connection_->asyncCall ("GetServerInformation");
+		const auto eitherInfo = co_await Util::Typed<QString, QString, QString, QString> (pending);
+		const auto& [implementation, vendor, serverVersion, versionString] = co_await Util::WithHandler (eitherInfo,
+				[this] (const QDBusError& err)
+				{
+					qWarning () << "unable to query the server information:" << err;
+					Connection_.reset ();
+				});
+		qDebug () << "using"
 				<< implementation
 				<< vendor
-				<< reply.argumentAt<2> ()
+				<< serverVersion
 				<< versionString;
 
 		const auto& versionSplit = QStringView { versionString }.split ('.', Qt::SkipEmptyParts);
@@ -190,39 +165,6 @@ namespace Sysnotify
 			Connection_.reset ();
 		else if (implementation == "Plasma")
 			IgnoreTimeoutCloses_ = true;						// KDE is shit violating specs.
-	}
-
-	void NotificationManager::handleNotificationCallFinished (QDBusPendingCallWatcher *w)
-	{
-		QDBusPendingReply<uint> reply = *w;
-		if (reply.isError ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< reply.error ().name ()
-					<< reply.error ().message ();
-			return;
-		}
-		int id = reply.argumentAt<0> ();
-		CallID2AD_ [id] = Watcher2AD_ [w];
-		Watcher2AD_.remove (w);
-
-		w->deleteLater ();
-	}
-
-	void NotificationManager::handleCapCheckCallFinished (QDBusPendingCallWatcher *w)
-	{
-		QDBusPendingReply<QStringList> reply = *w;
-		if (reply.isError ())
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "failed to handle notification, failed to query caps:"
-				<< reply.error ().name ()
-				<< reply.error ().message ();
-			return;
-		}
-		const auto& caps = reply.argumentAt<0> ();
-		bool hasActions = caps.contains ("actions");
-		DoNotify (Watcher2CapCheck_.take (w).Entity_, hasActions);
 	}
 
 	void NotificationManager::handleActionInvoked (uint id, QString action)
