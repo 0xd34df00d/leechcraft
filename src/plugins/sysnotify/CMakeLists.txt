@@ -7,5 +7,14 @@ LC_DEFINE_PLUGIN (
 		sysnotify.cpp
 		notificationmanager.cpp
 		imagehint.cpp
+		bodymarkup.cpp
 	QT_COMPONENTS DBus Gui
+	HAS_TESTS
+	)
+
+AddSysnotifyTest (bodymarkup
+	SRCS
+		tests/bodymarkuptest.cpp
+		bodymarkup.cpp
+	QT_COMPONENTS Gui
 	)
