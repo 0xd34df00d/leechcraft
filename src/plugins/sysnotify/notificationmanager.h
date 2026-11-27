@@ -26,14 +26,7 @@ namespace Sysnotify
 		Q_OBJECT
 
 		Util::DBus::EndpointWithSignals Server_;
-
-		enum class ServerState
-		{
-			Absent,
-			Usable,
-			Rejected,
-		};
-		ServerState ServerState_ = ServerState::Absent;
+		QString UsableServer_;
 
 		struct ActionData
 		{
@@ -50,7 +43,8 @@ namespace Sysnotify
 		bool CouldNotify (const Entity&) const;
 		Util::ContextTask<void> HandleNotification (Entity);
 	private:
-		Util::ContextTask<void> CheckServer ();
+		void HandleServerChanged (const QString&);
+		Util::ContextTask<void> CheckServer (QString);
 		void HandleActionInvoked (uint, const QString&);
 		void HandleNotificationClosed (uint);
 

@@ -35,16 +35,8 @@ namespace Sysnotify
 		}
 	}
 	{
-		if (!Server_.Conn.interface ()->isServiceRegistered (Server_.Service))
-		{
-			qWarning () << Q_FUNC_INFO
-				<< Server_.Conn.interface ()->registeredServiceNames ().value ();
-			return;
-		}
-
 		qDBusRegisterMetaType<ImageHint> ();
 
-		ServerState_ = ServerState::Usable;
 		const auto watcher = new QDBusServiceWatcher
 		{
 			Server_.Service,
@@ -57,11 +49,9 @@ namespace Sysnotify
 				this,
 				[this] (const QString&, const QString&, const QString& newOwner)
 				{
-					if (ServerState_ != ServerState::Rejected)
-						ServerState_ = newOwner.isEmpty () ? ServerState::Absent : ServerState::Usable;
+					HandleServerChanged (newOwner);
 				});
-
-		CheckServer ();
+		HandleServerChanged (Server_.Conn.interface ()->serviceOwner (Server_.Service).value ());
 
 		Server_.Connect ("ActionInvoked"_qs, this, &NotificationManager::HandleActionInvoked);
 		Server_.Connect ("NotificationClosed"_qs, this, &NotificationManager::HandleNotificationClosed);
@@ -69,7 +59,7 @@ namespace Sysnotify
 
 	bool NotificationManager::CouldNotify (const Entity& e) const
 	{
-		return ServerState_ == ServerState::Usable &&
+		return !UsableServer_.isEmpty () &&
 				e.Mime_ == "x-leechcraft/notification" &&
 				!e.Additional_ ["Text"].toString ().isEmpty ();
 	}
@@ -92,7 +82,8 @@ namespace Sysnotify
 	{
 		co_await Util::AddContext { CoroContext_ };
 
-		if (ServerState_ != ServerState::Usable)
+		const auto server = UsableServer_;
+		if (server.isEmpty ())
 			co_return;
 
 		auto actions = e.Additional_ ["NotificationActions"].toStringList ();
@@ -101,7 +92,7 @@ namespace Sysnotify
 			const auto eitherCaps = co_await Server_.Call<QStringList> ("GetCapabilities"_qs);
 			const auto& caps = co_await Util::WithHandler (eitherCaps,
 					[] (const QDBusError& err) { qWarning () << "unable to query the capabilities:" << err; });
-			if (ServerState_ != ServerState::Usable)
+			if (UsableServer_ != server)
 				co_return;
 
 			if (!caps.contains ("actions"))
@@ -141,19 +132,34 @@ namespace Sysnotify
 				timeout);
 		const auto id = co_await Util::WithHandler (eitherId,
 				[] (const QDBusError& err) { qWarning () << "unable to show the notification:" << err; });
-		CallID2AD_ [id] = { e, e.Additional_ ["HandlingObject"].value<QObject_ptr> (), actions };
+		if (UsableServer_ == server)
+			CallID2AD_ [id] = { e, e.Additional_ ["HandlingObject"].value<QObject_ptr> (), actions };
 	}
 
-	Util::ContextTask<void> NotificationManager::CheckServer ()
+	void NotificationManager::HandleServerChanged (const QString& server)
+	{
+		CallID2AD_.clear ();
+		UsableServer_ = server;
+		if (!server.isEmpty ())
+			CheckServer (server);
+	}
+
+	Util::ContextTask<void> NotificationManager::CheckServer (QString server)
 	{
 		co_await Util::AddContext { CoroContext_ };
 
+		const auto reject = [&]
+		{
+			if (UsableServer_ == server)
+				UsableServer_.clear ();
+		};
+
 		const auto eitherInfo = co_await Server_.Call<QString, QString, QString, QString> ("GetServerInformation"_qs);
 		const auto& [implementation, vendor, serverVersion, versionString] = co_await Util::WithHandler (eitherInfo,
-				[this] (const QDBusError& err)
+				[&] (const QDBusError& err)
 				{
 					qWarning () << "unable to query the server information:" << err;
-					ServerState_ = ServerState::Rejected;
+					reject ();
 				});
 		qDebug () << "using"
 				<< implementation
@@ -167,7 +173,7 @@ namespace Sysnotify
 					versionSplit.value (1).toInt ());
 
 		if (vendor == "LeechCraft")
-			ServerState_ = ServerState::Rejected;
+			reject ();
 	}
 
 	void NotificationManager::HandleActionInvoked (uint id, const QString& action)
