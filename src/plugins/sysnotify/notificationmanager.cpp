@@ -18,6 +18,8 @@
 #include <util/sll/qtutil.h>
 #include <util/threads/coro.h>
 #include <util/threads/coro/dbus.h>
+#include <util/xpc/util.h>
+#include "bodymarkup.h"
 #include "imagehint.h"
 
 namespace LC
@@ -86,8 +88,7 @@ namespace Sysnotify
 		if (server.isEmpty ())
 			co_return;
 
-		auto actions = e.Additional_ ["NotificationActions"].toStringList ();
-		if (!actions.isEmpty () && !Capabilities_)
+		if (!Capabilities_)
 		{
 			const auto eitherCaps = co_await Server_.Call<QStringList> ("GetCapabilities"_qs);
 			if (UsableServer_ != server)
@@ -98,11 +99,16 @@ namespace Sysnotify
 					[] (const QDBusError& err) { qWarning () << "unable to query the capabilities:" << err; });
 		}
 
-		if (!Capabilities_.value_or (QStringList {}).contains ("actions"))
+		const auto& caps = Capabilities_.value_or (QStringList {});
+		auto actions = e.Additional_ ["NotificationActions"].toStringList ();
+		if (!caps.contains ("actions"))
 			actions.clear ();
 
 		const auto& header = e.Entity_.toString ();
-		const auto& text = e.Additional_ ["Text"].toString ();
+		const auto& text = Util::GetNotificationText (e);
+		const auto& body = caps.contains ("body-markup") ?
+				ToBodyMarkup (text, caps.contains ("body-hyperlinks")) :
+				Util::ToPlainText (text);
 		bool uus = e.Additional_ ["UntilUserSees"].toBool ();
 
 		QStringList fmtActions;
@@ -128,7 +134,7 @@ namespace Sysnotify
 				0u,
 				"leechcraft_main"_qs,
 				QString {},
-				text,
+				body,
 				fmtActions,
 				hints,
 				timeout);
