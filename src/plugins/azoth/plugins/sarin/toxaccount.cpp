@@ -10,6 +10,7 @@
 #include <QUuid>
 #include <QAction>
 #include <QDataStream>
+#include <QPointer>
 #include <QtDebug>
 #include <tox/tox.h>
 #include <util/xpc/util.h>
@@ -137,7 +138,7 @@ namespace LC::Azoth::Sarin
 
 	Util::CoroContext& ToxAccount::GetToxThreadContext ()
 	{
-		return ToxThreadContext_.value ();
+		return Util::CoroContext::Of (ToxThreadScope_.value ());
 	}
 
 	QObject* ToxAccount::GetQObject ()
@@ -218,7 +219,7 @@ namespace LC::Azoth::Sarin
 			if (Tox_)
 			{
 				emit Emitter_.statusChanged (status);
-				ToxThreadContext_.reset ();
+				ToxThreadScope_.reset ();
 				Tox_.reset ();
 				emit threadChanged (Tox_);
 			}
@@ -390,24 +391,21 @@ namespace LC::Azoth::Sarin
 		co_await Util::AddContext { CoroContext_ };
 
 		Tox_ = std::make_shared<ToxRunner> (ToxW::InitContext { Nick_, ToxState_, ToxConfig_ });
-		ToxThreadContext_.emplace ("Tox thread"_qs);
+		ToxThreadScope_.emplace ().setObjectName ("Tox thread"_qs);
 		ConnectSignalsPreRun ();
 
-		const auto isLetGo = [this, started = std::weak_ptr { Tox_ }]
-		{
-			return started.expired () || started.lock () != Tox_;
-		};
+		const QPointer scope { &*ToxThreadScope_ };
 
 		qDebug () << "initializing...";
 		const auto initResult = co_await Tox_->Run (&ToxW::Init, status);
-		if (isLetGo ())
+		if (!scope)
 			co_return;
 
 		co_await Util::WithHandler (initResult,
 				[this] (const ToxError<InitError>& error)
 				{
 					qWarning () << "failed to init Tox:" << error;
-					ToxThreadContext_.reset ();
+					ToxThreadScope_.reset ();
 					Tox_.reset ();
 
 					// TODO human-readable message for the code
@@ -418,7 +416,7 @@ namespace LC::Azoth::Sarin
 				});
 
 		co_await LoadFriends ();
-		if (isLetGo ())
+		if (!scope)
 			co_return;
 
 		qDebug () << "done!";

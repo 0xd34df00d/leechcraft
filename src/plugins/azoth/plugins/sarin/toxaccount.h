@@ -52,7 +52,7 @@ namespace LC::Azoth::Sarin
 		QAction * const ActionGetToxId_;
 
 		std::shared_ptr<ToxRunner> Tox_;
-		std::optional<Util::CoroContext> ToxThreadContext_;
+		std::optional<QObject> ToxThreadScope_;
 		EntryStatus Status_;
 
 		MessagesManager * const MsgsMgr_;
