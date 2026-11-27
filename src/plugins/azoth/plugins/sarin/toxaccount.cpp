@@ -362,13 +362,15 @@ namespace LC::Azoth::Sarin
 	Util::ContextTask<void> ToxAccount::SetTypingState (Pubkey pkey, bool isTyping)
 	{
 		co_await Util::AddContext { CoroContext_ };
-		if (!Tox_)
+
+		const auto tox = Tox_;
+		if (!tox)
 			co_return;
 
-		const auto num = co_await Tox_->Run (&ToxW::ResolveFriendNum, pkey);
+		const auto num = co_await tox->Run (&ToxW::ResolveFriendNum, pkey);
 		if (!num)
 			co_return;
-		const auto result = co_await Tox_->RunWithErrorUnwrapping (&tox_self_set_typing, *num, isTyping);
+		const auto result = co_await tox->RunWithErrorUnwrapping (&tox_self_set_typing, *num, isTyping);
 		if (const auto err = result.MaybeLeft ())
 			qWarning () << "cannot set typing to" << isTyping << ":" << *err << tox_err_set_typing_to_string (*err);
 	}
