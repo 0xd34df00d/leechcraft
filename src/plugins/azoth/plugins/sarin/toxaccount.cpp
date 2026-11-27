@@ -393,8 +393,16 @@ namespace LC::Azoth::Sarin
 		ToxThreadContext_.emplace ("Tox thread"_qs);
 		ConnectSignalsPreRun ();
 
+		const auto isLetGo = [this, started = std::weak_ptr { Tox_ }]
+		{
+			return started.expired () || started.lock () != Tox_;
+		};
+
 		qDebug () << "initializing...";
 		const auto initResult = co_await Tox_->Run (&ToxW::Init, status);
+		if (isLetGo ())
+			co_return;
+
 		co_await Util::WithHandler (initResult,
 				[this] (const ToxError<InitError>& error)
 				{
@@ -410,6 +418,8 @@ namespace LC::Azoth::Sarin
 				});
 
 		co_await LoadFriends ();
+		if (isLetGo ())
+			co_return;
 
 		qDebug () << "done!";
 		emit threadChanged (Tox_);
