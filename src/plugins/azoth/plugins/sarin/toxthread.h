@@ -130,7 +130,7 @@ namespace LC::Azoth::Sarin
 		void gotChunkRequest (uint32_t friendNum, uint32_t fileNum, uint64_t position, size_t length);
 		void requested (uint32_t, Pubkey, uint32_t, uint64_t, const QString&);
 
-		void incomingMessage (uint32_t, const QString&);
+		void incomingMessage (Pubkey pubkey, const QString&);
 		void readReceipt (uint32_t);
 
 		void confInvited (const ConfInvitationEvent&);

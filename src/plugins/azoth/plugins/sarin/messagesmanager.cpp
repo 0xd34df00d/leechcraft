@@ -73,14 +73,9 @@ namespace LC::Azoth::Sarin
 			qWarning () << "the message for ID" << msgId << "is dead";
 	}
 
-	Util::ContextTask<void> MessagesManager::HandleInMessage (uint32_t friendId, QString body)
+	void MessagesManager::HandleInMessage (Pubkey pubkey, const QString& body)
 	{
-		co_await Util::AddContext { CoroContext_ };
-
-		const auto runner = co_await Util::NonEmpty (Acc_.GetTox (), "got message in offline");
-		const auto maybePubkey = co_await runner->Run (&ToxW::GetFriendPubkey, friendId);
-		const auto pubkey = co_await Util::NonEmpty (maybePubkey, std::tie ("cannot get pubkey for message", friendId));
-		auto& contact = Acc_.GetOrCreateByPubkey (*pubkey);
+		auto& contact = Acc_.GetOrCreateByPubkey (pubkey);
 
 		const auto msg = new ChatMessage { body, IMessage::Direction::In, &contact };
 		msg->Store ();

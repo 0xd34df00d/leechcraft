@@ -326,7 +326,10 @@ namespace LC::Azoth::Sarin
 		Register<tox_callback_friend_message,
 				[] (ToxW& self, Tox*, uint32_t friendId, TOX_MESSAGE_TYPE, const uint8_t *msg, size_t size)
 				{
-					emit self.Runner_.incomingMessage (friendId, FromToxStr (msg, size));
+					if (const auto pkey = self.GetFriendPubkey (friendId))
+						emit self.Runner_.incomingMessage (*pkey, FromToxStr (msg, size));
+					else
+						qWarning () << "cannot get pubkey for message from friend" << friendId;
 				}> ();
 		Register<tox_callback_friend_read_receipt,
 				[] (ToxW& self, Tox*, uint32_t, uint32_t msgId)
