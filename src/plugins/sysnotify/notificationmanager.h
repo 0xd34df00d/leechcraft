@@ -32,7 +32,6 @@ namespace Sysnotify
 
 		struct ActionData
 		{
-			Entity E_;
 			QObject_ptr Handler_;
 			QStringList Actions_;
 		};

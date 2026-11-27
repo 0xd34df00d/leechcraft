@@ -140,8 +140,8 @@ namespace Sysnotify
 				timeout);
 		const auto id = co_await Util::WithHandler (eitherId,
 				[] (const QDBusError& err) { qWarning () << "unable to show the notification:" << err; });
-		if (UsableServer_ == server)
-			CallID2AD_ [id] = { e, e.Additional_ ["HandlingObject"].value<QObject_ptr> (), actions };
+		if (UsableServer_ == server && !actions.isEmpty ())
+			CallID2AD_ [id] = { e.Additional_ ["HandlingObject"].value<QObject_ptr> (), actions };
 	}
 
 	void NotificationManager::HandleServerChanged (const QString& server)
