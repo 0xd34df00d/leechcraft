@@ -1462,20 +1462,25 @@ namespace LC::Azoth
 
 	void Core::addAccount (IAccount& account)
 	{
-		const auto item = EnsureAccountItem (&account);
+		EnsureAccountItem (&account);
 
 		auto& emitter = account.GetAccountEmitter ();
 		connect (&emitter,
 				&Emitters::Account::statusChanged,
 				this,
-				[this, item] (const EntryStatus& status)
+				[&] (const EntryStatus& status)
 				{
-					ItemIconManager_->SetIcon (item, ResourcesManager::Instance ().GetIconPathForState (status.State_).get ());
+					if (const auto item = GetAccountItem (&account))
+						ItemIconManager_->SetIcon (item, ResourcesManager::Instance ().GetIconPathForState (status.State_).get ());
 				});
 		connect (&emitter,
 				&Emitters::Account::accountRenamed,
 				this,
-				[item] (const QString& name) { item->setText (name); });
+				[&] (const QString& name)
+				{
+					if (const auto item = GetAccountItem (&account))
+						item->setText (name);
+				});
 
 		if (qobject_cast<IHaveServiceDiscovery*> (account.GetQObject ()))
 			connect (account.GetQObject (),
