@@ -90,12 +90,12 @@ namespace Sysnotify
 		if (!actions.isEmpty () && !Capabilities_)
 		{
 			const auto eitherCaps = co_await Server_.Call<QStringList> ("GetCapabilities"_qs);
-			const auto& caps = co_await Util::WithHandler (eitherCaps,
-					[] (const QDBusError& err) { qWarning () << "unable to query the capabilities:" << err; });
 			if (UsableServer_ != server)
 				co_return;
 
-			Capabilities_ = caps;
+			Util::Visit (eitherCaps,
+					[this] (const QStringList& caps) { Capabilities_ = caps; },
+					[] (const QDBusError& err) { qWarning () << "unable to query the capabilities:" << err; });
 		}
 
 		if (!Capabilities_.value_or (QStringList {}).contains ("actions"))
