@@ -454,7 +454,7 @@ namespace LC::Azoth::Sarin
 	{
 		connect (&*Tox_,
 				&ToxRunner::statusChanged,
-				this,
+				&*ToxThreadScope_,
 				[this] (const EntryStatus& s)
 				{
 					Status_ = s;
@@ -478,12 +478,12 @@ namespace LC::Azoth::Sarin
 				&ToxAccount::HandleFriendNameChanged);
 		connect (Tox_.get (),
 				&ToxRunner::friendStatusChanged,
-				this,
-				&ToxAccount::HandleFriendStatusChanged);
+				&*ToxThreadScope_,
+				std::bind_front (&ToxAccount::HandleFriendStatusChanged, this));
 		connect (Tox_.get (),
 				&ToxRunner::friendTypingChanged,
-				this,
-				&ToxAccount::HandleFriendTypingChanged);
+				&*ToxThreadScope_,
+				std::bind_front (&ToxAccount::HandleFriendTypingChanged, this));
 	}
 
 	void ToxAccount::InitEntry (Pubkey pubkey)
