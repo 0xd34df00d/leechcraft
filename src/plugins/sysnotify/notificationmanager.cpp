@@ -51,7 +51,7 @@ namespace Sysnotify
 		connect (Connection_.get (),
 				SIGNAL (NotificationClosed (uint, uint)),
 				this,
-				SLOT (handleNotificationClosed (uint, uint)));
+				SLOT (handleNotificationClosed (uint)));
 	}
 
 	bool NotificationManager::CouldNotify (const Entity& e) const
@@ -163,8 +163,6 @@ namespace Sysnotify
 
 		if (vendor == "LeechCraft")
 			Connection_.reset ();
-		else if (implementation == "Plasma")
-			IgnoreTimeoutCloses_ = true;						// KDE is shit violating specs.
 	}
 
 	void NotificationManager::handleActionInvoked (uint id, QString action)
@@ -187,11 +185,8 @@ namespace Sysnotify
 				Qt::QueuedConnection);
 	}
 
-	void NotificationManager::handleNotificationClosed (uint id, uint reason)
+	void NotificationManager::handleNotificationClosed (uint id)
 	{
-		if (IgnoreTimeoutCloses_ && reason == 1)
-			return;
-
 		CallID2AD_.remove (id);
 	}
 }

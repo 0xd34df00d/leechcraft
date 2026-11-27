@@ -36,7 +36,6 @@ namespace Sysnotify
 		};
 		QMap<uint, ActionData> CallID2AD_;
 
-		bool IgnoreTimeoutCloses_ = false;
 		std::tuple<int, int> Version_ { 0, 0 };
 	public:
 		NotificationManager (QObject* = 0);
@@ -47,7 +46,7 @@ namespace Sysnotify
 		Util::ContextTask<void> CheckServer ();
 	private slots:
 		void handleActionInvoked (uint, QString);
-		void handleNotificationClosed (uint, uint);
+		void handleNotificationClosed (uint);
 
 		LC_CORO_CONTEXT
 	};
