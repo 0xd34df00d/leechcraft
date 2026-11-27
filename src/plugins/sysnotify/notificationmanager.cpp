@@ -189,11 +189,7 @@ namespace Sysnotify
 	{
 		const auto& ad = CallID2AD_.take (id);
 		if (!ad.Handler_)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "handler already destroyed";
 			return;
-		}
 
 		QMetaObject::invokeMethod (this,
 				[handler = ad.Handler_, idx = action.toInt ()]
