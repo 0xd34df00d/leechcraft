@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <optional>
 #include <tuple>
 #include <QObject>
 #include <QPointer>
@@ -27,6 +28,7 @@ namespace Sysnotify
 
 		Util::DBus::EndpointWithSignals Server_;
 		QString UsableServer_;
+		std::optional<QStringList> Capabilities_;
 
 		struct ActionData
 		{

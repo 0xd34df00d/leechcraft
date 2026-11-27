@@ -87,7 +87,7 @@ namespace Sysnotify
 			co_return;
 
 		auto actions = e.Additional_ ["NotificationActions"].toStringList ();
-		if (!actions.isEmpty ())
+		if (!actions.isEmpty () && !Capabilities_)
 		{
 			const auto eitherCaps = co_await Server_.Call<QStringList> ("GetCapabilities"_qs);
 			const auto& caps = co_await Util::WithHandler (eitherCaps,
@@ -95,9 +95,11 @@ namespace Sysnotify
 			if (UsableServer_ != server)
 				co_return;
 
-			if (!caps.contains ("actions"))
-				actions.clear ();
+			Capabilities_ = caps;
 		}
+
+		if (!Capabilities_.value_or (QStringList {}).contains ("actions"))
+			actions.clear ();
 
 		const auto& header = e.Entity_.toString ();
 		const auto& text = e.Additional_ ["Text"].toString ();
@@ -140,6 +142,7 @@ namespace Sysnotify
 	{
 		CallID2AD_.clear ();
 		UsableServer_ = server;
+		Capabilities_.reset ();
 		if (!server.isEmpty ())
 			CheckServer (server);
 	}
