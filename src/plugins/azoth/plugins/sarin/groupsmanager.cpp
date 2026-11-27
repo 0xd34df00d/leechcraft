@@ -50,6 +50,7 @@ namespace LC::Azoth::Sarin
 		auto tox = Acc_.GetTox ();
 		if (!tox)
 			co_return Util::Left { JoinGroupError::ToxOffline };
+		co_await Util::AddContext { Acc_.GetToxThreadContext () };
 
 		const auto groupIdArr = HumanReadable2ToxId<TOX_GROUP_CHAT_ID_SIZE> (groupId);
 		if (!groupIdArr)
