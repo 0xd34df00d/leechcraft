@@ -63,16 +63,12 @@ namespace LC::Azoth::Sarin
 		}
 		FriendNum_ = *friendNum;
 
-		const auto sendResult = co_await Tox_->Run ([this] (ToxW& tox)
-				{
-					return WithStrError (&tox_file_send,
-							tox.GetTox (),
-							FilePath_.section ('/', -1, -1),
-							FriendNum_,
-							TOX_FILE_KIND_DATA,
-							static_cast<uint64_t> (Filesize_),
-							nullptr);
-				});
+		const auto sendResult = co_await Tox_->RunWithStrError (&tox_file_send,
+				FilePath_.section ('/', -1, -1),
+				FriendNum_,
+				TOX_FILE_KIND_DATA,
+				static_cast<uint64_t> (Filesize_),
+				nullptr);
 
 		FileNum_ = co_await Util::WithHandler (sendResult,
 				[this] (TOX_ERR_FILE_SEND err)
