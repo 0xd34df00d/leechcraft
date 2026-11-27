@@ -35,21 +35,21 @@ namespace LC::Azoth::Sarin
 		return !Tox_.expired ();
 	}
 
-	namespace
+	void FileTransferManager::SetupLifetime (FileTransferBase *job)
 	{
-		void SetupLifetime (FileTransferBase *job)
-		{
-			auto& emitter = job->GetTransferJobEmitter ();
-			QObject::connect (&emitter,
-					&Emitters::TransferJob::stateChanged,
-					job,
-					[job] (TransferState state)
-					{
-						if (IsTerminal (state))
-							job->deleteLater ();
-					},
-					Qt::QueuedConnection);
-		}
+		ActiveJobs_ << job;
+		connect (&job->GetTransferJobEmitter (),
+				&Emitters::TransferJob::stateChanged,
+				this,
+				[this, job] (const TransferState& state)
+				{
+					if (!IsTerminal (state))
+						return;
+
+					ActiveJobs_.removeOne (job);
+					disconnect (this, nullptr, job, nullptr);
+					job->deleteLater ();
+				});
 	}
 
 	ITransferJob* FileTransferManager::Accept (const IncomingOffer& offer, const QString& savePath)
@@ -117,6 +117,11 @@ namespace LC::Azoth::Sarin
 
 	void FileTransferManager::HandleToxThreadChanged (const std::shared_ptr<ToxRunner>& tox)
 	{
+		for (const auto job : std::exchange (ActiveJobs_, {}))
+			job->HandleToxThreadGone ();
+		for (const auto jobId : std::exchange (Offers_, {}).keys ())
+			emit Emitter_.offerRevoked (jobId);
+
 		Tox_ = tox;
 		if (!tox)
 			return;
@@ -156,6 +161,9 @@ namespace LC::Azoth::Sarin
 	void FileTransferManager::HandleRequest (uint32_t friendNum,
 			Pubkey pkey, uint32_t filenum, uint64_t size, const QString& name)
 	{
+		if (!IsAvailable ())
+			return;
+
 		const auto entry = Acc_->GetByPubkey (pkey);
 		if (!entry)
 		{

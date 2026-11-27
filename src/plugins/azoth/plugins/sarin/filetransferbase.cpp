@@ -21,4 +21,10 @@ namespace LC::Azoth::Sarin
 	{
 		return Emitter_;
 	}
+
+	void FileTransferBase::HandleToxThreadGone ()
+	{
+		using namespace Transfers;
+		emit Emitter_.stateChanged (Error { ErrorReason::Aborted, tr ("The account went offline.") });
+	}
 }

@@ -16,6 +16,7 @@
 
 namespace LC::Azoth::Sarin
 {
+	class FileTransferBase;
 	class ToxAccount;
 	class ToxRunner;
 
@@ -39,6 +40,8 @@ namespace LC::Azoth::Sarin
 
 		QHash<uint64_t, OfferContext> Offers_;
 		uint64_t JobIdGen_ = 0;
+
+		QList<FileTransferBase*> ActiveJobs_;
 	public:
 		explicit FileTransferManager (ToxAccount*);
 
@@ -51,6 +54,8 @@ namespace LC::Azoth::Sarin
 
 		void HandleToxThreadChanged (const std::shared_ptr<ToxRunner>&);
 	private:
+		void SetupLifetime (FileTransferBase*);
+
 		void HandleFileControl (uint32_t friendNum, uint32_t fileNum, int control);
 		void HandleRequest (uint32_t, Pubkey, uint32_t, uint64_t, const QString&);
 	signals:

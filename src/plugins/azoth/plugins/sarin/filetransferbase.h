@@ -31,5 +31,7 @@ namespace LC::Azoth::Sarin
 		FileTransferBase (Pubkey pubkey, const std::shared_ptr<ToxRunner>& tox, QObject *parent = nullptr);
 
 		Emitters::TransferJob& GetTransferJobEmitter () override;
+
+		void HandleToxThreadGone ();
 	};
 }
