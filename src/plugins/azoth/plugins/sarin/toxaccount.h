@@ -9,6 +9,7 @@
 #pragma once
 
 #include <memory>
+#include <optional>
 #include <QObject>
 #include <util/sll/either.h>
 #include <util/sll/void.h>
@@ -51,6 +52,7 @@ namespace LC::Azoth::Sarin
 		QAction * const ActionGetToxId_;
 
 		std::shared_ptr<ToxRunner> Tox_;
+		std::optional<Util::CoroContext> ToxThreadContext_;
 		EntryStatus Status_;
 
 		MessagesManager * const MsgsMgr_;
@@ -76,6 +78,13 @@ namespace LC::Azoth::Sarin
 		ToxContact& GetOrCreateByPubkey (Pubkey);
 
 		std::shared_ptr<ToxRunner> GetTox ();
+
+		/** @brief Returns the context that dies with the current Tox thread.
+		 *
+		 * Coroutines registered with it are cancelled when the account lets
+		 * that thread go. The account shall have a Tox thread.
+		 */
+		Util::CoroContext& GetToxThreadContext ();
 
 		QObject* GetQObject () override;
 		QObject* GetParentProtocol () const override;

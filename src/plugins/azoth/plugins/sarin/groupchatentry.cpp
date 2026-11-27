@@ -227,6 +227,7 @@ namespace LC::Azoth::Sarin
 		const auto tox = Mgr_.GetAccount ().GetTox ();
 		if (!tox)
 			co_return;
+		co_await Util::AddContext { Mgr_.GetAccount ().GetToxThreadContext () };
 
 		const auto result = co_await tox->RunWithErrorUnwrapping (&tox_group_leave, GroupNum_, msg.toUtf8 ());
 		if (result.IsRight ())
@@ -276,6 +277,7 @@ namespace LC::Azoth::Sarin
 		const auto tox = Mgr_.GetAccount ().GetTox ();
 		if (!tox)
 			co_return;
+		co_await Util::AddContext { Mgr_.GetAccount ().GetToxThreadContext () };
 
 		const auto result = co_await tox->RunWithErrorUnwrapping (&tox_group_self_set_name, GroupNum_, nick.toUtf8 ());
 		if (result.IsRight ())

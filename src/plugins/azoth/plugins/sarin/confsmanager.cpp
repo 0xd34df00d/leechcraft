@@ -48,8 +48,11 @@ namespace LC::Azoth::Sarin
 
 	namespace
 	{
-		Util::Task<std::optional<uint32_t>> JoinTextConf (std::shared_ptr<ToxRunner> tox, QByteArray cookie, uint32_t friendNum)
+		Util::ContextTask<std::optional<uint32_t>> JoinTextConf (Util::CoroContext& toxContext,
+				std::shared_ptr<ToxRunner> tox, QByteArray cookie, uint32_t friendNum)
 		{
+			co_await Util::AddContext { toxContext };
+
 			constexpr auto maxRetries = 10;
 			for (int i = 0; i < maxRetries; ++i)
 			{
@@ -98,11 +101,14 @@ namespace LC::Azoth::Sarin
 		if (!tox)
 			co_return;
 
+		auto& toxContext = Acc_.GetToxThreadContext ();
+		co_await Util::AddContext { toxContext };
+
 		std::optional<uint32_t> confNum;
 		switch (type)
 		{
 		case ConfType::Text:
-			confNum = co_await JoinTextConf (tox, cookie, friendNum);
+			confNum = co_await JoinTextConf (toxContext, tox, cookie, friendNum);
 			break;
 		case ConfType::AV:
 			confNum = co_await JoinAvConf (tox, cookie, friendNum);

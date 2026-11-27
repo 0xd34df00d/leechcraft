@@ -135,6 +135,11 @@ namespace LC::Azoth::Sarin
 		return Tox_;
 	}
 
+	Util::CoroContext& ToxAccount::GetToxThreadContext ()
+	{
+		return ToxThreadContext_.value ();
+	}
+
 	QObject* ToxAccount::GetQObject ()
 	{
 		return this;
@@ -213,6 +218,7 @@ namespace LC::Azoth::Sarin
 			if (Tox_)
 			{
 				emit Emitter_.statusChanged (status);
+				ToxThreadContext_.reset ();
 				Tox_.reset ();
 				emit threadChanged (Tox_);
 			}
@@ -382,6 +388,7 @@ namespace LC::Azoth::Sarin
 		co_await Util::AddContext { CoroContext_ };
 
 		Tox_ = std::make_shared<ToxRunner> (ToxW::InitContext { Nick_, ToxState_, ToxConfig_ });
+		ToxThreadContext_.emplace ("Tox thread"_qs);
 		ConnectSignalsPreRun ();
 
 		qDebug () << "initializing...";
@@ -390,6 +397,7 @@ namespace LC::Azoth::Sarin
 				[this] (const ToxError<InitError>& error)
 				{
 					qWarning () << "failed to init Tox:" << error;
+					ToxThreadContext_.reset ();
 					Tox_.reset ();
 
 					// TODO human-readable message for the code

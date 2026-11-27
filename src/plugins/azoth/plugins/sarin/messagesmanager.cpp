@@ -39,6 +39,7 @@ namespace LC::Azoth::Sarin
 			qWarning () << "cannot send messages in offline";
 			co_return;
 		}
+		co_await Util::AddContext { Acc_.GetToxThreadContext () };
 
 		const auto friendNum = co_await runner->Run (&ToxW::ResolveFriendNum, pkey);
 		if (!friendNum)
