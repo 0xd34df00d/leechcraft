@@ -66,7 +66,7 @@ namespace LC::Azoth::Sarin
 			return {};
 		}
 
-		const auto job = new FileTransferIn { ctx.Pkey_, ctx.FriendNum_, ctx.FileNum_, ctx.Size_, tox };
+		const auto job = new FileTransferIn { ctx.Pkey_, ctx.FriendNum_, ctx.FileNum_, ctx.Size_, tox, this };
 		SetupLifetime (job);
 		connect (this,
 				&FileTransferManager::gotFileControl,
@@ -102,7 +102,7 @@ namespace LC::Azoth::Sarin
 			return nullptr;
 		}
 
-		const auto transfer = new FileTransferOut { contact->GetPubKey (), name, tox };
+		const auto transfer = new FileTransferOut { contact->GetPubKey (), name, tox, this };
 		SetupLifetime (transfer);
 		connect (this,
 				&FileTransferManager::gotFileControl,
