@@ -24,7 +24,7 @@ namespace LC::AdvancedNotifications
 		return NMUrgentHint;
 	}
 
-	void WMUrgentHandler::Handle (const Entity& e, const NotificationRule&)
+	void WMUrgentHandler::Handle (const Entity& e, const QList<const NotificationRule*>&)
 	{
 		if (e.Additional_ [AN::EF::EventCategory].toString () == AN::CatEventCancel)
 			return;

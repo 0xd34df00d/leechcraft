@@ -21,7 +21,7 @@ namespace LC::AdvancedNotifications
 		return NMVisual;
 	}
 
-	void VisualHandler::Handle (const Entity& orig, const NotificationRule&)
+	void VisualHandler::Handle (const Entity& orig, const QList<const NotificationRule*>&)
 	{
 		if (orig.Additional_ [AN::EF::EventCategory].toString () == AN::CatEventCancel)
 			return;

@@ -7,12 +7,15 @@
  **********************************************************************/
 
 #include "concretehandlerbase.h"
+#include <util/sll/prelude.h>
 #include "notificationrule.h"
 
 namespace LC::AdvancedNotifications
 {
-	void ConcreteHandlerBase::Handle (const Entity& e, const INotificationRule& rule)
+	void ConcreteHandlerBase::Handle (const Entity& e, const QList<const INotificationRule*>& rules)
 	{
-		Handle (e, dynamic_cast<const NotificationRule&> (rule));
+		Handle (e,
+				Util::Map (rules,
+						[] (const INotificationRule *rule) { return &dynamic_cast<const NotificationRule&> (*rule); }));
 	}
 }

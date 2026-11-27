@@ -25,7 +25,7 @@ namespace Dolle
 		return NMTray;
 	}
 
-	void NotificationHandler::Handle (const Entity& e, const INotificationRule& rule)
+	void NotificationHandler::Handle (const Entity& e, const QList<const INotificationRule*>& rules)
 	{
 		const QString& cat = e.Additional_ ["org.LC.AdvNotifications.EventCategory"].toString ();
 		const QString& type = e.Additional_ ["org.LC.AdvNotifications.EventType"].toString ();
@@ -39,7 +39,7 @@ namespace Dolle
 			else
 				data.Counts_ [eventId] = e.Additional_.value ("org.LC.AdvNotifications.Count", 1).toInt ();
 
-			data.Color_ = rule.GetColor ();
+			data.Color_ = rules.last ()->GetColor ();
 			data.Total_ = std::accumulate (data.Counts_.constBegin (), data.Counts_.constEnd (), 0);
 		}
 		else

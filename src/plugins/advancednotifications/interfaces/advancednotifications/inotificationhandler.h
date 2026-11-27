@@ -9,6 +9,7 @@
 #pragma once
 
 #include <memory>
+#include <QList>
 #include <QObject>
 #include "types.h"
 
@@ -26,7 +27,13 @@ namespace AdvancedNotifications
 		virtual ~INotificationHandler () = default;
 
 		virtual NotificationMethod GetHandlerMethod () const = 0;
-		virtual void Handle (const Entity&, const INotificationRule&) = 0;
+
+		/** @brief Handles an event or its cancellation.
+		 *
+		 * Called once per event with the rules that matched it and ask for
+		 * this handler's method, and once per cancellation with no rules.
+		 */
+		virtual void Handle (const Entity&, const QList<const INotificationRule*>& rules) = 0;
 	};
 
 	using INotificationHandler_ptr = std::shared_ptr<INotificationHandler>;

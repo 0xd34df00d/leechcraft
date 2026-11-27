@@ -25,8 +25,8 @@ namespace AdvancedNotifications
 							  , public INotificationHandler
 	{
 	public:
-		virtual void Handle (const Entity&, const NotificationRule&) = 0;
-		void Handle (const Entity&, const INotificationRule&) override;
+		virtual void Handle (const Entity&, const QList<const NotificationRule*>&) = 0;
+		void Handle (const Entity&, const QList<const INotificationRule*>&) override;
 	};
 
 	using ConcreteHandlerBase_ptr = std::shared_ptr<ConcreteHandlerBase>;

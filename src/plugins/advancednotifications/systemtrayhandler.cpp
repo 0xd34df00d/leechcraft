@@ -45,7 +45,7 @@ namespace LC::AdvancedNotifications
 		return NMTray;
 	}
 
-	void SystemTrayHandler::Handle (const Entity& e, const NotificationRule&)
+	void SystemTrayHandler::Handle (const Entity& e, const QList<const NotificationRule*>&)
 	{
 		const auto& cat = e.Additional_ [AN::EF::EventCategory].toString ();
 		const auto& senderId = e.Additional_ [AN::EF::SenderID].toByteArray ();

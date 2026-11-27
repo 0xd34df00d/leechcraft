@@ -8,8 +8,6 @@
 
 #include "cmdrunhandler.h"
 #include <QProcess>
-#include <util/xpc/an/constants.h>
-#include <util/xpc/an/entityfields.h>
 #include <util/xpc/entityconstants.h>
 #include <util/xpc/util.h>
 #include "notificationrule.h"
@@ -21,35 +19,35 @@ namespace LC::AdvancedNotifications
 		return NMCommand;
 	}
 
-	void CmdRunHandler::Handle (const Entity& e, const NotificationRule& rule)
+	void CmdRunHandler::Handle (const Entity& e, const QList<const NotificationRule*>& rules)
 	{
-		if (e.Additional_ [AN::EF::EventCategory].toString () == AN::CatEventCancel)
-			return;
-
-		const CmdParams& params = rule.GetCmdParams ();
-		if (params.Cmd_.isEmpty ())
+		for (const auto rule : rules)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "empty command";
-			return;
-		}
-
-		auto args = params.Args_;
-		for (auto& arg : args)
-		{
-			if (arg [0] != '$')
+			const CmdParams& params = rule->GetCmdParams ();
+			if (params.Cmd_.isEmpty ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "empty command";
 				continue;
+			}
 
-			auto stripped = arg;
-			stripped.remove (0, 1);
-			if (!e.Additional_.contains (stripped))
-				continue;
+			auto args = params.Args_;
+			for (auto& arg : args)
+			{
+				if (arg [0] != '$')
+					continue;
 
-			arg = stripped == EF::Text ?
-					Util::ToPlainText (Util::GetNotificationText (e)) :
-					e.Additional_ [stripped].toString ();
+				auto stripped = arg;
+				stripped.remove (0, 1);
+				if (!e.Additional_.contains (stripped))
+					continue;
+
+				arg = stripped == EF::Text ?
+						Util::ToPlainText (Util::GetNotificationText (e)) :
+						e.Additional_ [stripped].toString ();
+			}
+
+			QProcess::startDetached (params.Cmd_, args);
 		}
-
-		QProcess::startDetached (params.Cmd_, args);
 	}
 }

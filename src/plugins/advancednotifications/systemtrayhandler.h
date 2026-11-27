@@ -45,7 +45,7 @@ namespace LC::AdvancedNotifications
 		~SystemTrayHandler () override;
 
 		NotificationMethod GetHandlerMethod () const override;
-		void Handle (const Entity&, const NotificationRule&) override;
+		void Handle (const Entity&, const QList<const NotificationRule*>&) override;
 	private:
 		void ExtractPixmap (EventData&, const Entity&);
 

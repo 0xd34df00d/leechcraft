@@ -16,6 +16,6 @@ namespace LC::AdvancedNotifications
 	{
 	public:
 		NotificationMethod GetHandlerMethod () const override;
-		void Handle (const Entity&, const NotificationRule&) override;
+		void Handle (const Entity&, const QList<const NotificationRule*>&) override;
 	};
 }

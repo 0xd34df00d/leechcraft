@@ -28,21 +28,24 @@ namespace LC::AdvancedNotifications
 		return NMAudio;
 	}
 
-	void AudioHandler::Handle (const Entity&, const NotificationRule& rule)
+	void AudioHandler::Handle (const Entity&, const QList<const NotificationRule*>& rules)
 	{
 		if (!XmlSettingsManager::Instance ()
 				.property ("EnableAudioNots").toBool ())
 			return;
 
-		const auto& fname = AudioThemeMgr_->GetAbsoluteFilePath (rule.GetAudioParams ().Filename_);
+		for (const auto rule : rules)
+		{
+			const auto& fname = AudioThemeMgr_->GetAbsoluteFilePath (rule->GetAudioParams ().Filename_);
 
-		const auto& now = QDateTime::currentDateTime ();
-		if (LastNotify_ [fname].msecsTo (now) < 1000)
-			return;
+			const auto& now = QDateTime::currentDateTime ();
+			if (LastNotify_ [fname].msecsTo (now) < 1000)
+				continue;
 
-		LastNotify_ [fname] = now;
+			LastNotify_ [fname] = now;
 
-		const auto& e = Util::MakeEntity (fname, QString (), Internal);
-		GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+			const auto& e = Util::MakeEntity (fname, QString (), Internal);
+			GetProxyHolder ()->GetEntityManager ()->HandleEntity (e);
+		}
 	}
 }

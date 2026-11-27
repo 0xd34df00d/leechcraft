@@ -28,7 +28,7 @@ namespace Dolle
 		QMap<QString, NotificationData> Counts_;
 	public:
 		NotificationMethod GetHandlerMethod () const override;
-		void Handle (const Entity&, const INotificationRule&) override;
+		void Handle (const Entity&, const QList<const INotificationRule*>&) override;
 	};
 }
 }

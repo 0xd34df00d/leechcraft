@@ -58,22 +58,26 @@ namespace LC::AdvancedNotifications
 		if (e.Additional_ [AN::EF::EventCategory].toString () == AN::CatEventCancel)
 		{
 			for (const auto& handler : Handlers_)
-				handler->Handle (e, NotificationRule {});
+				handler->Handle (e, {});
 			return;
 		}
 
-		bool wasHandled = false;
-		for (const auto& rule : RulesManager_->GetRules (e))
-		{
-			const auto& methods = rule.GetMethods ();
-			for (const auto& handler : Handlers_)
-			{
-				if (!(methods & handler->GetHandlerMethod ()))
-					continue;
+		const auto& rules = RulesManager_->GetRules (e);
 
-				handler->Handle (e, rule);
-				wasHandled = true;
-			}
+		bool wasHandled = false;
+		for (const auto& handler : Handlers_)
+		{
+			const auto method = handler->GetHandlerMethod ();
+
+			QList<const INotificationRule*> asking;
+			for (const auto& rule : rules)
+				if (rule.GetMethods () & method)
+					asking << &rule;
+			if (asking.isEmpty ())
+				continue;
+
+			handler->Handle (e, asking);
+			wasHandled = true;
 		}
 
 		if (!wasHandled)
