@@ -39,13 +39,13 @@ namespace LC::Azoth::Sarin
 		}
 
 		// TODO proper error handling
-		Tox_->RunWithError (&tox_file_control, FriendNum_, FileNum_, TOX_FILE_CONTROL_RESUME);
+		Tox_->RunWithErrorUnwrapping (&tox_file_control, FriendNum_, FileNum_, TOX_FILE_CONTROL_RESUME);
 	}
 
 	void FileTransferIn::Abort ()
 	{
 		// TODO proper error handling
-		Tox_->RunWithError (&tox_file_control, FriendNum_, FileNum_, TOX_FILE_CONTROL_CANCEL);
+		Tox_->RunWithErrorUnwrapping (&tox_file_control, FriendNum_, FileNum_, TOX_FILE_CONTROL_CANCEL);
 	}
 
 	void FileTransferIn::HandleData (quint32 friendNum, quint32 fileNum, const QByteArray& data, uint64_t position)

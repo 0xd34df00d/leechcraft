@@ -91,22 +91,22 @@ namespace LC::Azoth::Sarin
 	public:
 		using WorkerThread::WorkerThread;
 
-		auto RunWithError (auto f, auto... args)
+		auto RunWithErrorUnwrapping (auto f, auto... args)
 		{
 			return Run ([f, ...args = args] (ToxW& tox)
 			{
-				return WithError (f, tox.GetTox (), args...);;
+				return WithErrorUnwrapping (f, tox.GetTox (), args...);
 			});
 		}
 
-		auto RunWithStrError (auto f, auto... args)
+		auto RunWithUnwrapping (auto f, auto... args)
 		{
 			return Run ([f, ...args = args] (ToxW& tox)
 			{
-				return WithStrError (f, tox.GetTox (), args...);
+				return WithUnwrapping (f, tox.GetTox (), args...);
 			});
 		}
-	signals:
+		signals:
 		void statusChanged (const EntryStatus&);
 
 		void toxStateChanged (const QByteArray& newState);

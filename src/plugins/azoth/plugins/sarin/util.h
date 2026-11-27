@@ -122,13 +122,6 @@ namespace LC::Azoth::Sarin
 	}
 
 	template<typename F>
-	auto WithStr (const QString& str, F&& f)
-	{
-		const auto& strUtf8 = str.toUtf8 ();
-		return std::forward<F> (f) (std::bit_cast<const uint8_t*> (strUtf8.constData ()), strUtf8.size ());
-	}
-
-	template<typename F>
 	using ErrorType_t = std::remove_pointer_t<Util::ArgType_t<F, Util::ArgCount_v<F> - 1>>;
 
 	template<typename F>
@@ -154,10 +147,40 @@ namespace LC::Azoth::Sarin
 		return result;
 	}
 
-	template<typename F>
-	EitherType_t<F> WithStrError (F f, Tox *tox, const QString& str, auto... args)
+	namespace detail
 	{
-		return WithStr (str, [&] (auto bytes, auto size) { return WithError (f, tox, args..., bytes, size); });
+		inline auto Unwrap (const QByteArray& bytes)
+		{
+			return std::tuple { std::bit_cast<const uint8_t*> (bytes.constData ()), bytes.size () };
+		}
+
+		template<size_t N>
+		auto Unwrap (const std::array<uint8_t, N>& data)
+		{
+			return std::tuple { data.data () };
+		}
+
+		auto Unwrap (const QString& str) = delete ("Use `toUtf8()` or `toLatin1()` and pass the QByteArray");
+
+		template<typename T>
+		auto Unwrap (T t)
+		{
+			return std::tuple { t };
+		}
+	}
+
+	template<typename F, typename... Args>
+		requires (!std::is_pointer_v<Args> && ...) &&
+				(!std::is_same_v<Args, QString> && ...)
+	auto WithUnwrapping (F f, Tox *tox, Args... args)
+	{
+		return std::apply ([&] (auto... args) { return f (tox, args...); }, std::tuple_cat (detail::Unwrap (args)...));
+	}
+
+	template<typename F, typename... Args>
+	EitherType_t<F> WithErrorUnwrapping (F f, Tox *tox, Args... args)
+	{
+		return WithUnwrapping ([f]<typename... Ts> (Ts&&... subargs) { return WithError (f, std::forward<Ts> (subargs)...); }, tox, args...);
 	}
 
 	template<typename SizeF, typename CharsF, typename... Args>

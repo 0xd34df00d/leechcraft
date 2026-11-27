@@ -362,7 +362,7 @@ namespace LC::Azoth::Sarin
 		const auto num = co_await Tox_->Run (&ToxW::ResolveFriendNum, pkey);
 		if (!num)
 			co_return;
-		const auto result = co_await Tox_->RunWithError (&tox_self_set_typing, *num, isTyping);
+		const auto result = co_await Tox_->RunWithErrorUnwrapping (&tox_self_set_typing, *num, isTyping);
 		if (const auto err = result.MaybeLeft ())
 			qWarning () << "cannot set typing to" << isTyping << ":" << *err << tox_err_set_typing_to_string (*err);
 	}

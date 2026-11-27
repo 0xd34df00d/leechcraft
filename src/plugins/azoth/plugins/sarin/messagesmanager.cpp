@@ -52,7 +52,7 @@ namespace LC::Azoth::Sarin
 		constexpr auto backoffBase = 1s;
 		for (int i = 0; i < retries; ++i)
 		{
-			const auto sendResult = co_await runner->RunWithStrError (&tox_friend_send_message, body, *friendNum, TOX_MESSAGE_TYPE_NORMAL);
+			const auto sendResult = co_await runner->RunWithErrorUnwrapping (&tox_friend_send_message, *friendNum, TOX_MESSAGE_TYPE_NORMAL, body.toUtf8 ());
 			// TODO more specific error handling
 			Util::Visit (sendResult,
 					[&, this] (uint32_t msgId) { MsgId2Msg_ [msgId] = msg; },

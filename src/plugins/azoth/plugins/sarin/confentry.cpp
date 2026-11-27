@@ -211,7 +211,7 @@ namespace LC::Azoth::Sarin
 			co_return;
 		}
 
-		const auto result = co_await tox->RunWithError (&tox_conference_invite, *friendNum, ConfNum_);
+		const auto result = co_await tox->RunWithErrorUnwrapping (&tox_conference_invite, *friendNum, ConfNum_);
 		if (result.IsLeft ())
 			ReportError (tr ("Unable to invite %1 to %2: %3.").arg (name, GetEntryName (), ToUserString (result.GetLeft ())));
 	}

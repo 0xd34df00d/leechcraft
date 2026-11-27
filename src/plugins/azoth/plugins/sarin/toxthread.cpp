@@ -60,7 +60,7 @@ namespace LC::Azoth::Sarin
 		if (!Tox_)
 			return true;
 
-		if (const auto res = WithStrError (&tox_self_set_status_message, Tox_.get (), status.StatusString_);
+		if (const auto res = WithErrorUnwrapping (&tox_self_set_status_message, Tox_.get (), status.StatusString_.toUtf8 ());
 			res.IsLeft ())
 		{
 			qWarning () <<  "unable to set status message" << res.GetLeft ();
@@ -434,7 +434,7 @@ namespace LC::Azoth::Sarin
 		// TODO
 		//CallManager_ = std::make_shared<CallManager> (this, Tox_.get ());
 
-		if (const auto setNameRes = WithStrError (&tox_self_set_name, Tox_.get (), Name_);
+		if (const auto setNameRes = WithErrorUnwrapping (&tox_self_set_name, Tox_.get (), Name_.toUtf8 ());
 			setNameRes.IsLeft ())
 			qWarning () << "unable to set self name" << setNameRes.GetLeft ();
 

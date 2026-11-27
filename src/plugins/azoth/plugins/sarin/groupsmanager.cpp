@@ -60,10 +60,7 @@ namespace LC::Azoth::Sarin
 
 		const auto nickUtf8 = nick.toUtf8 ();
 		const auto pwUtf8 = password.toUtf8 ();
-		const auto joinResult = co_await tox->RunWithError (&tox_group_join,
-				groupIdArr->data (),
-				std::bit_cast<const uint8_t*> (nickUtf8.constData ()), nickUtf8.size (),
-				std::bit_cast<const uint8_t*> (pwUtf8.constData ()), pwUtf8.size ());
+		const auto joinResult = co_await tox->RunWithErrorUnwrapping (&tox_group_join, *groupIdArr, nickUtf8, pwUtf8);
 		const auto groupNum = co_await joinResult;
 
 		const auto entry = new GroupChatEntry { nick, groupNum, groupId, *this };

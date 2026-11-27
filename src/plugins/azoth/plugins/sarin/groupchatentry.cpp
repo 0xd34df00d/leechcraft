@@ -205,7 +205,7 @@ namespace LC::Azoth::Sarin
 			co_return;
 		}
 
-		const auto result = co_await tox->RunWithError (&tox_group_invite_friend, GroupNum_, *friendNum);
+		const auto result = co_await tox->RunWithErrorUnwrapping (&tox_group_invite_friend, GroupNum_, *friendNum);
 		if (result.IsLeft ())
 			ReportError (tr ("Unable to invite %1 to %2: %3.").arg (name, GetEntryName (), ToUserString (result.GetLeft ())));
 	}
@@ -228,7 +228,7 @@ namespace LC::Azoth::Sarin
 		if (!tox)
 			co_return;
 
-		const auto result = co_await tox->RunWithStrError (&tox_group_leave, msg, GroupNum_);
+		const auto result = co_await tox->RunWithErrorUnwrapping (&tox_group_leave, GroupNum_, msg.toUtf8 ());
 		if (result.IsRight ())
 		{
 			Mgr_.HandleLeft (GroupNum_);
@@ -277,7 +277,7 @@ namespace LC::Azoth::Sarin
 		if (!tox)
 			co_return;
 
-		const auto result = co_await tox->RunWithStrError (&tox_group_self_set_name, nick, GroupNum_);
+		const auto result = co_await tox->RunWithErrorUnwrapping (&tox_group_self_set_name, GroupNum_, nick.toUtf8 ());
 		if (result.IsRight ())
 		{
 			Nick_ = nick;

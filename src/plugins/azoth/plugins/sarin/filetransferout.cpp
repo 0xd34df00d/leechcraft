@@ -63,12 +63,12 @@ namespace LC::Azoth::Sarin
 		}
 		FriendNum_ = *friendNum;
 
-		const auto sendResult = co_await Tox_->RunWithStrError (&tox_file_send,
-				FilePath_.section ('/', -1, -1),
+		const auto sendResult = co_await Tox_->RunWithErrorUnwrapping (&tox_file_send,
 				FriendNum_,
 				TOX_FILE_KIND_DATA,
 				static_cast<uint64_t> (Filesize_),
-				nullptr);
+				nullptr,
+				FilePath_.section ('/', -1, -1).toUtf8 ());
 
 		FileNum_ = co_await Util::WithHandler (sendResult,
 				[this] (TOX_ERR_FILE_SEND err)
@@ -179,7 +179,7 @@ namespace LC::Azoth::Sarin
 			qWarning () << "could not read" << length << "bytes, reading" << data.size () << "instead";
 
 		// TODO error handling
-		co_await Tox_->RunWithError (&tox_file_send_chunk,
-				friendNum, fileNum, offset, std::bit_cast<const uint8_t*> (data.constData ()), data.size ());
+		co_await Tox_->RunWithErrorUnwrapping (&tox_file_send_chunk,
+				friendNum, fileNum, offset, data);
 	}
 }

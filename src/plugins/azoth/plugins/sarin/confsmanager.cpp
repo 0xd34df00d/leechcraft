@@ -53,8 +53,7 @@ namespace LC::Azoth::Sarin
 			constexpr auto maxRetries = 10;
 			for (int i = 0; i < maxRetries; ++i)
 			{
-				const auto joinResult = co_await tox->RunWithError (&tox_conference_join,
-						friendNum, std::bit_cast<const uint8_t*> (cookie.constData ()), cookie.size ());
+				const auto joinResult = co_await tox->RunWithErrorUnwrapping (&tox_conference_join, friendNum, cookie);
 				if (joinResult.IsRight ())
 					co_return joinResult.GetRight ();
 
@@ -81,15 +80,7 @@ namespace LC::Azoth::Sarin
 
 		Util::Task<std::optional<uint32_t>> JoinAvConf (std::shared_ptr<ToxRunner> tox, QByteArray cookie, uint32_t friendNum)
 		{
-			const auto confId = co_await tox->Run ([&] (ToxW& tox)
-					{
-						return toxav_join_av_groupchat (tox.GetTox (),
-								friendNum,
-								std::bit_cast<const uint8_t*> (cookie.constData ()),
-								cookie.size (),
-								nullptr,
-								nullptr);
-					});
+			const auto confId = co_await tox->RunWithUnwrapping (&toxav_join_av_groupchat, friendNum, cookie, nullptr, nullptr);
 			if (confId >= 0)
 				co_return confId;
 
@@ -152,7 +143,7 @@ namespace LC::Azoth::Sarin
 
 		// Any error of tox_conference_delete means that conference is already gone,
 		// so we can ignore it for our purposes.
-		co_await runner->RunWithError (&tox_conference_delete, confNum);
+		co_await runner->RunWithErrorUnwrapping (&tox_conference_delete, confNum);
 		runner->Run (&ToxW::SaveState);
 
 		const auto entry = Conf2Entry_.take (confNum);
