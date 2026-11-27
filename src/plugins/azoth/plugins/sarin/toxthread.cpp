@@ -332,9 +332,10 @@ namespace LC::Azoth::Sarin
 						qWarning () << "cannot get pubkey for message from friend" << friendId;
 				}> ();
 		Register<tox_callback_friend_read_receipt,
-				[] (ToxW& self, Tox*, uint32_t, uint32_t msgId)
+				[] (ToxW& self, Tox*, uint32_t friendId, uint32_t msgId)
 				{
-					emit self.Runner_.readReceipt (msgId);
+					if (const auto pkey = self.GetFriendPubkey (friendId))
+						emit self.Runner_.readReceipt (*pkey, msgId);
 				}> ();
 
 		// conferences

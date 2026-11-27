@@ -56,7 +56,7 @@ namespace LC::Azoth::Sarin
 			const auto sendResult = co_await runner->RunWithErrorUnwrapping (&tox_friend_send_message, *friendNum, TOX_MESSAGE_TYPE_NORMAL, body.toUtf8 ());
 			// TODO more specific error handling
 			Util::Visit (sendResult,
-					[&, this] (uint32_t msgId) { MsgId2Msg_ [msgId] = msg; },
+					[&, this] (uint32_t msgId) { MsgId2Msg_ [{ pkey, msgId }] = msg; },
 					[] (TOX_ERR_FRIEND_SEND_MESSAGE error) { qWarning () << "unable to send message" << error; });
 			if (sendResult.IsRight ())
 				break;
@@ -65,9 +65,9 @@ namespace LC::Azoth::Sarin
 		}
 	}
 
-	void MessagesManager::HandleReadReceipt (quint32 msgId)
+	void MessagesManager::HandleReadReceipt (Pubkey pkey, quint32 msgId)
 	{
-		if (const auto& val = MsgId2Msg_.take (msgId))
+		if (const auto& val = MsgId2Msg_.take ({ pkey, msgId }))
 			val->SetDelivered ();
 		else
 			qWarning () << "the message for ID" << msgId << "is dead";

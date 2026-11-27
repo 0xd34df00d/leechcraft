@@ -25,13 +25,13 @@ namespace LC::Azoth::Sarin
 	class MessagesManager : public QObject
 	{
 		ToxAccount& Acc_;
-		QHash<uint32_t, QPointer<ChatMessage>> MsgId2Msg_;
+		QHash<std::pair<Pubkey, uint32_t>, QPointer<ChatMessage>> MsgId2Msg_;
 	public:
 		explicit MessagesManager (ToxAccount&);
 
 		Util::ContextTask<void> SendMessage (Pubkey pkey, QPointer<ChatMessage>);
 	private:
-		void HandleReadReceipt (quint32);
+		void HandleReadReceipt (Pubkey, quint32);
 		void HandleInMessage (Pubkey, const QString&);
 
 		void SetThread (const std::shared_ptr<ToxRunner>&);

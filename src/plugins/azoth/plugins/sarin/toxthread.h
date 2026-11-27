@@ -131,7 +131,7 @@ namespace LC::Azoth::Sarin
 		void requested (uint32_t, Pubkey, uint32_t, uint64_t, const QString&);
 
 		void incomingMessage (Pubkey pubkey, const QString&);
-		void readReceipt (uint32_t);
+		void readReceipt (Pubkey pubkey, uint32_t msgId);
 
 		void confInvited (const ConfInvitationEvent&);
 		void confConnected (uint32_t confNum);
