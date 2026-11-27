@@ -130,10 +130,10 @@ namespace Sysnotify
 		}
 
 		const auto eitherId = co_await Server_.Call<uint> ("Notify"_qs,
-				header,
+				"LeechCraft"_qs,
 				0u,
 				"leechcraft_main"_qs,
-				QString {},
+				header,
 				body,
 				fmtActions,
 				hints,
