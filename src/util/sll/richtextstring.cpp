@@ -11,6 +11,11 @@
 
 namespace LC::Util
 {
+	QString PlainTextString::ToHtml () const
+	{
+		return RichTextString { *this }.ToHtml ();
+	}
+
 	namespace
 	{
 		constexpr char16_t LineTabulation = u'\v';

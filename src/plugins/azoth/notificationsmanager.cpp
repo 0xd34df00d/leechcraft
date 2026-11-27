@@ -12,6 +12,7 @@
 #include <util/sll/prelude.h>
 #include <util/sll/qobjectrefcast.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/visitor.h>
 #include <util/xpc/util.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/xpc/defaulthookproxy.h>
@@ -577,7 +578,13 @@ namespace Azoth
 		QString Text_;
 		Priority Priority_ = Priority::Info;
 
+		std::optional<Util::PlainTextString> Message_;
+
 		QList<std::pair<QString, std::function<void ()>>> Actions_ {};
+
+		struct TotalCount { int Count_; };
+		struct Delta { int Delta_; };
+		std::variant<TotalCount, Delta> Count_ = TotalCount { 1 };
 
 		bool IsAdvanced_;
 	};
@@ -633,6 +640,7 @@ namespace Azoth
 				{
 					.Conversation_ = conversation,
 					.Text_ = tr ("%1 started composing a message to you.").arg (Util::FormatName (conversation.GetEntryName ())),
+					.Message_ = {},
 					.Actions_ = { { tr ("Open chat"), openAction } },
 					.IsAdvanced_ = true,
 				});
@@ -646,7 +654,7 @@ namespace Azoth
 				n.Priority_);
 
 		if (n.IsAdvanced_)
-			e.Mime_ += "+advanced";
+			e.Mime_ += "+advanced"_qs;
 
 		if (!n.Actions_.isEmpty ())
 		{
@@ -666,9 +674,16 @@ namespace Azoth
 		e.Additional_ [AN::EF::VisualPath] = QStringList { n.Conversation_.GetEntryName () };
 		e.Additional_ [AN::EF::WindowIndex] = GetWindowOf (TabsMgr_, n.Conversation_);
 
+		Util::Visit (n.Count_,
+				[&] (EntryEventNotification::TotalCount total) { e.Additional_ [AN::EF::Count] = total.Count_; },
+				[&] (EntryEventNotification::Delta delta) { e.Additional_ [AN::EF::DeltaCount] = delta.Delta_; });
+
 		e.Additional_ [AN::Field::IMChatIsActive] = TabsMgr_.IsActiveChat (&n.Conversation_);
 		e.Additional_ [AN::Field::IMChatIsOpen] = static_cast<bool> (TabsMgr_.GetChatTab (convId));
 		e.Additional_ [AN::Field::IMChatHasBeenOpened] = TabsMgr_.HasChatBeenOpened (convId);
+
+		if (n.Message_)
+			e.Additional_ [Fields::Msg] = n.Message_->GetPlainText ();
 
 		e.Additional_.insert (SourceFields (n.Actor_));
 		if (const auto room = RoomOf (n.Actor_))

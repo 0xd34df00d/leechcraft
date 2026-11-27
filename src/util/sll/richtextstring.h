@@ -19,6 +19,12 @@ namespace LC::Util
 	struct PlainTextString
 	{
 		QString Text_;
+
+		bool IsEmpty () const { return Text_.isEmpty (); }
+
+		QString GetPlainText () const { return Text_; }
+
+		UTIL_SLL_API QString ToHtml () const;
 	};
 
 	/** @brief A text in Qt's rich text markup.
