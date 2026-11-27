@@ -85,11 +85,19 @@ namespace LC::Azoth::Sarin
 		void InitializeCallbacks ();
 	};
 
-	class ToxRunner final : public Util::Coro::WorkerThread<ToxW, ToxRunner>
+	class ToxRunner final : public QObject
 	{
 		Q_OBJECT
+
+		Util::Coro::WorkerThread<ToxW, ToxRunner> Thread_;
 	public:
-		using WorkerThread::WorkerThread;
+		explicit ToxRunner (const ToxW::InitContext&);
+
+		template<typename F, typename... Args>
+		auto Run (F&& f, Args&&... args)
+		{
+			return Thread_.Run (std::forward<F> (f), std::forward<Args> (args)...);
+		}
 
 		auto RunWithErrorUnwrapping (auto f, auto... args)
 		{

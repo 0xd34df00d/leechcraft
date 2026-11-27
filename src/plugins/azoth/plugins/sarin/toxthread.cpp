@@ -34,6 +34,11 @@ namespace LC::Azoth::Sarin
 
 	ToxW::~ToxW () = default;
 
+	ToxRunner::ToxRunner (const ToxW::InitContext& ctx)
+	: Thread_ { ctx, *this }
+	{
+	}
+
 	Tox* ToxW::GetTox ()
 	{
 		return Tox_.get ();
