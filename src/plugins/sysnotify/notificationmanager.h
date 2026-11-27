@@ -8,13 +8,12 @@
 
 #pragma once
 
-#include <memory>
 #include <tuple>
 #include <QObject>
-#include <QDBusInterface>
 #include <QPointer>
 #include <QStringList>
 #include <interfaces/structures.h>
+#include <util/dbus/async.h>
 #include <util/threads/coro/taskfwd.h>
 #include <util/threads/coro/corocontext.h>
 
@@ -26,7 +25,15 @@ namespace Sysnotify
 	{
 		Q_OBJECT
 
-		std::unique_ptr<QDBusInterface> Connection_;
+		Util::DBus::EndpointWithSignals Server_;
+
+		enum class ServerState
+		{
+			Absent,
+			Usable,
+			Rejected,
+		};
+		ServerState ServerState_ = ServerState::Absent;
 
 		struct ActionData
 		{
@@ -44,9 +51,8 @@ namespace Sysnotify
 		Util::ContextTask<void> HandleNotification (Entity);
 	private:
 		Util::ContextTask<void> CheckServer ();
-	private slots:
-		void handleActionInvoked (uint, QString);
-		void handleNotificationClosed (uint);
+		void HandleActionInvoked (uint, const QString&);
+		void HandleNotificationClosed (uint);
 
 		LC_CORO_CONTEXT
 	};

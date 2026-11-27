@@ -9,11 +9,13 @@
 #include "notificationmanager.h"
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
+#include <QDBusServiceWatcher>
 #include <QIcon>
 #include <QDBusMetaType>
 #include <QtDebug>
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
+#include <util/sll/qtutil.h>
 #include <util/threads/coro.h>
 #include <util/threads/coro/dbus.h>
 #include "imagehint.h"
@@ -24,40 +26,50 @@ namespace Sysnotify
 {
 	NotificationManager::NotificationManager (QObject *parent)
 	: QObject { parent }
+	, Server_
 	{
-		if (!QDBusConnection::sessionBus ().interface ()->
-				isServiceRegistered ("org.freedesktop.Notifications"))
+		{
+			.Service = "org.freedesktop.Notifications"_qs,
+			.Path = "/org/freedesktop/Notifications"_qs,
+			.Interface = "org.freedesktop.Notifications"_qs,
+		}
+	}
+	{
+		if (!Server_.Conn.interface ()->isServiceRegistered (Server_.Service))
 		{
 			qWarning () << Q_FUNC_INFO
-				<< QDBusConnection::sessionBus ().interface ()->registeredServiceNames ().value ();
+				<< Server_.Conn.interface ()->registeredServiceNames ().value ();
 			return;
 		}
 
 		qDBusRegisterMetaType<ImageHint> ();
 
-		Connection_.reset (new QDBusInterface ("org.freedesktop.Notifications",
-					"/org/freedesktop/Notifications",
-					"org.freedesktop.Notifications"));
-		if (!Connection_->isValid ())
-			qWarning () << Q_FUNC_INFO
-					<< Connection_->lastError ();
+		ServerState_ = ServerState::Usable;
+		const auto watcher = new QDBusServiceWatcher
+		{
+			Server_.Service,
+			Server_.Conn,
+			QDBusServiceWatcher::WatchForOwnerChange,
+			this
+		};
+		connect (watcher,
+				&QDBusServiceWatcher::serviceOwnerChanged,
+				this,
+				[this] (const QString&, const QString&, const QString& newOwner)
+				{
+					if (ServerState_ != ServerState::Rejected)
+						ServerState_ = newOwner.isEmpty () ? ServerState::Absent : ServerState::Usable;
+				});
 
 		CheckServer ();
 
-		connect (Connection_.get (),
-				SIGNAL (ActionInvoked (uint, QString)),
-				this,
-				SLOT (handleActionInvoked (uint, QString)));
-		connect (Connection_.get (),
-				SIGNAL (NotificationClosed (uint, uint)),
-				this,
-				SLOT (handleNotificationClosed (uint)));
+		Server_.Connect ("ActionInvoked"_qs, this, &NotificationManager::HandleActionInvoked);
+		Server_.Connect ("NotificationClosed"_qs, this, &NotificationManager::HandleNotificationClosed);
 	}
 
 	bool NotificationManager::CouldNotify (const Entity& e) const
 	{
-		return Connection_.get () &&
-				Connection_->isValid () &&
+		return ServerState_ == ServerState::Usable &&
 				e.Mime_ == "x-leechcraft/notification" &&
 				!e.Additional_ ["Text"].toString ().isEmpty ();
 	}
@@ -80,17 +92,16 @@ namespace Sysnotify
 	{
 		co_await Util::AddContext { CoroContext_ };
 
-		if (!Connection_)
+		if (ServerState_ != ServerState::Usable)
 			co_return;
 
 		auto actions = e.Additional_ ["NotificationActions"].toStringList ();
 		if (!actions.isEmpty ())
 		{
-			const auto& pending = Connection_->asyncCall ("GetCapabilities");
-			const auto eitherCaps = co_await Util::Typed<QStringList> (pending);
+			const auto eitherCaps = co_await Server_.Call<QStringList> ("GetCapabilities"_qs);
 			const auto& caps = co_await Util::WithHandler (eitherCaps,
 					[] (const QDBusError& err) { qWarning () << "unable to query the capabilities:" << err; });
-			if (!Connection_)
+			if (ServerState_ != ServerState::Usable)
 				co_return;
 
 			if (!caps.contains ("actions"))
@@ -119,20 +130,15 @@ namespace Sysnotify
 			hints ["image-data"] = imageVar;
 		}
 
-		QList<QVariant> arguments
-		{
-			header,
-			static_cast<uint> (0),
-			QString { "leechcraft_main" },
-			QString {},
-			text,
-			fmtActions,
-			hints,
-			timeout
-		};
-
-		const auto& pending = Connection_->asyncCallWithArgumentList ("Notify", arguments);
-		const auto eitherId = co_await Util::Typed<uint> (pending);
+		const auto eitherId = co_await Server_.Call<uint> ("Notify"_qs,
+				header,
+				0u,
+				"leechcraft_main"_qs,
+				QString {},
+				text,
+				fmtActions,
+				hints,
+				timeout);
 		const auto id = co_await Util::WithHandler (eitherId,
 				[] (const QDBusError& err) { qWarning () << "unable to show the notification:" << err; });
 		CallID2AD_ [id] = { e, e.Additional_ ["HandlingObject"].value<QObject_ptr> (), actions };
@@ -142,13 +148,12 @@ namespace Sysnotify
 	{
 		co_await Util::AddContext { CoroContext_ };
 
-		const auto& pending = Connection_->asyncCall ("GetServerInformation");
-		const auto eitherInfo = co_await Util::Typed<QString, QString, QString, QString> (pending);
+		const auto eitherInfo = co_await Server_.Call<QString, QString, QString, QString> ("GetServerInformation"_qs);
 		const auto& [implementation, vendor, serverVersion, versionString] = co_await Util::WithHandler (eitherInfo,
 				[this] (const QDBusError& err)
 				{
 					qWarning () << "unable to query the server information:" << err;
-					Connection_.reset ();
+					ServerState_ = ServerState::Rejected;
 				});
 		qDebug () << "using"
 				<< implementation
@@ -162,10 +167,10 @@ namespace Sysnotify
 					versionSplit.value (1).toInt ());
 
 		if (vendor == "LeechCraft")
-			Connection_.reset ();
+			ServerState_ = ServerState::Rejected;
 	}
 
-	void NotificationManager::handleActionInvoked (uint id, QString action)
+	void NotificationManager::HandleActionInvoked (uint id, const QString& action)
 	{
 		const auto& ad = CallID2AD_.take (id);
 		if (!ad.Handler_)
@@ -185,7 +190,7 @@ namespace Sysnotify
 				Qt::QueuedConnection);
 	}
 
-	void NotificationManager::handleNotificationClosed (uint id)
+	void NotificationManager::HandleNotificationClosed (uint id)
 	{
 		CallID2AD_.remove (id);
 	}
